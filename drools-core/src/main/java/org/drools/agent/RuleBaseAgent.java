@@ -49,24 +49,26 @@ public class RuleBaseAgent {
      */
     public static final String NEW_INSTANCE      = "newInstance";
     public static final String FILES             = "file";
-    public static final String DIRECTORY = "dir";
+    public static final String DIRECTORY         = "dir";
     //public static final String URIS = "uri";
     public static final String POLL_INTERVAL     = "poll";
 
     /**
      * Here is where we have a map of providers to the key that appears on the configuration.
      */
-    public static Map          PACKAGE_PROVIDERS = new HashMap() {
+    private static Map          PACKAGE_PROVIDERS = new HashMap() {
                                                      {
-                                                         put( FILES, FileScanner.class );
-                                                         put( DIRECTORY, DirectoryScanner.class);
+                                                         put( FILES,
+                                                              FileScanner.class );
+                                                         put( DIRECTORY,
+                                                              DirectoryScanner.class );
                                                      }
                                                  };
 
     /**
      * This is true if the rulebase is created anew each time.
      */
-    boolean                    newInstance;
+    private boolean                    newInstance;
 
     /**
      * The rule base that is being managed.
@@ -77,7 +79,7 @@ public class RuleBaseAgent {
      * The timer that is used to monitor for changes and deal with them. 
      */
     private Timer              timer;
-    
+
     /**
      * The providers that actually do the work.
      */
@@ -87,34 +89,38 @@ public class RuleBaseAgent {
      * Properties configured to load up packages into a rulebase (and monitor them
      * for changes).
      */
-    public RuleBaseAgent(
-                         Properties config) {
+    public RuleBaseAgent(Properties config) {
         init( config );
     }
 
     private void init(Properties config) {
-        
-        boolean newInstance = Boolean.valueOf( config.getProperty( NEW_INSTANCE, "false" ) ).booleanValue();
-        int secondsToRefresh = Integer.parseInt( config.getProperty( POLL_INTERVAL, "-1" ) );
+
+        boolean newInstance = Boolean.valueOf( config.getProperty( NEW_INSTANCE,
+                                                                   "false" ) ).booleanValue();
+        int secondsToRefresh = Integer.parseInt( config.getProperty( POLL_INTERVAL,
+                                                                     "-1" ) );
 
         providers = new ArrayList();
 
         for ( Iterator iter = config.keySet().iterator(); iter.hasNext(); ) {
             String key = (String) iter.next();
-            PackageProvider prov = getProvider( key, config );
-            if (prov != null) {
-                providers.add( prov ) ;
+            PackageProvider prov = getProvider( key,
+                                                config );
+            if ( prov != null ) {
+                providers.add( prov );
             }
         }
 
-        configure( newInstance, providers, secondsToRefresh );
+        configure( newInstance,
+                   providers,
+                   secondsToRefresh );
     }
-    
+
     /**
      * Pass in the name and full path to a config file that is on the classpath.
      */
     public RuleBaseAgent(String propsFileName) {
-        init(loadFromProperties( propsFileName ));        
+        init( loadFromProperties( propsFileName ) );
     }
 
     Properties loadFromProperties(String propsFileName) {
@@ -123,18 +129,20 @@ public class RuleBaseAgent {
         try {
             props.load( in );
             return props;
-            
+
         } catch ( IOException e ) {
-            throw new RuntimeDroolsException("Unable to load properties. Needs to be the path and name of a config file on your classpath.",e);
+            throw new RuntimeDroolsException( "Unable to load properties. Needs to be the path and name of a config file on your classpath.",
+                                              e );
         }
     }
 
     /**
      * Return a configured provider ready to go.
      */
-    private PackageProvider getProvider(String key, Properties config) {
-        if (!PACKAGE_PROVIDERS.containsKey( key )) {
-            return null; 
+    private PackageProvider getProvider(String key,
+                                        Properties config) {
+        if ( !PACKAGE_PROVIDERS.containsKey( key ) ) {
+            return null;
         }
         Class clz = (Class) PACKAGE_PROVIDERS.get( key );
         try {
@@ -150,22 +158,26 @@ public class RuleBaseAgent {
         }
     }
 
-    synchronized void configure(boolean newInstance, final List providers, int secondsToRefresh) {
+    synchronized void configure(boolean newInstance,
+                                final List providers,
+                                int secondsToRefresh) {
         this.newInstance = newInstance;
 
         //run it the first time for each.
-        refreshRuleBase(  );
+        refreshRuleBase();
 
         if ( secondsToRefresh != -1 ) {
             int interval = secondsToRefresh * 1000;
             //now schedule it for polling
             timer = new Timer( true );
             timer.schedule( new TimerTask() {
-                public void run() {
-                    refreshRuleBase();
+                                public void run() {
+                                    refreshRuleBase();
 
-                }
-            }, interval, interval );
+                                }
+                            },
+                            interval,
+                            interval );
         }
 
     }
@@ -182,7 +194,8 @@ public class RuleBaseAgent {
         if ( this.newInstance || this.ruleBase == null ) {
             ruleBase = RuleBaseFactory.newRuleBase();
         }
-        prov.updateRuleBase( this.ruleBase, !this.newInstance );
+        prov.updateRuleBase( this.ruleBase,
+                             !this.newInstance );
     }
 
     /**

@@ -34,7 +34,7 @@ public class FileScanner extends PackageProvider {
      * This sets the list of files to be monitored.
      * This takes a list of paths and files (not directories).
      */
-    void configure(Properties config) { 
+    void configure(Properties config) {
         List paths = RuleBaseAgent.list( config.getProperty( RuleBaseAgent.FILES ) );
         files = new File[paths.size()];
         for ( int i = 0; i < paths.size(); i++ ) {
@@ -45,7 +45,7 @@ public class FileScanner extends PackageProvider {
             files[i] = file;
         }
     }
-    
+
     /**
      * An alternative way to configure.
      */
@@ -58,13 +58,15 @@ public class FileScanner extends PackageProvider {
      * If there was an error reading the packages, this will not fail, it will 
      * just do nothing (as there may be a temporary IO issue). 
      */
-    void updateRuleBase(RuleBase rb, boolean removeExistingPackages) {
+    void updateRuleBase(RuleBase rb,
+                        boolean removeExistingPackages) {
         Package[] changes = getChangeSet();
-        if (changes == null) return;
+        if ( changes == null ) return;
         for ( int i = 0; i < changes.length; i++ ) {
             Package p = changes[i];
             if ( removeExistingPackages ) {
-                removePackage( p.getName(), rb );
+                removePackage( p.getName(),
+                               rb );
             }
             try {
                 rb.addPackage( p );
@@ -78,7 +80,8 @@ public class FileScanner extends PackageProvider {
      * Remove the package from the rulebase if it exists in it.
      * If it does not, does nothing.
      */
-    private void removePackage(String name, RuleBase rb) {
+    private void removePackage(String name,
+                               RuleBase rb) {
         Package[] ps = rb.getPackages();
         if ( ps == null ) return;
         for ( int i = 0; i < ps.length; i++ ) {
@@ -102,9 +105,11 @@ public class FileScanner extends PackageProvider {
         List list = new ArrayList();
         for ( int i = 0; i < files.length; i++ ) {
             File f = files[i];
-            if ( hasChanged( f.getPath(), this.lastUpdated, f.lastModified() ) ) {
+            if ( hasChanged( f.getPath(),
+                             this.lastUpdated,
+                             f.lastModified() ) ) {
                 Package p = readPackage( f );
-                if (p == null) return null;
+                if ( p == null ) return null;
                 list.add( p );
             }
         }
@@ -115,16 +120,15 @@ public class FileScanner extends PackageProvider {
      * If an exception occurs, it is noted, but ignored.
      * Especially IO, as generally they are temporary.
      */
-    private static Package readPackage(File pkgFile)  {
-        
+    private static Package readPackage(File pkgFile) {
+
         Package p1_ = null;
         ObjectInputStream in;
         try {
             in = new DroolsObjectInputStream( new FileInputStream( pkgFile ) );
             p1_ = (Package) in.readObject();
             in.close();
-            
-            
+
         } catch ( FileNotFoundException e ) {
             //throw new RuntimeDroolsException("Unable to open file: [" + pkgFile.getPath() + "]", e);
         } catch ( IOException e ) {
@@ -135,15 +139,19 @@ public class FileScanner extends PackageProvider {
         return p1_;
     }
 
-    boolean hasChanged(String path, Map updates, long fileLastModified) {
+    boolean hasChanged(String path,
+                       Map updates,
+                       long fileLastModified) {
 
         if ( !updates.containsKey( path ) ) {
-            updates.put( path, new Long( fileLastModified ) );
+            updates.put( path,
+                         new Long( fileLastModified ) );
             return true;
         } else {
             Long last = (Long) updates.get( path );
             if ( last.intValue() < fileLastModified ) {
-                updates.put( path, new Long( fileLastModified ) );
+                updates.put( path,
+                             new Long( fileLastModified ) );
                 return true;
             } else {
                 return false;
@@ -151,16 +159,14 @@ public class FileScanner extends PackageProvider {
         }
 
     }
-    
+
     public String toString() {
         StringBuffer buf = new StringBuffer();
         for ( int i = 0; i < files.length; i++ ) {
-            File f= files[i];
+            File f = files[i];
             buf.append( f.getPath() + " " );
         }
         return buf.toString();
     }
-
-    
 
 }
