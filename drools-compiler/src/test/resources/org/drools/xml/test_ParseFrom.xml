@@ -21,7 +21,7 @@
         <pattern identifier="cheese" object-type="Cheese" >
             <from>
                 <expression>
-                    cheesery.getCheeses()
+                    cheesery.getCheeses();
                  </expression>
             </from>
         </pattern>

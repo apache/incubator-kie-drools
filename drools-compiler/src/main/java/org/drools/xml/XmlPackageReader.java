@@ -207,6 +207,9 @@ public class XmlPackageReader extends DefaultHandler {
         this.handlers.put( "reverse",
                            new AccumulateHelperHandler( this ) );
 
+        this.handlers.put( "expression",
+                           new ExpressionHandler( this ) );
+
         initEntityResolver();
     }
 
@@ -380,11 +383,6 @@ public class XmlPackageReader extends DefaultHandler {
         }
 
         if ( handler == null ) {
-            //            if ( ((this.inHandledRuleSubElement == false) && (this.parents.getLast() instanceof RuleDescr)) || (this.parents.getLast() instanceof PackageDescr) ) {
-            //                throw new SAXParseException( "unknown tag '" + localName + "' in namespace '" + uri + "'",
-            //                                             getLocator() );
-            //            }
-            // no handler so build up the configuration
             startConfiguration( localName,
                                 attrs );
             return;

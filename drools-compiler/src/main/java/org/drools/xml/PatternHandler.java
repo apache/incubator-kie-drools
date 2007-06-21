@@ -29,6 +29,7 @@ import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ForallDescr;
+import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -113,11 +114,12 @@ class PatternHandler extends BaseAbstractHandler
             final PatternProcessorCeDescr parentDescr = (PatternProcessorCeDescr) parent;
             parentDescr.setSourcePattern( patternDescr );
         } else {
+
             final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
             final List conditionalDescriptors = parentDescr.getDescrs();
             for ( final Iterator iterator = conditionalDescriptors.iterator(); iterator.hasNext(); ) {
                 final Object obj = iterator.next();
-                if ( obj instanceof PatternProcessorCeDescr ) return null;
+                if ( obj instanceof PatternProcessorCeDescr || FromDescr.class.getName().equals( obj.getClass().getName() ) ) return null;
             }
             parentDescr.addDescr( patternDescr );
         }

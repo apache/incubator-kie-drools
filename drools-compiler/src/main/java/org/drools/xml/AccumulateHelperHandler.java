@@ -62,9 +62,7 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
         if ( localName.equals( "init" ) ) accumulate.setInitCode( expression.trim() );
         else if ( localName.equals( "action" ) ) accumulate.setActionCode( expression.trim() );
         else if ( localName.equals( "result" ) ) accumulate.setResultCode( expression.trim() );
-        else if ( localName.equals( "reverse" ) ) {
-        }
-        //accumulate.setReverseCode( expression.trim() );
+        else if ( localName.equals( "reverse" ) ) accumulate.setReverseCode( expression.trim() );
         else {
             //TODO FM: support for external functions
         }
