@@ -20,10 +20,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -57,7 +55,7 @@ class ReturnValueRestrictionHandler extends BaseAbstractHandler
             this.validPeers.add( VariableRestrictionDescr.class );
             this.validPeers.add( RestrictionConnectiveDescr.class );
             this.validPeers.add( QualifiedIdentifierRestrictionDescr.class );
-            
+
             this.allowNesting = false;
         }
     }
@@ -96,12 +94,12 @@ class ReturnValueRestrictionHandler extends BaseAbstractHandler
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        
-        Object parent = it.previous();
-        
-        if (parent instanceof FieldConstraintDescr) {
-	        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;
-	        fieldConstraintDescr.addRestriction( returnValueDescr );
+
+        final Object parent = it.previous();
+
+        if ( parent instanceof FieldConstraintDescr ) {
+            final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;
+            fieldConstraintDescr.addRestriction( returnValueDescr );
         } else if ( parent instanceof RestrictionConnectiveDescr ) {
             final RestrictionConnectiveDescr rcDescr = (RestrictionConnectiveDescr) parent;
             rcDescr.addRestriction( returnValueDescr );

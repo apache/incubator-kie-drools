@@ -70,9 +70,8 @@ class QualifiedIdentifierRestrictionHandler extends BaseAbstractHandler
             throw new SAXParseException( "<bound-variable> requires an 'evaluator' attribute",
                                          this.xmlPackageReader.getLocator() );
         }
-        
-//        qualifiedIdentifierRestricionDescr.set
 
+//        qualifiedIdentifierRestricionDescr.set
 
         final QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestricionDescr = new QualifiedIdentifierRestrictionDescr( evaluator,
                                                                                                                                 null );
@@ -84,10 +83,8 @@ class QualifiedIdentifierRestrictionHandler extends BaseAbstractHandler
                       final String localName) throws SAXException {
         final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        final QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestricionDescr = 
-            (QualifiedIdentifierRestrictionDescr) this.xmlPackageReader.getCurrent();
-        
-        
+        final QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestricionDescr = (QualifiedIdentifierRestrictionDescr) this.xmlPackageReader.getCurrent();
+
         final String expression = config.getText();
 
         if ( expression == null || expression.trim().equals( "" ) ) {
@@ -96,13 +93,12 @@ class QualifiedIdentifierRestrictionHandler extends BaseAbstractHandler
         }
 
         qualifiedIdentifierRestricionDescr.setText( expression );
-        
-        
+
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
 
-        Object parent = it.previous();
+        final Object parent = it.previous();
 
         if ( parent instanceof FieldConstraintDescr ) {
             final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;

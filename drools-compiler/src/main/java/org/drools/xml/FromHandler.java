@@ -15,8 +15,10 @@ import org.xml.sax.SAXException;
  * @author fernandomeyer
  *
  */
-public class FromHandler  extends BaseAbstractHandler implements Handler  {
-    
+public class FromHandler extends BaseAbstractHandler
+    implements
+    Handler {
+
     FromHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
@@ -28,24 +30,36 @@ public class FromHandler  extends BaseAbstractHandler implements Handler  {
             this.validPeers.add( null );
             this.validPeers.add( FieldConstraintDescr.class );
             this.allowNesting = false;
-            
         }
     }
 
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        
+    public Object start(final String uri,
+                        final String localName,
+                        final Attributes attrs) throws SAXException {
+
         this.xmlPackageReader.startConfiguration( localName,
                                                   attrs );
-        final FromDescr fromDesctiptor = new FromDescr();
 
+        final FromDescr fromDesctiptor = new FromDescr();
         return fromDesctiptor;
     }
 
+    public Object end(final String uri,
+                      final String localName) throws SAXException {
 
-    public Object end(String uri,
-                      String localName) throws SAXException {
+//        final Configuration config = this.xmlPackageReader.endConfiguration();
+//        final BaseDescr baseDescr = (BaseDescr) this.xmlPackageReader.getCurrent();
+//        
+//        final String expression = config.getText();
+//
+//        final LinkedList parents = this.xmlPackageReader.getParents();
+//        final ListIterator ite = parents.listIterator( parents.size() );
+//        ite.previous();
+//        ite.previous();
+//        final Object parent = ite.previous();
+//        
+//        AccumulateDescr accumulate = (AccumulateDescr) parent;
+
         return null;
 
     }
@@ -53,6 +67,5 @@ public class FromHandler  extends BaseAbstractHandler implements Handler  {
     public Class generateNodeFor() {
         return FromDescr.class;
     }
-
 
 }

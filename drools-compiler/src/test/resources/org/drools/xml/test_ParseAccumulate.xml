@@ -21,7 +21,7 @@
             <pattern identifier="cheese" object-type="Cheese">
                 <from>
                     <accumulate>
-                        <pattern object-type="Cheese"></pattern>
+                        <pattern object-type="Person"></pattern>
                         <init>
                             int total = 0;
                         </init>
@@ -29,7 +29,7 @@
                             total += $cheese.getPrice();
                         </action>
                         <result>
-                            new Integer( total ) )
+                            new Integer( total ) );
                         </result>
                     </accumulate>
                 </from>

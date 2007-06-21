@@ -45,16 +45,16 @@ public class DefaultConfiguration
     // ----------------------------------------------------------------------
 
     /** Node name. */
-    private String                name;
+    private final String          name;
 
     /** Node text. */
     private String                text               = "";
 
     /** Node attributes. */
-    private Map                   attrs;
+    private final Map             attrs;
 
     /** Children nodes. */
-    private List                  children;
+    private final List            children;
 
     // ----------------------------------------------------------------------
     //     Constructors

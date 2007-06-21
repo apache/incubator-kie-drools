@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class AccumulateDescr extends BaseDescr
     implements
-    ConditionalElementDescr {
+    PatternProcessorCeDescr {
 
     private static final long serialVersionUID = 2831283873824863255L;
 
@@ -36,10 +36,6 @@ public class AccumulateDescr extends BaseDescr
     private String            resultCode;
     private String[]          declarations;
     private String            className;
-
-    AccumulateDescr() {
-        super();
-    }
 
     public int getLine() {
         return this.sourcePattern.getLine();

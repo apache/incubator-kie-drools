@@ -32,6 +32,15 @@ public class BaseDescr
     private int               column           = -1;
     private int               endLine          = -1;
     private int               endColumn        = -1;
+    private String            text             = "";
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 
     public void setLocation(final int line,
                             final int column) {
