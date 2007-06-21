@@ -102,6 +102,10 @@ public class FileScanner {
         return (Package[]) list.toArray( new Package[list.size()] );
     }
 
+    /**
+     * If an exception occurs, it is noted, but ignored.
+     * Especially IO, as generally they are temporary.
+     */
     private static Package readPackage(File pkgFile)  {
         
         Package p1_ = null;
@@ -110,6 +114,8 @@ public class FileScanner {
             in = new DroolsObjectInputStream( new FileInputStream( pkgFile ) );
             p1_ = (Package) in.readObject();
             in.close();
+            
+            
         } catch ( FileNotFoundException e ) {
             //throw new RuntimeDroolsException("Unable to open file: [" + pkgFile.getPath() + "]", e);
         } catch ( IOException e ) {
