@@ -1,6 +1,8 @@
 package org.drools.agent;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +44,7 @@ public class FileScannerTest extends TestCase {
         RuleBaseAssemblerTest.writePackage( p2, p2f);
         
         FileScanner scan = new FileScanner();
-        scan.setFiles( new String[] {p1f.getPath(), p2f.getPath()} );
+        scan.configure( Arrays.asList( new String[] {p1f.getPath(), p2f.getPath()}) );
         
         RuleBase rb = RuleBaseFactory.newRuleBase();
         scan.updateRuleBase( rb, true );
