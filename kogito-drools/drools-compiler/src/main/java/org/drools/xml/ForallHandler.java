@@ -3,12 +3,18 @@
  */
 package org.drools.xml;
 
+import org.drools.lang.descr.ConditionalElementDescr;
+import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * @author fernandomeyer
@@ -38,6 +44,16 @@ public class ForallHandler extends BaseAbstractHandler implements Handler {
                       String localName) throws SAXException {
         final Configuration config = this.xmlPackageReader.endConfiguration();
         
+        final ForallDescr forallDescr = (ForallDescr) this.xmlPackageReader.getCurrent();
+
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
+        it.previous();
+        final Object parent = it.previous();
+
+        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+        parentDescr.addDescr( forallDescr );
+
         return null;
     }
 
@@ -57,8 +73,10 @@ public class ForallHandler extends BaseAbstractHandler implements Handler {
 
         this.xmlPackageReader.startConfiguration( localName,
                                                   attrs );
+        
+        ForallDescr forallDescr = new ForallDescr();
 
-        return null;
+        return forallDescr;
     }
 
 }

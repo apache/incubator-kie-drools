@@ -23,6 +23,7 @@ import java.util.List;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -147,9 +148,13 @@ public class DrlDumper extends ReflectiveVisitor
         
     }
     
-    //TODO FM: FIXME
-    public void visitForall() {
-        
+    public void visitForallDescr(final ForallDescr descr) {
+        this.template = new String();
+        this.template += "\t\tforall ( "; 
+        this.template += DrlDumper.eol;
+        this.template += processDescrList( descr.getDescrs() ); 
+        this.template += "\t\t)";
+        this.template += DrlDumper.eol;
     }
     
     public void visitFieldBindingDescr(final FieldBindingDescr descr) {
