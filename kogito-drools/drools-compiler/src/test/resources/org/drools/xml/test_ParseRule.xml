@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <package name="com.sample"
          xmlns="http://drools.org/drools-4.0"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-4.0 drools-4.0.xsd">
-         
+
 	<import name="java.util.HashMap" />
-	<import name="org.drools.*" />		
-	
-	<global identifier="x" type="com.sample.X" />		
+	<import name="org.drools.*" />
+
+	<global identifier="x" type="com.sample.X" />
 	<global identifier="yada" type="com.sample.Yada" />
 	
 	<function return-type="void" name="myFunc">
 	    <parameter identifier="foo" type="Bar" />
 	    <parameter identifier="bada" type="Bing" />
-	    	    
+
 	    <body>
 	    	System.out.println("hello world");
-		</body>		
+		</body>
 	</function>
-	
+
 <rule name="simple_rule">
 	<rule-attribute name="salience" value="10" />
 	<rule-attribute name="no-loop" value="true" />
@@ -26,10 +27,9 @@
 	<rule-attribute name="activation-group" value="activation-group" />
 
 	<lhs>
-
 		<pattern identifier="foo2" object-type="Bar" >
-            <or>
-                <and>
+            <or-constraint-connective>
+                <and-constraint-connective>
 					<field-constraint field-name="a">
                         <or-restriction-connective>
                             <and-restriction-connective>
@@ -39,16 +39,16 @@
                             <and-restriction-connective>
                                 <literal-restriction evaluator="&lt;" value="50" />
                                 <literal-restriction evaluator="&gt;" value="55" />
-                            </and-restriction-connective>                            
+                            </and-restriction-connective>
                         </or-restriction-connective>
 					</field-constraint>
 
 					<field-constraint field-name="a3">
                         <literal-restriction evaluator="==" value="black" />
                     </field-constraint>
-                </and>
+                </and-constraint-connective>
 
-                <and>
+                <and-constraint-connective>
                     <field-constraint field-name="a">
                         <literal-restriction evaluator="==" value="40" />
                     </field-constraint>
@@ -56,59 +56,79 @@
                     <field-constraint field-name="a3">
                         <literal-restriction evaluator="==" value="pink" />
                     </field-constraint>
-                </and>
+                </and-constraint-connective>
 
-                <and>
+                <and-constraint-connective>
                     <field-constraint field-name="a">
                         <literal-restriction evaluator="==" value="12"/>
                     </field-constraint>
-					
+
                     <field-constraint field-name="a3">
                         <or-restriction-connective>
                             <literal-restriction evaluator="==" value="yellow"/>
                             <literal-restriction evaluator="==" value="blue" />
                         </or-restriction-connective>
                     </field-constraint>
-                </and>
-            </or>
+                </and-constraint-connective>
+            </or-constraint-connective>
         </pattern>
-		
-		
-        <pattern identifier="foo3" object-type="Bar" >
-			<field-constraint field-name="a">
-                <or-restriction-connective>
-                    <literal-restriction evaluator="==" value="3" />
-                    <literal-restriction evaluator="==" value="4" />                    
-                </or-restriction-connective>
-			</field-constraint>
-			<field-constraint field-name="a3"> 
-				<literal-restriction evaluator="==" value="hello" />
-			</field-constraint>
-			<field-constraint field-name="a4">
-                <literal-restriction evaluator="==" value="null" />
-			</field-constraint>
-		</pattern>
 
-		<pattern identifier="foo4" object-type="Bar" >
-			<field-binding field-name="a" identifier="a4" />
-			<field-constraint field-name="a"> 
-				<literal-restriction evaluator="!=" value="4" />
-				<literal-restriction evaluator="!=" value="5" />
-			</field-constraint>
-		</pattern>
+        <not>
+            <pattern object-type="Person">
+                <field-constraint field-name="likes">
+                    <variable-restriction evaluator="==" identifier="type"/>
+                </field-constraint>
+            </pattern>
 
-		<pattern identifier="foo5" object-type="Bar" >
-			<field-constraint field-name="b">
+            <exists>
+                <pattern object-type="Person">
+                    <field-constraint field-name="likes">
+                        <variable-restriction evaluator="==" identifier="type"/>
+                    </field-constraint>
+                </pattern>                
+            </exists>
+        </not>
+
+        <or-conditional-element>
+            <pattern identifier="foo3" object-type="Bar" >
+                <field-constraint field-name="a">
+                    <or-restriction-connective>
+                        <literal-restriction evaluator="==" value="3" />
+                        <literal-restriction evaluator="==" value="4" />
+                    </or-restriction-connective>
+                </field-constraint>
+                <field-constraint field-name="a3">
+                    <literal-restriction evaluator="==" value="hello" />
+                </field-constraint>
+                <field-constraint field-name="a4">
+                    <literal-restriction evaluator="==" value="null" />
+                </field-constraint>
+            </pattern>
+
+            <pattern identifier="foo4" object-type="Bar" >
+                <field-binding field-name="a" identifier="a4" />
+                <field-constraint field-name="a">
+                    <literal-restriction evaluator="!=" value="4" />
+                    <literal-restriction evaluator="!=" value="5" />
+                </field-constraint>
+            </pattern>
+        </or-conditional-element>
+
+        <pattern identifier="foo5" object-type="Bar" >
+            <field-constraint field-name="b">
                 <or-restriction-connective>
                     <return-value-restriction evaluator="==" >a4 + 1</return-value-restriction>
                     <variable-restriction evaluator="&gt;" identifier="a4" />
+                    <qualified-identifier-restriction evaluator="==">
+                        org.drools.Bar.BAR_ENUM_VALUE
+                    </qualified-identifier-restriction>
                 </or-restriction-connective>
-			</field-constraint>
-		</pattern>
+            </field-constraint>            
+        </pattern>
 
-		<pattern identifier="foo6" object-type="Bar" >
+        <pattern identifier="foo6" object-type="Bar" >
 			<field-binding field-name="a" identifier="a4" />
-			<field-constraint field-name="b"> 
+			<field-constraint field-name="b">
 				<literal-restriction evaluator="==" value="6" />
 			</field-constraint>
 		</pattern>
@@ -117,15 +137,14 @@
 			<field-binding field-name="a" identifier="a4" />
 			<field-binding field-name="b" identifier="b4" />
 		</pattern>
-
 		<pattern object-type="Baz" > </pattern>
 	</lhs>
-	<rhs>  
+	<rhs>
 		  if ( a == b ) {
 		    assert( foo3 );
 		  } else {
 		    retract( foo4 );
-		  } 
+		  }
 		  System.out.println( a4 );
 	</rhs>
 </rule>

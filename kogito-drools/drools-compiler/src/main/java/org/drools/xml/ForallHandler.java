@@ -3,11 +3,12 @@
  */
 package org.drools.xml;
 
-import java.util.HashSet;
-
 import org.drools.lang.descr.ForallDescr;
+import org.drools.lang.descr.AndDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import java.util.HashSet;
 
 /**
  * @author fernandomeyer
@@ -20,13 +21,11 @@ public class ForallHandler extends BaseAbstractHandler implements Handler {
 
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
-
-//            this.validParents.add( LiteralRestrictionHandler.class );
+            this.validParents.add( AndDescr.class );
 
             this.validPeers = new HashSet();
-//            this.validPeers.add( null );
-//            this.validPeers.add( AndDescr.class );
-
+            this.validPeers.add( null );
+            
             this.allowNesting = true;
         }
     }

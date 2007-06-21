@@ -9,10 +9,6 @@ public class FromDescr extends BaseDescr
     private PatternDescr             pattern;
     private DeclarativeInvokerDescr dataSource;
 
-    FromDescr() {
-        //protected so only factory can create
-    }
-
     public int getLine() {
         return this.pattern.getLine();
     }
