@@ -46,6 +46,8 @@ class PatternHandler extends BaseAbstractHandler
             this.validParents.add( NotDescr.class );
             this.validParents.add( ExistsDescr.class );
             this.validParents.add( CollectDescr.class );
+            this.validParents.add( ForallDescr.class );
+            
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );

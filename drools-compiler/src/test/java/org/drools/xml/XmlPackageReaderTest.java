@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
@@ -15,6 +16,7 @@ import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
@@ -43,6 +45,29 @@ public class XmlPackageReaderTest extends TestCase {
                                             config );
     }
     
+    public void testParseForall() throws Exception {
+        final XmlPackageReader xmlPackageReader = new XmlPackageReader();
+        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseForall.xml" ) ) );
+        final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
+        assertNotNull( packageDescr );
+        
+        XmlDumper xmldumper = new XmlDumper();
+        String str =  xmldumper.dump( packageDescr );
+
+        System.out.println(str);
+
+        RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
+        ForallDescr forall = (ForallDescr) obj.getLhs().getDescrs().get( 0 );
+        List forallPaterns = forall.getDescrs();
+        
+        PatternDescr pattarnState = (PatternDescr) forallPaterns.get( 0 );
+        PatternDescr personState = (PatternDescr) forallPaterns.get( 1 );
+        PatternDescr cheeseState = (PatternDescr) forallPaterns.get( 2);
+        
+        assertEquals( pattarnState.getObjectType(), "State" );
+        assertEquals( personState.getObjectType(), "Person" );
+        assertEquals( cheeseState.getObjectType(), "Cheese" );
+    }
     
     public void testParseExists() throws Exception {
         final XmlPackageReader xmlPackageReader = new XmlPackageReader();
@@ -117,17 +142,6 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     
-//    //TODO: FM FIXME
-//    public void testParseForall() throws Exception {
-//        final XmlPackageReader xmlPackageReader = new XmlPackageReader();
-//        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseForall.xml" ) ) );
-//        final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-//        assertNotNull( packageDescr );
-//
-//        RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
-//        assertEquals( obj.getLhs().getDescrs().size(),
-//                      3 );
-//    }
 //
 //    //TODO: FM FIXME
 //    public void testAccumulate() throws Exception {
