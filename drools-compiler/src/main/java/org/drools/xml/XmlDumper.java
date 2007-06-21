@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -36,6 +37,7 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PackageDescrDumper;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -53,6 +55,7 @@ public class XmlDumper extends ReflectiveVisitor
     PackageDescrDumper {
 
     private StringBuffer        xmlDump;
+    private boolean             patternContext;
     private final static String eol = System.getProperty( "line.separator" );
 
     public synchronized String dump(final PackageDescr packageDescr) {
@@ -64,9 +67,8 @@ public class XmlDumper extends ReflectiveVisitor
     public void visitAndDescr(final AndDescr descr) {
         this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
-            this.template = "<and>" + processDescrList( descr.getDescrs() ) + "</and>";
-        } else {
-            this.template = "<and> </and>";
+            if ( !this.patternContext ) this.template = "<and-conditional-element>" + processDescrList( descr.getDescrs() ) + "</and-conditional-element>";
+            else this.template = "<and-constraint-connective>" + processDescrList( descr.getDescrs() ) + "</and-constraint-connective>";
         }
     }
 
@@ -81,6 +83,8 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     public void visitPatternDescr(final PatternDescr descr) {
+        this.patternContext = true;
+
         this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
             if ( descr.getIdentifier() != null ) {
@@ -95,7 +99,7 @@ public class XmlDumper extends ReflectiveVisitor
                 this.template = "<pattern object-type=\"" + descr.getObjectType() + "\" > </pattern>" + XmlDumper.eol;
             }
         }
-
+        this.patternContext = false;
     }
 
     public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
@@ -103,6 +107,29 @@ public class XmlDumper extends ReflectiveVisitor
             this.template = "<field-constraint field-name=\"" + descr.getFieldName() + "\"> " + XmlDumper.eol + processFieldConstraint( descr.getRestrictions() ) + XmlDumper.eol + "</field-constraint>";
         }
     }
+
+
+    public void visitCollectDescr(final CollectDescr descr) {
+        String tmpstr = new String();
+        visitPatternDescr( descr.getResultPattern() );
+
+        this.template =  this.template.substring( 0, this.template.indexOf( "</pattern>" ) );
+        tmpstr += this.template + " <from> <collect> ";
+        visitPatternDescr( descr.getSourcePattern() );
+        tmpstr += this.template;
+        this.template = tmpstr + " </collect> </from> ";
+        this.template += "</pattern>";
+    }
+    
+    //TODO FM: FIXME
+    public void visitAccumulateDescr() {
+        System.out.println("Collect Descr");
+    }
+    
+    //TODO FM: FIXME
+    public void visitForall() {
+        System.out.println("Collect Descr");
+    }    
 
     public void visitEvalDescr(final EvalDescr descr) {
         this.template = new String();
@@ -137,6 +164,11 @@ public class XmlDumper extends ReflectiveVisitor
         this.template = "<literal-restriction evaluator=\"" + replaceIllegalChars( descr.getEvaluator() ) + "\" value=\"" + replaceIllegalChars( descr.getText() ) + "\" />" + XmlDumper.eol;
     }
 
+    public void visitQualifiedIdentifierRestrictionDescr(final QualifiedIdentifierRestrictionDescr descr) {
+        this.template = new String();
+        this.template = "<qualified-identifier-restriction evaluator=\"" + replaceIllegalChars( descr.getEvaluator() ) + "\">" + replaceIllegalChars( descr.getText() ) + " </qualified-identifier-restriction>" + XmlDumper.eol;
+    }
+
     public void visitNotDescr(final NotDescr descr) {
         this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
@@ -150,9 +182,8 @@ public class XmlDumper extends ReflectiveVisitor
     public void visitOrDescr(final OrDescr descr) {
         this.template = new String();
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
-            this.template = "<or>" + processDescrList( descr.getDescrs() ) + "</or>";
-        } else {
-            this.template = "<or> </or>";
+            if ( !this.patternContext ) this.template = "<or-conditional-element>" + processDescrList( descr.getDescrs() ) + "</or-conditional-element>";
+            else this.template = "<or-constraint-connective>" + processDescrList( descr.getDescrs() ) + "</or-constraint-connective>";
         }
     }
 
@@ -223,12 +254,10 @@ public class XmlDumper extends ReflectiveVisitor
     public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
         this.template = new String();
         List restrictions = descr.getRestrictions();
-        String xmlTag = descr.getConnective() == RestrictionConnectiveDescr.OR 
-            ? RestrictionConnectiveHandler.OR 
-            : RestrictionConnectiveHandler.AND; 
-            
+        String xmlTag = descr.getConnective() == RestrictionConnectiveDescr.OR ? RestrictionConnectiveHandler.OR : RestrictionConnectiveHandler.AND;
+
         if ( restrictions != Collections.EMPTY_LIST ) {
-            this.template  = "<" + xmlTag + ">";
+            this.template = "<" + xmlTag + ">";
             this.template += processDescrList( restrictions );
             this.template += "</" + xmlTag + ">";
         }

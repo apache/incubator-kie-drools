@@ -16,24 +16,29 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-import org.drools.lang.descr.*;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
 /**
- * @author mproctor
  * @author fmeyer
- * 
  */
-class LiteralRestrictionHandler extends BaseAbstractHandler
+
+class QualifiedIdentifierRestrictionHandler extends BaseAbstractHandler
     implements
     Handler {
-    LiteralRestrictionHandler(final XmlPackageReader xmlPackageReader) {
+    QualifiedIdentifierRestrictionHandler(final XmlPackageReader xmlPackageReader) {
         this.xmlPackageReader = xmlPackageReader;
 
         if ( (this.validParents == null) && (this.validPeers == null) ) {
@@ -42,14 +47,14 @@ class LiteralRestrictionHandler extends BaseAbstractHandler
             this.validParents.add( RestrictionConnectiveDescr.class );
 
             this.validPeers = new HashSet();
+
             this.validPeers.add( null );
-            
             this.validPeers.add( LiteralRestrictionDescr.class );
             this.validPeers.add( ReturnValueRestrictionDescr.class );
             this.validPeers.add( VariableRestrictionDescr.class );
             this.validPeers.add( RestrictionConnectiveDescr.class );
-            this.validPeers.add( QualifiedIdentifierRestrictionDescr.class );            
-            
+            this.validPeers.add( QualifiedIdentifierRestrictionDescr.class );
+
             this.allowNesting = false;
         }
     }
@@ -62,45 +67,54 @@ class LiteralRestrictionHandler extends BaseAbstractHandler
 
         final String evaluator = attrs.getValue( "evaluator" );
         if ( evaluator == null || evaluator.trim().equals( "" ) ) {
-            throw new SAXParseException( "<literal-restriction> requires an 'evaluator' attribute",
+            throw new SAXParseException( "<bound-variable> requires an 'evaluator' attribute",
                                          this.xmlPackageReader.getLocator() );
         }
+        
+//        qualifiedIdentifierRestricionDescr.set
 
-        final String text = attrs.getValue( "value" );
-        if ( text == null || text.trim().equals( "" ) ) {
-            throw new SAXParseException( "<literal-restriction>  requires an 'value' attribute",
-                                         this.xmlPackageReader.getLocator() );
-        }
 
-        final LiteralRestrictionDescr literalDescr = new LiteralRestrictionDescr( evaluator,
-                                                                                  text );
+        final QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestricionDescr = new QualifiedIdentifierRestrictionDescr( evaluator,
+                                                                                                                                null );
 
-        return literalDescr;
+        return qualifiedIdentifierRestricionDescr;
     }
 
     public Object end(final String uri,
                       final String localName) throws SAXException {
         final Configuration config = this.xmlPackageReader.endConfiguration();
 
-        final LiteralRestrictionDescr literalDescr = (LiteralRestrictionDescr) this.xmlPackageReader.getCurrent();
+        final QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestricionDescr = 
+            (QualifiedIdentifierRestrictionDescr) this.xmlPackageReader.getCurrent();
+        
+        
+        final String expression = config.getText();
 
+        if ( expression == null || expression.trim().equals( "" ) ) {
+            throw new SAXParseException( "<qualified-identifier-restriction> must have an expression content",
+                                         this.xmlPackageReader.getLocator() );
+        }
+
+        qualifiedIdentifierRestricionDescr.setText( expression );
+        
+        
         final LinkedList parents = this.xmlPackageReader.getParents();
         final ListIterator it = parents.listIterator( parents.size() );
         it.previous();
-        
+
         Object parent = it.previous();
 
-        if (parent instanceof FieldConstraintDescr) {
-            final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) parent;
-            fieldConstriantDescr.addRestriction( literalDescr );
-        } else if ( parent instanceof RestrictionConnectiveDescr )  { 
-            final RestrictionConnectiveDescr restrictionDescr = (RestrictionConnectiveDescr) parent;
-            restrictionDescr.addRestriction( literalDescr );
+        if ( parent instanceof FieldConstraintDescr ) {
+            final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;
+            fieldConstraintDescr.addRestriction( qualifiedIdentifierRestricionDescr );
+        } else if ( parent instanceof RestrictionConnectiveDescr ) {
+            final RestrictionConnectiveDescr restrictionConDescr = (RestrictionConnectiveDescr) parent;
+            restrictionConDescr.addRestriction( qualifiedIdentifierRestricionDescr );
         }
         return null;
     }
-    
+
     public Class generateNodeFor() {
-        return LiteralRestrictionDescr.class;
+        return QualifiedIdentifierRestrictionDescr.class;
     }
 }

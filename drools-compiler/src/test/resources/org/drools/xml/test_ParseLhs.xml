@@ -21,13 +21,12 @@
 	
 	<rule name="my rule">
 		<lhs>
-			<and>
-			</and>	
-				
-			<or>
-			</or>
-			
-			<pattern object-type="Foo" >			
+
+            <and-conditional-element></and-conditional-element>
+
+            <or-conditional-element></or-conditional-element>
+
+            <pattern object-type="Foo" >
 			</pattern>							
 				
 			<pattern identifier="bar" object-type="Bar" >			
@@ -53,21 +52,21 @@
 				<pattern object-type="Bar" />							
 			</exists>		
 			
-			<and>
-				<or>
-					<pattern object-type="Bar" />			
-				</or>
-				<pattern object-type="Yada" />							
-			</and>							
-				
-			<or>
-				<and>
-					<pattern object-type="Foo" />							
-				</and>	
-				<pattern object-type="Zaa" />			
-			</or>	
-			
-			<eval>1==1</eval>					
+			<and-conditional-element>
+                <pattern object-type="Yada"/>
+                <or-conditional-element>
+                    <pattern object-type="Bar"/>
+                </or-conditional-element>
+
+            </and-conditional-element>
+
+            <or-conditional-element>
+                <pattern object-type="Zaa"/>
+                <and-conditional-element>
+                    <pattern object-type="Foo"/>
+                </and-conditional-element>
+            </or-conditional-element>
+			<eval>1==1</eval>
 		</lhs>
 		
 	    <rhs>

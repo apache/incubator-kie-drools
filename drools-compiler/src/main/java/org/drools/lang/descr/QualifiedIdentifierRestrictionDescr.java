@@ -35,7 +35,11 @@ public class QualifiedIdentifierRestrictionDescr extends RestrictionDescr {
         this.text = text;
         this.evaluator = evaluator;
     }
-
+    
+    public void setText(String text) {
+        this.text = text;
+    }
+    
     public String getEvaluator() {
         return this.evaluator;
     }

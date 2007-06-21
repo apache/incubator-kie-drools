@@ -16,18 +16,35 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.RuleDescr;
-import org.xml.sax.*;
-import org.xml.sax.helpers.DefaultHandler;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.*;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.*;
+
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * <code>RuleSet</code> loader.
@@ -130,11 +147,21 @@ public class XmlPackageReader extends DefaultHandler {
 
         this.handlers.put( "or-restriction-connective",
                            new RestrictionConnectiveHandler( this ) );
+        
+        this.handlers.put( "and-conditional-element", 
+                           new AndHandler(this));
+        
+        this.handlers.put( "or-conditional-element", 
+                           new OrHandler(this) );
+        
 
-        this.handlers.put( "and",
+        this.handlers.put( "and-constraint-connective",
                            new AndHandler( this ) );
-        this.handlers.put( "or",
+        this.handlers.put( "or-constraint-connective",
                            new OrHandler( this ) );
+        
+        
+        
         this.handlers.put( "not",
                            new NotHandler( this ) );
         this.handlers.put( "exists",
@@ -143,6 +170,11 @@ public class XmlPackageReader extends DefaultHandler {
                            new EvalHandler( this ) );
         this.handlers.put( "pattern",
                            new PatternHandler( this ) );
+        
+        
+        this.handlers.put( "from", new FromHandler(this) );
+        this.handlers.put( "forall", new ForallHandler(this) );
+        this.handlers.put( "collect", new CollectHandler(this) );
 
         // Field Constraints
         this.handlers.put( "field-constraint",
@@ -153,8 +185,12 @@ public class XmlPackageReader extends DefaultHandler {
                            new VariableRestrictionsHandler( this ) );
         this.handlers.put( "predicate",
                            new PredicateHandler( this ) );
+
         this.handlers.put( "return-value-restriction",
                            new ReturnValueRestrictionHandler( this ) );
+        this.handlers.put( "qualified-identifier-restriction",
+                           new QualifiedIdentifierRestrictionHandler( this ) );
+
         this.handlers.put( "field-binding",
                            new FieldBindingHandler( this ) );
 

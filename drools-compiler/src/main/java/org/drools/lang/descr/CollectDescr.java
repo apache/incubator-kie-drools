@@ -35,10 +35,6 @@ public class CollectDescr extends BaseDescr
     private PatternDescr       resultPattern;
     private String            classMethodName;
 
-    CollectDescr() {
-        super();
-    }
-
     public int getLine() {
         return this.sourcePattern.getLine();
     }

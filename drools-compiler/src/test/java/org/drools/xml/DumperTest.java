@@ -6,7 +6,6 @@ import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -24,7 +23,10 @@ public class DumperTest extends TestCase {
         final PackageDescr pkgOriginal = xmlPackageReader.getPackageDescr();
 
         final XmlDumper dumper = new XmlDumper();
+        
         final String result = dumper.dump( pkgOriginal );
+        
+        System.out.println(result);
 
         final DrlDumper drldumper = new DrlDumper();        
         final String drlresult = drldumper.dump( pkgOriginal );
@@ -65,16 +67,13 @@ public class DumperTest extends TestCase {
         DrlParser parser = new DrlParser();
         final PackageDescr pkgOriginal = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dump.drl" ) ) );
         final DrlDumper dumper = new DrlDumper();
-
-        
         final XmlDumper XMLdumper = new XmlDumper();
         final String XMLresult = XMLdumper.dump( pkgOriginal );
         
         final String result = dumper.dump( pkgOriginal );
         
-        
         System.out.println(result);
-        
+
         assertNotNull( result );
 
         parser = new DrlParser();
@@ -102,9 +101,9 @@ public class DumperTest extends TestCase {
         
 
         // Now double check the contents are the same
-        
+
         String buffer = readFile( "test_Dump.drl" );
-        
+
         assertEqualsIgnoreWhitespace( buffer.toString(), result );
 
     }

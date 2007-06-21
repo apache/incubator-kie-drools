@@ -5,7 +5,9 @@ package org.drools.xml;
 
 import java.util.HashSet;
 
+import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FromDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -20,42 +22,37 @@ public class FromHandler  extends BaseAbstractHandler implements Handler  {
 
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet();
-
-//            this.validParents.add( LiteralRestrictionHandler.class );
+            this.validParents.add( PatternDescr.class );
 
             this.validPeers = new HashSet();
-//            this.validPeers.add( null );
-//            this.validPeers.add( AndDescr.class );
-
-            this.allowNesting = true;
+            this.validPeers.add( null );
+            this.validPeers.add( FieldConstraintDescr.class );
+            this.allowNesting = false;
+            
         }
     }
-    
 
-    /* (non-Javadoc)
-     * @see org.drools.xml.Handler#end(java.lang.String, java.lang.String)
-     */
-    public Object end(String uri,
-                      String localName) throws SAXException {
-        // TODO Auto-generated method stub
-        return null;
+    public Object start(String uri,
+                        String localName,
+                        Attributes attrs) throws SAXException {
+        
+        this.xmlPackageReader.startConfiguration( localName,
+                                                  attrs );
+        final FromDescr fromDesctiptor = new FromDescr();
+
+        return fromDesctiptor;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.xml.Handler#generateNodeFor()
-     */
+
+    public Object end(String uri,
+                      String localName) throws SAXException {
+        return null;
+
+    }
+
     public Class generateNodeFor() {
         return FromDescr.class;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.xml.Handler#start(java.lang.String, java.lang.String, org.xml.sax.Attributes)
-     */
-    public Object start(String uri,
-                        String localName,
-                        Attributes attrs) throws SAXException {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
 }

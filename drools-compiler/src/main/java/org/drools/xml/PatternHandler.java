@@ -16,20 +16,16 @@ package org.drools.xml;
  * limitations under the License.
  */
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.ListIterator;
-
-import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.EvalDescr;
-import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.NotDescr;
-import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.*;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @author mproctor
@@ -49,6 +45,7 @@ class PatternHandler extends BaseAbstractHandler
             this.validParents.add( OrDescr.class );
             this.validParents.add( NotDescr.class );
             this.validParents.add( ExistsDescr.class );
+            this.validParents.add( CollectDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
@@ -59,7 +56,7 @@ class PatternHandler extends BaseAbstractHandler
             this.validPeers.add( EvalDescr.class );
             this.validPeers.add( PatternDescr.class );
 
-            this.allowNesting = false;
+            this.allowNesting = true;
         }
     }
 
@@ -96,13 +93,28 @@ class PatternHandler extends BaseAbstractHandler
         final PatternDescr patternDescr = (PatternDescr) this.xmlPackageReader.getCurrent();
 
         final LinkedList parents = this.xmlPackageReader.getParents();
-        final ListIterator it = parents.listIterator( parents.size() );
-        it.previous();
-        final Object parent = it.previous();
+        final ListIterator ite = parents.listIterator( parents.size() );
+        ite.previous();
+        final Object parent = ite.previous();
 
-        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
-        parentDescr.addDescr( patternDescr );
-
+        if ( parent.getClass().getName().equals( CollectDescr.class.getName() ) ) {
+            final CollectDescr parentDescr = (CollectDescr) parent;
+            parentDescr.setResultPattern( patternDescr );
+        } else if ( parent instanceof ConditionalElementDescr ) {
+            final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+            List conditionalDescriptors = parentDescr.getDescrs();
+            
+            if ( !conditionalDescriptors.isEmpty() ) {
+                for ( Iterator iterator = conditionalDescriptors.iterator(); iterator.hasNext(); ) {
+                    Object obj = iterator.next();
+                    
+                    if ( obj.getClass().getName().intern().equals( CollectDescr.class.getName().intern() )) {
+                        return null;
+                    }
+                }
+            }
+            parentDescr.addDescr( patternDescr );            
+        }
         return null;
     }
 

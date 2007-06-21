@@ -11,7 +11,8 @@ rule "simple_rule"
     foo4 : Bar( a4 : a != 4 && != 5)
     foo5 : Bar( b == (a4 + 1) || > a4)    
     foo6 : Bar( a4 : a, b == 6)    
-    foo7 : Bar( a4 : a, b4 : b)        
+    foo7 : Bar( a4 : a, b4 : b)    
+    $cheeseList  : ArrayList(size > 2) from collect( Cheese( type == $likes ) );    
     Baz()
   then
   if ( a == b ) {

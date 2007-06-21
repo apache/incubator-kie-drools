@@ -47,6 +47,7 @@ class OrHandler extends BaseAbstractHandler
             this.validPeers.add( EvalDescr.class );
             this.validPeers.add( PatternDescr.class );
 
+            
             this.allowNesting = true;
         }
     }

@@ -16,11 +16,13 @@ package org.drools.lang;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -115,7 +117,6 @@ public class DrlDumper extends ReflectiveVisitor
                 this.template = "\t\t" + descr.getObjectType() + "( )";
             }
         }
-
     }
 
     public void visitEvalDescr(final EvalDescr descr) {
@@ -132,6 +133,25 @@ public class DrlDumper extends ReflectiveVisitor
         }
     }
 
+    public void visitCollectDescr(final CollectDescr descr) {
+        String tmpstr = new String();
+        visitPatternDescr( descr.getResultPattern() );
+        tmpstr += this.template + " from collect (";
+        visitPatternDescr( descr.getSourcePattern() );
+        tmpstr += this.template.substring( 2 );
+        this.template = tmpstr + ");";
+    }
+    
+    //TODO FM: FIXME
+    public void visitAccumulateDescr() {
+        
+    }
+    
+    //TODO FM: FIXME
+    public void visitForall() {
+        
+    }
+    
     public void visitFieldBindingDescr(final FieldBindingDescr descr) {
         this.template = new String();
         this.template = descr.getIdentifier() + " : " + descr.getFieldName();
@@ -341,7 +361,7 @@ public class DrlDumper extends ReflectiveVisitor
             visit( obj );
             descrString += this.template;
             
-            if (obj.getClass().equals( PatternDescr.class )) {
+            if (obj.getClass().equals( PatternDescr.class ) || obj.getClass().equals( CollectDescr.class ) ) {
                 descrString += DrlDumper.eol;
             } else if (ite.hasNext()) {
                 descrString += " && ";
