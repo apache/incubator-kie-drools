@@ -1,5 +1,7 @@
 package org.drools.agent;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,13 +24,20 @@ import org.drools.RuntimeDroolsException;
  * CONFIG OPTIONS:
  *  <code>newInstance</code>: means that each time the rules are changed
  *   a new instance of the rulebase is created (as opposed to updated in place)
- *   the default is to update in place. DEFAULT: true
+ *   the default is to update in place. DEFAULT: false. If you set this to true, 
+ *   then you will need to call getRuleBase() each time you want to use it. If it is false, 
+ *   then it means you can keep your reference to the rulebase and it will be updated automatically
+ *   (as well as any stateful sessions). 
+ *
+ *  <code>poll</code>The number of seconds to poll for changes. Polling 
+ *  happens in a background thread.
  *
  *  <code>file</code>: a space seperated listing of files that make up the 
- *  packages of the rulebase. 
+ *  packages of the rulebase. Each package can only be in one file. You can't have 
+ *  packages spread across files.
  *  
  *  <code>dir</code>: a single file system directory to monitor for packages.
- *  ...
+ *  As with files, each package must be in its own file.
  * 
  * @author Michael Neale
  */
@@ -50,13 +59,14 @@ public class RuleBaseAgent {
     public static Map          PACKAGE_PROVIDERS = new HashMap() {
                                                      {
                                                          put( FILES, FileScanner.class );
+                                                         put( DIRECTORY, DirectoryScanner.class);
                                                      }
                                                  };
 
     /**
      * This is true if the rulebase is created anew each time.
      */
-    private boolean            newInstance;
+    boolean                    newInstance;
 
     /**
      * The rule base that is being managed.
@@ -67,13 +77,26 @@ public class RuleBaseAgent {
      * The timer that is used to monitor for changes and deal with them. 
      */
     private Timer              timer;
+    
+    /**
+     * The providers that actually do the work.
+     */
+    ArrayList                  providers;
 
+    /**
+     * Properties configured to load up packages into a rulebase (and monitor them
+     * for changes).
+     */
     public RuleBaseAgent(
                          Properties config) {
+        init( config );
+    }
+
+    private void init(Properties config) {
         boolean newInstance = Boolean.parseBoolean( config.getProperty( NEW_INSTANCE, "false" ) );
         int secondsToRefresh = Integer.parseInt( config.getProperty( POLL_INTERVAL, "-1" ) );
 
-        List providers = new ArrayList();
+        providers = new ArrayList();
 
         for ( Iterator iter = config.keySet().iterator(); iter.hasNext(); ) {
             String key = (String) iter.next();
@@ -83,7 +106,26 @@ public class RuleBaseAgent {
             }
         }
 
-        init( newInstance, providers, secondsToRefresh );
+        configure( newInstance, providers, secondsToRefresh );
+    }
+    
+    /**
+     * Pass in the name and full path to a config file that is on the classpath.
+     */
+    public RuleBaseAgent(String propsFileName) {
+        init(loadFromProperties( propsFileName ));        
+    }
+
+    Properties loadFromProperties(String propsFileName) {
+        InputStream in = this.getClass().getResourceAsStream( propsFileName );
+        Properties props = new Properties();
+        try {
+            props.load( in );
+            return props;
+            
+        } catch ( IOException e ) {
+            throw new RuntimeDroolsException("Unable to load properties. Needs to be the path and name of a config file on your classpath.",e);
+        }
     }
 
     /**
@@ -107,14 +149,11 @@ public class RuleBaseAgent {
         }
     }
 
-    synchronized void init(boolean newInstance, final List providers, int secondsToRefresh) {
+    synchronized void configure(boolean newInstance, final List providers, int secondsToRefresh) {
         this.newInstance = newInstance;
 
         //run it the first time for each.
-        for ( Iterator iter = providers.iterator(); iter.hasNext(); ) {
-            PackageProvider prov = (PackageProvider) iter.next();
-            updateRuleBase( prov );
-        }
+        refreshRuleBase(  );
 
         if ( secondsToRefresh != -1 ) {
             int interval = secondsToRefresh * 1000;
@@ -122,14 +161,19 @@ public class RuleBaseAgent {
             timer = new Timer( true );
             timer.schedule( new TimerTask() {
                 public void run() {
-                    for ( Iterator iter = providers.iterator(); iter.hasNext(); ) {
-                        PackageProvider prov = (PackageProvider) iter.next();
-                        updateRuleBase( prov );
-                    }
+                    refreshRuleBase();
+
                 }
             }, interval, interval );
         }
 
+    }
+
+    public void refreshRuleBase() {
+        for ( Iterator iter = providers.iterator(); iter.hasNext(); ) {
+            PackageProvider prov = (PackageProvider) iter.next();
+            updateRuleBase( prov );
+        }
     }
 
     private synchronized void updateRuleBase(PackageProvider prov) {

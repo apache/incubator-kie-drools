@@ -12,16 +12,15 @@ import junit.framework.TestCase;
 public class RuleBaseAgentTest extends TestCase {
 
     public void testLists() {
-        RuleBaseAgent mgr = new RuleBaseAgent();
         String s = "\tfoo.bar\n baz.bar\t whee ";
-        List result = mgr.list( s );
+        List result = RuleBaseAgent.list( s );
         assertEquals(3, result.size());
         assertEquals("foo.bar", result.get( 0 ));
         assertEquals("baz.bar", result.get(1));
         assertEquals("whee", result.get(2));
         
         s = null;
-        result = mgr.list( s );
+        result = RuleBaseAgent.list( s );
         assertNotNull(result);
         assertEquals(0, result.size());
     }
@@ -149,6 +148,46 @@ public class RuleBaseAgentTest extends TestCase {
         ag.stopPolling();
         
          
+    }
+    
+    
+    public void testDirectory() throws Exception {
+        File dir = RuleBaseAssemblerTest.getTempDirectory();
+        
+        Package p1 = new Package("p1");
+        File p1f = new File(dir, "p43_.pkg");
+        RuleBaseAssemblerTest.writePackage( p1, p1f );
+
+        Properties props = new Properties();
+        props.setProperty( RuleBaseAgent.DIRECTORY, dir.getPath() );
+        RuleBaseAgent ag = new RuleBaseAgent(props);
+        
+        ag.refreshRuleBase();
+        
+        RuleBase rb = ag.getRuleBase();
+        assertNotNull(rb);
+        assertEquals(1, rb.getPackages().length);
+        
+    }
+    
+    public void testLoadSampleConfig() {
+        RuleBaseAgent ag = new RuleBaseAgent();
+        Properties props = ag.loadFromProperties( "/sample-agent-config.properties" );
+        assertEquals("10", props.getProperty( RuleBaseAgent.POLL_INTERVAL ));
+        assertEquals("/home/packages", props.getProperty( RuleBaseAgent.DIRECTORY ));
+        assertEquals("true", props.getProperty( RuleBaseAgent.NEW_INSTANCE ));
+        assertEqualsIgnoreWhitespace( "/foo/bar.pkg /wee/waa.pkg /wee/waa2.pkg", props.getProperty( RuleBaseAgent.FILES ));
+    }
+    
+    private void assertEqualsIgnoreWhitespace(final String expected,
+                                              final String actual) {
+        final String cleanExpected = expected.replaceAll( "\\s+",
+                                                          "" );
+        final String cleanActual = actual.replaceAll( "\\s+",
+                                                      "" );
+
+        assertEquals( cleanExpected,
+                      cleanActual );
     }
     
 }
