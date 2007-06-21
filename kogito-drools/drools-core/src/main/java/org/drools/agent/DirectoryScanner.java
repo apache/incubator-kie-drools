@@ -13,32 +13,34 @@ import org.drools.RuleBase;
  */
 public class DirectoryScanner extends PackageProvider {
 
-    private File[] currentList;
+    private File[]      currentList;
     private FileScanner scanner;
-    private File dir;
+    private File        dir;
 
-    void configure(Properties config) {        
+    void configure(Properties config) {
         String d = config.getProperty( RuleBaseAgent.DIRECTORY );
-        
+
         //now check to see whats in them dir...
-        dir = new File(d);
-        if (!(dir.isDirectory() && dir.exists())) {
-            throw new IllegalArgumentException("The directory " + d + "is not valid.");            
+        dir = new File( d );
+        if ( !(dir.isDirectory() && dir.exists()) ) {
+            throw new IllegalArgumentException( "The directory " + d + "is not valid." );
         }
-        
+
         this.currentList = dir.listFiles();
         scanner = new FileScanner();
         scanner.setFiles( currentList );
-        
+
     }
 
-    void updateRuleBase(RuleBase rb, boolean removeExistingPackages) {
-        if (currentList.length != dir.listFiles().length) {
+    void updateRuleBase(RuleBase rb,
+                        boolean removeExistingPackages) {
+        if ( currentList.length != dir.listFiles().length ) {
             currentList = dir.listFiles();
             scanner = new FileScanner();
             scanner.setFiles( currentList );
         }
-        scanner.updateRuleBase( rb, removeExistingPackages );        
+        scanner.updateRuleBase( rb,
+                                removeExistingPackages );
     }
 
 }

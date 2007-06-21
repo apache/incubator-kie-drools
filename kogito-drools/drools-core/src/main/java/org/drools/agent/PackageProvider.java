@@ -16,15 +16,12 @@ public abstract class PackageProvider {
      * If there was an error reading the packages, this will not fail, it will 
      * just do nothing (as there may be a temporary IO issue). 
      */
-    abstract void updateRuleBase(RuleBase rb, boolean removeExistingPackages);
-    
-    
+    abstract void updateRuleBase(RuleBase rb,
+                                 boolean removeExistingPackages);
+
     /**
      * This will be passed the entire config.
      */
     abstract void configure(Properties config);
-    
-    
 
-    
 }
