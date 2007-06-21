@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -44,7 +45,9 @@ public class FileScannerTest extends TestCase {
         RuleBaseAssemblerTest.writePackage( p2, p2f);
         
         FileScanner scan = new FileScanner();
-        scan.configure( Arrays.asList( new String[] {p1f.getPath(), p2f.getPath()}) );
+        Properties props = new Properties();
+        props.setProperty( RuleBaseAgent.FILES, p1f.getPath() + " " + p2f.getPath() );
+        scan.configure( props );
         
         RuleBase rb = RuleBaseFactory.newRuleBase();
         scan.updateRuleBase( rb, true );
