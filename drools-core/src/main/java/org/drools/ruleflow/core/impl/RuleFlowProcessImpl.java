@@ -45,6 +45,7 @@ public class RuleFlowProcessImpl extends ProcessImpl
     private Map                nodes;
     private List               variables;
     private long               lastNodeId;
+    private List 			   imports;
 
     public RuleFlowProcessImpl() {
         super();
@@ -131,4 +132,12 @@ public class RuleFlowProcessImpl extends ProcessImpl
             throw new IllegalArgumentException( "A ruleflow process cannot have more than one end node!" );
         }
     }
+
+	public List getImports() {
+		return imports;
+	}
+
+	public void setImports(List imports) {
+		this.imports = imports;
+	}
 }
