@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -17,6 +18,7 @@ import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
+import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
@@ -50,8 +52,17 @@ public class XmlPackageReaderTest extends TestCase {
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseFrom.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
-        assertEquals( "com.sample",
-                      packageDescr.getName() );
+        RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
+        FromDescr from = (FromDescr) obj.getLhs().getDescrs().get( 0 );
+        
+        AccessorDescr accessordescriptor =  (AccessorDescr) from.getDataSource();
+        assertEquals( accessordescriptor.getVariableName(), "cheesery" );
+        
+        PatternDescr patterndescr = from.getReturnedPattern();
+        
+        assertEquals( patterndescr.getObjectType(), "Cheese" );
+        assertEquals( patterndescr.getIdentifier(), "cheese" );
+        
     }
 
     public void testAccumulate() throws Exception {

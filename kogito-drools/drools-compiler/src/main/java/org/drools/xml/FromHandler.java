@@ -4,7 +4,10 @@
 package org.drools.xml;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
+import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -47,21 +50,24 @@ public class FromHandler extends BaseAbstractHandler
     public Object end(final String uri,
                       final String localName) throws SAXException {
 
-//        final Configuration config = this.xmlPackageReader.endConfiguration();
-//        final BaseDescr baseDescr = (BaseDescr) this.xmlPackageReader.getCurrent();
-//        
-//        final String expression = config.getText();
-//
-//        final LinkedList parents = this.xmlPackageReader.getParents();
-//        final ListIterator ite = parents.listIterator( parents.size() );
-//        ite.previous();
-//        ite.previous();
-//        final Object parent = ite.previous();
-//        
-//        AccumulateDescr accumulate = (AccumulateDescr) parent;
+        final Configuration config = this.xmlPackageReader.endConfiguration();
+
+        final FromDescr fromDescr = (FromDescr) this.xmlPackageReader.getCurrent();
+
+        final LinkedList parents = this.xmlPackageReader.getParents();
+        final ListIterator it = parents.listIterator( parents.size() );
+        it.previous();
+        Object parent = it.previous();
+
+        final PatternDescr patternDescr = (PatternDescr) parent;
+
+        fromDescr.setPattern( patternDescr );
+
+        parent = it.previous();
+
+        ((ConditionalElementDescr) parent).addDescr( fromDescr );
 
         return null;
-
     }
 
     public Class generateNodeFor() {
