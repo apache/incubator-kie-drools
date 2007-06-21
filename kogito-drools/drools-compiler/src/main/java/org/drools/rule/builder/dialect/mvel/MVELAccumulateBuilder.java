@@ -99,11 +99,20 @@ public class MVELAccumulateBuilder
         final Serializable init = MVEL.compileExpression( (String) accumDescr.getInitCode(),
                                                           ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
         final Serializable action = MVEL.compileExpression( (String) accumDescr.getActionCode(),
-                                                          ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+                                                            ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+        Serializable reverse = null;
+        if ( accumDescr.getReverseCode() != null ) {
+            reverse = MVEL.compileExpression( (String) accumDescr.getReverseCode(),
+                                              ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+        }
         final Serializable result = MVEL.compileExpression( (String) accumDescr.getResultCode(),
-                                                          ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+                                                            ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
 
-        final MVELAccumulator accumulator = new MVELAccumulator( factory, init, action, result );
+        final MVELAccumulator accumulator = new MVELAccumulator( factory,
+                                                                 init,
+                                                                 action,
+                                                                 reverse,
+                                                                 result );
 
         final Accumulate accumulate = new Accumulate( sourcePattern,
                                                       resultPattern,

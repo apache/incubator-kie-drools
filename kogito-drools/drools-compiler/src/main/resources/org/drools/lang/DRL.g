@@ -1042,9 +1042,18 @@ accumulate_statement returns [AccumulateDescr d]
 			if( $text.text != null ) {
 			        $d.setActionCode( $text.text.substring(1, $text.text.length()-1) );
 	       			location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT, $d.getActionCode());
+				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE );
+			}
+		}
+		( REVERSE text=paren_chunk COMMA?
+		{
+			if( $text.text != null ) {
+			        $d.setReverseCode( $text.text.substring(1, $text.text.length()-1) );
+	       			location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_REVERSE_CONTENT, $d.getReverseCode());
 				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT );
 			}
 		}
+		)?
 		RESULT text=paren_chunk 
 		{
 			if( $text.text != null ) {
@@ -1177,7 +1186,9 @@ constraint[PatternDescr pattern]
 		{
 			top = $pattern.getConstraint();
 		}
-		or_constr[top]
+		( options {backtrack=true;}
+		: or_constr[top]
+		)
 	;	
 	
 or_constr[ConditionalElementDescr base]
@@ -1544,6 +1555,7 @@ identifier
         |       FROM	        
         |       INIT	        
         |       ACTION	        
+        |       REVERSE	        
         |       RESULT	        
         |       CONTAINS 	
         |       EXCLUDES 	
@@ -1672,6 +1684,8 @@ ACCUMULATE
 INIT	:	'init';
 
 ACTION	:	'action';
+
+REVERSE	:	'reverse';
 
 RESULT	:	'result';
 

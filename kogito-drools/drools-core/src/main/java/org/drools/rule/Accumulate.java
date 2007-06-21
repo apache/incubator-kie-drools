@@ -83,7 +83,7 @@ public class Accumulate extends ConditionalElement {
     public Object createContext() {
         return this.accumulator.createContext();
     }
-    
+
     /**
      * Executes the initialization block of code
      * 
@@ -132,6 +132,32 @@ public class Accumulate extends ConditionalElement {
     }
 
     /**
+     * Executes the reverse (action) code for the given fact handle
+     * 
+     * @param leftTuple
+     * @param handle
+     * @param declarations
+     * @param innerDeclarations
+     * @param workingMemory
+     * @throws Exception
+     */
+    public void reverse(final Object context,
+                        final Tuple leftTuple,
+                        final InternalFactHandle handle,
+                        final WorkingMemory workingMemory) {
+        try {
+            this.accumulator.reverse( context,
+                                      leftTuple,
+                                      handle,
+                                      this.requiredDeclarations,
+                                      this.innerDeclarations,
+                                      workingMemory );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( e );
+        }
+    }
+
+    /**
      * Gets the result of the accummulation
      * 
      * @param leftTuple
@@ -151,6 +177,14 @@ public class Accumulate extends ConditionalElement {
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
+    }
+    
+    /**
+     * Returns true if this accumulate supports reverse
+     * @return
+     */
+    public boolean supportsReverse() {
+        return this.accumulator.supportsReverse();
     }
 
     public Object clone() {

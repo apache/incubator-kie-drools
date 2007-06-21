@@ -70,6 +70,31 @@ public interface Accumulator
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception;
+    
+    /**
+     * Returns true if this accumulator supports operation reversal
+     * 
+     * @return
+     */
+    public boolean supportsReverse();
+    
+    /**
+     * Reverses the accumulate action for the given fact handle
+     * 
+     * @param context
+     * @param leftTuple
+     * @param handle
+     * @param declarations
+     * @param innerDeclarations
+     * @param workingMemory
+     * @throws Exception
+     */
+    public void reverse(Object context,
+                        Tuple leftTuple,
+                        InternalFactHandle handle,
+                        Declaration[] declarations,
+                        Declaration[] innerDeclarations,
+                        WorkingMemory workingMemory) throws Exception;
 
     /**
      * Gets the result of the accummulation

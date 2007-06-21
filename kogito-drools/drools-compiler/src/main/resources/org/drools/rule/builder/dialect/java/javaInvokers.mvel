@@ -204,6 +204,24 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 	        @foreach{globals as identifier} @{identifier}@end{","} );
     }
 
+    public void reverse(java.lang.Object context,
+                           org.drools.spi.Tuple leftTuple,
+                           org.drools.common.InternalFactHandle handle,
+                           org.drools.rule.Declaration[] declarations,
+                           org.drools.rule.Declaration[] innerDeclarations,
+                           org.drools.WorkingMemory workingMemory) throws Exception {
+        @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier} = ( @{type} ) declarations[@{i0}].@{declr.extractor.nativeReadMethod.name}( ( (org.drools.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
+        @end{}
+        @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}    
+        
+        ((@{ruleClassName}.@{className})context).reverse(
+            innerDeclarations,
+            handle.getObject()@if{declarations != empty},@end{} 
+            @foreach{declarations as declr} @{declr.identifier}@end{","}@if{globals != empty},@end{}
+	        @foreach{globals as identifier} @{identifier}@end{","} );
+    }
+
     public Object getResult(java.lang.Object context,
                             org.drools.spi.Tuple leftTuple,
                             org.drools.rule.Declaration[] declarations,
@@ -217,7 +235,11 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
             @foreach{declarations as declr} @{declr.identifier}@end{","}@if{globals != empty},@end{}
 	        @foreach{globals as identifier} @{identifier}@end{","} );
     }
-
+    
+    public boolean supportsReverse() {
+        return @{supportsReverse};
+    }
+    
     @includeByRef{hashCode(hashCode = hashCode)}
     
     @includeByRef{equals()}       

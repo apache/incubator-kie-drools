@@ -18,6 +18,7 @@ package org.drools;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Cheesery
@@ -43,6 +44,14 @@ public class Cheesery
     public void addCheese(final Cheese cheese) {
         this.cheeses.add( cheese );
         this.totalAmount += cheese.getPrice();
+    }
+
+    public void removeCheese(final Cheese cheese) {
+        this.cheeses.remove( cheese );
+        this.totalAmount = 0;
+        for( Iterator it = this.cheeses.iterator(); it.hasNext(); ) {
+            this.totalAmount += ((Cheese) it.next()).getPrice();
+        }
     }
 
     public void setStatus(final int status) {

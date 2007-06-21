@@ -46,10 +46,24 @@ public static class @{className} {
         @{actionCode}
     }
     
+    public void reverse(org.drools.rule.Declaration[] innerDeclarations, 
+                           Object object @if{declarations != empty}, @end{}
+                           @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
+                           @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}
+                           ) throws Exception {
+        @foreach{innerDeclarations as declr} @{declr.extractor.extractToClass.getName()} @{declr.identifier} = (@{declr.extractor.extractToClass.getName()}) innerDeclarations[@{i0}].@{declr.extractor.nativeReadMethod.name}( object );
+        @end{}
+        @{reverseCode}
+    }
+    
     public Object getResult(@foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
                             @foreach{globalTypes, globals as type, identifier}@{type} @{identifier} @end{","}
                            ) throws Exception {
         return ( @{resultCode} );
+    }
+    
+    public boolean supportsReverse() {
+        return @{supportsReverse};
     }
 }
 >>=::

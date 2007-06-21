@@ -41,16 +41,19 @@ public class MVELAccumulator
     private final DroolsMVELFactory factory;
     private final Serializable      init;
     private final Serializable      action;
+    private final Serializable      reverse;
     private final Serializable      result;
 
     public MVELAccumulator(final DroolsMVELFactory factory,
                            final Serializable init,
                            final Serializable action,
+                           final Serializable reverse,
                            final Serializable result) {
         super();
         this.factory = factory;
         this.init = init;
         this.action = action;
+        this.reverse = reverse;
         this.result = result;
     }
 
@@ -95,6 +98,21 @@ public class MVELAccumulator
                                 this.factory );
     }
 
+    public void reverse(Object context,
+                        Tuple leftTuple,
+                        InternalFactHandle handle,
+                        Declaration[] declarations,
+                        Declaration[] innerDeclarations,
+                        WorkingMemory workingMemory) throws Exception {
+        this.factory.setContext( leftTuple,
+                                 null,
+                                 handle.getObject(),
+                                 workingMemory );
+        MVEL.executeExpression( this.reverse,
+                                context,
+                                this.factory );
+    }
+
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#getResult(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
      */
@@ -110,6 +128,10 @@ public class MVELAccumulator
                                                       context,
                                                       this.factory );
         return result;
+    }
+
+    public boolean supportsReverse() {
+        return this.reverse != null ;
     }
 
 }

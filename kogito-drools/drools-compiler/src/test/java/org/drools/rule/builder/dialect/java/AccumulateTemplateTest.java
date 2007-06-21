@@ -102,7 +102,7 @@ public class AccumulateTemplateTest extends TestCase {
                                                    map,
                                                    registry );
 
-        System.out.println( method );
+        //System.out.println( method );
     }
 
     public void testInvokerGeneration() {
@@ -167,8 +167,13 @@ public class AccumulateTemplateTest extends TestCase {
                  "x = 0;" );
         map.put( "actionCode",
                  "x += 1;" );
+        map.put( "reverseCode",
+                 "" );
         map.put( "resultCode",
                  "x + 10" );
+
+        map.put( "supportsReverse",
+                 "false" );
 
         map.put( "resultType",
                  Integer.class );
@@ -182,7 +187,7 @@ public class AccumulateTemplateTest extends TestCase {
                                                    map,
                                                    registry );
 
-        System.out.println( method );
+        //System.out.println( method );
     }
 
     private TemplateRegistry getRuleTemplateRegistry() {

@@ -139,6 +139,13 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
                  actionCode );
         map.put( "resultCode",
                  resultCode );
+        if( accumDescr.getReverseCode() == null ) {
+            map.put( "reverseCode", "" );
+            map.put( "supportsReverse", "false" );
+        } else {
+            map.put( "reverseCode", accumDescr.getReverseCode() );
+            map.put( "supportsReverse", "true" );
+        }
 
         String resultType = null;
         // TODO: Need to change this... 
