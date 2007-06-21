@@ -1,6 +1,6 @@
 package org.drools.agent;
 
-import java.util.List;
+import java.util.Properties;
 
 import org.drools.RuleBase;
 
@@ -20,9 +20,9 @@ public abstract class PackageProvider {
     
     
     /**
-     * This will be passed a list of configuration strings which were extracted from the config property.
+     * This will be passed the entire config.
      */
-    abstract void configure(List configList);
+    abstract void configure(Properties config);
     
     
 

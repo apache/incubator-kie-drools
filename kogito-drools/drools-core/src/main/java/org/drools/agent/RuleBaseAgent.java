@@ -1,9 +1,6 @@
 package org.drools.agent;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,7 +14,6 @@ import java.util.TimerTask;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
-import org.drools.util.BinaryRuleBaseLoader;
 
 /**
  * This manages a single rulebase, based on the properties given
@@ -31,6 +27,7 @@ import org.drools.util.BinaryRuleBaseLoader;
  *  <code>file</code>: a space seperated listing of files that make up the 
  *  packages of the rulebase. 
  *  
+ *  <code>dir</code>: a single file system directory to monitor for packages.
  *  ...
  * 
  * @author Michael Neale
@@ -43,7 +40,7 @@ public class RuleBaseAgent {
      */
     public static final String NEW_INSTANCE      = "newInstance";
     public static final String FILES             = "file";
-    //public static final String DIRECTORIES = "dir";
+    public static final String DIRECTORY = "dir";
     //public static final String URIS = "uri";
     public static final String POLL_INTERVAL     = "poll";
 
@@ -80,10 +77,9 @@ public class RuleBaseAgent {
 
         for ( Iterator iter = config.keySet().iterator(); iter.hasNext(); ) {
             String key = (String) iter.next();
-            if ( key.equals( POLL_INTERVAL ) || key.equals( NEW_INSTANCE ) ) {
-                //already dealt with these
-            } else {
-                providers.add( getProvider( key, config.getProperty( key ) ) );
+            PackageProvider prov = getProvider( key, config );
+            if (prov != null) {
+                providers.add( prov ) ;
             }
         }
 
@@ -93,11 +89,14 @@ public class RuleBaseAgent {
     /**
      * Return a configured provider ready to go.
      */
-    private PackageProvider getProvider(String key, String property) {
+    private PackageProvider getProvider(String key, Properties config) {
+        if (!PACKAGE_PROVIDERS.containsKey( key )) {
+            return null; 
+        }
         Class clz = (Class) PACKAGE_PROVIDERS.get( key );
         try {
             PackageProvider prov = (PackageProvider) clz.newInstance();
-            prov.configure( list( property ) );
+            prov.configure( config );
             return prov;
         } catch ( InstantiationException e ) {
             throw new RuntimeDroolsException( "Unable to load up a package provider for " + key,

@@ -1,24 +1,44 @@
 package org.drools.agent;
 
-import java.util.List;
+import java.io.File;
+import java.util.Properties;
 
 import org.drools.RuleBase;
 
+/**
+ * This will scan a directory for files to watch for a change.
+ * It will update the list of files only if they number of files in a directory changes.
+ * 
+ * @author Michael Neale
+ */
 public class DirectoryScanner extends PackageProvider {
 
-    private List dir;
+    private File[] currentList;
+    private FileScanner scanner;
+    private File dir;
 
-    void configure(List configList) {
-        this.dir = configList;
+    void configure(Properties config) {        
+        String d = config.getProperty( RuleBaseAgent.DIRECTORY );
+        
         //now check to see whats in them dir...
-        if (configList.size() > 1) {
-            throw new IllegalArgumentException("You can only monitor one directory at a time this way.");
+        dir = new File(d);
+        if (!(dir.isDirectory() && dir.exists())) {
+            throw new IllegalArgumentException("The directory " + d + "is not valid.");            
         }
+        
+        this.currentList = dir.listFiles();
+        scanner = new FileScanner();
+        scanner.setFiles( currentList );
         
     }
 
     void updateRuleBase(RuleBase rb, boolean removeExistingPackages) {
-        
+        if (currentList.length != dir.listFiles().length) {
+            currentList = dir.listFiles();
+            scanner = new FileScanner();
+            scanner.setFiles( currentList );
+        }
+        scanner.updateRuleBase( rb, removeExistingPackages );        
     }
 
 }

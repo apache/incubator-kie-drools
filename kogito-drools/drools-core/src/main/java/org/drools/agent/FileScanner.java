@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
@@ -33,7 +34,8 @@ public class FileScanner extends PackageProvider {
      * This sets the list of files to be monitored.
      * This takes a list of paths and files (not directories).
      */
-    void configure(List paths) { 
+    void configure(Properties config) { 
+        List paths = RuleBaseAgent.list( config.getProperty( RuleBaseAgent.FILES ) );
         files = new File[paths.size()];
         for ( int i = 0; i < paths.size(); i++ ) {
             File file = new File( (String) paths.get( i ) );
@@ -42,6 +44,13 @@ public class FileScanner extends PackageProvider {
             }
             files[i] = file;
         }
+    }
+    
+    /**
+     * An alternative way to configure.
+     */
+    void setFiles(File[] files) {
+        this.files = files;
     }
 
     /**
