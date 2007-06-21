@@ -82,4 +82,17 @@ public class MockAccumulator
         return this.matchingObjects;
     }
 
+    public void reverse(Object context,
+                        Tuple leftTuple,
+                        InternalFactHandle handle,
+                        Declaration[] declarations,
+                        Declaration[] innerDeclarations,
+                        WorkingMemory workingMemory) throws Exception {
+        // nothing to do yet
+    }
+
+    public boolean supportsReverse() {
+        return false;
+    }
+
 }

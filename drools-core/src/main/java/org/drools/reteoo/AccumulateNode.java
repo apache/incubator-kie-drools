@@ -222,73 +222,20 @@ public class AccumulateNode extends BetaNode {
         for ( int i = 0; i < tuples.length; i++ ) {
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
-                modifyTupleAssert( tuple,
-                                   handle,
-                                   context,
-                                   workingMemory );
-            }
-        }
-    }
-
-    public void modifyTupleAssert(final ReteTuple leftTuple,
-                                  final InternalFactHandle handle,
-                                  final PropagationContext context,
-                                  final InternalWorkingMemory workingMemory) {
-
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        AccumulateResult accresult = (AccumulateResult) memory.getCreatedHandles().get( leftTuple );
-
-        // if tuple was propagated
-        if ( accresult.handle != null ) {
-            this.sink.propagateRetractTuple( leftTuple,
-                                             accresult.handle,
-                                             context,
-                                             workingMemory );
-
-            // Destroying the acumulate result object 
-            workingMemory.getFactHandleFactory().destroyFactHandle( accresult.handle );
-            accresult.handle = null;
-        } 
-        
-        if( accresult.context == null ) {
-            final Object accContext = this.accumulate.createContext();
-
-            this.accumulate.init( accContext,
-                                  leftTuple,
-                                  workingMemory );
-
-            accresult.context = accContext;
-        }
-
-        this.accumulate.accumulate( accresult.context,
-                                    leftTuple,
-                                    handle,
-                                    workingMemory );
-
-        final Object result = this.accumulate.getResult( accresult.context,
-                                                         leftTuple,
-                                                         workingMemory );
-
-        // First alpha node filters
-        boolean isAllowed = true;
-        for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
-            if ( !this.resultConstraints[i].isAllowed( result,
-                                                       workingMemory ) ) {
-                isAllowed = false;
-                break;
-            }
-        }
-        if ( isAllowed ) {
-            this.resultBinder.updateFromTuple( workingMemory,
-                                               leftTuple );
-            if ( this.resultBinder.isAllowedCachedLeft( result ) ) {
-                final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result );
-                accresult.handle = createdHandle;
-
-                this.sink.propagateAssertTuple( leftTuple,
-                                                createdHandle,
-                                                context,
-                                                workingMemory );
+                if( this.accumulate.supportsReverse() || context.getType() == PropagationContext.ASSERTION ) {
+                    modifyTuple( tuple,
+                                 handle,
+                                 context,
+                                 workingMemory );
+                } else {
+                    // context is MODIFICATION and does not supports reverse
+                    this.retractTuple( tuple,
+                                       context,
+                                       workingMemory );
+                    this.assertTuple( tuple,
+                                      context,
+                                      workingMemory );
+                }
             }
         }
     }
@@ -314,12 +261,101 @@ public class AccumulateNode extends BetaNode {
         for ( int i = 0; i < tuples.length; i++ ) {
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
-                this.retractTuple( tuple,
-                                   context,
-                                   workingMemory );
-                this.assertTuple( tuple,
-                                  context,
-                                  workingMemory );
+                if ( this.accumulate.supportsReverse() ) {
+                    this.modifyTuple( tuple,
+                                      handle,
+                                      context,
+                                      workingMemory );
+                } else {
+                    this.retractTuple( tuple,
+                                       context,
+                                       workingMemory );
+                    this.assertTuple( tuple,
+                                      context,
+                                      workingMemory );
+                }
+            }
+        }
+    }
+
+    public void modifyTuple(final ReteTuple leftTuple,
+                            final InternalFactHandle handle,
+                            final PropagationContext context,
+                            final InternalWorkingMemory workingMemory) {
+
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        AccumulateResult accresult = (AccumulateResult) memory.getCreatedHandles().get( leftTuple );
+
+        // if tuple was propagated
+        if ( accresult.handle != null ) {
+            this.sink.propagateRetractTuple( leftTuple,
+                                             accresult.handle,
+                                             context,
+                                             workingMemory );
+
+            // Destroying the acumulate result object 
+            workingMemory.getFactHandleFactory().destroyFactHandle( accresult.handle );
+            accresult.handle = null;
+        }
+
+        if ( context.getType() == PropagationContext.ASSERTION ) {
+            // assertion
+            if ( accresult.context == null ) {
+                final Object accContext = this.accumulate.createContext();
+
+                this.accumulate.init( accContext,
+                                      leftTuple,
+                                      workingMemory );
+
+                accresult.context = accContext;
+            }
+
+            this.accumulate.accumulate( accresult.context,
+                                        leftTuple,
+                                        handle,
+                                        workingMemory );
+        } else if( context.getType() == PropagationContext.MODIFICATION ) {
+            // modification
+            this.accumulate.reverse( accresult.context,
+                                     leftTuple,
+                                     handle,
+                                     workingMemory );
+            this.accumulate.accumulate( accresult.context,
+                                        leftTuple,
+                                        handle,
+                                        workingMemory );
+        } else {
+            // retraction
+            this.accumulate.reverse( accresult.context,
+                                     leftTuple,
+                                     handle,
+                                     workingMemory );
+        }
+
+        final Object result = this.accumulate.getResult( accresult.context,
+                                                         leftTuple,
+                                                         workingMemory );
+
+        // First alpha node filters
+        boolean isAllowed = true;
+        for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
+            if ( !this.resultConstraints[i].isAllowed( result,
+                                                       workingMemory ) ) {
+                isAllowed = false;
+                break;
+            }
+        }
+        if ( isAllowed ) {
+            this.resultBinder.updateFromTuple( workingMemory,
+                                               leftTuple );
+            if ( this.resultBinder.isAllowedCachedLeft( result ) ) {
+                final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result );
+                accresult.handle = createdHandle;
+
+                this.sink.propagateAssertTuple( leftTuple,
+                                                createdHandle,
+                                                context,
+                                                workingMemory );
             }
         }
     }

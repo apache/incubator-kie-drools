@@ -32,6 +32,7 @@ public class AccumulateDescr extends BaseDescr
     private PatternDescr      resultPattern;
     private String            initCode;
     private String            actionCode;
+    private String            reverseCode;
     private String            resultCode;
     private String[]          declarations;
     private String            className;
@@ -115,6 +116,14 @@ public class AccumulateDescr extends BaseDescr
 
     public void addOrMerge(BaseDescr baseDescr) {
         throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());        
+    }
+
+    public String getReverseCode() {
+        return reverseCode;
+    }
+
+    public void setReverseCode(String reverseCode) {
+        this.reverseCode = reverseCode;
     }
 
 }

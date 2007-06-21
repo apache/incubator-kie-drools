@@ -48,8 +48,10 @@ public class Location {
     public static final int LOCATION_LHS_FROM_ACCUMULATE_INIT_INSIDE = 304;
     public static final int LOCATION_LHS_FROM_ACCUMULATE_ACTION = 305;
     public static final int LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE = 306;
-    public static final int LOCATION_LHS_FROM_ACCUMULATE_RESULT = 307;
-    public static final int LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE = 308;
+    public static final int LOCATION_LHS_FROM_ACCUMULATE_REVERSE = 307;
+    public static final int LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE = 308;
+    public static final int LOCATION_LHS_FROM_ACCUMULATE_RESULT = 309;
+    public static final int LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE = 310;
     
     public static final int LOCATION_RHS = 1000;
     public static final int LOCATION_RULE_HEADER = 2000;
@@ -61,6 +63,7 @@ public class Location {
     public static final String LOCATION_FROM_CONTENT = "FromContent";
     public static final String LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT = "FromAccumulateInitContent";
     public static final String LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT = "FromAccumulateActionContent";
+    public static final String LOCATION_PROPERTY_FROM_ACCUMULATE_REVERSE_CONTENT = "FromAccumulateReverseContent";
     public static final String LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT = "FromAccumulateResultContent";
     public static final String LOCATION_LHS_CONTENT = "LHSContent";
     public static final String LOCATION_RHS_CONTENT = "RHSContent";

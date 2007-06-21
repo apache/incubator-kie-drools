@@ -2329,6 +2329,7 @@ public class RuleParserTest extends TestCase {
                                       accum.getInitCode() );
         assertEqualsIgnoreWhitespace( "x++;",
                                       accum.getActionCode() );
+        assertNull( accum.getReverseCode() );
         assertEqualsIgnoreWhitespace( "new Integer(x)",
                                       accum.getResultCode() );
 
@@ -3195,6 +3196,39 @@ public class RuleParserTest extends TestCase {
         final RuleDescr rule1 = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( 1,
                       rule1.getLhs().getDescrs().size() );
+    }
+
+    public void testAccumulateReverse() throws Exception {
+        final DRLParser parser = parseResource( "accumulateReverse.drl" );
+        parser.compilation_unit();
+
+        if ( parser.hasErrors() ) {
+            System.err.println( parser.getErrorMessages() );
+        }
+
+        assertFalse( parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        final PackageDescr pack = parser.getPackageDescr();
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        final AccumulateDescr accum = (AccumulateDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEqualsIgnoreWhitespace( "int x = 0 ;",
+                                      accum.getInitCode() );
+        assertEqualsIgnoreWhitespace( "x++;",
+                                      accum.getActionCode() );
+        assertEqualsIgnoreWhitespace( "x--;",
+                                      accum.getReverseCode() );
+        assertEqualsIgnoreWhitespace( "new Integer(x)",
+                                      accum.getResultCode() );
+
+        final PatternDescr pattern = (PatternDescr) accum.getSourcePattern();
+        assertEquals( "Person",
+                      pattern.getObjectType() );
     }
 
     private DRLParser parse(final String text) throws Exception {
