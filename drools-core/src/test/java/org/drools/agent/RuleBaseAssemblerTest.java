@@ -55,7 +55,7 @@ public class RuleBaseAssemblerTest extends TestCase {
     }
 
     public static File getTempDirectory() {
-        File f = new File("__temp_test_drools_packages");
+        File f = tempDir();
         if (f.exists()) {
             if (f.isFile()) {
                 throw new IllegalStateException("The temp directory exists as a file. Nuke it now !");
@@ -67,6 +67,10 @@ public class RuleBaseAssemblerTest extends TestCase {
         }
         return f;
     }
+
+    private static File tempDir() {
+        return new File("__temp_test_drools_packages");
+    }
     
     public static boolean deleteDir(File dir) {
         
@@ -75,6 +79,7 @@ public class RuleBaseAssemblerTest extends TestCase {
             for (int i=0; i<children.length; i++) {
                 boolean success = deleteDir(new File(dir, children[i]));
                 if (!success) {
+                    //throw new RuntimeException("Unable to delete !");
                     return false;
                 }
             }
@@ -82,6 +87,11 @@ public class RuleBaseAssemblerTest extends TestCase {
     
         // The directory is now empty so delete it
         return dir.delete();
+    }
+
+    public static void clearTempDirectory() {
+        deleteDir( tempDir() );
+        
     }      
     
 }

@@ -46,13 +46,12 @@ public class FileScanner {
 
     /**
      * Perform the scan, adding in any packages changed to the rulebase.
-     * It will call remove package 
-     * @throws ClassNotFoundException 
-     * @throws IOException 
-     * @throws FileNotFoundException 
+     * If there was an error reading the packages, this will not fail, it will 
+     * just do nothing (as there may be a temporary IO issue). 
      */
     void updateRuleBase(RuleBase rb, boolean removeExistingPackages) {
         Package[] changes = getChangeSet();
+        if (changes == null) return;
         for ( int i = 0; i < changes.length; i++ ) {
             Package p = changes[i];
             if ( removeExistingPackages ) {
@@ -95,13 +94,16 @@ public class FileScanner {
         for ( int i = 0; i < files.length; i++ ) {
             File f = files[i];
             if ( hasChanged( f.getPath(), this.lastUpdated, f.lastModified() ) ) {
-                list.add( readPackage( f ) );
+                Package p = readPackage( f );
+                if (p == null) return null;
+                list.add( p );
             }
         }
         return (Package[]) list.toArray( new Package[list.size()] );
     }
 
-    public static Package readPackage(File pkgFile)  {
+    private static Package readPackage(File pkgFile)  {
+        
         Package p1_ = null;
         ObjectInputStream in;
         try {
@@ -109,11 +111,11 @@ public class FileScanner {
             p1_ = (Package) in.readObject();
             in.close();
         } catch ( FileNotFoundException e ) {
-            throw new RuntimeDroolsException("Unable to open file: [" + pkgFile.getPath() + "]", e);
+            //throw new RuntimeDroolsException("Unable to open file: [" + pkgFile.getPath() + "]", e);
         } catch ( IOException e ) {
-            throw new RuntimeDroolsException("Unable to open file: [" + pkgFile.getPath() + "]", e);
+            //throw new RuntimeDroolsException("Unable to open file: [" + pkgFile.getPath() + "] ", e);
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException("Unable to load package from file: [" + pkgFile.getPath() + "]", e);
+            //throw new RuntimeDroolsException("Unable to load package from file: [" + pkgFile.getPath() + "]", e);
         }
         return p1_;
     }
@@ -133,6 +135,15 @@ public class FileScanner {
             }
         }
 
+    }
+    
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        for ( int i = 0; i < files.length; i++ ) {
+            File f= files[i];
+            buf.append( f.getPath() + " " );
+        }
+        return buf.toString();
     }
 
 }
