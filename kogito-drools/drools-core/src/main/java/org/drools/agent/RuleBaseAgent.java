@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Timer;
@@ -13,6 +16,7 @@ import java.util.TimerTask;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.RuntimeDroolsException;
 import org.drools.util.BinaryRuleBaseLoader;
 
 /**
@@ -37,61 +41,104 @@ public class RuleBaseAgent {
      * Following are property keys to be used in the property
      * config file.
      */
-    public static final String NEW_INSTANCE  = "newInstance";
-    public static final String FILES         = "file";
+    public static final String NEW_INSTANCE      = "newInstance";
+    public static final String FILES             = "file";
     //public static final String DIRECTORIES = "dir";
     //public static final String URIS = "uri";
-    public static final String POLL_INTERVAL = "poll";
+    public static final String POLL_INTERVAL     = "poll";
+
+    /**
+     * Here is where we have a map of providers to the key that appears on the configuration.
+     */
+    public static Map          PACKAGE_PROVIDERS = new HashMap() {
+                                                     {
+                                                         put( FILES, FileScanner.class );
+                                                     }
+                                                 };
 
     /**
      * This is true if the rulebase is created anew each time.
      */
     private boolean            newInstance;
-    
+
     /**
      * The rule base that is being managed.
      */
     private RuleBase           ruleBase;
-    private Timer timer;
 
-    public RuleBaseAgent(Properties config) {
+    /**
+     * The timer that is used to monitor for changes and deal with them. 
+     */
+    private Timer              timer;
+
+    public RuleBaseAgent(
+                         Properties config) {
         boolean newInstance = Boolean.parseBoolean( config.getProperty( NEW_INSTANCE, "false" ) );
-        int secondsToRefresh = Integer.parseInt( config.getProperty( POLL_INTERVAL , "-1") );
-        List files = list( config.getProperty( FILES ) );
-        
-        init( newInstance, files, secondsToRefresh );
+        int secondsToRefresh = Integer.parseInt( config.getProperty( POLL_INTERVAL, "-1" ) );
+
+        List providers = new ArrayList();
+
+        for ( Iterator iter = config.keySet().iterator(); iter.hasNext(); ) {
+            String key = (String) iter.next();
+            if ( key.equals( POLL_INTERVAL ) || key.equals( NEW_INSTANCE ) ) {
+                //already dealt with these
+            } else {
+                providers.add( getProvider( key, config.getProperty( key ) ) );
+            }
+        }
+
+        init( newInstance, providers, secondsToRefresh );
     }
 
-    synchronized void init(boolean newInstance, List files, int secondsToRefresh) {
+    /**
+     * Return a configured provider ready to go.
+     */
+    private PackageProvider getProvider(String key, String property) {
+        Class clz = (Class) PACKAGE_PROVIDERS.get( key );
+        try {
+            PackageProvider prov = (PackageProvider) clz.newInstance();
+            prov.configure( list( property ) );
+            return prov;
+        } catch ( InstantiationException e ) {
+            throw new RuntimeDroolsException( "Unable to load up a package provider for " + key,
+                                              e );
+        } catch ( IllegalAccessException e ) {
+            throw new RuntimeDroolsException( "Unable to load up a package provider for " + key,
+                                              e );
+        }
+    }
+
+    synchronized void init(boolean newInstance, final List providers, int secondsToRefresh) {
         this.newInstance = newInstance;
-        final FileScanner fileScan = new FileScanner();
-        fileScan.setFiles( (String[]) files.toArray( new String[files.size()] ) );
-        
-        //run it the first time
-        updateRuleBase( fileScan );
-        
-        
-        if (secondsToRefresh != -1) {
+
+        //run it the first time for each.
+        for ( Iterator iter = providers.iterator(); iter.hasNext(); ) {
+            PackageProvider prov = (PackageProvider) iter.next();
+            updateRuleBase( prov );
+        }
+
+        if ( secondsToRefresh != -1 ) {
             int interval = secondsToRefresh * 1000;
             //now schedule it for polling
-            timer = new Timer();
+            timer = new Timer( true );
             timer.schedule( new TimerTask() {
                 public void run() {
-                    updateRuleBase( fileScan );
+                    for ( Iterator iter = providers.iterator(); iter.hasNext(); ) {
+                        PackageProvider prov = (PackageProvider) iter.next();
+                        updateRuleBase( prov );
+                    }
                 }
             }, interval, interval );
         }
 
     }
 
-    
-    private synchronized void updateRuleBase(FileScanner fileScan) {
-        System.err.println("SCANNING FOR CHANGE " + fileScan.toString());
-        
-        if (this.newInstance || this.ruleBase == null) {
+    private synchronized void updateRuleBase(PackageProvider prov) {
+        System.err.println( "SCANNING FOR CHANGE " + prov.toString() );
+        if ( this.newInstance || this.ruleBase == null ) {
             ruleBase = RuleBaseFactory.newRuleBase();
         }
-        fileScan.updateRuleBase( this.ruleBase, !this.newInstance );
+        prov.updateRuleBase( this.ruleBase, !this.newInstance );
     }
 
     /**
@@ -99,7 +146,7 @@ public class RuleBaseAgent {
      * @param property
      * @return
      */
-    List list(String property) {
+    static List list(String property) {
         if ( property == null ) return Collections.EMPTY_LIST;
         StringTokenizer st = new StringTokenizer( property,
                                                   "\n\r\t " );
@@ -109,14 +156,14 @@ public class RuleBaseAgent {
         }
         return list;
     }
-    
+
     /**
      * Return a current rulebase.
      * Depending on the configuration, this may be a new object each time
      * the rules are updated.
      *  
      */
-    public RuleBase getRuleBase() {
+    public synchronized RuleBase getRuleBase() {
         return this.ruleBase;
     }
 
@@ -127,16 +174,16 @@ public class RuleBaseAgent {
      * Stop the polling (if it is happening)
      */
     public void stopPolling() {
-        if (this.timer != null) timer.cancel();
+        if ( this.timer != null ) timer.cancel();
         timer = null;
     }
-    
+
     boolean isNewInstance() {
         return newInstance;
     }
-    
+
     boolean isPolling() {
         return this.timer != null;
     }
-    
+
 }

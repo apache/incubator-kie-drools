@@ -20,7 +20,7 @@ import org.drools.rule.Package;
  * @author Michael Neale
  *
  */
-public class FileScanner {
+public class FileScanner extends PackageProvider {
 
     private File[] files;
     private Map    lastUpdated = new HashMap();
@@ -33,10 +33,10 @@ public class FileScanner {
      * This sets the list of files to be monitored.
      * This takes a list of paths and files (not directories).
      */
-    public void setFiles(String[] paths) {
-        files = new File[paths.length];
-        for ( int i = 0; i < paths.length; i++ ) {
-            File file = new File( paths[i] );
+    void configure(List paths) { 
+        files = new File[paths.size()];
+        for ( int i = 0; i < paths.size(); i++ ) {
+            File file = new File( (String) paths.get( i ) );
             if ( !file.exists() ) {
                 throw new IllegalArgumentException( "The file " + file.getName() + " does not exist." );
             }
@@ -151,5 +151,7 @@ public class FileScanner {
         }
         return buf.toString();
     }
+
+    
 
 }
