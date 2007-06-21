@@ -93,7 +93,8 @@ public class RuleBaseAgent {
     }
 
     private void init(Properties config) {
-        boolean newInstance = Boolean.parseBoolean( config.getProperty( NEW_INSTANCE, "false" ) );
+        
+        boolean newInstance = Boolean.valueOf( config.getProperty( NEW_INSTANCE, "false" ) ).booleanValue();
         int secondsToRefresh = Integer.parseInt( config.getProperty( POLL_INTERVAL, "-1" ) );
 
         providers = new ArrayList();
