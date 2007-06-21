@@ -90,4 +90,20 @@ public interface RuleFlowProcess
      * @return	the variable names of this RuleFlow process
      */
     String[] getVariableNames();
+    
+    /**
+     * Returns the imports of this RuleFlow process.
+     * They are defined as a List of fully qualified class names.
+     * 
+     * @return	the imports of this RuleFlow process
+     */
+    List getImports();
+    
+    /**
+     * Sets the imports of this RuleFlow process
+     * 
+     * @param imports	the imports as a List of fully qualified class names
+     */
+    void setImports(List imports);
+
 }
