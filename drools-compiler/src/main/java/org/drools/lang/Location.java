@@ -65,6 +65,7 @@ public class Location {
     public static final String LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT = "FromAccumulateActionContent";
     public static final String LOCATION_PROPERTY_FROM_ACCUMULATE_REVERSE_CONTENT = "FromAccumulateReverseContent";
     public static final String LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT = "FromAccumulateResultContent";
+    public static final String LOCATION_PROPERTY_FROM_ACCUMULATE_EXPRESSION_CONTENT = "FromAccumulateExpressionContent";
     public static final String LOCATION_LHS_CONTENT = "LHSContent";
     public static final String LOCATION_RHS_CONTENT = "RHSContent";
     public static final String LOCATION_HEADER_CONTENT = "HeaderContent";

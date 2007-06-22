@@ -43,7 +43,10 @@ public class MVELConsequenceBuilderTest extends TestCase {
         DialectRegistry registry = new DialectRegistry();
         registry.addDialect( "default",
                              mvelDialect );
-        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkg,
+        final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
+                                                                               pkg,
                                                                                ruleDescr,
                                                                                registry,
                                                                                mvelDialect );

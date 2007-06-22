@@ -970,7 +970,79 @@ from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 		}
 	}
 	
-expression_chain[FromDescr from, AccessorDescr as] 
+
+accumulate_statement returns [AccumulateDescr d]
+	@init {
+		$d = factory.createAccumulate();
+	} 
+	:
+	        ACCUMULATE 
+		{ 
+			$d.setLocation( offset($ACCUMULATE.line), $ACCUMULATE.pos );
+			$d.setStartCharacter( ((CommonToken)$ACCUMULATE).getStartIndex() );
+			location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE );
+		}	
+		LEFT_PAREN pattern=lhs_pattern COMMA? 
+		{
+		        $d.setSourcePattern( (PatternDescr) $pattern.d );
+		}
+		( ( 
+			INIT 
+			{
+				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_INIT );
+			}
+			text=paren_chunk COMMA?
+			{
+				if( $text.text != null ) {
+				        $d.setInitCode( $text.text.substring(1, $text.text.length()-1) );
+					location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, $d.getInitCode());
+					location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION );
+				}
+			}
+			ACTION text=paren_chunk COMMA?
+			{
+				if( $text.text != null ) {
+				        $d.setActionCode( $text.text.substring(1, $text.text.length()-1) );
+	       				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT, $d.getActionCode());
+					location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE );
+				}
+			}
+			( REVERSE text=paren_chunk COMMA?
+			{
+				if( $text.text != null ) {
+				        $d.setReverseCode( $text.text.substring(1, $text.text.length()-1) );
+	       				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_REVERSE_CONTENT, $d.getReverseCode());
+					location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT );
+				}
+			}
+			)?
+			RESULT text=paren_chunk 
+			{
+				if( $text.text != null ) {
+				        $d.setResultCode( $text.text.substring(1, $text.text.length()-1) );
+					location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT, $d.getResultCode());
+				}
+			}
+		) 
+		|
+		(
+			id=ID text=paren_chunk
+			{
+				if( $id.text != null ) {
+				        $d.setExternalFunction( true );
+					$d.setFunctionIdentifier( $id.text );
+				        $d.setExpression( $text.text.substring(1, $text.text.length()-1) );
+	       				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_EXPRESSION_CONTENT, $d.getExpression());
+				}
+			}
+		)
+		)
+		RIGHT_PAREN
+		{
+			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+			d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
+		} 
+	; expression_chain[FromDescr from, AccessorDescr as] 
 	@init {
   		FieldAccessDescr fa = null;
 	    	MethodAccessDescr ma = null;	
@@ -1010,63 +1082,7 @@ expression_chain[FromDescr from, AccessorDescr as]
 		}
 	}
 	
-accumulate_statement returns [AccumulateDescr d]
-	@init {
-		$d = factory.createAccumulate();
-	}
-	:
-	        ACCUMULATE 
-		{ 
-			$d.setLocation( offset($ACCUMULATE.line), $ACCUMULATE.pos );
-			$d.setStartCharacter( ((CommonToken)$ACCUMULATE).getStartIndex() );
-			location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE );
-		}	
-		LEFT_PAREN pattern=lhs_pattern COMMA? 
-		{
-		        $d.setSourcePattern( (PatternDescr) $pattern.d );
-		}
-		INIT 
-		{
-			location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_INIT );
-		}
-		text=paren_chunk COMMA?
-		{
-			if( $text.text != null ) {
-			        $d.setInitCode( $text.text.substring(1, $text.text.length()-1) );
-				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, $d.getInitCode());
-				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION );
-			}
-		}
-		ACTION text=paren_chunk COMMA?
-		{
-			if( $text.text != null ) {
-			        $d.setActionCode( $text.text.substring(1, $text.text.length()-1) );
-	       			location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT, $d.getActionCode());
-				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE );
-			}
-		}
-		( REVERSE text=paren_chunk COMMA?
-		{
-			if( $text.text != null ) {
-			        $d.setReverseCode( $text.text.substring(1, $text.text.length()-1) );
-	       			location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_REVERSE_CONTENT, $d.getReverseCode());
-				location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT );
-			}
-		}
-		)?
-		RESULT text=paren_chunk 
-		{
-			if( $text.text != null ) {
-			        $d.setResultCode( $text.text.substring(1, $text.text.length()-1) );
-				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT, $d.getResultCode());
-			}
-		}
-		RIGHT_PAREN
-		{
-			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-			d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
-		} 
-	; 		
+		
  		
 collect_statement returns [CollectDescr d]
 	@init {
@@ -1186,9 +1202,7 @@ constraint[PatternDescr pattern]
 		{
 			top = $pattern.getConstraint();
 		}
-		( options {backtrack=true;}
-		: or_constr[top]
-		)
+		or_constr[top]
 	;	
 	
 or_constr[ConditionalElementDescr base]
@@ -1283,7 +1297,7 @@ field_constraint[ConditionalElementDescr base]
 		    }
 		}
 		(
-			options {backtrack=true;}
+			( options {backtrack=true;}
 			: or_restr_connective[top]
 			{
 				// we must add now as we didn't before
@@ -1291,6 +1305,7 @@ field_constraint[ConditionalElementDescr base]
 				    $base.addDescr( fc );
 				}
 			}
+			)
 		|
 			'->' predicate[$base] 
 		)?

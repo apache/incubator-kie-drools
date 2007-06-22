@@ -382,7 +382,8 @@ public class PackageBuilder {
             //ruleDescr.getLhs().insertDescr( 0, baseDescr );
         }
 
-        RuleBuildContext context = new RuleBuildContext( pkg,
+        RuleBuildContext context = new RuleBuildContext( this.configuration,
+                                                         pkg,
                                                          ruleDescr,
                                                          this.dialects,
                                                          this.dialect );

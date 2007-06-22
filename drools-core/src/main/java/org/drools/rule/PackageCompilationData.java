@@ -33,6 +33,7 @@ import java.util.Map;
 
 import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
+import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Consequence;
@@ -230,6 +231,8 @@ public class PackageCompilationData
             ((Accumulate) invoker).setAccumulator( (Accumulator) clazz.newInstance() );
         } else if ( invoker instanceof Rule ) {
             ((Rule) invoker).setConsequence( (Consequence) clazz.newInstance() );
+        } else if ( invoker instanceof JavaAccumulatorFunctionExecutor ) {
+            ((JavaAccumulatorFunctionExecutor) invoker).setExpression( (ReturnValueExpression) clazz.newInstance() );
         }
     }
 

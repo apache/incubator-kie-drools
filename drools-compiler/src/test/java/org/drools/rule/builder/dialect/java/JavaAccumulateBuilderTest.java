@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.DescrFactory;
 import org.drools.lang.descr.FieldBindingDescr;
@@ -53,7 +54,8 @@ public class JavaAccumulateBuilderTest extends TestCase {
         Dialect java = new JavaDialect(pkgBuilder);
         registry.addDialect( "java", java );
         RuleDescr ruleDescr = new RuleDescr("test rule");
-        RuleBuildContext context = new RuleBuildContext( pkg, ruleDescr, registry, java);
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        RuleBuildContext context = new RuleBuildContext( conf, pkg, ruleDescr, registry, java);
         
         Accumulate accumulate = (Accumulate) builder.build( context, accumDescr );
         

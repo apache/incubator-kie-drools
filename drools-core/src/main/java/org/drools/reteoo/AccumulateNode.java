@@ -223,7 +223,8 @@ public class AccumulateNode extends BetaNode {
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
                 if( this.accumulate.supportsReverse() || context.getType() == PropagationContext.ASSERTION ) {
-                    modifyTuple( tuple,
+                    modifyTuple( true,
+                                 tuple,
                                  handle,
                                  context,
                                  workingMemory );
@@ -262,7 +263,8 @@ public class AccumulateNode extends BetaNode {
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
                 if ( this.accumulate.supportsReverse() ) {
-                    this.modifyTuple( tuple,
+                    this.modifyTuple( false,
+                                      tuple,
                                       handle,
                                       context,
                                       workingMemory );
@@ -278,7 +280,8 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    public void modifyTuple(final ReteTuple leftTuple,
+    public void modifyTuple(final boolean isAssert,
+                            final ReteTuple leftTuple,
                             final InternalFactHandle handle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
@@ -316,14 +319,17 @@ public class AccumulateNode extends BetaNode {
                                         workingMemory );
         } else if( context.getType() == PropagationContext.MODIFICATION ) {
             // modification
-            this.accumulate.reverse( accresult.context,
-                                     leftTuple,
-                                     handle,
-                                     workingMemory );
-            this.accumulate.accumulate( accresult.context,
-                                        leftTuple,
-                                        handle,
-                                        workingMemory );
+            if( isAssert ) {
+                this.accumulate.accumulate( accresult.context,
+                                            leftTuple,
+                                            handle,
+                                            workingMemory );
+            } else {
+                this.accumulate.reverse( accresult.context,
+                                         leftTuple,
+                                         handle,
+                                         workingMemory );
+            }
         } else {
             // retraction
             this.accumulate.reverse( accresult.context,
