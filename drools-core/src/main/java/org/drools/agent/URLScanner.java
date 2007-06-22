@@ -33,7 +33,7 @@ public class URLScanner extends PackageProvider {
     //a record of the last updated URL timestamps
     Map         lastUpdated = new HashMap();
 
-    private File localCacheDir;
+    File        localCacheDir;
 
     void configure(Properties config) {
         List uriList = RuleAgent.list( config.getProperty( RuleAgent.URLS ) );
@@ -70,7 +70,7 @@ public class URLScanner extends PackageProvider {
         return fs;
     }
 
-    private File getLocalCacheFileForURL(File cacheDir, URL u) {
+    static File getLocalCacheFileForURL(File cacheDir, URL u) {
         File f;
         try {
             f = new File( cacheDir,

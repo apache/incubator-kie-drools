@@ -179,8 +179,12 @@ public class RuleAgent {
             timer = new Timer( true );
             timer.schedule( new TimerTask() {
                                 public void run() {
-                                    refreshRuleBase();
-
+                                    try {
+                                        refreshRuleBase();
+                                    } catch (Exception e) {
+                                        //don't want to stop execution here.
+                                        listener.exception( e );
+                                    }
                                 }
                             },
                             interval,
