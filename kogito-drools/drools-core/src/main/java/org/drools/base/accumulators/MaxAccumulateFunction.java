@@ -19,12 +19,12 @@ package org.drools.base.accumulators;
 
 
 /**
- * An implementation of an accumulator capable of calculating average values
+ * An implementation of an accumulator capable of calculating maximum values
  * 
  * @author etirelli
  *
  */
-public class MaxAccumulator implements AccumulateFunction {
+public class MaxAccumulateFunction implements AccumulateFunction {
 
     protected static class MaxData {
         public double max = Double.MIN_VALUE;
@@ -42,7 +42,7 @@ public class MaxAccumulator implements AccumulateFunction {
      */
     public void init(Object context) throws Exception {
         MaxData data = (MaxData) context;
-        data.max = 0;
+        data.max = Double.MIN_VALUE;
     }
 
     /* (non-Javadoc)

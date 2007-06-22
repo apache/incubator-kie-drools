@@ -625,7 +625,7 @@ class MethodWriter
 
     public void visitInsn(final int opcode) {
         if ( this.computeMaxs ) {
-            // updates current and max stack sizes
+            // updates current and min stack sizes
             final int size = this.stackSize + MethodWriter.SIZE[opcode];
             if ( size > this.maxStackSize ) {
                 this.maxStackSize = size;
@@ -646,7 +646,7 @@ class MethodWriter
     public void visitIntInsn(final int opcode,
                              final int operand) {
         if ( this.computeMaxs && opcode != Opcodes.NEWARRAY ) {
-            // updates current and max stack sizes only if opcode == NEWARRAY
+            // updates current and min stack sizes only if opcode == NEWARRAY
             // (stack size variation = 0 for BIPUSH or SIPUSH)
             final int size = this.stackSize + 1;
             if ( size > this.maxStackSize ) {
@@ -667,7 +667,7 @@ class MethodWriter
     public void visitVarInsn(final int opcode,
                              final int var) {
         if ( this.computeMaxs ) {
-            // updates current and max stack sizes
+            // updates current and min stack sizes
             if ( opcode == Opcodes.RET ) {
                 // no stack change, but end of current block (no successor)
                 if ( this.currentBlock != null ) {
@@ -681,7 +681,7 @@ class MethodWriter
                 }
                 this.stackSize = size;
             }
-            // updates max locals
+            // updates min locals
             int n;
             if ( opcode == Opcodes.LLOAD || opcode == Opcodes.DLOAD || opcode == Opcodes.LSTORE || opcode == Opcodes.DSTORE ) {
                 n = var + 2;
@@ -715,7 +715,7 @@ class MethodWriter
     public void visitTypeInsn(final int opcode,
                               final String desc) {
         if ( this.computeMaxs && opcode == Opcodes.NEW ) {
-            // updates current and max stack sizes only if opcode == NEW
+            // updates current and min stack sizes only if opcode == NEW
             // (stack size variation = 0 for ANEWARRAY, CHECKCAST, INSTANCEOF)
             final int size = this.stackSize + 1;
             if ( size > this.maxStackSize ) {
@@ -751,7 +751,7 @@ class MethodWriter
                     size = this.stackSize + (c == 'D' || c == 'J' ? -3 : -2);
                     break;
             }
-            // updates current and max stack sizes
+            // updates current and min stack sizes
             if ( size > this.maxStackSize ) {
                 this.maxStackSize = size;
             }
@@ -796,7 +796,7 @@ class MethodWriter
             } else {
                 size = this.stackSize - (argSize >> 2) + (argSize & 0x03);
             }
-            // updates current and max stack sizes
+            // updates current and min stack sizes
             if ( size > this.maxStackSize ) {
                 this.maxStackSize = size;
             }
@@ -837,7 +837,7 @@ class MethodWriter
                                   label );
                 }
             } else {
-                // updates current stack size (max stack size unchanged because
+                // updates current stack size (min stack size unchanged because
                 // stack size variation always negative in this case)
                 this.stackSize += MethodWriter.SIZE[opcode];
                 if ( this.currentBlock != null ) {
@@ -892,7 +892,7 @@ class MethodWriter
                               label );
             }
             // begins a new current block,
-            // resets the relative current and max stack sizes
+            // resets the relative current and min stack sizes
             this.currentBlock = label;
             this.stackSize = 0;
             this.maxStackSize = 0;
@@ -913,7 +913,7 @@ class MethodWriter
             } else {
                 size = this.stackSize + 1;
             }
-            // updates current and max stack sizes
+            // updates current and min stack sizes
             if ( size > this.maxStackSize ) {
                 this.maxStackSize = size;
             }
@@ -936,7 +936,7 @@ class MethodWriter
     public void visitIincInsn(final int var,
                               final int increment) {
         if ( this.computeMaxs ) {
-            // updates max locals only (no stack change)
+            // updates min locals only (no stack change)
             final int n = var + 1;
             if ( n > this.maxLocals ) {
                 this.maxLocals = n;
@@ -957,7 +957,7 @@ class MethodWriter
                                      final Label dflt,
                                      final Label labels[]) {
         if ( this.computeMaxs ) {
-            // updates current stack size (max stack size unchanged)
+            // updates current stack size (min stack size unchanged)
             --this.stackSize;
             // ends current block (with many new successors)
             if ( this.currentBlock != null ) {
@@ -994,7 +994,7 @@ class MethodWriter
                                       final int keys[],
                                       final Label labels[]) {
         if ( this.computeMaxs ) {
-            // updates current stack size (max stack size unchanged)
+            // updates current stack size (min stack size unchanged)
             --this.stackSize;
             // ends current block (with many new successors)
             if ( this.currentBlock != null ) {
@@ -1031,7 +1031,7 @@ class MethodWriter
     public void visitMultiANewArrayInsn(final String desc,
                                         final int dims) {
         if ( this.computeMaxs ) {
-            // updates current stack size (max stack size unchanged because
+            // updates current stack size (min stack size unchanged because
             // stack size variation always negative or null)
             this.stackSize += 1 - dims;
         }
@@ -1101,11 +1101,11 @@ class MethodWriter
     public void visitMaxs(final int maxStack,
                           final int maxLocals) {
         if ( this.computeMaxs ) {
-            // true (non relative) max stack size
+            // true (non relative) min stack size
             int max = 0;
             /*
              * control flow analysis algorithm: while the block stack is not
-             * empty, pop a block from this stack, update the max stack size,
+             * empty, pop a block from this stack, update the min stack size,
              * compute the true (non relative) begin stack size of the
              * successors of this block, and push these successors onto the
              * stack (unless they have already been pushed onto the stack).
@@ -1118,10 +1118,10 @@ class MethodWriter
                 // pops a block from the stack
                 Label l = stack;
                 stack = stack.next;
-                // computes the true (non relative) max stack size of this block
+                // computes the true (non relative) min stack size of this block
                 final int start = l.beginStackSize;
                 final int blockMax = start + l.maxStackSize;
-                // updates the global max stack size
+                // updates the global min stack size
                 if ( blockMax > max ) {
                     max = blockMax;
                 }

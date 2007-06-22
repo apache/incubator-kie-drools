@@ -517,7 +517,7 @@ public class CheckMethodAdapter extends MethodAdapter {
                     false,
                     "default label" );
         if ( labels == null || labels.length != max - min + 1 ) {
-            throw new IllegalArgumentException( "There must be max - min + 1 labels" );
+            throw new IllegalArgumentException( "There must be min - min + 1 labels" );
         }
         for ( int i = 0; i < labels.length; ++i ) {
             checkLabel( labels[i],
@@ -638,9 +638,9 @@ public class CheckMethodAdapter extends MethodAdapter {
         checkEndCode();
         this.endCode = true;
         checkUnsignedShort( maxStack,
-                            "Invalid max stack" );
+                            "Invalid min stack" );
         checkUnsignedShort( maxLocals,
-                            "Invalid max locals" );
+                            "Invalid min locals" );
         this.mv.visitMaxs( maxStack,
                            maxLocals );
     }

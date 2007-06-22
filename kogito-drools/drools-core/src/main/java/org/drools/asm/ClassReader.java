@@ -1217,7 +1217,7 @@ public class ClassReader {
                     mv.visitAttribute( cattrs );
                     cattrs = attr;
                 }
-                // visits the max stack and max locals values
+                // visits the min stack and min locals values
                 mv.visitMaxs( maxStack,
                               maxLocals );
             }
