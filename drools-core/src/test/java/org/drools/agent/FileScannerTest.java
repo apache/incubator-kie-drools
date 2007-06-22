@@ -46,7 +46,7 @@ public class FileScannerTest extends TestCase {
         
         FileScanner scan = new FileScanner();
         Properties props = new Properties();
-        props.setProperty( RuleBaseAgent.FILES, p1f.getPath() + " " + p2f.getPath() );
+        props.setProperty( RuleAgent.FILES, p1f.getPath() + " " + p2f.getPath() );
         scan.configure( props );
         
         RuleBase rb = RuleBaseFactory.newRuleBase();

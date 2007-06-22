@@ -9,18 +9,18 @@ import org.drools.rule.Package;
 
 import junit.framework.TestCase;
 
-public class RuleBaseAgentTest extends TestCase {
+public class RuleAgentTest extends TestCase {
 
     public void testLists() {
         String s = "\tfoo.bar\n baz.bar\t whee ";
-        List result = RuleBaseAgent.list( s );
+        List result = RuleAgent.list( s );
         assertEquals(3, result.size());
         assertEquals("foo.bar", result.get( 0 ));
         assertEquals("baz.bar", result.get(1));
         assertEquals("whee", result.get(2));
         
         s = null;
-        result = RuleBaseAgent.list( s );
+        result = RuleAgent.list( s );
         assertNotNull(result);
         assertEquals(0, result.size());
     }
@@ -40,7 +40,7 @@ public class RuleBaseAgentTest extends TestCase {
         
         Properties props = new Properties();
         props.setProperty( "file", path );
-        RuleBaseAgent ag = new RuleBaseAgent(props);
+        RuleAgent ag = new RuleAgent(props);
         RuleBase rb = ag.getRuleBase();
         assertNotNull(rb);
         assertEquals(2, rb.getPackages().length);
@@ -48,7 +48,7 @@ public class RuleBaseAgentTest extends TestCase {
         assertFalse(ag.isPolling());
         
         props.setProperty( "poll", "1" );
-        ag = new RuleBaseAgent(props);
+        ag = new RuleAgent(props);
         assertTrue(ag.isPolling());
         
         ag.stopPolling();
@@ -69,7 +69,7 @@ public class RuleBaseAgentTest extends TestCase {
         Properties props = new Properties();
         props.setProperty( "file", path );
         props.setProperty( "poll", "1" );
-        RuleBaseAgent ag = new RuleBaseAgent(props);
+        RuleAgent ag = new RuleAgent(props);
         
         assertTrue(ag.isPolling());
         RuleBase rb = ag.getRuleBase();
@@ -128,7 +128,7 @@ public class RuleBaseAgentTest extends TestCase {
         props.setProperty( "file", path );
         props.setProperty( "poll", "1" );
         props.setProperty( "newInstance", "true" );
-        RuleBaseAgent ag = new RuleBaseAgent(props);
+        RuleAgent ag = new RuleAgent(props);
         assertTrue(ag.isNewInstance());
         assertTrue(ag.isPolling());
         RuleBase rb = ag.getRuleBase();
@@ -159,8 +159,8 @@ public class RuleBaseAgentTest extends TestCase {
         RuleBaseAssemblerTest.writePackage( p1, p1f );
 
         Properties props = new Properties();
-        props.setProperty( RuleBaseAgent.DIRECTORY, dir.getPath() );
-        RuleBaseAgent ag = new RuleBaseAgent(props);
+        props.setProperty( RuleAgent.DIRECTORY, dir.getPath() );
+        RuleAgent ag = new RuleAgent(props);
         
         ag.refreshRuleBase();
         
@@ -171,12 +171,12 @@ public class RuleBaseAgentTest extends TestCase {
     }
     
     public void testLoadSampleConfig() {
-        RuleBaseAgent ag = new RuleBaseAgent();
+        RuleAgent ag = new RuleAgent();
         Properties props = ag.loadFromProperties( "/sample-agent-config.properties" );
-        assertEquals("10", props.getProperty( RuleBaseAgent.POLL_INTERVAL ));
-        assertEquals("/home/packages", props.getProperty( RuleBaseAgent.DIRECTORY ));
-        assertEquals("true", props.getProperty( RuleBaseAgent.NEW_INSTANCE ));
-        assertEqualsIgnoreWhitespace( "/foo/bar.pkg /wee/waa.pkg /wee/waa2.pkg", props.getProperty( RuleBaseAgent.FILES ));
+        assertEquals("10", props.getProperty( RuleAgent.POLL_INTERVAL ));
+        assertEquals("/home/packages", props.getProperty( RuleAgent.DIRECTORY ));
+        assertEquals("true", props.getProperty( RuleAgent.NEW_INSTANCE ));
+        assertEqualsIgnoreWhitespace( "/foo/bar.pkg /wee/waa.pkg /wee/waa2.pkg", props.getProperty( RuleAgent.FILES ));
     }
     
     private void assertEqualsIgnoreWhitespace(final String expected,

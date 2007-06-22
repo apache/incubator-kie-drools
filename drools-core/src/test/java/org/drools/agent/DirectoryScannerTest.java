@@ -26,7 +26,7 @@ public class DirectoryScannerTest extends TestCase {
         
         DirectoryScanner scan = new DirectoryScanner();
         Properties props = new Properties();
-        props.setProperty( RuleBaseAgent.DIRECTORY, dir.getPath() );
+        props.setProperty( RuleAgent.DIRECTORY, dir.getPath() );
                 
         scan.configure( props );
         
