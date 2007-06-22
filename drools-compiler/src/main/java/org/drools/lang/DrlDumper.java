@@ -16,19 +16,17 @@ package org.drools.lang;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
-import org.drools.lang.descr.ForallDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
@@ -37,6 +35,7 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PackageDescrDumper;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.QueryDescr;
@@ -56,16 +55,16 @@ public class DrlDumper extends ReflectiveVisitor
     PackageDescrDumper {
 
     private StringBuffer        drlDump;
-    private static final String eol = System.getProperty( "line.separator" );
-    private String template;
-    private boolean needsBracket = false;
+    private static final String eol          = System.getProperty( "line.separator" );
+    private String              template;
+    private boolean             needsBracket = false;
 
     public synchronized String dump(final PackageDescr packageDescr) {
         this.drlDump = new StringBuffer();
         visitPackageDescr( packageDescr );
         return this.drlDump.toString();
     }
-    
+
     public String getTemplate() {
         return this.template;
     }
@@ -94,7 +93,8 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
         if ( !descr.getRestrictions().isEmpty() ) {
-            this.template = descr.getFieldName() + " " + processFieldConstraint( descr.getRestriction(), false );
+            this.template = descr.getFieldName() + " " + processFieldConstraint( descr.getRestriction(),
+                                                                                 false );
         }
     }
 
@@ -142,21 +142,21 @@ public class DrlDumper extends ReflectiveVisitor
         tmpstr += this.template.substring( 2 );
         this.template = tmpstr + ");";
     }
-    
+
     //TODO FM: FIXME
     public void visitAccumulateDescr() {
-        
+
     }
-    
+
     public void visitForallDescr(final ForallDescr descr) {
         this.template = new String();
-        this.template += "\t\tforall ( "; 
+        this.template += "\t\tforall ( ";
         this.template += DrlDumper.eol;
-        this.template += processDescrList( descr.getDescrs() ); 
+        this.template += processDescrList( descr.getDescrs() );
         this.template += "\t\t)";
         this.template += DrlDumper.eol;
     }
-    
+
     public void visitFieldBindingDescr(final FieldBindingDescr descr) {
         this.template = new String();
         this.template = descr.getIdentifier() + " : " + descr.getFieldName();
@@ -193,7 +193,8 @@ public class DrlDumper extends ReflectiveVisitor
     }
 
     public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
-        String tmp = this.processFieldConstraint( descr, true );
+        String tmp = this.processFieldConstraint( descr,
+                                                  true );
         this.template = tmp;
     }
 
@@ -289,7 +290,8 @@ public class DrlDumper extends ReflectiveVisitor
             visit( iterator.next() );
             descrString += this.template;
             if ( descrString.endsWith( DrlDumper.eol ) ) {
-                descrString = descrString.substring( 0, descrString.indexOf( DrlDumper.eol ) );
+                descrString = descrString.substring( 0,
+                                                     descrString.indexOf( DrlDumper.eol ) );
             }
             descrString += " || ";
         }
@@ -328,29 +330,30 @@ public class DrlDumper extends ReflectiveVisitor
                                       descrString.length() );
     }
 
-    private String processFieldConstraint(final RestrictionConnectiveDescr restriction, boolean addBrackets ) {
+    private String processFieldConstraint(final RestrictionConnectiveDescr restriction,
+                                          boolean addBrackets) {
         String descrString = "";
         String connective = "";
         boolean bracketTmp = this.needsBracket;
         this.needsBracket = restriction.getRestrictions().size() > 1;
-        
+
         if ( restriction.getConnective() == RestrictionConnectiveDescr.OR ) {
             connective = " || ";
         } else {
             connective = " && ";
         }
-        if( addBrackets && bracketTmp ) {
+        if ( addBrackets && bracketTmp ) {
             descrString += "( ";
         }
         for ( final Iterator it = restriction.getRestrictions().iterator(); it.hasNext(); ) {
             final Object temp = it.next();
             visit( temp );
             descrString += this.template;
-            if( it.hasNext() ) {
+            if ( it.hasNext() ) {
                 descrString += connective;
             }
         }
-        if( addBrackets && bracketTmp ) {
+        if ( addBrackets && bracketTmp ) {
             descrString += " )";
         }
         this.needsBracket = bracketTmp;
@@ -360,15 +363,15 @@ public class DrlDumper extends ReflectiveVisitor
     private String processDescrList(final List descr) {
         String descrString = "";
         for ( final Iterator ite = descr.iterator(); ite.hasNext(); ) {
-            
-            Object obj =  ite.next();
-            
+
+            Object obj = ite.next();
+
             visit( obj );
             descrString += this.template;
-            
-            if (obj.getClass().equals( PatternDescr.class ) || obj.getClass().equals( CollectDescr.class ) ) {
+
+            if ( obj.getClass().equals( PatternDescr.class ) || obj.getClass().equals( CollectDescr.class ) ) {
                 descrString += DrlDumper.eol;
-            } else if (ite.hasNext()) {
+            } else if ( ite.hasNext() ) {
                 descrString += " && ";
             }
         }
