@@ -18,7 +18,7 @@ public class DirectoryScanner extends PackageProvider {
     private File        dir;
 
     void configure(Properties config) {
-        String d = config.getProperty( RuleBaseAgent.DIRECTORY );
+        String d = config.getProperty( RuleAgent.DIRECTORY );
 
         //now check to see whats in them dir...
         dir = new File( d );

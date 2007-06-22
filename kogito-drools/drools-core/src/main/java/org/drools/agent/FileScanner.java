@@ -35,7 +35,7 @@ public class FileScanner extends PackageProvider {
      * This takes a list of paths and files (not directories).
      */
     void configure(Properties config) {
-        List paths = RuleBaseAgent.list( config.getProperty( RuleBaseAgent.FILES ) );
+        List paths = RuleAgent.list( config.getProperty( RuleAgent.FILES ) );
         files = new File[paths.size()];
         for ( int i = 0; i < paths.size(); i++ ) {
             File file = new File( (String) paths.get( i ) );
