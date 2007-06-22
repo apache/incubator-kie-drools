@@ -2333,6 +2333,8 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "new Integer(x)",
                                       accum.getResultCode() );
 
+        assertFalse( accum.isExternalFunction() );
+        
         final PatternDescr pattern = (PatternDescr) accum.getSourcePattern();
         assertEquals( "Person",
                       pattern.getObjectType() );
@@ -3225,6 +3227,37 @@ public class RuleParserTest extends TestCase {
                                       accum.getReverseCode() );
         assertEqualsIgnoreWhitespace( "new Integer(x)",
                                       accum.getResultCode() );
+        assertFalse( accum.isExternalFunction() );
+
+        final PatternDescr pattern = (PatternDescr) accum.getSourcePattern();
+        assertEquals( "Person",
+                      pattern.getObjectType() );
+    }
+
+    public void testAccumulateExternalFunction() throws Exception {
+        final DRLParser parser = parseResource( "accumulateExternalFunction.drl" );
+        parser.compilation_unit();
+
+        if ( parser.hasErrors() ) {
+            System.err.println( parser.getErrorMessages() );
+        }
+
+        assertFalse( parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        final PackageDescr pack = parser.getPackageDescr();
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        final AccumulateDescr accum = (AccumulateDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEqualsIgnoreWhitespace( "$age",
+                                      accum.getExpression() );
+        assertEqualsIgnoreWhitespace( "average",
+                                      accum.getFunctionIdentifier() );
+        assertTrue( accum.isExternalFunction() );
 
         final PatternDescr pattern = (PatternDescr) accum.getSourcePattern();
         assertEquals( "Person",

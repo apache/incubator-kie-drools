@@ -1,0 +1,6 @@
+rule "AccumulateReverseParserTest"
+when
+     Number() from accumulate( Person( $age : age > 21 ),
+                               average( $age ) );
+then
+end

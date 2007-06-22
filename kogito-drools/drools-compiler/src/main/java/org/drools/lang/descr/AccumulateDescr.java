@@ -36,6 +36,9 @@ public class AccumulateDescr extends BaseDescr
     private String            resultCode;
     private String[]          declarations;
     private String            className;
+    private boolean           externalFunction = false;
+    private String            functionIdentifier;
+    private String            expression;
 
     public int getLine() {
         return this.sourcePattern.getLine();
@@ -120,6 +123,30 @@ public class AccumulateDescr extends BaseDescr
 
     public void setReverseCode(String reverseCode) {
         this.reverseCode = reverseCode;
+    }
+
+    public boolean isExternalFunction() {
+        return externalFunction;
+    }
+
+    public void setExternalFunction(boolean externalFunction) {
+        this.externalFunction = externalFunction;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+    }
+
+    public String getFunctionIdentifier() {
+        return functionIdentifier;
+    }
+
+    public void setFunctionIdentifier(String functionIdentifier) {
+        this.functionIdentifier = functionIdentifier;
     }
 
 }

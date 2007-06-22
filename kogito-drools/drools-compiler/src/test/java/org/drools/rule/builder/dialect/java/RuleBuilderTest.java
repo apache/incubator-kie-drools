@@ -91,7 +91,8 @@ public class RuleBuilderTest extends TestCase {
         DialectRegistry registry = new DialectRegistry();
         registry.addDialect( "java", dialect );
         
-        RuleBuildContext context = new RuleBuildContext(pkg, ruleDescr, registry, dialect);
+        final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        RuleBuildContext context = new RuleBuildContext(conf, pkg, ruleDescr, registry, dialect);
       
         builder.build( context );
 

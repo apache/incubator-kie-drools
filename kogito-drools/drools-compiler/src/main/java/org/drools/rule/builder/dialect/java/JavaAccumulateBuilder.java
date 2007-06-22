@@ -16,6 +16,7 @@
 
 package org.drools.rule.builder.dialect.java;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -24,9 +25,13 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import org.drools.base.ClassObjectType;
+import org.drools.base.accumulators.AccumulateFunction;
+import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
+import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Accumulate;
 import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
@@ -37,6 +42,9 @@ import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.spi.Accumulator;
+import org.mvel.MVEL;
 
 /**
  * A builder for the java dialect accumulate version
@@ -73,106 +81,160 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
         final Pattern resultPattern = patternBuilder.build( context,
                                                             accumDescr.getResultPattern() );
 
-        final String className = "Accumulate" + context.getNextId();
-        accumDescr.setClassName( className );
+        Accumulate accumulate = null;
 
-        final JavaAnalysisResult analysis1 = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
-                                                                                                     accumDescr,
-                                                                                                     accumDescr.getInitCode() );
-        final Dialect.AnalysisResult analysis2 = context.getDialect().analyzeBlock( context,
-                                                                                    accumDescr,
-                                                                                    accumDescr.getActionCode() );
-        final Dialect.AnalysisResult analysis3 = context.getDialect().analyzeExpression( context,
-                                                                                         accumDescr,
-                                                                                         accumDescr.getResultCode() );
+        if ( accumDescr.isExternalFunction() ) {
+            // if it is an external function, build a method for it
 
-        final List requiredDeclarations = new ArrayList( analysis1.getBoundIdentifiers()[0] );
-        requiredDeclarations.addAll( analysis2.getBoundIdentifiers()[0] );
-        requiredDeclarations.addAll( analysis3.getBoundIdentifiers()[0] );
+            final JavaAnalysisResult analysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
+                                                                                                        accumDescr,
+                                                                                                        accumDescr.getExpression() );
 
-        final List requiredGlobals = new ArrayList( analysis1.getBoundIdentifiers()[1] );
-        requiredGlobals.addAll( analysis2.getBoundIdentifiers()[1] );
-        requiredGlobals.addAll( analysis3.getBoundIdentifiers()[1] );
+            final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
-        final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
-        for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
-            declarations[i] = context.getDeclarationResolver().getDeclaration( (String) requiredDeclarations.get( i ) );
-        }
-        final Declaration[] sourceDeclArr = (Declaration[]) sourcePattern.getOuterDeclarations().values().toArray( new Declaration[0] );
+            final List tupleDeclarations = new ArrayList();
+            for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
+                tupleDeclarations.add( context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) ) );
+            }
 
-        final String[] globals = (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] );
+            final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
+            final String[] requiredGlobals = (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] );
+            final Declaration[] sourceDeclArr = (Declaration[]) sourcePattern.getOuterDeclarations().values().toArray( new Declaration[0] );
 
-        final Map map = createVariableContext( className,
-                                               null,
-                                               context,
-                                               declarations,
-                                               null,
-                                               globals );
+            final String className = "accumulateExpression" + context.getNextId();
 
-        map.put( "className",
-                 accumDescr.getClassName() );
-        map.put( "innerDeclarations",
-                 sourceDeclArr );
+            final Map map = createVariableContext( className,
+                                                   (String) accumDescr.getExpression(),
+                                                   context,
+                                                   previousDeclarations,
+                                                   sourceDeclArr,
+                                                   requiredGlobals );
 
-        final String initCode = this.fixInitCode( analysis1,
-                                                  accumDescr.getInitCode() );
-        final String actionCode = accumDescr.getActionCode();
-        final String resultCode = accumDescr.getResultCode();
 
-        String[] attributesTypes = new String[analysis1.getLocalVariablesMap().size()];
-        String[] attributes = new String[analysis1.getLocalVariablesMap().size()];
-        int index = 0;
-        for ( Iterator it = analysis1.getLocalVariablesMap().entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) it.next();
-            attributes[index] = (String) entry.getKey();
-            attributesTypes[index] = ((JavaLocalDeclarationDescr) entry.getValue()).getType();
-        }
+            AccumulateFunction function = context.getConfiguration().getAccumulatorFunction( accumDescr.getFunctionIdentifier() );
 
-        map.put( "attributes",
-                 attributes );
-        map.put( "attributesTypes",
-                 attributesTypes );
+            JavaAccumulatorFunctionExecutor accumulator = new JavaAccumulatorFunctionExecutor( function );
+            
+            accumulate = new Accumulate( sourcePattern,
+                                         resultPattern,
+                                         previousDeclarations,
+                                         sourceDeclArr,
+                                         accumulator );
 
-        map.put( "initCode",
-                 initCode );
-        map.put( "actionCode",
-                 actionCode );
-        map.put( "resultCode",
-                 resultCode );
-        if( accumDescr.getReverseCode() == null ) {
-            map.put( "reverseCode", "" );
-            map.put( "supportsReverse", "false" );
+            generatTemplates( "returnValueMethod",
+                              "returnValueInvoker",
+                              context,
+                              className,
+                              map,
+                              accumulator,
+                              accumDescr );
         } else {
-            map.put( "reverseCode", accumDescr.getReverseCode() );
-            map.put( "supportsReverse", "true" );
+            // ELSE, if it is not an external function, build it using the regular java builder
+            final String className = "Accumulate" + context.getNextId();
+            accumDescr.setClassName( className );
+
+            final JavaAnalysisResult analysis1 = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
+                                                                                                         accumDescr,
+                                                                                                         accumDescr.getInitCode() );
+            final Dialect.AnalysisResult analysis2 = context.getDialect().analyzeBlock( context,
+                                                                                        accumDescr,
+                                                                                        accumDescr.getActionCode() );
+            final Dialect.AnalysisResult analysis3 = context.getDialect().analyzeExpression( context,
+                                                                                             accumDescr,
+                                                                                             accumDescr.getResultCode() );
+
+            final List requiredDeclarations = new ArrayList( analysis1.getBoundIdentifiers()[0] );
+            requiredDeclarations.addAll( analysis2.getBoundIdentifiers()[0] );
+            requiredDeclarations.addAll( analysis3.getBoundIdentifiers()[0] );
+
+            final List requiredGlobals = new ArrayList( analysis1.getBoundIdentifiers()[1] );
+            requiredGlobals.addAll( analysis2.getBoundIdentifiers()[1] );
+            requiredGlobals.addAll( analysis3.getBoundIdentifiers()[1] );
+
+            final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
+            for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
+                declarations[i] = context.getDeclarationResolver().getDeclaration( (String) requiredDeclarations.get( i ) );
+            }
+            final Declaration[] sourceDeclArr = (Declaration[]) sourcePattern.getOuterDeclarations().values().toArray( new Declaration[0] );
+
+            final String[] globals = (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] );
+
+            final Map map = createVariableContext( className,
+                                                   null,
+                                                   context,
+                                                   declarations,
+                                                   null,
+                                                   globals );
+
+            map.put( "className",
+                     accumDescr.getClassName() );
+            map.put( "innerDeclarations",
+                     sourceDeclArr );
+
+            final String initCode = this.fixInitCode( analysis1,
+                                                      accumDescr.getInitCode() );
+            final String actionCode = accumDescr.getActionCode();
+            final String resultCode = accumDescr.getResultCode();
+
+            String[] attributesTypes = new String[analysis1.getLocalVariablesMap().size()];
+            String[] attributes = new String[analysis1.getLocalVariablesMap().size()];
+            int index = 0;
+            for ( Iterator it = analysis1.getLocalVariablesMap().entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) it.next();
+                attributes[index] = (String) entry.getKey();
+                attributesTypes[index] = ((JavaLocalDeclarationDescr) entry.getValue()).getType();
+            }
+
+            map.put( "attributes",
+                     attributes );
+            map.put( "attributesTypes",
+                     attributesTypes );
+
+            map.put( "initCode",
+                     initCode );
+            map.put( "actionCode",
+                     actionCode );
+            map.put( "resultCode",
+                     resultCode );
+            if ( accumDescr.getReverseCode() == null ) {
+                map.put( "reverseCode",
+                         "" );
+                map.put( "supportsReverse",
+                         "false" );
+            } else {
+                map.put( "reverseCode",
+                         accumDescr.getReverseCode() );
+                map.put( "supportsReverse",
+                         "true" );
+            }
+
+            String resultType = null;
+            // TODO: Need to change this... 
+            if ( resultPattern.getObjectType() instanceof ClassObjectType ) {
+                resultType = ((ClassObjectType) resultPattern.getObjectType()).getClassType().getName();
+            } else {
+                resultType = resultPattern.getObjectType().getValueType().getClassType().getName();
+            }
+
+            map.put( "resultType",
+                     resultType );
+
+            map.put( "hashCode",
+                     new Integer( actionCode.hashCode() ) );
+
+            accumulate = new Accumulate( sourcePattern,
+                                         resultPattern,
+                                         declarations,
+                                         sourceDeclArr );
+
+            generatTemplates( "accumulateInnerClass",
+                              "accumulateInvoker",
+                              context,
+                              className,
+                              map,
+                              accumulate,
+                              accumDescr );
         }
-
-        String resultType = null;
-        // TODO: Need to change this... 
-        if ( resultPattern.getObjectType() instanceof ClassObjectType ) {
-            resultType = ((ClassObjectType) resultPattern.getObjectType()).getClassType().getName();
-        } else {
-            resultType = resultPattern.getObjectType().getValueType().getClassType().getName();
-        }
-
-        map.put( "resultType",
-                 resultType );
-
-        map.put( "hashCode",
-                 new Integer( actionCode.hashCode() ) );
-
-        final Accumulate accumulate = new Accumulate( sourcePattern,
-                                                      resultPattern,
-                                                      declarations,
-                                                      sourceDeclArr );
-
-        generatTemplates( "accumulateInnerClass",
-                          "accumulateInvoker",
-                          context,
-                          className,
-                          map,
-                          accumulate,
-                          accumDescr );
 
         return accumulate;
     }

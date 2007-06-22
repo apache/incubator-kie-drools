@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.rule.builder.Dialect;
 import org.drools.util.ChainedProperties;
 
@@ -42,10 +43,12 @@ import org.drools.util.ChainedProperties;
  * system property "drools.compiler.lnglevel". Valid values are 1.4, 1.5 and 1.6.
  */
 public class PackageBuilderConfiguration {
-    public static final int      ECLIPSE         = 0;
-    public static final int      JANINO          = 1;
+    public static final int      ECLIPSE                    = 0;
+    public static final int      JANINO                     = 1;
 
-    public static final String[] LANGUAGE_LEVELS = new String[]{"1.4", "1.5", "1.6"};
+    public static final String[] LANGUAGE_LEVELS            = new String[]{"1.4", "1.5", "1.6"};
+
+    private static final String  ACCUMULATE_FUNCTION_PREFIX = "drools.accumulate.function.";
 
     private Map                  dialects;
 
@@ -58,6 +61,8 @@ public class PackageBuilderConfiguration {
     private String               languageLevel;
 
     private ChainedProperties    chainedProperties;
+
+    private Map                  accumulatorFunctions;
 
     /**
      * Programmatic properties file, added with lease precedence
@@ -109,6 +114,8 @@ public class PackageBuilderConfiguration {
         this.chainedProperties.mapStartsWith( this.dialects,
                                               "drools.dialect" );
         setDefaultDialect( (String) this.dialects.remove( "drools.dialect.default" ) );
+
+        buildAccumulateFunctionsMap();
     }
 
     public int getCompiler() {
@@ -141,9 +148,9 @@ public class PackageBuilderConfiguration {
             String dialectClass = (String) entry.getValue();
             try {
                 Class cls = classLoader.loadClass( dialectClass );
-                Constructor cons = cls.getConstructor( new Class[] { PackageBuilder.class } );
+                Constructor cons = cls.getConstructor( new Class[]{PackageBuilder.class} );
                 registry.addDialect( dialectName,
-                                     (Dialect) cons.newInstance( new Object[] { packageBuilder } ) );
+                                     (Dialect) cons.newInstance( new Object[]{packageBuilder} ) );
             } catch ( Exception e ) {
                 throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + "'" );
             }
@@ -233,6 +240,50 @@ public class PackageBuilderConfiguration {
         }
 
         return level;
+    }
+
+    private void buildAccumulateFunctionsMap() {
+        this.accumulatorFunctions = new HashMap();
+        Map temp = new HashMap();
+        this.chainedProperties.mapStartsWith( temp,
+                                              ACCUMULATE_FUNCTION_PREFIX );
+        for( Iterator it = temp.entrySet().iterator(); it.hasNext(); ) {
+            Map.Entry entry = (Map.Entry) it.next();
+            String identifier = ((String) entry.getKey()).trim().substring( ACCUMULATE_FUNCTION_PREFIX.length() );
+            this.accumulatorFunctions.put( identifier, entry.getValue() );
+        }
+    }
+
+    public void addAccumulatorFunction(String identifier,
+                                       String className) {
+        this.accumulatorFunctions.put( identifier,
+                                       className );
+    }
+
+    public void addAccumulatorFunction(String identifier,
+                                       Class clazz) {
+        this.accumulatorFunctions.put( identifier,
+                                       clazz.getName() );
+    }
+
+    public AccumulateFunction getAccumulatorFunction(String identifier) {
+        String className = (String) this.accumulatorFunctions.get( identifier );
+        if ( className == null ) {
+            throw new RuntimeDroolsException( "No accumulator function found for identifier: " + identifier );
+        }
+        try {
+            Class clazz = this.classLoader.loadClass( className );
+            return (AccumulateFunction) clazz.newInstance();
+        } catch ( ClassNotFoundException e ) {
+            throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Class " + className + " not found",
+                                              e );
+        } catch ( InstantiationException e ) {
+            throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Class " + className + " not found",
+                                              e );
+        } catch ( IllegalAccessException e ) {
+            throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Class " + className + " not found",
+                                              e );
+        }
     }
 
 }

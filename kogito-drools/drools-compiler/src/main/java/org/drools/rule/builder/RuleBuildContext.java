@@ -26,6 +26,7 @@ import java.util.Stack;
 
 import org.drools.base.evaluators.DateFactory;
 import org.drools.compiler.DialectRegistry;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -42,53 +43,58 @@ import org.drools.spi.DeclarationScopeResolver;
 public class RuleBuildContext {
 
     // current package
-    private Package                  pkg;
+    private Package                     pkg;
+
+    // configuration
+    private PackageBuilderConfiguration configuration;
 
     // current rule
-    private Rule                     rule;
+    private Rule                        rule;
 
     // a stack for the rule building used
     // for declarations resolution
-    private Stack                    buildStack;
+    private Stack                       buildStack;
 
     // current Rule descriptor
-    private RuleDescr                ruleDescr;
+    private RuleDescr                   ruleDescr;
 
     // available declarationResolver 
-    private DeclarationScopeResolver declarationResolver;
+    private DeclarationScopeResolver    declarationResolver;
 
     // a simple counter for patterns
-    private int                      patternId = -1;
+    private int                         patternId = -1;
 
     // errors found when building the current context
-    private List                     errors;
+    private List                        errors;
 
     // list of generated methods
-    private List                     methods;
+    private List                        methods;
 
     // map<String invokerClassName, String invokerCode> of generated invokers
-    private Map                      invokers;
+    private Map                         invokers;
 
     // map<String invokerClassName, ConditionalElement ce> of generated invoker lookups
-    private Map                      invokerLookups;
+    private Map                         invokerLookups;
 
     // map<String invokerClassName, BaseDescr descr> of descriptor lookups
-    private Map                      descrLookups;
+    private Map                         descrLookups;
 
     // a simple counter for generated names
-    private int                      counter;
+    private int                         counter;
 
-    private DialectRegistry          dialectRegistry;
+    private DialectRegistry             dialectRegistry;
 
-    private Dialect                  dialect;
+    private Dialect                     dialect;
 
     /**
      * Default constructor
      */
-    public RuleBuildContext(final Package pkg,
+    public RuleBuildContext(final PackageBuilderConfiguration configuration,
+                            final Package pkg,
                             final RuleDescr ruleDescr,
                             final DialectRegistry dialectRegistry,
                             final Dialect defaultDialect) {
+        this.configuration = configuration;
         this.pkg = pkg;
 
         this.methods = new ArrayList();
@@ -321,6 +327,10 @@ public class RuleBuildContext {
                 rule.setDialect( attributeDescr.getValue() );
             }
         }
+    }
+
+    public PackageBuilderConfiguration getConfiguration() {
+        return configuration;
     }
 
 }
