@@ -24,6 +24,7 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -57,6 +58,8 @@ class ExistsHandler extends BaseAbstractHandler
             this.validPeers.add( ExistsDescr.class );
             this.validPeers.add( EvalDescr.class );
             this.validPeers.add( PatternDescr.class );
+            this.validPeers.add( ForallDescr.class );
+            
 
             this.allowNesting = true;
         }

@@ -500,7 +500,7 @@ public class XmlPackageReader extends DefaultHandler {
             }
         }
         if ( !validPeer ) {
-            throw new SAXParseException( "<" + localName + "> is after an invalid element",
+            throw new SAXParseException( "<" + localName + "> is after an invalid element: " + Handler.class.getName(),
                                          getLocator() );
         }
 
