@@ -41,7 +41,7 @@ import org.drools.RuntimeDroolsException;
  * 
  * @author Michael Neale
  */
-public class RuleBaseAgent {
+public class RuleAgent {
 
     /**
      * Following are property keys to be used in the property
@@ -50,8 +50,11 @@ public class RuleBaseAgent {
     public static final String NEW_INSTANCE      = "newInstance";
     public static final String FILES             = "file";
     public static final String DIRECTORY         = "dir";
-    //public static final String URIS = "uri";
+    public static final String URLS = "url";
     public static final String POLL_INTERVAL     = "poll";
+    
+    //this is needed for cold starting when BRMS is down (ie only for URL).
+    public static final String LOCAL_URL_CACHE = "localCacheDir";
 
     /**
      * Here is where we have a map of providers to the key that appears on the configuration.
@@ -85,13 +88,17 @@ public class RuleBaseAgent {
      */
     ArrayList                  providers;
 
+    private AgentEventListener listener = getDefaultListener();
+    
     /**
      * Properties configured to load up packages into a rulebase (and monitor them
      * for changes).
      */
-    public RuleBaseAgent(Properties config) {
+    public RuleAgent(Properties config) {
         init( config );
     }
+
+
 
     private void init(Properties config) {
 
@@ -119,7 +126,7 @@ public class RuleBaseAgent {
     /**
      * Pass in the name and full path to a config file that is on the classpath.
      */
-    public RuleBaseAgent(String propsFileName) {
+    public RuleAgent(String propsFileName) {
         init( loadFromProperties( propsFileName ) );
     }
 
@@ -224,7 +231,7 @@ public class RuleBaseAgent {
         return this.ruleBase;
     }
 
-    RuleBaseAgent() {
+    RuleAgent() {
     }
 
     /**
@@ -243,4 +250,23 @@ public class RuleBaseAgent {
         return this.timer != null;
     }
 
+    private AgentEventListener getDefaultListener() {
+
+        return new AgentEventListener() {
+
+            public void exception(Exception e) {
+                e.printStackTrace();
+            }
+
+            public void info(String message) {
+                System.err.println("INFO: " + message);                
+            }
+
+            public void warning(String message) {
+                System.err.println("WARNING: " + message);                
+            }
+            
+        };
+    }
+    
 }
