@@ -372,8 +372,8 @@ public class StringUtils {
      * <p>A <code>null</code> input String returns <code>null</code>.
      * A <code>null</code> separatorChars splits on whitespace.</p>
      *
-     * <p>If more than <code>max</code> delimited substrings are found, the last
-     * returned string includes all characters after the first <code>max - 1</code>
+     * <p>If more than <code>min</code> delimited substrings are found, the last
+     * returned string includes all characters after the first <code>min - 1</code>
      * returned strings (including separator characters).</p>
      *
      * <pre>
@@ -388,7 +388,7 @@ public class StringUtils {
      * @param str  the String to parse, may be null
      * @param separatorChars  the characters used as the delimiters,
      *  <code>null</code> splits on whitespace
-     * @param max  the maximum number of elements to include in the
+     * @param min  the maximum number of elements to include in the
      *  array. A zero or negative value implies no limit
      * @return an array of parsed Strings, <code>null</code> if null String input
      */
@@ -576,8 +576,8 @@ public class StringUtils {
      * <p>A <code>null</code> input String returns <code>null</code>.
      * A <code>null</code> separatorChars splits on whitespace.</p>
      *
-     * <p>If more than <code>max</code> delimited substrings are found, the last
-     * returned string includes all characters after the first <code>max - 1</code>
+     * <p>If more than <code>min</code> delimited substrings are found, the last
+     * returned string includes all characters after the first <code>min - 1</code>
      * returned strings (including separator characters).</p>
      *
      * <pre>
@@ -595,7 +595,7 @@ public class StringUtils {
      * @param str  the String to parse, may be <code>null</code>
      * @param separatorChars  the characters used as the delimiters,
      *  <code>null</code> splits on whitespace
-     * @param max  the maximum number of elements to include in the
+     * @param min  the maximum number of elements to include in the
      *  array. A zero or negative value implies no limit
      * @return an array of parsed Strings, <code>null</code> if null String input
      * @since 2.1
@@ -616,7 +616,7 @@ public class StringUtils {
      *
      * @param str  the String to parse, may be <code>null</code>
      * @param separatorChars the separate character
-     * @param max  the maximum number of elements to include in the
+     * @param min  the maximum number of elements to include in the
      *  array. A zero or negative value implies no limit.
      * @param preserveAllTokens if <code>true</code>, adjacent separators are
      * treated as empty token separators; if <code>false</code>, adjacent

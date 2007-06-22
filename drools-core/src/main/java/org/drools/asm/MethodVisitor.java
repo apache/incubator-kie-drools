@@ -248,7 +248,7 @@ public interface MethodVisitor {
      * Visits a TABLESWITCH instruction.
      * 
      * @param min the minimum key value.
-     * @param max the maximum key value.
+     * @param min the maximum key value.
      * @param dflt beginning of the default handler block.
      * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is
      *        the beginning of the handler block for the <tt>min + i</tt> key.
@@ -281,7 +281,7 @@ public interface MethodVisitor {
 
     // -------------------------------------------------------------------------
     // Exceptions table entries, debug information,
-    // max stack size and max locals
+    // min stack size and min locals
     // -------------------------------------------------------------------------
 
     /**

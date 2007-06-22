@@ -19,15 +19,14 @@ package org.drools.base.accumulators;
 
 
 /**
- * An implementation of an accumulator capable of calculating average values
+ * An implementation of an accumulator capable of calculating sum of values
  * 
  * @author etirelli
  *
  */
-public class AverageAccumulator implements AccumulateFunction {
+public class SumAccumulateFunction implements AccumulateFunction {
 
-    protected static class AverageData {
-        public int    count = 0;
+    protected static class SumData {
         public double total = 0;
     }
 
@@ -35,15 +34,14 @@ public class AverageAccumulator implements AccumulateFunction {
      * @see org.drools.base.accumulators.AccumulateFunction#createContext()
      */
     public Object createContext() {
-        return new AverageData();
+        return new SumData();
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
     public void init(Object context) throws Exception {
-        AverageData data = (AverageData) context;
-        data.count = 0;
+        SumData data = (SumData) context;
         data.total = 0;
     }
 
@@ -52,8 +50,7 @@ public class AverageAccumulator implements AccumulateFunction {
      */
     public void accumulate(Object context,
                            Object value) {
-        AverageData data = (AverageData) context;
-        data.count++;
+        SumData data = (SumData) context;
         data.total += ((Number) value).doubleValue();
     }
 
@@ -62,8 +59,7 @@ public class AverageAccumulator implements AccumulateFunction {
      */
     public void reverse(Object context,
                         Object value) throws Exception {
-        AverageData data = (AverageData) context;
-        data.count--;
+        SumData data = (SumData) context;
         data.total -= ((Number) value).doubleValue();
     }
 
@@ -71,8 +67,8 @@ public class AverageAccumulator implements AccumulateFunction {
      * @see org.drools.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
     public Object getResult(Object context) throws Exception {
-        AverageData data = (AverageData) context;
-        return new Double( data.count == 0 ? 0 : data.total / data.count );
+        SumData data = (SumData) context;
+        return new Double( data.total );
     }
 
     /* (non-Javadoc)
