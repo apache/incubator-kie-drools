@@ -19,6 +19,7 @@ package org.drools.lang;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
@@ -27,6 +28,7 @@ import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
+import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
@@ -142,11 +144,17 @@ public class DrlDumper extends ReflectiveVisitor
         tmpstr += this.template.substring( 2 );
         this.template = tmpstr + ");";
     }
-
+    
     //TODO FM: FIXME
-    public void visitAccumulateDescr() {
-
+    public void visitAccumulateDescr(final AccumulateDescr descr) {
+        System.out.println( "Accumulate DRL" );
     }
+    
+    //TODO FM: FIXME
+    public void visitFromDescr(final FromDescr descr) {
+        System.out.println( "From DRL" );
+    }
+
 
     public void visitForallDescr(final ForallDescr descr) {
         this.template = new String();
