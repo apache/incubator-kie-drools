@@ -1,6 +1,6 @@
 package org.drools;
 
-global java.util.List results
+global java.util.List results;
 
 rule "test nested CEs"	
 	when

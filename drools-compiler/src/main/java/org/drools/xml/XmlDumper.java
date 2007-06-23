@@ -124,7 +124,6 @@ public class XmlDumper extends ReflectiveVisitor
         this.template += "</pattern>";
     }
 
-    //TODO FM: FIXME
     public void visitAccumulateDescr(final AccumulateDescr descr) {
         String tmpstr = new String();
         visit( descr.getResultPattern() );
@@ -141,6 +140,7 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     //TODO FM: FIXME
+    
     public void visitFromDescr(final FromDescr descr) {
 
         String tmpstr = new String();
@@ -154,7 +154,6 @@ public class XmlDumper extends ReflectiveVisitor
         this.template += "</pattern>";
     }
 
-    //TODO FM: FIXME
     public void visitForallDescr(final ForallDescr descr) {
         this.template = "<forall>" + processDescrList( descr.getDescrs() ) + "</forall>";
     }

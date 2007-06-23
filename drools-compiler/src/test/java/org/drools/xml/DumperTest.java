@@ -52,24 +52,24 @@ public class DumperTest extends TestCase {
         DumperTestHelper.DrlFile( "../integrationtests/test_Collect.drl" );
     }
     
-    //FIXME: FM Correct Drl Dumper 
-//    public void testRoundTripAccumulateDrl() throws Exception {
-//        DumperTestHelper.DrlFile( "../integrationtests/test_Accumulate.drl" );
-//    }
-//    
-//    public void testRoundTripExistsDrl() throws Exception {
-//        DumperTestHelper.DrlFile( "../integrationtests/test_exists.drl" );
-//    }
-//
-//    public void testRoundTripForallDrl() throws Exception {
-//        DumperTestHelper.DrlFile( "../integrationtests/test_Forall.drl" );
-//    }
-//
-//    public void testRoundTripFromDrl() throws Exception {
-//        DumperTestHelper.DrlFile( "../integrationtests/test_From.drl" );
-//    }
-//
-//    public void testRoundTripSimpleRuleDrl() throws Exception {
-//        DumperTestHelper.DrlFile( "../lang/simple_rule.drl" );
-//    }
+    public void testRoundTripAccumulateDrl() throws Exception {
+        DumperTestHelper.DrlFile( "../integrationtests/test_Accumulate.drl" );
+    }
+    
+    public void testRoundTripExistsDrl() throws Exception {
+        DumperTestHelper.DrlFile( "../integrationtests/test_exists.drl" );
+    }
+
+    public void testRoundTripForallDrl() throws Exception {
+        DumperTestHelper.DrlFile( "../integrationtests/test_Forall.drl" );
+    }
+
+    //FM: FIXME
+    public void FIXME_testRoundTripFromDrl() throws Exception {
+        DumperTestHelper.DrlFile( "test_from.drl" );
+    }
+
+    public void testRoundTripSimpleRuleDrl() throws Exception {
+        DumperTestHelper.DrlFile( "test_simplerule.drl" );
+    }
 }
