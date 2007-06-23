@@ -111,7 +111,7 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
                                                    requiredGlobals );
 
 
-            AccumulateFunction function = context.getConfiguration().getAccumulatorFunction( accumDescr.getFunctionIdentifier() );
+            AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
 
             JavaAccumulatorFunctionExecutor accumulator = new JavaAccumulatorFunctionExecutor( function );
             
