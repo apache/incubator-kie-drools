@@ -23,4 +23,6 @@ package org.drools.lang.descr;
  */
 public class RestrictionDescr extends BaseDescr {
 
+    private static final long serialVersionUID = 3979438504432163004L;
+
 }

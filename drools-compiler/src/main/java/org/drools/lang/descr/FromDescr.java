@@ -6,6 +6,8 @@ import java.util.List;
 public class FromDescr extends BaseDescr
     implements
     ConditionalElementDescr {
+
+    private static final long serialVersionUID = -7321451713158332284L;
     private PatternDescr             pattern;
     private DeclarativeInvokerDescr dataSource;
 

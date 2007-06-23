@@ -5,6 +5,7 @@ package org.drools.lang.descr;
  */
 public class FunctionCallDescr extends DeclarativeInvokerDescr {
 
+    private static final long serialVersionUID = 2578223387059771844L;
     private String name;
     private String arguments;
 

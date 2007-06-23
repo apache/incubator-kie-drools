@@ -65,7 +65,7 @@ public class DumperTest extends TestCase {
     }
 
     //FM: FIXME
-    public void FIXME_testRoundTripFromDrl() throws Exception {
+    public void testRoundTripFromDrl() throws Exception {
         DumperTestHelper.DrlFile( "test_from.drl" );
     }
 
