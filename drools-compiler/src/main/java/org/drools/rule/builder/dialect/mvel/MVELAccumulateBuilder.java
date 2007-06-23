@@ -101,7 +101,7 @@ public class MVELAccumulateBuilder
             final Serializable expression = MVEL.compileExpression( (String) accumDescr.getExpression(),
                                                                     ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
 
-            AccumulateFunction function = context.getConfiguration().getAccumulatorFunction( accumDescr.getFunctionIdentifier() );
+            AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
             
             accumulator = new MVELAccumulatorFunctionExecutor( factory,
                                                                expression,

@@ -18,6 +18,7 @@ package org.drools.compiler;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class PackageBuilderConfiguration {
 
     private ChainedProperties    chainedProperties;
 
-    private Map                  accumulatorFunctions;
+    private Map                  accumulateFunctions;
 
     /**
      * Programmatic properties file, added with lease precedence
@@ -243,31 +244,36 @@ public class PackageBuilderConfiguration {
     }
 
     private void buildAccumulateFunctionsMap() {
-        this.accumulatorFunctions = new HashMap();
+        this.accumulateFunctions = new HashMap();
         Map temp = new HashMap();
         this.chainedProperties.mapStartsWith( temp,
                                               ACCUMULATE_FUNCTION_PREFIX );
-        for( Iterator it = temp.entrySet().iterator(); it.hasNext(); ) {
+        for ( Iterator it = temp.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             String identifier = ((String) entry.getKey()).trim().substring( ACCUMULATE_FUNCTION_PREFIX.length() );
-            this.accumulatorFunctions.put( identifier, entry.getValue() );
+            this.accumulateFunctions.put( identifier,
+                                           entry.getValue() );
         }
     }
+    
+    public Map getAccumulateFunctionsMap() {
+        return Collections.unmodifiableMap( this.accumulateFunctions );
+    }
 
-    public void addAccumulatorFunction(String identifier,
-                                       String className) {
-        this.accumulatorFunctions.put( identifier,
+    public void addAccumulateFunction(String identifier,
+                                      String className) {
+        this.accumulateFunctions.put( identifier,
                                        className );
     }
 
-    public void addAccumulatorFunction(String identifier,
-                                       Class clazz) {
-        this.accumulatorFunctions.put( identifier,
+    public void addAccumulateFunction(String identifier,
+                                      Class clazz) {
+        this.accumulateFunctions.put( identifier,
                                        clazz.getName() );
     }
 
-    public AccumulateFunction getAccumulatorFunction(String identifier) {
-        String className = (String) this.accumulatorFunctions.get( identifier );
+    public AccumulateFunction getAccumulateFunction(String identifier) {
+        String className = (String) this.accumulateFunctions.get( identifier );
         if ( className == null ) {
             throw new RuntimeDroolsException( "No accumulator function found for identifier: " + identifier );
         }
