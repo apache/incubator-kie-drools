@@ -17,9 +17,7 @@ package org.drools.xml;
  */
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.ListIterator;
 
 import org.drools.lang.descr.AccumulateDescr;
@@ -29,7 +27,6 @@ import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ForallDescr;
-import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -115,13 +112,9 @@ class PatternHandler extends BaseAbstractHandler
             final PatternProcessorCeDescr parentDescr = (PatternProcessorCeDescr) parent;
             parentDescr.setSourcePattern( patternDescr );
         } else {
+            if ( config.getChild( "from" ) != null ) return null;
 
             final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
-            final List conditionalDescriptors = parentDescr.getDescrs();
-            for ( final Iterator iterator = conditionalDescriptors.iterator(); iterator.hasNext(); ) {
-                final Object obj = iterator.next();
-                if ( obj instanceof PatternProcessorCeDescr || FromDescr.class.getName().equals( obj.getClass().getName() ) ) return null;
-            }
             parentDescr.addDescr( patternDescr );
         }
         return null;

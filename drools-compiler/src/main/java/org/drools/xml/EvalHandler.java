@@ -58,7 +58,6 @@ class EvalHandler extends BaseAbstractHandler
             this.validPeers.add( EvalDescr.class );
             this.validPeers.add( PatternDescr.class );
             this.validPeers.add( ForallDescr.class );
-            
 
             this.allowNesting = true;
         }

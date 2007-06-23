@@ -35,7 +35,7 @@ public class ForallHandler extends BaseAbstractHandler
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
-            
+
             this.validPeers.add( AndDescr.class );
             this.validPeers.add( OrDescr.class );
             this.validPeers.add( NotDescr.class );

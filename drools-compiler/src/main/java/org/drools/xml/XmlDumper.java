@@ -20,10 +20,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.ForallDescr;
+import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -123,8 +125,33 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     //TODO FM: FIXME
-    public void visitAccumulateDescr() {
-        System.out.println( "Collect Descr" );
+    public void visitAccumulateDescr(final AccumulateDescr descr) {
+        String tmpstr = new String();
+        visit( descr.getResultPattern() );
+        this.template = this.template.substring( 0,
+                                                 this.template.indexOf( "</pattern>" ) );
+        tmpstr += this.template + " <from> <accumulate> ";
+        visit( descr.getSourcePattern() );
+        tmpstr += this.template;
+
+        tmpstr += "<init>" + descr.getInitCode() + "</init><action>" + descr.getActionCode() + "</action><result>" + descr.getResultCode() + "</result>";
+
+        this.template = tmpstr + " </accumulate> </from> ";
+        this.template += "</pattern>";
+    }
+
+    //TODO FM: FIXME
+    public void visitFromDescr(final FromDescr descr) {
+
+        String tmpstr = new String();
+        visitPatternDescr( descr.getReturnedPattern() );
+        this.template = this.template.substring( 0,
+                                                 this.template.indexOf( "</pattern>" ) );
+        tmpstr += this.template + " <from> <expression> ";
+        tmpstr += descr.getDataSource().getText().trim();
+
+        this.template = tmpstr + " </expression> </from> ";
+        this.template += "</pattern>";
     }
 
     //TODO FM: FIXME

@@ -84,6 +84,7 @@ public class ExpressionHandler extends BaseAbstractHandler
 
         try {
             final DeclarativeInvokerDescr declarativeInvoker = parser.from_source( fromSource );
+            declarativeInvoker.setText( expression );
             fromSource.setDataSource( declarativeInvoker );
 
         } catch ( final RecognitionException e ) {
