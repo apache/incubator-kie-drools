@@ -130,7 +130,7 @@ public class DrlDumper extends ReflectiveVisitor
     public void visitExistsDescr(final ExistsDescr descr) {
         this.template = new String();
         if ( !descr.getDescrs().isEmpty() ) {
-            this.template = "\t\texists " + processDescrList( descr.getDescrs() );
+            this.template = "\t\texists " + processDescrList( descr.getDescrs() ) + ";";
         } else {
             this.template = "";
         }
@@ -145,22 +145,38 @@ public class DrlDumper extends ReflectiveVisitor
         this.template = tmpstr + ");";
     }
     
-    //TODO FM: FIXME
     public void visitAccumulateDescr(final AccumulateDescr descr) {
-        System.out.println( "Accumulate DRL" );
+        String tmpstr = new String();
+        visitPatternDescr( descr.getResultPattern() );
+        tmpstr += this.template + " from accumulate (";
+        visitPatternDescr( descr.getSourcePattern() );
+        tmpstr += this.template.substring( 2 );
+        tmpstr += ", init(" + descr.getInitCode() + "), "; 
+        tmpstr += "action(" + descr.getActionCode() + "), "; 
+        tmpstr += "result(" + descr.getResultCode() + ")"; 
+        this.template = tmpstr + ");";
     }
     
-    //TODO FM: FIXME
     public void visitFromDescr(final FromDescr descr) {
-        System.out.println( "From DRL" );
+        visitPatternDescr( descr.getReturnedPattern() );
+        this.template += " from (";
+        this.template += descr.getDataSource().getText().trim();
+        this.template += ")";
     }
 
 
     public void visitForallDescr(final ForallDescr descr) {
-        this.template = new String();
-        this.template += "\t\tforall ( ";
-        this.template += DrlDumper.eol;
-        this.template += processDescrList( descr.getDescrs() );
+        String localstr = new String();
+        localstr += "\t\tforall ( ";
+        localstr += DrlDumper.eol;
+        
+        for ( final Iterator ite = descr.getDescrs().iterator(); ite.hasNext(); ) {
+            Object obj = ite.next();
+            visit( obj );
+            localstr += this.template + ",";
+        }
+        
+        this.template = localstr.substring( 0, localstr.lastIndexOf( "," ) );
         this.template += "\t\t)";
         this.template += DrlDumper.eol;
     }
