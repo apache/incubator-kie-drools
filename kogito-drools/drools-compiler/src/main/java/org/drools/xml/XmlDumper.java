@@ -146,10 +146,9 @@ public class XmlDumper extends ReflectiveVisitor
         String tmpstr = new String();
         visitPatternDescr( descr.getReturnedPattern() );
         this.template = this.template.substring( 0,
-                                                 this.template.indexOf( "</pattern>" ) );
+        this.template.indexOf( "</pattern>" ) );
         tmpstr += this.template + " <from> <expression> ";
-        tmpstr += descr.getDataSource().getText().trim();
-
+        tmpstr += descr.getDataSource();
         this.template = tmpstr + " </expression> </from> ";
         this.template += "</pattern>";
     }

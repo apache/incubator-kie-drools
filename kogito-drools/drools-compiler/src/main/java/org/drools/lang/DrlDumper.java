@@ -159,9 +159,8 @@ public class DrlDumper extends ReflectiveVisitor
     
     public void visitFromDescr(final FromDescr descr) {
         visitPatternDescr( descr.getReturnedPattern() );
-        this.template += " from (";
-        this.template += descr.getDataSource().getText().trim();
-        this.template += ")";
+        this.template += " from ";
+        this.template += descr.getDataSource();
     }
 
 
