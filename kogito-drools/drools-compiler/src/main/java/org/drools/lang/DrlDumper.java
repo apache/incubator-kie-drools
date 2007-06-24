@@ -144,38 +144,42 @@ public class DrlDumper extends ReflectiveVisitor
         tmpstr += this.template.substring( 2 );
         this.template = tmpstr + ");";
     }
-    
+
     public void visitAccumulateDescr(final AccumulateDescr descr) {
         String tmpstr = new String();
         visitPatternDescr( descr.getResultPattern() );
         tmpstr += this.template + " from accumulate (";
         visitPatternDescr( descr.getSourcePattern() );
         tmpstr += this.template.substring( 2 );
-        tmpstr += ", init(" + descr.getInitCode() + "), "; 
-        tmpstr += "action(" + descr.getActionCode() + "), "; 
-        tmpstr += "result(" + descr.getResultCode() + ")"; 
+
+        if ( descr.isExternalFunction() ) tmpstr += "," + descr.getFunctionIdentifier() + "(" + descr.getExpression() + ")";
+        else {
+            tmpstr += ", init(" + descr.getInitCode() + "), ";
+            tmpstr += "action(" + descr.getActionCode() + "), ";
+            tmpstr += "result(" + descr.getResultCode() + ")";
+        }
         this.template = tmpstr + ");";
     }
-    
+
     public void visitFromDescr(final FromDescr descr) {
         visitPatternDescr( descr.getReturnedPattern() );
         this.template += " from ";
         this.template += descr.getDataSource();
     }
 
-
     public void visitForallDescr(final ForallDescr descr) {
         String localstr = new String();
         localstr += "\t\tforall ( ";
         localstr += DrlDumper.eol;
-        
+
         for ( final Iterator ite = descr.getDescrs().iterator(); ite.hasNext(); ) {
             Object obj = ite.next();
             visit( obj );
             localstr += this.template + ",";
         }
-        
-        this.template = localstr.substring( 0, localstr.lastIndexOf( "," ) );
+
+        this.template = localstr.substring( 0,
+                                            localstr.lastIndexOf( "," ) );
         this.template += "\t\t)";
         this.template += DrlDumper.eol;
     }

@@ -207,8 +207,11 @@ public class XmlPackageReader extends DefaultHandler {
         this.handlers.put( "reverse",
                            new AccumulateHelperHandler( this ) );
 
+        this.handlers.put( "external-function",
+                           new AccumulateHelperHandler( this ) );
+        
         this.handlers.put( "expression",
-                           new ExpressionHandler( this ) );
+                           new ExpressionHandler( this ) );        
 
         initEntityResolver();
     }

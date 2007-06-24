@@ -132,17 +132,17 @@ public class XmlDumper extends ReflectiveVisitor
         tmpstr += this.template + " <from> <accumulate> ";
         visit( descr.getSourcePattern() );
         tmpstr += this.template;
-
-        tmpstr += "<init>" + descr.getInitCode() + "</init><action>" + descr.getActionCode() + "</action><result>" + descr.getResultCode() + "</result>";
+        
+        if ( descr.isExternalFunction() )
+            tmpstr += "<external-function evaluator=\"" + descr.getFunctionIdentifier() + "\" expression=\"" + descr.getExpression()  + "\"/>";
+        else 
+            tmpstr += "<init>" + descr.getInitCode() + "</init><action>" + descr.getActionCode() + "</action><result>" + descr.getResultCode() + "</result>";
 
         this.template = tmpstr + " </accumulate> </from> ";
         this.template += "</pattern>";
     }
 
-    //TODO FM: FIXME
-    
     public void visitFromDescr(final FromDescr descr) {
-
         String tmpstr = new String();
         visitPatternDescr( descr.getReturnedPattern() );
         this.template = this.template.substring( 0,
