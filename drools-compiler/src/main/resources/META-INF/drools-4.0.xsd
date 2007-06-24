@@ -259,15 +259,22 @@
     <xs:group name="accumulate">
      <xs:sequence>
         <xs:element ref="drools:pattern"/>
-        <xs:element name="init" type="xs:string"/>
-        <xs:element name="action" type="xs:string"/>
-        <xs:element name="result" type="xs:string"/>
+        <xs:choice>
+            <xs:sequence>
+                <xs:element name="init" type="xs:string"/>
+                <xs:element name="action" type="xs:string"/>
+                <xs:element name="result" type="xs:string"/>
+            </xs:sequence>
+            <xs:element ref="drools:external-function"/>
+        </xs:choice>
      </xs:sequence>
     </xs:group>
 
     <xs:element name="accumulate">
         <xs:complexType>
-            <xs:group ref="drools:accumulate"/>
+            <xs:choice maxOccurs="1" minOccurs="1">
+                <xs:group ref="drools:accumulate"/>
+            </xs:choice>
         </xs:complexType>
     </xs:element>
 
@@ -325,7 +332,15 @@
 		</xs:complexType>
 	</xs:element>
 
-	<xs:element name="variable-restriction">
+
+	<xs:element name="external-function">
+		<xs:complexType>
+			<xs:attribute name="evaluator" type="xs:string" use="required"/>
+			<xs:attribute name="expression" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+    <xs:element name="variable-restriction">
 		<xs:complexType>
 			<xs:attribute name="evaluator" type="xs:string" use="required"/>
 			<xs:attribute name="identifier" type="xs:string" use="required"/>

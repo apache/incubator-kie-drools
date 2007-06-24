@@ -34,10 +34,6 @@ public class DumperTest extends TestCase {
         DumperTestHelper.XmlFile( "test_ParseFrom.xml" );
     }
 
-    public void testRoundTripSimpleRuleXml() throws Exception {
-        DumperTestHelper.XmlFile( "test_ParseAccumulate.xml" );
-    }
-
     public void testRoundTripComplexRuleXml() throws Exception {
         DumperTestHelper.XmlFile( "test_RoundTrip.xml" );
     }
@@ -53,7 +49,7 @@ public class DumperTest extends TestCase {
     }
     
     public void testRoundTripAccumulateDrl() throws Exception {
-        DumperTestHelper.DrlFile( "../integrationtests/test_Accumulate.drl" );
+        DumperTestHelper.DrlFile( "test_accumulateall.drl" );
     }
     
     public void testRoundTripExistsDrl() throws Exception {
@@ -64,7 +60,6 @@ public class DumperTest extends TestCase {
         DumperTestHelper.DrlFile( "../integrationtests/test_Forall.drl" );
     }
 
-    //FM: FIXME
     public void testRoundTripFromDrl() throws Exception {
         DumperTestHelper.DrlFile( "test_from.drl" );
     }

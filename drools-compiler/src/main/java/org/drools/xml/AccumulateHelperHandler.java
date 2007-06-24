@@ -47,7 +47,7 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
 
         final String expression = config.getText();
 
-        if ( expression == null || expression.trim().equals( "" ) ) {
+        if ( expression == null) {
             throw new SAXParseException( "<" + localName + "> must have some content",
                                          this.xmlPackageReader.getLocator() );
         }
@@ -63,8 +63,10 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
         else if ( localName.equals( "action" ) ) accumulate.setActionCode( expression.trim() );
         else if ( localName.equals( "result" ) ) accumulate.setResultCode( expression.trim() );
         else if ( localName.equals( "reverse" ) ) accumulate.setReverseCode( expression.trim() );
-        else {
-            //TODO FM: support for external functions
+        else if ( localName.equals( "external-function" ) ) {
+            accumulate.setExternalFunction( true );
+            accumulate.setFunctionIdentifier( config.getAttribute( "evaluator" ) );
+            accumulate.setExpression( config.getAttribute( "expression" ) );
         }
 
         return null;
