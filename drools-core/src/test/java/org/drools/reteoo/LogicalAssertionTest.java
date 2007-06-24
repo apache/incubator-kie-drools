@@ -47,6 +47,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
@@ -148,6 +149,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
@@ -238,6 +240,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
@@ -375,6 +378,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
@@ -462,6 +466,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
@@ -560,6 +565,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
@@ -688,6 +694,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
@@ -788,6 +795,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();

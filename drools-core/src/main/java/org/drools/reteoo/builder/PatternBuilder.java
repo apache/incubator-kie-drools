@@ -88,6 +88,7 @@ public class PatternBuilder
                                                                   new ObjectTypeNode( context.getNextId(),
                                                                                       pattern.getObjectType(),
                                                                                       context.getRuleBase().getRete(),
+                                                                                      context.getRuleBase().getConfiguration().isObjectTypeMemory(),
                                                                                       context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() ) ) );
 
         final List betaConstraints = new ArrayList();
@@ -114,11 +115,15 @@ public class PatternBuilder
                     isAlphaConstraint = false;
                 }
             }
+                        
+            
             if ( isAlphaConstraint ) {
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                           new AlphaNode( context.getNextId(),
                                                                                          (AlphaNodeFieldConstraint) constraint,
-                                                                                         context.getObjectSource() ) ) );
+                                                                                         context.getObjectSource(),
+                                                                                         context.getRuleBase().getConfiguration().isAlphaMemory(),
+                                                                                         context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() )  ) );
             } else {
                 utils.checkUnboundDeclarations( context,
                                                 constraint.getRequiredDeclarations() );

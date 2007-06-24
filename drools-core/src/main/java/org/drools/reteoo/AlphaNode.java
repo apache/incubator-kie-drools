@@ -58,25 +58,6 @@ public class AlphaNode extends ObjectSource
     /**
      * Construct an <code>AlphaNode</code> with a unique id using the provided
      * <code>FieldConstraint</code> and the given <code>ObjectSource</code>.
-     * Nodes created in this way will have a local memory by default. 
-     * 
-     * @param id
-     * @param constraint
-     * @param objectSource
-     */
-    public AlphaNode(final int id,
-                     final AlphaNodeFieldConstraint constraint,
-                     final ObjectSource objectSource) {
-        this( id,
-              constraint,
-              objectSource,
-              true,
-              3 );
-    }
-
-    /**
-     * Construct an <code>AlphaNode</code> with a unique id using the provided
-     * <code>FieldConstraint</code> and the given <code>ObjectSource</code>.
      * Set the boolean flag to true if the node is supposed to have local 
      * memory, or false otherwise. Memory is optional for <code>AlphaNode</code>s 
      * and is only of benefic when adding additional <code>Rule</code>s at runtime. 

@@ -45,7 +45,9 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    null,
-                                                   null );
+                                                   null,
+                                                   true,
+                                                   3);
 
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
 
@@ -245,7 +247,9 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final AlphaNode alphaNode = new AlphaNode( 2,
                                                    constraint,
-                                                   source );
+                                                   source,
+                                                   true,
+                                                   3 );
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
 
