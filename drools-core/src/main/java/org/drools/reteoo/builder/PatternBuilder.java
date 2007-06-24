@@ -118,9 +118,7 @@ public class PatternBuilder
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                           new AlphaNode( context.getNextId(),
                                                                                          (AlphaNodeFieldConstraint) constraint,
-                                                                                         context.getObjectSource(),
-                                                                                         context.getRuleBase().getConfiguration().isAlphaMemory(),
-                                                                                         context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold()) ) );
+                                                                                         context.getObjectSource() ) ) );
             } else {
                 utils.checkUnboundDeclarations( context,
                                                 constraint.getRequiredDeclarations() );
