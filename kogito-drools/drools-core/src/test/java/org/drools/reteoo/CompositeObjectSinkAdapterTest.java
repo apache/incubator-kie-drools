@@ -52,7 +52,9 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         final AlphaNode al = new AlphaNode( 0,
                                       new PredicateConstraint( null,
                                                                null ),
-                                      null );
+                                      null,
+                                      true,
+                                      3  );
         ad.addObjectSink( al );
 
         assertEquals( 1,
@@ -77,7 +79,9 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                                                        new ObjectFieldImpl( "stilton" ) );
         final AlphaNode al = new AlphaNode( 0,
                                       lit,
-                                      new MockObjectSource( 0 ) );
+                                      new MockObjectSource( 0 ),
+                                      true,
+                                      3  );
 
         ad.addObjectSink( al );
 
@@ -102,7 +106,9 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                                                        new ObjectFieldImpl( "stilton" ) );
         final AlphaNode al = new AlphaNode( 0,
                                       lit,
-                                      new MockObjectSource( 0 ) );
+                                      new MockObjectSource( 0 ),
+                                      true,
+                                      3  );
 
         ad.addObjectSink( al );
 
@@ -118,7 +124,9 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                                                         new ObjectFieldImpl( "cheddar" ) );
         final AlphaNode al2 = new AlphaNode( 1,
                                        lit2,
-                                       new MockObjectSource( 0 ) );
+                                       new MockObjectSource( 0 ),
+                                       true,
+                                       3  );
 
         ad.addObjectSink( al2 );
 
@@ -158,7 +166,9 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                                                        new ObjectFieldImpl( "stilton" ) );
         final AlphaNode al = new AlphaNode( 0,
                                       lit,
-                                      new MockObjectSource( 0 ) );
+                                      new MockObjectSource( 0 ),
+                                      true,
+                                      3  );
 
         ad.addObjectSink( al );
 
@@ -174,7 +184,9 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                                                         new ObjectFieldImpl( "cheddar" ) );
         final AlphaNode al2 = new AlphaNode( 1,
                                        lit2,
-                                       new MockObjectSource( 1 ) );
+                                       new MockObjectSource( 1 ),
+                                       true,
+                                       3  );
 
         ad.addObjectSink( al2 );
 
@@ -187,7 +199,9 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                                                         new ObjectFieldImpl( "stinky" ) );
         final AlphaNode al3 = new AlphaNode( 1,
                                        lit3,
-                                       new MockObjectSource( 2 ) );
+                                       new MockObjectSource( 2 ),
+                                       true,
+                                       3  );
         ad.addObjectSink( al3 );
 
         //this should now be nicely hashed.

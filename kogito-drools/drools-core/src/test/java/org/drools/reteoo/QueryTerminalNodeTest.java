@@ -50,6 +50,7 @@ public class QueryTerminalNodeTest extends TestCase {
         final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( 1,
                                                                        queryObjectType,
                                                                        rete,
+                                                                       true,
                                                                        3 );
         queryObjectTypeNode.attach();
 
@@ -66,7 +67,9 @@ public class QueryTerminalNodeTest extends TestCase {
 
         AlphaNode alphaNode = new AlphaNode( 2,
                                              constraint,
-                                             queryObjectTypeNode );
+                                             queryObjectTypeNode,
+                                             true,
+                                             3  );
         alphaNode.attach();
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 3,
@@ -77,6 +80,7 @@ public class QueryTerminalNodeTest extends TestCase {
         final ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( 4,
                                                                         cheeseObjectType,
                                                                         rete,
+                                                                        true,
                                                                         3 );
         cheeseObjectTypeNode.attach();
 
@@ -92,7 +96,9 @@ public class QueryTerminalNodeTest extends TestCase {
 
         alphaNode = new AlphaNode( 5,
                                    constraint,
-                                   cheeseObjectTypeNode );
+                                   cheeseObjectTypeNode,
+                                   true,
+                                   3  );
         alphaNode.attach();
 
         final JoinNode joinNode = new JoinNode( 6,

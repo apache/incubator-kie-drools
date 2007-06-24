@@ -76,6 +76,7 @@ public class RuleBaseConfiguration
     private boolean             removeIdentities;
     private boolean             shareAlphaNodes;
     private boolean             shareBetaNodes;
+    private boolean             objectTypeMemory;
     private boolean             alphaMemory;
     private int                 alphaNodeHashingThreshold;
     private int                 compositeKeyDepth;
@@ -112,6 +113,9 @@ public class RuleBaseConfiguration
 
         setRemoveIdentities( Boolean.valueOf( this.chainedProperties.getProperty( "drools.removeIdentities",
                                                                                   "false" ) ).booleanValue() );
+
+        setObjectTypeMemory( Boolean.valueOf( this.chainedProperties.getProperty( "drools.objectTypeMemory",
+                                                                                  "true" ) ).booleanValue() );
 
         setAlphaMemory( Boolean.valueOf( this.chainedProperties.getProperty( "drools.alphaMemory",
                                                                              "false" ) ).booleanValue() );
@@ -187,6 +191,15 @@ public class RuleBaseConfiguration
     public void setRemoveIdentities(final boolean removeIdentities) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.removeIdentities = removeIdentities;
+    }
+
+    public boolean isObjectTypeMemory() {
+        return this.objectTypeMemory;
+    }
+
+    public void setObjectTypeMemory(final boolean objectTypeMemory) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.objectTypeMemory = objectTypeMemory;
     }
 
     public boolean isAlphaMemory() {
@@ -429,11 +442,11 @@ public class RuleBaseConfiguration
         if ( excludes == null || "".equals( excludes.trim() ) ) {
             return;
         }
-        
+
         if ( this.shadowProxyExcludes == null ) {
             this.shadowProxyExcludes = new HashMap();
         }
-        
+
         String[] items = excludes.split( " " );
         for ( int i = 0; i < items.length; i++ ) {
             String qualifiedNamespace = items[i].substring( 0,
@@ -449,7 +462,7 @@ public class RuleBaseConfiguration
                     List list = new ArrayList();
                     list.add( name );
                     this.shadowProxyExcludes.put( qualifiedNamespace,
-                                                  list );                    
+                                                  list );
                 }
             } else if ( name.equals( STAR ) ) {
                 // if its a STAR now add it anyway, we don't care if it was a STAR or a List before
@@ -464,12 +477,12 @@ public class RuleBaseConfiguration
             }
         }
     }
-    
+
     public boolean isShadowed(String className) {
         if ( this.shadowProxyExcludes == null ) {
             return true;
         }
-        
+
         String qualifiedNamespace = className.substring( 0,
                                                          className.lastIndexOf( '.' ) ).trim();
         String name = className.substring( className.lastIndexOf( '.' ) + 1 ).trim();
@@ -479,12 +492,10 @@ public class RuleBaseConfiguration
         } else if ( STAR.equals( object ) ) {
             return false;
         } else {
-            List list = ( List ) object;
+            List list = (List) object;
             return !list.contains( name );
         }
-        
-        
-        
+
     }
 
 }

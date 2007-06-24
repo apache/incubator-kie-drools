@@ -55,12 +55,14 @@ public class ReteTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( Object.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
 
         final ObjectTypeNode stringTypeNode = new ObjectTypeNode( 2,
                                                                   new ClassObjectType( String.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         stringTypeNode.attach();
 
@@ -91,6 +93,7 @@ public class ReteTest extends DroolsTestCase {
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( List.class ),
                                                             rete,
+                                                            true,
                                                             3 );
         objectTypeNode.attach();
         MockObjectSink sink = new MockObjectSink();
@@ -99,6 +102,7 @@ public class ReteTest extends DroolsTestCase {
         objectTypeNode = new ObjectTypeNode( 1,
                                              new ClassObjectType( Collection.class ),
                                              rete,
+                                             true,
                                              3 );
         objectTypeNode.attach();
         sink = new MockObjectSink();
@@ -107,6 +111,7 @@ public class ReteTest extends DroolsTestCase {
         objectTypeNode = new ObjectTypeNode( 1,
                                              new ClassObjectType( ArrayList.class ),
                                              rete,
+                                             true,
                                              3 );
         objectTypeNode.attach();
         sink = new MockObjectSink();
@@ -157,6 +162,7 @@ public class ReteTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( List.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink1 = new MockObjectSink();
@@ -210,6 +216,7 @@ public class ReteTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( List.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink1 = new MockObjectSink();
@@ -267,6 +274,7 @@ public class ReteTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( Cheese.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink1 = new MockObjectSink();
@@ -305,6 +313,7 @@ public class ReteTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( Cheese.class ),
                                                                   rete,
+                                                                  true,
                                                                   3 );
         objectTypeNode.attach();
         final MockObjectSink sink1 = new MockObjectSink();

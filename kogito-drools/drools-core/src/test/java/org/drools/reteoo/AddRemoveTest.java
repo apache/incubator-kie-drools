@@ -33,6 +33,7 @@ public class AddRemoveTest extends DroolsTestCase {
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( Object.class ),
                                                                   rete,
+                                                                  true,
                                                                   1 );
         objectTypeNode.attach();
 
