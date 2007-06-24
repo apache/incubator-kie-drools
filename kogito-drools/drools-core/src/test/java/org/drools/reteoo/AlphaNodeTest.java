@@ -416,7 +416,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       memory.size() );
 
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
-                                                            "cheese" );
+                                                            new Cheese( "brie", 10 ) );
 
         // object should NOT retract as it doesn't exist
         alphaNode.retractObject( f1,
@@ -424,7 +424,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                  workingMemory );
 
         // without memory, it will always propagate a retract
-        assertLength( 1,
+        assertLength( 0,
                       sink.getRetracted() );
         assertEquals( 0,
                       memory.size() );
@@ -436,11 +436,11 @@ public class AlphaNodeTest extends DroolsTestCase {
                                  context,
                                  workingMemory );
 
-        assertLength( 2,
+        assertLength( 1,
                       sink.getRetracted() );
         assertEquals( 0,
                       memory.size() );
-        final Object[] list = (Object[]) sink.getRetracted().get( 1 );
+        final Object[] list = (Object[]) sink.getRetracted().get( 0 );
         assertSame( f0,
                     list[0] );
 

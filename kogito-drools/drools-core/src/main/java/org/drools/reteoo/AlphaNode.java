@@ -138,6 +138,9 @@ public class AlphaNode extends ObjectSource
         if ( hasMemory() ) {
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             propagate = memory.remove( handle );
+        } else {
+            propagate = this.constraint.isAllowed( handle.getObject(),
+                                                   workingMemory );
         }
         if ( propagate ) {
             this.sink.propagateRetractObject( handle,
