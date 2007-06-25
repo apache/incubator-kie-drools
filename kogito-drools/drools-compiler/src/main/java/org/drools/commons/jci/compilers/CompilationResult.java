@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-package org.apache.commons.jci.compilers;
+package org.drools.commons.jci.compilers;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.apache.commons.jci.problems.CompilationProblem;
+
+import org.drools.commons.jci.problems.CompilationProblem;
 
 /**
  * A CompilationResult represents the result of a compilation.

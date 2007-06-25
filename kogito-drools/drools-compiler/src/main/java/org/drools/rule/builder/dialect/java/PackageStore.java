@@ -18,7 +18,7 @@ package org.drools.rule.builder.dialect.java;
 
 import java.util.List;
 
-import org.apache.commons.jci.stores.ResourceStore;
+import org.drools.commons.jci.stores.ResourceStore;
 import org.drools.rule.PackageCompilationData;
 
 public class PackageStore

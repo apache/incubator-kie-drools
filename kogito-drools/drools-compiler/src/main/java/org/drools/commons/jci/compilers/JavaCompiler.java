@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.apache.commons.jci.compilers;
+package org.drools.commons.jci.compilers;
 
-import org.apache.commons.jci.problems.CompilationProblemHandler;
-import org.apache.commons.jci.readers.ResourceReader;
-import org.apache.commons.jci.stores.ResourceStore;
+import org.drools.commons.jci.problems.CompilationProblemHandler;
+import org.drools.commons.jci.readers.ResourceReader;
+import org.drools.commons.jci.stores.ResourceStore;
 
 
 /**

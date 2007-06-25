@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.commons.jci.readers;
+package org.drools.commons.jci.readers;
 
 import java.util.Map;
 import java.util.HashMap;

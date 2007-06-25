@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.commons.jci.problems;
+package org.drools.commons.jci.problems;
 
 /**
  * An abstract definition of a compilation problem

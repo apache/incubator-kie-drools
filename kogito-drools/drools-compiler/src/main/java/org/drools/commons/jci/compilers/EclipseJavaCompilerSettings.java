@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.commons.jci.compilers;
+package org.drools.commons.jci.compilers;
 
 import java.util.HashMap;
 import java.util.Map;

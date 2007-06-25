@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.jci.compilers;
+package org.drools.commons.jci.compilers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,9 +25,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.commons.jci.problems.CompilationProblem;
-import org.apache.commons.jci.readers.ResourceReader;
-import org.apache.commons.jci.stores.ResourceStore;
+import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.commons.jci.readers.ResourceReader;
+import org.drools.commons.jci.stores.ResourceStore;
 import org.drools.util.ClassUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.ClassFile;
@@ -119,7 +119,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         }
     }
 
-    public org.apache.commons.jci.compilers.CompilationResult compile(final String[] pSourceFiles,
+    public org.drools.commons.jci.compilers.CompilationResult compile(final String[] pSourceFiles,
                                                                       final ResourceReader pReader,
                                                                       final ResourceStore pStore,
                                                                       final ClassLoader pClassLoader,
@@ -184,7 +184,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         if ( problems.size() > 0 ) {
             final CompilationProblem[] result = new CompilationProblem[problems.size()];
             problems.toArray( result );
-            return new org.apache.commons.jci.compilers.CompilationResult( result );
+            return new org.drools.commons.jci.compilers.CompilationResult( result );
         }
 
         final IErrorHandlingPolicy policy = DefaultErrorHandlingPolicies.proceedWithAllProblems();
@@ -373,7 +373,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
         final CompilationProblem[] result = new CompilationProblem[problems.size()];
         problems.toArray( result );
-        return new org.apache.commons.jci.compilers.CompilationResult( result );
+        return new org.drools.commons.jci.compilers.CompilationResult( result );
     }
 
     public JavaCompilerSettings createDefaultSettings() {

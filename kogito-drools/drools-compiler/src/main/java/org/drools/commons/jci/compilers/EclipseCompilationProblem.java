@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-package org.apache.commons.jci.compilers;
+package org.drools.commons.jci.compilers;
 
-import org.apache.commons.jci.problems.CompilationProblem;
+import org.drools.commons.jci.problems.CompilationProblem;
 import org.eclipse.jdt.core.compiler.IProblem;
 
 /**
