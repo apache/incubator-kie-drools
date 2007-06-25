@@ -18,7 +18,8 @@ end
 
 rule "test from using a global against a map lookup"
 	when
-		$cheese : Cheese( type == "stilton" ) from cheesery.getCheeseMap["stilton"]	
+	    Person( $stilton : type == "stilton" )
+		$cheese : Cheese( type == $stilton ) from cheesery.getCheeseMap["stilton"]	
 	then
 		list1.add( $cheese );
 end
