@@ -1,10 +1,22 @@
 package org.drools.brms.client.modeldriven;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.drools.brms.server.rules.SuggestionCompletionLoader;
 
 import junit.framework.TestCase;
 
 public class SuggestionCompletionTest extends TestCase {
+    
+    public void testNestedImports() {
+        String pkg = "package org.test\n import org.drools.brms.client.modeldriven.SuggestionCompletionTest.NestedClass";
+        
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();   
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg, new ArrayList(), new ArrayList() );
+        
+        assertEquals( "String", engine.getFieldType( "SuggestionCompletionTest$NestedClass", "name" ) );
+    }    
 
     public void testCompletions() {
 
@@ -202,4 +214,15 @@ public class SuggestionCompletionTest extends TestCase {
         assertTrue( com.isGlobalVariable( "y" ) );
     }
 
+    public static class NestedClass {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }               
+    }
 }
