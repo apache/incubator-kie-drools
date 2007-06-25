@@ -60,6 +60,7 @@ public class XmlDumper extends ReflectiveVisitor
     private StringBuffer        xmlDump;
     private boolean             patternContext;
     private final static String eol = System.getProperty( "line.separator" );
+    private String              template;
 
     public synchronized String dump(final PackageDescr packageDescr) {
         this.xmlDump = new StringBuffer();
@@ -132,11 +133,9 @@ public class XmlDumper extends ReflectiveVisitor
         tmpstr += this.template + " <from> <accumulate> ";
         visit( descr.getSourcePattern() );
         tmpstr += this.template;
-        
-        if ( descr.isExternalFunction() )
-            tmpstr += "<external-function evaluator=\"" + descr.getFunctionIdentifier() + "\" expression=\"" + descr.getExpression()  + "\"/>";
-        else 
-            tmpstr += "<init>" + descr.getInitCode() + "</init><action>" + descr.getActionCode() + "</action><result>" + descr.getResultCode() + "</result>";
+
+        if ( descr.isExternalFunction() ) tmpstr += "<external-function evaluator=\"" + descr.getFunctionIdentifier() + "\" expression=\"" + descr.getExpression() + "\"/>";
+        else tmpstr += "<init>" + descr.getInitCode() + "</init><action>" + descr.getActionCode() + "</action><result>" + descr.getResultCode() + "</result>";
 
         this.template = tmpstr + " </accumulate> </from> ";
         this.template += "</pattern>";
@@ -146,7 +145,7 @@ public class XmlDumper extends ReflectiveVisitor
         String tmpstr = new String();
         visitPatternDescr( descr.getReturnedPattern() );
         this.template = this.template.substring( 0,
-        this.template.indexOf( "</pattern>" ) );
+                                                 this.template.indexOf( "</pattern>" ) );
         tmpstr += this.template + " <from> <expression> ";
         tmpstr += descr.getDataSource();
         this.template = tmpstr + " </expression> </from> ";
@@ -239,8 +238,6 @@ public class XmlDumper extends ReflectiveVisitor
         this.template = new String();
         this.template = "<query name=\"" + descr.getName() + "\">" + "<lhs>" + processDescrList( descr.getLhs().getDescrs() ) + "</lhs>" + "</query>";
     }
-
-    private String template;
 
     private String processRules(final List rules) {
         String ruleList = "";

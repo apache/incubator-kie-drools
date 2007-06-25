@@ -112,10 +112,10 @@ class PatternHandler extends BaseAbstractHandler
             final PatternProcessorCeDescr parentDescr = (PatternProcessorCeDescr) parent;
             parentDescr.setSourcePattern( patternDescr );
         } else {
-            if ( config.getChild( "from" ) != null ) return null;
-
-            final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
-            parentDescr.addDescr( patternDescr );
+            if ( config.getChild( "from" ) == null ) { 
+                final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+                parentDescr.addDescr( patternDescr );
+            }
         }
         return null;
     }

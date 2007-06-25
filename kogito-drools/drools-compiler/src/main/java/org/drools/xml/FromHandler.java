@@ -65,9 +65,8 @@ public class FromHandler extends BaseAbstractHandler
 
         final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
 
-        if ( config.getChild( "accumulate" ) != null || config.getChild( "collect" ) != null ) return null;
-
-        ((ConditionalElementDescr) parent).addDescr( fromDescr );
+        if ( (config.getChild( "accumulate" ) == null) && (config.getChild( "collect" ) == null) ) 
+            ((ConditionalElementDescr) parent).addDescr( fromDescr );
 
         return null;
     }
