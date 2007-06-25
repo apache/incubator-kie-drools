@@ -815,6 +815,9 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "cheesery",
                                  cheesery );
         workingMemory.insert( cheesery );
+        
+        Person p = new Person("stilton");
+        workingMemory.insert( p );
 
         workingMemory.fireAllRules();
 
