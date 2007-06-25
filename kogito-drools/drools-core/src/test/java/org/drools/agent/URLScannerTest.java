@@ -102,9 +102,10 @@ public class URLScannerTest extends TestCase {
 
         int numfiles = dir.list().length;
         
+        
         Properties config = new Properties();
         //config.setProperty( RuleAgent.LOCAL_URL_CACHE, dir.getPath() );
-        config.setProperty( RuleAgent.URLS, "http://goo.ber http://wee.waa" );
+        config.setProperty( RuleAgent.URLS, "http://goo2.ber http://wee2.waa" );
 
         scan.configure( config );
 
@@ -118,10 +119,10 @@ public class URLScannerTest extends TestCase {
             }
 
             public Package fetchPackage(URL url) throws IOException {
-                if ( url.toExternalForm().equals( "http://goo.ber" ) ) {
-                    return new Package( "goo.ber" );
+                if ( url.toExternalForm().equals( "http://goo2.ber" ) ) {
+                    return new Package( "goo2.ber" );
                 } else {
-                    return new Package( "wee.waa" );
+                    return new Package( "wee2.waa" );
                 }
             }
 
@@ -134,10 +135,26 @@ public class URLScannerTest extends TestCase {
         scan.updateRuleBase( rb, false );
 
         assertEquals( 2, rb.getPackages().length );
-        assertEquals( "goo.ber", rb.getPackages()[0].getName() );
-        assertEquals( "wee.waa", rb.getPackages()[1].getName() );
+
+        assertExists(new String[] {"goo2.ber", "wee2.waa"}, rb.getPackages());
+        
+
 
         assertEquals( numfiles, dir.list().length );
+    }
+
+    private void assertExists(String[] names, Package[] packages) {
+        for ( int i = 0; i < packages.length; i++ ) {
+            String name = packages[i].getName();
+            int matches = 0;
+            for ( int j = 0; j < names.length; j++ ) {
+                if (name.equals( names[j] )) {
+                    matches++;
+                }
+            }
+            assertEquals("Should only have one package named " + name, 1, matches);
+        }
+        
     }
 
     public void testUpdateWithLocalCache() {
