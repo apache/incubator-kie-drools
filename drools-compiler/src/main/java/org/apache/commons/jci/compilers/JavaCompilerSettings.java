@@ -14,32 +14,80 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jci.compilers;
 
+
+/**
+ * Most common denominator for JavaCompiler settings.
+ * 
+ * If you need more specific settings you have to provide
+ * the native compiler configurations to the compilers.
+ * Writing of a custom factory is suggested. 
+ * 
+ * @author tcurdt
+ */
 public class JavaCompilerSettings {
 
-    public void setTargetVersion(final String pTargetVersion) {
+    private String targetVersion;
+    private String sourceVersion;
+    private String sourceEncoding;
+    private boolean warnings;
+    private boolean deprecations;
+    private boolean verbose;
 
+
+    public void setTargetVersion( final String pTargetVersion ) {
+        targetVersion = pTargetVersion;
     }
 
-    public void setSourceVersion(final String pSourceVersion) {
-
+    public String getTargetVersion() {
+        return targetVersion;
     }
 
-    public void setSourceEncoding(final String pSourceEncoding) {
 
+    public void setSourceVersion( final String pSourceVersion ) {
+        sourceVersion = pSourceVersion;
     }
 
-    public void setWarnings(final boolean pWarnings) {
-
+    public String getSourceVersion() {
+        return sourceVersion;
     }
 
-    public void setDeprecations(final boolean pDeprecations) {
 
+    public void setSourceEncoding( final String pSourceEncoding ) {
+        sourceEncoding = pSourceEncoding;
     }
 
-    public void setVerbose(final boolean pVerbose) {
+    public String getSourceEncoding() {
+        return sourceEncoding;
+    }
 
+
+    public void setWarnings( final boolean pWarnings ) {
+        warnings = pWarnings;
+    }
+
+    public boolean isWarnings() {
+        return warnings;
+    }
+
+
+    public void setDeprecations( final boolean pDeprecations )  {
+        deprecations = pDeprecations;
+    }
+
+    public boolean isDeprecations() {
+        return deprecations;
+    }
+
+
+    public void setVerbose( final boolean pVerbose ) {
+        verbose = pVerbose;
+    }
+
+    public boolean isVerbose() {
+        return verbose;
     }
 
 }

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jci.compilers;
 
 import java.util.HashMap;
@@ -21,21 +22,29 @@ import java.util.Map;
 
 import org.drools.util.ClassUtils;
 
+
+/**
+ * Creates JavaCompilers
+ * 
+ * TODO use META-INF discovery mechanism
+ * 
+ * @author tcurdt
+ */
 public final class JavaCompilerFactory {
 
     /**
-     * @deprecated
+     * @deprecated will be remove after the next release, please create an instance yourself
      */
     private static final JavaCompilerFactory INSTANCE = new JavaCompilerFactory();
 
+    private final Map classCache = new HashMap();
+    
     /**
-     * @deprecated
+     * @deprecated will be remove after the next release, please create an instance yourself
      */
     public static JavaCompilerFactory getInstance() {
         return JavaCompilerFactory.INSTANCE;
     }
-
-    private final Map classCache = new HashMap();
 
     /**
      * Tries to guess the class name by convention. So for compilers
@@ -49,40 +58,36 @@ public final class JavaCompilerFactory {
      * 
      * @param pHint
      * @return JavaCompiler or null
-     * 
-     * TODO use META-INF discovery mechanism
      */
     public JavaCompiler createCompiler(final String pHint) {
-
+        
         final String className;
-        if ( pHint.indexOf( '.' ) < 0 ) {
-            className = "org.apache.commons.jci.compilers." + ClassUtils.toJavaCasing( pHint ) + "JavaCompiler";
+        if (pHint.indexOf('.') < 0) {
+            className = "org.apache.commons.jci.compilers." + ClassUtils.toJavaCasing(pHint) + "JavaCompiler";
         } else {
             className = pHint;
         }
-
-        Class clazz = (Class) this.classCache.get( className );
-
-        if ( clazz == null ) {
+        
+        Class clazz = (Class) classCache.get(className);
+        
+        if (clazz == null) {
             try {
-                clazz = Class.forName( className );
-                this.classCache.put( className,
-                                clazz );
-            } catch ( final ClassNotFoundException e ) {
+                clazz = Class.forName(className);
+                classCache.put(className, clazz);
+            } catch (ClassNotFoundException e) {
                 clazz = null;
             }
         }
 
-        if ( clazz == null ) {
+        if (clazz == null) {
             return null;
         }
-
+        
         try {
             return (JavaCompiler) clazz.newInstance();
-        } catch ( final Throwable t ) {
-            t.printStackTrace();
+        } catch (Throwable t) {
             return null;
         }
     }
-
+    
 }

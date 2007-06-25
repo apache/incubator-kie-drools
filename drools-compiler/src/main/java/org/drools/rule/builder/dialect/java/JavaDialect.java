@@ -13,6 +13,7 @@ import org.apache.commons.jci.compilers.EclipseJavaCompiler;
 import org.apache.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.apache.commons.jci.compilers.JavaCompiler;
 import org.apache.commons.jci.compilers.JavaCompilerFactory;
+import org.apache.commons.jci.compilers.JavaCompilerSettings;
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.apache.commons.jci.readers.MemoryResourceReader;
 import org.apache.commons.jci.readers.ResourceReader;
@@ -487,19 +488,18 @@ public class JavaDialect
             }
             case PackageBuilderConfiguration.ECLIPSE :
             default : {
-                final EclipseJavaCompilerSettings eclipseSettings = new EclipseJavaCompilerSettings();
-                final Map map = eclipseSettings.getMap();
+                this.compiler = JavaCompilerFactory.getInstance().createCompiler( "eclipse" );
+                JavaCompilerSettings settings = this.compiler.createDefaultSettings();    
+                
                 String lngLevel = this.configuration.getJavaLanguageLevel();
-                map.put( CompilerOptions.OPTION_TargetPlatform,
-                         lngLevel );
-
+                settings.setTargetVersion( lngLevel );
+                
                 if ( lngLevel == "1.4" ) {
                     // 1.5 is the minimum for source langauge level, so we can use static imports.
                     lngLevel = "1.5";
                 }
-                map.put( CompilerOptions.OPTION_Source,
-                         lngLevel );
-                this.compiler = new EclipseJavaCompiler( map );
+                
+                settings.setSourceVersion(  lngLevel );
                 break;
             }
         }
