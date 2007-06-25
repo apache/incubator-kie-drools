@@ -42,5 +42,16 @@ public class DirectoryScanner extends PackageProvider {
         scanner.updateRuleBase( rb,
                                 removeExistingPackages );
     }
+    
+    public String toString() {
+        String s = "DirectoryScanner";
+        if (dir != null) {
+            s = s + " scanning dir: " + dir.getPath();
+        }
+        if (currentList != null) {
+            s = s + " found " + currentList.length + " file(s).";            
+        }
+        return s;
+    }
 
 }

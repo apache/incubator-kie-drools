@@ -155,5 +155,19 @@ public class URLScanner extends PackageProvider {
             }
         }        
     }    
+    
+    public String toString() {
+        String s = "URLScanner monitoring URLs: ";
+        if (this.urls != null) {
+            for ( int i = 0; i < urls.length; i++ ) {
+                URL url = urls[i];
+                s = s + " " + url.toExternalForm();
+            }
+        }
+        if (this.localCacheDir != null) {
+            s = s + " with local cache dir of " + this.localCacheDir.getPath();
+        }
+        return s;
+    }
 
 }
