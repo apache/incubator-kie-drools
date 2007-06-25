@@ -11,11 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.rule.Package;
-
-import com.sun.corba.se.internal.iiop.ListenerThread;
 
 /**
  * This will monitor a file to a binary package.
