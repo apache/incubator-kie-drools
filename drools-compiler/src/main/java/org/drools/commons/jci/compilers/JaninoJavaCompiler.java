@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.commons.jci.compilers;
+package org.drools.commons.jci.compilers;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,9 +27,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.jci.problems.CompilationProblem;
-import org.apache.commons.jci.readers.ResourceReader;
-import org.apache.commons.jci.stores.ResourceStore;
 import org.codehaus.janino.ClassLoaderIClassLoader;
 import org.codehaus.janino.CompileException;
 import org.codehaus.janino.DebuggingInformation;
@@ -45,6 +42,9 @@ import org.codehaus.janino.WarningHandler;
 import org.codehaus.janino.Scanner.LocatedException;
 import org.codehaus.janino.UnitCompiler.ErrorHandler;
 import org.codehaus.janino.util.ClassFile;
+import org.drools.commons.jci.problems.CompilationProblem;
+import org.drools.commons.jci.readers.ResourceReader;
+import org.drools.commons.jci.stores.ResourceStore;
 import org.drools.util.ClassUtils;
 
 /**

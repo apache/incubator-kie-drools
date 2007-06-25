@@ -16,7 +16,7 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-import org.apache.commons.jci.problems.CompilationProblem;
+import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Rule;
 

@@ -14,26 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.apache.commons.jci.problems;
-
+package org.drools.commons.jci.stores;
 
 /**
- * A CompilationProblemHandler gets access to a problem
- * as soon as the problem is available while the
- * CompilationResult only represents a summary at the
- * end.
- * The handler can be used to asynchronously update a
- * GUI or stop compilation by returning false (e.g.
- * when a maximum number of erros has been reached)
- * 
- * NOTE:
- * has to be supported by the compiler implementation!!
+ * A Store is where the compilers are storing the results
  * 
  * @author tcurdt
  */
-public interface CompilationProblemHandler {
+public interface ResourceStore {
 
-    boolean handle( final CompilationProblem pProblem );
-
+    void write( final String pResourceName, final byte[] pResourceData );
+    byte[] read( final String pResourceName );
+    void remove( final String pResourceName );
 }

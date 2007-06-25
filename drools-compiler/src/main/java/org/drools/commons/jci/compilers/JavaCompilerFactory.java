@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.commons.jci.compilers;
+package org.drools.commons.jci.compilers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +63,7 @@ public final class JavaCompilerFactory {
         
         final String className;
         if (pHint.indexOf('.') < 0) {
-            className = "org.apache.commons.jci.compilers." + ClassUtils.toJavaCasing(pHint) + "JavaCompiler";
+            className = "org.drools.commons.jci.compilers." + ClassUtils.toJavaCasing(pHint) + "JavaCompiler";
         } else {
             className = pHint;
         }

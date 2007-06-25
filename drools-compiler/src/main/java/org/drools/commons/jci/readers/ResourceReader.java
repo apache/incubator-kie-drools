@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.commons.jci.readers;
+package org.drools.commons.jci.readers;
 
 /**
  * A ResourceReader provide acces to resource like e.g. source code

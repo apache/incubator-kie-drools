@@ -14,16 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.jci.stores;
 
-/**
- * A Store is where the compilers are storing the results
- * 
- * @author tcurdt
- */
-public interface ResourceStore {
+package org.drools.commons.jci.compilers;
 
-    void write( final String pResourceName, final byte[] pResourceData );
-    byte[] read( final String pResourceName );
-    void remove( final String pResourceName );
+public final class JaninoJavaCompilerSettings extends JavaCompilerSettings {
+    // TODO: implement the native janino compiler settings
 }
