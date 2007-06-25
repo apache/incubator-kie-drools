@@ -14,35 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jci.compilers;
 
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.eclipse.jdt.core.compiler.IProblem;
 
-public class EclipseCompilationProblem
-    implements
-    CompilationProblem {
+/**
+ * Wrapping an Eclipse compiler problem
+ * 
+ * @author tcurdt
+ */
+public final class EclipseCompilationProblem implements CompilationProblem {
 
     private final IProblem problem;
 
     public EclipseCompilationProblem(final IProblem pProblem) {
-        this.problem = pProblem;
+        problem = pProblem;
     }
 
     public boolean isError() {
-        return this.problem.isError();
+        return problem.isError();
     }
 
     public String getFileName() {
-        return new String( this.problem.getOriginatingFileName() );
+        return new String(problem.getOriginatingFileName());
     }
 
     public int getStartLine() {
-        return this.problem.getSourceLineNumber();
+        return problem.getSourceLineNumber();
     }
 
     public int getStartColumn() {
-        return this.problem.getSourceStart();
+        return problem.getSourceStart();
     }
 
     public int getEndLine() {
@@ -50,26 +54,26 @@ public class EclipseCompilationProblem
     }
 
     public int getEndColumn() {
-        return this.problem.getSourceEnd();
+        return problem.getSourceEnd();
     }
 
     public String getMessage() {
-        return this.problem.getMessage();
+        return problem.getMessage();
     }
 
     public String toString() {
         final StringBuffer sb = new StringBuffer();
-        sb.append( getFileName() ).append( " (" );
-        sb.append( getStartLine() );
-        sb.append( ":" );
-        sb.append( getStartColumn() );
-        sb.append( ") : " );
-        sb.append( getMessage() );
+        sb.append(getFileName()).append(" (");
+        sb.append(getStartLine());
+        sb.append(":");
+        sb.append(getStartColumn());
+        sb.append(") : ");
+        sb.append(getMessage());
         return sb.toString();
     }
 
     public int getId() {
-        return this.problem.getID();
+        return problem.getID();
     }
 
 }

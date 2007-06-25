@@ -14,75 +14,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jci.compilers;
 
 import org.apache.commons.jci.problems.CompilationProblem;
 import org.codehaus.janino.Location;
 import org.codehaus.janino.Scanner.LocatedException;
 
-public class JaninoCompilationProblem
-    implements
-    CompilationProblem {
+/**
+ * Janino version of a CompilationProblem
+ * 
+ * @author tcurdt
+ */
+public final class JaninoCompilationProblem implements CompilationProblem {
 
     private final Location location;
-    private final String   fileName;
-    private final String   message;
-    private final boolean  error;
+    private final String fileName;
+    private final String message;
+    private final boolean error;
 
     public JaninoCompilationProblem(final LocatedException pLocatedException) {
-        this( pLocatedException.getLocation(),
-              pLocatedException.getMessage(),
-              true );
+        this(pLocatedException.getLocation(), pLocatedException.getMessage(), true);
     }
 
-    public JaninoCompilationProblem(final Location pLocation,
-                                    final String pMessage,
-                                    final boolean pError) {
-        this( pLocation.getFileName(),
-              pLocation,
-              pMessage,
-              pError );
+    public JaninoCompilationProblem(final Location pLocation, final String pMessage, final boolean pError) {
+      this(pLocation.getFileName(), pLocation, pMessage, pError);
     }
 
-    public JaninoCompilationProblem(final String pFilename,
-                                    final String pMessage,
-                                    final boolean pError) {
-        this( pFilename,
-              null,
-              pMessage,
-              pError );
+    public JaninoCompilationProblem(final String pFilename, final String pMessage, final boolean pError) {
+        this(pFilename, null, pMessage, pError);
     }
 
-    public JaninoCompilationProblem(final String pFilename,
-                                    final Location pLocation,
-                                    final String pMessage,
-                                    final boolean pError) {
-        this.location = pLocation;
-        this.fileName = pFilename;
-        this.message = pMessage;
-        this.error = pError;
+    public JaninoCompilationProblem(final String pFilename, final Location pLocation, final String pMessage, final boolean pError) {
+        location = pLocation;
+        fileName = pFilename;
+        message = pMessage;
+        error = pError;
     }
 
     public boolean isError() {
-        return this.error;
+        return error;
     }
 
     public String getFileName() {
-        return this.fileName;
+        return fileName;
     }
 
     public int getStartLine() {
-        if ( this.location == null ) {
+        if (location == null) {
             return 0;
         }
-        return this.location.getLineNumber();
+        return location.getLineNumber();
     }
 
     public int getStartColumn() {
-        if ( this.location == null ) {
+        if (location == null) {
             return 0;
         }
-        return this.location.getColumnNumber();
+        return location.getColumnNumber();
     }
 
     public int getEndLine() {
@@ -94,17 +83,17 @@ public class JaninoCompilationProblem
     }
 
     public String getMessage() {
-        return this.message;
+        return message;
     }
 
     public String toString() {
         final StringBuffer sb = new StringBuffer();
-        sb.append( getFileName() ).append( " (" );
-        sb.append( getStartLine() );
-        sb.append( ":" );
-        sb.append( getStartColumn() );
-        sb.append( ") : " );
-        sb.append( getMessage() );
+        sb.append(getFileName()).append(" (");
+        sb.append(getStartLine());
+        sb.append(":");
+        sb.append(getStartColumn());
+        sb.append(") : ");
+        sb.append(getMessage());
         return sb.toString();
     }
 

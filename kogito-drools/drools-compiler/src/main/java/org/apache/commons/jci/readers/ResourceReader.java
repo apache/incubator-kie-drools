@@ -14,13 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jci.readers;
 
 /**
+ * A ResourceReader provide acces to resource like e.g. source code
+ * 
  * @author tcurdt
  */
 public interface ResourceReader {
-    boolean isAvailable(final String pResourceName);
 
-    byte[] getBytes(final String pResourceName);
+    boolean isAvailable( final String pResourceName );
+    byte[] getBytes( final String pResourceName );
+
 }

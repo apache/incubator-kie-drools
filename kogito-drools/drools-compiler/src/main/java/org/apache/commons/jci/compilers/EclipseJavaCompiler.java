@@ -44,21 +44,25 @@ import org.eclipse.jdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 
+/**
+ * Eclipse compiler implemenation
+ * 
+ * @author tcurdt
+ */
 public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
-    //private final Log log = LogFactory.getLog(EclipseJavaCompiler.class);
-    private final Map settings;
+    private final EclipseJavaCompilerSettings defaultSettings;
 
     public EclipseJavaCompiler() {
         this( new EclipseJavaCompilerSettings() );
     }
 
     public EclipseJavaCompiler(final Map pSettings) {
-        this.settings = pSettings;
+        this.defaultSettings = new EclipseJavaCompilerSettings( pSettings );
     }
 
     public EclipseJavaCompiler(final EclipseJavaCompilerSettings pSettings) {
-        this.settings = pSettings.getMap();
+        this.defaultSettings = pSettings;
     }
 
     final class CompilationUnit
@@ -83,16 +87,11 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 this.typeName = this.clazzName.toCharArray();
             }
 
-            //            log.debug("className=" + clazzName);
-            //            log.debug("fileName=" + fileName);
-            //            log.debug("typeName=" + new String(typeName)); 
-
             final StringTokenizer izer = new StringTokenizer( this.clazzName,
                                                               "." );
             this.packageName = new char[izer.countTokens() - 1][];
             for ( int i = 0; i < this.packageName.length; i++ ) {
                 this.packageName[i] = izer.nextToken().toCharArray();
-                //                log.debug("package[" + i + "]=" + new String(packageName[i]));
             }
         }
 
@@ -101,7 +100,14 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         }
 
         public char[] getContents() {
-            return new String( this.reader.getBytes( this.fileName ) ).toCharArray();
+            final byte[] content = this.reader.getBytes( this.fileName );
+
+            if ( content == null ) {
+                return null;
+                //throw new RuntimeException("resource " + fileName + " could not be found");
+            }
+
+            return new String( content ).toCharArray();
         }
 
         public char[] getMainTypeName() {
@@ -116,17 +122,69 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
     public org.apache.commons.jci.compilers.CompilationResult compile(final String[] pSourceFiles,
                                                                       final ResourceReader pReader,
                                                                       final ResourceStore pStore,
-                                                                      final ClassLoader pClassLoader) {
+                                                                      final ClassLoader pClassLoader,
+                                                                      final JavaCompilerSettings pSettings) {
 
-        final Map settingsMap = this.settings;
-        //        final Set sourceFileIndex = new HashSet();
+        final Map settingsMap = ((EclipseJavaCompilerSettings) pSettings).getMap();
+
+        final Collection problems = new ArrayList();
+
         final ICompilationUnit[] compilationUnits = new ICompilationUnit[pSourceFiles.length];
         for ( int i = 0; i < compilationUnits.length; i++ ) {
             final String sourceFile = pSourceFiles[i];
-            compilationUnits[i] = new CompilationUnit( pReader,
-                                                       sourceFile );
-            //            sourceFileIndex.add(sourceFile);
-            //            log.debug("compiling " + sourceFile);
+
+            if ( pReader.isAvailable( sourceFile ) ) {
+                compilationUnits[i] = new CompilationUnit( pReader,
+                                                           sourceFile );
+            } else {
+
+                final CompilationProblem problem = new CompilationProblem() {
+
+                    public int getEndColumn() {
+                        return 0;
+                    }
+
+                    public int getEndLine() {
+                        return 0;
+                    }
+
+                    public String getFileName() {
+                        return sourceFile;
+                    }
+
+                    public String getMessage() {
+                        return "Source " + sourceFile + " could not be found";
+                    }
+
+                    public int getStartColumn() {
+                        return 0;
+                    }
+
+                    public int getStartLine() {
+                        return 0;
+                    }
+
+                    public boolean isError() {
+                        return true;
+                    }
+
+                    public String toString() {
+                        return getMessage();
+                    }
+                };
+
+                if ( this.problemHandler != null ) {
+                    this.problemHandler.handle( problem );
+                }
+
+                problems.add( problem );
+            }
+        }
+
+        if ( problems.size() > 0 ) {
+            final CompilationProblem[] result = new CompilationProblem[problems.size()];
+            problems.toArray( result );
+            return new org.apache.commons.jci.compilers.CompilationResult( result );
         }
 
         final IErrorHandlingPolicy policy = DefaultErrorHandlingPolicies.proceedWithAllProblems();
@@ -155,7 +213,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     result.append( '.' );
                 }
 
-                //            	log.debug("finding typeName=" + new String(typeName) + " packageName=" + result.toString());
+                //                log.debug("finding typeName=" + new String(typeName) + " packageName=" + result.toString());
 
                 result.append( pTypeName );
                 return findType( result.toString() );
@@ -167,13 +225,10 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     return null;
                 }
 
-                //            	log.debug("finding " + pClazzName);
-
                 final String resourceName = ClassUtils.convertClassToResourcePath( pClazzName );
 
                 final byte[] clazzBytes = pStore.read( pClazzName );
                 if ( clazzBytes != null ) {
-                    //                    log.debug("loading from store " + pClazzName);
 
                     final char[] fileName = pClazzName.toCharArray();
                     try {
@@ -183,22 +238,12 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                         return new NameEnvironmentAnswer( classFileReader,
                                                           null );
                     } catch ( final ClassFormatException e ) {
-                        //                        log.error("wrong class format", e);
-                        return null;
+                        throw new RuntimeException( "ClassFormatException in loading class '" + fileName + "' with JCI." );
                     }
                 }
 
-                //            	log.debug("not in store " + pClazzName);
-
-                //                if (pReader.isAvailable(clazzName.replace('.', '/') + ".java")) {
-                //                    log.debug("compile " + clazzName);
-                //                    ICompilationUnit compilationUnit = new CompilationUnit(pReader, clazzName);
-                //                    return new NameEnvironmentAnswer(compilationUnit, null);
-                //                }
-
                 final InputStream is = pClassLoader.getResourceAsStream( resourceName );
                 if ( is == null ) {
-                    //                	log.debug("class " + pClazzName + " not found");
                     return null;
                 }
 
@@ -221,25 +266,23 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     return new NameEnvironmentAnswer( classFileReader,
                                                       null );
                 } catch ( final IOException e ) {
-                    e.printStackTrace();
-                    //                    log.error("could not read class", e);
-                    return null;
+                    throw new RuntimeException( "could not read class",
+                                                e );
                 } catch ( final ClassFormatException e ) {
-                    e.printStackTrace();
-                    //                    log.error("wrong class format", e);
-                    return null;
+                    throw new RuntimeException( "wrong class format",
+                                                e );
                 } finally {
                     try {
                         baos.close();
                     } catch ( final IOException oe ) {
-                        oe.printStackTrace();
-                        //                        log.error("could not close output stream", oe);
+                        throw new RuntimeException( "could not close output stream",
+                                                    oe );
                     }
                     try {
                         is.close();
                     } catch ( final IOException ie ) {
-                        ie.printStackTrace();
-                        //                        log.error("could not close input stream", ie);
+                        throw new RuntimeException( "could not close input stream",
+                                                    ie );
                     }
                 }
             }
@@ -248,14 +291,13 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
                 final InputStream is = pClassLoader.getResourceAsStream( ClassUtils.convertClassToResourcePath( pClazzName ) );
                 if ( is != null ) {
-                    //                	log.debug("found the class for " + pClazzName + "- no package");
                     return false;
                 }
 
+                // FIXME: this should not be tied to the extension
                 final String source = pClazzName.replace( '.',
                                                           '/' ) + ".java";
                 if ( pReader.isAvailable( source ) ) {
-                    //                	log.debug("found the source " + source + " for " + pClazzName + " - no package ");
                     return false;
                 }
 
@@ -284,11 +326,9 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             }
 
             public void cleanup() {
-                //            	log.debug("cleanup");
             }
         };
 
-        final Collection problems = new ArrayList();
         final ICompilerRequestor compilerRequestor = new ICompilerRequestor() {
             public void acceptResult(final CompilationResult pResult) {
                 if ( pResult.hasProblems() ) {
@@ -334,5 +374,9 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         final CompilationProblem[] result = new CompilationProblem[problems.size()];
         problems.toArray( result );
         return new org.apache.commons.jci.compilers.CompilationResult( result );
+    }
+
+    public JavaCompilerSettings createDefaultSettings() {
+        return this.defaultSettings;
     }
 }

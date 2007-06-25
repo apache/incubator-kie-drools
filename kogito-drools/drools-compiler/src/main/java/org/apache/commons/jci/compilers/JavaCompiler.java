@@ -14,13 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jci.compilers;
 
 import org.apache.commons.jci.problems.CompilationProblemHandler;
 import org.apache.commons.jci.readers.ResourceReader;
 import org.apache.commons.jci.stores.ResourceStore;
 
+
 /**
+ * The general compiler interface. All compilers implementing
+ * this interface should read the resources from the reader
+ * and store the java class files into the ResourceStore.
+ * 
+ * The actual compilation language does not matter. But the
+ * contract is that the result of the compilation will be a
+ * class file.
+ * 
+ * If possible the compiler should notify the optional
+ * CompilationProblemHandler as soon as a problem is found.
+ * 
  * @author tcurdt
  */
 public interface JavaCompiler {
@@ -33,7 +46,22 @@ public interface JavaCompiler {
      * 
      * @param pHandler
      */
-    void setCompilationProblemHandler(final CompilationProblemHandler pHandler);
+    void setCompilationProblemHandler( final CompilationProblemHandler pHandler );
+
+    /**
+     * factory method to create the underlying default settings
+     */
+    JavaCompilerSettings createDefaultSettings();
+    
+    /**
+     * uses the default compiler settings and the current classloader
+     */
+    CompilationResult compile( final String[] pResourcePaths, final ResourceReader pReader, final ResourceStore pStore );
+
+    /**
+     * uses the default compiler settings
+     */
+    CompilationResult compile( final String[] pResourcePaths, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader pClassLoader );
 
     /**
      * Compiles the java resources "some/path/to/MyJava.java"
@@ -50,18 +78,10 @@ public interface JavaCompiler {
      * @param pResourcePaths
      * @param pReader
      * @param pStore
+     * @param pClassLoader
+     * @param pSettings
      * @return always a CompilationResult
      */
-    CompilationResult compile(final String[] pResourcePaths,
-                              final ResourceReader pReader,
-                              final ResourceStore pStore);
+    CompilationResult compile( final String[] pResourcePaths, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader pClassLoader, final JavaCompilerSettings pSettings );
 
-    /**
-     * As the usual compiler but you can provide the classloader
-     * and therefor the classpath you are compiling with.
-     */
-    CompilationResult compile(final String[] pResourcePaths,
-                              final ResourceReader pReader,
-                              final ResourceStore pStore,
-                              final ClassLoader classLoader);
 }
