@@ -100,6 +100,8 @@ public class URLScannerTest extends TestCase {
         URLScanner scan = new URLScanner();
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
+        int numfiles = dir.list().length;
+        
         Properties config = new Properties();
         //config.setProperty( RuleAgent.LOCAL_URL_CACHE, dir.getPath() );
         config.setProperty( RuleAgent.URLS, "http://goo.ber http://wee.waa" );
@@ -135,7 +137,7 @@ public class URLScannerTest extends TestCase {
         assertEquals( "goo.ber", rb.getPackages()[0].getName() );
         assertEquals( "wee.waa", rb.getPackages()[1].getName() );
 
-        assertEquals( 0, dir.list().length );
+        assertEquals( numfiles, dir.list().length );
     }
 
     public void testUpdateWithLocalCache() {
