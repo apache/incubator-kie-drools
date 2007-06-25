@@ -43,7 +43,7 @@ public class HttpClientImpl implements IHttpClient {
         
     }
 
-    public Package fetchPackage(URL url) throws IOException {
+    public Package fetchPackage(URL url) throws IOException, ClassNotFoundException {
         URLConnection con = url.openConnection();
         HttpURLConnection httpCon = (HttpURLConnection) con;
         try {
@@ -51,12 +51,8 @@ public class HttpClientImpl implements IHttpClient {
             InputStream in = httpCon.getInputStream();
             
             DroolsObjectInputStream oin = new DroolsObjectInputStream(in);
-            try {
                 return (Package) oin.readObject();
-            } catch ( ClassNotFoundException e ) {            
-                e.printStackTrace();
-                return null;
-            }
+  
         } finally {
             httpCon.disconnect();
         }

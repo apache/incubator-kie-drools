@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
 import org.drools.rule.Package;
 
@@ -94,11 +93,14 @@ public class URLScanner extends PackageProvider {
                 return localCacheFileScanner.loadPackageChanges();                
             }
             listener.exception( e );
-        }
+        } catch ( ClassNotFoundException e ) {
+            this.listener.exception( e );
+            this.listener.warning( "Was unable to load a class when loading a package. Perhaps it is missing from this application." );
+        }        
         return null;
     }
     
-    private Package[] getChangeSet() throws IOException {
+    private Package[] getChangeSet() throws IOException, ClassNotFoundException {
         if ( this.urls == null ) return new Package[0];
         List list = new ArrayList();
         for ( int i = 0; i < urls.length; i++ ) {
@@ -131,7 +133,7 @@ public class URLScanner extends PackageProvider {
         
     }
 
-    private Package readPackage(URL u) throws IOException {
+    private Package readPackage(URL u) throws IOException, ClassNotFoundException {
         return httpClient.fetchPackage( u );        
     }
 
