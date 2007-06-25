@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.rule.Package;
+
+import com.sun.corba.se.internal.iiop.ListenerThread;
 
 /**
  * This will monitor a file to a binary package.
@@ -51,14 +52,13 @@ public class FileScanner extends PackageProvider {
     }
 
     /**
-     * Perform the scan, adding in any packages changed to the rulebase.
+     * Perform the scan.
      * If there was an error reading the packages, this will not fail, it will 
      * just do nothing (as there may be a temporary IO issue). 
      */
-    void updateRuleBase(RuleBase rb,
-                        boolean removeExistingPackages) {
+    Package[] loadPackageChanges() {
         Package[] changes = getChangeSet();
-        applyChanges( rb, removeExistingPackages, changes );
+        return changes;
     }
 
 
@@ -91,7 +91,7 @@ public class FileScanner extends PackageProvider {
      * If an exception occurs, it is noted, but ignored.
      * Especially IO, as generally they are temporary.
      */
-    private static Package readPackage(File pkgFile) {
+    private Package readPackage(File pkgFile) {
 
         Package p1_ = null;
         ObjectInputStream in;
@@ -101,11 +101,13 @@ public class FileScanner extends PackageProvider {
             in.close();
 
         } catch ( FileNotFoundException e ) {
-            //throw new RuntimeDroolsException("Unable to open file: [" + pkgFile.getPath() + "]", e);
+            this.listener.exception( e );
+            this.listener.warning( "Was unable to find the file " + pkgFile.getPath() );
         } catch ( IOException e ) {
-            //throw new RuntimeDroolsException("Unable to open file: [" + pkgFile.getPath() + "] ", e);
+            this.listener.exception( e );
         } catch ( ClassNotFoundException e ) {
-            //throw new RuntimeDroolsException("Unable to load package from file: [" + pkgFile.getPath() + "]", e);
+            this.listener.exception( e );
+            this.listener.warning( "Was unable to load a class when loading a package. Perhaps it is missing from this application." );
         }
         return p1_;
     }
@@ -120,7 +122,7 @@ public class FileScanner extends PackageProvider {
             return true;
         } else {
             Long last = (Long) updates.get( path );
-            if ( last.intValue() < fileLastModified ) {
+            if ( last.longValue() < fileLastModified ) {
                 updates.put( path,
                              new Long( fileLastModified ) );
                 return true;

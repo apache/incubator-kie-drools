@@ -3,6 +3,7 @@ package org.drools.agent;
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 import org.drools.RuleBase;
 import org.drools.rule.Package;
@@ -40,7 +41,7 @@ public class RuleAgentTest extends TestCase {
         
         Properties props = new Properties();
         props.setProperty( "file", path );
-        RuleAgent ag = new RuleAgent(props);
+        RuleAgent ag = RuleAgent.newRuleAgent(props);
         RuleBase rb = ag.getRuleBase();
         assertNotNull(rb);
         assertEquals(2, rb.getPackages().length);
@@ -48,7 +49,7 @@ public class RuleAgentTest extends TestCase {
         assertFalse(ag.isPolling());
         
         props.setProperty( "poll", "1" );
-        ag = new RuleAgent(props);
+        ag = RuleAgent.newRuleAgent(props);
         assertTrue(ag.isPolling());
         
         ag.stopPolling();
@@ -58,25 +59,29 @@ public class RuleAgentTest extends TestCase {
     
     public void testPollingFilesRuleBaseUpdate() throws Exception {
         //RuleBaseAssemblerTest.clearTempDirectory();
-        File dir = RuleBaseAssemblerTest.getTempDirectory();
+        final File dir = RuleBaseAssemblerTest.getTempDirectory();
         
-        Package p1 = new Package("p1");
-        File p1f = new File(dir, "p42_.pkg");
+        Random rnd = new Random(System.currentTimeMillis());
+        
+        final Package p1 = new Package("p1");
+        final File p1f = new File(dir, rnd.nextLong() + ".pkg");
         RuleBaseAssemblerTest.writePackage( p1, p1f );
         
-        String path = dir.getPath() + "/" + "p42_.pkg";
+        String path = p1f.getPath();
         
         Properties props = new Properties();
         props.setProperty( "file", path );
-        props.setProperty( "poll", "1" );
-        RuleAgent ag = new RuleAgent(props);
         
-        assertTrue(ag.isPolling());
+        RuleAgent ag = RuleAgent.newRuleAgent(props);
+        
+        
         RuleBase rb = ag.getRuleBase();
         assertEquals(1, rb.getPackages().length);        
         assertEquals(0, rb.getPackages()[0].getGlobals().size());
         
         p1.addGlobal( "goo", String.class );
+        
+        Thread.sleep( 1000 );
         
         RuleBaseAssemblerTest.writePackage( p1, p1f );
         
@@ -85,7 +90,9 @@ public class RuleAgentTest extends TestCase {
         assertEquals(1, rb.getPackages().length);        
         assertEquals(0, rb.getPackages()[0].getGlobals().size());
         
-        Thread.sleep( 2000 );
+        Thread.sleep( 1000 );
+        
+        ag.refreshRuleBase();
         
         RuleBase rb2 = ag.getRuleBase();
         assertSame(rb, rb2);
@@ -96,14 +103,18 @@ public class RuleAgentTest extends TestCase {
         //now check subsequent changes
         p1.addGlobal( "goo2", String.class );
         System.err.println("-->WRITING CHANGE");
+        Thread.sleep( 1000 );
         RuleBaseAssemblerTest.writePackage( p1, p1f );
         System.err.println("-->WROTE CHANGE");
+        Thread.sleep( 1000 );
+        ag.refreshRuleBase();
+        
         RuleBase rb2_ = ag.getRuleBase(); 
         assertSame(rb2_, rb2);
         assertEquals(1, rb2_.getPackages().length);
-        assertEquals(1, rb2_.getPackages()[0].getGlobals().size());
+        assertEquals(2, rb2_.getPackages()[0].getGlobals().size());
         
-        Thread.sleep( 2000 );
+        ag.refreshRuleBase();
 
         RuleBase rb3 = ag.getRuleBase();
         assertSame(rb3, rb2);        
@@ -111,41 +122,70 @@ public class RuleAgentTest extends TestCase {
         assertEquals(1, rb3.getPackages().length);
         assertEquals(2, rb3.getPackages()[0].getGlobals().size());
         
+        ag.refreshRuleBase();
+        ag.refreshRuleBase();
         
-        ag.stopPolling();
+        assertEquals(1, rb3.getPackages().length);
+        assertEquals(2, rb3.getPackages()[0].getGlobals().size());
+                
+        
     }
     
     public void testPollingFilesRuleBaseReplace() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
-        
+
         Package p1 = new Package("p1");
         File p1f = new File(dir, "p43_.pkg");
         RuleBaseAssemblerTest.writePackage( p1, p1f );
+
+        Package p2 = new Package("p2");
+        File p2f = new File(dir, "p44_.pkg");
+        RuleBaseAssemblerTest.writePackage( p2, p2f );         
         
-        String path = dir.getPath() + "/" + "p43_.pkg";
+        
+
+        String path = dir.getPath() + "/" + "p43_.pkg " + dir.getPath() + "/p44_.pkg";
         
         Properties props = new Properties();
         props.setProperty( "file", path );
-        props.setProperty( "poll", "1" );
+        
         props.setProperty( "newInstance", "true" );
-        RuleAgent ag = new RuleAgent(props);
+        RuleAgent ag = RuleAgent.newRuleAgent(props);
+        
         assertTrue(ag.isNewInstance());
-        assertTrue(ag.isPolling());
+        
         RuleBase rb = ag.getRuleBase();
-        assertEquals(1, rb.getPackages().length);
+        assertEquals(2, rb.getPackages().length);
 
         RuleBase rb_ = ag.getRuleBase();
         assertSame(rb, rb_);
         
-        RuleBaseAssemblerTest.writePackage( p1, p1f );
         
-        Thread.sleep( 2100 );
+        ag.refreshRuleBase();
+        
+        assertSame(rb, ag.getRuleBase());
+        Thread.sleep( 1000 );
+        //only change one
+        RuleBaseAssemblerTest.writePackage( p1, p1f );
+        Thread.sleep( 1000 );
+        ag.refreshRuleBase();
+        
         
         rb_ = ag.getRuleBase();
 
         assertNotSame( rb, rb_ );
         
-        ag.stopPolling();
+        
+        //check we will have 2
+        assertEquals(2, rb_.getPackages().length);
+
+        ag.refreshRuleBase();
+        ag.refreshRuleBase();
+        
+        RuleBase rb__ = ag.getRuleBase();
+        assertSame(rb_, rb__);
+        
+        
         
          
     }
@@ -160,7 +200,10 @@ public class RuleAgentTest extends TestCase {
 
         Properties props = new Properties();
         props.setProperty( RuleAgent.DIRECTORY, dir.getPath() );
-        RuleAgent ag = new RuleAgent(props);
+        props.setProperty( RuleAgent.CONFIG_NAME, "goo" );
+        
+        
+        RuleAgent ag = RuleAgent.newRuleAgent(props);
         
         ag.refreshRuleBase();
         
@@ -194,14 +237,19 @@ public class RuleAgentTest extends TestCase {
         RuleAgent ag = new RuleAgent();
         assertNotNull(ag.listener);
 
+        final String[] name = new String[1];
+        
         AgentEventListener list = new AgentEventListener() {
-            public void debug(String name, String message) {
+            public void debug(String message) {
             }
-            public void exception(String name, Exception e) {
+            public void exception(Exception e) {
             }
-            public void info(String name, String message) {
+            public void info(String message) {
             }
-            public void warning(String name, String message) {
+            public void warning(String message) {
+            }            
+            public void setAgentName(String n) {
+                name[0] = n;
             }
         };
         
@@ -216,14 +264,43 @@ public class RuleAgentTest extends TestCase {
         Properties props = new Properties();
         props.setProperty( "file", path );
         props.setProperty( "poll", "1" );
-        ag = new RuleAgent(props, list);
+        props.setProperty( "name", "poo" );
+        ag = RuleAgent.newRuleAgent(props, list);
 
         assertEquals(list, ag.listener);
+        assertEquals("poo", name[0]);
         ag.stopPolling();
         
         
     }
     
+    
+    public void testPollSetup() throws Exception {
+        //this is the only method that will actually run the polling timer
+        
+        
+        Properties props = new Properties();
+        //props.setProperty( "file", "/foo/bar" );
+        props.setProperty( "poll", "1" );
+        MockRuleAgent ag = new MockRuleAgent();
+        ag.init(props);
+        
+        assertTrue(ag.isPolling());
+        assertTrue(ag.refreshCalled);
+        ag.refreshCalled = false;
+        assertFalse(ag.refreshCalled);
+        Thread.sleep( 100 );
+        assertFalse(ag.refreshCalled);
+        Thread.sleep( 1500 );
+        assertTrue(ag.refreshCalled);
+        ag.refreshCalled = false;
+        Thread.sleep( 100 );
+        assertFalse(ag.refreshCalled);
+        Thread.sleep( 1500 );
+        assertTrue(ag.refreshCalled);
+        ag.stopPolling();
+       
+    }
     
     
 }
