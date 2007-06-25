@@ -1,6 +1,8 @@
 package org.drools.agent;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,20 +52,23 @@ public class FileScannerTest extends TestCase {
         scan.configure( props );
         
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        scan.updateRuleBase( rb, true );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
+        
+        
         
         assertEquals(2, rb.getPackages().length);
         assertEquals("p1", rb.getPackages()[0].getName());
         assertEquals("p2", rb.getPackages()[1].getName());
         
-        
-        scan.updateRuleBase( rb, true );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
         assertEquals(2, rb.getPackages().length);
         assertEquals("p1", rb.getPackages()[0].getName());
         assertEquals("p2", rb.getPackages()[1].getName());
 
         RuleBaseAssemblerTest.writePackage( p2, p2f );
-        scan.updateRuleBase( rb, true );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
+
+
         assertEquals(2, rb.getPackages().length);
         assertEquals("p1", rb.getPackages()[0].getName());
         assertEquals("p2", rb.getPackages()[1].getName());
@@ -73,9 +78,26 @@ public class FileScannerTest extends TestCase {
     public void testEmptyList() throws Exception {
         FileScanner scan = new FileScanner();
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        scan.updateRuleBase( rb, true );
+        
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
+
         assertEquals(0, rb.getPackages().length);
     }
+    
+    public void testFileChanges() throws Exception {
+        File dir = RuleBaseAssemblerTest.getTempDirectory();
+        File t = new File(dir, "x.bar");
+        
+        Package x = new Package("x");
+        RuleBaseAssemblerTest.writePackage( x, t );
+        
+        FileScanner scan = new FileScanner();
+        Map updates = new HashMap();
+        assertTrue(scan.hasChanged( "x", updates, t.lastModified() ));
+        assertFalse(scan.hasChanged( "x", updates, t.lastModified() ));
+        
+    }
+
     
     
 }

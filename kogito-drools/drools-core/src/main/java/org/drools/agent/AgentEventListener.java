@@ -9,23 +9,28 @@ package org.drools.agent;
 public interface AgentEventListener {
 
     /**
+     * This sets the name for logging.
+     */
+    public void setAgentName(String name);
+    
+    /**
      * For general info messages.
      */
-    public void info(String configName, String message);
+    public void info(String message);
     
     /**
      * For a warning (useful when tracking down problems).
      */
-    public void warning(String configName, String message);
+    public void warning(String message);
     
     /**
      * An exception occurred.
      */
-    public void exception(String configName, Exception e);
+    public void exception(Exception e);
     
     
     /**
      * These should not be logged, just shown if needed.
      */
-    public void debug(String configName, String message);
+    public void debug(String message);
 }

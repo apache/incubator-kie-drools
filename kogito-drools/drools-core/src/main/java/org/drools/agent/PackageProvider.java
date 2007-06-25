@@ -1,5 +1,8 @@
 package org.drools.agent;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Properties;
 
 import org.drools.RuleBase;
@@ -13,13 +16,15 @@ import org.drools.rule.Package;
  */
 public abstract class PackageProvider {
 
+    protected AgentEventListener listener;
+
     /**
-     * Perform the scan, adding in any packages changed to the rulebase.
+     * Perform the scan, adding in any packages changed.
+     * if there are no changes, null should be returned.
      * If there was an error reading the packages, this will not fail, it will 
      * just do nothing (as there may be a temporary IO issue). 
      */
-    abstract void updateRuleBase(RuleBase rb,
-                                 boolean removeExistingPackages);
+    abstract Package[] loadPackageChanges();
 
     /**
      * This will be passed the entire config.
@@ -30,7 +35,7 @@ public abstract class PackageProvider {
      * Remove the package from the rulebase if it exists in it.
      * If it does not, does nothing.
      */
-    void removePackage(String name,
+    static void removePackage(String name,
                                RuleBase rb) {
         Package[] ps = rb.getPackages();
         if ( ps == null ) return;
@@ -44,20 +49,30 @@ public abstract class PackageProvider {
     }    
     
     
-    void applyChanges(RuleBase rb, boolean removeExistingPackages, Package[] changes) {
+    static void applyChanges(RuleBase rb, boolean removeExistingPackages, Package[] ps, AgentEventListener listener) {
+        applyChanges( rb, removeExistingPackages, Arrays.asList( ps ), listener );
+    }
+    
+    static void applyChanges(RuleBase rb, boolean removeExistingPackages, Collection changes, AgentEventListener listener) {
         if ( changes == null ) return;
-        for ( int i = 0; i < changes.length; i++ ) {
-            Package p = changes[i];
+        for ( Iterator iter = changes.iterator(); iter.hasNext(); ) {
+            Package p = (Package) iter.next();
+            
             if ( removeExistingPackages ) {
                 removePackage( p.getName(),
                                rb );
             }
             try {
+                listener.info( "Adding package called " + p.getName() );
                 rb.addPackage( p );
             } catch ( Exception e ) {
                 throw new RuntimeDroolsException( e );
             }
         }
+    }
+    
+    public void setAgentListener(AgentEventListener listener) {
+        this.listener = listener;
     }
     
     

@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -132,7 +134,9 @@ public class URLScannerTest extends TestCase {
         assertNull( scan.localCacheDir );
 
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        scan.updateRuleBase( rb, false );
+        AgentEventListener list = getNilListener();
+        PackageProvider.applyChanges( rb, false, scan.loadPackageChanges(), list );
+
 
         assertEquals( 2, rb.getPackages().length );
 
@@ -141,6 +145,12 @@ public class URLScannerTest extends TestCase {
 
 
         assertEquals( numfiles, dir.list().length );
+    }
+
+
+
+    private AgentEventListener getNilListener() {
+        return new MockListener();
     }
 
     private void assertExists(String[] names, Package[] packages) {
@@ -159,6 +169,7 @@ public class URLScannerTest extends TestCase {
 
     public void testUpdateWithLocalCache() {
         URLScanner scan = new URLScanner();
+        scan.listener = new MockListener();
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
         Properties config = new Properties();
@@ -190,7 +201,8 @@ public class URLScannerTest extends TestCase {
         assertNotNull( scan.localCacheDir );
 
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        scan.updateRuleBase( rb, false );
+        PackageProvider.applyChanges( rb, false, scan.loadPackageChanges(), getNilListener() );
+
 
         assertEquals( 2, rb.getPackages().length );
         assertEquals( "goo.ber", rb.getPackages()[0].getName() );
@@ -223,8 +235,13 @@ public class URLScannerTest extends TestCase {
         
         rb = RuleBaseFactory.newRuleBase();
         assertEquals(0, rb.getPackages().length);
-        scan.updateRuleBase( rb, true );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), getNilListener() );
+
         assertEquals(2, rb.getPackages().length);
+        
+        final boolean[] fetchCalled = new boolean[1];
+        
+        fetchCalled[0] = false;
         
         //now check with IOExceptions
         scan.httpClient = new IHttpClient() {
@@ -237,23 +254,22 @@ public class URLScannerTest extends TestCase {
             }
 
             public Package fetchPackage(URL url) throws IOException {
+                fetchCalled[0] = true;
                 throw new IOException("poo");
             }
 
         };          
         
-        scan.updateRuleBase( rb, true );
-        assertEquals(2, rb.getPackages().length);
-        
-        rb = RuleBaseFactory.newRuleBase();
-        scan.updateRuleBase( rb, true );
-        assertEquals(2, rb.getPackages().length);
-        
+        Package[] changes = scan.loadPackageChanges();
+        assertEquals(0, changes.length);
+        assertEquals(true, fetchCalled[0]);
+
     }
     
     public void testColdStartWithError() throws Exception {
         //this will show starting up and reading packages from the dir when the remote one doesn't respond
         URLScanner scan = new URLScanner();
+        scan.listener = new MockListener();
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
         Package p1 = new Package("goo.ber");
@@ -287,7 +303,7 @@ public class URLScannerTest extends TestCase {
         assertNotNull( scan.localCacheDir );
         
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        scan.updateRuleBase( rb, true );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), getNilListener() );
         assertEquals(2, rb.getPackages().length);
         
         

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Properties;
 
 import org.drools.RuleBase;
+import org.drools.rule.Package;
 
 /**
  * This will scan a directory for files to watch for a change.
@@ -32,15 +33,14 @@ public class DirectoryScanner extends PackageProvider {
 
     }
 
-    void updateRuleBase(RuleBase rb,
-                        boolean removeExistingPackages) {
+    Package[] loadPackageChanges()  {
         if ( currentList.length != dir.listFiles().length ) {
+            listener.info( "Extra files detected in the directory " + dir.getPath() );
             currentList = dir.listFiles();
             scanner = new FileScanner();
             scanner.setFiles( currentList );
         }
-        scanner.updateRuleBase( rb,
-                                removeExistingPackages );
+        return scanner.loadPackageChanges();
     }
     
     public String toString() {

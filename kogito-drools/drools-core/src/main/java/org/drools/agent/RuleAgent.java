@@ -3,6 +3,7 @@ package org.drools.agent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.TimerTask;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
+import org.drools.rule.Package;
 
 /**
  * This manages a single rulebase, based on the properties given
@@ -39,6 +41,8 @@ import org.drools.RuntimeDroolsException;
  *  
  *  <code>dir</code>: a single file system directory to monitor for packages.
  *  As with files, each package must be in its own file.
+ *  
+ *  <code>url</code>: A space seperated URL to a binary rulebase in the BRMS.
  * 
  * @author Michael Neale
  */
@@ -61,7 +65,7 @@ public class RuleAgent {
     /**
      * Here is where we have a map of providers to the key that appears on the configuration.
      */
-    private static Map          PACKAGE_PROVIDERS = new HashMap() {
+    public static Map          PACKAGE_PROVIDERS = new HashMap() {
                                                      {
                                                          put( FILES,
                                                               FileScanner.class );
@@ -90,37 +94,52 @@ public class RuleAgent {
      */
     List                       providers;
 
-    AgentEventListener listener = getDefaultListener();
-    private String configName;
-    
+    /**
+     * This keeps the packages around that have been loaded.
+     */
+    Map                        packages = new HashMap();
+
+    /**
+     * For logging events (important for stuff that happens in the background).
+     */
+    AgentEventListener          listener = getDefaultListener();
+
+
+
     /**
      * Properties configured to load up packages into a rulebase (and monitor them
      * for changes).
      */
-    public RuleAgent(Properties config) {
-        init( config );
+    public static RuleAgent newRuleAgent(Properties config) {
+        RuleAgent agent = new RuleAgent();
+        agent.init( config );
+        return agent;
     }
     
     /**
      * This allows an optional listener to be passed in.
      * The default one prints some stuff out to System.err only when really needed.
      */
-    public RuleAgent(Properties config, AgentEventListener listener) {
-        this.listener = listener;
-        init(config);
+    public static RuleAgent newRuleAgent(Properties config, AgentEventListener listener) {
+        RuleAgent agent = new RuleAgent();
+        agent.listener = listener;
+        agent.init(config);
+        return agent;
     }
 
 
 
-    private void init(Properties config) {
+    void init(Properties config) {
 
         boolean newInstance = Boolean.valueOf( config.getProperty( NEW_INSTANCE,
                                                                    "false" ) ).booleanValue();
         int secondsToRefresh = Integer.parseInt( config.getProperty( POLL_INTERVAL,
                                                                      "-1" ) );
-        String name = config.getProperty( CONFIG_NAME, "default" );
+        final String name = config.getProperty( CONFIG_NAME, "default" );
         
-        listener.info( this.configName, "Configuring with newInstance=" + newInstance + ", secondsToRefresh=" 
+        listener.setAgentName( name );
+        
+        listener.info( "Configuring with newInstance=" + newInstance + ", secondsToRefresh=" 
                        + secondsToRefresh);        
         
         List provs = new ArrayList();
@@ -130,30 +149,34 @@ public class RuleAgent {
             PackageProvider prov = getProvider( key,
                                                 config );
             if ( prov != null ) {
-                listener.info( configName, "Configuring package provider : " + prov.toString() );
+                listener.info( "Configuring package provider : " + prov.toString() );
                 provs.add( prov );
             }
         }
 
 
         configure( newInstance,  provs,                
-                   secondsToRefresh, name );
+                   secondsToRefresh );
     }
 
     /**
      * Pass in the name and full path to a config file that is on the classpath.
      */
-    public RuleAgent(String propsFileName) {
-        init( loadFromProperties( propsFileName ) );
+    public static RuleAgent newRuleAgent(String propsFileName) {
+        RuleAgent agent = new RuleAgent();
+        agent.init( agent.loadFromProperties( propsFileName ) );
+        return agent;
     }
     
     /**
      * This takes in an optional listener.
      * Listener must not be null in this case.
      */
-    public RuleAgent(String propsFileName, AgentEventListener listener) {
-        this.listener = listener;
-        init( loadFromProperties( propsFileName ) );
+    public static RuleAgent newRuleAgent(String propsFileName, AgentEventListener listener) {
+        RuleAgent ag = new RuleAgent();
+        ag.listener = listener;
+        ag.init( ag.loadFromProperties( propsFileName ) );
+        return ag;
     }
 
     Properties loadFromProperties(String propsFileName) {
@@ -179,7 +202,8 @@ public class RuleAgent {
         }
         Class clz = (Class) PACKAGE_PROVIDERS.get( key );
         try {
-            PackageProvider prov = (PackageProvider) clz.newInstance();
+            PackageProvider prov = (PackageProvider) clz.newInstance( );
+            prov.setAgentListener( listener );
             prov.configure( config );
             return prov;
         } catch ( InstantiationException e ) {
@@ -193,10 +217,10 @@ public class RuleAgent {
 
     synchronized void configure(boolean newInstance,
                                 List provs,
-                                int secondsToRefresh, String name) {
+                                int secondsToRefresh) {
         this.newInstance = newInstance;
         this.providers = provs;
-        this.configName = name;
+
         
         //run it the first time for each.
         refreshRuleBase();
@@ -208,11 +232,13 @@ public class RuleAgent {
             timer.schedule( new TimerTask() {
                                 public void run() {
                                     try {
-                                        listener.debug( configName, "Timer woke up." );
+                                        
+                                        listener.debug( "Checking for updates." );
                                         refreshRuleBase();
+                                        
                                     } catch (Exception e) {
-                                        //don't want to stop execution here.
-                                        listener.exception( configName, e );
+                                        //don't want to stop execution here.                                        
+                                        listener.exception( e );
                                     }
                                 }
                             },
@@ -223,19 +249,45 @@ public class RuleAgent {
     }
 
     public void refreshRuleBase() {
+
+        List changedPackages = new ArrayList();
+        
         for ( Iterator iter = providers.iterator(); iter.hasNext(); ) {
             PackageProvider prov = (PackageProvider) iter.next();
-            updateRuleBase( prov );
+            Package[] changes = checkForChanges( prov );
+            if (changes != null && changes.length > 0) {
+                changedPackages.addAll( Arrays.asList( changes ) );
+            }
         }
+        
+        if (changedPackages.size() > 0) {
+            listener.info( "Applying changes to the rulebase." );
+            //we have a change
+            if (this.newInstance) {
+                listener.info( "Creating a new rulebase as per settings." );
+                //blow away old
+                this.ruleBase = RuleBaseFactory.newRuleBase();
+                
+                //need to store ALL packages
+                for ( Iterator iter = changedPackages.iterator(); iter.hasNext(); ) {
+                    Package element = (Package) iter.next();
+                    this.packages.put( element.getName(), element ); //replace
+                }
+                //get packages from full name
+                PackageProvider.applyChanges( this.ruleBase, false, this.packages.values(), this.listener );
+            } else {
+                PackageProvider.applyChanges( this.ruleBase, true, changedPackages, this.listener );
+            }
+        }
+        
+
     }
 
-    private synchronized void updateRuleBase(PackageProvider prov) {
-        listener.debug( configName, "SCANNING FOR CHANGE " + prov.toString() );
-        if ( this.newInstance || this.ruleBase == null ) {            
-            ruleBase = RuleBaseFactory.newRuleBase();
-        }
-        prov.updateRuleBase( this.ruleBase,
-                             !this.newInstance );
+    private synchronized Package[] checkForChanges(PackageProvider prov) {
+        listener.debug( "SCANNING FOR CHANGE " + prov.toString() );
+        if (this.ruleBase == null) ruleBase = RuleBaseFactory.newRuleBase();
+        Package[] changes = prov.loadPackageChanges();
+        return changes;
     }
 
     /**
@@ -291,26 +343,33 @@ public class RuleAgent {
 
         return new AgentEventListener() {
 
+            private String name;
+
             public String time() {
                 Date d = new Date();
                 return d.toString();
             }
             
-            public void exception(String name, Exception e) {
-                System.err.println("RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow");
+            public void exception(Exception e) {
+                System.err.println("RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow.");
                 e.printStackTrace( System.err );
             }
 
-            public void info(String name, String message) {
+            public void info(String message) {
                 System.err.println("RuleAgent(" + name + ") INFO (" + time() + "): " + message);                
             }
 
-            public void warning(String name, String message) {
+            public void warning(String message) {
                 System.err.println("RuleAgent(" + name + ") WARNING (" + time() + "): " + message);                
             }
 
-            public void debug(String name, String message) {
+            public void debug(String message) {
                 //do nothing...                
+            }
+
+            public void setAgentName(String name) {
+                this.name = name;
+                
             }
             
         };

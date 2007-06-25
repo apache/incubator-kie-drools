@@ -83,17 +83,19 @@ public class URLScanner extends PackageProvider {
 
 
 
-    void updateRuleBase(RuleBase rb, boolean removeExistingPackages) {
+    Package[] loadPackageChanges() { //void updateRuleBase(RuleBase rb, boolean removeExistingPackages) {
         Package[] changes = null;
         try {
             changes = getChangeSet();
-            applyChanges( rb, removeExistingPackages, changes );
+            return changes;
         } catch ( IOException e ) {
             if (this.localCacheFileScanner != null) {
-                localCacheFileScanner.updateRuleBase( rb, removeExistingPackages );
+                listener.warning( "Falling back to local cache." );
+                return localCacheFileScanner.loadPackageChanges();                
             }
-            //TODO: add in logging
+            listener.exception( e );
         }
+        return null;
     }
     
     private Package[] getChangeSet() throws IOException {
@@ -123,7 +125,8 @@ public class URLScanner extends PackageProvider {
             out.flush();
             out.close();
         } catch (IOException e) {
-            //TODO: log this event
+            listener.exception( e );
+            listener.warning( "Was an error with the local cache directory " + localCacheDir.getPath() );
         }
         
     }
@@ -135,8 +138,8 @@ public class URLScanner extends PackageProvider {
     private boolean hasChanged(URL u, Map updates) throws IOException {
         LastUpdatedPing pong = httpClient.checkLastUpdated( u );
         if (pong.isError()) {
+            listener.warning( "Was an error contacting " + u.toExternalForm() + ". Reponse header: " + pong.responseMessage );
             throw new IOException("Was unable to reach server.");
-            //TODO: log stuff here.
         }
         
         String url = u.toExternalForm();
@@ -146,7 +149,7 @@ public class URLScanner extends PackageProvider {
             return true;
         } else {
             Long last = (Long) updates.get( url );
-            if ( last.intValue() < pong.lastUpdated ) {
+            if ( last.longValue() < pong.lastUpdated ) {
                 updates.put( url,
                              new Long( pong.lastUpdated ) );
                 return true;

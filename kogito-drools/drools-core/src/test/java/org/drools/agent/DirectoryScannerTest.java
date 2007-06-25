@@ -25,13 +25,15 @@ public class DirectoryScannerTest extends TestCase {
         RuleBaseAssemblerTest.writePackage( p2, p2f);
         
         DirectoryScanner scan = new DirectoryScanner();
+        scan.listener = new MockListener();
         Properties props = new Properties();
         props.setProperty( RuleAgent.DIRECTORY, dir.getPath() );
                 
         scan.configure( props );
         
         RuleBase rb = RuleBaseFactory.newRuleBase();
-        scan.updateRuleBase( rb, true );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
+
         assertEquals(2, rb.getPackages().length);
                 
         Package p3 = new Package("p3");
@@ -39,7 +41,8 @@ public class DirectoryScannerTest extends TestCase {
         
         RuleBaseAssemblerTest.writePackage( p3, p3f );
         
-        scan.updateRuleBase( rb, true );
+        PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
+
         assertEquals(3, rb.getPackages().length);        
     }
     
