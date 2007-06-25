@@ -133,6 +133,7 @@ public class FileScanner extends PackageProvider {
 
     public String toString() {
         StringBuffer buf = new StringBuffer();
+        buf.append( "FileScanner scanning: " );
         for ( int i = 0; i < files.length; i++ ) {
             File f = files[i];
             buf.append( f.getPath() + " " );

@@ -190,4 +190,40 @@ public class RuleAgentTest extends TestCase {
                       cleanActual );
     }
     
+    public void testEventListenerSetup() throws Exception {
+        RuleAgent ag = new RuleAgent();
+        assertNotNull(ag.listener);
+
+        AgentEventListener list = new AgentEventListener() {
+            public void debug(String name, String message) {
+            }
+            public void exception(String name, Exception e) {
+            }
+            public void info(String name, String message) {
+            }
+            public void warning(String name, String message) {
+            }
+        };
+        
+        File dir = RuleBaseAssemblerTest.getTempDirectory();
+        
+        Package p1 = new Package("p1");
+        File p1f = new File(dir, "p42_.pkg");
+        RuleBaseAssemblerTest.writePackage( p1, p1f );
+        
+        String path = dir.getPath() + "/" + "p42_.pkg";
+        
+        Properties props = new Properties();
+        props.setProperty( "file", path );
+        props.setProperty( "poll", "1" );
+        ag = new RuleAgent(props, list);
+
+        assertEquals(list, ag.listener);
+        ag.stopPolling();
+        
+        
+    }
+    
+    
+    
 }
