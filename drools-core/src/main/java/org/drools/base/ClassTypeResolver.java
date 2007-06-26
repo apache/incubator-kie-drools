@@ -221,7 +221,6 @@ public class ClassTypeResolver
         String qualifiedClass = null;
         Class clazz = null;
 
-        // not python
         if ( importText.endsWith( "*" ) ) {
             qualifiedClass = importText.substring( 0,
                                                    importText.indexOf( '*' ) ) + className;

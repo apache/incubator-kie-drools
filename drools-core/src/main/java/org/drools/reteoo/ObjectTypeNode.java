@@ -151,8 +151,10 @@ public class ObjectTypeNode extends ObjectSource
             return;
         }
 
-        memory.add( handle,
-                    false );
+        if ( hasMemory() ) {
+            memory.add( handle,
+                        false );
+        }
 
         this.sink.propagateAssertObject( handle,
                                          context,
