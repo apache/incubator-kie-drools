@@ -39,6 +39,7 @@ import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.SalienceBuilder;
+import org.mvel.AbstractParser;
 import org.mvel.integration.impl.ClassImportResolverFactory;
 import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 
@@ -81,6 +82,8 @@ public class MVELDialect
     private Map builders;
 
     public MVELDialect(final PackageBuilder builder) {
+        AbstractParser.setLanguageLevel(4); 
+        
         this.pkg = builder.getPackage();
         this.configuration = builder.getPackageBuilderConfiguration();
         this.typeResolver = builder.getTypeResolver();
