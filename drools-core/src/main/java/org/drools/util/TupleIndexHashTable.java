@@ -168,7 +168,7 @@ public class TupleIndexHashTable extends AbstractHashTable
     }
     
     public Entry[] toArray() {
-        Entry[] result = new Entry[this.size];
+        Entry[] result = new Entry[this.factSize];
         int index = 0;
         for ( int i = 0; i < this.table.length; i++ ) {
             FieldIndexEntry fieldIndexEntry = (FieldIndexEntry)this.table[i];
@@ -278,6 +278,7 @@ public class TupleIndexHashTable extends AbstractHashTable
                                    this.table.length );
         FieldIndexEntry entry = (FieldIndexEntry) this.table[index];
 
+        // search to find an existing entry
         while ( entry != null ) {
             if ( entry.matches( tuple,
                                 hashCode ) ) {
@@ -286,6 +287,7 @@ public class TupleIndexHashTable extends AbstractHashTable
             entry = (FieldIndexEntry) entry.next;
         }
 
+        // entry does not exist, so create
         if ( entry == null ) {
             entry = new FieldIndexEntry( this.index,
                                          hashCode );
