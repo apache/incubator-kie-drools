@@ -98,6 +98,72 @@ public class MVELConsequenceBuilderTest extends TestCase {
     public void testKnowledgeHelper() {
         
     }
+    
+    public void testImperativeCodeError() throws Exception {
+        final Package pkg = new Package( "pkg1" );
+        final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
+        ruleDescr.setConsequence( "if (cheese.price == 10) { cheese.price = 5; }" );
+
+        MVELDialect mvelDialect = new MVELDialect( new PackageBuilder( pkg ) );
+        DialectRegistry registry = new DialectRegistry();
+        registry.addDialect( "default",
+                             mvelDialect );
+        final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+
+        final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
+                                                                               pkg,
+                                                                               ruleDescr,
+                                                                               registry,
+                                                                               mvelDialect );
+
+        final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
+
+        final ObjectType cheeseObjeectType = new ClassObjectType( Cheese.class );
+
+        final Pattern pattern = new Pattern( 0,
+                                             cheeseObjeectType );
+
+        final PatternExtractor extractor = new PatternExtractor( cheeseObjeectType );
+
+        final Declaration declaration = new Declaration( "cheese",
+                                                         extractor,
+                                                         pattern );
+        final Map map = new HashMap();
+        map.put( "cheese",
+                 declaration );
+        declarationResolver.setDeclarations( map );
+        context.setDeclarationResolver( declarationResolver );
+
+        final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
+        builder.build( context );
+
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           10 );
+        final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
+        final ReteTuple tuple = new ReteTuple( f0 );
+
+        final AgendaItem item = new AgendaItem( 0,
+                                                tuple,
+                                                10,
+                                                null,
+                                                context.getRule(),
+                                                null );
+        final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
+        kbHelper.setActivation( item );
+        try {
+        context.getRule().getConsequence().evaluate( kbHelper,
+                                                     wm );
+            fail( "should throw an exception, as 'if' is not allowed" );
+        } catch ( Exception e) {
+            
+        }
+        
+        assertEquals( 10,
+                      cheddar.getPrice() );
+    }
 
     /**
      * Just like MVEL command line, we can allow expressions to span lines, with optional ";"

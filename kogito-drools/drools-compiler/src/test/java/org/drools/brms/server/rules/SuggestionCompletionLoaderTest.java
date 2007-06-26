@@ -8,7 +8,7 @@ import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 
 import junit.framework.TestCase;
 
-public class SuggestionCompletionLoaderTest extends TestCase {
+public class SuggestionCompletionLoaderTest extends TestCase {    
 
     public void testSuggestionCompLoader() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
@@ -35,6 +35,6 @@ public class SuggestionCompletionLoaderTest extends TestCase {
             return Object.class;
         }
         
-    }
+    }    
     
 }
