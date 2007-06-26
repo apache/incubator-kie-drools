@@ -95,7 +95,7 @@ public abstract class AbstractHashTable
 
         this.table = newTable;
         this.threshold = (int) (newCapacity * this.loadFactor);
-    }
+    }     
     
     public Entry[] toArray() {
         Entry[] result = new Entry[this.size];
