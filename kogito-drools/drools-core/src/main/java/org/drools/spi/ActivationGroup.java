@@ -1,8 +1,11 @@
 package org.drools.spi;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
-public interface ActivationGroup {
+public interface ActivationGroup
+    extends
+    Serializable {
     public String getName();
 
     public void addActivation(Activation activation);
