@@ -88,7 +88,6 @@ public class PatternBuilder
                                                                   new ObjectTypeNode( context.getNextId(),
                                                                                       pattern.getObjectType(),
                                                                                       context.getRuleBase().getRete(),
-                                                                                      context.getRuleBase().getConfiguration().isObjectTypeMemory(),
                                                                                       context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() ) ) );
 
         final List betaConstraints = new ArrayList();

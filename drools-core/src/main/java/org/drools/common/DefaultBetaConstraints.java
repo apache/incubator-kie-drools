@@ -191,7 +191,7 @@ public class DefaultBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory() {
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
         BetaMemory memory;
         if ( this.indexed > 0 ) {
             LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
@@ -221,10 +221,10 @@ public class DefaultBetaConstraints
             } else {
                 factHandleMemory = new FactHashTable();
             }
-            memory = new BetaMemory( tupleMemory,
+            memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
                                      factHandleMemory );
         } else {
-            memory = new BetaMemory( new TupleHashTable(),
+            memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
                                      new FactHashTable() );
         }
 

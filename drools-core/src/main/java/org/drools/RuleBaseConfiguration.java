@@ -71,12 +71,13 @@ public class RuleBaseConfiguration
     private ChainedProperties   chainedProperties;
 
     private boolean             immutable;
+    
+    private boolean             sequential;
 
     private boolean             maintainTms;
     private boolean             removeIdentities;
     private boolean             shareAlphaNodes;
     private boolean             shareBetaNodes;
-    private boolean             objectTypeMemory;
     private boolean             alphaMemory;
     private int                 alphaNodeHashingThreshold;
     private int                 compositeKeyDepth;
@@ -107,15 +108,15 @@ public class RuleBaseConfiguration
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
         }
+        
+        setSequential( Boolean.valueOf( this.chainedProperties.getProperty( "drools.sequential",
+                        "false" ) ).booleanValue() );        
 
         setMaintainTms( Boolean.valueOf( this.chainedProperties.getProperty( "drools.maintainTms",
                                                                              "true" ) ).booleanValue() );
 
         setRemoveIdentities( Boolean.valueOf( this.chainedProperties.getProperty( "drools.removeIdentities",
                                                                                   "false" ) ).booleanValue() );
-
-        setObjectTypeMemory( Boolean.valueOf( this.chainedProperties.getProperty( "drools.objectTypeMemory",
-                                                                                  "true" ) ).booleanValue() );
 
         setAlphaMemory( Boolean.valueOf( this.chainedProperties.getProperty( "drools.alphaMemory",
                                                                              "false" ) ).booleanValue() );
@@ -174,8 +175,16 @@ public class RuleBaseConfiguration
             throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
         }
     }
+    
+    public void setSequential(boolean sequential) {
+        this.sequential = sequential;
+    }
+    
+    public boolean isSequential() {
+        return this.sequential;
+    }
 
-    public boolean getMaintainTms() {
+    public boolean isMaintainTms() {
         return this.maintainTms;
     }
 
@@ -191,15 +200,6 @@ public class RuleBaseConfiguration
     public void setRemoveIdentities(final boolean removeIdentities) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.removeIdentities = removeIdentities;
-    }
-
-    public boolean isObjectTypeMemory() {
-        return this.objectTypeMemory;
-    }
-
-    public void setObjectTypeMemory(final boolean objectTypeMemory) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.objectTypeMemory = objectTypeMemory;
     }
 
     public boolean isAlphaMemory() {
