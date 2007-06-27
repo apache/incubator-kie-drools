@@ -58,6 +58,13 @@ public class DefaultBetaConstraints
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                   final RuleBaseConfiguration conf) {
+        this( constraints, conf, false );
+        
+    }
+    
+    public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                  final RuleBaseConfiguration conf,
+                                  final boolean disableIndexing ) {
         this.conf = conf;
         this.indexed = -1;
         this.constraints = new LinkedList();
@@ -67,7 +74,7 @@ public class DefaultBetaConstraints
         // First create a LinkedList of constraints, with the indexed constraints first.
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             // Determine  if this constraint is indexable
-            if ( isIndexable( constraints[i] ) ) {
+            if ( (!disableIndexing) && conf.isIndexLeftBetaMemory() && conf.isIndexRightBetaMemory() && isIndexable( constraints[i] ) ) {
                 if ( depth >= 1 && this.indexed == -1 ) {
                     // first index, so just add to the front
                     this.constraints.insertAfter( null,

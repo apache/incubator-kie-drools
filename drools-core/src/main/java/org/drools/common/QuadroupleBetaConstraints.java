@@ -66,8 +66,16 @@ public class QuadroupleBetaConstraints
 
     public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                      final RuleBaseConfiguration conf) {
+        this( constraints,
+              conf,
+              false );
+    }
+
+    public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                     final RuleBaseConfiguration conf,
+                                     final boolean disableIndexing) {
         this.conf = conf;
-        if ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) {
+        if ( disableIndexing || ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) ) {
             this.indexed0 = false;
             this.indexed1 = false;
             this.indexed2 = false;
@@ -128,7 +136,7 @@ public class QuadroupleBetaConstraints
                     swap( constraints,
                           3,
                           2 );
-                } else if ( depth >= 4 ){
+                } else if ( depth >= 4 ) {
                     this.indexed3 = true;
                 }
             }
@@ -208,7 +216,7 @@ public class QuadroupleBetaConstraints
                                                                                                                                             object )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( this.context2,
                                                                                                                                                                                                                  object ))
                && (this.indexed3 || this.constraint3.isAllowedCachedLeft( this.context3,
-                                                        object ));
+                                                                          object ));
     }
 
     /* (non-Javadoc)
@@ -218,8 +226,9 @@ public class QuadroupleBetaConstraints
         return this.constraint0.isAllowedCachedRight( tuple,
                                                       this.context0 ) && this.constraint1.isAllowedCachedRight( tuple,
                                                                                                                 this.context1 ) && this.constraint2.isAllowedCachedRight( tuple,
-                                                                                                                                                                          this.context2 ) && ( this.indexed3 || this.constraint3.isAllowedCachedRight( tuple,
-                                                                                                                                                                                                                                    this.context3 ));
+                                                                                                                                                                          this.context2 )
+               && (this.indexed3 || this.constraint3.isAllowedCachedRight( tuple,
+                                                                           this.context3 ));
     }
 
     public boolean isIndexed() {

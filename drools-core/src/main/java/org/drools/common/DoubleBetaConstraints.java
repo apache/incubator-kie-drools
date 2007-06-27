@@ -60,8 +60,16 @@ public class DoubleBetaConstraints
 
     public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                  final RuleBaseConfiguration conf) {
+        this( constraints,
+              conf,
+              false );
+    }
+
+    public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                 final RuleBaseConfiguration conf,
+                                 final boolean disableIndexing) {
         this.conf = conf;
-        if ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) {
+        if ( disableIndexing || ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) ) {
             this.indexed0 = false;
             this.indexed1 = false;
         } else {
