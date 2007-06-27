@@ -1,8 +1,8 @@
 package org.drools.brms.modeldriven;
 
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-
 import junit.framework.TestCase;
+
+import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 
 public class DSLSentenceTest extends TestCase {
 

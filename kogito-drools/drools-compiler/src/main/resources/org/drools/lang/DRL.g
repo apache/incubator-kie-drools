@@ -779,25 +779,34 @@ lhs_unary returns [BaseDescr d]
 	@init {
 		$d = null;
 	}
-	:	(	u=lhs_exist { $d = $u.d; }
-		|	u=lhs_not { $d = $u.d; }
-		|	u=lhs_eval { $d = $u.d; }
-		|	u=lhs_pattern { $d = $u.d; } (
-		          FROM 
-		          {
-				location.setType(Location.LOCATION_LHS_FROM);
-				location.setProperty(Location.LOCATION_FROM_CONTENT, "");
-		          }
-		          ( options { k=1; } :
-		            ( ac=accumulate_statement { $ac.d.setResultPattern((PatternDescr) $u.d); $d=$ac.d; })
-		          | ( cs=collect_statement { $cs.d.setResultPattern((PatternDescr) $u.d); $d=$cs.d; }) 
-		          | ( fm=from_statement {$fm.d.setPattern((PatternDescr) $u.d); $d=$fm.d; }) 
-		          )
-		        )?
-		|	u=lhs_forall  { $d = $u.d; }
-		|	LEFT_PAREN u=lhs_or RIGHT_PAREN { $d = $u.d; }
+	:	(	( EXISTS ) => u=lhs_exist { $d = $u.d; }
+		|	( NOT ) => u=lhs_not  { $d = $u.d; }
+		|	( EVAL ) => u=lhs_eval  { $d = $u.d; }
+		|	( FORALL ) => u=lhs_forall  { $d = $u.d; }
+		|	( LEFT_PAREN ) => LEFT_PAREN u=lhs_or RIGHT_PAREN  { $d = $u.d; }
+		|	ps=pattern_source  { $d = (BaseDescr) $ps.d; }
 		) 
 		opt_semicolon
+	;
+	
+pattern_source returns [BaseDescr d]
+	@init {
+		$d = null;
+	}
+	:	
+		u=lhs_pattern { $d = $u.d; } 
+		(
+			FROM 
+		        {
+				location.setType(Location.LOCATION_LHS_FROM);
+				location.setProperty(Location.LOCATION_FROM_CONTENT, "");
+		        }
+		        ( options { k=1; } :
+		            ( ac=accumulate_statement { ((PatternDescr)$d).setSource((PatternSourceDescr) $ac.d); })
+		          | ( cs=collect_statement { ((PatternDescr)$d).setSource((PatternSourceDescr) $cs.d); }) 
+		          | ( fm=from_statement { ((PatternDescr)$d).setSource((PatternSourceDescr) $fm.d); }) 
+		        )
+		)?
 	;
 	
 lhs_exist returns [BaseDescr d]
@@ -811,8 +820,8 @@ lhs_exist returns [BaseDescr d]
 			$d.setStartCharacter( ((CommonToken)$EXISTS).getStartIndex() );
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS );
 		}
-	        ( ( LEFT_PAREN pattern=lhs_or 
-	           	{ if ( $pattern.d != null ) ((ExistsDescr)$d).addDescr( $pattern.d ); }
+	        ( ( LEFT_PAREN or=lhs_or 
+	           	{ if ( $or.d != null ) ((ExistsDescr)$d).addDescr( $or.d ); }
 	           RIGHT_PAREN 
 	                { $d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() ); }
 	        )    
@@ -837,8 +846,8 @@ lhs_not	returns [NotDescr d]
 			$d.setStartCharacter( ((CommonToken)$NOT).getStartIndex() );
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT );
 		}
-		( ( LEFT_PAREN pattern=lhs_or  
-	           	{ if ( $pattern.d != null ) $d.addDescr( $pattern.d ); }
+		( ( LEFT_PAREN or=lhs_or  
+	           	{ if ( $or.d != null ) $d.addDescr( $or.d ); }
 	           RIGHT_PAREN 
 	                { $d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() ); }
 		  )
@@ -982,9 +991,9 @@ accumulate_statement returns [AccumulateDescr d]
 			$d.setStartCharacter( ((CommonToken)$ACCUMULATE).getStartIndex() );
 			location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE );
 		}	
-		LEFT_PAREN pattern=lhs_pattern COMMA? 
+		LEFT_PAREN pattern=pattern_source COMMA? 
 		{
-		        $d.setSourcePattern( (PatternDescr) $pattern.d );
+		        $d.setInputPattern( (PatternDescr) $pattern.d );
 		}
 		( ( 
 			INIT 
@@ -1042,7 +1051,9 @@ accumulate_statement returns [AccumulateDescr d]
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 			d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
 		} 
-	; expression_chain[FromDescr from, AccessorDescr as] 
+	; 
+	
+expression_chain[FromDescr from, AccessorDescr as] 
 	@init {
   		FieldAccessDescr fa = null;
 	    	MethodAccessDescr ma = null;	
@@ -1095,9 +1106,9 @@ collect_statement returns [CollectDescr d]
 			$d.setStartCharacter( ((CommonToken)$COLLECT).getStartIndex() );
 			location.setType( Location.LOCATION_LHS_FROM_COLLECT );
 		}	
-		LEFT_PAREN pattern=lhs_pattern RIGHT_PAREN
+		LEFT_PAREN pattern=pattern_source RIGHT_PAREN
 		{
-		        $d.setSourcePattern( (PatternDescr)$pattern.d );
+		        $d.setInputPattern( (PatternDescr) $pattern.d );
 			$d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 		}
@@ -1313,17 +1324,21 @@ field_constraint[ConditionalElementDescr base]
 	
 
 or_restr_connective[ RestrictionConnectiveDescr base ]
+	options { 
+		backtrack=true;
+	}
 	@init {
 		RestrictionConnectiveDescr or = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
 	}
 	:
 		and_restr_connective[or] 
-		(	options {backtrack=true;}
-		:	DOUBLE_PIPE 
+		( 
+			options {backtrack=true;}
+			: DOUBLE_PIPE 
 			{
 				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 			}
-		  and_restr_connective[or] 
+			and_restr_connective[or] 
 		)*
 	;
 	finally {

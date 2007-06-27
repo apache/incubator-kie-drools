@@ -11,8 +11,6 @@ import java.util.Set;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.compilers.CompilationResult;
-import org.drools.commons.jci.compilers.EclipseJavaCompiler;
-import org.drools.commons.jci.compilers.EclipseJavaCompilerSettings;
 import org.drools.commons.jci.compilers.JavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.commons.jci.compilers.JavaCompilerSettings;
@@ -45,7 +43,6 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.CollectBuilder;
-import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.ForallBuilder;
@@ -58,11 +55,10 @@ import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
+import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
-import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
-import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 
 public class JavaDialect
     implements
@@ -270,8 +266,8 @@ public class JavaDialect
         return this.typeFixer;
     }
 
-    public Object getBuilder(final Class clazz) {
-        return this.builders.get( clazz );
+    public RuleConditionBuilder getBuilder(final Class clazz) {
+        return (RuleConditionBuilder) this.builders.get( clazz );
     }
 
     public PatternBuilder getPatternBuilder() {
@@ -290,7 +286,7 @@ public class JavaDialect
         return this.accumulate;
     }
 
-    public ConditionalElementBuilder getEvalBuilder() {
+    public RuleConditionBuilder getEvalBuilder() {
         return this.eval;
     }
 

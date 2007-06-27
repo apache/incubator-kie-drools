@@ -27,7 +27,6 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.FromBuilder;
@@ -38,6 +37,7 @@ import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
+import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 import org.mvel.AbstractParser;
 import org.mvel.integration.impl.ClassImportResolverFactory;
@@ -238,8 +238,8 @@ public class MVELDialect
         return result;
     }
 
-    public Object getBuilder(final Class clazz) {
-        return this.builders.get( clazz );
+    public RuleConditionBuilder getBuilder(final Class clazz) {
+        return (RuleConditionBuilder) this.builders.get( clazz );
     }
 
     public Map getBuilders() {
@@ -266,7 +266,7 @@ public class MVELDialect
         return this.consequence;
     }
 
-    public ConditionalElementBuilder getEvalBuilder() {
+    public RuleConditionBuilder getEvalBuilder() {
         return this.eval;
     }
 

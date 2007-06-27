@@ -16,7 +16,6 @@
 
 package org.drools.rule.builder.dialect.java;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -24,27 +23,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-import org.drools.base.ClassObjectType;
 import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
-import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Accumulate;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
+import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
-import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.spi.Accumulator;
-import org.mvel.MVEL;
 
 /**
  * A builder for the java dialect accumulate version
@@ -53,17 +45,16 @@ import org.mvel.MVEL;
  */
 public class JavaAccumulateBuilder extends AbstractJavaBuilder
     implements
-    ConditionalElementBuilder,
     AccumulateBuilder {
 
-    public ConditionalElement build(final RuleBuildContext context,
+    public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
         return build( context,
                       descr,
                       null );
     }
 
-    public ConditionalElement build(final RuleBuildContext context,
+    public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr,
                                     final Pattern prefixPattern) {
 
@@ -71,15 +62,12 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
 
         final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
 
-        final Pattern sourcePattern = patternBuilder.build( context,
-                                                            accumDescr.getSourcePattern() );
+        final Pattern sourcePattern = (Pattern) patternBuilder.build( context,
+                                                                      accumDescr.getInputPattern() );
 
         if ( sourcePattern == null ) {
             return null;
         }
-
-        final Pattern resultPattern = patternBuilder.build( context,
-                                                            accumDescr.getResultPattern() );
 
         Accumulate accumulate = null;
 
@@ -110,13 +98,11 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
                                                    sourceDeclArr,
                                                    requiredGlobals );
 
-
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
 
             JavaAccumulatorFunctionExecutor accumulator = new JavaAccumulatorFunctionExecutor( function );
-            
+
             accumulate = new Accumulate( sourcePattern,
-                                         resultPattern,
                                          previousDeclarations,
                                          sourceDeclArr,
                                          accumulator );
@@ -208,22 +194,10 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
                          "true" );
             }
 
-            String resultType = null;
-            // TODO: Need to change this... 
-            if ( resultPattern.getObjectType() instanceof ClassObjectType ) {
-                resultType = ((ClassObjectType) resultPattern.getObjectType()).getClassType().getName();
-            } else {
-                resultType = resultPattern.getObjectType().getValueType().getClassType().getName();
-            }
-
-            map.put( "resultType",
-                     resultType );
-
             map.put( "hashCode",
                      new Integer( actionCode.hashCode() ) );
 
             accumulate = new Accumulate( sourcePattern,
-                                         resultPattern,
                                          declarations,
                                          sourceDeclArr );
 

@@ -17,8 +17,8 @@
 package org.drools.rule.builder;
 
 import org.drools.lang.descr.BaseDescr;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.Pattern;
+import org.drools.rule.RuleConditionElement;
 
 /**
  * An interface to define classes capable of building
@@ -26,12 +26,12 @@ import org.drools.rule.Pattern;
  * 
  * @author etirelli
  */
-public interface ConditionalElementBuilder {
+public interface RuleConditionBuilder {
 
-    public ConditionalElement build(final RuleBuildContext context,
+    public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr);    
     
-    public ConditionalElement build(final RuleBuildContext context,
+    public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr,
                                     final Pattern prefixPattern);
 

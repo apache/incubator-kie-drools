@@ -77,7 +77,6 @@ public class AccumulateNodeTest extends DroolsTestCase {
         final Pattern resultPattern = new Pattern( 1,
                                                 resultObjType );
         this.accumulate = new Accumulate( sourcePattern,
-                                          resultPattern,
                                           new Declaration[0],
                                           new Declaration[0],
                                           this.accumulator );

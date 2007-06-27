@@ -44,6 +44,7 @@ public class AccumulateNode extends BetaNode {
 
     private static final long                serialVersionUID = -4081578178269297948L;
 
+    private final boolean                    unwrapRightObject;
     private final Accumulate                 accumulate;
     private final AlphaNodeFieldConstraint[] resultConstraints;
     private final BetaConstraints            resultBinder;
@@ -70,7 +71,8 @@ public class AccumulateNode extends BetaNode {
               new AlphaNodeFieldConstraint[0],
               EmptyBetaConstraints.getInstance(),
               EmptyBetaConstraints.getInstance(),
-              accumulate );
+              accumulate,
+              false );
     }
 
     public AccumulateNode(final int id,
@@ -79,7 +81,8 @@ public class AccumulateNode extends BetaNode {
                           final AlphaNodeFieldConstraint[] resultConstraints,
                           final BetaConstraints sourceBinder,
                           final BetaConstraints resultBinder,
-                          final Accumulate accumulate) {
+                          final Accumulate accumulate,
+                          final boolean unwrapRightObject ) {
         super( id,
                leftInput,
                rightInput,
@@ -87,6 +90,7 @@ public class AccumulateNode extends BetaNode {
         this.resultBinder = resultBinder;
         this.resultConstraints = resultConstraints;
         this.accumulate = accumulate;
+        this.unwrapRightObject = unwrapRightObject;
     }
 
     /**
@@ -133,8 +137,12 @@ public class AccumulateNode extends BetaNode {
                                           leftTuple );
 
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
-            final InternalFactHandle handle = entry.getFactHandle();
+            InternalFactHandle handle = entry.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
+                if( this.unwrapRightObject ) {
+                    // if there is a subnetwork, handle must be unwrapped
+                    handle = ((ReteTuple) handle.getObject()).getLastHandle(); 
+                }
                 this.accumulate.accumulate( accContext,
                                             leftTuple,
                                             handle,
@@ -282,7 +290,7 @@ public class AccumulateNode extends BetaNode {
 
     public void modifyTuple(final boolean isAssert,
                             final ReteTuple leftTuple,
-                            final InternalFactHandle handle,
+                            InternalFactHandle handle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
 
@@ -301,6 +309,11 @@ public class AccumulateNode extends BetaNode {
             accresult.handle = null;
         }
 
+        if( this.unwrapRightObject ) {
+            // if there is a subnetwork, handle must be unwrapped
+            handle = ((ReteTuple) handle.getObject()).getLastHandle(); 
+        }
+        
         if ( context.getType() == PropagationContext.ASSERTION ) {
             // assertion
             if ( accresult.context == null ) {

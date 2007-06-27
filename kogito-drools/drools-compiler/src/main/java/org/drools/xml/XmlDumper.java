@@ -24,13 +24,12 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
-import org.drools.lang.descr.ForallDescr;
-import org.drools.lang.descr.FromDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.ForallDescr;
+import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
@@ -39,6 +38,7 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PackageDescrDumper;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.QueryDescr;
@@ -114,12 +114,12 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitCollectDescr(final CollectDescr descr) {
         String tmpstr = new String();
-        visitPatternDescr( descr.getResultPattern() );
+        //visitPatternDescr( descr.getOutputPattern() );
 
         this.template = this.template.substring( 0,
                                                  this.template.indexOf( "</pattern>" ) );
         tmpstr += this.template + " <from> <collect> ";
-        visitPatternDescr( descr.getSourcePattern() );
+        visitPatternDescr( descr.getInputPattern() );
         tmpstr += this.template;
         this.template = tmpstr + " </collect> </from> ";
         this.template += "</pattern>";
@@ -127,11 +127,11 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitAccumulateDescr(final AccumulateDescr descr) {
         String tmpstr = new String();
-        visit( descr.getResultPattern() );
+        //visit( descr.getOutputPattern() );
         this.template = this.template.substring( 0,
                                                  this.template.indexOf( "</pattern>" ) );
         tmpstr += this.template + " <from> <accumulate> ";
-        visit( descr.getSourcePattern() );
+        visit( descr.getInputPattern() );
         tmpstr += this.template;
 
         if ( descr.isExternalFunction() ) tmpstr += "<external-function evaluator=\"" + descr.getFunctionIdentifier() + "\" expression=\"" + descr.getExpression() + "\"/>";
@@ -143,7 +143,7 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitFromDescr(final FromDescr descr) {
         String tmpstr = new String();
-        visitPatternDescr( descr.getReturnedPattern() );
+        //visitPatternDescr( descr.getOutputPattern() );
         this.template = this.template.substring( 0,
                                                  this.template.indexOf( "</pattern>" ) );
         tmpstr += this.template + " <from> <expression> ";

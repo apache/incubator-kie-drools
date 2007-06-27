@@ -21,7 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
@@ -37,7 +36,6 @@ import junit.framework.TestCase;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
-import org.drools.InsertedObject;
 import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.Cheesery;
@@ -46,6 +44,7 @@ import org.drools.FactHandle;
 import org.drools.FromTestClass;
 import org.drools.Guess;
 import org.drools.IndexedNumber;
+import org.drools.InsertedObject;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
@@ -79,8 +78,8 @@ import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.DefaultWorkingMemoryEventListener;
 import org.drools.event.ObjectInsertedEvent;
-import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.ObjectRetractedEvent;
+import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
@@ -2922,7 +2921,6 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( map ) );
        
     }
-    
     
     
 }

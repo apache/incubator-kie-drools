@@ -10,10 +10,8 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
-import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ClassTypeResolver;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DialectRegistry;
@@ -22,15 +20,11 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
+import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
-import org.drools.rule.builder.dialect.java.DeclarationTypeFixer;
-import org.drools.rule.builder.dialect.java.JavaDialect;
-import org.drools.rule.builder.dialect.java.JavaExprAnalyzer;
-import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
 import org.drools.spi.FieldExtractor;
 
 public class MVELPredicateBuilderTest extends TestCase {

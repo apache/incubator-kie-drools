@@ -1,10 +1,9 @@
 package org.drools.brms.modeldriven;
 
-import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
-import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
-
 import junit.framework.TestCase;
+
+import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
+import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 
 public class CompositeFieldConstraintTest extends TestCase {
 

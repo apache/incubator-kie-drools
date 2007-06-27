@@ -1,7 +1,5 @@
-package org.drools.xml;
-
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2007 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +12,16 @@ package org.drools.xml;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Created on Jun 25, 2007
  */
-
-import java.util.Set;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
+package org.drools.rule;
 
 /**
- * @author mproctor
+ * A markup interface for pattern source elements
  * 
+ * @author etirelli
  */
-interface Handler {
+public interface PatternSource extends RuleConditionElement {
 
-    Object start(String uri,
-                 String localName,
-                 Attributes attrs) throws SAXException;
-
-    Object end(String uri,
-               String localName) throws SAXException;
-
-    Set getValidParents();
-
-    Set getValidPeers();
-
-    boolean allowNesting();
-
-    Class generateNodeFor();
 }

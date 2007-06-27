@@ -19,11 +19,11 @@ package org.drools.rule.builder;
 import java.util.Iterator;
 
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ForallDescr;
-import org.drools.rule.Pattern;
-import org.drools.rule.ConditionalElement;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Forall;
+import org.drools.rule.Pattern;
+import org.drools.rule.RuleConditionElement;
 
 /**
  * @author etirelli
@@ -31,21 +31,23 @@ import org.drools.rule.Forall;
  */
 public class ForallBuilder
     implements
-    ConditionalElementBuilder {
+    RuleConditionBuilder {
 
-    public ConditionalElement build(final RuleBuildContext context,
+    public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
-        return build(context, descr, null);
+        return build( context,
+                      descr,
+                      null );
     }
-    
-    public ConditionalElement build(final RuleBuildContext context,
+
+    public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr,
                                     final Pattern prefixPattern) {
         final ForallDescr forallDescr = (ForallDescr) descr;
 
         final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
-        final Pattern basePattern = patternBuilder.build( context,
-                                                          forallDescr.getBasePattern() );
+        final Pattern basePattern = (Pattern) patternBuilder.build( context,
+                                                                    forallDescr.getBasePattern() );
 
         if ( basePattern == null ) {
             return null;
@@ -58,8 +60,8 @@ public class ForallBuilder
         context.getBuildStack().push( forall );
 
         for ( final Iterator it = forallDescr.getRemainingPatterns().iterator(); it.hasNext(); ) {
-            final Pattern anotherPattern = patternBuilder.build( context,
-                                                                 (PatternDescr) it.next() );
+            final Pattern anotherPattern = (Pattern) patternBuilder.build( context,
+                                                                           (PatternDescr) it.next() );
             forall.addRemainingPattern( anotherPattern );
         }
 

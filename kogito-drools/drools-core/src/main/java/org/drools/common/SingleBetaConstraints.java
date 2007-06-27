@@ -55,8 +55,16 @@ public class SingleBetaConstraints
 
     public SingleBetaConstraints(final BetaNodeFieldConstraint constraint,
                                  final RuleBaseConfiguration conf) {
+        this( constraint,
+              conf,
+              false );
+    }
+
+    public SingleBetaConstraints(final BetaNodeFieldConstraint constraint,
+                                 final RuleBaseConfiguration conf,
+                                 final boolean disableIndex) {
         this.conf = conf;
-        if ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) {
+        if ( (disableIndex) || (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) ) {
             this.indexed = false;
         } else {
             final int depth = conf.getCompositeKeyDepth();

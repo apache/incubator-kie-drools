@@ -9,10 +9,8 @@ import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ClassTypeResolver;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
@@ -20,14 +18,10 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Package;
-import org.drools.rule.builder.RuleBuildContext;
-import org.drools.rule.builder.dialect.java.JavaDialect;
-import org.drools.rule.builder.dialect.mvel.MVELEvalBuilder;
-import org.drools.spi.DeclarationScopeResolver;
+import org.drools.rule.Pattern;
 import org.drools.spi.FieldExtractor;
 
 public class MVELEvalBuilderTest extends TestCase {

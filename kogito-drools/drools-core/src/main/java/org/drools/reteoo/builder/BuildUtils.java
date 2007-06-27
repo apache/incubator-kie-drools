@@ -161,7 +161,8 @@ public class BuildUtils {
      * @return
      */
     public BetaConstraints createBetaNodeConstraint(final BuildContext context,
-                                                    final List list) {
+                                                    final List list,
+                                                    final boolean disableIndexing ) {
         BetaConstraints constraints;
         switch ( list.size() ) {
             case 0 :
@@ -169,7 +170,8 @@ public class BuildUtils {
                 break;
             case 1 :
                 constraints = new SingleBetaConstraints( (BetaNodeFieldConstraint) list.get( 0 ),
-                                                         context.getRuleBase().getConfiguration() );
+                                                         context.getRuleBase().getConfiguration(),
+                                                         disableIndexing );
                 break;
             case 2 :
                 constraints = new DoubleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),

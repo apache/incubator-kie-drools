@@ -21,13 +21,13 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.ForallDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;

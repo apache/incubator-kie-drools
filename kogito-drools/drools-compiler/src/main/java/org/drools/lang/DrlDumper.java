@@ -138,18 +138,18 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitCollectDescr(final CollectDescr descr) {
         String tmpstr = new String();
-        visitPatternDescr( descr.getResultPattern() );
+        //visitPatternDescr( descr.getOutputPattern() );
         tmpstr += this.template + " from collect (";
-        visitPatternDescr( descr.getSourcePattern() );
+        visitPatternDescr( descr.getInputPattern() );
         tmpstr += this.template.substring( 2 );
         this.template = tmpstr + ");";
     }
 
     public void visitAccumulateDescr(final AccumulateDescr descr) {
         String tmpstr = new String();
-        visitPatternDescr( descr.getResultPattern() );
+        //visitPatternDescr( descr.getOutputPattern() );
         tmpstr += this.template + " from accumulate (";
-        visitPatternDescr( descr.getSourcePattern() );
+        visitPatternDescr( descr.getInputPattern() );
         tmpstr += this.template.substring( 2 );
 
         if ( descr.isExternalFunction() ) tmpstr += "," + descr.getFunctionIdentifier() + "(" + descr.getExpression() + ")";
@@ -162,7 +162,7 @@ public class DrlDumper extends ReflectiveVisitor
     }
 
     public void visitFromDescr(final FromDescr descr) {
-        visitPatternDescr( descr.getReturnedPattern() );
+        //visitPatternDescr( descr.getOutputPattern() );
         this.template += " from ";
         this.template += descr.getDataSource();
     }

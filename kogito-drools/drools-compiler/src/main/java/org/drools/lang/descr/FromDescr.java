@@ -3,21 +3,13 @@ package org.drools.lang.descr;
 import java.util.Collections;
 import java.util.List;
 
-public class FromDescr extends BaseDescr
+public class FromDescr extends PatternSourceDescr
     implements
-    ConditionalElementDescr {
+    ConditionalElementDescr
+    {
 
     private static final long serialVersionUID = -7321451713158332284L;
-    private PatternDescr             pattern;
     private DeclarativeInvokerDescr dataSource;
-
-    public int getLine() {
-        return this.pattern.getLine();
-    }
-
-    public void setPattern(final PatternDescr pattern) {
-        this.pattern = pattern;
-    }
 
     public DeclarativeInvokerDescr getDataSource() {
         return this.dataSource;
@@ -25,10 +17,6 @@ public class FromDescr extends BaseDescr
 
     public void setDataSource(final DeclarativeInvokerDescr dataSource) {
         this.dataSource = dataSource;
-    }
-
-    public PatternDescr getReturnedPattern() {
-        return this.pattern;
     }
 
     public void addDescr(final BaseDescr baseDescr) {
@@ -42,5 +30,6 @@ public class FromDescr extends BaseDescr
     public void addOrMerge(BaseDescr baseDescr) {
         throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());        
     }
+
 
 }

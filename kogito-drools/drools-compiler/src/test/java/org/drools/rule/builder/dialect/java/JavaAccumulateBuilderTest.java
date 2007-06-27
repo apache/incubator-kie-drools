@@ -2,6 +2,8 @@ package org.drools.rule.builder.dialect.java;
 
 import java.util.Set;
 
+import junit.framework.TestCase;
+
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -10,14 +12,9 @@ import org.drools.lang.descr.DescrFactory;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.InitialFactHandle;
-import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Accumulate;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
-
-import junit.framework.TestCase;
 
 public class JavaAccumulateBuilderTest extends TestCase {
 
@@ -39,10 +36,7 @@ public class JavaAccumulateBuilderTest extends TestCase {
         FieldBindingDescr price = new FieldBindingDescr( "price", "$price" );
         PatternDescr cheeseDescr = new PatternDescr( "org.drools.Cheese" );
         cheeseDescr.addConstraint( price );
-        accumDescr.setSourcePattern( cheeseDescr );
-        
-        PatternDescr totalDescr = new PatternDescr( "java.lang.Integer", "$total" );
-        accumDescr.setResultPattern( totalDescr );
+        accumDescr.setInputPattern( cheeseDescr );
         
         accumDescr.setInitCode( "int x = 0;" );
         accumDescr.setActionCode( "x += $price;" );

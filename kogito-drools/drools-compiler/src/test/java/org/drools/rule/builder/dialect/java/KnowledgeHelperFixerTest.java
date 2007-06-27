@@ -16,8 +16,6 @@ package org.drools.rule.builder.dialect.java;
  * limitations under the License.
  */
 
-import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
-
 import junit.framework.TestCase;
 
 public class KnowledgeHelperFixerTest extends TestCase {

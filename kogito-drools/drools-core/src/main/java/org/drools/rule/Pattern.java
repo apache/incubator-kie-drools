@@ -40,6 +40,7 @@ public class Pattern
     final Declaration         declaration;
     private Map               declarations;
     private final int         index;
+    private PatternSource     source;
 
     // this is the offset of the related fact inside a tuple. i.e:
     // the position of the related fact inside the tuple; 
@@ -102,6 +103,14 @@ public class Pattern
 
     public ObjectType getObjectType() {
         return this.objectType;
+    }
+
+    public PatternSource getSource() {
+        return source;
+    }
+
+    public void setSource(PatternSource source) {
+        this.source = source;
     }
 
     public List getConstraints() {
@@ -184,6 +193,7 @@ public class Pattern
         result = PRIME * result + this.index;
         result = PRIME * result + ((this.objectType == null) ? 0 : this.objectType.hashCode());
         result = PRIME * result + this.offset;
+        result = PRIME * result + ((this.source == null) ? 0 : this.source.hashCode());
         return result;
     }
 
@@ -220,7 +230,7 @@ public class Pattern
         if ( this.offset != other.offset ) {
             return false;
         }
-        return true;
+        return ( this.source == null ) ? other.source == null : this.source.equals( other.source ); 
     }
 
 }

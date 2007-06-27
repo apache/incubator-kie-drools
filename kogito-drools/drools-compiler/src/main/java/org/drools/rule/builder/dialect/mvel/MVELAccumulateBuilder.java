@@ -28,11 +28,10 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Accumulate;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
+import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.ConditionalElementBuilder;
 import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -46,35 +45,30 @@ import org.mvel.MVEL;
  */
 public class MVELAccumulateBuilder
     implements
-    ConditionalElementBuilder,
     AccumulateBuilder {
 
-    public ConditionalElement build(final RuleBuildContext context,
-                                    final BaseDescr descr) {
+    public RuleConditionElement build(final RuleBuildContext context,
+                                      final BaseDescr descr) {
         return build( context,
                       descr,
                       null );
     }
 
-    public ConditionalElement build(final RuleBuildContext context,
-                                    final BaseDescr descr,
-                                    final Pattern prefixPattern) {
+    public RuleConditionElement build(final RuleBuildContext context,
+                                      final BaseDescr descr,
+                                      final Pattern prefixPattern) {
 
         final AccumulateDescr accumDescr = (AccumulateDescr) descr;
 
         final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
 
         // create source pattern
-        final Pattern sourcePattern = patternBuilder.build( context,
-                                                            accumDescr.getSourcePattern() );
+        final Pattern sourcePattern = (Pattern) patternBuilder.build( context,
+                                                                      accumDescr.getInputPattern() );
 
         if ( sourcePattern == null ) {
             return null;
         }
-
-        // create result pattern
-        final Pattern resultPattern = patternBuilder.build( context,
-                                                            accumDescr.getResultPattern() );
 
         final Declaration[] sourceDeclArr = (Declaration[]) sourcePattern.getOuterDeclarations().values().toArray( new Declaration[0] );
 
@@ -102,7 +96,7 @@ public class MVELAccumulateBuilder
                                                                     ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
 
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
-            
+
             accumulator = new MVELAccumulatorFunctionExecutor( factory,
                                                                expression,
                                                                function );
@@ -148,7 +142,6 @@ public class MVELAccumulateBuilder
         }
 
         final Accumulate accumulate = new Accumulate( sourcePattern,
-                                                      resultPattern,
                                                       declarations,
                                                       sourceDeclArr,
                                                       accumulator );

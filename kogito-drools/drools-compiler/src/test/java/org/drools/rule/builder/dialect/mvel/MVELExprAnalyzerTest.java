@@ -1,11 +1,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import java.util.List;
-import java.util.Set;
-
 import junit.framework.TestCase;
-
-import org.antlr.runtime.RecognitionException;
 
 public class MVELExprAnalyzerTest extends TestCase {
 

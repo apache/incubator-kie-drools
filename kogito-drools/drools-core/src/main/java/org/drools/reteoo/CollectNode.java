@@ -46,6 +46,7 @@ public class CollectNode extends BetaNode
     private final Collect                    collect;
     private final AlphaNodeFieldConstraint[] resultConstraints;
     private final BetaConstraints            resultsBinder;
+    private final boolean                    unwrapRightObject;
 
     /**
      * Constructor.
@@ -69,7 +70,8 @@ public class CollectNode extends BetaNode
               new AlphaNodeFieldConstraint[0],
               EmptyBetaConstraints.getInstance(),
               EmptyBetaConstraints.getInstance(),
-              collect );
+              collect,
+              false );
     }
 
     /**
@@ -96,7 +98,8 @@ public class CollectNode extends BetaNode
                        final AlphaNodeFieldConstraint[] resultConstraints,
                        final BetaConstraints sourceBinder,
                        final BetaConstraints resultsBinder,
-                       final Collect collect) {
+                       final Collect collect,
+                       final boolean unwrapRight ) {
         super( id,
                leftInput,
                rightInput,
@@ -104,6 +107,7 @@ public class CollectNode extends BetaNode
         this.resultsBinder = resultsBinder;
         this.resultConstraints = resultConstraints;
         this.collect = collect;
+        this.unwrapRightObject = unwrapRight;
     }
 
     /**
@@ -141,8 +145,11 @@ public class CollectNode extends BetaNode
                                           leftTuple );
 
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
-            final InternalFactHandle handle = entry.getFactHandle();
+            InternalFactHandle handle = entry.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
+                if( this.unwrapRightObject ) {
+                    handle = ((ReteTuple) handle.getObject()).getLastHandle(); 
+                }
                 result.add( handle.getObject() );
             }
         }
@@ -268,7 +275,7 @@ public class CollectNode extends BetaNode
      * @param workingMemory
      */
     public void modifyTuple(final ReteTuple leftTuple,
-                            final InternalFactHandle handle,
+                            InternalFactHandle handle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
 
@@ -283,6 +290,11 @@ public class CollectNode extends BetaNode
                                              context,
                                              workingMemory );
             result.propagated = false;
+        }
+        
+        // if there is a subnetwork, we need to unwrapp the object from inside the tuple
+        if( this.unwrapRightObject ) {
+            handle = ((ReteTuple) handle.getObject()).getLastHandle(); 
         }
 
         if ( context.getType() == PropagationContext.ASSERTION ) {

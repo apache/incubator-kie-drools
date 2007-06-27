@@ -17,16 +17,16 @@
 package org.drools.reteoo.builder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.common.BetaConstraints;
+import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.CollectNode;
+import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.TupleSource;
 import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
-import org.drools.rule.Declaration;
-import org.drools.rule.LiteralConstraint;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 
@@ -45,55 +45,56 @@ public class CollectBuilder
                       final BuildUtils utils,
                       final RuleConditionElement rce) {
 
+        boolean existSubNetwort = false;
         final Collect collect = (Collect) rce;
+
+        final List resultBetaConstraints = context.getBetaconstraints();
+        final List resultAlphaConstraints = context.getAlphaConstraints();
 
         final Pattern sourcePattern = collect.getSourcePattern();
 
         // get builder for the pattern
         final ReteooComponentBuilder builder = utils.getBuilderFor( sourcePattern );
 
+        // save tuple source for later if needed
+        final TupleSource tupleSource = context.getTupleSource();
+        
         // builds the source pattern
         builder.build( context,
                        utils,
                        sourcePattern );
 
-        final Pattern pattern = collect.getResultPattern();
-        // adjusting target pattern offset to be the same as the source pattern
-        pattern.setOffset( context.getCurrentPatternOffset() - 1 );
+        // if object source is null, then we need to adapt tuple source into a subnetwork
+        if ( context.getObjectSource() == null ) {
 
-        final List constraints = pattern.getConstraints();
+            // attach right input adapter node to convert tuple source into an object source
+            context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                      new RightInputAdapterNode( context.getNextId(),
+                                                                                                 context.getTupleSource() ) ) );
 
-        final List betaConstraints = new ArrayList();
-        final List alphaConstraints = new ArrayList();
+            // restore tuple source from before the start of the sub network
+            context.setTupleSource( tupleSource );
 
-        for ( final Iterator it = constraints.iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            // Check if its a declaration
-            if ( object instanceof Declaration ) {
-                continue;
-            }
-
-            final AlphaNodeFieldConstraint fieldConstraint = (AlphaNodeFieldConstraint) object;
-            if ( fieldConstraint instanceof LiteralConstraint ) {
-                alphaConstraints.add( fieldConstraint );
-            } else {
-                utils.checkUnboundDeclarations( context,
-                                                fieldConstraint.getRequiredDeclarations() );
-                betaConstraints.add( fieldConstraint );
-            }
+            // create a tuple start equals constraint and set it in the context
+            final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
+            final List betaConstraints = new ArrayList();
+            betaConstraints.add( constraint );
+            context.setBetaconstraints( betaConstraints );
+            existSubNetwort = true;
         }
-
-        final BetaConstraints resultsBinder = utils.createBetaNodeConstraint( context,
-                                                                              betaConstraints );
-
+        
+        BetaConstraints binder = utils.createBetaNodeConstraint( context, context.getBetaconstraints(), false );
+        BetaConstraints resultBinder = utils.createBetaNodeConstraint( context, resultBetaConstraints, false );
+        
         context.setTupleSource( (TupleSource) utils.attachNode( context,
                                                                 new CollectNode( context.getNextId(),
                                                                                  context.getTupleSource(),
                                                                                  context.getObjectSource(),
-                                                                                 (AlphaNodeFieldConstraint[]) alphaConstraints.toArray( new AlphaNodeFieldConstraint[alphaConstraints.size()] ),
-                                                                                 context.getBetaconstraints(),
-                                                                                 resultsBinder,
-                                                                                 collect ) ) );
+                                                                                 (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
+                                                                                 binder, // source binder
+                                                                                 resultBinder,
+                                                                                 collect,
+                                                                                 existSubNetwort ) ) );
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
     }

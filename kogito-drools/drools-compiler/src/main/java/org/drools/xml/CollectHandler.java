@@ -75,7 +75,7 @@ public class CollectHandler extends BaseAbstractHandler
 
         if ( parent.getClass().getName().equals( FromDescr.class.getName() ) ) {
             final PatternDescr resultPattern = (PatternDescr) ite.previous();
-            collectDescr.setResultPattern( resultPattern );
+            collectDescr.setInputPattern( resultPattern );
 
             final AndDescr andDescr = (AndDescr) ite.previous();
             andDescr.addDescr( collectDescr );

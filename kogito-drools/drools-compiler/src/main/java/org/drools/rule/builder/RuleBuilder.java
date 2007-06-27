@@ -44,7 +44,7 @@ public class RuleBuilder {
     public void build(final RuleBuildContext context) {
         RuleDescr ruleDescr = context.getRuleDescr();
 
-        final ConditionalElementBuilder builder = (ConditionalElementBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
+        final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
             Pattern prefixPattern = null;
             if ( context.getRuleDescr() instanceof QueryDescr ) {

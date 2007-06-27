@@ -24,14 +24,11 @@ import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.rule.Pattern;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.From;
-import org.drools.rule.builder.RuleBuildContext;
-import org.drools.rule.builder.PatternBuilder;
-import org.drools.rule.builder.ConditionalElementBuilder;
+import org.drools.rule.Pattern;
+import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.FromBuilder;
+import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.DataProvider;
 import org.mvel.MVEL;
 import org.mvel.integration.impl.ClassImportResolverFactory;
@@ -43,27 +40,19 @@ import org.mvel.integration.impl.ClassImportResolverFactory;
  */
 public class MVELFromBuilder
     implements
-    ConditionalElementBuilder,
     FromBuilder {
 
-    public ConditionalElement build(final RuleBuildContext context,
-                                    final BaseDescr descr) {
-        return build(context, descr, null);
+    public RuleConditionElement build(final RuleBuildContext context,
+                                      final BaseDescr descr) {
+        return build( context,
+                      descr,
+                      null );
     }
-    
-    public ConditionalElement build(final RuleBuildContext context,
-                                    final BaseDescr descr,
-                                    final Pattern prefixPattern) {
+
+    public RuleConditionElement build(final RuleBuildContext context,
+                                      final BaseDescr descr,
+                                      final Pattern prefixPattern) {
         final FromDescr fromDescr = (FromDescr) descr;
-
-        final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
-
-        final Pattern pattern = patternBuilder.build( context,
-                                                      fromDescr.getReturnedPattern() );
-
-        if ( pattern == null ) {
-            return null;
-        }
 
         final AccessorDescr accessor = (AccessorDescr) fromDescr.getDataSource();
         DataProvider dataProvider = null;
@@ -90,7 +79,6 @@ public class MVELFromBuilder
             return null;
         }
 
-        return new From( pattern,
-                         dataProvider );
+        return new From( dataProvider );
     }
 }
