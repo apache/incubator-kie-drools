@@ -18,6 +18,7 @@ package org.drools.common;
 
 import java.io.Serializable;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.util.FactHashTable;
@@ -79,8 +80,8 @@ public class EmptyBetaConstraints
         return true;
     }
 
-    public BetaMemory createBetaMemory() {
-        final BetaMemory memory = new BetaMemory( new TupleHashTable(),
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
+        final BetaMemory memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
                                                   new FactHashTable() );
 
         return memory;

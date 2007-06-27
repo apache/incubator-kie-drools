@@ -50,7 +50,6 @@ public class QueryTerminalNodeTest extends TestCase {
         final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( 1,
                                                                        queryObjectType,
                                                                        rete,
-                                                                       true,
                                                                        3 );
         queryObjectTypeNode.attach();
 
@@ -80,7 +79,6 @@ public class QueryTerminalNodeTest extends TestCase {
         final ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( 4,
                                                                         cheeseObjectType,
                                                                         rete,
-                                                                        true,
                                                                         3 );
         cheeseObjectTypeNode.attach();
 

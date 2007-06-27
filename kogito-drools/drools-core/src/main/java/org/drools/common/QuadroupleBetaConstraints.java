@@ -230,7 +230,7 @@ public class QuadroupleBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory() {
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
 
         BetaMemory memory;
 
@@ -283,10 +283,10 @@ public class QuadroupleBetaConstraints
             } else {
                 factHandleMemory = new FactHashTable();
             }
-            memory = new BetaMemory( tupleMemory,
+            memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
                                      factHandleMemory );
         } else {
-            memory = new BetaMemory( new TupleHashTable(),
+            memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
                                      new FactHashTable() );
         }
 

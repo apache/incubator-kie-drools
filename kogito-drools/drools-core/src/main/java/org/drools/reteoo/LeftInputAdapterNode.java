@@ -89,21 +89,6 @@ public class LeftInputAdapterNode extends TupleSource
         setHasMemory( false );
     }
 
-    //    public AlphaNodeFieldConstraint[] getConstraints() {
-    //        // Sanity check
-    //        if ( this.constraints == null ) {
-    //            return null;
-    //        }
-    //        LinkedList constraints = this.constraints.getConstraints();
-    //
-    //        AlphaNodeFieldConstraint[] array = new AlphaNodeFieldConstraint[constraints.size()];
-    //        int i = 0;
-    //        for ( LinkedListEntry entry = (LinkedListEntry) constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
-    //            array[i++] = (AlphaNodeFieldConstraint) entry.getObject();
-    //        }
-    //        return array;
-    //    }
-
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()
      */
@@ -141,14 +126,18 @@ public class LeftInputAdapterNode extends TupleSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
 
-        this.sink.createAndPropagateAssertTuple( handle,
-                                                 context,
-                                                 workingMemory );
+        if ( !workingMemory.isSequential() ) {
+            this.sink.createAndPropagateAssertTuple( handle,
+                                                     context,
+                                                     workingMemory );
 
-        if ( this.hasMemory ) {
-            final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-            memory.add( handle,
-                        false );
+            if ( this.hasMemory ) {
+                final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
+                memory.add( handle,
+                            false );
+            }
+        } else {
+            workingMemory.addLIANodePropagation( new LIANodePropagation(this, handle, context) );
         }
     }
 

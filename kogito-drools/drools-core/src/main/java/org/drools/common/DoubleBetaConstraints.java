@@ -159,7 +159,7 @@ public class DoubleBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory() {
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
         BetaMemory memory;
 
         final List list = new ArrayList( 2 );
@@ -196,10 +196,10 @@ public class DoubleBetaConstraints
             } else {
                 factHandleMemory = new FactHashTable();
             }
-            memory = new BetaMemory( tupleMemory,
+            memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
                                      factHandleMemory );
         } else {
-            memory = new BetaMemory( new TupleHashTable(),
+            memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
                                      new FactHashTable() );
         }
 

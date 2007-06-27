@@ -100,6 +100,7 @@ abstract class BetaNode extends TupleSource
              final ObjectSource rightInput,
              final BetaConstraints constraints) {
         super( id );
+        super.setHasMemory( true );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.constraints = constraints;
@@ -230,7 +231,7 @@ abstract class BetaNode extends TupleSource
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Object createMemory(final RuleBaseConfiguration config) {
-        return this.constraints.createBetaMemory();
+        return this.constraints.createBetaMemory(config);
     }
 
     /**

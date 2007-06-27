@@ -3,6 +3,7 @@ package org.drools.common;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.reteoo.LIANodePropagation;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
@@ -42,4 +43,8 @@ public interface InternalWorkingMemory
                        final Activation activation) throws FactException;
 
     public Lock getLock();    
+    
+    public boolean isSequential();
+    
+    public void addLIANodePropagation(LIANodePropagation liaNodePropagation);
 }

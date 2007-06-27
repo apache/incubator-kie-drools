@@ -48,6 +48,7 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.reteoo.LIANodePropagation;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.common.core.Process;
 import org.drools.ruleflow.common.instance.ProcessInstance;
@@ -137,6 +138,10 @@ public abstract class AbstractWorkingMemory
     protected long                            propagationIdCounter;
 
     private final boolean                     maintainTms;
+    
+    private final boolean                     sequential;
+    
+    private List                        liaPropagations                                = Collections.EMPTY_LIST;
 
     /** Flag to determine if a rule is currently being fired. */
     protected boolean                         firing;
@@ -157,7 +162,8 @@ public abstract class AbstractWorkingMemory
         this.id = id;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
-        this.maintainTms = this.ruleBase.getConfiguration().getMaintainTms();
+        this.maintainTms = this.ruleBase.getConfiguration().isMaintainTms();
+        this.sequential = this.ruleBase.getConfiguration().isSequential();
 
         if ( this.maintainTms ) {
             this.tms = new TruthMaintenanceSystem( this );
@@ -185,10 +191,21 @@ public abstract class AbstractWorkingMemory
 
     // ------------------------------------------------------------
     // Instance methods
-    // ------------------------------------------------------------
-
+    // ------------------------------------------------------------    
+    
     void setRuleBase(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
+    }
+    
+    public boolean isSequential() {
+        return this.sequential;
+    }
+    
+    public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
+        if ( this.liaPropagations == Collections.EMPTY_LIST ) {
+            this.liaPropagations = new ArrayList();
+        }
+        this.liaPropagations.add( liaNodePropagation );
     }
 
     public void addEventListener(final WorkingMemoryEventListener listener) {
@@ -388,8 +405,14 @@ public abstract class AbstractWorkingMemory
         // If we're already firing a rule, then it'll pick up
         // the firing for any other assertObject(..) that get
         // nested inside, avoiding concurrent-modification
-        // exceptions, depending on code paths of the actions.
+        // exceptions, depending on code paths of the actions.                
 
+        if ( isSequential() ) {
+            for ( Iterator it = this.liaPropagations.iterator(); it.hasNext(); ) {
+                (( LIANodePropagation ) it.next()).doPropagation( this );
+            }
+        }
+        
         if ( !this.actionQueue.isEmpty() ) {
             executeQueuedActions();
         }
@@ -626,7 +649,15 @@ public abstract class AbstractWorkingMemory
             // you cannot assert a null object
             return null;
         }
+                
         InternalFactHandle handle = null;
+        
+        if ( isSequential() ) {
+            handle = this.handleFactory.newFactHandle( object );
+            insert(handle, object, rule, activation);
+            return handle;
+        }
+        
         try {
             this.lock.lock();
             // check if the object already exists in the WM
@@ -761,29 +792,35 @@ public abstract class AbstractWorkingMemory
             if ( dynamic ) {
                 addPropertyChangeListener( object );
             }
+            
+            insert(handle, object, rule, activation);
 
-            final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
-                                                                                      PropagationContext.ASSERTION,
-                                                                                      rule,
-                                                                                      activation,
-                                                                                      this.agenda.getActiveActivations(),
-                                                                                      this.agenda.getDormantActivations() );
 
-            doInsert( handle,
-                      object,
-                      propagationContext );
-
-            this.workingMemoryEventSupport.fireObjectInserted( propagationContext,
-                                                               handle,
-                                                               object );
-
-            if ( !this.actionQueue.isEmpty() ) {
-                executeQueuedActions();
-            }
         } finally {
             this.lock.unlock();
         }
         return handle;
+    }
+    
+    private void insert( InternalFactHandle handle, Object object, Rule rule, Activation activation) {
+        final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
+                                                                                  PropagationContext.ASSERTION,
+                                                                                  rule,
+                                                                                  activation,
+                                                                                  this.agenda.getActiveActivations(),
+                                                                                  this.agenda.getDormantActivations() );
+
+        doInsert( handle,
+                  object,
+                  propagationContext );
+
+        this.workingMemoryEventSupport.fireObjectInserted( propagationContext,
+                                                           handle,
+                                                           object );
+
+        if ( !this.actionQueue.isEmpty() ) {
+            executeQueuedActions();
+        }        
     }
 
     protected void addPropertyChangeListener(final Object object) {

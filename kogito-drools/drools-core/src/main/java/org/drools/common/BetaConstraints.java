@@ -2,6 +2,7 @@ package org.drools.common;
 
 import java.io.Serializable;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.util.LinkedList;
@@ -26,5 +27,5 @@ public interface BetaConstraints
 
     public boolean isEmpty();
 
-    public BetaMemory createBetaMemory();
+    public BetaMemory createBetaMemory(final RuleBaseConfiguration config);
 }

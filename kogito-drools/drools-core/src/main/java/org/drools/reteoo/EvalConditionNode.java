@@ -142,8 +142,10 @@ public class EvalConditionNode extends TupleSource
                                                           workingMemory );
 
         if ( allowed ) {
-            final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( this );
-            memory.add( tuple );
+            if ( !workingMemory.isSequential() ) {
+                final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( this );
+                memory.add( tuple );
+            }
 
             this.sink.propagateAssertTuple( tuple,
                                             context,

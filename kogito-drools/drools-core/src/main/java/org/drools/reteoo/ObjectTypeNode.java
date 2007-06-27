@@ -93,14 +93,13 @@ public class ObjectTypeNode extends ObjectSource
     public ObjectTypeNode(final int id,
                           final ObjectType objectType,
                           final Rete rete,
-                          final boolean hasMemory,
                           final int alphaNodeHashingThreshold) {
         super( id,
                null,
                alphaNodeHashingThreshold );
         this.rete = rete;
         this.objectType = objectType;
-        setHasMemory( hasMemory );
+        setHasMemory( true );
     }
 
     // ------------------------------------------------------------
@@ -144,14 +143,13 @@ public class ObjectTypeNode extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-
         if ( context.getType() == PropagationContext.MODIFICATION && this.skipOnModify && context.getDormantActivations() == 0 ) {
             // we do this after the shadowproxy update, just so that its up to date for the future
             return;
         }
 
-        if ( hasMemory() ) {
+        if ( !workingMemory.isSequential() ) {
+            final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             memory.add( handle,
                         false );
         }

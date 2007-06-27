@@ -179,7 +179,10 @@ public final class RuleTerminalNode extends BaseNode
 
             agenda.scheduleItem( item );
             tuple.setActivation( item );
-            memory.getTupleMemory().add( tuple );
+            
+            if ( !workingMemory.isSequential() ) {
+                memory.getTupleMemory().add( tuple );
+            }
 
             item.setActivated( true );
             ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
