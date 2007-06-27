@@ -175,19 +175,23 @@ public class BuildUtils {
                 break;
             case 2 :
                 constraints = new DoubleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                         context.getRuleBase().getConfiguration() );
+                                                         context.getRuleBase().getConfiguration(),
+                                                         disableIndexing  );
                 break;
             case 3 :
                 constraints = new TripleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                         context.getRuleBase().getConfiguration() );
+                                                         context.getRuleBase().getConfiguration(),
+                                                         disableIndexing  );
                 break;
             case 4 :
                 constraints = new QuadroupleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                             context.getRuleBase().getConfiguration() );
+                                                             context.getRuleBase().getConfiguration(),
+                                                             disableIndexing  );
                 break;
             default :
                 constraints = new DefaultBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
-                                                          context.getRuleBase().getConfiguration() );
+                                                          context.getRuleBase().getConfiguration(),
+                                                          disableIndexing  );
         }
         return constraints;
     }

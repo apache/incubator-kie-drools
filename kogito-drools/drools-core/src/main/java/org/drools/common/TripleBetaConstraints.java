@@ -63,8 +63,16 @@ public class TripleBetaConstraints
 
     public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                  final RuleBaseConfiguration conf) {
+        this( constraints,
+              conf,
+              false );
+    }
+
+    public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
+                                 final RuleBaseConfiguration conf,
+                                 final boolean disableIndexing) {
         this.conf = conf;
-        if ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) {
+        if ( disableIndexing || (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) ) {
             this.indexed0 = false;
             this.indexed1 = false;
             this.indexed2 = false;
