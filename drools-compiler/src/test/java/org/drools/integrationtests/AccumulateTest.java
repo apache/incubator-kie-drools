@@ -682,4 +682,78 @@ public class AccumulateTest extends TestCase {
 
     }
     
+    public void testAccumulateWithFromChaining() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateWithFromChaining.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+                                                         8 ), new Cheese( "stilton",
+                                                                           10 ), new Cheese( "stilton",
+                                                                                            9 ), new Cheese( "brie",
+                                                                                                              4 ), new Cheese( "brie",
+                                                                                                                                1 ), new Cheese( "provolone",
+                                                                                                                                                  8 )};
+
+        Cheesery cheesery = new Cheesery();
+        
+        for( int i = 0; i < cheese.length; i++ ) {
+            cheesery.addCheese( cheese[i] );
+        }
+        
+        FactHandle cheeseryHandle = wm.insert( cheesery );
+        
+        final Person bob = new Person( "Bob",
+                                       "stilton" );
+
+        final FactHandle bobHandle = wm.insert( bob );
+
+        // ---------------- 1st scenario
+        wm.fireAllRules();
+        // one fire, as per rule constraints
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 3,
+                             ((List) results.get( results.size() - 1 )).size() );
+
+        // ---------------- 2nd scenario
+        final int index = 1;
+        cheese[index].setType( "brie" );
+        wm.update( cheeseryHandle,
+                   cheesery );
+        wm.fireAllRules();
+
+        // no fire
+        Assert.assertEquals( 1,
+                             results.size() );
+
+        // ---------------- 3rd scenario
+        bob.setLikes( "brie" );
+        wm.update( bobHandle,
+                   bob );
+        wm.fireAllRules();
+
+        // 2 fires
+        Assert.assertEquals( 2,
+                             results.size() );
+        Assert.assertEquals( 3,
+                             ((List) results.get( results.size() - 1 )).size() );
+
+        // ---------------- 4th scenario
+        cheesery.getCheeses().remove( cheese[3] );
+        wm.update( cheeseryHandle,
+                   cheesery );
+        wm.fireAllRules();
+
+        // should not have fired as per constraint
+        Assert.assertEquals( 2,
+                             results.size() );
+
+    }
 }
