@@ -172,12 +172,13 @@ public class TupleIndexHashTable extends AbstractHashTable
         int index = 0;
         for ( int i = 0; i < this.table.length; i++ ) {
             FieldIndexEntry fieldIndexEntry = (FieldIndexEntry)this.table[i];
-            if ( fieldIndexEntry != null ) {
+            while ( fieldIndexEntry != null ) {
                 Entry entry = fieldIndexEntry.getFirst();
                 while ( entry != null ) {
                     result[index++] = entry;
                     entry = entry.getNext();
-                }
+                }       
+                fieldIndexEntry  = ( FieldIndexEntry ) fieldIndexEntry.getNext();
             }
         }
         return result;
