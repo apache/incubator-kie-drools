@@ -106,20 +106,25 @@ public class DrlDumper extends ReflectiveVisitor
     }
 
     public void visitPatternDescr(final PatternDescr descr) {
-        this.template = new String();
-        if ( !descr.getConstraint().getDescrs().isEmpty() ) {
-            if ( descr.getIdentifier() != null ) {
-                this.template = "\t\t" + descr.getIdentifier() + " : " + descr.getObjectType() + "( " + processColoumnConstraintList( descr.getConstraint().getDescrs() ) + ")";
-            } else {
-                this.template = "\t\t" + descr.getObjectType() + "( " + processColoumnConstraintList( descr.getConstraint().getDescrs() ) + ")";
-            }
-        } else {
-            if ( descr.getIdentifier() != null ) {
-                this.template = "\t\t" + descr.getIdentifier() + " : " + descr.getObjectType() + "( )";
-            } else {
-                this.template = "\t\t" + descr.getObjectType() + "( )";
-            }
+        StringBuffer buf = new StringBuffer();
+        buf.append( "\t\t" );
+        if ( descr.getIdentifier() != null ) {
+            buf.append(  descr.getIdentifier() );
+            buf.append( " : " );
+            
         }
+        buf.append( descr.getObjectType() );
+        buf.append( "( " );
+        if ( !descr.getConstraint().getDescrs().isEmpty() ) {
+            buf.append( processColoumnConstraintList( descr.getConstraint().getDescrs() ) );
+        }
+        buf.append( " )" );
+        if( descr.getSource() != null ) {
+            buf.append( " from " );
+            this.template = buf.toString();
+            visit( descr.getSource() );
+        }
+        this.template = buf.toString();
     }
 
     public void visitEvalDescr(final EvalDescr descr) {
@@ -138,8 +143,7 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitCollectDescr(final CollectDescr descr) {
         String tmpstr = new String();
-        //visitPatternDescr( descr.getOutputPattern() );
-        tmpstr += this.template + " from collect (";
+        tmpstr += this.template + " collect (";
         visitPatternDescr( descr.getInputPattern() );
         tmpstr += this.template.substring( 2 );
         this.template = tmpstr + ");";
@@ -147,23 +151,24 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitAccumulateDescr(final AccumulateDescr descr) {
         String tmpstr = new String();
-        //visitPatternDescr( descr.getOutputPattern() );
-        tmpstr += this.template + " from accumulate (";
+        tmpstr += this.template + " accumulate (";
         visitPatternDescr( descr.getInputPattern() );
         tmpstr += this.template.substring( 2 );
 
-        if ( descr.isExternalFunction() ) tmpstr += "," + descr.getFunctionIdentifier() + "(" + descr.getExpression() + ")";
-        else {
+        if ( descr.isExternalFunction() ) {
+            tmpstr += "," + descr.getFunctionIdentifier() + "(" + descr.getExpression() + ")";
+        } else {
             tmpstr += ", init(" + descr.getInitCode() + "), ";
             tmpstr += "action(" + descr.getActionCode() + "), ";
+            if( descr.getReverseCode() != null ) {
+                tmpstr += " reverse(" + descr.getReverseCode() +"), ";
+            }
             tmpstr += "result(" + descr.getResultCode() + ")";
         }
         this.template = tmpstr + ");";
     }
 
     public void visitFromDescr(final FromDescr descr) {
-        //visitPatternDescr( descr.getOutputPattern() );
-        this.template += " from ";
         this.template += descr.getDataSource();
     }
 
