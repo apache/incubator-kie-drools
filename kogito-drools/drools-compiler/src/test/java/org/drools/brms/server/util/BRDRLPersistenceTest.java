@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
 import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
@@ -408,6 +409,41 @@ public class BRDRLPersistenceTest extends TestCase {
 
     }
     
+    public void testInvalidComposite() throws Exception {
+        RuleModel m = new RuleModel();
+        CompositeFactPattern com = new CompositeFactPattern("not");
+        m.addLhsItem( com );
+        
+        String s = BRDRLPersistence.getInstance().marshal( m );
+        assertNotNull(s);
+        
+        m.addLhsItem( new CompositeFactPattern("or") );
+        m.addLhsItem( new CompositeFactPattern("exists") );
+        s = BRDRLPersistence.getInstance().marshal( m );
+        assertNotNull(s);
+    }
     
+    public void testAssertWithDSL() throws Exception {
+        RuleModel m = new RuleModel();
+        DSLSentence sen = new DSLSentence();
+        sen.sentence = "I CAN HAS DSL";
+        m.addRhsItem( sen );
+        ActionInsertFact ins = new ActionInsertFact("Shizzle");
+        ActionFieldValue val = new ActionFieldValue("goo", "42", "Numeric");
+        ins.fieldValues = new ActionFieldValue[1];
+        ins.fieldValues[0] = val;
+        m.addRhsItem( ins );
+
+        ActionInsertLogicalFact insL = new ActionInsertLogicalFact("Shizzle");
+        ActionFieldValue valL = new ActionFieldValue("goo", "42", "Numeric");
+        insL.fieldValues = new ActionFieldValue[1];
+        insL.fieldValues[0] = valL;
+        m.addRhsItem( insL );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+        assertTrue(result.indexOf( ">insert" ) > -1);
+        System.err.println(result);
+        assertTrue(result.indexOf( ">insertLogical" ) > -1);
+    }
 
 }

@@ -319,7 +319,7 @@ public class BRDRLPersistence
 
         public void visitActionInsertLogicalFact(final ActionInsertLogicalFact action) {
             this.generateInsertCall( action,
-                                     false );
+                                     true );
         }
 
         private void generateInsertCall(final ActionInsertFact action,
@@ -341,10 +341,14 @@ public class BRDRLPersistence
                 buf.append( "();\n" );
                 generateSetMethodCalls( "fact" + idx,
                                         action.fieldValues );
+                buf.append( "\t\t" );
+                if (isDSLEnhanced) {
+                    buf.append( ">" );
+                }
                 if ( isLogic ) {
-                    buf.append( "\t\tinsertLogical( fact" );
+                    buf.append( "insertLogical( fact" );
                 } else {
-                    buf.append( "\t\tinsert( fact" );
+                    buf.append( "insert( fact" );
                 }
                 buf.append( idx++ );
                 buf.append( " );\n" );
