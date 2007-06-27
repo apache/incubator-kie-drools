@@ -29,7 +29,7 @@ public class SuggestionCompletionEngine
      */
     private static final String[] STANDARD_CONNECTIVES   = new String[]{"|| ==", "|| !=", "&& !="};
     private static final String[] STRING_CONNECTIVES     = new String[]{"|| ==", "|| !=", "&& !=", "&& matches", "|| matches"};
-    private static final String[] COMPARABLE_CONNECTIVES = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >="};
+    private static final String[] COMPARABLE_CONNECTIVES = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >="};
     private static final String[] COLLECTION_CONNECTIVES = new String[]{"|| ==", "|| !=", "&& !=", "|| contains", "&& contains", "|| excludes", "&& excludes"};
 
     private static final String[] STANDARD_OPERATORS     = new String[]{"==", "!="};
