@@ -9,9 +9,7 @@ import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ClassTypeResolver;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
@@ -20,14 +18,11 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
-import org.drools.rule.builder.RuleBuildContext;
-import org.drools.rule.builder.dialect.java.JavaDialect;
-import org.drools.spi.PatternExtractor;
-import org.drools.spi.DeclarationScopeResolver;
+import org.drools.rule.Pattern;
 import org.drools.spi.ObjectType;
+import org.drools.spi.PatternExtractor;
 
 public class MVELConsequenceBuilderTest extends TestCase {
 

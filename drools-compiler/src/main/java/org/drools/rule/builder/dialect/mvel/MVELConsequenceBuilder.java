@@ -4,13 +4,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.FactHandle;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
-import org.drools.base.mvel.DroolsMVELPreviousDeclarationVariable;
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.RuleError;
-import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.KnowledgeHelper;

@@ -28,7 +28,7 @@ public interface Dialect {
 
     QueryBuilder getQueryBuilder();
 
-    ConditionalElementBuilder getEvalBuilder();
+    RuleConditionBuilder getEvalBuilder();
 
     AccumulateBuilder getAccumulateBuilder();
 
@@ -42,7 +42,7 @@ public interface Dialect {
 
     FromBuilder getFromBuilder();
 
-    Object getBuilder(Class clazz);
+    RuleConditionBuilder getBuilder(Class clazz);
 
     AnalysisResult analyzeExpression(final RuleBuildContext context,
                                      final BaseDescr descr,

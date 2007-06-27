@@ -3,9 +3,9 @@ package org.drools.brms.client.modeldriven;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.drools.brms.server.rules.SuggestionCompletionLoader;
-
 import junit.framework.TestCase;
+
+import org.drools.brms.server.rules.SuggestionCompletionLoader;
 
 public class SuggestionCompletionTest extends TestCase {
     

@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
@@ -23,9 +26,6 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class FirstOrderLogicTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -53,21 +53,21 @@ public class FirstOrderLogicTest extends TestCase {
                       results );
 
         wm.insert( new Cheese( "stilton",
-                                     10 ) );
+                               10 ) );
         wm.insert( new Cheese( "stilton",
-                                     7 ) );
+                               7 ) );
         wm.insert( new Cheese( "stilton",
-                                     8 ) );
+                               8 ) );
         wm.insert( new Cheese( "brie",
-                                     5 ) );
+                               5 ) );
         wm.insert( new Cheese( "provolone",
-                                     150 ) );
+                               150 ) );
         wm.insert( new Cheese( "provolone",
-                                     20 ) );
+                               20 ) );
         wm.insert( new Person( "Bob",
-                                     "stilton" ) );
+                               "stilton" ) );
         wm.insert( new Person( "Mark",
-                                     "provolone" ) );
+                               "provolone" ) );
 
         wm.fireAllRules();
 
@@ -120,7 +120,7 @@ public class FirstOrderLogicTest extends TestCase {
         final int index = 1;
         cheese[index].setPrice( 9 );
         wm.update( cheeseHandles[index],
-                         cheese[index] );
+                   cheese[index] );
         wm.fireAllRules();
 
         Assert.assertEquals( ++fireCount,
@@ -133,7 +133,7 @@ public class FirstOrderLogicTest extends TestCase {
         // ---------------- 3rd scenario
         bob.setLikes( "brie" );
         wm.update( bobHandle,
-                         bob );
+                   bob );
         wm.fireAllRules();
 
         Assert.assertEquals( fireCount,
@@ -173,7 +173,7 @@ public class FirstOrderLogicTest extends TestCase {
         assertEquals( 1,
                       list.size() );
     }
-    
+
     public void testNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_rule_test.drl" ) ) );
@@ -209,8 +209,7 @@ public class FirstOrderLogicTest extends TestCase {
         Assert.assertTrue( list.contains( new Integer( 7 ) ) );
         Assert.assertTrue( list.contains( new Integer( 8 ) ) );
     }
-    
-    
+
     public void testNotWithBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_with_bindings_rule_test.drl" ) ) );
@@ -250,8 +249,8 @@ public class FirstOrderLogicTest extends TestCase {
 
         assertEquals( 1,
                       list.size() );
-    }    
-    
+    }
+
     public void testExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "exists_rule_test.drl" ) ) );
@@ -332,7 +331,6 @@ public class FirstOrderLogicTest extends TestCase {
         assertEquals( 1,
                       list.size() );
     }
-    
 
     public void testForall() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -361,21 +359,21 @@ public class FirstOrderLogicTest extends TestCase {
                       list.size() );
 
         workingMemory.insert( new Cheese( bob.getLikes(),
-                                                10 ) );
+                                          10 ) );
         workingMemory.fireAllRules();
 
         assertEquals( 1,
                       list.size() );
     }
-    
+
     public void testRemoveIdentitiesSubNetwork() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_removeIdentitiesSubNetwork.drl" ) ) );
         final Package pkg = builder.getPackage();
-        
+
         final RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setRemoveIdentities( true );
-        final RuleBase ruleBase = getRuleBase(config);
+        final RuleBase ruleBase = getRuleBase( config );
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -383,45 +381,94 @@ public class FirstOrderLogicTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        final Person bob = new Person( "bob", "stilton" );
+        final Person bob = new Person( "bob",
+                                       "stilton" );
         workingMemory.insert( bob );
 
-        final Person mark = new Person( "mark", "stilton" );
+        final Person mark = new Person( "mark",
+                                        "stilton" );
         workingMemory.insert( mark );
 
         final Cheese stilton1 = new Cheese( "stilton",
-                                           6 );
+                                            6 );
         final FactHandle stilton1Handle = workingMemory.insert( stilton1 );
         final Cheese stilton2 = new Cheese( "stilton",
-                                           7 );
+                                            7 );
         final FactHandle stilton2Handle = workingMemory.insert( stilton2 );
 
         workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
-        
+
         workingMemory.retract( stilton1Handle );
-        
+
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
-        assertEquals( mark, list.get( 0 ));
-        
+        assertEquals( mark,
+                      list.get( 0 ) );
+
         workingMemory.retract( stilton2Handle );
-        
+
         workingMemory.fireAllRules();
         assertEquals( 2,
                       list.size() );
-        assertEquals( bob, list.get( 1 ));
-    }    
-    
+        assertEquals( bob,
+                      list.get( 1 ) );
+    }
+
+    public void testCollectWithNestedFromWithParams() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectWithNestedFrom.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        final Person bob = new Person( "bob",
+                                       "stilton" );
+
+        Cheesery cheesery = new Cheesery();
+        cheesery.addCheese( new Cheese( "stilton",
+                                        10 ) );
+        cheesery.addCheese( new Cheese( "brie",
+                                        20 ) );
+        cheesery.addCheese( new Cheese( "muzzarela",
+                                        8 ) );
+        cheesery.addCheese( new Cheese( "stilton",
+                                        5 ) );
+        cheesery.addCheese( new Cheese( "provolone",
+                                        1 ) );
+
+        workingMemory.insert( bob );
+        workingMemory.insert( cheesery );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        List cheeses = (List) results.get( 0 );
+        assertEquals( 2,
+                      cheeses.size() );
+        assertEquals( bob.getLikes(),
+                      ((Cheese) cheeses.get( 0 )).getType() );
+        assertEquals( bob.getLikes(),
+                      ((Cheese) cheeses.get( 1 )).getType() );
+
+    }
+
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
                                                       DroolsParserException,
                                                       Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
-            System.out.println(parser.getErrors());
+            System.out.println( parser.getErrors() );
             Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
@@ -435,5 +482,5 @@ public class FirstOrderLogicTest extends TestCase {
         // load up the rulebase
         return ruleBase;
     }
-    
+
 }

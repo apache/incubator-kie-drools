@@ -6,6 +6,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.RuleBase;
@@ -14,8 +16,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-
-import junit.framework.TestCase;
 
 public class DslTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

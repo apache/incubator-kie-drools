@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.JoinNode;
@@ -47,13 +48,13 @@ public class GroupElementBuilder
 
     public GroupElementBuilder() {
         this.geBuilders.put( GroupElement.AND,
-                        new AndBuilder() );
+                             new AndBuilder() );
         this.geBuilders.put( GroupElement.OR,
-                        new OrBuilder() );
+                             new OrBuilder() );
         this.geBuilders.put( GroupElement.NOT,
-                        new NotBuilder() );
+                             new NotBuilder() );
         this.geBuilders.put( GroupElement.EXISTS,
-                        new ExistsBuilder() );
+                             new ExistsBuilder() );
     }
 
     /**
@@ -125,11 +126,14 @@ public class GroupElementBuilder
                 // if there was a previous tuple source, then a join node is needed
                 if ( context.getObjectSource() != null && context.getTupleSource() != null ) {
                     // so, create the tuple source and clean up the constraints and object source
+                    final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
+                                                                                            context.getBetaconstraints(),
+                                                                                            false );
                     context.setTupleSource( (TupleSource) utils.attachNode( context,
                                                                             new JoinNode( context.getNextId(),
                                                                                           context.getTupleSource(),
                                                                                           context.getObjectSource(),
-                                                                                          context.getBetaconstraints() ) ) );
+                                                                                          betaConstraints ) ) );
                     context.setBetaconstraints( null );
                     context.setObjectSource( null );
                 }
@@ -220,11 +224,13 @@ public class GroupElementBuilder
                 final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
                 final List predicates = new ArrayList();
                 predicates.add( constraint );
-                context.setBetaconstraints( utils.createBetaNodeConstraint( context,
-                                                                            predicates ) );
+                context.setBetaconstraints( predicates );
 
             }
 
+            final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
+                                                                                    context.getBetaconstraints(),
+                                                                                    false );
             // then attach the NOT node. It will work both as a simple not node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
@@ -232,7 +238,7 @@ public class GroupElementBuilder
                                                                     new NotNode( context.getNextId(),
                                                                                  context.getTupleSource(),
                                                                                  context.getObjectSource(),
-                                                                                 context.getBetaconstraints() ) ) );
+                                                                                 betaConstraints ) ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 
@@ -293,10 +299,13 @@ public class GroupElementBuilder
                 final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
                 final List predicates = new ArrayList();
                 predicates.add( constraint );
-                context.setBetaconstraints( utils.createBetaNodeConstraint( context,
-                                                                            predicates ) );
+                context.setBetaconstraints( predicates );
 
             }
+
+            final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
+                                                                                    context.getBetaconstraints(),
+                                                                                    false );
 
             // then attach the EXISTS node. It will work both as a simple exists node
             // or as subnetwork join node as the context was set appropriatelly
@@ -305,7 +314,7 @@ public class GroupElementBuilder
                                                                     new ExistsNode( context.getNextId(),
                                                                                     context.getTupleSource(),
                                                                                     context.getObjectSource(),
-                                                                                    context.getBetaconstraints() ) ) );
+                                                                                    betaConstraints ) ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 

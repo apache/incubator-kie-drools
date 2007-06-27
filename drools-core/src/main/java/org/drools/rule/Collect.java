@@ -17,6 +17,7 @@
 package org.drools.rule;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
@@ -26,12 +27,14 @@ import org.drools.base.ClassObjectType;
  * @author etirelli
  *
  */
-public class Collect extends ConditionalElement {
+public class Collect extends ConditionalElement
+    implements
+    PatternSource {
 
     private static final long serialVersionUID = 6064290134136990287L;
 
-    private Pattern            sourcePattern;
-    private Pattern            resultPattern;
+    private Pattern           sourcePattern;
+    private Pattern           resultPattern;
 
     public Collect(final Pattern sourcePattern,
                    final Pattern resultPattern) {
@@ -75,7 +78,7 @@ public class Collect extends ConditionalElement {
     }
 
     public Map getOuterDeclarations() {
-        return this.resultPattern.getOuterDeclarations();
+        return Collections.EMPTY_MAP;
     }
 
     /**

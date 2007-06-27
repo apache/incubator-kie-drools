@@ -1,19 +1,19 @@
 package org.drools.brms.server.util;
 
+import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
 import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
-import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
 import org.drools.brms.client.modeldriven.brxml.ActionSetField;
+import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
 import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
-import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.DSLSentence;
 import org.drools.brms.client.modeldriven.brxml.FactPattern;
 import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
+import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;

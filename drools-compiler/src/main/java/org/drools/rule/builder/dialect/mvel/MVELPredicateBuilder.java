@@ -27,8 +27,8 @@ import org.drools.compiler.RuleError;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
-import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.PredicateBuilder;
+import org.drools.rule.builder.RuleBuildContext;
 import org.mvel.MVEL;
 
 /**

@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -15,13 +18,9 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.integrationtests.helloworld.Message;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.mvel.MVEL;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class MVELTest extends TestCase {
     public void testHelloWorld() throws Exception {                   

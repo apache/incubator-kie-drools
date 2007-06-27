@@ -21,7 +21,7 @@ import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
-import org.drools.rule.ConditionalElement;
+import org.drools.rule.RuleConditionElement;
 
 /**
  * @author etirelli
@@ -29,31 +29,32 @@ import org.drools.rule.ConditionalElement;
  */
 public class CollectBuilder
     implements
-    ConditionalElementBuilder {
+    RuleConditionBuilder {
 
-    public ConditionalElement build(final RuleBuildContext context,
+    public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
-        return build(context, descr, null);
+        return build( context,
+                      descr,
+                      null );
     }
-    
-    public ConditionalElement build(final RuleBuildContext context,
+
+    public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr,
                                     final Pattern prefixPattern) {
 
         final CollectDescr collectDescr = (CollectDescr) descr;
         final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
-        final Pattern sourcePattern = patternBuilder.build( context,
-                                                            collectDescr.getSourcePattern() );
+        final Pattern sourcePattern = (Pattern) patternBuilder.build( context,
+                                                                      collectDescr.getInputPattern() );
 
         if ( sourcePattern == null ) {
             return null;
         }
 
-        final Pattern resultPattern = patternBuilder.build( context,
-                                                            collectDescr.getResultPattern() );
-
         final String className = "collect" + context.getNextId();
         collectDescr.setClassMethodName( className );
+        
+        Pattern resultPattern = (Pattern) context.getBuildStack().peek();
 
         final Collect collect = new Collect( sourcePattern,
                                              resultPattern );

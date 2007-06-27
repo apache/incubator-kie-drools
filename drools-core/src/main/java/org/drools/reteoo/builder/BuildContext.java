@@ -17,6 +17,7 @@
 package org.drools.reteoo.builder;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 import org.drools.common.BetaConstraints;
@@ -48,10 +49,10 @@ public class BuildContext {
     private int                       currentPatternOffset;
 
     // rule base to add rules to
-    private InternalRuleBase            rulebase;
+    private InternalRuleBase          rulebase;
 
     // working memories attached to the given rulebase
-    private InternalWorkingMemory[]     workingMemories;
+    private InternalWorkingMemory[]   workingMemories;
 
     // id generator
     private ReteooBuilder.IdGenerator idGenerator;
@@ -60,7 +61,10 @@ public class BuildContext {
     private LinkedList                buildstack;
 
     // beta constraints from the last pattern attached
-    BetaConstraints                   betaconstraints;
+    private List                      betaconstraints;
+
+    // alpha constraints from the last pattern attached
+    private List                      alphaConstraints;
 
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
@@ -91,9 +95,9 @@ public class BuildContext {
         this.currentPatternOffset = currentPatternIndex;
         this.syncObjectTypesWithPatternOffset();
     }
-    
+
     public void syncObjectTypesWithPatternOffset() {
-        while( this.objectType.size() > this.currentPatternOffset ) {
+        while ( this.objectType.size() > this.currentPatternOffset ) {
             this.objectType.removeLast();
         }
     }
@@ -217,15 +221,26 @@ public class BuildContext {
     /**
      * @return the betaconstraints
      */
-    public BetaConstraints getBetaconstraints() {
+    public List getBetaconstraints() {
         return this.betaconstraints;
     }
 
     /**
      * @param betaconstraints the betaconstraints to set
      */
-    public void setBetaconstraints(final BetaConstraints betaconstraints) {
+    public void setBetaconstraints(final List betaconstraints) {
         this.betaconstraints = betaconstraints;
+    }
+
+    /**
+     * @return
+     */
+    public List getAlphaConstraints() {
+        return alphaConstraints;
+    }
+
+    public void setAlphaConstraints(List alphaConstraints) {
+        this.alphaConstraints = alphaConstraints;
     }
 
 }

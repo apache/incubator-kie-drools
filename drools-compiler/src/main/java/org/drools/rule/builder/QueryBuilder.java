@@ -1,8 +1,6 @@
 package org.drools.rule.builder;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldExtractor;
-import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
@@ -10,7 +8,6 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.extractors.ArrayExtractor;
 import org.drools.compiler.RuleError;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Pattern;

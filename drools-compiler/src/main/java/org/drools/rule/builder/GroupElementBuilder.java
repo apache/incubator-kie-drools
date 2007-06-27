@@ -21,16 +21,14 @@ import java.util.Iterator;
 import org.drools.RuntimeDroolsException;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
-import org.drools.lang.descr.QueryDescr;
-import org.drools.rule.Pattern;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
+import org.drools.rule.Pattern;
+import org.drools.rule.RuleConditionElement;
 
 /**
  * @author etirelli
@@ -38,21 +36,23 @@ import org.drools.rule.GroupElementFactory;
  */
 public class GroupElementBuilder
     implements
-    ConditionalElementBuilder {
-    
-    public ConditionalElement build(final RuleBuildContext context,
+    RuleConditionBuilder {
+
+    public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr) {
-        return build(context, descr, null);
+        return build( context,
+                      descr,
+                      null );
     }
-    
-    public ConditionalElement build(final RuleBuildContext context,
+
+    public RuleConditionElement build(final RuleBuildContext context,
                                     final BaseDescr descr,
                                     final Pattern prefixPattern) {
         final ConditionalElementDescr cedescr = (ConditionalElementDescr) descr;
 
         final GroupElement ge = newGroupElementFor( cedescr.getClass() );
-        context.getBuildStack().push( ge );        
-        
+        context.getBuildStack().push( ge );
+
         if ( prefixPattern != null ) {
             ge.addChild( prefixPattern );
         }
@@ -63,27 +63,16 @@ public class GroupElementBuilder
             final BaseDescr child = (BaseDescr) it.next();
 
             // gets corresponding builder
-            //final ConditionalElementBuilder cebuilder = ( ConditionalElementBuilder ) utils.getBuilder( child.getClass() );
-            final Object builder = context.getDialect().getBuilder( child.getClass() );
+            final RuleConditionBuilder builder = context.getDialect().getBuilder( child.getClass() );
 
-            if ( builder instanceof ConditionalElementBuilder ) {
-                ConditionalElementBuilder ceBuilder = (ConditionalElementBuilder) builder;
-                final ConditionalElement ce = ceBuilder.build( context,
-                                                               child );
-                if ( ce != null ) {
-                    ge.addChild( ce );
-                }
-            } else if ( builder instanceof PatternBuilder ) {
-                final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( child.getClass() );
-
-                final Pattern pattern = patternBuilder.build( context,
-                                                              (PatternDescr) child );
-                // in case there is a problem with the pattern building,
+            if ( builder != null ) {
+                final RuleConditionElement element = builder.build( context,
+                                                                    child );
+                // in case there is a problem with the building,
                 // builder will return null. Ex: ClassNotFound for the pattern type
-                if ( pattern != null ) {
-                    ge.addChild( pattern );
+                if ( element != null ) {
+                    ge.addChild( element );
                 }
-
             } else {
                 throw new RuntimeDroolsException( "BUG: no builder found for descriptor class " + child.getClass() );
             }

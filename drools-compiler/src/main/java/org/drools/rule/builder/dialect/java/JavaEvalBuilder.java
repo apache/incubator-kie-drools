@@ -21,13 +21,13 @@ import java.util.Map;
 
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
-import org.drools.rule.ConditionalElement;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;
-import org.drools.rule.builder.ConditionalElementBuilder;
+import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.rule.builder.RuleConditionBuilder;
 
 /**
  * @author etirelli
@@ -35,10 +35,10 @@ import org.drools.rule.builder.RuleBuildContext;
  */
 public class JavaEvalBuilder extends AbstractJavaBuilder
     implements
-    ConditionalElementBuilder {
+    RuleConditionBuilder {
 
-    public ConditionalElement build(final RuleBuildContext context,
-                                    final BaseDescr descr) {
+    public RuleConditionElement build(final RuleBuildContext context,
+                                      final BaseDescr descr) {
         return build( context,
                       descr,
                       null );
@@ -54,9 +54,9 @@ public class JavaEvalBuilder extends AbstractJavaBuilder
      * 
      * @return the Eval Conditional Element
      */
-    public ConditionalElement build(final RuleBuildContext context,
-                                    final BaseDescr descr,
-                                    final Pattern prefixPattern) {
+    public RuleConditionElement build(final RuleBuildContext context,
+                                      final BaseDescr descr,
+                                      final Pattern prefixPattern) {
         // it must be an EvalDescr
         final EvalDescr evalDescr = (EvalDescr) descr;
 

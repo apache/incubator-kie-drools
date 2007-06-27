@@ -25,27 +25,19 @@ import java.util.List;
  * @author etirelli
  *
  */
-public class CollectDescr extends BaseDescr
+public class CollectDescr extends PatternSourceDescr
     implements
-    PatternProcessorCeDescr
+    ConditionalElementDescr,
+    PatternDestinationDescr
     {
 
-    private static final long serialVersionUID = -78056848363435347L;
+    private static final long  serialVersionUID = -78056848363435347L;
 
-    private PatternDescr       sourcePattern;
-    private PatternDescr       resultPattern;
-    private String            classMethodName;
+    private PatternDescr       inputPattern;
+    private String             classMethodName;
 
     public int getLine() {
-        return this.sourcePattern.getLine();
-    }
-
-    public void setSourcePattern(final PatternDescr sourcePattern) {
-        this.sourcePattern = sourcePattern;
-    }
-
-    public PatternDescr getSourcePattern() {
-        return this.sourcePattern;
+        return this.inputPattern.getLine();
     }
 
     public String getClassMethodName() {
@@ -56,20 +48,12 @@ public class CollectDescr extends BaseDescr
         this.classMethodName = classMethodName;
     }
 
-    public void setResultPattern(final PatternDescr resultPattern) {
-        this.resultPattern = resultPattern;
-    }
-
-    public PatternDescr getResultPattern() {
-        return this.resultPattern;
-    }
-
     public String toString() {
-        return "[Collect: id=" + this.resultPattern.getIdentifier() + "; objectType=" + this.resultPattern.getObjectType() + "]";
+        return "[Collect: input=" + this.inputPattern.getIdentifier() + "; objectType=" + this.inputPattern.getObjectType() + "]";
     }
 
     public void addDescr(final BaseDescr patternDescr) {
-        throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());        
+        throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
     }
 
     public List getDescrs() {
@@ -78,7 +62,15 @@ public class CollectDescr extends BaseDescr
     }
 
     public void addOrMerge(BaseDescr baseDescr) {
-        throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());        
+        throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
+    }
+
+    public PatternDescr getInputPattern() {
+        return this.inputPattern;
+    }
+
+    public void setInputPattern(final PatternDescr inputPattern) {
+        this.inputPattern = inputPattern;
     }
 
 }

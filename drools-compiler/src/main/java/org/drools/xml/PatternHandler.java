@@ -30,7 +30,7 @@ import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.PatternProcessorCeDescr;
+import org.drools.lang.descr.PatternDestinationDescr;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -108,9 +108,9 @@ class PatternHandler extends BaseAbstractHandler
         ite.previous();
         final Object parent = ite.previous();
 
-        if ( parent instanceof PatternProcessorCeDescr ) {
-            final PatternProcessorCeDescr parentDescr = (PatternProcessorCeDescr) parent;
-            parentDescr.setSourcePattern( patternDescr );
+        if ( parent instanceof PatternDestinationDescr ) {
+            final PatternDestinationDescr parentDescr = (PatternDestinationDescr) parent;
+            parentDescr.setInputPattern( patternDescr );
         } else {
             if ( config.getChild( "from" ) == null ) { 
                 final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;

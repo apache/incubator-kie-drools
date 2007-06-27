@@ -29,6 +29,7 @@ public class PatternDescr extends BaseDescr {
     private ConditionalElementDescr constraint          = new AndDescr();
     private int                     leftParentCharacter  = -1;
     private int                     rightParentCharacter = -1;
+    private PatternSourceDescr      source;
 
     public PatternDescr() {
         this( null,
@@ -104,5 +105,13 @@ public class PatternDescr extends BaseDescr {
      */
     public void setRightParentCharacter(final int rightParentCharacter) {
         this.rightParentCharacter = rightParentCharacter;
+    }
+
+    public PatternSourceDescr getSource() {
+        return source;
+    }
+
+    public void setSource(PatternSourceDescr source) {
+        this.source = source;
     }
 }

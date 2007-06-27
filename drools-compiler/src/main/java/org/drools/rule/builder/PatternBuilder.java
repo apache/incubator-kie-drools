@@ -54,9 +54,11 @@ import org.drools.rule.MultiRestrictionFieldConstraint;
 import org.drools.rule.OrCompositeRestriction;
 import org.drools.rule.OrConstraint;
 import org.drools.rule.Pattern;
+import org.drools.rule.PatternSource;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
+import org.drools.rule.RuleConditionElement;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.spi.Constraint;
@@ -71,9 +73,18 @@ import org.drools.spi.Restriction;
  * 
  * @author etirelli
  */
-public class PatternBuilder {
+public class PatternBuilder
+    implements
+    RuleConditionBuilder {
 
     public PatternBuilder() {
+    }
+
+    public RuleConditionElement build(RuleBuildContext context,
+                                      BaseDescr descr) {
+        return this.build( context,
+                           descr,
+                           null );
     }
 
     /**
@@ -85,8 +96,11 @@ public class PatternBuilder {
      * @param patternDescr
      * @return
      */
-    public Pattern build(final RuleBuildContext context,
-                         final PatternDescr patternDescr) {
+    public RuleConditionElement build(RuleBuildContext context,
+                                      BaseDescr descr,
+                                      Pattern prefixPattern) {
+
+        final PatternDescr patternDescr = (PatternDescr) descr;
 
         if ( patternDescr.getObjectType() == null || patternDescr.getObjectType().equals( "" ) ) {
             context.getErrors().add( new RuleError( context.getRule(),
@@ -147,6 +161,16 @@ public class PatternBuilder {
                              object,
                              null );
         }
+        
+        if( patternDescr.getSource() != null ) {
+            // we have a pattern source, so build it
+            RuleConditionBuilder builder = context.getDialect().getBuilder( patternDescr.getSource().getClass() );
+            
+            PatternSource source = (PatternSource) builder.build( context, patternDescr.getSource() );
+            
+            pattern.setSource( source );
+        }
+        
         // poping the pattern
         context.getBuildStack().pop();
         return pattern;

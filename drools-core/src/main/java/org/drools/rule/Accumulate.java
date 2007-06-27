@@ -16,6 +16,7 @@
 
 package org.drools.rule;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
@@ -27,46 +28,41 @@ import org.drools.spi.Tuple;
 /**
  * A class to represent the Accumulate CE
  */
-public class Accumulate extends ConditionalElement {
+public class Accumulate extends ConditionalElement
+    implements PatternSource  
+    {
 
     private static final long serialVersionUID = 4608000398919355806L;
 
     private Accumulator       accumulator;
     private Pattern           sourcePattern;
-    private Pattern           resultPattern;
     private Declaration[]     requiredDeclarations;
     private Declaration[]     innerDeclarations;
 
-    public Accumulate(final Pattern sourcePattern,
-                      final Pattern resultPattern) {
+    public Accumulate(final Pattern sourcePattern) {
 
         this( sourcePattern,
-              resultPattern,
               new Declaration[0],
               new Declaration[0],
               null );
     }
 
     public Accumulate(final Pattern sourcePattern,
-                      final Pattern resultPattern,
                       final Declaration[] requiredDeclarations,
                       final Declaration[] innerDeclarations) {
 
         this( sourcePattern,
-              resultPattern,
               requiredDeclarations,
               innerDeclarations,
               null );
     }
 
     public Accumulate(final Pattern sourcePattern,
-                      final Pattern resultPattern,
                       final Declaration[] requiredDeclarations,
                       final Declaration[] innerDeclarations,
                       final Accumulator accumulator) {
 
         this.sourcePattern = sourcePattern;
-        this.resultPattern = resultPattern;
         this.requiredDeclarations = requiredDeclarations;
         this.innerDeclarations = innerDeclarations;
         this.accumulator = accumulator;
@@ -189,14 +185,9 @@ public class Accumulate extends ConditionalElement {
 
     public Object clone() {
         return new Accumulate( this.sourcePattern,
-                               this.resultPattern,
                                this.requiredDeclarations,
                                this.innerDeclarations,
                                this.accumulator );
-    }
-
-    public Pattern getResultPattern() {
-        return this.resultPattern;
     }
 
     public Pattern getSourcePattern() {
@@ -208,7 +199,7 @@ public class Accumulate extends ConditionalElement {
     }
 
     public Map getOuterDeclarations() {
-        return this.resultPattern.getOuterDeclarations();
+        return Collections.EMPTY_MAP;
     }
 
     /**

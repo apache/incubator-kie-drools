@@ -4,28 +4,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
 import org.drools.Person;
-import org.drools.PersonInterface;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.State;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.rule.Rule;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class AccumulateTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

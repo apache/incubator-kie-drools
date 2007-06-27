@@ -1,12 +1,10 @@
 package org.drools.brms.server.rules;
 
 import java.util.ArrayList;
-import java.util.Collection;
-
-import org.drools.Person;
-import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 
 import junit.framework.TestCase;
+
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 
 public class SuggestionCompletionLoaderTest extends TestCase {    
 

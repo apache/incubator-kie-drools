@@ -1,15 +1,26 @@
 // $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g 2007-06-19 10:28:04
 
 	package org.drools.rule.builder.dialect.java.parser;
-	import java.util.Iterator;
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+	import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
+
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.MismatchedNotSetException;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.MismatchedTokenException;
+import org.antlr.runtime.MismatchedTreeNodeException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.ParserRuleReturnScope;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
 /** A Java 1.5 grammar for ANTLR v3 derived from the spec
  *
  *  This is a very close representation of the spec; the changes

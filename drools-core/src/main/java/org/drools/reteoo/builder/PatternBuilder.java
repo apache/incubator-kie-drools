@@ -16,12 +16,11 @@
 
 package org.drools.reteoo.builder;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.base.ClassObjectType;
-import org.drools.common.BetaConstraints;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.ObjectSource;
@@ -29,6 +28,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
+import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
@@ -51,46 +51,61 @@ public class PatternBuilder
 
         final Pattern pattern = (Pattern) rce;
 
-        context.setBetaconstraints( this.attachPattern( context,
-                                                       utils,
-                                                       pattern ) );
+        this.attachPattern( context,
+                            utils,
+                            pattern );
 
     }
 
-    private BetaConstraints attachPattern(final BuildContext context,
-                                         final BuildUtils utils,
-                                         final Pattern pattern) throws InvalidPatternException {
+    private void attachPattern(final BuildContext context,
+                               final BuildUtils utils,
+                               final Pattern pattern) throws InvalidPatternException {
 
         // Set pattern offset to the appropriate value
         pattern.setOffset( context.getCurrentPatternOffset() );
 
         context.incrementCurrentPatternOffset();
 
-        // Attach alpha nodes
-        final List predicates = attachAlphaNodes( context,
-                                                  utils,
-                                                  pattern );
+        final List alphaConstraints = new LinkedList();
+        final List betaConstraints = new LinkedList();
+
+        this.createConstraints( context,
+                                utils,
+                                pattern,
+                                alphaConstraints,
+                                betaConstraints );
 
         // Create BetaConstraints object
-        final BetaConstraints binder = utils.createBetaNodeConstraint( context,
-                                                                       predicates );
+        context.setBetaconstraints( betaConstraints );
 
-        return binder;
+        if ( pattern.getSource() == null ) {
+            // pattern is selected from working memory, so 
+            // Attach alpha nodes
+            attachAlphaNodes( context,
+                              utils,
+                              pattern,
+                              alphaConstraints );
+
+        } else {
+            context.setAlphaConstraints( alphaConstraints );
+            
+            PatternSource source = pattern.getSource();
+
+            ReteooComponentBuilder builder = utils.getBuilderFor( source );
+
+            builder.build( context,
+                           utils,
+                           source );
+        }
     }
 
-    public List attachAlphaNodes(final BuildContext context,
-                                 final BuildUtils utils,
-                                 final Pattern pattern) throws InvalidPatternException {
+    private void createConstraints(BuildContext context,
+                                   BuildUtils utils,
+                                   Pattern pattern,
+                                   List alphaConstraints,
+                                   List betaConstraints) {
 
         final List constraints = pattern.getConstraints();
-
-        context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                  new ObjectTypeNode( context.getNextId(),
-                                                                                      pattern.getObjectType(),
-                                                                                      context.getRuleBase().getRete(),
-                                                                                      context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() ) ) );
-
-        final List betaConstraints = new ArrayList();
 
         // check if cross products for identity patterns should be disabled
         checkRemoveIdentities( context,
@@ -114,23 +129,39 @@ public class PatternBuilder
                     isAlphaConstraint = false;
                 }
             }
-                        
-            
+
             if ( isAlphaConstraint ) {
-                context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                          new AlphaNode( context.getNextId(),
-                                                                                         (AlphaNodeFieldConstraint) constraint,
-                                                                                         context.getObjectSource(),
-                                                                                         context.getRuleBase().getConfiguration().isAlphaMemory(),
-                                                                                         context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() )  ) );
+                alphaConstraints.add( constraint );
             } else {
                 utils.checkUnboundDeclarations( context,
                                                 constraint.getRequiredDeclarations() );
                 betaConstraints.add( constraint );
             }
         }
+    }
 
-        return betaConstraints;
+    public void attachAlphaNodes(final BuildContext context,
+                                 final BuildUtils utils,
+                                 final Pattern pattern,
+                                 List alphaConstraints) throws InvalidPatternException {
+
+        context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                  new ObjectTypeNode( context.getNextId(),
+                                                                                      pattern.getObjectType(),
+                                                                                      context.getRuleBase().getRete(),
+                                                                                      context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() ) ) );
+
+        for ( final Iterator it = alphaConstraints.iterator(); it.hasNext(); ) {
+            final AlphaNodeFieldConstraint constraint = (AlphaNodeFieldConstraint) it.next();
+
+            context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                      new AlphaNode( context.getNextId(),
+                                                                                     (AlphaNodeFieldConstraint) constraint,
+                                                                                     context.getObjectSource(),
+                                                                                     context.getRuleBase().getConfiguration().isAlphaMemory(),
+                                                                                     context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() ) ) );
+        }
+
     }
 
     /**
@@ -164,6 +195,6 @@ public class PatternBuilder
      */
     public boolean requiresLeftActivation(final BuildUtils utils,
                                           final RuleConditionElement rce) {
-        return false;
+        return ((Pattern)rce).getSource() != null;
     }
 }

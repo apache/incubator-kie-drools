@@ -17,8 +17,8 @@
 
 package org.drools.commons.jci.readers;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A memory based reader to compile from memory

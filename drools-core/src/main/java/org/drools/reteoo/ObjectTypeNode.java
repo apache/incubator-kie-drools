@@ -19,8 +19,6 @@ package org.drools.reteoo;
 import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ShadowProxy;
-import org.drools.base.ShadowProxyHelper;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;

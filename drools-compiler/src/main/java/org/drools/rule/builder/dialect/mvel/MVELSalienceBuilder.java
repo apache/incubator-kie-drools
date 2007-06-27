@@ -3,7 +3,6 @@ package org.drools.rule.builder.dialect.mvel;
 import java.io.Serializable;
 
 import org.drools.base.mvel.DroolsMVELFactory;
-import org.drools.base.mvel.MVELConsequence;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.compiler.RuleError;
 import org.drools.rule.builder.RuleBuildContext;

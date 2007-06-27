@@ -22,15 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.base.mvel.DroolsMVELFactory;
-import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.base.mvel.MVELReturnValueExpression;
-import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueRestriction;
-import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.ReturnValueBuilder;
+import org.drools.rule.builder.RuleBuildContext;
 import org.mvel.MVEL;
 
 /**

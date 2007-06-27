@@ -1,28 +1,22 @@
 package org.drools.rule;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Map;
 
 import org.drools.spi.DataProvider;
 
 public class From extends ConditionalElement
     implements
-    Serializable {
+    Serializable,
+    PatternSource {
 
     private static final long serialVersionUID = -2640290731776949513L;
 
-    private Pattern            pattern;
-
     private DataProvider      dataProvider;
 
-    public From(final Pattern pattern,
-                final DataProvider dataProvider) {
-        this.pattern = pattern;
+    public From(final DataProvider dataProvider) {
         this.dataProvider = dataProvider;
-    }
-
-    public Pattern getPattern() {
-        return this.pattern;
     }
 
     public DataProvider getDataProvider() {
@@ -35,18 +29,18 @@ public class From extends ConditionalElement
     }
 
     public Map getInnerDeclarations() {
-        return this.pattern.getInnerDeclarations();
+        return Collections.EMPTY_MAP;
     }
 
     public Map getOuterDeclarations() {
-        return this.pattern.getOuterDeclarations();
+        return Collections.EMPTY_MAP;
     }
 
     /**
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {
-        return (Declaration) this.pattern.getInnerDeclarations().get( identifier );
+        return null;
     }
 
 }

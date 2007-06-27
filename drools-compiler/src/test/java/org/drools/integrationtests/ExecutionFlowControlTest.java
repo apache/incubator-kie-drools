@@ -6,6 +6,9 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.Person;
@@ -32,9 +35,6 @@ import org.drools.ruleflow.common.instance.ProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class ExecutionFlowControlTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
