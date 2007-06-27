@@ -150,26 +150,33 @@ public class BRDRLPersistence
             }
             if ( CompositeFactPattern.COMPOSITE_TYPE_EXISTS.equals( pattern.type ) ) {
                 buf.append( pattern.type );
-                buf.append( " " );
-                this.generateFactPattern( pattern.patterns[0] );
+                buf.append( " " );                
+                renderSubPattern( pattern );
                 buf.append( "\n" );
             } else if ( CompositeFactPattern.COMPOSITE_TYPE_NOT.equals( pattern.type ) ) {
                 buf.append( pattern.type );
                 buf.append( " " );
-                this.generateFactPattern( pattern.patterns[0] );
+                renderSubPattern( pattern );
                 buf.append( "\n" );
             } else if ( CompositeFactPattern.COMPOSITE_TYPE_OR.equals( pattern.type ) ) {
                 buf.append( "( " );
-                for ( int i = 0; i < pattern.patterns.length; i++ ) {
-                    if ( i > 0 ) {
-                        buf.append( " " );
-                        buf.append( pattern.type );
-                        buf.append( " " );
+                if (pattern.patterns != null ) {
+                    for ( int i = 0; i < pattern.patterns.length; i++ ) {
+                        if ( i > 0 ) {
+                            buf.append( " " );
+                            buf.append( pattern.type );
+                            buf.append( " " );
+                        }
+                        renderSubPattern( pattern );
                     }
-                    this.generateFactPattern( pattern.patterns[0] );
                 }
                 buf.append( " )\n" );
             }
+        }
+
+        private void renderSubPattern(CompositeFactPattern pattern) {
+            if (pattern.patterns == null || pattern.patterns.length == 0) return;
+            this.generateFactPattern( pattern.patterns[0] );
         }
 
         public void visitDSLSentence(final DSLSentence sentence) {
