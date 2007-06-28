@@ -194,8 +194,8 @@ public class FieldConstraintTest extends TestCase {
                                     Declaration[] previousDeclarations,
                                     Declaration[] localDeclarations,
                                     WorkingMemory workingMemory) {
-                int price1 = previousDeclarations[0].getIntValue( workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) );
-                int price2 = localDeclarations[0].getIntValue( object );
+                int price1 = previousDeclarations[0].getIntValue( (InternalWorkingMemory) workingMemory, workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) );
+                int price2 = localDeclarations[0].getIntValue( (InternalWorkingMemory) workingMemory, object );
 
                 return (price2 == (price1 * 2));
 
@@ -267,7 +267,7 @@ public class FieldConstraintTest extends TestCase {
                                        Declaration[] previousDeclarations,
                                        Declaration[] localDeclarations,
                                        WorkingMemory workingMemory) {
-                int price = ((Number) previousDeclarations[0].getValue( workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) )).intValue();
+                int price = ((Number) previousDeclarations[0].getValue( (InternalWorkingMemory) workingMemory, workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) )).intValue();
                 return FieldFactory.getFieldValue( 2 * price );
 
             }

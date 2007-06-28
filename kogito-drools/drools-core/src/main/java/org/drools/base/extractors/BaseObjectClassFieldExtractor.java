@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 
 public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtractor {
 
@@ -24,12 +25,12 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
                fieldName );
     }
 
-    public abstract Object getValue(Object object);
+    public abstract Object getValue(InternalWorkingMemory workingMemory, Object object);
 
-    public boolean getBooleanValue(final Object object) {
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
-        final Object value = getValue( object );
+        final Object value = getValue( workingMemory, object );
         
         if ( value instanceof Boolean ) {
             return ((Boolean) value).booleanValue();
@@ -37,10 +38,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         throw new RuntimeDroolsException( "Conversion to boolean not supported from " + value.getClass().getName() );
     }
 
-    public byte getByteValue(final Object object) {
+    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
-        final Object value = getValue( object );
+        final Object value = getValue( workingMemory, object );
         
         if ( value instanceof Number ) {
             return ((Number) value).byteValue();
@@ -48,10 +49,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         throw new RuntimeDroolsException( "Conversion to byte not supported from " + value.getClass().getName() );
     }
 
-    public char getCharValue(final Object object) {
+    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
-        final Object value = getValue( object );
+        final Object value = getValue( workingMemory, object );
         
         if ( value instanceof Character ) {
             return ((Character) value).charValue();
@@ -59,10 +60,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         throw new RuntimeDroolsException( "Conversion to char not supported from " + value.getClass().getName() );
     }
 
-    public double getDoubleValue(final Object object) {
+    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
-        final Object value = getValue( object );
+        final Object value = getValue( workingMemory, object );
         
         if ( value instanceof Number ) {
             return ((Number) value).doubleValue();
@@ -70,10 +71,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         throw new RuntimeDroolsException( "Conversion to double not supported from " + value.getClass().getName() );
     }
 
-    public float getFloatValue(final Object object) {
+    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
-        final Object value = getValue( object );
+        final Object value = getValue( workingMemory, object );
         
         if ( value instanceof Number ) {
             return ((Number) value).floatValue();
@@ -81,10 +82,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         throw new RuntimeDroolsException( "Conversion to float not supported from " + value.getClass().getName() );
     }
 
-    public int getIntValue(final Object object) {
+    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
-        final Object value = getValue( object );
+        final Object value = getValue( workingMemory, object );
         
         if ( value instanceof Number ) {
             return ((Number) value).intValue();
@@ -92,10 +93,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         throw new RuntimeDroolsException( "Conversion to int not supported from " + value.getClass().getName() );
     }
 
-    public long getLongValue(final Object object) {
+    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
-        final Object value = getValue( object );
+        final Object value = getValue( workingMemory, object );
         
         if ( value instanceof Number ) {
             return ((Number) value).longValue();
@@ -103,10 +104,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         throw new RuntimeDroolsException( "Conversion to long not supported from " + value.getClass().getName() );
     }
 
-    public short getShortValue(final Object object) {
+    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
         // this can be improved by generating specific 
         // bytecode generation in the subclass, avoiding the if instanceof
-        final Object value = getValue( object );
+        final Object value = getValue( workingMemory, object );
 
         if ( value instanceof Number ) {
             return ((Number) value).shortValue();
@@ -114,26 +115,26 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         throw new RuntimeDroolsException( "Conversion to short not supported from " + value.getClass().getName() );
     }
     
-    public boolean isNullValue(final Object object) {
+    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
         if (object == null) {
             return true;
         } else {
-            return getValue( object ) == null;
+            return getValue( workingMemory, object ) == null;
         }
     }
 
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{Object.class} );
+                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
                                               e );
         }
     }
 
-    public int getHashCode(final Object object) {
-        final Object value = getValue( object );
+    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
+        final Object value = getValue( workingMemory, object );
         return (value != null) ? value.hashCode() : 0;
     }
 

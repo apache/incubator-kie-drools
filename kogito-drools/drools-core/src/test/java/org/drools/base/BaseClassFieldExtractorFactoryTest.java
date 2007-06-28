@@ -34,14 +34,14 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "michael",
-                      ex.getValue( new TestBean() ) );
+                      ex.getValue( null, new TestBean() ) );
         ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
                                                                 "age",
                                                                 Thread.currentThread().getContextClassLoader() );
         assertEquals( 1,
                       ex.getIndex() );
         assertEquals( 42,
-                      ((Number) ex.getValue( new TestBean() )).intValue() );
+                      ((Number) ex.getValue( null, new TestBean() )).intValue() );
 
     }
 
@@ -52,7 +52,7 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "foo",
-                      ex.getValue( new TestInterfaceImpl() ) );
+                      ex.getValue( null, new TestInterfaceImpl() ) );
     }
 
     public void testAbstract() throws Exception {
@@ -62,7 +62,7 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "foo",
-                      ex.getValue( new TestAbstractImpl() ) );
+                      ex.getValue( null, new TestAbstractImpl() ) );
     }
 
     public void testInherited() throws Exception {
@@ -70,7 +70,7 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
                                                                          "text",
                                                                          getClass().getClassLoader() );
         assertEquals( "hola",
-                      ex.getValue( new BeanInherit() ) );
+                      ex.getValue( null, new BeanInherit() ) );
     }
 
     public void testSelfReference() throws Exception {
@@ -79,7 +79,7 @@ public class BaseClassFieldExtractorFactoryTest extends TestCase {
                                                                          getClass().getClassLoader() );
         final TestBean bean = new TestBean();
         assertEquals( bean,
-                      ex.getValue( bean ) );
+                      ex.getValue( null, bean ) );
     }
 
 }

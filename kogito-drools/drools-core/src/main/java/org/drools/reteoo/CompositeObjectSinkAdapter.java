@@ -460,20 +460,20 @@ public class CompositeObjectSinkAdapter
             this.index = index;
             final ValueType vtype = extractor.getValueType();
             if ( vtype.isBoolean() ) {
-                this.bvalue = extractor.getBooleanValue( value );
+                this.bvalue = extractor.getBooleanValue( null, value );
                 this.type = BOOL;
                 this.setHashCode( this.bvalue ? 1231 : 1237 );
             } else if ( vtype.isIntegerNumber() ) {
-                this.lvalue = extractor.getLongValue( value );
+                this.lvalue = extractor.getLongValue( null, value );
                 this.type = LONG;
                 this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
             } else if ( vtype.isFloatNumber() ) {
-                this.dvalue = extractor.getDoubleValue( value );
+                this.dvalue = extractor.getDoubleValue( null, value );
                 this.type = DOUBLE;
                 final long temp = Double.doubleToLongBits( this.dvalue );
                 this.setHashCode( (int) (temp ^ (temp >>> 32)) );
             } else {
-                this.ovalue = extractor.getValue( value );
+                this.ovalue = extractor.getValue( null, value );
                 this.type = OBJECT;
                 this.setHashCode( this.ovalue.hashCode() );
             }

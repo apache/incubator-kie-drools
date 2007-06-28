@@ -81,14 +81,19 @@ public class AccumulateTemplateTest extends TestCase {
                  inner );
 
         map.put( "attributes",
-                 new Attribute[]{new Attribute( "int",
-                                                "x" )} );
+                 new String[]{"x"} );
+        map.put( "attributesTypes",
+                 new String[]{"int"} );
         map.put( "initCode",
                  "x = 0;" );
         map.put( "actionCode",
                  "x += 1;" );
+        map.put( "reverseCode",
+                 "x -= 1;" );
         map.put( "resultCode",
                  "x + 10" );
+        map.put( "supportsReverse",
+                 "true" );
 
         map.put( "resultType",
                  Integer.class );
@@ -97,7 +102,7 @@ public class AccumulateTemplateTest extends TestCase {
                  new Integer( 10 ) );
 
         TemplateRegistry registry = getRuleTemplateRegistry();
-        Object method = TemplateInterpreter.parse( registry.getTemplate( "accummulateInnerClass" ),
+        Object method = TemplateInterpreter.parse( registry.getTemplate( "accumulateInnerClass" ),
                                                    null,
                                                    map,
                                                    registry );

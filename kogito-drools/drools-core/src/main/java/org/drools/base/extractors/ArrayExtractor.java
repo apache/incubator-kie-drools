@@ -3,6 +3,7 @@ package org.drools.base.extractors;
 import java.lang.reflect.Method;
 
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Extractor;
 
 public class ArrayExtractor implements Extractor {
@@ -20,57 +21,57 @@ public class ArrayExtractor implements Extractor {
         return type;        
     }
     
-    public boolean getBooleanValue(Object object) {
-        Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory, Object object) {
+        Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return ( (Boolean)array[ this.index ]).booleanValue();
     }
-    public byte getByteValue(Object object) {
-        Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+    public byte getByteValue(InternalWorkingMemory workingMemory, Object object) {
+        Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return ( (Byte)array[ this.index ]).byteValue();
     }
-    public char getCharValue(Object object) {
-        Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+    public char getCharValue(InternalWorkingMemory workingMemory, Object object) {
+        Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return ( (Character)array[ this.index ]).charValue();
     }
-    public double getDoubleValue(Object object) {
-        Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+    public double getDoubleValue(InternalWorkingMemory workingMemory, Object object) {
+        Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return ( (Double)array[ this.index ]).doubleValue();
     }
 
-    public float getFloatValue(Object object) {
-        Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+    public float getFloatValue(InternalWorkingMemory workingMemory, Object object) {
+        Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return ( (Float)array[ this.index ]).floatValue();
     }
 
-    public int getIntValue(Object object) {
-        Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+    public int getIntValue(InternalWorkingMemory workingMemory, Object object) {
+        Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return ( (Integer)array[ this.index ]).intValue();
     }
-    public long getLongValue(Object object) {
-        Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+    public long getLongValue(InternalWorkingMemory workingMemory, Object object) {
+        Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return ( (Long) array[ this.index ]).longValue();
     }
     public Method getNativeReadMethod() {
         throw new UnsupportedOperationException("cannot call a method on an array extractor" );
     }
-    public short getShortValue(Object object) {
-        Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+    public short getShortValue(InternalWorkingMemory workingMemory, Object object) {
+        Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return ( (Short)array[ this.index ]).shortValue();
     }
-    public Object getValue(Object object) {
-        Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+    public Object getValue(InternalWorkingMemory workingMemory, Object object) {
+        Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return array[ this.index ];
     }
     public ValueType getValueType() {
         return ValueType.OBJECT_TYPE;
     }
-    public boolean isNullValue(Object object) {
-        Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+    public boolean isNullValue(InternalWorkingMemory workingMemory, Object object ) {
+        Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return array[ this.index ] == null;
     }
     
-  public int getHashCode(Object object) {
-      Object[] array = ( Object[] ) this.arrayExtractor.getValue( object );
+  public int getHashCode(InternalWorkingMemory workingMemory, Object object) {
+      Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
       return array[ this.index ].hashCode();
   }    
 
@@ -93,9 +94,8 @@ public class ArrayExtractor implements Extractor {
         if ( index != other.index ) return false;
         return true;
     }
-    
 
-    
-    
-    
+    public boolean isGlobal() {
+        return false;
+    }
 }

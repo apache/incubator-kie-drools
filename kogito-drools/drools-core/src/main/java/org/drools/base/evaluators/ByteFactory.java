@@ -18,6 +18,7 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.LongVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
@@ -76,51 +77,51 @@ public class ByteFactory
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if ( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if ( extractor.isNullValue( workingMemory, object1 ) ) {
                 return object2.isNull();
             } else if ( object2.isNull() ) {
                 return false;
             }
             
-            return extractor.getByteValue( object1 ) == object2.getByteValue();
+            return extractor.getByteValue( workingMemory, object1 ) == object2.getByteValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
-            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return context.isRightNull();
             } else if ( context.isRightNull() ) {
                 return false;
             }
             
-            return context.declaration.getExtractor().getByteValue( left ) == ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getByteValue( workingMemory, left ) == ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if ( context.extractor.isNullValue( right )) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if ( context.extractor.isNullValue( workingMemory, right )) {
                 return context.isLeftNull();
             } else if ( context.isLeftNull() ) {
                 return false;
             }
             
-            return ((LongVariableContextEntry) context).left == context.extractor.getByteValue( right );
+            return ((LongVariableContextEntry) context).left == context.extractor.getByteValue( workingMemory, right );
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if (extractor1.isNullValue( object1 )) {
-                return extractor2.isNullValue( object2 );
-            } else if (extractor2.isNullValue( object2 )) {
+                                final Extractor extractor2, final Object object2) {
+            if (extractor1.isNullValue( workingMemory, object1 )) {
+                return extractor2.isNullValue( workingMemory, object2 );
+            } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return false;
             }
             
-            return extractor1.getByteValue( object1 ) == extractor2.getByteValue( object2 );
+            return extractor1.getByteValue( workingMemory, object1 ) == extractor2.getByteValue( workingMemory, object2 );
         }
 
         public String toString() {
@@ -141,51 +142,51 @@ public class ByteFactory
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if ( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if ( extractor.isNullValue( workingMemory, object1 ) ) {
                 return !object2.isNull();
             } else if ( object2.isNull() ) {
                 return true;
             }
             
-            return extractor.getByteValue( object1 ) != object2.getByteValue();
+            return extractor.getByteValue( workingMemory, object1 ) != object2.getByteValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
-            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return !context.isRightNull();
             } else if ( context.isRightNull() ) {
                 return true;
             }
             
-            return context.declaration.getExtractor().getByteValue( left ) != ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getByteValue( workingMemory, left ) != ((LongVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object object2) {
-            if ( context.extractor.isNullValue( object2 ) ) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object object2) {
+            if ( context.extractor.isNullValue( workingMemory, object2 ) ) {
                 return !context.isLeftNull();
             } else if ( context.isLeftNull() ) {
                 return true;
             }
             
-            return ((LongVariableContextEntry) context).left != context.extractor.getByteValue( object2 );
+            return ((LongVariableContextEntry) context).left != context.extractor.getByteValue( workingMemory, object2 );
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if (extractor1.isNullValue( object1 )) {
-                return !extractor2.isNullValue( object2 );
-            } else if (extractor2.isNullValue( object2 )) {
+                                final Extractor extractor2, final Object object2) {
+            if (extractor1.isNullValue( workingMemory, object1 )) {
+                return !extractor2.isNullValue( workingMemory, object2 );
+            } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return true;
             }
             
-            return extractor1.getByteValue( object1 ) != extractor2.getByteValue( object2 );
+            return extractor1.getByteValue( workingMemory, object1 ) != extractor2.getByteValue( workingMemory, object2 );
         }
 
         public String toString() {
@@ -205,39 +206,39 @@ public class ByteFactory
                    Operator.LESS );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            return extractor.getByteValue( object1 ) < object2.getByteValue();
+            return extractor.getByteValue( workingMemory, object1 ) < object2.getByteValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
             if( context.rightNull ) {
                 return false;
             }
-            return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getByteValue( left );
+            return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getByteValue( workingMemory, left );
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if( context.extractor.isNullValue( right ) ) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            return context.extractor.getByteValue( right ) < ((LongVariableContextEntry) context).left;
+            return context.extractor.getByteValue( workingMemory, right ) < ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if( extractor1.isNullValue( object1 ) ) {
+                                final Extractor extractor2, final Object object2) {
+            if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            return extractor1.getByteValue( object1 ) < extractor2.getByteValue( object2 );
+            return extractor1.getByteValue( workingMemory, object1 ) < extractor2.getByteValue( workingMemory, object2 );
         }
 
         public String toString() {
@@ -257,39 +258,39 @@ public class ByteFactory
                    Operator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            return extractor.getByteValue( object1 ) <= object2.getByteValue();
+            return extractor.getByteValue( workingMemory, object1 ) <= object2.getByteValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
             if( context.rightNull ) {
                 return false;
             }
-            return ((LongVariableContextEntry) context).right <= context.declaration.getExtractor().getByteValue( left );
+            return ((LongVariableContextEntry) context).right <= context.declaration.getExtractor().getByteValue( workingMemory, left );
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if( context.extractor.isNullValue( right ) ) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            return context.extractor.getByteValue( right ) <= ((LongVariableContextEntry) context).left;
+            return context.extractor.getByteValue( workingMemory, right ) <= ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if( extractor1.isNullValue( object1 ) ) {
+                                final Extractor extractor2, final Object object2) {
+            if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            return extractor1.getByteValue( object1 ) <= extractor2.getByteValue( object2 );
+            return extractor1.getByteValue( workingMemory, object1 ) <= extractor2.getByteValue( workingMemory, object2 );
         }
 
         public String toString() {
@@ -309,39 +310,39 @@ public class ByteFactory
                    Operator.GREATER );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            return extractor.getByteValue( object1 ) > object2.getByteValue();
+            return extractor.getByteValue( workingMemory, object1 ) > object2.getByteValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
             if( context.rightNull ) {
                 return false;
             }
-            return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getByteValue( left );
+            return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getByteValue( workingMemory, left );
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if( context.extractor.isNullValue( right ) ) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            return context.extractor.getByteValue( right ) > ((LongVariableContextEntry) context).left;
+            return context.extractor.getByteValue( workingMemory, right ) > ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if( extractor1.isNullValue( object1 ) ) {
+                                final Extractor extractor2, final Object object2) {
+            if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            return extractor1.getByteValue( object1 ) > extractor2.getByteValue( object2 );
+            return extractor1.getByteValue( workingMemory, object1 ) > extractor2.getByteValue( workingMemory, object2 );
         }
 
         public String toString() {
@@ -361,39 +362,39 @@ public class ByteFactory
                    Operator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            return extractor.getByteValue( object1 ) >= object2.getByteValue();
+            return extractor.getByteValue( workingMemory, object1 ) >= object2.getByteValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
             if( context.rightNull ) {
                 return false;
             }
-            return ((LongVariableContextEntry) context).right >= context.declaration.getExtractor().getByteValue( left );
+            return ((LongVariableContextEntry) context).right >= context.declaration.getExtractor().getByteValue( workingMemory, left );
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if( context.extractor.isNullValue( right ) ) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            return context.extractor.getByteValue( right ) >= ((LongVariableContextEntry) context).left;
+            return context.extractor.getByteValue( workingMemory, right ) >= ((LongVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if( extractor1.isNullValue( object1 ) ) {
+                                final Extractor extractor2, final Object object2) {
+            if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
-            return extractor1.getByteValue( object1 ) >= extractor2.getByteValue( object2 );
+            return extractor1.getByteValue( workingMemory, object1 ) >= extractor2.getByteValue( workingMemory, object2 );
         }
 
         public String toString() {

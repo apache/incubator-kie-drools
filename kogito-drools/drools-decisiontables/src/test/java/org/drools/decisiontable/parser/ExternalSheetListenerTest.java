@@ -17,8 +17,6 @@ import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.StatelessSession;
-import org.drools.WorkingMemory;
 import org.drools.concurrent.Future;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleFlowEventListener;

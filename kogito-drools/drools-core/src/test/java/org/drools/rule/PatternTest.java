@@ -29,7 +29,7 @@ public class PatternTest extends TestCase {
                                            42 );
 
         assertEquals( stilton,
-                      dec.getValue( stilton ) );
+                      dec.getValue( null, stilton ) );
 
     }
 
@@ -64,7 +64,7 @@ public class PatternTest extends TestCase {
                                new Integer( 200 ) );
 
         assertEquals( stilton,
-                      dec.getValue( stilton ) );
+                      dec.getValue( null, stilton ) );
     }
 
 }

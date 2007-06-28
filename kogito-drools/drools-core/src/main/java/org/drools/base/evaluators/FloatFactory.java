@@ -18,6 +18,7 @@ package org.drools.base.evaluators;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.DoubleVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
@@ -74,55 +75,55 @@ public class FloatFactory
                    Operator.EQUAL );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if ( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if ( extractor.isNullValue( workingMemory, object1 ) ) {
                 return object2.isNull();
             } else if ( object2.isNull() ) {
                 return false;
             }
             
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getFloatValue( object1 ) == object2.getFloatValue();
+            return extractor.getFloatValue( workingMemory, object1 ) == object2.getFloatValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
-            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return context.isRightNull();
             } else if ( context.isRightNull() ) {
                 return false;
             }
             
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getFloatValue( left ) == ((DoubleVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getFloatValue( workingMemory, left ) == ((DoubleVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if ( context.extractor.isNullValue( right )) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if ( context.extractor.isNullValue( workingMemory, right )) {
                 return context.isLeftNull();
             } else if ( context.isLeftNull() ) {
                 return false;
             }
             
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left == context.extractor.getFloatValue( right );
+            return ((DoubleVariableContextEntry) context).left == context.extractor.getFloatValue( workingMemory, right );
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if (extractor1.isNullValue( object1 )) {
-                return extractor2.isNullValue( object2 );
-            } else if (extractor2.isNullValue( object2 )) {
+                                final Extractor extractor2, final Object object2) {
+            if (extractor1.isNullValue( workingMemory, object1 )) {
+                return extractor2.isNullValue( workingMemory, object2 );
+            } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return false;
             }
             
             // TODO: we are not handling delta right now... maybe we should
-            return extractor1.getFloatValue( object1 ) == extractor2.getFloatValue( object2 );
+            return extractor1.getFloatValue( workingMemory, object1 ) == extractor2.getFloatValue( workingMemory, object2 );
         }
 
         public String toString() {
@@ -142,55 +143,55 @@ public class FloatFactory
                    Operator.NOT_EQUAL );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if ( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if ( extractor.isNullValue( workingMemory, object1 ) ) {
                 return !object2.isNull();
             } else if ( object2.isNull() ) {
                 return true;
             }
             
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getFloatValue( object1 ) != object2.getFloatValue();
+            return extractor.getFloatValue( workingMemory, object1 ) != object2.getFloatValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
-            if ( context.declaration.getExtractor().isNullValue( left ) ) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
+            if ( context.declaration.getExtractor().isNullValue( workingMemory, left ) ) {
                 return !context.isRightNull();
             } else if ( context.isRightNull() ) {
                 return true;
             }
             
             // TODO: we are not handling delta right now... maybe we should
-            return context.declaration.getExtractor().getFloatValue( left ) != ((DoubleVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getFloatValue( workingMemory, left ) != ((DoubleVariableContextEntry) context).right;
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if ( context.extractor.isNullValue( right ) ) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if ( context.extractor.isNullValue( workingMemory, right ) ) {
                 return !context.isLeftNull();
             } else if ( context.isLeftNull() ) {
                 return true;
             }
             
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).left != context.extractor.getFloatValue( right );
+            return ((DoubleVariableContextEntry) context).left != context.extractor.getFloatValue( workingMemory, right );
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if (extractor1.isNullValue( object1 )) {
-                return !extractor2.isNullValue( object2 );
-            } else if (extractor2.isNullValue( object2 )) {
+                                final Extractor extractor2, final Object object2) {
+            if (extractor1.isNullValue( workingMemory, object1 )) {
+                return !extractor2.isNullValue( workingMemory, object2 );
+            } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return true;
             }
             
             // TODO: we are not handling delta right now... maybe we should
-            return extractor1.getFloatValue( object1 ) != extractor2.getFloatValue( object2 );
+            return extractor1.getFloatValue( workingMemory, object1 ) != extractor2.getFloatValue( workingMemory, object2 );
         }
 
         public String toString() {
@@ -210,43 +211,43 @@ public class FloatFactory
                    Operator.LESS );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getFloatValue( object1 ) < object2.getFloatValue();
+            return extractor.getFloatValue( workingMemory, object1 ) < object2.getFloatValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
             if( context.rightNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).right < context.declaration.getExtractor().getFloatValue( left );
+            return ((DoubleVariableContextEntry) context).right < context.declaration.getExtractor().getFloatValue( workingMemory, left );
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if( context.extractor.isNullValue( right ) ) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return context.extractor.getFloatValue( right ) < ((DoubleVariableContextEntry) context).left;
+            return context.extractor.getFloatValue( workingMemory, right ) < ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if( extractor1.isNullValue( object1 ) ) {
+                                final Extractor extractor2, final Object object2) {
+            if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return extractor1.getFloatValue( object1 ) < extractor2.getFloatValue( object2 );
+            return extractor1.getFloatValue( workingMemory, object1 ) < extractor2.getFloatValue( workingMemory, object2 );
         }
 
         public String toString() {
@@ -266,43 +267,43 @@ public class FloatFactory
                    Operator.LESS_OR_EQUAL );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getFloatValue( object1 ) <= object2.getFloatValue();
+            return extractor.getFloatValue( workingMemory, object1 ) <= object2.getFloatValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
             if( context.rightNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).right <= context.declaration.getExtractor().getFloatValue( left );
+            return ((DoubleVariableContextEntry) context).right <= context.declaration.getExtractor().getFloatValue( workingMemory, left );
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if( context.extractor.isNullValue( right ) ) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return context.extractor.getFloatValue( right ) <= ((DoubleVariableContextEntry) context).left;
+            return context.extractor.getFloatValue( workingMemory, right ) <= ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if( extractor1.isNullValue( object1 ) ) {
+                                final Extractor extractor2, final Object object2) {
+            if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return extractor1.getFloatValue( object1 ) <= extractor2.getFloatValue( object2 );
+            return extractor1.getFloatValue( workingMemory, object1 ) <= extractor2.getFloatValue( workingMemory, object2 );
         }
 
         public String toString() {
@@ -322,43 +323,43 @@ public class FloatFactory
                    Operator.GREATER );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getFloatValue( object1 ) > object2.getFloatValue();
+            return extractor.getFloatValue( workingMemory, object1 ) > object2.getFloatValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
             if( context.rightNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).right > context.declaration.getExtractor().getFloatValue( left );
+            return ((DoubleVariableContextEntry) context).right > context.declaration.getExtractor().getFloatValue( workingMemory, left );
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if( context.extractor.isNullValue( right ) ) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return context.extractor.getFloatValue( right ) > ((DoubleVariableContextEntry) context).left;
+            return context.extractor.getFloatValue( workingMemory, right ) > ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if( extractor1.isNullValue( object1 ) ) {
+                                final Extractor extractor2, final Object object2) {
+            if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return extractor1.getFloatValue( object1 ) > extractor2.getFloatValue( object2 );
+            return extractor1.getFloatValue( workingMemory, object1 ) > extractor2.getFloatValue( workingMemory, object2 );
         }
 
         public String toString() {
@@ -378,43 +379,43 @@ public class FloatFactory
                    Operator.GREATER_OR_EQUAL );
         }
 
-        public boolean evaluate(final Extractor extractor,
-                                final Object object1,
-                                final FieldValue object2) {
-            if( extractor.isNullValue( object1 ) ) {
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            if( extractor.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return extractor.getFloatValue( object1 ) >= object2.getFloatValue();
+            return extractor.getFloatValue( workingMemory, object1 ) >= object2.getFloatValue();
         }
 
-        public boolean evaluateCachedRight(final VariableContextEntry context,
-                                           final Object left) {
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
             if( context.rightNull ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return ((DoubleVariableContextEntry) context).right >= context.declaration.getExtractor().getFloatValue( left );
+            return ((DoubleVariableContextEntry) context).right >= context.declaration.getExtractor().getFloatValue( workingMemory, left );
         }
 
-        public boolean evaluateCachedLeft(final VariableContextEntry context,
-                                          final Object right) {
-            if( context.extractor.isNullValue( right ) ) {
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return context.extractor.getFloatValue( right ) >= ((DoubleVariableContextEntry) context).left;
+            return context.extractor.getFloatValue( workingMemory, right ) >= ((DoubleVariableContextEntry) context).left;
         }
 
-        public boolean evaluate(final Extractor extractor1,
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if( extractor1.isNullValue( object1 ) ) {
+                                final Extractor extractor2, final Object object2) {
+            if( extractor1.isNullValue( workingMemory, object1 ) ) {
                 return false;
             }
             // TODO: we are not handling delta right now... maybe we should
-            return extractor1.getFloatValue( object1 ) >= extractor2.getFloatValue( object2 );
+            return extractor1.getFloatValue( workingMemory, object1 ) >= extractor2.getFloatValue( workingMemory, object2 );
         }
 
         public String toString() {

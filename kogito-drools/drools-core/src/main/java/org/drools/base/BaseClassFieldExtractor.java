@@ -78,6 +78,10 @@ abstract public class BaseClassFieldExtractor
         return this.valueType;
     }
     
+    public boolean isGlobal() {
+        return false;
+    }
+    
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;

@@ -18,6 +18,7 @@ package org.drools.base.extractors;
 
 import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 
 /**
  * A special field extractor for the self reference "this".
@@ -35,11 +36,11 @@ public class SelfReferenceClassFieldExtractor extends BaseObjectClassFieldExtrac
                ValueType.determineValueType( clazz ) ); // value type
     }
 
-    public Object getValue(final Object object) {
+    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
         return (object instanceof ShadowProxy) ? ((ShadowProxy) object).getShadowedObject() : object;
     }   
     
-    public boolean isNullValue(final Object object) {
-        return getValue( object ) == null;
+    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getValue( workingMemory, object ) == null;
     }
 }

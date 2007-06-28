@@ -58,23 +58,23 @@ public class LiteralRestriction
     public boolean isAllowed(final Extractor extractor,
                              final Object object,
                              final InternalWorkingMemory workingMemoiry) {
-        return this.evaluator.evaluate( extractor,
-                                        object,
-                                        this.field );
+        return this.evaluator.evaluate( null,
+                                        extractor,
+                                        object, this.field );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final Object object) {
-        return this.evaluator.evaluate( ((LiteralContextEntry) context).getFieldExtractor(),
-                                        object,
-                                        this.field );
+        return this.evaluator.evaluate( null,
+                                        ((LiteralContextEntry) context).getFieldExtractor(),
+                                        object, this.field );
     }
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,
                                         final ContextEntry context) {
-        return this.evaluator.evaluate( ((LiteralContextEntry) context).getFieldExtractor(),
-                                        ((LiteralContextEntry) context).getObject(),
-                                        this.field );
+        return this.evaluator.evaluate( null,
+                                        ((LiteralContextEntry) context).getFieldExtractor(),
+                                        ((LiteralContextEntry) context).getObject(), this.field );
     }
 
     /**

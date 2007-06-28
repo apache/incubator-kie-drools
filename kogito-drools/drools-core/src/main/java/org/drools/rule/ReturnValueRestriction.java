@@ -140,13 +140,13 @@ public class ReturnValueRestriction
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
         try {
-            return this.evaluator.evaluate( extractor,
-                                            object,
-                                            this.expression.evaluate( object,
-                                                                      tuple,
-                                                                      this.previousDeclarations,
-                                                                      this.localDeclarations,
-                                                                      workingMemory ) );
+            return this.evaluator.evaluate( null,
+                                            extractor,
+                                            object, this.expression.evaluate( object,
+                                                                                              tuple,
+                                                                                              this.previousDeclarations,
+                                                                                              this.localDeclarations,
+                                                                                              workingMemory ) );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }

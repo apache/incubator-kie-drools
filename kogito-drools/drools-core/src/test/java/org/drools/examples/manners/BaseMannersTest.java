@@ -41,6 +41,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.field.BooleanFieldImpl;
 import org.drools.base.field.LongFieldImpl;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
@@ -477,8 +478,8 @@ public abstract class BaseMannersTest extends TestCase {
 
                     Context context = (Context) drools.get( contextDeclaration );
                     Count count = (Count) drools.get( countDeclaration );
-                    int seatId = seatingIdDeclaration.getExtractor().getIntValue( tuple.get( seatingIdDeclaration ).getObject() );
-                    int seatingRightSeat = seatingRightSeatDeclaration.getExtractor().getIntValue( tuple.get( seatingRightSeatDeclaration ).getObject() );
+                    int seatId = seatingIdDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory, tuple.get( seatingIdDeclaration ).getObject() );
+                    int seatingRightSeat = seatingRightSeatDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory, tuple.get( seatingRightSeatDeclaration ).getObject() );
 
                     String leftGuestName = (String) drools.get( leftGuestNameDeclaration );
                     String rightGuestName = (String) drools.get( seatingRightGuestNameDeclaration );
@@ -653,8 +654,8 @@ public abstract class BaseMannersTest extends TestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-                    int id = seatingIdDeclaration.getExtractor().getIntValue( tuple.get( seatingIdDeclaration ).getObject() );
-                    int seat = pathSeatDeclaration.getExtractor().getIntValue( tuple.get( pathSeatDeclaration ).getObject() );
+                    int id = seatingIdDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory, tuple.get( seatingIdDeclaration ).getObject() );
+                    int seat = pathSeatDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory, tuple.get( pathSeatDeclaration ).getObject() );
                     String guestName = (String) drools.get( pathGuestNameDeclaration );
 
                     Path path = new Path( id,

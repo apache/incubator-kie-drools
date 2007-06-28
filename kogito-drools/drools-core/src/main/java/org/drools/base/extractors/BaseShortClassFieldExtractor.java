@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 
 public abstract class BaseShortClassFieldExtractor extends BaseClassFieldExtractor {
 
@@ -31,56 +32,56 @@ public abstract class BaseShortClassFieldExtractor extends BaseClassFieldExtract
                valueType );
     }
 
-    public Object getValue(final Object object) {
-        return new Long( getShortValue( object ) );
+    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
+        return new Long( getShortValue( workingMemory, object ) );
     }
 
-    public boolean getBooleanValue(final Object object) {
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
         throw new RuntimeDroolsException( "Conversion to boolean not supported from short" );
     }
 
-    public byte getByteValue(final Object object) {
-        return (byte) getShortValue( object );
+    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
+        return (byte) getShortValue( workingMemory, object );
 
     }
 
-    public char getCharValue(final Object object) {
+    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
         throw new RuntimeDroolsException( "Conversion to char not supported from short" );
     }
 
-    public double getDoubleValue(final Object object) {
-        return getShortValue( object );
+    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getShortValue( workingMemory, object );
     }
 
-    public float getFloatValue(final Object object) {
-        return getShortValue( object );
+    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getShortValue( workingMemory, object );
     }
 
-    public int getIntValue(final Object object) {
-        return getShortValue( object );
+    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getShortValue( workingMemory, object );
     }
 
-    public long getLongValue(final Object object) {
-        return getShortValue( object );
+    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getShortValue( workingMemory, object );
     }
 
-    public abstract short getShortValue(Object object);
+    public abstract short getShortValue(InternalWorkingMemory workingMemory, Object object);
     
-    public boolean isNullValue(final Object object) {
+    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
         return false;
     }
 
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getShortValue",
-                                                      new Class[]{Object.class} );
+                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
                                               e );
         }
     }
 
-    public int getHashCode(final Object object) {
-        return getShortValue( object );
+    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
+        return getShortValue( workingMemory, object );
     }
 }
