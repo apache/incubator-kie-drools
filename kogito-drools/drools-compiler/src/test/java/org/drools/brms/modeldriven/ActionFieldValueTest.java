@@ -3,7 +3,7 @@ package org.drools.brms.modeldriven;
 import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
 
 public class ActionFieldValueTest extends TestCase {
 

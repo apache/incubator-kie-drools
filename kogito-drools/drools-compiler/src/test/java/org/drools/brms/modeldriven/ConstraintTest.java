@@ -2,7 +2,7 @@ package org.drools.brms.modeldriven;
 
 import junit.framework.TestCase;
 
-import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 
 public class ConstraintTest extends TestCase {
 

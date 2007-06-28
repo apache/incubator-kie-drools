@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
 
 /**
  * A builder to incrementally populate a SuggestionCompletionEngine

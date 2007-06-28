@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.brms.client.modeldriven.brxml.PortableObject;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.PortableObject;
 
 /**
  * An suggestion completion processor. This should be usable in both GWT/Web and the IDE.

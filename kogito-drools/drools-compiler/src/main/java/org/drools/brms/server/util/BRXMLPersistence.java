@@ -1,19 +1,19 @@
 package org.drools.brms.server.util;
 
-import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionInsertLogicalFact;
-import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
-import org.drools.brms.client.modeldriven.brxml.ActionSetField;
-import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
-import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
-import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
-import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brl.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brl.ActionInsertLogicalFact;
+import org.drools.brms.client.modeldriven.brl.ActionRetractFact;
+import org.drools.brms.client.modeldriven.brl.ActionSetField;
+import org.drools.brms.client.modeldriven.brl.ActionUpdateField;
+import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brl.CompositeFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.ConnectiveConstraint;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.RuleAttribute;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
+import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -21,7 +21,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 /**
  * This class persists the rule model to XML and back.
  * 
- * This is the 'brxml' xml format (Business Rule Language).
+ * This is the 'brl' xml format (Business Rule Language).
  * 
  * @author Michael Neale
  */
@@ -72,7 +72,7 @@ public class BRXMLPersistence implements BRLPersistence {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.brms.server.util.BRLPersistence#toXML(org.drools.brms.client.modeldriven.brxml.RuleModel)
+     * @see org.drools.brms.server.util.BRLPersistence#toXML(org.drools.brms.client.modeldriven.brl.RuleModel)
      */
     public String marshal(final RuleModel model) {
         return this.xt.toXML( model );

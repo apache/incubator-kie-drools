@@ -7,21 +7,21 @@ import java.io.Reader;
 import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.brms.client.modeldriven.brxml.ActionFieldValue;
-import org.drools.brms.client.modeldriven.brxml.ActionInsertFact;
-import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
-import org.drools.brms.client.modeldriven.brxml.ActionUpdateField;
-import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
-import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
-import org.drools.brms.client.modeldriven.brxml.DSLSentence;
-import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.ISingleFieldConstraint;
-import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
-import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brl.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brl.ActionRetractFact;
+import org.drools.brms.client.modeldriven.brl.ActionUpdateField;
+import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brl.CompositeFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.ConnectiveConstraint;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.RuleAttribute;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
+import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 
-public class BRXMLPersitenceTest extends TestCase {
+public class BRLPersitenceTest extends TestCase {
 
     public void testGenerateEmptyXML() {
         final BRLPersistence p = BRXMLPersistence.getInstance();
@@ -179,7 +179,7 @@ public class BRXMLPersitenceTest extends TestCase {
      * then backwards compatability is broken.
      */
     public void testBackwardsCompat() throws Exception {
-        RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( loadResource( "existing_brxml.xml" ) );
+        RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( loadResource( "existing_brl.xml" ) );
         
         assertNotNull(m2);
         assertEquals(3, m2.rhs.length);

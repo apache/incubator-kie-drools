@@ -4,18 +4,18 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.drools.brms.client.modeldriven.brxml.ActionRetractFact;
-import org.drools.brms.client.modeldriven.brxml.ActionSetField;
-import org.drools.brms.client.modeldriven.brxml.CompositeFactPattern;
-import org.drools.brms.client.modeldriven.brxml.CompositeFieldConstraint;
-import org.drools.brms.client.modeldriven.brxml.ConnectiveConstraint;
-import org.drools.brms.client.modeldriven.brxml.FactPattern;
-import org.drools.brms.client.modeldriven.brxml.IAction;
-import org.drools.brms.client.modeldriven.brxml.IPattern;
-import org.drools.brms.client.modeldriven.brxml.ISingleFieldConstraint;
-import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
-import org.drools.brms.client.modeldriven.brxml.RuleModel;
-import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.ActionRetractFact;
+import org.drools.brms.client.modeldriven.brl.ActionSetField;
+import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.brms.client.modeldriven.brl.CompositeFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.ConnectiveConstraint;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.IAction;
+import org.drools.brms.client.modeldriven.brl.IPattern;
+import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brl.RuleAttribute;
+import org.drools.brms.client.modeldriven.brl.RuleModel;
+import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.thoughtworks.xstream.XStream;
 
