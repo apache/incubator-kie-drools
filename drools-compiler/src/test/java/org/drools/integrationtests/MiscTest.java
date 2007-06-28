@@ -2945,6 +2945,52 @@ public class MiscTest extends TestCase {
         }
     }
 
+    public void testFireLimit() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_fireLimit.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        workingMemory.insert( new Integer( 0 ) );
+        workingMemory.fireAllRules();
+
+        assertEquals( 20,
+                      results.size() );
+        for( int i = 0; i < 20; i++ ) {
+            assertEquals( new Integer( i ), results.get( i ) );
+        }
+        results.clear();
+        
+        workingMemory.insert( new Integer( 0 ) );
+        workingMemory.fireAllRules( 10 );
+
+        assertEquals( 10,
+                      results.size() );
+        for( int i = 0; i < 10; i++ ) {
+            assertEquals( new Integer( i ), results.get( i ) );
+        }
+        results.clear();
+        
+        workingMemory.insert( new Integer( 0 ) );
+        workingMemory.fireAllRules( -1 );
+
+        assertEquals( 20,
+                      results.size() );
+        for( int i = 0; i < 20; i++ ) {
+            assertEquals( new Integer( i ), results.get( i ) );
+        }
+        results.clear();
+        
+        
+    }
+
     
     
 }
