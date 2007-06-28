@@ -13,6 +13,7 @@ public class UpdateObject
     private FactHandle       factHandle;
     private Object           object;
     private volatile boolean done;
+    private Exception     e;
 
     public UpdateObject(final FactHandle factHandle,
                         final Object object) {
@@ -33,4 +34,12 @@ public class UpdateObject
     public boolean isDone() {
         return this.done == true;
     }
+    
+    public boolean exceptionThrown() {
+        return e != null;
+    }
+    
+    public Exception getException() {
+        return this.e;
+    }    
 }
