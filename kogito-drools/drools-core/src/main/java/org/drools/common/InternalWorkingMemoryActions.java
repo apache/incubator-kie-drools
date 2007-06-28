@@ -52,4 +52,5 @@ public interface InternalWorkingMemoryActions
                              final Object object,
                              final Rule rule,
                              final Activation activation);
+    
 }

@@ -198,4 +198,8 @@ public class DefaultKnowledgeHelper
     public Declaration getDeclaration(final String identifier) {
         return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
     }
+    
+    public void halt() {
+        this.workingMemory.halt();
+    }
 }

@@ -2921,6 +2921,30 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( map ) );
        
     }
+
+    public void testHalt() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_halt.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        workingMemory.insert( new Integer( 0 ) );
+        workingMemory.fireAllRules();
+
+        assertEquals( 10,
+                      results.size() );
+        for( int i = 0; i < 10; i++ ) {
+            assertEquals( new Integer( i ), results.get( i ) );
+        }
+    }
+
     
     
 }

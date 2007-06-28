@@ -311,4 +311,11 @@ public interface WorkingMemory
      * Starts a new process instance for the process with the given id. 
      */
     ProcessInstance startProcess(String processId);
+
+    /**
+     * Stops rule firing after the currect rule finishes executing
+     *
+     */
+    public void halt();
+    
 }
