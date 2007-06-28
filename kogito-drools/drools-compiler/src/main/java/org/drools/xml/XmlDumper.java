@@ -88,21 +88,31 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitPatternDescr(final PatternDescr descr) {
         this.patternContext = true;
-
         this.template = new String();
+        StringBuffer localString = new StringBuffer();
+        
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
             if ( descr.getIdentifier() != null ) {
-                this.template = "<pattern identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol + "</pattern>" + XmlDumper.eol;
+                localString.append("<pattern identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol);
             } else {
-                this.template = "<pattern object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol + "</pattern>" + XmlDumper.eol;
+                localString.append("<pattern object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol);
             }
         } else {
             if ( descr.getIdentifier() != null ) {
-                this.template = "<pattern identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" > </pattern>" + XmlDumper.eol;
+                localString.append("<pattern identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol);;
             } else {
-                this.template = "<pattern object-type=\"" + descr.getObjectType() + "\" > </pattern>" + XmlDumper.eol;
+                localString.append("<pattern object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol);
             }
         }
+        
+        if ( descr.getSource() != null ) {
+            visit(descr.getSource());
+            localString.append( this.template );
+        }
+        localString.append("</pattern>" + XmlDumper.eol);
+        
+        this.template = localString.toString();
+        
         this.patternContext = false;
     }
 
@@ -113,23 +123,16 @@ public class XmlDumper extends ReflectiveVisitor
     }
 
     public void visitCollectDescr(final CollectDescr descr) {
-        String tmpstr = new String();
-        //visitPatternDescr( descr.getOutputPattern() );
-
-        this.template = this.template.substring( 0,
-                                                 this.template.indexOf( "</pattern>" ) );
-        tmpstr += this.template + " <from> <collect> ";
-        visitPatternDescr( descr.getInputPattern() );
-        tmpstr += this.template;
-        this.template = tmpstr + " </collect> </from> ";
-        this.template += "</pattern>";
+        StringBuffer tmpstr = new StringBuffer();
+        tmpstr.append( "<from> <collect>" );
+        visit(descr.getInputPattern() );
+        tmpstr.append( this.template );
+        tmpstr.append(" </collect> </from> ");
+        this.template = tmpstr.toString();
     }
 
     public void visitAccumulateDescr(final AccumulateDescr descr) {
         String tmpstr = new String();
-        //visit( descr.getOutputPattern() );
-        this.template = this.template.substring( 0,
-                                                 this.template.indexOf( "</pattern>" ) );
         tmpstr += this.template + " <from> <accumulate> ";
         visit( descr.getInputPattern() );
         tmpstr += this.template;
@@ -138,18 +141,13 @@ public class XmlDumper extends ReflectiveVisitor
         else tmpstr += "<init>" + descr.getInitCode() + "</init><action>" + descr.getActionCode() + "</action><result>" + descr.getResultCode() + "</result>";
 
         this.template = tmpstr + " </accumulate> </from> ";
-        this.template += "</pattern>";
     }
 
     public void visitFromDescr(final FromDescr descr) {
         String tmpstr = new String();
-        //visitPatternDescr( descr.getOutputPattern() );
-        this.template = this.template.substring( 0,
-                                                 this.template.indexOf( "</pattern>" ) );
         tmpstr += this.template + " <from> <expression> ";
         tmpstr += descr.getDataSource();
         this.template = tmpstr + " </expression> </from> ";
-        this.template += "</pattern>";
     }
 
     public void visitForallDescr(final ForallDescr descr) {
