@@ -73,10 +73,7 @@ public class AccumulateHandler extends BaseAbstractHandler
 
         if ( parent.getClass().getName().equals( FromDescr.class.getName() ) ) {
             final PatternDescr result = (PatternDescr) ite.previous();
-            accumulateDescr.setInputPattern( result );
-
-            final AndDescr andDescr = (AndDescr) ite.previous();
-            andDescr.addDescr( accumulateDescr );
+            result.setSource( accumulateDescr );
 
         } else if ( parent instanceof ConditionalElementDescr ) {
             final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
