@@ -29,6 +29,7 @@ import org.antlr.runtime.RecognitionException;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
 import org.drools.lang.Expander;
+import org.drools.lang.ExpanderException;
 import org.drools.lang.Location;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DefaultExpanderResolver;
@@ -109,6 +110,37 @@ public class DrlParser {
         return this.parse( expanded );
     }
 
+    /**
+     * This will expand the DRL.
+     * useful for debugging.
+     * @param source - the source which use a DSL
+     * @param dsl - the DSL itself.
+     * @throws DroolsParserException If unable to expand in any way.
+     */
+    public String getExpandedDRL(final String source, final Reader dsl) throws DroolsParserException {
+        DefaultExpanderResolver resolver;
+        try {
+            resolver = new DefaultExpanderResolver( dsl );
+        } catch ( final IOException e ) {
+            throw new DroolsParserException( "Error parsing the DSL.",
+                                             e );
+        }
+        final Expander expander = resolver.get( "*",
+                                          null );
+        final String expanded = expander.expand( source );
+        
+        if ( expander.hasErrors() ) {
+            String err = "";
+            for ( Iterator iter = expander.getErrors().iterator(); iter.hasNext(); ) {
+                ExpanderException ex = (ExpanderException) iter.next();
+                err  = err + "\n Line:[" + ex.getLine() + "] " + ex.getMessage();
+                
+            }
+            throw new DroolsParserException(err);
+        }    
+        return expanded;
+    }
+    
     private StringBuffer getDRLText(final Reader reader) throws IOException {
         final StringBuffer text = new StringBuffer();
 
