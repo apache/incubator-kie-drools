@@ -145,6 +145,8 @@ public abstract class AbstractWorkingMemory
 
     /** Flag to determine if a rule is currently being fired. */
     protected boolean                         firing;
+    
+    protected boolean                         halt;
 
     // ------------------------------------------------------------
     // Constructors
@@ -394,6 +396,10 @@ public abstract class AbstractWorkingMemory
         return this.ruleBase;
     }
 
+    public void halt() {
+        this.halt = true;
+    }
+    
     /**
      * @see WorkingMemory
      */
@@ -405,7 +411,8 @@ public abstract class AbstractWorkingMemory
         // If we're already firing a rule, then it'll pick up
         // the firing for any other assertObject(..) that get
         // nested inside, avoiding concurrent-modification
-        // exceptions, depending on code paths of the actions.                
+        // exceptions, depending on code paths of the actions.          
+        this.halt = false;
 
         if ( isSequential() ) {
             for ( Iterator it = this.liaPropagations.iterator(); it.hasNext(); ) {
@@ -423,7 +430,7 @@ public abstract class AbstractWorkingMemory
             try {
                 this.firing = true;
 
-                while ( this.agenda.fireNextItem( agendaFilter ) ) {
+                while ( (!halt) && this.agenda.fireNextItem( agendaFilter ) ) {
                     noneFired = false;
                     if ( !this.actionQueue.isEmpty() ) {
                         executeQueuedActions();
@@ -450,7 +457,7 @@ public abstract class AbstractWorkingMemory
             executeQueuedActions();
         }
 
-        while ( this.agenda.fireNextItem( agendaFilter ) ) {
+        while ( (!halt) && this.agenda.fireNextItem( agendaFilter ) ) {
             ;
         }
 

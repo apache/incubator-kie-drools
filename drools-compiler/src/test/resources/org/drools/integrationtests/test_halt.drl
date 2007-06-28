@@ -1,0 +1,20 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "fire"
+when
+    $old : Number( $val : intValue )
+then
+    results.add( $old );
+    insert( new Integer( $val + 1 ) );
+    retract( $old );
+end
+
+rule "stop"
+	salience 10
+when
+	Number( intValue == 10 )
+then
+    drools.halt();
+end

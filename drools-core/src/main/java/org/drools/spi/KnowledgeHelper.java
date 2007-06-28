@@ -17,11 +17,9 @@ package org.drools.spi;
  */
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.QueryResults;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
@@ -134,5 +132,7 @@ public interface KnowledgeHelper
 //    void setFocus(AgendaGroup focus);
 
     public Declaration getDeclaration(String identifier);
+    
+    public void halt();
 
 }
