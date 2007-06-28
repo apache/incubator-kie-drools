@@ -28,7 +28,7 @@ public class BRDRLPersistenceTest extends TestCase {
     }
 
     public void testGenerateEmptyDRL() {
-        String expected = "rule \"null\"\n\twhen\n\tthen\nend\n";
+        String expected = "rule \"null\"\n\tdialect \"mvel\"\n\twhen\n\tthen\nend\n";
 
         final String drl = p.marshal( new RuleModel() );
 
@@ -38,7 +38,7 @@ public class BRDRLPersistenceTest extends TestCase {
     }
 
     public void testBasics() {
-        String expected = "rule \"my rule\"\n\tno-loop true\n\twhen\n\t\tPerson( )\n" + 
+        String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n" + 
                           "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         m.addLhsItem( new FactPattern( "Person" ) );
@@ -56,10 +56,11 @@ public class BRDRLPersistenceTest extends TestCase {
 
     public void testMoreComplexRendering() {
         final RuleModel m = getComplexModel();
-        String expected = "rule \"Complex Rule\"\n" +
+        String expected = "rule \"Complex Rule\"\n" +                            
                           "\tno-loop true\n" +
                           "\tsalience -10\n" +
                           "\tagenda-group \"aGroup\"\n" +
+                          "\tdialect \"mvel\"\n" +
                           "\twhen\n"+
                           "\t\t>p1 : Person( f1 : age < 42 )\n"+
                           "\t\t>not Cancel( )\n"+
@@ -254,7 +255,7 @@ public class BRDRLPersistenceTest extends TestCase {
         
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"with composite\" " +
-            " when " +
+            " \tdialect \"mvel\"\n when " +
                 "p1 : Person( ) " + 
                 "Goober( goo == \"foo\"  || == \"bar\" || goo2 == \"foo\" || ( goo == \"whee\" && gabba == \"whee\" ), goo3 == \"foo\" )" +
             " then " +
@@ -278,7 +279,7 @@ public class BRDRLPersistenceTest extends TestCase {
         
         String actual = BRDRLPersistence.getInstance().marshal( m );
 
-        String expected = "rule \"boo\" when Person() then end";
+        String expected = "rule \"boo\" \tdialect \"mvel\"\n when Person() then end";
         
         assertEqualsIgnoreWhitespace( expected, actual );
         
@@ -289,7 +290,7 @@ public class BRDRLPersistenceTest extends TestCase {
         
         actual = BRDRLPersistence.getInstance().marshal( m );
 
-        expected = "rule \"boo\" when Person(q : field1) then end";
+        expected = "rule \"boo\" dialect \"mvel\" when Person(q : field1) then end";
         
         assertEqualsIgnoreWhitespace( expected, actual );
         
@@ -324,7 +325,7 @@ public class BRDRLPersistenceTest extends TestCase {
         String result = BRDRLPersistence.getInstance().marshal( m );
      
         assertEqualsIgnoreWhitespace( "rule \"test literal strings\"" +
-                                          " when " +
+                                          "\tdialect \"mvel\"\n when " +
                                           "     Person(field1 == \"goo\", field2 == variableHere)" +
                                           " then " +
                                           "end", result );
@@ -366,7 +367,7 @@ public class BRDRLPersistenceTest extends TestCase {
         
         
         String expected = "rule \"yeah\" " +
-                            " when " + 
+                            "\tdialect \"mvel\"\n when " + 
                                     "Goober( goo == ( someFunc(x) ) )" + 
                             " then " + 
                             "end";
@@ -400,7 +401,7 @@ public class BRDRLPersistenceTest extends TestCase {
         String result = BRDRLPersistence.getInstance().marshal( m );
         
         String expected = "rule \"test literal strings\" " +
-            " when " +
+            "\tdialect \"mvel\"\n when " +
                 "Person( field1 == goo  || == \"blah\" )" + 
                 " then " +
                 "end";
@@ -444,6 +445,19 @@ public class BRDRLPersistenceTest extends TestCase {
         assertTrue(result.indexOf( ">insert" ) > -1);
         System.err.println(result);
         assertTrue(result.indexOf( ">insertLogical" ) > -1);
+    }
+    
+    public void testDefaultMVEL() {
+        RuleModel m = new RuleModel();
+        
+        String s = BRDRLPersistence.getInstance().marshal( m );
+        assertTrue(s.indexOf( "mvel" ) > -1);
+        
+        m.addAttribute( new RuleAttribute("dialect", "goober") );
+        s = BRDRLPersistence.getInstance().marshal( m );
+        assertFalse(s.indexOf( "mvel" ) > -1);
+        assertTrue(s.indexOf( "goober" ) > -1);
+        
     }
 
 }
