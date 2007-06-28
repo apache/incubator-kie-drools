@@ -73,6 +73,8 @@ abstract public class AbstractRuleBase
     protected Map                                   pkgs;
 
     protected Map                                   processes;
+    
+    protected Map                                   agendaGroupRuleTotals;
 
     protected transient CompositePackageClassLoader packageClassLoader;
 
@@ -114,6 +116,10 @@ abstract public class AbstractRuleBase
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
         this.factHandleFactory = factHandleFactory;
+        
+        if ( this.config.isSequential() ) {
+            this.agendaGroupRuleTotals = new HashMap();
+        }
 
         this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
         this.classLoader = new MapBackedClassLoader( Thread.currentThread().getContextClassLoader() );
@@ -142,6 +148,7 @@ abstract public class AbstractRuleBase
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         final ObjectOutput out = new ObjectOutputStream( bos );
         out.writeObject( this.id );
+        out.writeObject( this.agendaGroupRuleTotals );
         out.writeObject( this.factHandleFactory );
         out.writeObject( this.globals );
         out.writeObject( this.config );
@@ -184,6 +191,7 @@ abstract public class AbstractRuleBase
         childStream.setRuleBase( this );
 
         this.id = (String) childStream.readObject();
+        this.agendaGroupRuleTotals = (Map) childStream.readObject();
         this.factHandleFactory = (FactHandleFactory) childStream.readObject();
         this.globals = (Map) childStream.readObject();
 
@@ -242,6 +250,9 @@ abstract public class AbstractRuleBase
         return this.globals;
     }
 
+    public Map getAgendaGroupRuleTotals() {
+        return this.agendaGroupRuleTotals;
+    }
     /**
      * Add a <code>Package</code> to the network. Iterates through the
      * <code>Package</code> adding Each individual <code>Rule</code> to the
