@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.brxml;
+package org.drools.brms.client.modeldriven.brl;
 
 /**
  * This is used when asserting a new fact.

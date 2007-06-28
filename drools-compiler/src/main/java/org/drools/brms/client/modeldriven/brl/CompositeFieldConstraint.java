@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.brxml;
+package org.drools.brms.client.modeldriven.brl;
 
 /**
  * This is a field constraint that may span multiple fields.

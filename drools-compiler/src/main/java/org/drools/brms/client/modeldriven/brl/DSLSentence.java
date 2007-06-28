@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.brxml;
+package org.drools.brms.client.modeldriven.brl;
 
 /**
  * This represents a DSL sentence.

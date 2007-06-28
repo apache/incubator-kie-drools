@@ -1,4 +1,4 @@
-package org.drools.brms.client.modeldriven.brxml;
+package org.drools.brms.client.modeldriven.brl;
 
 /**
  * Holds field and value for "action" parts of the rule.
