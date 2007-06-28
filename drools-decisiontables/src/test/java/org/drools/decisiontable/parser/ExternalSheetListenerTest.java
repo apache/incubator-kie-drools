@@ -338,6 +338,17 @@ public class ExternalSheetListenerTest extends TestCase {
                     // TODO Auto-generated method stub
                     
                 }
+
+                public void fireAllRules(int fireLimit) throws FactException {
+                    // TODO Auto-generated method stub
+                    
+                }
+
+                public void fireAllRules(AgendaFilter agendaFilter,
+                                         int fireLimit) throws FactException {
+                    // TODO Auto-generated method stub
+                    
+                }
 			};
 		}
 	}
