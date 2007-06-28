@@ -175,7 +175,7 @@ public class BRLPersitenceTest extends TestCase {
     }
 
     /**
-     * This will verify that we can load an old BRXML change. If this fails,
+     * This will verify that we can load an old BRL change. If this fails,
      * then backwards compatability is broken.
      */
     public void testBackwardsCompat() throws Exception {
