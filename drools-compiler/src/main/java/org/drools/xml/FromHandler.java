@@ -73,13 +73,12 @@ public class FromHandler extends BaseAbstractHandler
         Object parent = it.previous();
 
         final PatternDescr patternDescr = (PatternDescr) parent;
-        //fromDescr.setOutputPattern( patternDescr );
-        parent = it.previous();
 
-        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) it.previous();
 
-        if ( (config.getChild( "accumulate" ) == null) && (config.getChild( "collect" ) == null) ) 
-            ((ConditionalElementDescr) parent).addDescr( fromDescr );
+        if ( (config.getChild( "expression" ) != null) ) {
+            patternDescr.setSource( fromDescr );    
+        }
 
         return null;
     }

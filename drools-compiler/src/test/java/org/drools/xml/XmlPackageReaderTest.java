@@ -53,15 +53,15 @@ public class XmlPackageReaderTest extends TestCase {
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
-        FromDescr from = (FromDescr) obj.getLhs().getDescrs().get( 0 );
+        PatternDescr patterndescr = (PatternDescr) obj.getLhs().getDescrs().get( 0 );
+        
+        FromDescr from = (FromDescr) patterndescr.getSource();
         
         AccessorDescr accessordescriptor =  (AccessorDescr) from.getDataSource();
         assertEquals( accessordescriptor.getVariableName(), "cheesery" );
-        
-        //PatternDescr patterndescr = from.getOutputPattern();
-        
-//        assertEquals( patterndescr.getObjectType(), "Cheese" );
-//        assertEquals( patterndescr.getIdentifier(), "cheese" );
+
+        assertEquals( patterndescr.getObjectType(), "Cheese" );
+        assertEquals( patterndescr.getIdentifier(), "cheese" );
         
     }
 
@@ -72,9 +72,13 @@ public class XmlPackageReaderTest extends TestCase {
         assertNotNull( packageDescr );
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
 
-        Object accumulateobj = obj.getLhs().getDescrs().get( 0 );
-        assertTrue( accumulateobj instanceof AccumulateDescr );
-        AccumulateDescr accumulatedescr = (AccumulateDescr) accumulateobj;
+        Object patternobj = obj.getLhs().getDescrs().get( 0 );
+        assertTrue( patternobj instanceof PatternDescr );
+        final PatternDescr patterncheese = (PatternDescr) patternobj;
+        assertEquals( patterncheese.getIdentifier(), "cheese" );
+        assertEquals( patterncheese.getObjectType(), "Cheese" );
+        
+        AccumulateDescr accumulatedescr = (AccumulateDescr) patterncheese.getSource();
         assertEquals( "total += $cheese.getPrice();",
                       accumulatedescr.getActionCode() );
         assertEquals( "int total = 0;",
@@ -82,17 +86,25 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "new Integer( total ) );",
                       accumulatedescr.getResultCode() );
 
-        PatternDescr sourcePattern = accumulatedescr.getInputPattern();
-//        PatternDescr resultPattern = accumulatedescr.getOutputPattern();
-
-        assertNotNull( sourcePattern );
-//        assertNotNull( resultPattern );
-
-//        assertEquals( "Cheese",
-//                      resultPattern.getObjectType() );
-        assertEquals( "Person",
-                      sourcePattern.getObjectType() );
-
+        patternobj = obj.getLhs().getDescrs().get( 1 );
+        assertTrue( patternobj instanceof PatternDescr );
+        
+        final PatternDescr patternmax = (PatternDescr) patternobj;
+        assertEquals( patternmax.getIdentifier(), "max" );
+        assertEquals( patternmax.getObjectType(), "Number" );
+        
+        accumulatedescr = (AccumulateDescr) patternmax.getSource();
+        
+        assertTrue( accumulatedescr.isExternalFunction() );
+        
+        assertEquals( "max",
+                      accumulatedescr.getFunctionIdentifier() );
+        
+        assertNull( accumulatedescr.getInitCode() );
+        assertNull( accumulatedescr.getActionCode() );
+        assertNull( accumulatedescr.getResultCode() );
+        assertNull( accumulatedescr.getReverseCode());
+        
     }
 
     public void testParseForall() throws Exception {
@@ -100,9 +112,6 @@ public class XmlPackageReaderTest extends TestCase {
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseForall.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
-
-        XmlDumper xmldumper = new XmlDumper();
-        String str = xmldumper.dump( packageDescr );
 
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
         ForallDescr forall = (ForallDescr) obj.getLhs().getDescrs().get( 0 );
@@ -154,20 +163,25 @@ public class XmlPackageReaderTest extends TestCase {
         assertNotNull( packageDescr );
 
         RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
-        Object objectCollect = obj.getLhs().getDescrs().get( 0 );
-        assertTrue( objectCollect instanceof CollectDescr );
+        Object objectpattern = obj.getLhs().getDescrs().get( 0 );
+        assertTrue( objectpattern instanceof PatternDescr );
 
-        CollectDescr collectDescr = (CollectDescr) objectCollect;
-
-        //PatternDescr sourcePattern = collectDescr.getOutputPattern();
-        PatternDescr resultPattern = collectDescr.getInputPattern();
-
-        //assertEquals( sourcePattern.getObjectType(),
-        //              "Cheese" );
-        assertEquals( resultPattern.getObjectType(),
-                      "Person" );
-
-        Object fieldContraintObject = resultPattern.getConstraint().getDescrs().get( 0 );
+        PatternDescr patterndescr = (PatternDescr) objectpattern;
+        
+        assertEquals( patterndescr.getObjectType(),
+                                    "Cheese" );
+        
+        Object collectobj = patterndescr.getSource();
+        
+        assertTrue( collectobj instanceof CollectDescr );
+        
+        CollectDescr collectDescr = (CollectDescr) collectobj;
+        
+        PatternDescr inputpattern =  collectDescr.getInputPattern();
+        
+        assertEquals( inputpattern.getObjectType(),
+                    "Person" );
+        Object fieldContraintObject = inputpattern.getConstraint().getDescrs().get( 0 );
         assertTrue( fieldContraintObject instanceof FieldConstraintDescr );
         FieldConstraintDescr fieldconstraintdescr = (FieldConstraintDescr) fieldContraintObject;
         assertEquals( fieldconstraintdescr.getFieldName(),
@@ -180,7 +194,7 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( literalDesc.getText(),
                       "pink" );
 
-        //fieldContraintObject = sourcePattern.getConstraint().getDescrs().get( 0 );
+        fieldContraintObject = patterndescr.getConstraint().getDescrs().get( 0 );
         assertTrue( fieldContraintObject instanceof FieldConstraintDescr );
         fieldconstraintdescr = (FieldConstraintDescr) fieldContraintObject;
         assertEquals( fieldconstraintdescr.getFieldName(),
@@ -192,6 +206,7 @@ public class XmlPackageReaderTest extends TestCase {
                       "==" );
         assertEquals( literalDesc.getText(),
                       "1" );
+        
     }
 
     public void testParsePackageName() throws Exception {

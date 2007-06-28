@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.FromDescr;
@@ -65,7 +64,6 @@ public class CollectHandler extends BaseAbstractHandler
                       final String localName) throws SAXException {
 
         final Configuration config = this.xmlPackageReader.endConfiguration();
-
         final CollectDescr collectDescr = (CollectDescr) this.xmlPackageReader.getCurrent();
 
         final LinkedList parents = this.xmlPackageReader.getParents();
@@ -75,11 +73,7 @@ public class CollectHandler extends BaseAbstractHandler
 
         if ( parent.getClass().getName().equals( FromDescr.class.getName() ) ) {
             final PatternDescr resultPattern = (PatternDescr) ite.previous();
-            collectDescr.setInputPattern( resultPattern );
-
-            final AndDescr andDescr = (AndDescr) ite.previous();
-            andDescr.addDescr( collectDescr );
-
+            resultPattern.setSource( collectDescr );
         } else if ( parent instanceof ConditionalElementDescr ) {
             final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
             parentDescr.addDescr( collectDescr );

@@ -99,8 +99,8 @@ class PatternHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName) throws SAXException {
-        final Configuration config = this.xmlPackageReader.endConfiguration();
 
+        final Configuration config = this.xmlPackageReader.endConfiguration();
         final PatternDescr patternDescr = (PatternDescr) this.xmlPackageReader.getCurrent();
 
         final LinkedList parents = this.xmlPackageReader.getParents();
@@ -112,10 +112,8 @@ class PatternHandler extends BaseAbstractHandler
             final PatternDestinationDescr parentDescr = (PatternDestinationDescr) parent;
             parentDescr.setInputPattern( patternDescr );
         } else {
-            if ( config.getChild( "from" ) == null ) { 
-                final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
-                parentDescr.addDescr( patternDescr );
-            }
+            final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
+            parentDescr.addDescr( patternDescr );
         }
         return null;
     }
