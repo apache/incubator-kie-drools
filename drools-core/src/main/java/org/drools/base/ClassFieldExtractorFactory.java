@@ -40,6 +40,7 @@ import org.drools.base.extractors.BaseObjectClassFieldExtractor;
 import org.drools.base.extractors.BaseShortClassFieldExtractor;
 import org.drools.base.extractors.MVELClassFieldExtractor;
 import org.drools.base.extractors.SelfReferenceClassFieldExtractor;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.util.asm.ClassFieldInspector;
 
 /**
@@ -330,7 +331,7 @@ public class ClassFieldExtractorFactory {
         Method overridingMethod;
         try {
             overridingMethod = superClass.getMethod( getOverridingMethodName( fieldType ),
-                                                     new Class[]{Object.class} );
+                                                     new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report back to JBoss Rules team.",
                                               e );
@@ -346,7 +347,7 @@ public class ClassFieldExtractorFactory {
         final Label l0 = new Label();
         mv.visitLabel( l0 );
         mv.visitVarInsn( Opcodes.ALOAD,
-                         1 );
+                         2 );
         mv.visitTypeInsn( Opcodes.CHECKCAST,
                           Type.getInternalName( originalClass ) );
 
@@ -370,12 +371,18 @@ public class ClassFieldExtractorFactory {
                                l0,
                                l1,
                                0 );
+        mv.visitLocalVariable( "workingMemory",
+                               Type.getDescriptor( InternalWorkingMemory.class ),
+                               null,
+                               l0,
+                               l1,
+                               1 );
         mv.visitLocalVariable( "object",
                                Type.getDescriptor( Object.class ),
                                null,
                                l0,
                                l1,
-                               1 );
+                               2 );
         mv.visitMaxs( 0,
                       0 );
         mv.visitEnd();

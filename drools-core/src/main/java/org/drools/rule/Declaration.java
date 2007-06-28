@@ -43,6 +43,7 @@ package org.drools.rule;
 import java.io.Serializable;
 
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Extractor;
 
 /*
@@ -160,44 +161,48 @@ public class Declaration
         return this.extractor;
     }
 
-    public Object getValue(final Object object) {
-        return this.extractor.getValue( object );
+    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
+        return this.extractor.getValue( workingMemory, object );
     }
 
-    public char getCharValue(final Object object) {
-        return this.extractor.getCharValue( object );
+    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
+        return this.extractor.getCharValue( workingMemory, object );
     }
 
-    public int getIntValue(final Object object) {
-        return this.extractor.getIntValue( object );
+    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
+        return this.extractor.getIntValue( workingMemory, object );
     }
 
-    public byte getByteValue(final Object object) {
-        return this.extractor.getByteValue( object );
+    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
+        return this.extractor.getByteValue( workingMemory, object );
     }
 
-    public short getShortValue(final Object object) {
-        return this.extractor.getShortValue( object );
+    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
+        return this.extractor.getShortValue( workingMemory, object );
     }
 
-    public long getLongValue(final Object object) {
-        return this.extractor.getLongValue( object );
+    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
+        return this.extractor.getLongValue( workingMemory, object );
     }
 
-    public float getFloatValue(final Object object) {
-        return this.extractor.getFloatValue( object );
+    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
+        return this.extractor.getFloatValue( workingMemory, object );
     }
 
-    public double getDoubleValue(final Object object) {
-        return this.extractor.getDoubleValue( object );
+    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
+        return this.extractor.getDoubleValue( workingMemory, object );
     }
 
-    public boolean getBooleanValue(final Object object) {
-        return this.extractor.getBooleanValue( object );
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
+        return this.extractor.getBooleanValue( workingMemory, object );
     }
 
-    public int getHashCode(final Object object) {
-        return this.extractor.getHashCode( object );
+    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
+        return this.extractor.getHashCode( workingMemory, object );
+    }
+    
+    public boolean isGlobal() {
+        return this.extractor.isGlobal();
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

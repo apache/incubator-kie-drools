@@ -30,6 +30,7 @@ import java.util.Locale;
 import junit.framework.TestCase;
 
 import org.drools.base.evaluators.Operator;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
 import org.drools.rule.VariableRestriction.DoubleVariableContextEntry;
@@ -614,9 +615,9 @@ public class EvaluatorFactoryTest extends TestCase {
                                                     final Object[] row,
                                                     final Evaluator evaluator) {
         final FieldValue value = FieldFactory.getFieldValue( row[2] );
-        final boolean result = evaluator.evaluate( extractor,
-                                                   row[0],
-                                                   value );
+        final boolean result = evaluator.evaluate( null,
+                                                   extractor,
+                                                   row[0], value );
         final String message = "The evaluator type: [" + valueType + "] with FieldValue incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -642,8 +643,8 @@ public class EvaluatorFactoryTest extends TestCase {
                                                              (FieldExtractor) extractor,
                                                              valueType,
                                                              row );
-        final boolean result = evaluator.evaluateCachedRight( context,
-                                                              row[2] );
+        final boolean result = evaluator.evaluateCachedRight( null,
+                                                              context, row[2] );
         final String message = "The evaluator type: [" + valueType + "] with CachedRight incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -669,8 +670,8 @@ public class EvaluatorFactoryTest extends TestCase {
                                                                    (FieldExtractor) extractor,
                                                              valueType,
                                                              row );
-        final boolean result = evaluator.evaluateCachedLeft( context,
-                                                             row[0] );
+        final boolean result = evaluator.evaluateCachedLeft( null,
+                                                             context, row[0] );
         final String message = "The evaluator type: [" + valueType + "] with CachedLeft incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -692,10 +693,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                                      final Extractor extractor,
                                                      final Object[] row,
                                                      final Evaluator evaluator) {
-        final boolean result = evaluator.evaluate( extractor,
-                                                   row[0],
+        final boolean result = evaluator.evaluate( null,
                                                    extractor,
-                                                   row[2] );
+                                                   row[0],
+                                                   extractor, row[2] );
         final String message = "The evaluator type: [" + valueType + "] with 2 extractors incorrectly returned " + result + " for [" + row[0] + " " + row[1] + " " + row[2] + "]. It was asserted to return " + row[3];
 
         if ( row[3] == Boolean.TRUE ) {
@@ -820,19 +821,19 @@ public class EvaluatorFactoryTest extends TestCase {
 
         private static final long serialVersionUID = 2759666130893301563L;
 
-        public boolean getBooleanValue(final Object object) {
+        public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Boolean) object).booleanValue() : false;
         }
 
-        public byte getByteValue(final Object object) {
+        public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Number) object).byteValue() : (byte) 0;
         }
 
-        public char getCharValue(final Object object) {
+        public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Character) object).charValue() : '\0';
         }
 
-        public double getDoubleValue(final Object object) {
+        public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Number) object).doubleValue() : 0.0;
         }
 
@@ -840,19 +841,19 @@ public class EvaluatorFactoryTest extends TestCase {
             return null;
         }
 
-        public float getFloatValue(final Object object) {
+        public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Number) object).floatValue() : (float) 0.0;
         }
 
-        public int getHashCode(final Object object) {
+        public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
             return 0;
         }
 
-        public int getIntValue(final Object object) {
+        public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Number) object).intValue() : 0;
         }
 
-        public long getLongValue(final Object object) {
+        public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Number) object).longValue() : 0;
         }
 
@@ -860,15 +861,15 @@ public class EvaluatorFactoryTest extends TestCase {
             return null;
         }
 
-        public short getShortValue(final Object object) {
+        public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Number) object).shortValue() : (short) 0;
         }
 
-        public Object getValue(final Object object) {
+        public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
             return object;
         }
         
-        public boolean isNullValue(final Object object) {
+        public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object ) {
             return object == null;
         }
 
@@ -879,6 +880,10 @@ public class EvaluatorFactoryTest extends TestCase {
 
         public int getIndex() {
             return 0;
+        }
+
+        public boolean isGlobal() {
+            return false;
         }
 
     }

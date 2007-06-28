@@ -163,7 +163,7 @@ public class DefaultKnowledgeHelper
     //    }
 
     public Object get(final Declaration declaration) {
-        return declaration.getValue( this.tuple.get( declaration ).getObject() );
+        return declaration.getValue( workingMemory, this.tuple.get( declaration ).getObject() );
     }
 
     public Tuple getTuple() {

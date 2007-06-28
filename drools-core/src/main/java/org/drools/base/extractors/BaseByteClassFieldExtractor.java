@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 
 /**
  * A Base class for primitive byte class field
@@ -53,55 +54,55 @@ public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtracto
                valueType );
     }
 
-    public Object getValue(final Object object) {
-        return new Long( getByteValue( object ) );
+    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
+        return new Long( getByteValue( workingMemory, object ) );
     }
 
-    public boolean getBooleanValue(final Object object) {
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
         throw new RuntimeDroolsException( "Conversion to boolean not supported from byte" );
     }
 
-    public abstract byte getByteValue(Object object);
+    public abstract byte getByteValue(InternalWorkingMemory workingMemory, Object object);
 
-    public char getCharValue(final Object object) {
+    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
         throw new RuntimeDroolsException( "Conversion to char not supported from byte" );
     }
 
-    public double getDoubleValue(final Object object) {
-        return getByteValue( object );
+    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getByteValue( workingMemory, object );
     }
 
-    public float getFloatValue(final Object object) {
-        return getByteValue( object );
+    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getByteValue( workingMemory, object );
     }
 
-    public int getIntValue(final Object object) {
-        return getByteValue( object );
+    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getByteValue( workingMemory, object );
     }
 
-    public long getLongValue(final Object object) {
-        return getByteValue( object );
+    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getByteValue( workingMemory, object );
     }
 
-    public short getShortValue(final Object object) {
-        return getByteValue( object );
+    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getByteValue( workingMemory, object );
     }
 
-    public boolean isNullValue(final Object object) {
+    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
         return false;
     }
     
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getByteValue",
-                                                      new Class[]{Object.class} );
+                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
                                               e );
         }
     }
 
-    public int getHashCode(final Object object) {
-        return getByteValue( object );
+    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
+        return getByteValue( workingMemory, object );
     }
 }

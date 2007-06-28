@@ -19,13 +19,13 @@ package org.drools.spi;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 
 /**
- * This is a dummy extractor used during rule compilation and build. It is not
- * supposed to be used to extract real global values during runtime, so
- * all getValueXXX() methods will raise unsupported operation exceptions.
+ * This is a global variable extractor used to get a global variable value
  * 
  * @author etirelli
  */
@@ -43,8 +43,8 @@ public class GlobalExtractor
         this.objectType = new ClassObjectType( (Class) map.get( this.key ));
     }
 
-    public Object getValue(final Object object) {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
+        return workingMemory.getGlobal( key );
     }
 
     public ObjectType getObjectType() {
@@ -59,44 +59,75 @@ public class GlobalExtractor
         return this.objectType.getValueType();
     }
 
-    public boolean getBooleanValue(final Object object) {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
+        if( this.objectType.getValueType().isBoolean() ) {
+            return ((Boolean) workingMemory.getGlobal( key )).booleanValue();
+        }
+        throw new ClassCastException("Not possible to convert global '"+key+"' into a boolean.");
     }
 
-    public byte getByteValue(final Object object) {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
+        if( this.objectType.getValueType().isNumber() ) {
+            return ((Number) workingMemory.getGlobal( key )).byteValue();
+        }
+        throw new ClassCastException("Not possible to convert global '"+key+"' into a byte.");
     }
 
-    public char getCharValue(final Object object) {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
+        if( this.objectType.getValueType().isChar() ) {
+            return ((Character) workingMemory.getGlobal( key )).charValue();
+        }
+        throw new ClassCastException("Not possible to convert global '"+key+"' into a char.");
     }
 
-    public double getDoubleValue(final Object object) {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
+        if( this.objectType.getValueType().isNumber() ) {
+            return ((Number) workingMemory.getGlobal( key )).doubleValue();
+        }
+        throw new ClassCastException("Not possible to convert global '"+key+"' into a double.");
     }
 
-    public float getFloatValue(final Object object) {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
+        if( this.objectType.getValueType().isNumber() ) {
+            return ((Number) workingMemory.getGlobal( key )).floatValue();
+        }
+        throw new ClassCastException("Not possible to convert global '"+key+"' into a float.");
     }
 
-    public int getIntValue(final Object object) {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
+        if( this.objectType.getValueType().isNumber() ) {
+            return ((Number) workingMemory.getGlobal( key )).intValue();
+        }
+        throw new ClassCastException("Not possible to convert global '"+key+"' into an int.");
     }
 
-    public long getLongValue(final Object object) {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
+        if( this.objectType.getValueType().isNumber() ) {
+            return ((Number) workingMemory.getGlobal( key )).longValue();
+        }
+        throw new ClassCastException("Not possible to convert global '"+key+"' into a long.");
     }
 
-    public short getShortValue(final Object object) {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
+        if( this.objectType.getValueType().isNumber() ) {
+            return ((Number) workingMemory.getGlobal( key )).shortValue();
+        }
+        throw new ClassCastException("Not possible to convert global '"+key+"' into a short.");
     }
 
     public Method getNativeReadMethod() {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+        try {
+            return this.getClass().getDeclaredMethod( "getValue",
+                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                              e );
+        }
     }
 
-    public int getHashCode(final Object object) {
-        throw new UnsupportedOperationException("Operation not suported for globals");
+    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
+        final Object value = getValue( workingMemory, object );
+        return (value != null) ? value.hashCode() : 0;
     }
 
     public int hashCode() {
@@ -115,7 +146,12 @@ public class GlobalExtractor
                ( this.objectType == null ? other.objectType == null : this.objectType.equals( other.objectType ));
     }
 
-    public boolean isNullValue(Object object) {
-        throw new UnsupportedOperationException("Operation not supported for globals");
+    public boolean isNullValue( InternalWorkingMemory workingMemory, Object object ) {
+        final Object value = getValue( workingMemory, object );
+        return value == null;
+    }
+
+    public boolean isGlobal() {
+        return true;
     }
 }

@@ -21,7 +21,7 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     public void testGetBooleanValue() {
         try {
-            this.extractor.getBooleanValue( this.bean );
+            this.extractor.getBooleanValue( null, this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -31,7 +31,7 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetByteValue() {
         try {
             Assert.assertEquals( (byte) FloatClassFieldExtractorTest.VALUE,
-                                 this.extractor.getByteValue( this.bean ) );
+                                 this.extractor.getByteValue( null, this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -39,7 +39,7 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     public void testGetCharValue() {
         try {
-            this.extractor.getCharValue( this.bean );
+            this.extractor.getCharValue( null, this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -49,7 +49,7 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetDoubleValue() {
         try {
             Assert.assertEquals( FloatClassFieldExtractorTest.VALUE,
-                                 this.extractor.getDoubleValue( this.bean ),
+                                 this.extractor.getDoubleValue( null, this.bean ),
                                  0.01 );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
@@ -59,7 +59,7 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetFloatValue() {
         try {
             Assert.assertEquals( FloatClassFieldExtractorTest.VALUE,
-                                 this.extractor.getFloatValue( this.bean ),
+                                 this.extractor.getFloatValue( null, this.bean ),
                                  0.01 );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
@@ -69,7 +69,7 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetIntValue() {
         try {
             Assert.assertEquals( (int) FloatClassFieldExtractorTest.VALUE,
-                                 this.extractor.getIntValue( this.bean ) );
+                                 this.extractor.getIntValue( null, this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -78,7 +78,7 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetLongValue() {
         try {
             Assert.assertEquals( (long) FloatClassFieldExtractorTest.VALUE,
-                                 this.extractor.getLongValue( this.bean ) );
+                                 this.extractor.getLongValue( null, this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -87,7 +87,7 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetShortValue() {
         try {
             Assert.assertEquals( (short) FloatClassFieldExtractorTest.VALUE,
-                                 this.extractor.getShortValue( this.bean ) );
+                                 this.extractor.getShortValue( null, this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -96,8 +96,8 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetValue() {
         try {
             Assert.assertEquals( new Float( FloatClassFieldExtractorTest.VALUE ),
-                                 this.extractor.getValue( this.bean ) );
-            Assert.assertTrue( this.extractor.getValue( this.bean ) instanceof Float );
+                                 this.extractor.getValue( null, this.bean ) );
+            Assert.assertTrue( this.extractor.getValue( null, this.bean ) instanceof Float );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -105,7 +105,7 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     
     public void testIsNullValue() {
         try {
-            Assert.assertFalse( this.extractor.isNullValue( this.bean ) );
+            Assert.assertFalse( this.extractor.isNullValue( null, this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }

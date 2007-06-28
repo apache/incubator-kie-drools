@@ -34,18 +34,18 @@ public class FactTemplateFieldExtractorTest extends TestCase {
                                new Integer( 200 ) );
 
         assertEquals( "stilton",
-                      extractName.getValue( stilton ) );
+                      extractName.getValue( null, stilton ) );
 
         assertEquals( new Integer( 200 ),
-                      extractPrice.getValue( stilton ) );
+                      extractPrice.getValue( null, stilton ) );
 
-        assertFalse( extractName.isNullValue( stilton ) );
+        assertFalse( extractName.isNullValue( null, stilton ) );
         
         stilton.setFieldValue( "name",
                                null );
         
-        assertTrue( extractName.isNullValue( stilton ) );
-        assertFalse( extractPrice.isNullValue( stilton ) );
+        assertTrue( extractName.isNullValue( null, stilton ) );
+        assertFalse( extractPrice.isNullValue( null, stilton ) );
         
         final Fact brie = cheese.createFact( 12 );
         brie.setFieldValue( "name",
@@ -54,18 +54,18 @@ public class FactTemplateFieldExtractorTest extends TestCase {
                             new Integer( 55 ) );
 
         assertEquals( "brie",
-                      extractName.getValue( brie ) );
+                      extractName.getValue( null, brie ) );
 
         assertEquals( new Integer( 55 ),
-                      extractPrice.getValue( brie ) );
+                      extractPrice.getValue( null, brie ) );
         
-        assertFalse( extractName.isNullValue( brie ) );
+        assertFalse( extractName.isNullValue( null, brie ) );
         
         brie.setFieldValue( "name",
                             null );
         
-        assertTrue( extractName.isNullValue( brie ) );
-        assertFalse( extractPrice.isNullValue( stilton ) );
+        assertTrue( extractName.isNullValue( null, brie ) );
+        assertFalse( extractPrice.isNullValue( null, stilton ) );
     }
 
     public void testDeclaration() {
@@ -100,6 +100,6 @@ public class FactTemplateFieldExtractorTest extends TestCase {
 
         // Check we can extract Declarations correctly 
         assertEquals( "brie",
-                      declaration.getValue( brie ) );
+                      declaration.getValue( null, brie ) );
     }
 }

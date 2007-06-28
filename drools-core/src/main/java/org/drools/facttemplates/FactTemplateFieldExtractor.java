@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.FieldExtractor;
 
 public class FactTemplateFieldExtractor
@@ -24,7 +25,7 @@ public class FactTemplateFieldExtractor
         return this.factTemplate.getFieldTemplate( this.fieldIndex ).getValueType();
     }
 
-    public Object getValue(final Object object) {
+    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
         return ((Fact) object).getFieldValue( this.fieldIndex );
     }
 
@@ -36,35 +37,35 @@ public class FactTemplateFieldExtractor
         return Fact.class;//this.factTemplate.getFieldTemplate( fieldIndex ).getValueType().getClass();
     }
 
-    public boolean getBooleanValue(final Object object) {
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
         return ((Boolean) ((Fact) object).getFieldValue( this.fieldIndex )).booleanValue();
     }
 
-    public byte getByteValue(final Object object) {
+    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).byteValue();
     }
 
-    public char getCharValue(final Object object) {
+    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
         return ((Character) ((Fact) object).getFieldValue( this.fieldIndex )).charValue();
     }
 
-    public double getDoubleValue(final Object object) {
+    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).doubleValue();
     }
 
-    public float getFloatValue(final Object object) {
+    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).floatValue();
     }
 
-    public int getIntValue(final Object object) {
+    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).intValue();
     }
 
-    public long getLongValue(final Object object) {
+    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).longValue();
     }
 
-    public short getShortValue(final Object object) {
+    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
         return ((Number) ((Fact) object).getFieldValue( this.fieldIndex )).shortValue();
     }
 
@@ -78,11 +79,16 @@ public class FactTemplateFieldExtractor
         }
     }
 
-    public int getHashCode(final Object object) {
-        return getValue( object ).hashCode();
+    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
+        return getValue( workingMemory, object ).hashCode();
     }
 
-    public boolean isNullValue(Object object) {
+    public boolean isGlobal() {
+        return false;
+    }
+
+    public boolean isNullValue(InternalWorkingMemory workingMemory,
+                               Object object) {
         return ((Fact) object).getFieldValue( this.fieldIndex ) == null;
     }
 }

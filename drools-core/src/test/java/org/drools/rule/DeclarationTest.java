@@ -78,7 +78,7 @@ public class DeclarationTest extends TestCase {
 
         // Check we can extract Declarations correctly
         assertEquals( "cheddar",
-                      declaration.getValue( cheddar ) );
+                      declaration.getValue( null, cheddar ) );
     }
 
     public static int getIndex(final Class clazz,

@@ -125,7 +125,7 @@ public class PatternBuilder
 
             boolean isAlphaConstraint = true;
             for ( int i = 0; isAlphaConstraint && i < declarations.length; i++ ) {
-                if ( declarations[i].getPattern() != pattern ) {
+                if ( ! declarations[i].isGlobal() && declarations[i].getPattern() != pattern ) {
                     isAlphaConstraint = false;
                 }
             }

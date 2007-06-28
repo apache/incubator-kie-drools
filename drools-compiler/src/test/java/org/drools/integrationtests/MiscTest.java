@@ -2991,6 +2991,45 @@ public class MiscTest extends TestCase {
         
     }
 
+    public void testGlobals2() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalsAsConstraints.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        final List cheeseTypes = new ArrayList();
+        workingMemory.setGlobal( "cheeseTypes",
+                                 cheeseTypes );
+        cheeseTypes.add( "stilton" );
+        cheeseTypes.add( "muzzarela" );
+
+        final Cheese stilton = new Cheese( "stilton",
+                                           5 );
+        workingMemory.insert( stilton );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( "memberOf", results.get( 0 ));
+
+        final Cheese brie = new Cheese( "brie",
+                                           5 );
+        workingMemory.insert( brie );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( "not memberOf", results.get( 1 ));
+    }
+
     
     
 }

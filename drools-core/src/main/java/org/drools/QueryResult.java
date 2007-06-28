@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.drools.base.ShadowProxy;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.Tuple;
 
@@ -35,7 +36,7 @@ public class QueryResult {
     }
 
     public Object get(final Declaration declaration) {
-        return declaration.getValue( getObject( this.tuple.get( declaration ) ) );
+        return declaration.getValue( (InternalWorkingMemory) workingMemory, getObject( this.tuple.get( declaration ) ) );
     }
 
     public FactHandle[] getFactHandles() {

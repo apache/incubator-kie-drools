@@ -29,6 +29,7 @@ import org.drools.audit.event.ObjectLogEvent;
 import org.drools.audit.event.RuleFlowGroupLogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -243,7 +244,7 @@ public abstract class WorkingMemoryLogger
                     // This handle is now invalid, probably due to an fact retraction
                     continue;
                 }
-                final Object value = declaration.getValue( this.workingMemory.getObject( handle ) );
+                final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, this.workingMemory.getObject( handle ) );
 
                 result.append( declaration.getIdentifier() );
                 result.append( "=" );

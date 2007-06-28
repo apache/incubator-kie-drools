@@ -226,22 +226,22 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             return 0;
         }
 
-        public boolean getBooleanValue(final Object object) {
+        public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
             //  Auto-generated method stub
             return false;
         }
 
-        public byte getByteValue(final Object object) {
+        public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
             //  Auto-generated method stub
             return 0;
         }
 
-        public char getCharValue(final Object object) {
+        public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
             //  Auto-generated method stub
             return 0;
         }
 
-        public double getDoubleValue(final Object object) {
+        public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
             //  Auto-generated method stub
             return 0;
         }
@@ -251,17 +251,17 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             return null;
         }
 
-        public float getFloatValue(final Object object) {
+        public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
             //  Auto-generated method stub
             return 0;
         }
 
-        public int getIntValue(final Object object) {
+        public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
             //  Auto-generated method stub
             return 0;
         }
 
-        public long getLongValue(final Object object) {
+        public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
             //  Auto-generated method stub
             return 0;
         }
@@ -271,17 +271,17 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             return null;
         }
 
-        public short getShortValue(final Object object) {
+        public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
             //  Auto-generated method stub
             return 0;
         }
 
-        public Object getValue(final Object object) {
+        public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
             //  Auto-generated method stub
             return null;
         }
         
-        public boolean isNullValue(final Object object) {
+        public boolean isNullValue(final Object object, InternalWorkingMemory workingMemory) {
             return false;
         }
 
@@ -290,8 +290,19 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             return null;
         }
 
-        public int getHashCode(final Object object) {
+        public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
             return 0;
+        }
+
+        public boolean isGlobal() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public boolean isNullValue(InternalWorkingMemory workingMemory,
+                                   Object object) {
+            // TODO Auto-generated method stub
+            return false;
         }
 
     }

@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseClassFieldExtractor;
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 
 public abstract class BaseIntClassFieldExtractor extends BaseClassFieldExtractor {
 
@@ -31,56 +32,56 @@ public abstract class BaseIntClassFieldExtractor extends BaseClassFieldExtractor
                valueType );
     }
 
-    public Object getValue(final Object object) {
-        return new Long( getIntValue( object ) );
+    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
+        return new Long( getIntValue( workingMemory, object ) );
     }
 
-    public boolean getBooleanValue(final Object object) {
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
         throw new RuntimeDroolsException( "Conversion to boolean not supported from int" );
     }
 
-    public byte getByteValue(final Object object) {
-        return (byte) getIntValue( object );
+    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
+        return (byte) getIntValue( workingMemory, object );
 
     }
 
-    public char getCharValue(final Object object) {
+    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
         throw new RuntimeDroolsException( "Conversion to char not supported from int" );
     }
 
-    public double getDoubleValue(final Object object) {
-        return getIntValue( object );
+    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getIntValue( workingMemory, object );
     }
 
-    public float getFloatValue(final Object object) {
-        return getIntValue( object );
+    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getIntValue( workingMemory, object );
     }
 
-    public abstract int getIntValue(Object object);
+    public abstract int getIntValue(InternalWorkingMemory workingMemory, Object object);
 
-    public long getLongValue(final Object object) {
-        return getIntValue( object );
+    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
+        return getIntValue( workingMemory, object );
     }
 
-    public short getShortValue(final Object object) {
-        return (short) getIntValue( object );
+    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
+        return (short) getIntValue( workingMemory, object );
     }
 
-    public boolean isNullValue(final Object object) {
+    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
         return false;
     }
 
     public Method getNativeReadMethod() {
         try {
             return this.getClass().getDeclaredMethod( "getIntValue",
-                                                      new Class[]{Object.class} );
+                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
                                               e );
         }
     }
 
-    public int getHashCode(final Object object) {
-        return getIntValue( object );
+    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
+        return getIntValue( workingMemory, object );
     }
 }

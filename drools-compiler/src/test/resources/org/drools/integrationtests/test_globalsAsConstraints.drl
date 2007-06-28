@@ -1,0 +1,18 @@
+package org.drools;
+
+global java.util.List cheeseTypes;
+global java.util.List results;
+
+rule "member of cheese types"
+when
+	Cheese( type memberOf cheeseTypes )
+then
+    results.add( "memberOf" );
+end
+
+rule "not member of cheese types"
+when
+    Cheese( type not memberOf cheeseTypes )
+then
+    results.add( "not memberOf" );
+end

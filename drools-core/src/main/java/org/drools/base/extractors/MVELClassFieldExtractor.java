@@ -25,6 +25,7 @@ import java.util.Set;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
 import org.mvel.CompiledExpression;
@@ -69,13 +70,13 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
     /* (non-Javadoc)
      * @see org.drools.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)
      */
-    public Object getValue(Object object) {
+    public Object getValue(InternalWorkingMemory workingMemory, Object object) {
         for( Iterator it = this.extractors.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             String var = (String) entry.getKey();
             FieldExtractor extr = (FieldExtractor) entry.getValue();
             
-            this.variables.put( var, extr.getValue( object ));
+            this.variables.put( var, extr.getValue( workingMemory, object ));
         }
         return MVEL.executeExpression( mvelExpression, this.variables );
     }

@@ -6,7 +6,6 @@ import junit.framework.TestCase;
 import org.drools.Address;
 import org.drools.Person;
 import org.drools.base.ClassFieldExtractorCache;
-import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.spi.Extractor;
 
 public class MVELClassFieldExtractorTest extends TestCase {
@@ -27,7 +26,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
 
     public void testGetBooleanValue() {
         try {
-            this.extractor.getBooleanValue( this.person );
+            this.extractor.getBooleanValue( null, this.person );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -36,7 +35,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
 
     public void testGetByteValue() {
         try {
-            this.extractor.getByteValue( this.person );
+            this.extractor.getByteValue( null, this.person );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -45,7 +44,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
 
     public void testGetCharValue() {
         try {
-            this.extractor.getCharValue( this.person );
+            this.extractor.getCharValue( null, this.person );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -54,7 +53,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
 
     public void testGetDoubleValue() {
         try {
-            this.extractor.getDoubleValue( this.person );
+            this.extractor.getDoubleValue( null, this.person );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -63,7 +62,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
 
     public void testGetFloatValue() {
         try {
-            this.extractor.getFloatValue( this.person );
+            this.extractor.getFloatValue( null, this.person );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -72,7 +71,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
 
     public void testGetIntValue() {
         try {
-            this.extractor.getIntValue( this.person );
+            this.extractor.getIntValue( null, this.person );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -81,7 +80,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
 
     public void testGetLongValue() {
         try {
-            this.extractor.getLongValue( this.person );
+            this.extractor.getLongValue( null, this.person );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -90,7 +89,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
 
     public void testGetShortValue() {
         try {
-            this.extractor.getShortValue( this.person );
+            this.extractor.getShortValue( null, this.person );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -100,8 +99,8 @@ public class MVELClassFieldExtractorTest extends TestCase {
     public void testGetValue() {
         try {
             Assert.assertEquals( "Home Street",
-                                 this.extractor.getValue( this.person ) );
-            Assert.assertTrue( this.extractor.getValue( this.person ) instanceof String );
+                                 this.extractor.getValue( null, this.person ) );
+            Assert.assertTrue( this.extractor.getValue( null, this.person ) instanceof String );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -109,12 +108,12 @@ public class MVELClassFieldExtractorTest extends TestCase {
 
     public void testIsNullValue() {
         try {
-            Assert.assertFalse( this.extractor.isNullValue( this.person ) );
+            Assert.assertFalse( this.extractor.isNullValue( null, this.person ) );
 
             Extractor nullExtractor = ClassFieldExtractorCache.getExtractor( Person.class,
                                                                              "addresses['business'].phone",
                                                                              getClass().getClassLoader() );
-            Assert.assertTrue( nullExtractor.isNullValue( this.person ) );
+            Assert.assertTrue( nullExtractor.isNullValue( null, this.person ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }

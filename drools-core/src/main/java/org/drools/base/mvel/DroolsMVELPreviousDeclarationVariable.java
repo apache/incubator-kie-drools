@@ -2,6 +2,7 @@ package org.drools.base.mvel;
 
 import java.io.Serializable;
 
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
 import org.mvel.integration.VariableResolver;
 
@@ -28,7 +29,7 @@ public class DroolsMVELPreviousDeclarationVariable
     }
 
     public Object getValue() {
-        return this.declaration.getValue( this.factory.getValue( this.declaration ) );
+        return this.declaration.getValue( (InternalWorkingMemory) this.factory.getWorkingMemory(), this.factory.getValue( this.declaration ) );
     }    
 
     public void setValue(final Object value) {

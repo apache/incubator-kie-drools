@@ -20,30 +20,33 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import org.drools.base.ValueType;
+import org.drools.common.InternalWorkingMemory;
 
 public interface Extractor
     extends
     Serializable {
 
-    public Object getValue(Object object);
+    public Object getValue(InternalWorkingMemory workingMemory, Object object);
 
-    public char getCharValue(Object object);
+    public char getCharValue(InternalWorkingMemory workingMemory, Object object);
 
-    public int getIntValue(Object object);
+    public int getIntValue(InternalWorkingMemory workingMemory, Object object);
 
-    public byte getByteValue(Object object);
+    public byte getByteValue(InternalWorkingMemory workingMemory, Object object);
 
-    public short getShortValue(Object object);
+    public short getShortValue(InternalWorkingMemory workingMemory, Object object);
 
-    public long getLongValue(Object object);
+    public long getLongValue(InternalWorkingMemory workingMemory, Object object);
 
-    public float getFloatValue(Object object);
+    public float getFloatValue(InternalWorkingMemory workingMemory, Object object);
 
-    public double getDoubleValue(Object object);
+    public double getDoubleValue(InternalWorkingMemory workingMemory, Object object);
 
-    public boolean getBooleanValue(Object object);
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory, Object object);
     
-    public boolean isNullValue(Object object);
+    public boolean isNullValue(InternalWorkingMemory workingMemory, Object object);
+    
+    public boolean isGlobal();
 
     public ValueType getValueType();
 
@@ -51,6 +54,6 @@ public interface Extractor
 
     public Method getNativeReadMethod();
 
-    public int getHashCode(Object object);
+    public int getHashCode(InternalWorkingMemory workingMemory, Object object);
 
 }
