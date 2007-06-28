@@ -16,6 +16,7 @@ import org.drools.brms.client.modeldriven.brxml.FieldConstraint;
 import org.drools.brms.client.modeldriven.brxml.IAction;
 import org.drools.brms.client.modeldriven.brxml.IPattern;
 import org.drools.brms.client.modeldriven.brxml.ISingleFieldConstraint;
+import org.drools.brms.client.modeldriven.brxml.RuleAttribute;
 import org.drools.brms.client.modeldriven.brxml.RuleModel;
 import org.drools.brms.client.modeldriven.brxml.SingleFieldConstraint;
 import org.drools.util.ReflectiveVisitor;
@@ -85,9 +86,23 @@ public class BRDRLPersistence
      */
     private void marshalAttributes(StringBuffer buf,
                                    RuleModel model) {
+        boolean hasDialect = false;
         for ( int i = 0; i < model.attributes.length; i++ ) {
+            RuleAttribute attr = model.attributes[i];
+            
             buf.append( "\t" );
-            buf.append( model.attributes[i] );
+            buf.append( attr );
+            
+            buf.append( "\n" );
+            if (attr.attributeName.equals( "dialect" )) {
+                hasDialect = true;
+            }            
+        }
+//Un comment below for mvel        
+        if (!hasDialect) {
+            RuleAttribute attr = new RuleAttribute("dialect", "mvel");
+            buf.append( "\t" );
+            buf.append( attr );
             buf.append( "\n" );
         }
     }
