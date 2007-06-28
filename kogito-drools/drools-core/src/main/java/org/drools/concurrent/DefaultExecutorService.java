@@ -20,6 +20,7 @@ public class DefaultExecutorService implements ExecutorService {
     
     public void startUp() {
         this.thread = new Thread( executor );
+        this.thread.start();
         this.running = true;
     }
     

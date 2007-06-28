@@ -32,6 +32,7 @@ public class CommandExecutor implements Runnable, Serializable {
     }
 
     public void run() {
+        this.run = true;
         while (this.run) {
             try {
                 Command executor = ( Command ) this.queue.take();

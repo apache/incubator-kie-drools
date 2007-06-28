@@ -22,7 +22,11 @@ public class AssertObjects
 
     public void execute(final WorkingMemory workingMemory) {
         if ( this.object instanceof Object[] ) {
-            workingMemory.insert( this.object );
+            final Object[] objects = (Object[]) this.object;
+            for ( int i = 0; i < objects.length; i++ ) {
+                workingMemory.insert( objects[i] );
+            }
+            
         } else if ( this.object instanceof List ) {
             final List list = (List) this.object;
             this.results = new ArrayList( list.size() );
