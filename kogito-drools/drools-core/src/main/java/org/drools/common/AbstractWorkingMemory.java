@@ -404,10 +404,18 @@ public abstract class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public synchronized void fireAllRules() throws FactException {
-        fireAllRules( null );
+        fireAllRules( null, -1 );
     }
 
-    public synchronized void fireAllRules(final AgendaFilter agendaFilter) throws FactException {
+    public synchronized void fireAllRules( int fireLimit ) throws FactException {
+        fireAllRules( null, fireLimit );
+    }
+
+    public synchronized void fireAllRules( final AgendaFilter agendaFilter ) throws FactException {
+        fireAllRules( agendaFilter, -1 );
+    }
+
+    public synchronized void fireAllRules(final AgendaFilter agendaFilter, int fireLimit ) throws FactException {
         // If we're already firing a rule, then it'll pick up
         // the firing for any other assertObject(..) that get
         // nested inside, avoiding concurrent-modification
@@ -430,7 +438,8 @@ public abstract class AbstractWorkingMemory
             try {
                 this.firing = true;
 
-                while ( (!halt) && this.agenda.fireNextItem( agendaFilter ) ) {
+                while ( continueFiring( fireLimit ) && this.agenda.fireNextItem( agendaFilter ) ) {
+                    fireLimit = updateFireLimit( fireLimit );
                     noneFired = false;
                     if ( !this.actionQueue.isEmpty() ) {
                         executeQueuedActions();
@@ -439,11 +448,19 @@ public abstract class AbstractWorkingMemory
             } finally {
                 this.firing = false;
                 if ( noneFired ) {
-                    doOtherwise( agendaFilter );
+                    doOtherwise( agendaFilter, fireLimit );
                 }
 
             }
         }
+    }
+    
+    private final boolean continueFiring( final int fireLimit ) {
+        return (!halt) && (fireLimit != 0 );
+    }
+    
+    private final int updateFireLimit( final int fireLimit ) {
+        return fireLimit > 0 ? fireLimit-1 : fireLimit;
     }
 
     /**
@@ -451,14 +468,14 @@ public abstract class AbstractWorkingMemory
      * If no items are fired, then it will assert a temporary "Otherwise"
      * fact and allow any rules to fire to handle "otherwise" cases.
      */
-    private void doOtherwise(final AgendaFilter agendaFilter) {
+    private void doOtherwise(final AgendaFilter agendaFilter, int fireLimit ) {
         final FactHandle handle = this.insert( new Otherwise() );
         if ( !this.actionQueue.isEmpty() ) {
             executeQueuedActions();
         }
 
-        while ( (!halt) && this.agenda.fireNextItem( agendaFilter ) ) {
-            ;
+        while ( continueFiring( fireLimit ) && this.agenda.fireNextItem( agendaFilter ) ) {
+            fireLimit = updateFireLimit( fireLimit );
         }
 
         this.retract( handle );

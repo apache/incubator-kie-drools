@@ -162,6 +162,22 @@ public interface WorkingMemory
      */
     void fireAllRules(AgendaFilter agendaFilter) throws FactException;
       
+    /**
+     * Fire all items on the agenda until empty or at most 'fireLimit' rules have fired
+     * 
+     * @throws FactException
+     *             If an error occurs.
+     */
+    void fireAllRules( int fireLimit ) throws FactException;
+
+    /**
+     * Fire all items on the agenda using the given AgendaFiler
+     * until empty or at most 'fireLimit' rules have fired
+     * 
+     * @throws FactException
+     *             If an error occurs.
+     */
+    void fireAllRules(final AgendaFilter agendaFilter, int fireLimit ) throws FactException;
 
     /**
      * Retrieve the object associated with a <code>FactHandle</code>.
