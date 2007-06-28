@@ -12,6 +12,7 @@ public class RetractObject
     Future {
     private FactHandle       factHandle;
     private volatile boolean done;
+    private Exception     e;
 
     public RetractObject(final FactHandle factHandle) {
         this.factHandle = factHandle;
@@ -30,4 +31,12 @@ public class RetractObject
     public boolean isDone() {
         return this.done;
     }
+    
+    public boolean exceptionThrown() {
+        return e != null;
+    }
+    
+    public Exception getException() {
+        return this.e;
+    }    
 }

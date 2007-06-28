@@ -6,4 +6,7 @@ public interface Future extends Serializable  {
     boolean isDone();
     
     Object getObject();
+    
+    boolean exceptionThrown();
+    Exception getException();
 }

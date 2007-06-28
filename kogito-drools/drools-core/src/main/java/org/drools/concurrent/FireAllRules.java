@@ -12,13 +12,18 @@ public class FireAllRules
     Future {
     private AgendaFilter     agendaFilter;
     private volatile boolean done;
+    private Exception     e;
 
     public FireAllRules(final AgendaFilter agendaFilter) {
         this.agendaFilter = agendaFilter;
     }
 
     public void execute(final WorkingMemory workingMemory) {
-        workingMemory.fireAllRules( this.agendaFilter );
+        try {
+            workingMemory.fireAllRules( this.agendaFilter );
+        } catch ( Exception e ) {
+            this.e = e;
+        }
         this.done = true;
     }
 
@@ -29,4 +34,12 @@ public class FireAllRules
     public boolean isDone() {
         return this.done;
     }
+    
+    public boolean exceptionThrown() {
+        return e != null;
+    }
+    
+    public Exception getException() {
+        return this.e;
+    }      
 }
