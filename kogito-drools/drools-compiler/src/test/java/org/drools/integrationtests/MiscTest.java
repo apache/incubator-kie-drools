@@ -2711,20 +2711,26 @@ public class MiscTest extends TestCase {
         oldChili2.setAge( 48 );
         oldChili2.setHair( "blue" );
 
+        final Person veryold = new Person( "very old" );
+        veryold.setAge( 99 );
+        veryold.setHair( "gray" );
+
         workingMemory.insert( youngChili1 );
         workingMemory.insert( youngChili2 );
         workingMemory.insert( chili1 );
         workingMemory.insert( chili2 );
         workingMemory.insert( oldChili1 );
         workingMemory.insert( oldChili2 );
+        workingMemory.insert( veryold );
 
         workingMemory.fireAllRules();
 
-        assertEquals( 3,
+        assertEquals( 4,
                       results.size() );
         assertEquals( chili1, results.get( 0 ) );
         assertEquals( oldChili1, results.get( 1 ) );
         assertEquals( youngChili1, results.get( 2 ) );
+        assertEquals( veryold, results.get( 3 ) );
 
     }
 
@@ -3030,6 +3036,4 @@ public class MiscTest extends TestCase {
         assertEquals( "not memberOf", results.get( 1 ));
     }
 
-    
-    
 }

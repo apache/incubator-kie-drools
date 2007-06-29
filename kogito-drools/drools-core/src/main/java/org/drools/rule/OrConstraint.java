@@ -61,7 +61,7 @@ public class OrConstraint extends AbstractCompositeConstraint {
                                        Object object) {
         if ( this.betaConstraints.length > 0 ) {
             for ( int i = 0; i < this.betaConstraints.length; i++ ) {
-                if ( this.betaConstraints[i].isAllowedCachedLeft( context,
+                if ( this.betaConstraints[i].isAllowedCachedLeft( ((MultiFieldConstraintContextEntry)context).contexts[i],
                                                                   object ) ) {
                     return true;
                 }
@@ -79,7 +79,7 @@ public class OrConstraint extends AbstractCompositeConstraint {
         if ( this.betaConstraints.length > 0 ) {
             for ( int i = 0; i < this.betaConstraints.length; i++ ) {
                 if ( this.betaConstraints[i].isAllowedCachedRight( tuple,
-                                                                   context ) ) {
+                                                                   ((MultiFieldConstraintContextEntry)context).contexts[i] ) ) {
                     return true;
                 }
             }
