@@ -131,7 +131,7 @@ public abstract class AbstractCompositeConstraint
      * {@inheritDoc}
      */
     public ContextEntry getContextEntry() {
-        return new MultiFieldOrConstraintContextEntry( this.betaConstraints );
+        return new MultiFieldConstraintContextEntry( this.betaConstraints );
     }
 
     public int hashCode() {
@@ -167,16 +167,16 @@ public abstract class AbstractCompositeConstraint
      * 
      * @author etirelli
      */
-    protected static class MultiFieldOrConstraintContextEntry
+    protected static class MultiFieldConstraintContextEntry
         implements
         ContextEntry {
 
         private static final long    serialVersionUID = -612826751146514955L;
 
-        private final ContextEntry[] contexts;
+        public final ContextEntry[] contexts;
         public ContextEntry          next;
 
-        public MultiFieldOrConstraintContextEntry(BetaNodeFieldConstraint[] constraints) {
+        public MultiFieldConstraintContextEntry(BetaNodeFieldConstraint[] constraints) {
             contexts = new ContextEntry[constraints.length];
             for ( int i = 0; i < contexts.length; i++ ) {
                 contexts[i] = constraints[i].getContextEntry();

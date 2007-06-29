@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.AbstractCompositeConstraint.MultiFieldConstraintContextEntry;
 import org.drools.util.ArrayUtils;
 
 /**
@@ -58,7 +59,7 @@ public class AndConstraint extends AbstractCompositeConstraint {
                                        Object object) {
         if ( this.betaConstraints.length > 0 ) {
             for ( int i = 0; i < this.betaConstraints.length; i++ ) {
-                if ( !this.betaConstraints[i].isAllowedCachedLeft( context,
+                if ( !this.betaConstraints[i].isAllowedCachedLeft( ((MultiFieldConstraintContextEntry)context).contexts[i],
                                                                    object ) ) {
                     return false;
                 }
@@ -75,7 +76,7 @@ public class AndConstraint extends AbstractCompositeConstraint {
         if ( this.betaConstraints.length > 0 ) {
             for ( int i = 0; i < this.betaConstraints.length; i++ ) {
                 if ( !this.betaConstraints[i].isAllowedCachedRight( tuple,
-                                                                    context ) ) {
+                                                                    ((MultiFieldConstraintContextEntry)context).contexts[i] ) ) {
                     return false;
                 }
             }
