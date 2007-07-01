@@ -1021,6 +1021,21 @@ public class PackageBuilderTest extends DroolsTestCase {
                     compiler.getClass() );
     }
 
+    public void testPackageMerge() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        try {
+            builder.addPackage( new PackageDescr( "org.drools" ) );
+
+            builder.addPackageFromDrl( new StringReader( "package org.drools\n"+
+                                                         "function boolean testIt() {\n"+
+                                                         "  return true;\n"+
+                                                         "}\n") );
+        } catch ( RuntimeException e ) {
+            fail( "Should not raise any exception: "+e.getMessage());
+        }
+
+    }
+
     private void createReturnValueRule(final PackageDescr packageDescr,
                                        final String expression) {
         final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
