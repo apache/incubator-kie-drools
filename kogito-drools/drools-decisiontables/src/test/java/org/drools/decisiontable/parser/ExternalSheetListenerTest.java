@@ -348,6 +348,11 @@ public class ExternalSheetListenerTest extends TestCase {
                     // TODO Auto-generated method stub
                     
                 }
+
+				public Future asyncInsert(List list) {
+					// TODO Auto-generated method stub
+					return null;
+				}
 			};
 		}
 	}
