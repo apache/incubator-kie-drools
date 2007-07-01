@@ -71,6 +71,8 @@ public class ReteooBuilder
     private transient ReteooRuleBuilder       ruleBuilder;
 
     private IdGenerator                       idGenerator;
+    
+    private boolean                           ordered;
 
     // ------------------------------------------------------------
     // Constructors
@@ -128,6 +130,10 @@ public class ReteooBuilder
     }
     
     public void order() {
+        if ( ordered ) {
+            // we should only do this on first call, its expected the RuleBase should not change afterwards.
+            return;
+        }
         Map map = new HashMap();
         
         for ( Iterator it = this.rules.values().iterator(); it.hasNext(); ) {
@@ -163,6 +169,7 @@ public class ReteooBuilder
             
             ruleBase.getAgendaGroupRuleTotals().put( agendaGroup, new Integer( i ) );
         }
+        ordered = true;
     }
 
     public static class RuleSequenceComparator implements Comparator {
