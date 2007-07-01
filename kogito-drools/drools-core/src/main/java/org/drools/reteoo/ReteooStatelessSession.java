@@ -1,5 +1,6 @@
 package org.drools.reteoo;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -58,34 +59,34 @@ public class ReteooStatelessSession implements StatelessSession {
         this.workingMemory.fireAllRules( this.agendaFilter );
     }
 
-    public void execute(Object[] list) {
-        for ( int i = 0, length = list.length; i < length; i++ ) {
-            this.workingMemory.insert( list[i] );
+    public void execute(Object[] array) {
+        for ( int i = 0, length = array.length; i < length; i++ ) {
+            this.workingMemory.insert( array[i] );
         }
         this.workingMemory.fireAllRules( this.agendaFilter );
     }
 
-    public void execute(List list) {
-        for( Iterator it = list.iterator(); it.hasNext(); ) {
+    public void execute(Collection collection) {
+        for( Iterator it = collection.iterator(); it.hasNext(); ) {
             this.workingMemory.insert( it.next() );
         }
         this.workingMemory.fireAllRules( this.agendaFilter );
     }
     
     public void asyncExecute(final Object object) {
-        final AssertObject assertObjects = new AssertObject( object );
-        this.executor.submit( assertObjects );
+        final AssertObject assertObject = new AssertObject( object );
+        this.executor.submit( assertObject );
         this.executor.submit( new FireAllRules( this.agendaFilter ) );
     }       
     
-    public void asyncExecute(final Object[] list) {
-        final AssertObjects assertObjects = new AssertObjects( list );
+    public void asyncExecute(final Object[] array) {
+        final AssertObjects assertObjects = new AssertObjects( array );
         this.executor.submit( assertObjects );
         this.executor.submit( new FireAllRules( this.agendaFilter ) );
     }
     
-    public void asyncExecute(final List list) {
-        final AssertObjects assertObjects = new AssertObjects( list );
+    public void asyncExecute(final Collection collection) {
+        final AssertObjects assertObjects = new AssertObjects( collection );
         this.executor.submit( assertObjects );
         this.executor.submit( new FireAllRules( this.agendaFilter ) );
     }         
@@ -96,16 +97,16 @@ public class ReteooStatelessSession implements StatelessSession {
         return new ReteStatelessSessionResult( this.workingMemory );
     }
 
-    public StatelessSessionResult executeWithResults(Object[] list) {
-        for ( int i = 0, length = list.length; i < length; i++ ) {
-            this.workingMemory.insert( list[i] );
+    public StatelessSessionResult executeWithResults(Object[] array) {
+        for ( int i = 0, length = array.length; i < length; i++ ) {
+            this.workingMemory.insert( array[i] );
         }
         this.workingMemory.fireAllRules( this.agendaFilter );
         return new ReteStatelessSessionResult( this.workingMemory );
     }
 
-    public StatelessSessionResult executeWithResults(List list) {
-        for( Iterator it = list.iterator(); it.hasNext(); ) {
+    public StatelessSessionResult executeWithResults(Collection collection) {
+        for( Iterator it = collection.iterator(); it.hasNext(); ) {
             this.workingMemory.insert( it.next() );
         }
         this.workingMemory.fireAllRules( this.agendaFilter );

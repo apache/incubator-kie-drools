@@ -19,11 +19,12 @@ package org.drools.reteoo;
 import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.common.AgendaGroupImpl;
+import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
@@ -60,6 +61,8 @@ public final class RuleTerminalNode extends BaseNode
     // Instance members
     // ------------------------------------------------------------
 
+    private int sequence;
+    
     /**
      * 
      */
@@ -110,7 +113,15 @@ public final class RuleTerminalNode extends BaseNode
     public Rule getRule() {
         return this.rule;
     }
+    
+    public void setSequence(int seq) {
+        this.sequence = seq;
+    }
 
+    public int getSequence() {
+        return this.sequence;
+    }
+    
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // org.drools.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,16 +204,17 @@ public final class RuleTerminalNode extends BaseNode
             // implementations
             // ----------------
             final TerminalNodeMemory memory = (TerminalNodeMemory) workingMemory.getNodeMemory( this );
-            AgendaGroupImpl agendaGroup = memory.getAgendaGroup();
+            InternalAgendaGroup agendaGroup = memory.getAgendaGroup();
             if ( agendaGroup == null ) {
+                // @todo: this logic really should be encapsulated inside the Agenda
                 if ( this.rule.getAgendaGroup() == null || this.rule.getAgendaGroup().equals( "" ) || this.rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {
                     // Is the Rule AgendaGroup undefined? If it is use MAIN,
                     // which is added to the Agenda by default
-                    agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup( AgendaGroup.MAIN );
+                    agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup( AgendaGroup.MAIN );
                 } else {
                     // AgendaGroup is defined, so try and get the AgendaGroup
                     // from the Agenda
-                    agendaGroup = (AgendaGroupImpl) agenda.getAgendaGroup( this.rule.getAgendaGroup() );
+                    agendaGroup = (InternalAgendaGroup) agenda.getAgendaGroup( this.rule.getAgendaGroup() );
                 }
 
                 memory.setAgendaGroup( agendaGroup );
@@ -219,6 +231,10 @@ public final class RuleTerminalNode extends BaseNode
                                                     context,
                                                     this.rule,
                                                     this.subrule );
+            
+            if ( workingMemory.isSequential() ) {
+                item.setSequenence( this.sequence );
+            }
 
             if ( this.rule.getActivationGroup() != null ) {
                 // Lazy cache activationGroup
@@ -505,7 +521,7 @@ public final class RuleTerminalNode extends BaseNode
         Serializable {
         private static final long serialVersionUID = 320L;
 
-        private AgendaGroupImpl   agendaGroup;
+        private InternalAgendaGroup   agendaGroup;
 
         private ActivationGroup   activationGroup;
 
@@ -517,11 +533,11 @@ public final class RuleTerminalNode extends BaseNode
             this.tupleMemory = new TupleHashTable();
         }
 
-        public AgendaGroupImpl getAgendaGroup() {
+        public InternalAgendaGroup getAgendaGroup() {
             return this.agendaGroup;
         }
 
-        public void setAgendaGroup(final AgendaGroupImpl agendaGroup) {
+        public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
             this.agendaGroup = agendaGroup;
         }
 

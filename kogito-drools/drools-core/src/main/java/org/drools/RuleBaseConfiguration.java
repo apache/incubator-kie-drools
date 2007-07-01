@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.drools.common.AgendaGroupFactory;
+import org.drools.common.ArrayAgendaGroupFactory;
+import org.drools.common.PriorityQueueAgendaGroupFactory;
 import org.drools.concurrent.ExecutorService;
 import org.drools.spi.ConflictResolver;
 import org.drools.util.ChainedProperties;
@@ -403,6 +406,14 @@ public class RuleBaseConfiguration
         }
     }
 
+    public AgendaGroupFactory getAgendaGroupFactory() {
+        if ( isSequential() ) {
+            return ArrayAgendaGroupFactory.getInstance();
+        } else {
+            return PriorityQueueAgendaGroupFactory.getInstance();
+        }
+    }
+    
     private static ConflictResolver determineConflictResolver(String className) {
         Class clazz = null;
         try {
@@ -495,7 +506,6 @@ public class RuleBaseConfiguration
             List list = (List) object;
             return !list.contains( name );
         }
-
     }
 
 }

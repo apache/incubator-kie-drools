@@ -44,7 +44,9 @@ public interface InternalRuleBase
     public FactHandleFactory newFactHandleFactory();
 
     public Map getGlobals();
-
+    
+    public Map getAgendaGroupRuleTotals();
+    
     public RuleBaseConfiguration getConfiguration();
     
     public Package getPackage(String name);

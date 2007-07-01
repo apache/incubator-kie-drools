@@ -42,6 +42,8 @@ import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashSet;
 
+import sun.security.x509.IssuerAlternativeNameExtension;
+
 /**
  * Implementation of <code>RuleBase</code>.
  * 
@@ -240,6 +242,12 @@ public class ReteooRuleBase extends AbstractRuleBase {
     
     public StatelessSession newStatelessSession() {
         ExecutorService executor = this.config.getExecutorService();
+
+        //orders the rules
+        if ( this.config.isSequential() ) {
+            this.reteooBuilder.order();
+        }
+        
         ReteooWorkingMemory wm = new ReteooWorkingMemory( this.workingMemoryCounter++,
                                                           this  );
         

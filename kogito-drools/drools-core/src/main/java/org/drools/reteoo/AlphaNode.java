@@ -120,11 +120,12 @@ public class AlphaNode extends ObjectSource
                              final InternalWorkingMemory workingMemory) throws FactException {
         if ( this.constraint.isAllowed( handle.getObject(),
                                         workingMemory ) ) {
-            if ( hasMemory() ) {
+            if ( hasMemory()  && !workingMemory.isSequential() ) {
                 final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
                 memory.add( handle,
                             false );
             }
+            
             this.sink.propagateAssertObject( handle,
                                              context,
                                              workingMemory );

@@ -678,6 +678,7 @@ public abstract class AbstractWorkingMemory
         
         if ( isSequential() ) {
             handle = this.handleFactory.newFactHandle( object );
+            this.assertMap.put( handle, handle, false );
             insert(handle, object, rule, activation);
             return handle;
         }

@@ -40,6 +40,9 @@ import org.drools.rule.Rule;
 public interface KnowledgeHelper
     extends
     Serializable {
+    
+    public void setActivation(final Activation agendaItem); 
+    
     /**
      * Asserts an object, notice that it does not return the FactHandle
      * 

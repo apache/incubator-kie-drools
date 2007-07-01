@@ -16,9 +16,11 @@
 
 package org.drools.reteoo.builder;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalRuleBase;
@@ -230,6 +232,19 @@ public class BuildContext {
      */
     public void setBetaconstraints(final List betaconstraints) {
         this.betaconstraints = betaconstraints;
+    }   
+    
+    public int getNextSequence(String groupName) {
+        //List list = new ArrayList();
+        
+        Integer seq = ( Integer ) this.rulebase.getAgendaGroupRuleTotals().get( groupName );
+        if ( seq == null ) {
+            seq = new Integer( 0 );            
+        }
+        Integer newSeq = new Integer( seq.intValue() + 1 );
+        this.rulebase.getAgendaGroupRuleTotals().put( groupName, newSeq );
+        
+        return newSeq.intValue();
     }
 
     /**

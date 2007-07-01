@@ -21,6 +21,7 @@ import java.beans.IntrospectionException;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
@@ -217,6 +218,88 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertFalse( "Should not contain 'cheddar handle'",
                      memory.contains( f0 ) );
     }
+    
+    public void testLiteralConstraintAssertSequentialMode() throws Exception {
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setSequential( true );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
+        final Rule rule = new Rule( "test-rule" );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
+
+        final MockObjectSource source = new MockObjectSource( 15 );
+
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type",
+                                                                                     getClass().getClassLoader() );
+
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
+
+        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                                    evaluator,
+                                                                    field );
+
+        // With Memory
+        final AlphaNode alphaNode = new AlphaNode( 2,
+                                                   constraint,
+                                                   source,
+                                                   true,
+                                                   3 ); // has memory
+
+        final MockObjectSink sink = new MockObjectSink();
+        alphaNode.addObjectSink( sink );
+
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           5 );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( cheddar );
+
+        // check sink is empty
+        assertLength( 0,
+                      sink.getAsserted() );
+
+        // check alpha memory is empty 
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
+
+        assertEquals( 0,
+                      memory.size() );
+
+        // object should assert as it passes text
+        alphaNode.assertObject( f0,
+                                context,
+                                workingMemory );
+
+        assertEquals( 1,
+                      sink.getAsserted().size() );
+        assertEquals( 0,
+                      memory.size() );
+        Object[] list = (Object[]) sink.getAsserted().get( 0 );
+        assertSame( cheddar,
+                    workingMemory.getObject( (DefaultFactHandle) list[0] ) );
+
+        final Cheese stilton = new Cheese( "stilton",
+                                           6 );
+        final DefaultFactHandle f1 = new DefaultFactHandle( 1,
+                                                            stilton );
+
+        // object should NOT assert as it does not pass test
+        alphaNode.assertObject( f1,
+                                context,
+                                workingMemory );
+
+        assertLength( 1,
+                      sink.getAsserted() );
+        assertEquals( 0,
+                      memory.size() );
+        list = (Object[]) sink.getAsserted().get( 0 );
+        assertSame( cheddar,
+                    workingMemory.getObject( (DefaultFactHandle) list[0] ) );
+    }    
+    
+    
 
     /*
      * dont need to test with and without memory on this, as it was already done

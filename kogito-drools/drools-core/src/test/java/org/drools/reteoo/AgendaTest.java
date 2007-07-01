@@ -24,12 +24,16 @@ import java.util.Map;
 import org.drools.Agenda;
 import org.drools.DroolsTestCase;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.SalienceInteger;
-import org.drools.common.AgendaGroupImpl;
+import org.drools.common.ArrayAgendaGroup;
+import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
+import org.drools.common.InternalAgendaGroup;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.conflict.DepthConflictResolver;
@@ -196,30 +200,12 @@ public class AgendaTest extends DroolsTestCase {
     }
 
     public void testFocusStack() throws ConsequenceException {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final InternalRuleBase ruleBase = ( InternalRuleBase ) RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-
-        //       // create the AgendaGroups
-        final AgendaGroupImpl agendaGroup1 = new AgendaGroupImpl( "agendaGroup1", DepthConflictResolver.getInstance() );
-        agenda.addAgendaGroup( agendaGroup1 );
-        //        ActivationQueue queue1 = agendaGroup1.getActivationQueue( 0 );
-
-        final AgendaGroupImpl agendaGroup2 = new AgendaGroupImpl( "agendaGroup2", DepthConflictResolver.getInstance() );
-        agenda.addAgendaGroup( agendaGroup2 );
-        //        ActivationQueue queue2 = agendaGroup2.getActivationQueue( 0 );
-
-        final AgendaGroupImpl agendaGroup3 = new AgendaGroupImpl( "agendaGroup3", DepthConflictResolver.getInstance() );
-        agenda.addAgendaGroup( agendaGroup3 );
-        //        ActivationQueue queue3 = agendaGroup3.getActivationQueue( 0 );
-
         // create the consequence
         final Consequence consequence = new Consequence() {
-            /**
-             * 
-             */
             private static final long serialVersionUID = -5828597682602481200L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -278,6 +264,18 @@ public class AgendaTest extends DroolsTestCase {
                                                                         PropagationContext.ASSERTION,
                                                                         rule3,
                                                                         null );
+        
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+
+        // create the AgendaGroups
+        final AgendaGroup agendaGroup1 = new BinaryHeapQueueAgendaGroup( "agendaGroup1", ruleBase );
+        agenda.addAgendaGroup( agendaGroup1 );
+
+        final AgendaGroup agendaGroup2 = new BinaryHeapQueueAgendaGroup( "agendaGroup2", ruleBase );
+        agenda.addAgendaGroup( agendaGroup2 );
+
+        final AgendaGroup agendaGroup3 = new BinaryHeapQueueAgendaGroup( "agendaGroup3", ruleBase );
+        agenda.addAgendaGroup( agendaGroup3 );        
 
         // focus at this point is MAIN
         assertEquals( 0,
@@ -288,7 +286,7 @@ public class AgendaTest extends DroolsTestCase {
                            workingMemory );
 
         // check focus is main
-        final AgendaGroupImpl main = (AgendaGroupImpl) agenda.getAgendaGroup( AgendaGroup.MAIN );
+        final AgendaGroup main = agenda.getAgendaGroup( AgendaGroup.MAIN );
         assertEquals( agenda.getFocus(),
                       main );
         // check main got the tuple
@@ -421,13 +419,13 @@ public class AgendaTest extends DroolsTestCase {
 
     //
     public void testAutoFocus() throws ConsequenceException {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final InternalRuleBase ruleBase = ( InternalRuleBase ) RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         // create the agendaGroup
-        final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup", DepthConflictResolver.getInstance() );
+        final AgendaGroup agendaGroup = new BinaryHeapQueueAgendaGroup( "agendaGroup", ruleBase );
         agenda.addAgendaGroup( agendaGroup );
 
         // create the consequence
@@ -498,13 +496,13 @@ public class AgendaTest extends DroolsTestCase {
     }
 
     public void testAgendaGroupLockOnActive() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        final InternalRuleBase ruleBase = ( InternalRuleBase ) RuleBaseFactory.newRuleBase();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         // create the agendaGroup
-        final AgendaGroupImpl agendaGroup = new AgendaGroupImpl( "agendaGroup", DepthConflictResolver.getInstance() );
+        final InternalAgendaGroup agendaGroup = new BinaryHeapQueueAgendaGroup( "agendaGroup", ruleBase );
         agenda.addAgendaGroup( agendaGroup );
 
         final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
@@ -1378,6 +1376,230 @@ public class AgendaTest extends DroolsTestCase {
                           workingMemory );
         assertEquals( 2,
                       ruleFlowGroup.size() );
+    }
+    
+    public void testSequentialAgenda() {
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setSequential( true );
+        InternalRuleBase ruleBase = ( InternalRuleBase ) RuleBaseFactory.newRuleBase( conf );
+        
+
+        // create the consequence
+        final Consequence consequence = new Consequence() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -5828597682602481200L;
+
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) {
+                // do nothing
+            }
+        };
+
+        final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
+                                                                      "cheese" ) );
+
+        // create a rule for each agendaGroup
+        final Rule rule0 = new Rule( "test-rule0" );
+        final RuleTerminalNode node0 = new RuleTerminalNode( 3,
+                                                             new MockTupleSource( 2 ),
+                                                             rule0,
+                                                             rule0.getLhs() );
+        node0.setSequence( 72 );
+        rule0.setConsequence( consequence );
+        final PropagationContext context0 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule0,
+                                                                        null );
+
+        final Rule rule1 = new Rule( "test-rule1",
+                                     "agendaGroup1" );
+        final RuleTerminalNode node1 = new RuleTerminalNode( 5,
+                                                             new MockTupleSource( 4 ),
+                                                             rule1,
+                                                             rule1.getLhs() );
+        node1.setSequence( 10 );
+        rule1.setConsequence( consequence );
+        final PropagationContext context1 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule1,
+                                                                        null );
+
+        final Rule rule2 = new Rule( "test-rule2",
+                                     "agendaGroup1" );
+        final RuleTerminalNode node2 = new RuleTerminalNode( 7,
+                                                             new MockTupleSource( 6 ),
+                                                             rule2,
+                                                             rule2.getLhs() );
+        node2.setSequence( 7 );
+        rule2.setConsequence( consequence );
+        final PropagationContext context2 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule2,
+                                                                        null );
+
+        final Rule rule3 = new Rule( "test-rule3",
+                                     "agendaGroup2" );
+        final RuleTerminalNode node3 = new RuleTerminalNode( 9,
+                                                             new MockTupleSource( 8 ),
+                                                             rule3,
+                                                             rule3.getLhs() );
+        node3.setSequence( 0 );
+        rule3.setConsequence( consequence );
+        final PropagationContext context3 = new PropagationContextImpl( 0,
+                                                                        PropagationContext.ASSERTION,
+                                                                        rule3,
+                                                                        null );
+        
+        ruleBase.getAgendaGroupRuleTotals().put( "MAIN", new Integer( 100 ) );
+        ruleBase.getAgendaGroupRuleTotals().put( "agendaGroup1", new Integer( 10 ) );
+        ruleBase.getAgendaGroupRuleTotals().put( "agendaGroup2", new Integer( 1 ) );
+
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+
+        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+
+        final AgendaGroup agendaGroup1 = new ArrayAgendaGroup( "agendaGroup1", ruleBase );
+        agenda.addAgendaGroup( agendaGroup1 );
+
+        final AgendaGroup agendaGroup2 = new ArrayAgendaGroup( "agendaGroup2", ruleBase );
+        agenda.addAgendaGroup( agendaGroup2 );  
+        
+        // focus at this point is MAIN
+        assertEquals( 0,
+                      agenda.focusStackSize() );
+
+        node0.assertTuple( tuple,
+                           context0,
+                           workingMemory );
+
+        // check focus is main
+        final AgendaGroup main = agenda.getAgendaGroup( AgendaGroup.MAIN );
+        assertEquals( agenda.getFocus(),
+                      main );
+        // check main got the tuple
+        assertEquals( 1,
+                      agenda.getFocus().size() );
+        node2.assertTuple( tuple,
+                           context2,
+                           workingMemory );
+
+        // main is still focus and this tuple went to agendaGroup1
+        assertEquals( 1,
+                      agenda.getFocus().size() );
+
+        // check agendaGroup1 still got the tuple
+        assertEquals( 1,
+                      agendaGroup1.size() );
+
+        // make sure total agenda size reflects this
+        assertEquals( 2,
+                      agenda.agendaSize() );
+
+        // put another one on agendaGroup 1
+        node2.assertTuple( tuple,
+                           context2,
+                           workingMemory );
+
+        // main is still focus so shouldn't have increased
+        assertEquals( 1,
+                      agenda.getFocus().size() );
+
+        // check agendaGroup2 still got the tuple
+        assertEquals( 2,
+                      agendaGroup1.size() );
+
+        // make sure total agenda size reflects this
+        assertEquals( 3,
+                      agenda.agendaSize() );
+
+        // set the focus to agendaGroup1, note agendaGroup1 has no activations
+        agenda.setFocus( "agendaGroup1" );
+        // add agendaGroup2 onto the focus stack
+        agenda.setFocus( "agendaGroup2" );
+
+        // agendaGroup2, the current focus, has no activations
+        assertEquals( 0,
+                      agenda.getFocus().size() );
+
+        // add to agendaGroup2
+        node3.assertTuple( tuple,
+                           context3,
+                           workingMemory );
+
+        assertEquals( 1,
+                      agenda.getFocus().size() );
+
+        node3.assertTuple( tuple,
+                           context3,
+                           workingMemory );
+
+        // agendaGroup2 now has 2 activations
+        assertEquals( 2,
+                      agenda.getFocus().size() );
+        
+        // check totalAgendaSize still works
+        assertEquals( 5,
+                      agenda.agendaSize() );
+
+        // ok now lets check that stacks work with fireNextItem
+        agenda.fireNextItem( null );
+
+        // agendaGroup2 should still be the current agendaGroup
+        assertEquals( agendaGroup2,
+                      agenda.getFocus() );
+        // agendaGroup2 has gone from 2 to one activations
+        assertEquals( 1,
+                      agenda.getFocus().size() );
+        // check totalAgendaSize has reduced too
+        assertEquals( 4,
+                      agenda.agendaSize() );
+
+        // now repeat the process
+        agenda.fireNextItem( null );
+
+        // focus is still agendaGroup2, but now its empty
+        assertEquals( agendaGroup2, agenda.getFocus() );
+        assertEquals( 0,
+                      agenda.getFocus().size() );
+        assertEquals( 3,
+                      agenda.agendaSize() );
+
+        // repeat fire again
+        agenda.fireNextItem( null );
+
+        // agendaGroup2 is empty so it should be popped from the stack making agendaGroup1 the current agendaGroup
+        assertEquals( agendaGroup1,
+                      agenda.getFocus() );
+        // agendaGroup1 had 2 activations, now it only has 1
+        assertEquals( 1,
+                      agenda.getFocus().size() );
+        assertEquals( 2,
+                      agenda.agendaSize() );
+
+        // repeat fire again
+        agenda.fireNextItem( null );
+
+        assertEquals( agendaGroup1,
+                      agenda.getFocus() );
+        assertEquals( 0,
+                      agenda.getFocus().size() );
+        assertEquals( 1,
+                      agenda.agendaSize() );
+
+        // this last fire is more interesting as it demonstrates that
+        // agendaGroup1 on
+        // the stack before agendaGroup2 gets skipped as it has no activations
+        agenda.fireNextItem( null );
+
+        assertEquals( agenda.getFocus(),
+                      main );
+        assertEquals( 0,
+                      agenda.getFocus().size() );
+        assertEquals( 0,
+                      agenda.agendaSize() );        
+        
     }
 
 }

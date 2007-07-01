@@ -323,7 +323,7 @@ public class Rete extends ObjectSource
             if ( cls == null || !ruleBase.getConfiguration().isShadowed( cls.getName() ) ) {
                 return;
             }
-
+            
             String pkgName = cls.getPackage().getName();
             if ( "org.drools.reteoo".equals( pkgName ) || "org.drools.base".equals( pkgName ) ) {
                 // We don't shadow internal classes

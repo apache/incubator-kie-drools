@@ -1,5 +1,7 @@
 package org.drools.util;
 
+import org.drools.spi.Activation;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,7 +18,7 @@ package org.drools.util;
  * limitations under the License.
  */
 
-public interface Queueable {
+public interface Queueable extends Activation {
     public void enqueued(Queue queue,
                          int index);
 
