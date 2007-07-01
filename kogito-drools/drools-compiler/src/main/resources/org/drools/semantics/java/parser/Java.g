@@ -89,6 +89,7 @@ options {k=2; backtrack=true; memoize=true;}
 	public List getLocalDeclarations() { return localDeclarations; }
 	public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
 	private List errors = new ArrayList();
+	private int localVariableLevel = 0;
 	
 	private String source = "unknown";
 	
@@ -389,16 +390,22 @@ variableDeclarator
 		JavaLocalDeclarationDescr.IdentifierDescr ident;
 	}
 	@init {
-		$variableDeclarator::ident = new JavaLocalDeclarationDescr.IdentifierDescr();
+		if( this.localVariableLevel == 1 ) { // we only want top level local vars
+			$variableDeclarator::ident = new JavaLocalDeclarationDescr.IdentifierDescr();
+		}
 	}
 	@after {
-		$localVariableDeclaration::descr.addIdentifier( $variableDeclarator::ident );
+	        if( this.localVariableLevel == 1 ) { // we only want top level local vars
+	        	$localVariableDeclaration::descr.addIdentifier( $variableDeclarator::ident );
+	        }
 	}
-	:	Identifier variableDeclaratorRest 
+	:	id=Identifier rest=variableDeclaratorRest 
 		{ 
-			$variableDeclarator::ident.setIdentifier( $Identifier.text );
-			$variableDeclarator::ident.setStart( ((CommonToken)$Identifier).getStartIndex() - 1 );
-			$variableDeclarator::ident.setEnd( ((CommonToken)$variableDeclaratorRest.stop).getStopIndex() );
+			if( this.localVariableLevel == 1 ) { // we only want top level local vars
+				$variableDeclarator::ident.setIdentifier( $id.text );
+				$variableDeclarator::ident.setStart( ((CommonToken)$id).getStartIndex() - 1 );
+				$variableDeclarator::ident.setEnd( ((CommonToken)$rest.stop).getStopIndex() );
+			}
 		}
 	;
 	
@@ -608,6 +615,12 @@ defaultValue
 // STATEMENTS / BLOCKS
 
 block
+        @init {
+            this.localVariableLevel++;
+        }
+        @after {
+            this.localVariableLevel--;
+        }
 	:	'{' blockStatement* '}'
 	;
 	
@@ -703,6 +716,12 @@ options {k=3;} // be efficient for common case: for (ID ID : ID) ...
 	;
 
 forInit
+        @init {
+            this.localVariableLevel++;
+        }
+        @after {
+            this.localVariableLevel--;
+        }
 	:	variableModifier* type variableDeclarators
 	|	expressionList
 	;

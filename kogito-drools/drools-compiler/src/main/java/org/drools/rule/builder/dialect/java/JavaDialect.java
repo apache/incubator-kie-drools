@@ -227,6 +227,7 @@ public class JavaDialect
             result = this.analyzer.analyzeBlock( text,
                                                  new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
+            e.printStackTrace();
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
                                                     null,
