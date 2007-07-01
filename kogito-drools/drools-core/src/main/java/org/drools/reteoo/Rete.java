@@ -17,10 +17,7 @@ package org.drools.reteoo;
  */
 
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -31,7 +28,6 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ShadowProxy;
 import org.drools.base.ShadowProxyFactory;
-import org.drools.base.ShadowProxyHelper;
 import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalFactHandle;
@@ -40,15 +36,13 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactImpl;
-import org.drools.rule.Package;
+import org.drools.objenesis.Objenesis;
+import org.drools.objenesis.ObjenesisStd;
+import org.drools.objenesis.instantiator.ObjectInstantiator;
 import org.drools.spi.PropagationContext;
-import org.drools.util.ClassUtils;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-import org.objenesis.instantiator.ObjectInstantiator;
 
 /**
  * The Rete-OO network.

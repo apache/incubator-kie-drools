@@ -19,10 +19,10 @@ package org.drools.base;
 import java.lang.reflect.Field;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.objenesis.Objenesis;
+import org.drools.objenesis.ObjenesisStd;
+import org.drools.objenesis.instantiator.ObjectInstantiator;
 import org.drools.spi.ObjectType;
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-import org.objenesis.instantiator.ObjectInstantiator;
 
 /**
  * Java class semantics <code>ObjectType</code>.
