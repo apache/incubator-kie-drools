@@ -1,6 +1,7 @@
 package org.drools.decisiontable.parser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -274,7 +275,7 @@ public class ExternalSheetListenerTest extends TestCase {
                     return null;
                 }
 
-                public Future asyncInsert(List list) {
+                public Future asyncInsert(Collection collection) {
                     // TODO Auto-generated method stub
                     return null;
                 }
