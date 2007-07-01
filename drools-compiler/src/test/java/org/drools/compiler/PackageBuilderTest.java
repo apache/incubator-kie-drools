@@ -177,7 +177,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         DefaultKnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( workingMemory );
         knowledgeHelper.setActivation( activation );
-        
+
         rule.getConsequence().evaluate( knowledgeHelper,
                                         workingMemory );
         assertEquals( new Integer( 1 ),
@@ -196,7 +196,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( workingMemory );
         knowledgeHelper.setActivation( activation );
-        
+
         rule.getConsequence().evaluate( knowledgeHelper,
                                         workingMemory );
         assertEquals( new Integer( 2 ),
@@ -258,7 +258,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final DefaultKnowledgeHelper knowledgeHelper = new org.drools.base.DefaultKnowledgeHelper( workingMemory );
         knowledgeHelper.setActivation( activation );
-        
+
         newRule.getConsequence().evaluate( knowledgeHelper,
                                            workingMemory );
         assertEquals( new Integer( 1 ),
@@ -848,19 +848,19 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
     }
-    
+
     public void testQuery() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
         final QueryDescr queryDescr = new QueryDescr( "query1" );
-        queryDescr.setParameters( new String[] { "$type" } );
-        queryDescr.setParameterTypes( new String[] { "String" } );
-        
+        queryDescr.setParameters( new String[]{"$type"} );
+        queryDescr.setParameterTypes( new String[]{"String"} );
+
         packageDescr.addRule( queryDescr );
 
         final AndDescr lhs = new AndDescr();
-        queryDescr.setLhs( lhs );        
+        queryDescr.setLhs( lhs );
 
         final PatternDescr pattern = new PatternDescr( Cheese.class.getName(),
                                                        "stilton" );
@@ -878,21 +878,27 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         assertLength( 0,
                       builder.getErrors().getErrors() );
-        
+
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        
+
         StatefulSession session = ruleBase.newStatefulSession();
-        
-        session.insert( new Cheese( "stilton", 15) );
-        
-        QueryResults results = session.getQueryResults( "query1", new Object[] { "stilton" } );
-        assertEquals( 1, results.size() );
+
+        session.insert( new Cheese( "stilton",
+                                    15 ) );
+
+        QueryResults results = session.getQueryResults( "query1",
+                                                        new Object[]{"stilton"} );
+        assertEquals( 1,
+                      results.size() );
         Object object = results.get( 0 ).get( 0 );
-        assertEquals( new Cheese( "stilton", 15),  object);
-        
-        results = session.getQueryResults( "query1", new Object[] { "cheddar" } );                       
-    }    
+        assertEquals( new Cheese( "stilton",
+                                  15 ),
+                      object );
+
+        results = session.getQueryResults( "query1",
+                                           new Object[]{"cheddar"} );
+    }
 
     public void testDuplicateRuleNames() throws Exception {
 
@@ -994,8 +1000,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         PackageBuilder builder = new PackageBuilder();
         final Field dialectField = builder.getClass().getDeclaredField( "dialect" );
         dialectField.setAccessible( true );
-        JavaDialect dialect = ( JavaDialect ) dialectField.get( builder );
-        
+        JavaDialect dialect = (JavaDialect) dialectField.get( builder );
+
         final Field compilerField = dialect.getClass().getDeclaredField( "compiler" );
         compilerField.setAccessible( true );
         JavaCompiler compiler = (JavaCompiler) compilerField.get( dialect );
@@ -1005,8 +1011,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         // test JANINO with property settings
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         conf.setCompiler( PackageBuilderConfiguration.JANINO );
-        builder = new PackageBuilder( conf );    
-        dialect = ( JavaDialect ) dialectField.get( builder );        
+        builder = new PackageBuilder( conf );
+        dialect = (JavaDialect) dialectField.get( builder );
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( JaninoJavaCompiler.class,
                     compiler.getClass() );
@@ -1014,8 +1020,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         // test eclipse jdt core with property settings and default source level
         conf = new PackageBuilderConfiguration();
         conf.setCompiler( PackageBuilderConfiguration.ECLIPSE );
-        builder = new PackageBuilder( conf );    
-        dialect = ( JavaDialect ) dialectField.get( builder );        
+        builder = new PackageBuilder( conf );
+        dialect = (JavaDialect) dialectField.get( builder );
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( EclipseJavaCompiler.class,
                     compiler.getClass() );
@@ -1026,14 +1032,10 @@ public class PackageBuilderTest extends DroolsTestCase {
         try {
             builder.addPackage( new PackageDescr( "org.drools" ) );
 
-            builder.addPackageFromDrl( new StringReader( "package org.drools\n"+
-                                                         "function boolean testIt() {\n"+
-                                                         "  return true;\n"+
-                                                         "}\n") );
+            builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
         } catch ( RuntimeException e ) {
-            fail( "Should not raise any exception: "+e.getMessage());
+            fail( "Should not raise any exception: " + e.getMessage() );
         }
-
     }
 
     private void createReturnValueRule(final PackageDescr packageDescr,
@@ -1171,75 +1173,82 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         return rule;
     }
-    
+
     public void testRuleFlow() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        
+
         InputStream in = this.getClass().getResourceAsStream( "/org/drools/integrationtests/ruleflow.rf" );
-        assertNotNull(in);
-        
-        builder.addPackage( new PackageDescr("ya") );
-        
-        builder.addRuleFlow( new InputStreamReader(in) );
+        assertNotNull( in );
+
+        builder.addPackage( new PackageDescr( "ya" ) );
+
+        builder.addRuleFlow( new InputStreamReader( in ) );
         Package pkg = builder.getPackage();
-        assertNotNull(pkg);
-        
+        assertNotNull( pkg );
+
         Map flows = pkg.getRuleFlows();
-        assertNotNull(flows);
-        assertEquals(1, flows.size());
-        
-        assertTrue(flows.containsKey( "0" ));
-        
+        assertNotNull( flows );
+        assertEquals( 1,
+                      flows.size() );
+
+        assertTrue( flows.containsKey( "0" ) );
+
         Process p = (Process) flows.get( "0" );
         assertTrue( p instanceof RuleFlowProcessImpl );
-        
-        
+
         //now serialization
         ByteArrayOutputStream data = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(data);
+        ObjectOutputStream out = new ObjectOutputStream( data );
         out.writeObject( pkg );
-        
-        ObjectInputStream objIn = new DroolsObjectInputStream(new ByteArrayInputStream(data.toByteArray()));
+
+        ObjectInputStream objIn = new DroolsObjectInputStream( new ByteArrayInputStream( data.toByteArray() ) );
         Package pkg2 = (Package) objIn.readObject();
-        assertNotNull(pkg2);
-        
+        assertNotNull( pkg2 );
+
         flows = pkg2.getRuleFlows();
-        assertNotNull(flows);
-        assertEquals(1, flows.size());
-        assertTrue(flows.containsKey( "0" ));
+        assertNotNull( flows );
+        assertEquals( 1,
+                      flows.size() );
+        assertTrue( flows.containsKey( "0" ) );
         p = (Process) flows.get( "0" );
         assertTrue( p instanceof RuleFlowProcessImpl );
     }
-    
+
     public void testPackageRuleFlows() throws Exception {
-        Package pkg = new Package("boo");
-        Process rf = new MockRuleFlow("1");
+        Package pkg = new Package( "boo" );
+        Process rf = new MockRuleFlow( "1" );
         pkg.addRuleFlow( rf );
-        assertTrue(pkg.getRuleFlows().containsKey( "1" ));
-        assertSame(rf, pkg.getRuleFlows().get( "1" ));
-        
-        Process rf2 = new MockRuleFlow("2");
+        assertTrue( pkg.getRuleFlows().containsKey( "1" ) );
+        assertSame( rf,
+                    pkg.getRuleFlows().get( "1" ) );
+
+        Process rf2 = new MockRuleFlow( "2" );
         pkg.addRuleFlow( rf2 );
-        assertTrue(pkg.getRuleFlows().containsKey( "1" ));
-        assertSame(rf, pkg.getRuleFlows().get( "1" ));
-        assertTrue(pkg.getRuleFlows().containsKey( "2" ));
-        assertSame(rf2, pkg.getRuleFlows().get( "2" ));
-        
+        assertTrue( pkg.getRuleFlows().containsKey( "1" ) );
+        assertSame( rf,
+                    pkg.getRuleFlows().get( "1" ) );
+        assertTrue( pkg.getRuleFlows().containsKey( "2" ) );
+        assertSame( rf2,
+                    pkg.getRuleFlows().get( "2" ) );
+
         pkg.removeRuleFlow( "1" );
-        assertTrue(pkg.getRuleFlows().containsKey( "2" ));
-        assertSame(rf2, pkg.getRuleFlows().get( "2" ));
-        assertFalse(pkg.getRuleFlows().containsKey( "1" ));
-        
+        assertTrue( pkg.getRuleFlows().containsKey( "2" ) );
+        assertSame( rf2,
+                    pkg.getRuleFlows().get( "2" ) );
+        assertFalse( pkg.getRuleFlows().containsKey( "1" ) );
+
     }
-    
-    class MockRuleFlow implements Process {
+
+    class MockRuleFlow
+        implements
+        Process {
 
         private String id;
 
         MockRuleFlow(String id) {
             this.id = id;
         }
-        
+
         public String getId() {
             return id;
         }
@@ -1267,7 +1276,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         public void setVersion(String version) {
         }
-        
+
     }
 
     class MockActivation
@@ -1291,7 +1300,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         public Rule getRule() {
             return this.rule;
         }
-        
+
         public int getSalience() {
             return this.salience;
         }

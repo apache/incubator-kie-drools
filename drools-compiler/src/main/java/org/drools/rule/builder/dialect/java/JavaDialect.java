@@ -337,9 +337,9 @@ public class JavaDialect
                 final CompilationProblem err = result.getErrors()[i];
 
                 final ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
-                if ( handler instanceof RuleErrorHandler ) {
-                    final RuleErrorHandler rh = (RuleErrorHandler) handler;
-                }
+//                if ( handler instanceof RuleErrorHandler ) {
+//                    final RuleErrorHandler rh = (RuleErrorHandler) handler;
+//                }
                 handler.addError( err );
             }
 
