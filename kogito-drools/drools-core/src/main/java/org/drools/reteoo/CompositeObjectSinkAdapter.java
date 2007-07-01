@@ -475,7 +475,7 @@ public class CompositeObjectSinkAdapter
             } else {
                 this.ovalue = extractor.getValue( null, value );
                 this.type = OBJECT;
-                this.setHashCode( this.ovalue.hashCode() );
+                this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
             }
         }
 
@@ -498,7 +498,7 @@ public class CompositeObjectSinkAdapter
             } else {
                 this.ovalue = value.getValue();
                 this.type = OBJECT;
-                this.setHashCode( this.ovalue.hashCode() );
+                this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
             }
         }
 

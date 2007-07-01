@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 
 import junit.framework.TestCase;
 
+import org.drools.Cheese;
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.StringFactory;
@@ -24,8 +26,8 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     public void testBeta() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final MockBetaNode beta = new MockBetaNode( 0,
-                                              null,
-                                              null );
+                                                    null,
+                                                    null );
         ad.addObjectSink( beta );
         assertEquals( 1,
                       ad.getSinks().length );
@@ -50,11 +52,11 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     public void testAlphaWithPredicate() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final AlphaNode al = new AlphaNode( 0,
-                                      new PredicateConstraint( null,
-                                                               null ),
-                                      null,
-                                      true,
-                                      3  );
+                                            new PredicateConstraint( null,
+                                                                     null ),
+                                            null,
+                                            true,
+                                            3 );
         ad.addObjectSink( al );
 
         assertEquals( 1,
@@ -75,13 +77,13 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final LiteralConstraint lit = new LiteralConstraint( new MockExtractor(),
-                                                       StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
-                                                       new ObjectFieldImpl( "stilton" ) );
+                                                             StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                             new ObjectFieldImpl( "stilton" ) );
         final AlphaNode al = new AlphaNode( 0,
-                                      lit,
-                                      new MockObjectSource( 0 ),
-                                      true,
-                                      3  );
+                                            lit,
+                                            new MockObjectSource( 0 ),
+                                            true,
+                                            3 );
 
         ad.addObjectSink( al );
 
@@ -102,13 +104,13 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final LiteralConstraint lit = new LiteralConstraint( new MockExtractor(),
-                                                       StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
-                                                       new ObjectFieldImpl( "stilton" ) );
+                                                             StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                             new ObjectFieldImpl( "stilton" ) );
         final AlphaNode al = new AlphaNode( 0,
-                                      lit,
-                                      new MockObjectSource( 0 ),
-                                      true,
-                                      3  );
+                                            lit,
+                                            new MockObjectSource( 0 ),
+                                            true,
+                                            3 );
 
         ad.addObjectSink( al );
 
@@ -120,13 +122,13 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                       ad.getSinks()[0] );
 
         final LiteralConstraint lit2 = new LiteralConstraint( new MockExtractor(),
-                                                        StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
-                                                        new ObjectFieldImpl( "cheddar" ) );
+                                                              StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                              new ObjectFieldImpl( "cheddar" ) );
         final AlphaNode al2 = new AlphaNode( 1,
-                                       lit2,
-                                       new MockObjectSource( 0 ),
-                                       true,
-                                       3  );
+                                             lit2,
+                                             new MockObjectSource( 0 ),
+                                             true,
+                                             3 );
 
         ad.addObjectSink( al2 );
 
@@ -140,8 +142,8 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         //add a beta, just for good measure, make sure it leaves others alone
         final MockBetaNode beta = new MockBetaNode( 0,
-                                              null,
-                                              null );
+                                                    null,
+                                                    null );
         ad.addObjectSink( beta );
         assertNotNull( ad.otherSinks );
         assertEquals( 2,
@@ -162,13 +164,13 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     public void testTripleAlpha() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final LiteralConstraint lit = new LiteralConstraint( new MockExtractor(),
-                                                       StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
-                                                       new ObjectFieldImpl( "stilton" ) );
+                                                             StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                             new ObjectFieldImpl( "stilton" ) );
         final AlphaNode al = new AlphaNode( 0,
-                                      lit,
-                                      new MockObjectSource( 0 ),
-                                      true,
-                                      3  );
+                                            lit,
+                                            new MockObjectSource( 0 ),
+                                            true,
+                                            3 );
 
         ad.addObjectSink( al );
 
@@ -180,13 +182,13 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                       ad.getSinks()[0] );
 
         final LiteralConstraint lit2 = new LiteralConstraint( new MockExtractor(),
-                                                        StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
-                                                        new ObjectFieldImpl( "cheddar" ) );
+                                                              StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                              new ObjectFieldImpl( "cheddar" ) );
         final AlphaNode al2 = new AlphaNode( 1,
-                                       lit2,
-                                       new MockObjectSource( 1 ),
-                                       true,
-                                       3  );
+                                             lit2,
+                                             new MockObjectSource( 1 ),
+                                             true,
+                                             3 );
 
         ad.addObjectSink( al2 );
 
@@ -195,13 +197,13 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                       ad.hashableSinks.size() );
 
         final LiteralConstraint lit3 = new LiteralConstraint( new MockExtractor(),
-                                                        StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
-                                                        new ObjectFieldImpl( "stinky" ) );
+                                                              StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                              new ObjectFieldImpl( "stinky" ) );
         final AlphaNode al3 = new AlphaNode( 1,
-                                       lit3,
-                                       new MockObjectSource( 2 ),
-                                       true,
-                                       3  );
+                                             lit3,
+                                             new MockObjectSource( 2 ),
+                                             true,
+                                             3 );
         ad.addObjectSink( al3 );
 
         //this should now be nicely hashed.
@@ -217,6 +219,54 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     }
 
+    public void testPropagationWithNullValue() {
+
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
+        FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                          "type",
+                                                                          this.getClass().getClassLoader() );
+        final LiteralConstraint lit1 = new LiteralConstraint( extractor,
+                                                              StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                              new ObjectFieldImpl( "stilton" ) );
+        final AlphaNode al1 = new AlphaNode( 0,
+                                             lit1,
+                                             new MockObjectSource( 0 ),
+                                             true,
+                                             3 );
+
+        final LiteralConstraint lit2 = new LiteralConstraint( extractor,
+                                                              StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                              new ObjectFieldImpl( "brie" ) );
+        final AlphaNode al2 = new AlphaNode( 0,
+                                             lit2,
+                                             new MockObjectSource( 0 ),
+                                             true,
+                                             3 );
+
+        final LiteralConstraint lit3 = new LiteralConstraint( extractor,
+                                                              StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                              new ObjectFieldImpl( "muzzarela" ) );
+        final AlphaNode al3 = new AlphaNode( 0,
+                                             lit3,
+                                             new MockObjectSource( 0 ),
+                                             true,
+                                             3 );
+
+        ad.addObjectSink( al1 );
+        ad.addObjectSink( al2 );
+        ad.addObjectSink( al3 );
+
+        InternalFactHandle handle = new ReteooFactHandleFactory().newFactHandle( new Cheese() );
+        try {
+            ad.propagateAssertObject( handle,
+                                      null,
+                                      null );
+        } catch ( RuntimeException e ) {
+            fail( "Not supposed to throw any exception: "+e.getMessage());
+        }
+
+    }
+
     static class MockExtractor
         implements
         FieldExtractor {
@@ -226,22 +276,26 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             return 0;
         }
 
-        public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
+        public boolean getBooleanValue(InternalWorkingMemory workingMemory,
+                                       final Object object) {
             //  Auto-generated method stub
             return false;
         }
 
-        public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
+        public byte getByteValue(InternalWorkingMemory workingMemory,
+                                 final Object object) {
             //  Auto-generated method stub
             return 0;
         }
 
-        public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
+        public char getCharValue(InternalWorkingMemory workingMemory,
+                                 final Object object) {
             //  Auto-generated method stub
             return 0;
         }
 
-        public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
+        public double getDoubleValue(InternalWorkingMemory workingMemory,
+                                     final Object object) {
             //  Auto-generated method stub
             return 0;
         }
@@ -251,17 +305,20 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             return null;
         }
 
-        public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
+        public float getFloatValue(InternalWorkingMemory workingMemory,
+                                   final Object object) {
             //  Auto-generated method stub
             return 0;
         }
 
-        public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
+        public int getIntValue(InternalWorkingMemory workingMemory,
+                               final Object object) {
             //  Auto-generated method stub
             return 0;
         }
 
-        public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
+        public long getLongValue(InternalWorkingMemory workingMemory,
+                                 final Object object) {
             //  Auto-generated method stub
             return 0;
         }
@@ -271,17 +328,20 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             return null;
         }
 
-        public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
+        public short getShortValue(InternalWorkingMemory workingMemory,
+                                   final Object object) {
             //  Auto-generated method stub
             return 0;
         }
 
-        public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
+        public Object getValue(InternalWorkingMemory workingMemory,
+                               final Object object) {
             //  Auto-generated method stub
             return null;
         }
-        
-        public boolean isNullValue(final Object object, InternalWorkingMemory workingMemory) {
+
+        public boolean isNullValue(final Object object,
+                                   InternalWorkingMemory workingMemory) {
             return false;
         }
 
@@ -290,7 +350,8 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             return null;
         }
 
-        public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
+        public int getHashCode(InternalWorkingMemory workingMemory,
+                               final Object object) {
             return 0;
         }
 
