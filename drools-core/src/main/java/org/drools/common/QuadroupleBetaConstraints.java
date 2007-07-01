@@ -62,8 +62,6 @@ public class QuadroupleBetaConstraints
     private boolean                       indexed2;
     private boolean                       indexed3;
 
-    private RuleBaseConfiguration         conf;
-
     public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                      final RuleBaseConfiguration conf) {
         this( constraints,
@@ -74,7 +72,6 @@ public class QuadroupleBetaConstraints
     public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                      final RuleBaseConfiguration conf,
                                      final boolean disableIndexing) {
-        this.conf = conf;
         if ( disableIndexing || ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) ) {
             this.indexed0 = false;
             this.indexed1 = false;
@@ -239,7 +236,7 @@ public class QuadroupleBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
+    public BetaMemory createBetaMemory(RuleBaseConfiguration conf) {
 
         BetaMemory memory;
 
@@ -280,22 +277,22 @@ public class QuadroupleBetaConstraints
         if ( !list.isEmpty() ) {
             final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
             TupleMemory tupleMemory;
-            if ( this.conf.isIndexLeftBetaMemory() ) {
+            if ( conf.isIndexLeftBetaMemory() ) {
                 tupleMemory = new TupleIndexHashTable( indexes );
             } else {
                 tupleMemory = new TupleHashTable();
             }
 
             FactHandleMemory factHandleMemory;
-            if ( this.conf.isIndexRightBetaMemory() ) {
+            if ( conf.isIndexRightBetaMemory() ) {
                 factHandleMemory = new FactHandleIndexHashTable( indexes );
             } else {
                 factHandleMemory = new FactHashTable();
             }
-            memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
+            memory = new BetaMemory( conf.isSequential() ? null : tupleMemory,
                                      factHandleMemory );
         } else {
-            memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
+            memory = new BetaMemory( conf.isSequential() ? null : new TupleHashTable(),
                                      new FactHashTable() );
         }
 

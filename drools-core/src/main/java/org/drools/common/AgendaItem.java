@@ -53,9 +53,12 @@ public class AgendaItem
 
     /** The rule. */
     private final Rule               rule;
-    
+
     /** The salience */
     private final int                salience;
+
+    /** Used for sequential mode */
+    private int                      sequenence;
 
     /** The subrule */
     private final GroupElement       subrule;
@@ -75,7 +78,7 @@ public class AgendaItem
 
     private boolean                  activated;
 
-    private AgendaGroupImpl          agendaGroup;
+    private InternalAgendaGroup      agendaGroup;
 
     private ActivationGroupNode      activationGroupNode;
 
@@ -104,7 +107,7 @@ public class AgendaItem
         this.rule = rule;
         this.salience = salience;
         this.subrule = subrule;
-        this.activationNumber = activationNumber;        
+        this.activationNumber = activationNumber;
     }
 
     // ------------------------------------------------------------
@@ -131,9 +134,17 @@ public class AgendaItem
     public Tuple getTuple() {
         return this.tuple;
     }
-    
+
     public int getSalience() {
         return this.salience;
+    }
+
+    public int getSequenence() {
+        return sequenence;
+    }
+
+    public void setSequenence(int sequenence) {
+        this.sequenence = sequenence;
     }
 
     /*
@@ -156,7 +167,7 @@ public class AgendaItem
     public LinkedList getLogicalDependencies() {
         return this.justified;
     }
-    
+
     public void setLogicalDependencies(LinkedList justified) {
         this.justified = justified;
     }
@@ -231,7 +242,7 @@ public class AgendaItem
         return this.agendaGroup;
     }
 
-    public void setAgendaGroup(final AgendaGroupImpl agendaGroup) {
+    public void setAgendaGroup(final InternalAgendaGroup agendaGroup) {
         this.agendaGroup = agendaGroup;
     }
 

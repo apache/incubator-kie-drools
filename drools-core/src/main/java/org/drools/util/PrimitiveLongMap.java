@@ -46,7 +46,7 @@ public class PrimitiveLongMap
     private final int           tableSize;
     private final int           shifts;
     private final int           doubleShifts;
-    private final Page          firstPage;
+    private Page                firstPage;
     private Page                lastPage;
     private int                 lastPageId;
     private long                maxKey;
@@ -91,6 +91,10 @@ public class PrimitiveLongMap
 
         this.lastPageId = 0;
 
+        init();
+    }
+
+    private void init() {
         // instantiate the first page
         // previous sibling of first page is null
         // next sibling of last page is null
@@ -103,6 +107,14 @@ public class PrimitiveLongMap
 
         // our first page is also our last page
         this.lastPage = this.firstPage;
+    }
+
+    public void clear() {
+        init();
+    }
+
+    public boolean isEmpty() {
+        return this.totalSize == 0;
     }
 
     public Object put(final long key,
@@ -162,6 +174,36 @@ public class PrimitiveLongMap
             value = null;
         }
         return value;
+    }
+    
+    /**
+     * gets the next populated key, after the given key position.
+     * @param key
+     * @return
+     */
+    public long getNext(long key) {
+        final int currentPageId = (int) key >> this.doubleShifts;
+        final int nextPageId = (int) (key+1) >> this.doubleShifts;
+        
+        if ( currentPageId != nextPageId ) {
+            Page page = findPage( key + 1);
+            while ( page.isEmpty() ) {
+                page = page.getNextSibling();
+            }
+            key = this.doubleShifts << page.getPageId();
+        } else {
+            key += 1;
+        }
+        
+        while ( !containsKey( key ) && key <= this.maxKey ) {
+            key++;
+        }
+        
+        if ( key > this.maxKey ) {
+            key -= 1;
+        }
+                                
+        return key;
     }
 
     public int size() {
@@ -339,15 +381,15 @@ public class PrimitiveLongMap
             // normalise key
             key -= this.pageSize * this.pageId;
 
-            // determine page
-            final int page = (int) key >> this.shifts;
+            // determine table
+            final int table = (int) key >> this.shifts;
 
             // determine offset
-            final int offset = page << this.shifts;
+            final int offset = table << this.shifts;
 
-            // tables[page][slot]
-            return this.tables[page][(int) key - offset];
-        }
+            // tables[table][slot]
+            return this.tables[table][(int) key - offset];
+        }              
 
         public Object put(long key,
                           final Object newValue) {
@@ -359,7 +401,7 @@ public class PrimitiveLongMap
             // normalise key
             key -= this.pageSize * this.pageId;
 
-            // determine page
+            // determine table
             final int table = (int) key >> this.shifts;
 
             // determine offset

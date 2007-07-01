@@ -19,11 +19,17 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.RuleIntegrationException;
+import org.drools.base.SalienceInteger;
 import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalRuleBase;
@@ -31,6 +37,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.ReteooRuleBuilder;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
+import org.drools.spi.AgendaGroup;
+import org.drools.spi.Salience;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
@@ -118,7 +126,85 @@ public class ReteooBuilder
         this.rules.put( rule,
                         terminals.toArray( new BaseNode[terminals.size()] ) );
     }
+    
+    public void order() {
+        Map map = new HashMap();
+        
+        for ( Iterator it = this.rules.values().iterator(); it.hasNext(); ) {
+            BaseNode[] nodes = (BaseNode[]) it.next();
+            for ( int i = 0 ; i < nodes.length; i++ ) {
+                if ( nodes[i] instanceof RuleTerminalNode ) {
+                    RuleTerminalNode node = ( RuleTerminalNode ) nodes[i];
+                    String agendaGroup = node.getRule().getAgendaGroup();
+                    if ( agendaGroup == null || agendaGroup.equals( "" ) ) {
+                        agendaGroup = "MAIN";
+                    }
+                    List rules = ( List ) map.get( agendaGroup );
+                    if ( rules == null ) {
+                        rules = new ArrayList();
+                        map.put( agendaGroup, rules );
+                    }
+                    rules.add( node );
+                }
+            }
+        }
+        
+        for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
+            Entry entry = ( Entry ) it.next();
+            String agendaGroup = (String) entry.getKey();
+            List rules = ( List ) entry.getValue();
+            Collections.sort( rules, RuleSequenceComparator.INSTANCE );
+            
+            int i = 0;
+            for ( Iterator listIter = rules.iterator(); listIter.hasNext(); ) {
+                RuleTerminalNode node = ( RuleTerminalNode ) listIter.next();
+                node.setSequence( i++ );
+            }
+            
+            ruleBase.getAgendaGroupRuleTotals().put( agendaGroup, new Integer( i ) );
+        }
+    }
 
+    public static class RuleSequenceComparator implements Comparator {
+        public final static RuleSequenceComparator INSTANCE = new RuleSequenceComparator();
+
+        public int compare(Object o1,
+                           Object o2) {
+            RuleTerminalNode r1 = (RuleTerminalNode) o1;
+            RuleTerminalNode r2 = (RuleTerminalNode) o2;
+            
+            Salience so1 = r1.getRule().getSalience();
+            if (so1 != null && !(so1 instanceof SalienceInteger) ) {
+                throw new RuntimeException(r1.getRule().getName() + "must not have a dynamic salience" );
+            }
+            Salience so2 = r2.getRule().getSalience();
+            if (so2 != null && !(so2 instanceof SalienceInteger) ) {
+                throw new RuntimeException(r2.getRule().getName() + "must not have a dynamic salience" );
+            }
+            
+            int s1 = so1.getValue( null, null );
+            int s2 = so2.getValue( null, null );
+            
+            if ( s1 >  s2) {                        
+                return -1;
+            } else if ( s1 < s2 ) {
+                return 1;
+            } 
+            
+            int id1 =r1.getId();
+            int id2 =r2.getId();
+            
+            if ( id1 <  id2) {                        
+                return -1;
+            } else if ( id1 > id2 ) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        
+    }
+    
     public BaseNode[] getTerminalNodes(final Rule rule) {
         return (BaseNode[]) this.rules.remove( rule );
     }

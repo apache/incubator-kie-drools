@@ -21,7 +21,11 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConflictResolver;
 import org.drools.util.BinaryHeapQueue;
+import org.drools.util.LinkedList;
+import org.drools.util.LinkedListEntry;
+import org.drools.util.PrimitiveLongMap;
 import org.drools.util.Queueable;
+import org.drools.util.LinkedList.LinkedListIterator;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -35,18 +39,22 @@ import org.drools.util.Queueable;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-public class AgendaGroupImpl
+public class ArrayAgendaGroup
     implements
-    AgendaGroup {
+    InternalAgendaGroup {
 
-    private static final long     serialVersionUID = 320L;
+    private static final long serialVersionUID = 320L;
 
-    private final String          name;
+    private final String      name;
 
     /** Items in the agenda. */
-    private final BinaryHeapQueue queue;
+    private LinkedList[]      array;
 
-    private boolean               active;
+    private boolean           active;
+
+    private int               size;
+
+    private int               index;
 
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
@@ -54,12 +62,18 @@ public class AgendaGroupImpl
      * @param name
      *      The <AgendaGroup> name.
      */
-    
-    
-    public AgendaGroupImpl(final String name, final ConflictResolver conflictResolver) {
+
+    public ArrayAgendaGroup(final String name,
+                            final InternalRuleBase ruleBase) {
         this.name = name;
-        this.queue = new BinaryHeapQueue( conflictResolver );
-    }    
+        Integer integer = (Integer) ruleBase.getAgendaGroupRuleTotals().get( name );
+        if ( integer == null ) {
+            this.array = new LinkedList[0];
+        } else {
+            this.array = new LinkedList[integer.intValue()];    
+        }
+        
+    }
 
     /* (non-Javadoc)
      * @see org.drools.spi.AgendaGroup#getName()
@@ -69,22 +83,45 @@ public class AgendaGroupImpl
     }
 
     public void clear() {
-        this.queue.clear();
+        this.array = new LinkedList[this.array.length];
     }
 
     /* (non-Javadoc)
      * @see org.drools.spi.AgendaGroup#size()
      */
     public int size() {
-        return this.queue.size();
+        return this.size;
     }
 
     public void add(final Activation activation) {
-        this.queue.enqueue( (Queueable) activation );
+        AgendaItem item = (AgendaItem) activation;
+        this.size++;
+
+        LinkedList list = this.array[item.getSequenence()];
+        if ( list == null ) {
+            list = new LinkedList();
+            this.array[item.getSequenence()] = list;
+        }
+        
+        list.add( new LinkedListEntry( activation ) );
     }
 
     public Activation getNext() {
-        return (Activation) this.queue.dequeue();
+        Activation activation = null;
+        int length = this.array.length;
+        while ( this.index < length ) {
+            LinkedList list = this.array[this.index];            
+            if ( list != null ) {
+                activation = (Activation) ((LinkedListEntry)list.removeFirst()).getObject();
+                if ( list.isEmpty()) {
+                    this.array[this.index++] = null;
+                }
+                this.size--;
+                break;
+            }
+            this.index++;
+        }
+        return (Activation) activation;
     }
 
     public boolean isActive() {
@@ -103,15 +140,29 @@ public class AgendaGroupImpl
      * @return
      */
     public boolean isEmpty() {
-        return this.queue.isEmpty();
+        return this.size == 0;
     }
 
     public Activation[] getActivations() {
-        return (Activation[]) this.queue.toArray( new AgendaItem[this.queue.size()] );
+        Activation[] activations = new Activation[this.size];
+        int j = 0;
+        for ( int i = 0; i < this.array.length; i++ ) {;
+            LinkedList list = this.array[i];
+            if ( list != null ) {
+                LinkedListIterator it = list.iterator();
+                Activation activation = ( Activation ) ((LinkedListEntry)it.next()).getObject();
+                while ( activation != null) {
+                    activations[j++] = activation;
+                    activation = ( Activation ) it.next();
+                }
+            }
+            
+        }
+        return activations;
     }
 
-    public Queueable[] getQueueable() {
-        return this.queue.getQueueable();
+    public Activation[] getQueue() {
+        return getActivations();
     }
 
     public String toString() {
@@ -119,11 +170,11 @@ public class AgendaGroupImpl
     }
 
     public boolean equal(final Object object) {
-        if ( (object == null) || !(object instanceof AgendaGroupImpl) ) {
+        if ( (object == null) || !(object instanceof ArrayAgendaGroup) ) {
             return false;
         }
 
-        if ( ((AgendaGroupImpl) object).name.equals( this.name ) ) {
+        if ( ((ArrayAgendaGroup) object).name.equals( this.name ) ) {
             return true;
         }
 

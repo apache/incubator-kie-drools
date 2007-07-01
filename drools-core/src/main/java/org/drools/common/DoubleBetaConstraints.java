@@ -56,8 +56,6 @@ public class DoubleBetaConstraints
     private boolean                       indexed0;
     private boolean                       indexed1;
 
-    private RuleBaseConfiguration         conf;
-
     public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                  final RuleBaseConfiguration conf) {
         this( constraints,
@@ -68,7 +66,6 @@ public class DoubleBetaConstraints
     public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                  final RuleBaseConfiguration conf,
                                  final boolean disableIndexing) {
-        this.conf = conf;
         if ( disableIndexing || ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) ) {
             this.indexed0 = false;
             this.indexed1 = false;
@@ -192,14 +189,14 @@ public class DoubleBetaConstraints
             final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
 
             TupleMemory tupleMemory;
-            if ( this.conf.isIndexLeftBetaMemory() ) {
+            if ( config.isIndexLeftBetaMemory() ) {
                 tupleMemory = new TupleIndexHashTable( indexes );
             } else {
                 tupleMemory = new TupleHashTable();
             }
 
             FactHandleMemory factHandleMemory;
-            if ( this.conf.isIndexRightBetaMemory() ) {
+            if ( config.isIndexRightBetaMemory() ) {
                 factHandleMemory = new FactHandleIndexHashTable( indexes );
             } else {
                 factHandleMemory = new FactHashTable();

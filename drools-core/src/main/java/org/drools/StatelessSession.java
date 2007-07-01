@@ -1,5 +1,6 @@
 package org.drools;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.event.AgendaEventListener;
@@ -61,14 +62,14 @@ public interface StatelessSession {
      * This will assert the list of facts as SEPARATE facts to the engine
      * (NOT an array).
      */    
-    void execute(Object[] list);
+    void execute(Object[] array);
 
     /**
      * Insert a List of facts, an fire the rules, returning when finished.
      * This will assert the list of facts as SEPARATE facts to the engine
      * (NOT as a List).
      */        
-    void execute(List list);    
+    void execute(Collection collection);    
     
     /**
      * This will assert the object in the background. This is
@@ -80,13 +81,13 @@ public interface StatelessSession {
      * This will assert the object array (as SEPARATE facts) in the background. This is
      * "send and forget" execution.
      */
-    void asyncExecute(Object[] list);
+    void asyncExecute(Object[] array);
 
     /**
      * This will assert the object List (as SEPARATE facts) in the background. This is
      * "send and forget" execution.
      */    
-    void asyncExecute(List list);      
+    void asyncExecute(Collection collection);      
     
     
     /**
@@ -99,11 +100,11 @@ public interface StatelessSession {
      * Similar to the normal execute method, but this will return
      * "results". 
      */    
-    StatelessSessionResult executeWithResults(Object[] list);
+    StatelessSessionResult executeWithResults(Object[] array);
 
     /**
      * Similar to the normal execute method, but this will return
      * "results". 
      */   
-    StatelessSessionResult executeWithResults(List list);
+    StatelessSessionResult executeWithResults(Collection collection);
 }

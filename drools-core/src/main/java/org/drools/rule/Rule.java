@@ -473,7 +473,7 @@ public class Rule
         return this.loadOrder;
     }
 
-    void setLoadOrder(final long loadOrder) {
+    public void setLoadOrder(final long loadOrder) {
         this.loadOrder = loadOrder;
     }
 

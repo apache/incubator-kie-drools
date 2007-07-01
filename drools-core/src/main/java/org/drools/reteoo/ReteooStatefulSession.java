@@ -1,5 +1,6 @@
 package org.drools.reteoo;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.FactHandle;
@@ -43,14 +44,14 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
                                                        object ) );
     }
 
-    public Future asyncInsert(final Object[] list) {
-        final AssertObjects assertObjects = new AssertObjects( list );
+    public Future asyncInsert(final Object[] array) {
+        final AssertObjects assertObjects = new AssertObjects( array );
         this.executor.submit( assertObjects );
         return assertObjects;
     }
 
-    public Future asyncInsert(final List list) {
-        final AssertObjects assertObjects = new AssertObjects( list );
+    public Future asyncInsert(final Collection collection) {
+        final AssertObjects assertObjects = new AssertObjects( collection );
         this.executor.submit( assertObjects );
         return assertObjects;
     }

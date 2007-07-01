@@ -26,6 +26,8 @@ import org.drools.base.ClassObjectType;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.ReteooBuilder.IdGenerator;
+import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
@@ -98,5 +100,6 @@ public class ReteooRuleBuilderTest extends TestCase {
         final RuleTerminalNode terminal = (RuleTerminalNode) terminals.get( 0 );
 
     }
+
 
 }

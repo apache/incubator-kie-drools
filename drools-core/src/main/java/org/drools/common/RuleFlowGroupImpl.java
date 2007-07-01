@@ -123,7 +123,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
         final LinkedListIterator it = this.list.iterator();
         for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
             final Activation activation = node.getActivation();
-            ((AgendaGroupImpl) activation.getAgendaGroup()).add( activation );
+            ((BinaryHeapQueueAgendaGroup) activation.getAgendaGroup()).add( activation );
         }
     }
 
@@ -145,7 +145,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
         this.list.add( node );
 
         if ( this.active ) {
-            ((AgendaGroupImpl) activation.getAgendaGroup()).add( activation );
+            ((InternalAgendaGroup) activation.getAgendaGroup()).add( activation );
         }
     }
 

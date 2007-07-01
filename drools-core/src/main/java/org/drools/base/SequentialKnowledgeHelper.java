@@ -31,7 +31,7 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 
-public class DefaultKnowledgeHelper
+public class SequentialKnowledgeHelper
     implements
     KnowledgeHelper {
 
@@ -43,7 +43,7 @@ public class DefaultKnowledgeHelper
     private Tuple                              tuple;
     private final InternalWorkingMemoryActions workingMemory;
 
-    public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
+    public SequentialKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
     }
 
@@ -54,92 +54,44 @@ public class DefaultKnowledgeHelper
         this.tuple = agendaItem.getTuple();
     }
 
-    public void insert(final Object object) throws FactException {
-        insert( object,
-                false );
+    public void insert(final Object object) throws FactException {        
     }
 
     public void insert(final Object object,
                        final boolean dynamic) throws FactException {
-        this.workingMemory.insert( object,
-                                   dynamic,
-                                   false,
-                                   this.rule,
-                                   this.activation );
     }
 
     public void insertLogical(final Object object) throws FactException {
-        insertLogical( object,
-                       false );
     }
 
     public void insertLogical(final Object object,
                               final boolean dynamic) throws FactException {
-        this.workingMemory.insert( object,
-                                   dynamic,
-                                   true,
-                                   this.rule,
-                                   this.activation );
     }
 
     public void update(final FactHandle handle,
                        final Object newObject) throws FactException {
-        // only update if this fact exists in the wm
-        this.workingMemory.update( handle,
-                                   newObject,
-                                   this.rule,
-                                   this.activation );
     }
 
     public void update(final Object object) throws FactException {
-        FactHandle handle = this.workingMemory.getFactHandle( object );
-        if ( handle == null ) {
-            throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
-        }
-        // only update if this fact exists in the wm
-        this.workingMemory.update( handle,
-                                   object,
-                                   this.rule,
-                                   this.activation );
     }
 
     public void retract(final FactHandle handle) throws FactException {
-        this.workingMemory.retract( handle,
-                                    true,
-                                    true,
-                                    this.rule,
-                                    this.activation );
     }
 
     public void retract(final Object object) throws FactException {
-        FactHandle handle = this.workingMemory.getFactHandle( object );
-        if ( handle == null ) {
-            throw new FactException( "Retract error: handle not found for object: " + object + ". Is it in the working memory?" );
-        }
-        this.workingMemory.retract( handle,
-                                    true,
-                                    true,
-                                    this.rule,
-                                    this.activation );
     }
 
     public void modifyRetract(final Object object) {
-        FactHandle handle = this.workingMemory.getFactHandle( object );
-        this.workingMemory.modifyRetract( handle, rule, activation );
     }
 
     public void modifyRetract(final FactHandle factHandle) {
-        this.workingMemory.modifyRetract( factHandle, rule, activation );
     }
 
     public void modifyInsert(final Object object) {
-        FactHandle handle = this.workingMemory.getFactHandle( object );
-        this.workingMemory.modifyInsert( handle, object, rule, activation );
     }
 
     public void modifyInsert(final FactHandle factHandle,
-                             final Object object) {
-        this.workingMemory.modifyInsert( factHandle, object, rule, activation );        
+                             final Object object) {      
     }
 
     public Rule getRule() {
@@ -161,6 +113,7 @@ public class DefaultKnowledgeHelper
     //    public void clearAgendaGroup(final String group) {
     //        this.workingMemory.clearAgendaGroup( group );
     //    }
+
 
     public Tuple getTuple() {
         return this.tuple;
@@ -201,5 +154,5 @@ public class DefaultKnowledgeHelper
     
     public void halt() {
         this.workingMemory.halt();
-    }
+    }    
 }

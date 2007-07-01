@@ -24,6 +24,7 @@ import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.Person;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
@@ -110,6 +111,50 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       memory.size() );
         assertTrue( memory.contains( handle1 ) );
+    }
+    
+    public void testAssertObjectSequentialMode() {
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
+
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setSequential( true );
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           ruleBase );
+
+        final Rete source = ruleBase.getRete();
+
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  new ClassObjectType( String.class ),
+                                                                  source,
+                                                                  3 );
+
+        final MockObjectSink sink = new MockObjectSink();
+        objectTypeNode.addObjectSink( sink );
+
+        final Object string1 = "cheese";
+
+        final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.insert( string1 );
+
+        // should assert as ObjectType matches
+        objectTypeNode.assertObject( handle1,
+                                     context,
+                                     workingMemory );
+
+        // make sure just string1 was asserted 
+        final List asserted = sink.getAsserted();
+        assertLength( 1,
+                      asserted );
+        assertSame( string1,
+                    workingMemory.getObject( (DefaultFactHandle) ((Object[]) asserted.get( 0 ))[0] ) );
+
+        // it's sequential, so check the asserted object was not added to the node memory
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
+        assertEquals( 0,
+                      memory.size() );
     }
 
     public void testMemory() {
