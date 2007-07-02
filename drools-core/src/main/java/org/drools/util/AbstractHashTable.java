@@ -339,8 +339,9 @@ public abstract class AbstractHashTable
         }
     }
 
-    public static class FactEntry
+    public static class FactEntryImpl
         implements
+        FactEntry,
         Entry {
 
         private static final long serialVersionUID = 1776798977330980128L;
@@ -353,13 +354,13 @@ public abstract class AbstractHashTable
 
         //        private LinkedList              list;
 
-        public FactEntry(final InternalFactHandle handle) {
+        public FactEntryImpl(final InternalFactHandle handle) {
             this.handle = handle;
             this.hashCode = handle.hashCode();
             //            this.list = new LinkedList();
         }
 
-        public FactEntry(final InternalFactHandle handle,
+        public FactEntryImpl(final InternalFactHandle handle,
                          final int hashCode) {
             this.handle = handle;
             this.hashCode = hashCode;
@@ -391,7 +392,7 @@ public abstract class AbstractHashTable
         }
 
         public boolean equals(final Object object) {
-            return (object == this) || (this.handle == ((FactEntry) object).handle);
+            return (object == this) || (this.handle == ((FactEntryImpl) object).handle);
         }
 
         public String toString() {

@@ -31,8 +31,9 @@ import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
-import org.drools.util.AbstractHashTable.FactEntry;
+import org.drools.util.AbstractHashTable.FactEntryImpl;
 
 public class JoinNodeTest extends DroolsTestCase {
     Rule                rule;

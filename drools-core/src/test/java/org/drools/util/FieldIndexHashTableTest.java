@@ -19,7 +19,7 @@ import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.spi.FieldExtractor;
-import org.drools.util.AbstractHashTable.FactEntry;
+import org.drools.util.AbstractHashTable.FactEntryImpl;
 import org.drools.util.AbstractHashTable.FieldIndex;
 import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
 import org.drools.util.ObjectHashMap.ObjectEntry;
@@ -186,7 +186,7 @@ public class FieldIndexHashTableTest extends TestCase {
         assertSame( stiltonHandle2,
                     stiltonEntry.getFirst().getFactHandle() );
         assertSame( stiltonHandle1,
-                    ((FactEntry) stiltonEntry.getFirst().getNext()).getFactHandle() );
+                    ((FactEntryImpl) stiltonEntry.getFirst().getNext()).getFactHandle() );
     }
 
     public void testTwoDifferentEntriesSameHashCode() throws Exception {

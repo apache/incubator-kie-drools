@@ -28,8 +28,9 @@ import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ArrayUtils;
 import org.drools.util.Entry;
+import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
-import org.drools.util.AbstractHashTable.FactEntry;
+import org.drools.util.AbstractHashTable.FactEntryImpl;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**

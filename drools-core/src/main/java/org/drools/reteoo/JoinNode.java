@@ -20,8 +20,9 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
-import org.drools.util.AbstractHashTable.FactEntry;
+import org.drools.util.AbstractHashTable.FactEntryImpl;
 
 /**
  * <code>JoinNode</code> extends <code>BetaNode</code> to perform

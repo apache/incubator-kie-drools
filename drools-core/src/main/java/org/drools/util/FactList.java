@@ -3,6 +3,8 @@
  */
 package org.drools.util;
 
+import java.io.Serializable;
+
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
@@ -29,7 +31,7 @@ public class FactList
 
     public boolean add(final InternalFactHandle handle,
                        final boolean checkExists) {
-        this.list.add( new LinkedListEntry( handle ) );
+        this.list.add( new FactEntryImpl( handle ) );
         return true;
     }
 
@@ -64,5 +66,16 @@ public class FactList
 
     public boolean isIndexed() {
         return false;
+    }
+    
+    public static class FactEntryImpl extends LinkedListEntry implements FactEntry, Serializable {    
+        public FactEntryImpl(InternalFactHandle handle) {
+            super(handle);
+        }
+
+        public InternalFactHandle getFactHandle() {
+            return (InternalFactHandle) getObject();
+        }
+        
     }
 }

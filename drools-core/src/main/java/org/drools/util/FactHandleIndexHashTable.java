@@ -268,7 +268,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
 
         private static final long serialVersionUID = -577270475161063671L;
         private Entry             next;
-        private FactEntry         first;
+        private FactEntryImpl         first;
         private final int         hashCode;
         private Index             index;
 
@@ -286,35 +286,35 @@ public class FactHandleIndexHashTable extends AbstractHashTable
             this.next = next;
         }
 
-        public FactEntry getFirst() {
+        public FactEntryImpl getFirst() {
             return this.first;
         }
 
         public void add(final InternalFactHandle handle) {
-            final FactEntry entry = new FactEntry( handle );
+            final FactEntryImpl entry = new FactEntryImpl( handle );
             entry.next = this.first;
             this.first = entry;
         }
 
-        public FactEntry get(final InternalFactHandle handle) {
+        public FactEntryImpl get(final InternalFactHandle handle) {
             final long id = handle.getId();
-            FactEntry current = this.first;
+            FactEntryImpl current = this.first;
             while ( current != null ) {
                 if ( current.handle.getId() == id ) {
                     return current;
                 }
-                current = (FactEntry) current.next;
+                current = (FactEntryImpl) current.next;
             }
             return null;
         }
 
-        public FactEntry remove(final InternalFactHandle handle) {
+        public FactEntryImpl remove(final InternalFactHandle handle) {
             final long id = handle.getId();
 
-            FactEntry previous = this.first;
-            FactEntry current = previous;
+            FactEntryImpl previous = this.first;
+            FactEntryImpl current = previous;
             while ( current != null ) {
-                final FactEntry next = (FactEntry) current.next;
+                final FactEntryImpl next = (FactEntryImpl) current.next;
                 if ( current.handle.getId() == id ) {
                     if ( this.first == current ) {
                         this.first = next;

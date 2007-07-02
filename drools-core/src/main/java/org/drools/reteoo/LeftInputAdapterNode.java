@@ -23,9 +23,10 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
-import org.drools.util.AbstractHashTable.FactEntry;
+import org.drools.util.AbstractHashTable.FactEntryImpl;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -175,7 +176,7 @@ public class LeftInputAdapterNode extends TupleSource
             // We have memory so iterate over all entries
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             final Iterator it = memory.iterator();
-            for ( final FactEntry entry = (FactEntry) it.next(); entry != null; it.next() ) {
+            for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
                 final InternalFactHandle handle = entry.getFactHandle();
                 sink.assertTuple( new ReteTuple( handle ),
                                   context,
