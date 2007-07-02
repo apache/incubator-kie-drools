@@ -320,7 +320,7 @@ public class Rete extends ObjectSource
             this.ruleBase = ruleBase;
             Rete rete = ruleBase.getRete();
 
-            if ( cls == null || !ruleBase.getConfiguration().isShadowed( cls.getName() ) ) {
+            if ( !ruleBase.getConfiguration().isShadowProxy() || cls == null || !ruleBase.getConfiguration().isShadowed( cls.getName() ) ) {
                 return;
             }
             

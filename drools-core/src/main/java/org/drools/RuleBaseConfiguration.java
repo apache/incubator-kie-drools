@@ -51,6 +51,8 @@ import org.drools.util.ChainedProperties;
  */
 
 /**
+ * drools.shadowproxy = <true|false>
+ * drools.shadowproxy.exclude = org.domainy.* org.domainx.ClassZ
  * drools.sequential = <true|false>
  * drools.sequential.agenda = <sequential|dynamic>
  * drools.removeIdentities = <true|false>
@@ -66,7 +68,6 @@ import org.drools.util.ChainedProperties;
  * drools.executorService = <qualified class name>
  * drools.conflictResolver = <qualified class name>
  * 
- * drools.shadowproxy.exclude = org.domainy.* org.domainx.ClassZ
  */
 public class RuleBaseConfiguration
     implements
@@ -95,6 +96,7 @@ public class RuleBaseConfiguration
 
     private ConflictResolver    conflictResolver;
 
+    private boolean             shadowProxy;
     private Map                 shadowProxyExcludes;
     private static final String STAR             = "*";
 
@@ -157,6 +159,12 @@ public class RuleBaseConfiguration
 
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
                                                                                                                   "org.drools.conflict.DepthConflictResolver" ) ) );
+
+        setShareBetaNodes( Boolean.valueOf( this.chainedProperties.getProperty( "drools.shadowproxy",
+                                                                                "true" ) ).booleanValue() );
+
+        setShadowProxy( determineShadowProxy( this.chainedProperties.getProperty( "drools.shadowproxy",
+                                                                                  null ) ) );
 
         setShadowProxyExcludes( this.chainedProperties.getProperty( "drools.shadowProxyExcludes",
                                                                     "" ) );
@@ -307,6 +315,144 @@ public class RuleBaseConfiguration
         this.executorService = executorService;
     }
 
+    public AgendaGroupFactory getAgendaGroupFactory() {
+        if ( isSequential() ) {
+            if ( this.sequentialAgenda == SequentialAgenda.SEQUENTIAL ) {
+                return ArrayAgendaGroupFactory.getInstance();
+            } else {
+                return PriorityQueueAgendaGroupFactory.getInstance();
+            }
+        } else {
+            return PriorityQueueAgendaGroupFactory.getInstance();
+        }
+    }
+
+    public SequentialAgenda getSequentialAgenda() {
+        return this.sequentialAgenda;
+    }
+
+    public void setSequentialAgenda(final SequentialAgenda sequentialAgenda) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.sequentialAgenda = sequentialAgenda;
+    }
+    
+    private boolean determineShadowProxy(String userValue) {
+        if ( userValue != null ) {
+            return Boolean.valueOf( userValue ).booleanValue();
+        } else {
+            if ( this.isSequential() ) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }    
+
+    private static ConflictResolver determineConflictResolver(String className) {
+        Class clazz = null;
+        try {
+            clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
+
+        if ( clazz == null ) {
+            try {
+                clazz = RuleBaseConfiguration.class.getClassLoader().loadClass( className );
+            } catch ( ClassNotFoundException e ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            try {
+                return (ConflictResolver) clazz.getMethod( "getInstance",
+                                                           null ).invoke( null,
+                                                                          null );
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException( "Unable to Conflict Resolver '" + className + "'" );
+            }
+        } else {
+            throw new IllegalArgumentException( "conflict Resolver '" + className + "' not found" );
+        }
+    }
+
+    public void setConflictResolver(ConflictResolver conflictResolver) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.conflictResolver = conflictResolver;
+    }
+
+    public ConflictResolver getConflictResolver() {
+        return this.conflictResolver;
+    }
+
+    public void setShadowProxy(boolean shadowProxy) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.shadowProxy = shadowProxy;
+    }
+
+    public boolean isShadowProxy() {
+        return this.shadowProxy;
+    }
+
+    private void setShadowProxyExcludes(String excludes) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        if ( excludes == null || "".equals( excludes.trim() ) ) {
+            return;
+        }
+
+        if ( this.shadowProxyExcludes == null ) {
+            this.shadowProxyExcludes = new HashMap();
+        }
+
+        String[] items = excludes.split( " " );
+        for ( int i = 0; i < items.length; i++ ) {
+            String qualifiedNamespace = items[i].substring( 0,
+                                                            items[i].lastIndexOf( '.' ) ).trim();
+            String name = items[i].substring( items[i].lastIndexOf( '.' ) + 1 ).trim();
+            Object object = this.shadowProxyExcludes.get( qualifiedNamespace );
+            if ( object == null ) {
+                if ( STAR.equals( name ) ) {
+                    this.shadowProxyExcludes.put( qualifiedNamespace,
+                                                  STAR );
+                } else {
+                    // create a new list and add it
+                    List list = new ArrayList();
+                    list.add( name );
+                    this.shadowProxyExcludes.put( qualifiedNamespace,
+                                                  list );
+                }
+            } else if ( name.equals( STAR ) ) {
+                // if its a STAR now add it anyway, we don't care if it was a STAR or a List before
+                this.shadowProxyExcludes.put( qualifiedNamespace,
+                                              STAR );
+            } else {
+                // its a list so add it if it doesn't already exist
+                List list = (List) object;
+                if ( !list.contains( object ) ) {
+                    list.add( name );
+                }
+            }
+        }
+    }
+
+    public boolean isShadowed(String className) {
+        if ( this.shadowProxyExcludes == null ) {
+            return true;
+        }
+
+        String qualifiedNamespace = className.substring( 0,
+                                                         className.lastIndexOf( '.' ) ).trim();
+        String name = className.substring( className.lastIndexOf( '.' ) + 1 ).trim();
+        Object object = this.shadowProxyExcludes.get( qualifiedNamespace );
+        if ( object == null ) {
+            return true;
+        } else if ( STAR.equals( object ) ) {
+            return false;
+        } else {
+            List list = (List) object;
+            return !list.contains( name );
+        }
+    }
+
     private static ExecutorService determineExecutorService(String className) {
         Class clazz = null;
         try {
@@ -415,10 +561,10 @@ public class RuleBaseConfiguration
     public static class SequentialAgenda
         implements
         Serializable {
-        private static final long            serialVersionUID  = 320L;
+        private static final long            serialVersionUID = 320L;
 
-        public static final SequentialAgenda SEQUENTIAL = new SequentialAgenda( 0 );
-        public static final SequentialAgenda DYNAMIC    = new SequentialAgenda( 1 );
+        public static final SequentialAgenda SEQUENTIAL       = new SequentialAgenda( 0 );
+        public static final SequentialAgenda DYNAMIC          = new SequentialAgenda( 1 );
 
         private int                          value;
 
@@ -451,120 +597,4 @@ public class RuleBaseConfiguration
             return "SequentialAgenda : " + ((this.value == 0) ? "sequential" : "dynamic");
         }
     }
-
-    public AgendaGroupFactory getAgendaGroupFactory() {
-        if ( isSequential() ) {
-            if ( this.sequentialAgenda == SequentialAgenda.SEQUENTIAL ) {
-                return ArrayAgendaGroupFactory.getInstance();
-            } else {
-                return PriorityQueueAgendaGroupFactory.getInstance();
-            }
-        } else {
-            return PriorityQueueAgendaGroupFactory.getInstance();
-        }
-    }
-
-    public SequentialAgenda getSequentialAgenda() {
-        return this.sequentialAgenda;
-    }
-
-    public void setSequentialAgenda(final SequentialAgenda sequentialAgenda) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.sequentialAgenda = sequentialAgenda;
-    }
-
-    private static ConflictResolver determineConflictResolver(String className) {
-        Class clazz = null;
-        try {
-            clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
-        } catch ( ClassNotFoundException e ) {
-        }
-
-        if ( clazz == null ) {
-            try {
-                clazz = RuleBaseConfiguration.class.getClassLoader().loadClass( className );
-            } catch ( ClassNotFoundException e ) {
-            }
-        }
-
-        if ( clazz != null ) {
-            try {
-                return (ConflictResolver) clazz.getMethod( "getInstance",
-                                                           null ).invoke( null,
-                                                                          null );
-            } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Unable to Conflict Resolver '" + className + "'" );
-            }
-        } else {
-            throw new IllegalArgumentException( "conflict Resolver '" + className + "' not found" );
-        }
-    }
-
-    public void setConflictResolver(ConflictResolver conflictResolver) {
-        this.conflictResolver = conflictResolver;
-    }
-
-    public ConflictResolver getConflictResolver() {
-        return this.conflictResolver;
-    }
-
-    private void setShadowProxyExcludes(String excludes) {
-        if ( excludes == null || "".equals( excludes.trim() ) ) {
-            return;
-        }
-
-        if ( this.shadowProxyExcludes == null ) {
-            this.shadowProxyExcludes = new HashMap();
-        }
-
-        String[] items = excludes.split( " " );
-        for ( int i = 0; i < items.length; i++ ) {
-            String qualifiedNamespace = items[i].substring( 0,
-                                                            items[i].lastIndexOf( '.' ) ).trim();
-            String name = items[i].substring( items[i].lastIndexOf( '.' ) + 1 ).trim();
-            Object object = this.shadowProxyExcludes.get( qualifiedNamespace );
-            if ( object == null ) {
-                if ( STAR.equals( name ) ) {
-                    this.shadowProxyExcludes.put( qualifiedNamespace,
-                                                  STAR );
-                } else {
-                    // create a new list and add it
-                    List list = new ArrayList();
-                    list.add( name );
-                    this.shadowProxyExcludes.put( qualifiedNamespace,
-                                                  list );
-                }
-            } else if ( name.equals( STAR ) ) {
-                // if its a STAR now add it anyway, we don't care if it was a STAR or a List before
-                this.shadowProxyExcludes.put( qualifiedNamespace,
-                                              STAR );
-            } else {
-                // its a list so add it if it doesn't already exist
-                List list = (List) object;
-                if ( !list.contains( object ) ) {
-                    list.add( name );
-                }
-            }
-        }
-    }
-
-    public boolean isShadowed(String className) {
-        if ( this.shadowProxyExcludes == null ) {
-            return true;
-        }
-
-        String qualifiedNamespace = className.substring( 0,
-                                                         className.lastIndexOf( '.' ) ).trim();
-        String name = className.substring( className.lastIndexOf( '.' ) + 1 ).trim();
-        Object object = this.shadowProxyExcludes.get( qualifiedNamespace );
-        if ( object == null ) {
-            return true;
-        } else if ( STAR.equals( object ) ) {
-            return false;
-        } else {
-            List list = (List) object;
-            return !list.contains( name );
-        }
-    }
-
 }
