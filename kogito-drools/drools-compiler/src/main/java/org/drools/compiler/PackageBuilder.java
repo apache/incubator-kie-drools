@@ -33,6 +33,7 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
@@ -215,14 +216,16 @@ public class PackageBuilder {
         validateUniqueRuleNames( packageDescr );
         
 
-        String dialectName = null;        
-        for ( Iterator it = packageDescr.getAttributes().iterator(); it.hasNext(); ) {
-            String value = ( String ) it.next();
-            if ( "dialect".equals( value )) {   
-                dialectName = value;
-                break;
-            }
-        }
+        String dialectName = null;       
+//MN: not needed as overrides are done in the compiler before here
+//as we can have mixed dialect types - still not quite right here.       
+//        for ( Iterator it = packageDescr.getAttributes().iterator(); it.hasNext(); ) {
+//            AttributeDescr value = ( AttributeDescr ) it.next();
+//            if ( "dialect".equals( value.getName() )) {   
+//                dialectName = value.getValue();
+//                break;
+//            }
+//        }
         
         // The Package does not have a default dialect, so set it
         if ( dialectName == null && this.dialect == null ) {

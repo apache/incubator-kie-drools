@@ -55,7 +55,7 @@ public class SequentialTest extends TestCase {
 
     }
     
-    public void testProfileSequential() throws Exception {
+    public void XXtestProfileSequential() throws Exception {
 
         runTestProfileManyRulesAndFacts(true, "Sequential mode", 0 );
         runTestProfileManyRulesAndFacts(true, "Sequential mode", 0);
@@ -64,7 +64,7 @@ public class SequentialTest extends TestCase {
         Thread.sleep( 100 );
     }
     
-    public void testProfileRETE() throws Exception {
+    public void XXtestProfileRETE() throws Exception {
         runTestProfileManyRulesAndFacts(false, "Normal RETE mode", 0);
         runTestProfileManyRulesAndFacts(false, "Normal RETE mode", 0);
         
@@ -75,11 +75,11 @@ public class SequentialTest extends TestCase {
     
     public void testNumberofIterationsSeq() throws Exception {
         //test throughput
-        runTestProfileManyRulesAndFacts( true, "SEQUENTIAL", 6000 );
+        runTestProfileManyRulesAndFacts( true, "SEQUENTIAL", 2000 );
     }
     public void testNumberofIterationsRETE() throws Exception {
         //test throughput
-        runTestProfileManyRulesAndFacts( false, "RETE", 6000 );
+        runTestProfileManyRulesAndFacts( false, "RETE", 2000 );
         
     }
     

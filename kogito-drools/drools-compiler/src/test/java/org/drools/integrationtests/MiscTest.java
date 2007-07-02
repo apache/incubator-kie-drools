@@ -36,6 +36,7 @@ import junit.framework.TestCase;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
+import org.drools.Address;
 import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.Cheesery;
@@ -60,6 +61,7 @@ import org.drools.State;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
+import org.drools.brms.client.modeldriven.brl.RuleAttribute;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.compiler.DrlParser;
@@ -85,7 +87,9 @@ import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.integrationtests.helloworld.Message;
 import org.drools.lang.DrlDumper;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -508,6 +512,48 @@ public class MiscTest extends TestCase {
         memory.fireAllRules();
         assertEquals( 9,
                       cell.getValue() );
+    }
+    
+    public void testNesting() throws Exception {
+        Person p = new Person();
+        p.setName( "Michael" );
+        
+        Address add1 = new Address();
+        add1.setStreet( "High" );
+        
+        Address add2 = new Address();
+        add2.setStreet( "Low" );
+        
+        List l = new ArrayList();
+        l.add( add1 ); l.add( add2 );
+        
+        p.setAddresses( l );
+        
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "nested_fields.drl" ) ) );
+
+        assertFalse(builder.hasErrors());
+        
+        DrlParser parser = new DrlParser();
+        PackageDescr desc = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nested_fields.drl" ) ) );
+        List packageAttrs = desc.getAttributes();
+        assertEquals(1, desc.getRules().size());
+        assertEquals(1, packageAttrs.size());
+        
+        RuleDescr rule = (RuleDescr) desc.getRules().get( 0 );
+        List ruleAttrs = rule.getAttributes();
+        assertEquals(1, ruleAttrs.size());
+        
+        assertEquals("mvel", ((AttributeDescr)ruleAttrs.get(0)).getValue());
+        assertEquals("dialect", ((AttributeDescr)ruleAttrs.get(0)).getName());
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+
+        final WorkingMemory memory = ruleBase.newStatefulSession();
+
+        memory.insert( p );
+        memory.fireAllRules();
+        
     }
 
     public void testOr() throws Exception {
@@ -1449,7 +1495,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void testSerializable() throws Exception {
+    public void XXtestSerializable() throws Exception {
 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
 

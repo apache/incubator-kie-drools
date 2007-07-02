@@ -2168,6 +2168,13 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
+    public void FIXME_testPackageGarbage() throws Exception {
+        
+        parseResource( "package_garbage.drl" ).compilation_unit();
+        assertTrue(this.parser.hasErrors());
+    }
+    
+    
     public void testPackageAttributes() throws Exception {
         parseResource( "package_attributes.drl" ).compilation_unit();
         assertFalse( this.parser.getErrorMessages().toString(),
