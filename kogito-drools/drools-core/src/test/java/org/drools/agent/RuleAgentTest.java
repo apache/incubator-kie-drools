@@ -1,7 +1,10 @@
 package org.drools.agent;
 
 import java.io.File;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
@@ -302,5 +305,97 @@ public class RuleAgentTest extends TestCase {
        
     }
     
+    public void testProviderMap() throws Exception {
+ 
+        assertEquals(3, RuleAgent.PACKAGE_PROVIDERS.size());
+        assertTrue(RuleAgent.PACKAGE_PROVIDERS.containsKey( "url" ));
+        assertTrue(RuleAgent.PACKAGE_PROVIDERS.containsKey( "file" ));
+        assertTrue(RuleAgent.PACKAGE_PROVIDERS.containsKey( "dir" ));
+        assertFalse(RuleAgent.PACKAGE_PROVIDERS.containsKey( "XXX" ));
+        assertTrue(RuleAgent.PACKAGE_PROVIDERS.get( "url" ).equals( URLScanner.class ));
+        
+    }
+    
+    public void testLoadUpFromProperties() throws Exception {
+        AnotherRuleAgentMock ag = new AnotherRuleAgentMock();
+        Map oldMap = ag.PACKAGE_PROVIDERS;
+        
+        ag.PACKAGE_PROVIDERS = new HashMap();
+        ag.PACKAGE_PROVIDERS.put( RuleAgent.URLS, MockProvider.class );
+        ag.PACKAGE_PROVIDERS.put( RuleAgent.FILES, MockProvider.class );
+        ag.PACKAGE_PROVIDERS.put( RuleAgent.DIRECTORY, MockProvider.class );
+                
+        
+        Properties props = new Properties();
+        props.load( this.getClass().getResourceAsStream( "/rule-agent-config.properties" ) );
+        MockEventListener evl = new MockEventListener();
+        ag.listener = evl; 
+        
+        ag.init( props );
+        
+        
+        assertTrue(ag.newInstance);
+        assertEquals(3, ag.provs.size());
+        assertEquals(30, ag.secondsToRefresh);
+        assertEquals("MyConfig", evl.name);
+        assertFalse(evl.exceptionCalled);
+        assertFalse(evl.warningCalled);
+        assertTrue(evl.infoCalled);
+        
+        ag.PACKAGE_PROVIDERS = oldMap;
+    }
+    
+    
+    
+
+    class AnotherRuleAgentMock extends RuleAgent {
+
+        public int secondsToRefresh;
+        public List provs;
+        public boolean newInstance;
+
+        synchronized void configure(boolean newInstance, List provs, int secondsToRefresh) {
+            this.newInstance = newInstance;
+            this.provs = provs;
+            this.secondsToRefresh = secondsToRefresh;
+        }
+        
+        
+        
+    }
+    
+
+    class MockEventListener implements AgentEventListener {
+
+
+        public String name;
+        boolean exceptionCalled = false;
+        boolean infoCalled = false;
+        boolean warningCalled;
+
+        public void debug(String message) {
+
+            
+        }
+
+        public void exception(Exception e) {
+            this.exceptionCalled = true;
+        }
+
+        public void info(String message) {
+            if (message != null) this.infoCalled = true;                
+        }
+
+        public void setAgentName(String name) {
+            this.name = name;
+        }
+
+        public void warning(String message) {
+            this.warningCalled = false;
+            
+        }
+        
+            
+    }
     
 }
