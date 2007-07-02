@@ -182,7 +182,11 @@ compilation_unit
 	}
 	:	prolog 
 		statement+
+		EOF
 	;
+	catch [ RecognitionException e ] {
+		reportError( e );
+	}
 	
 prolog
 	@init {
@@ -1195,6 +1199,7 @@ fact[String ident] returns [BaseDescr d]
 			pattern.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
 		        pattern.setRightParentCharacter( ((CommonToken)$RIGHT_PAREN).getStartIndex() );
  		}
+ 		EOF? // this is needed for partial parsing
  	;
 	
 	

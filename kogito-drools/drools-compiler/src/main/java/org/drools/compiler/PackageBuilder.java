@@ -33,7 +33,6 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
-import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
