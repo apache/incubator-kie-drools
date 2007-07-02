@@ -50,7 +50,7 @@ public class ShadowProxyFactory {
 
     public static Class getProxy(final Class clazz) {
         try {
-            if ( (clazz.getModifiers() & Modifier.FINAL) != 0 ) {
+            if ( !isPossibleToGenerateTheProxyFor( clazz ) ) {
                 return null;
             }
 
@@ -71,7 +71,7 @@ public class ShadowProxyFactory {
 
     public static byte[] getProxyBytes(final Class clazz) {
         try {
-            if ( (clazz.getModifiers() & Modifier.FINAL) != 0 ) {
+            if ( !isPossibleToGenerateTheProxyFor( clazz ) ) {
                 return null;
             }
 
@@ -83,6 +83,21 @@ public class ShadowProxyFactory {
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
+    }
+    
+    protected static boolean isPossibleToGenerateTheProxyFor( final Class clazz) throws Exception {
+        if ( (clazz.getModifiers() & Modifier.FINAL) != 0 ) {
+            return false;
+        }
+        Method equals = clazz.getMethod( "equals", new Class[] { Object.class } );
+        if( Modifier.isFinal( equals.getModifiers() ) ) {
+            return false;
+        }
+        Method hashcode = clazz.getMethod( "hashCode", new Class[0] );
+        if( Modifier.isFinal( hashcode.getModifiers() ) ) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -141,6 +156,7 @@ public class ShadowProxyFactory {
         for ( int i = 0; i < methods.length; i++ ) {
             if ( (!Modifier.isFinal( methods[i].getModifiers() )) && Modifier.isPublic( methods[i].getModifiers() ) && (!Modifier.isStatic( methods[i].getModifiers() )) ) {
                 if ( (!methods[i].getReturnType().equals( Void.TYPE )) && (methods[i].getParameterTypes().length == 0) && (!methods[i].getName().equals( "hashCode" )) && (!methods[i].getName().equals( "toString" )) ) {
+                    System.out.println("Caching: "+methods[i].toString());
 
                     final String fieldName = methods[i].getName();
 
@@ -161,6 +177,7 @@ public class ShadowProxyFactory {
                                     clazz,
                                     cw );
                 } else if ( (!methods[i].getName().equals( "hashCode" )) && (!methods[i].getName().equals( "equals" )) ) {
+                    System.out.println("Delegating: "+methods[i].toString());
                     buildDelegateMethod( methods[i],
                                          clazz,
                                          className,
