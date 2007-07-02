@@ -253,7 +253,7 @@ public class LinkedList
         return true;
     }
 
-    public LinkedListIterator iterator() {
+    public Iterator iterator() {
         this.iterator.reset( this );
         return this.iterator;
     }
@@ -268,6 +268,7 @@ public class LinkedList
      */
     public class LinkedListIterator
         implements
+        Iterator,
         Serializable {
         private LinkedList     list;
         private LinkedListNode current;
@@ -277,7 +278,7 @@ public class LinkedList
             this.current = this.list.firstNode;
         }
 
-        public LinkedListNode next() {
+        public Object next() {
             if ( this.current == null ) {
                 return null;
             }

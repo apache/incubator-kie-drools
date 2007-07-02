@@ -19,6 +19,7 @@ package org.drools.common;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
 import org.drools.ruleflow.instance.impl.RuleFlowSequenceNodeInstanceImpl;
 import org.drools.spi.Activation;
+import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedList.LinkedListIterator;
 
@@ -90,7 +91,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
             ((EventSupport) this.workingMemory).getRuleFlowEventSupport()
     			.fireRuleFlowGroupActivated(this);
         } else {
-            final LinkedListIterator it = this.list.iterator();
+            final Iterator it = this.list.iterator();
             for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
                 final Activation activation = node.getActivation();
                 activation.remove();
@@ -120,7 +121,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
 
     private void triggerActivations() {
         // iterate all activations adding them to their AgendaGroups
-        final LinkedListIterator it = this.list.iterator();
+        final Iterator it = this.list.iterator();
         for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
             final Activation activation = node.getActivation();
             ((BinaryHeapQueueAgendaGroup) activation.getAgendaGroup()).add( activation );
@@ -128,7 +129,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
     }
 
     public void clear() {
-        final LinkedListIterator it = this.list.iterator();
+        final Iterator it = this.list.iterator();
         for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
             node.getActivation().remove();
         }

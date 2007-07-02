@@ -32,6 +32,7 @@ import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.util.FactHashTable;
 import org.drools.util.FactHandleIndexHashTable;
+import org.drools.util.FactList;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
@@ -195,7 +196,7 @@ public class DefaultBetaConstraints
         return false;
     }
 
-    public BetaMemory createBetaMemory(RuleBaseConfiguration conf) {
+    public BetaMemory createBetaMemory(RuleBaseConfiguration config) {
         BetaMemory memory;
         if ( this.indexed > 0 ) {
             LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
@@ -213,23 +214,23 @@ public class DefaultBetaConstraints
 
             final FieldIndex[] indexes = (FieldIndex[]) list.toArray( new FieldIndex[list.size()] );
             TupleMemory tupleMemory;
-            if ( conf.isIndexLeftBetaMemory() ) {
+            if ( config.isIndexLeftBetaMemory() ) {
                 tupleMemory = new TupleIndexHashTable( indexes );
             } else {
                 tupleMemory = new TupleHashTable();
             }
 
             FactHandleMemory factHandleMemory;
-            if ( conf.isIndexRightBetaMemory() ) {
+            if ( config.isIndexRightBetaMemory() ) {
                 factHandleMemory = new FactHandleIndexHashTable( indexes );
             } else {
-                factHandleMemory = new FactHashTable();
+                factHandleMemory = config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable();
             }
-            memory = new BetaMemory( conf.isSequential() ? null : tupleMemory,
+            memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
                                      factHandleMemory );
         } else {
-            memory = new BetaMemory( conf.isSequential() ? null : new TupleHashTable(),
-                                     new FactHashTable() );
+            memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
+                                     config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable() );
         }
 
         return memory;

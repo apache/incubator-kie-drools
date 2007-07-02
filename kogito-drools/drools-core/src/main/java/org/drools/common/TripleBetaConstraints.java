@@ -31,6 +31,7 @@ import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.util.FactHashTable;
 import org.drools.util.FactHandleIndexHashTable;
+import org.drools.util.FactList;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
@@ -241,13 +242,13 @@ public class TripleBetaConstraints
             if ( conf.isIndexRightBetaMemory() ) {
                 factHandleMemory = new FactHandleIndexHashTable( indexes );
             } else {
-                factHandleMemory = new FactHashTable();
+                factHandleMemory = conf.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable();
             }
             memory = new BetaMemory( conf.isSequential() ? null : tupleMemory,
                                      factHandleMemory );
         } else {
             memory = new BetaMemory( conf.isSequential() ? null : new TupleHashTable(),
-                                     new FactHashTable() );
+                                     conf.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable() );
         }
 
         return memory;
