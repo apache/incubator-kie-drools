@@ -57,6 +57,8 @@ public class ArrayAgendaGroup
 
     private int               index;
 
+    private int               lastIndex;
+
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
      * 
@@ -68,12 +70,15 @@ public class ArrayAgendaGroup
                             final InternalRuleBase ruleBase) {
         this.name = name;
         Integer integer = (Integer) ruleBase.getAgendaGroupRuleTotals().get( name );
+           
         if ( integer == null ) {
             this.array = new LinkedList[0];
         } else {
             this.array = new LinkedList[integer.intValue()];    
         }
-        
+
+        this.index = this.array.length-1; 
+        this.lastIndex = 0;        
     }
 
     /* (non-Javadoc)
@@ -97,8 +102,17 @@ public class ArrayAgendaGroup
     public void add(final Activation activation) {
         AgendaItem item = (AgendaItem) activation;
         this.size++;
-
-        LinkedList list = this.array[item.getSequenence()];
+        int seq = item.getSequenence();
+        
+        if ( seq < this.index ) {
+            this.index = seq;
+        }
+        
+        if ( seq > this.lastIndex ) {
+            this.lastIndex = seq;
+        }
+        
+        LinkedList list = this.array[seq];
         if ( list == null ) {
             list = new LinkedList();
             this.array[item.getSequenence()] = list;
@@ -109,8 +123,7 @@ public class ArrayAgendaGroup
 
     public Activation getNext() {
         Activation activation = null;
-        int length = this.array.length;
-        while ( this.index < length ) {
+        while ( this.index <= lastIndex ) {
             LinkedList list = this.array[this.index];            
             if ( list != null ) {
                 activation = (Activation) ((LinkedListEntry)list.removeFirst()).getObject();
