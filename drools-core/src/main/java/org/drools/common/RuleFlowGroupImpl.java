@@ -89,7 +89,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
             	triggerActivations();
             }
             ((EventSupport) this.workingMemory).getRuleFlowEventSupport()
-    			.fireRuleFlowGroupActivated(this);
+    			.fireRuleFlowGroupActivated(this, this.workingMemory);
         } else {
             final Iterator it = this.list.iterator();
             for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
@@ -100,7 +100,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
                 }
             }
             ((EventSupport) this.workingMemory).getRuleFlowEventSupport()
-				.fireRuleFlowGroupDeactivated(this);
+				.fireRuleFlowGroupDeactivated(this, this.workingMemory);
         }
     }
 

@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.event.AgendaEventListener;
+import org.drools.event.RuleFlowEventListener;
+import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.GlobalResolver;
 
@@ -18,28 +20,23 @@ import org.drools.spi.GlobalResolver;
  * the specific information.
  */
 public interface StatelessSession {
-    /**
-     * Returns all event listeners.
-     * 
-     * @return listeners The listeners.
-     */
+    public void addEventListener(final WorkingMemoryEventListener listener);
+
+    public void removeEventListener(final WorkingMemoryEventListener listener);
+
     public List getWorkingMemoryEventListeners();
 
-    /**
-     * Add an event listener.
-     * 
-     * @param listener
-     *            The listener to add.
-     */
-    public void addEventListener(AgendaEventListener listener);
+    public void addEventListener(final AgendaEventListener listener);
 
-    /**
-     * Remove an event listener.
-     * 
-     * @param listener
-     *            The listener to remove.
-     */
-    public void removeEventListener(AgendaEventListener listener);    
+    public void removeEventListener(final AgendaEventListener listener);
+
+    public List getAgendaEventListeners();
+
+    public void addEventListener(final RuleFlowEventListener listener);
+
+    public void removeEventListener(final RuleFlowEventListener listener);
+
+    public List getRuleFlowEventListeners();
     
     
     void setAgendaFilter(AgendaFilter agendaFilter);

@@ -25,6 +25,7 @@ import java.util.List;
 import org.drools.Agenda;
 import org.drools.WorkingMemory;
 import org.drools.common.EventSupport;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.ruleflow.common.instance.impl.ProcessInstanceImpl;
 import org.drools.ruleflow.core.EndNode;
 import org.drools.ruleflow.core.Join;
@@ -47,7 +48,7 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
 
     private static final long serialVersionUID = -6760756665603399413L;
 
-    private WorkingMemory 	workingMemory;
+    private InternalWorkingMemory 	workingMemory;
     private final List      nodeInstances    = new ArrayList();
 
     public RuleFlowProcess getRuleFlowProcess() {
@@ -84,7 +85,7 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
         return this.workingMemory.getAgenda();
     }
 
-    public void setWorkingMemory(final WorkingMemory workingMemory) {
+    public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
     	if (this.workingMemory != null) {
     		throw new IllegalArgumentException("A working memory can only be set once.");
     	}
@@ -143,7 +144,7 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
         super.setState(state);
         if (state == ProcessInstanceImpl.STATE_COMPLETED) {
         	((EventSupport) this.workingMemory).getRuleFlowEventSupport()
-        		.fireRuleFlowProcessCompleted(this);
+        		.fireRuleFlowProcessCompleted(this, this.workingMemory);
         }
     }
 

@@ -1,8 +1,13 @@
 package org.drools.common;
 
+import java.util.Map;
+
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.event.AgendaEventSupport;
+import org.drools.event.RuleFlowEventSupport;
+import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -13,8 +18,16 @@ import org.drools.util.concurrent.locks.Lock;
 
 public interface InternalWorkingMemory
     extends
-    WorkingMemory {
+    WorkingMemory {      
     public long getId();
+    
+    public void setGlobals(Map globals);
+    
+    public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport);
+
+    public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
+
+    public void setRuleFlowEventSupport(RuleFlowEventSupport ruleFlowEventSupport);
 
     public Object getNodeMemory(NodeMemory node);
 

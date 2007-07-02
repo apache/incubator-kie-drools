@@ -1,115 +1,198 @@
 package org.drools.reteoo;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.ObjectFilter;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.AssertObject;
 import org.drools.concurrent.AssertObjects;
+import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.FireAllRules;
 import org.drools.concurrent.Future;
 import org.drools.event.AgendaEventListener;
+import org.drools.event.AgendaEventSupport;
+import org.drools.event.RuleFlowEventListener;
+import org.drools.event.RuleFlowEventSupport;
+import org.drools.event.WorkingMemoryEventListener;
+import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.GlobalResolver;
 
-public class ReteooStatelessSession implements StatelessSession {
-    private WorkingMemory workingMemory;
-    private final ExecutorService executor;
-    private AgendaFilter agendaFilter;    
+public class ReteooStatelessSession
+    implements
+    StatelessSession {
+    //private WorkingMemory workingMemory;
 
-    public ReteooStatelessSession(final WorkingMemory workingMemory,
-                                final ExecutorService executorService) {
-        this.workingMemory = workingMemory;
-        this.executor = executorService;
-    }        
+    private InternalRuleBase            ruleBase;
+    private AgendaFilter                agendaFilter;
+    private Map                         globals                   = new HashMap();
+    private GlobalResolver              globalResolver;
 
-    public void addEventListener(AgendaEventListener listener) {
-        this.workingMemory.addEventListener( listener );
+    /** The eventSupport */
+    protected WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
+
+    protected AgendaEventSupport        agendaEventSupport        = new AgendaEventSupport();
+
+    protected RuleFlowEventSupport      ruleFlowEventSupport      = new RuleFlowEventSupport();
+
+    public ReteooStatelessSession(final InternalRuleBase ruleBase) {
+        this.ruleBase = ruleBase;
+    }
+
+    public InternalWorkingMemory newWorkingMemory() {
+        InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
+                                                            this.ruleBase );
+
+        wm.setGlobals( globals );
+        if ( globalResolver != null ) {
+            wm.setGlobalResolver( this.globalResolver );
+        }
+        wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
+        wm.setAgendaEventSupport( this.agendaEventSupport );
+        wm.setRuleFlowEventSupport( ruleFlowEventSupport );
+
+        return wm;
+    }
+
+    public void addEventListener(final WorkingMemoryEventListener listener) {
+        this.workingMemoryEventSupport.addEventListener( listener );
+    }
+
+    public void removeEventListener(final WorkingMemoryEventListener listener) {
+        this.workingMemoryEventSupport.removeEventListener( listener );
     }
 
     public List getWorkingMemoryEventListeners() {
-        return this.workingMemory.getWorkingMemoryEventListeners();
+        return this.workingMemoryEventSupport.getEventListeners();
     }
 
-    public void removeEventListener(AgendaEventListener listener) {
-        this.removeEventListener( listener );   
+    public void addEventListener(final AgendaEventListener listener) {
+        this.agendaEventSupport.addEventListener( listener );
+    }
+
+    public void removeEventListener(final AgendaEventListener listener) {
+        this.agendaEventSupport.removeEventListener( listener );
+    }
+
+    public List getAgendaEventListeners() {
+        return this.agendaEventSupport.getEventListeners();
+    }
+
+    public void addEventListener(final RuleFlowEventListener listener) {
+        this.ruleFlowEventSupport.addEventListener( listener );
+    }
+
+    public void removeEventListener(final RuleFlowEventListener listener) {
+        this.ruleFlowEventSupport.removeEventListener( listener );
+    }
+
+    public List getRuleFlowEventListeners() {
+        return this.ruleFlowEventSupport.getEventListeners();
     }
 
     public void setAgendaFilter(AgendaFilter agendaFilter) {
         this.agendaFilter = agendaFilter;
     }
-    
+
     public void setGlobal(String identifier,
                           Object value) {
-        this.workingMemory.setGlobal( identifier, value );
+        this.globals.put( identifier,
+                          value );
     }
 
     public void setGlobalResolver(GlobalResolver globalResolver) {
-       this.workingMemory.setGlobalResolver( globalResolver );        
+        this.globalResolver = globalResolver;
     }
 
-    public void execute(Object object) {
-        this.workingMemory.insert( object );
-        this.workingMemory.fireAllRules( this.agendaFilter );
+    public void execute(Object object) {        
+        InternalWorkingMemory wm = newWorkingMemory();
+        
+        wm.insert( object );
+        wm.fireAllRules( this.agendaFilter );
     }
 
     public void execute(Object[] array) {
+        InternalWorkingMemory wm = newWorkingMemory();
+        
         for ( int i = 0, length = array.length; i < length; i++ ) {
-            this.workingMemory.insert( array[i] );
+            wm.insert( array[i] );
         }
-        this.workingMemory.fireAllRules( this.agendaFilter );
+        wm.fireAllRules( this.agendaFilter );
     }
 
     public void execute(Collection collection) {
-        for( Iterator it = collection.iterator(); it.hasNext(); ) {
-            this.workingMemory.insert( it.next() );
+        InternalWorkingMemory wm = newWorkingMemory();
+        
+        for ( Iterator it = collection.iterator(); it.hasNext(); ) {
+            wm.insert( it.next() );
         }
-        this.workingMemory.fireAllRules( this.agendaFilter );
+        wm.fireAllRules( this.agendaFilter );
     }
-    
+
     public void asyncExecute(final Object object) {
+        InternalWorkingMemory wm = newWorkingMemory();
+        
         final AssertObject assertObject = new AssertObject( object );
-        this.executor.submit( assertObject );
-        this.executor.submit( new FireAllRules( this.agendaFilter ) );
-    }       
-    
-    public void asyncExecute(final Object[] array) {
-        final AssertObjects assertObjects = new AssertObjects( array );
-        this.executor.submit( assertObjects );
-        this.executor.submit( new FireAllRules( this.agendaFilter ) );
+        ExecutorService executor = this.ruleBase.getConfiguration().getExecutorService();
+        executor.setCommandExecutor( new CommandExecutor( wm ) );        
+        executor.submit( assertObject );
+        executor.submit( new FireAllRules( this.agendaFilter ) );
     }
-    
+
+    public void asyncExecute(final Object[] array) {
+        InternalWorkingMemory wm = newWorkingMemory();
+        
+        final AssertObjects assertObjects = new AssertObjects( array );
+        ExecutorService executor = this.ruleBase.getConfiguration().getExecutorService();
+        executor.setCommandExecutor( new CommandExecutor( wm ) );        
+        executor.submit( assertObjects );
+        executor.submit( new FireAllRules( this.agendaFilter ) );
+    }
+
     public void asyncExecute(final Collection collection) {
+        InternalWorkingMemory wm = newWorkingMemory();
+        
         final AssertObjects assertObjects = new AssertObjects( collection );
-        this.executor.submit( assertObjects );
-        this.executor.submit( new FireAllRules( this.agendaFilter ) );
-    }         
-    
+        ExecutorService executor = this.ruleBase.getConfiguration().getExecutorService();
+        executor.setCommandExecutor( new CommandExecutor( wm ) );        
+        executor.submit( assertObjects );
+        executor.submit( new FireAllRules( this.agendaFilter ) );
+    }
+
     public StatelessSessionResult executeWithResults(Object object) {
-        this.workingMemory.insert( object );
-        this.workingMemory.fireAllRules( this.agendaFilter );
-        return new ReteStatelessSessionResult( this.workingMemory );
+        InternalWorkingMemory wm = newWorkingMemory();
+        
+        wm.insert( object );
+        wm.fireAllRules( this.agendaFilter );
+        return new ReteStatelessSessionResult( wm );
     }
 
     public StatelessSessionResult executeWithResults(Object[] array) {
+        InternalWorkingMemory wm = newWorkingMemory();
+        
         for ( int i = 0, length = array.length; i < length; i++ ) {
-            this.workingMemory.insert( array[i] );
+            wm.insert( array[i] );
         }
-        this.workingMemory.fireAllRules( this.agendaFilter );
-        return new ReteStatelessSessionResult( this.workingMemory );
+        wm.fireAllRules( this.agendaFilter );
+        return new ReteStatelessSessionResult( wm );
     }
 
     public StatelessSessionResult executeWithResults(Collection collection) {
-        for( Iterator it = collection.iterator(); it.hasNext(); ) {
-            this.workingMemory.insert( it.next() );
+        InternalWorkingMemory wm = newWorkingMemory();
+        
+        for ( Iterator it = collection.iterator(); it.hasNext(); ) {
+            wm.insert( it.next() );
         }
-        this.workingMemory.fireAllRules( this.agendaFilter );
-        return new ReteStatelessSessionResult( this.workingMemory );
-    }    
+        wm.fireAllRules( this.agendaFilter );
+        return new ReteStatelessSessionResult( wm );
+    }
 }

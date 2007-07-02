@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.drools.Agenda;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.ruleflow.common.instance.ProcessInstance;
 import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
@@ -45,7 +46,7 @@ public interface RuleFlowProcessInstance
 
     RuleFlowNodeInstance getFirstNodeInstance(long nodeId);
 
-    void setWorkingMemory(WorkingMemory workingMemory);
+    void setWorkingMemory(InternalWorkingMemory workingMemory);
     
     WorkingMemory getWorkingMemory();
 

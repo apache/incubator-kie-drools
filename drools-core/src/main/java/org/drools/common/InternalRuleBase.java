@@ -40,6 +40,8 @@ public interface InternalRuleBase
      * @return the id
      */
     public String getId();
+    
+    public int nextWorkingMemoryCounter();
 
     public FactHandleFactory newFactHandleFactory();
 

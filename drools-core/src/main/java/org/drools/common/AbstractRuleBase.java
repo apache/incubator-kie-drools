@@ -98,6 +98,10 @@ abstract public class AbstractRuleBase
     public AbstractRuleBase() {
 
     }
+    
+    public synchronized int nextWorkingMemoryCounter() {
+        return this.workingMemoryCounter++;
+    }
 
     /**
      * Construct.

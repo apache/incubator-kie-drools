@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 
@@ -36,10 +37,8 @@ public class AgendaEventSupport
      */
     private static final long   serialVersionUID = 320L;
     private final List          listeners        = Collections.synchronizedList( new ArrayList() );
-    private final WorkingMemory workingMemory;
 
-    public AgendaEventSupport(final WorkingMemory workingMemory) {
-        this.workingMemory = workingMemory;
+    public AgendaEventSupport() {
     }
 
     public void addEventListener(final AgendaEventListener listener) {
@@ -106,7 +105,7 @@ public class AgendaEventSupport
         }
     }
 
-    public void fireAfterActivationFired(final Activation activation) {
+    public void fireAfterActivationFired(final Activation activation, final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -115,11 +114,11 @@ public class AgendaEventSupport
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).afterActivationFired( event,
-                                                                                  this.workingMemory );
+                                                                                  workingMemory );
         }
     }
 
-    public void fireAgendaGroupPopped(final AgendaGroup agendaGroup) {
+    public void fireAgendaGroupPopped(final AgendaGroup agendaGroup, final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -128,11 +127,11 @@ public class AgendaEventSupport
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).agendaGroupPopped( event,
-                                                                               this.workingMemory );
+                                                                               workingMemory );
         }
     }
 
-    public void fireAgendaGroupPushed(final AgendaGroup agendaGroup) {
+    public void fireAgendaGroupPushed(final AgendaGroup agendaGroup, final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -141,7 +140,7 @@ public class AgendaEventSupport
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((AgendaEventListener) this.listeners.get( i )).agendaGroupPushed( event,
-                                                                               this.workingMemory );
+                                                                               workingMemory );
         }
     }
 }

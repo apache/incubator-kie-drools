@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.spi.RuleFlowGroup;
 
@@ -32,10 +33,8 @@ public class RuleFlowEventSupport implements Serializable {
 
 	private static final long serialVersionUID = -4300367587017885998L;
 	private final List listeners = Collections.synchronizedList( new ArrayList() );
-    private final WorkingMemory workingMemory;
 
-    public RuleFlowEventSupport(final WorkingMemory workingMemory) {
-        this.workingMemory = workingMemory;
+    public RuleFlowEventSupport() {
     }
 
     public void addEventListener(final RuleFlowEventListener listener) {
@@ -60,7 +59,7 @@ public class RuleFlowEventSupport implements Serializable {
         return this.listeners.isEmpty();
     }
 
-    public void fireRuleFlowProcessStarted(final RuleFlowProcessInstance instance) {
+    public void fireRuleFlowProcessStarted(final RuleFlowProcessInstance instance, final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -69,11 +68,11 @@ public class RuleFlowEventSupport implements Serializable {
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((RuleFlowEventListener) this.listeners.get( i ))
-            	.ruleFlowStarted( event, this.workingMemory );
+            	.ruleFlowStarted( event, workingMemory );
         }
     }
 
-    public void fireRuleFlowProcessCompleted(final RuleFlowProcessInstance instance) {
+    public void fireRuleFlowProcessCompleted(final RuleFlowProcessInstance instance, final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -82,11 +81,11 @@ public class RuleFlowEventSupport implements Serializable {
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((RuleFlowEventListener) this.listeners.get( i ))
-            	.ruleFlowCompleted( event, this.workingMemory );
+            	.ruleFlowCompleted( event, workingMemory );
         }
     }
 
-    public void fireRuleFlowGroupActivated(final RuleFlowGroup ruleFlowGroup) {
+    public void fireRuleFlowGroupActivated(final RuleFlowGroup ruleFlowGroup, final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -95,11 +94,11 @@ public class RuleFlowEventSupport implements Serializable {
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((RuleFlowEventListener) this.listeners.get( i ))
-            	.ruleFlowGroupActivated( event, this.workingMemory );
+            	.ruleFlowGroupActivated( event, workingMemory );
         }
     }
 
-    public void fireRuleFlowGroupDeactivated(final RuleFlowGroup ruleFlowGroup) {
+    public void fireRuleFlowGroupDeactivated(final RuleFlowGroup ruleFlowGroup, final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -108,7 +107,7 @@ public class RuleFlowEventSupport implements Serializable {
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((RuleFlowEventListener) this.listeners.get( i ))
-            	.ruleFlowGroupDeactivated( event, this.workingMemory );
+            	.ruleFlowGroupDeactivated( event, workingMemory );
         }
     }
 

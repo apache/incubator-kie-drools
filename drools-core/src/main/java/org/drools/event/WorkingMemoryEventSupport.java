@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -36,10 +37,8 @@ public class WorkingMemoryEventSupport
      */
     private static final long   serialVersionUID = -7572714148615479288L;
     private final List          listeners        = Collections.synchronizedList( new ArrayList() );
-    private final WorkingMemory workingMemory;
 
-    public WorkingMemoryEventSupport(final WorkingMemory workingMemory) {
-        this.workingMemory = workingMemory;
+    public WorkingMemoryEventSupport() {
     }
 
     public void addEventListener(final WorkingMemoryEventListener listener) {
@@ -66,12 +65,13 @@ public class WorkingMemoryEventSupport
 
     public void fireObjectInserted(final PropagationContext propagationContext,
                                    final FactHandle handle,
-                                   final Object object) {
+                                   final Object object,
+                                   final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final ObjectInsertedEvent event = new ObjectInsertedEvent( this.workingMemory,
+        final ObjectInsertedEvent event = new ObjectInsertedEvent( workingMemory,
                                                                    propagationContext,
                                                                    handle,
                                                                    object );
@@ -84,12 +84,13 @@ public class WorkingMemoryEventSupport
     public void fireObjectUpdated(final PropagationContext propagationContext,
                                    final FactHandle handle,
                                    final Object oldObject,
-                                   final Object object) {
+                                   final Object object,
+                                   final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final ObjectUpdatedEvent event = new ObjectUpdatedEvent( this.workingMemory,
+        final ObjectUpdatedEvent event = new ObjectUpdatedEvent( workingMemory,
                                                                    propagationContext,
                                                                    handle,
                                                                    oldObject,
@@ -102,12 +103,13 @@ public class WorkingMemoryEventSupport
 
     public void fireObjectRetracted(final PropagationContext propagationContext,
                                     final FactHandle handle,
-                                    final Object oldObject) {
+                                    final Object oldObject,
+                                    final InternalWorkingMemory workingMemory ) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final ObjectRetractedEvent event = new ObjectRetractedEvent( this.workingMemory,
+        final ObjectRetractedEvent event = new ObjectRetractedEvent( workingMemory,
                                                                      propagationContext,
                                                                      handle,
                                                                      oldObject );
