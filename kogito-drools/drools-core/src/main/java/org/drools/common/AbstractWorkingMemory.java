@@ -99,7 +99,7 @@ public abstract class AbstractWorkingMemory
                                                                                                                     8 );
 
     /** Global values which are associated with this memory. */
-    protected final Map                       globals                                       = new HashMap();
+    protected Map                             globals                                       = new HashMap();
 
     /** Object-to-handle mapping. */
     private final ObjectHashMap               assertMap;
@@ -113,11 +113,11 @@ public abstract class AbstractWorkingMemory
                                                                                             };
 
     /** The eventSupport */
-    protected final WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( this );
+    protected WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( );
 
-    protected final AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( this );
+    protected AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( );
 
-    protected final RuleFlowEventSupport      ruleFlowEventSupport                          = new RuleFlowEventSupport( this );
+    protected RuleFlowEventSupport      ruleFlowEventSupport                          = new RuleFlowEventSupport( );
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     protected transient InternalRuleBase      ruleBase;
@@ -138,14 +138,14 @@ public abstract class AbstractWorkingMemory
     protected long                            propagationIdCounter;
 
     private final boolean                     maintainTms;
-    
+
     private final boolean                     sequential;
-    
-    private List                        liaPropagations                                = Collections.EMPTY_LIST;
+
+    private List                              liaPropagations                               = Collections.EMPTY_LIST;
 
     /** Flag to determine if a rule is currently being fired. */
     protected boolean                         firing;
-    
+
     protected boolean                         halt;
 
     // ------------------------------------------------------------
@@ -194,15 +194,27 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------    
-    
+
     void setRuleBase(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
     
+    public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport) {
+        this.workingMemoryEventSupport = workingMemoryEventSupport;
+    }
+
+    public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport) {
+        this.agendaEventSupport = agendaEventSupport;
+    }
+
+    public void setRuleFlowEventSupport(RuleFlowEventSupport ruleFlowEventSupport) {
+        this.ruleFlowEventSupport = ruleFlowEventSupport;
+    }
+
     public boolean isSequential() {
         return this.sequential;
     }
-    
+
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
         if ( this.liaPropagations == Collections.EMPTY_LIST ) {
             this.liaPropagations = new ArrayList();
@@ -293,6 +305,10 @@ public abstract class AbstractWorkingMemory
 
     public FactHandleFactory getFactHandleFactory() {
         return this.handleFactory;
+    }
+
+    public void setGlobals(Map globals) {
+        this.globals = globals;
     }
 
     /**
@@ -399,23 +415,27 @@ public abstract class AbstractWorkingMemory
     public void halt() {
         this.halt = true;
     }
-    
+
     /**
      * @see WorkingMemory
      */
     public synchronized void fireAllRules() throws FactException {
-        fireAllRules( null, -1 );
+        fireAllRules( null,
+                      -1 );
     }
 
-    public synchronized void fireAllRules( int fireLimit ) throws FactException {
-        fireAllRules( null, fireLimit );
+    public synchronized void fireAllRules(int fireLimit) throws FactException {
+        fireAllRules( null,
+                      fireLimit );
     }
 
-    public synchronized void fireAllRules( final AgendaFilter agendaFilter ) throws FactException {
-        fireAllRules( agendaFilter, -1 );
+    public synchronized void fireAllRules(final AgendaFilter agendaFilter) throws FactException {
+        fireAllRules( agendaFilter,
+                      -1 );
     }
 
-    public synchronized void fireAllRules(final AgendaFilter agendaFilter, int fireLimit ) throws FactException {
+    public synchronized void fireAllRules(final AgendaFilter agendaFilter,
+                                          int fireLimit) throws FactException {
         // If we're already firing a rule, then it'll pick up
         // the firing for any other assertObject(..) that get
         // nested inside, avoiding concurrent-modification
@@ -424,10 +444,10 @@ public abstract class AbstractWorkingMemory
 
         if ( isSequential() ) {
             for ( Iterator it = this.liaPropagations.iterator(); it.hasNext(); ) {
-                (( LIANodePropagation ) it.next()).doPropagation( this );
+                ((LIANodePropagation) it.next()).doPropagation( this );
             }
         }
-        
+
         if ( !this.actionQueue.isEmpty() ) {
             executeQueuedActions();
         }
@@ -448,19 +468,20 @@ public abstract class AbstractWorkingMemory
             } finally {
                 this.firing = false;
                 if ( noneFired ) {
-                    doOtherwise( agendaFilter, fireLimit );
+                    doOtherwise( agendaFilter,
+                                 fireLimit );
                 }
 
             }
         }
     }
-    
-    private final boolean continueFiring( final int fireLimit ) {
-        return (!halt) && (fireLimit != 0 );
+
+    private final boolean continueFiring(final int fireLimit) {
+        return (!halt) && (fireLimit != 0);
     }
-    
-    private final int updateFireLimit( final int fireLimit ) {
-        return fireLimit > 0 ? fireLimit-1 : fireLimit;
+
+    private final int updateFireLimit(final int fireLimit) {
+        return fireLimit > 0 ? fireLimit - 1 : fireLimit;
     }
 
     /**
@@ -468,7 +489,8 @@ public abstract class AbstractWorkingMemory
      * If no items are fired, then it will assert a temporary "Otherwise"
      * fact and allow any rules to fire to handle "otherwise" cases.
      */
-    private void doOtherwise(final AgendaFilter agendaFilter, int fireLimit ) {
+    private void doOtherwise(final AgendaFilter agendaFilter,
+                             int fireLimit) {
         final FactHandle handle = this.insert( new Otherwise() );
         if ( !this.actionQueue.isEmpty() ) {
             executeQueuedActions();
@@ -673,16 +695,21 @@ public abstract class AbstractWorkingMemory
             // you cannot assert a null object
             return null;
         }
-                
+
         InternalFactHandle handle = null;
-        
+
         if ( isSequential() ) {
             handle = this.handleFactory.newFactHandle( object );
-            this.assertMap.put( handle, handle, false );
-            insert(handle, object, rule, activation);
+            this.assertMap.put( handle,
+                                handle,
+                                false );
+            insert( handle,
+                    object,
+                    rule,
+                    activation );
             return handle;
         }
-        
+
         try {
             this.lock.lock();
             // check if the object already exists in the WM
@@ -817,17 +844,22 @@ public abstract class AbstractWorkingMemory
             if ( dynamic ) {
                 addPropertyChangeListener( object );
             }
-            
-            insert(handle, object, rule, activation);
 
+            insert( handle,
+                    object,
+                    rule,
+                    activation );
 
         } finally {
             this.lock.unlock();
         }
         return handle;
     }
-    
-    private void insert( InternalFactHandle handle, Object object, Rule rule, Activation activation) {
+
+    private void insert(InternalFactHandle handle,
+                        Object object,
+                        Rule rule,
+                        Activation activation) {
         final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                   PropagationContext.ASSERTION,
                                                                                   rule,
@@ -841,11 +873,12 @@ public abstract class AbstractWorkingMemory
 
         this.workingMemoryEventSupport.fireObjectInserted( propagationContext,
                                                            handle,
-                                                           object );
+                                                           object,
+                                                           this );
 
         if ( !this.actionQueue.isEmpty() ) {
             executeQueuedActions();
-        }        
+        }
     }
 
     protected void addPropertyChangeListener(final Object object) {
@@ -968,7 +1001,8 @@ public abstract class AbstractWorkingMemory
 
             this.workingMemoryEventSupport.fireObjectRetracted( propagationContext,
                                                                 handle,
-                                                                object );
+                                                                object,
+                                                                this );
 
             this.assertMap.remove( handle );
 
@@ -1077,7 +1111,8 @@ public abstract class AbstractWorkingMemory
             this.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
                                                               factHandle,
                                                               originalObject,
-                                                              object );
+                                                              object,
+                                                              this );
 
             propagationContext.clearRetractedTuples();
 
@@ -1178,7 +1213,8 @@ public abstract class AbstractWorkingMemory
             this.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
                                                               factHandle,
                                                               originalObject,
-                                                              object );
+                                                              object,
+                                                              this );
 
             propagationContext.clearRetractedTuples();
 
@@ -1310,7 +1346,7 @@ public abstract class AbstractWorkingMemory
             processInstance.setProcess( process );
             processInstance.start();
 
-            getRuleFlowEventSupport().fireRuleFlowProcessStarted( processInstance );
+            getRuleFlowEventSupport().fireRuleFlowProcessStarted( processInstance, this );
 
             return processInstance;
         } else {

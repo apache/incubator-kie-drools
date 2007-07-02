@@ -183,7 +183,7 @@ public class DefaultAgenda
             this.focusStack.add( agendaGroup );
             ((InternalAgendaGroup) agendaGroup).setActive( true );
             final EventSupport eventsupport = (EventSupport) this.workingMemory;
-            eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup );
+            eventsupport.getAgendaEventSupport().fireAgendaGroupPushed( agendaGroup, this.workingMemory );
             return true;
         } else {
             return false;
@@ -221,7 +221,7 @@ public class DefaultAgenda
                 agendaGroup.setActive( false );
                 this.focusStack.removeLast();
                 final EventSupport eventsupport = (EventSupport) this.workingMemory;
-                eventsupport.getAgendaEventSupport().fireAgendaGroupPopped( agendaGroup );
+                eventsupport.getAgendaEventSupport().fireAgendaGroupPopped( agendaGroup, this.workingMemory );
             } else {
                 agendaGroup = (empty) ? null : agendaGroup;
                 break;
@@ -523,7 +523,7 @@ public class DefaultAgenda
             ruleFlowGroup.removeActivation( activation );
         }
 
-        eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation );
+        eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation, this.workingMemory );
     }
 
     public void increaseActiveActivations() {

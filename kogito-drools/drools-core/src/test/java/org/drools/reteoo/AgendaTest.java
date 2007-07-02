@@ -34,6 +34,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.conflict.DepthConflictResolver;
@@ -1456,7 +1457,7 @@ public class AgendaTest extends DroolsTestCase {
         ruleBase.getAgendaGroupRuleTotals().put( "agendaGroup1", new Integer( 10 ) );
         ruleBase.getAgendaGroupRuleTotals().put( "agendaGroup2", new Integer( 1 ) );
 
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        InternalWorkingMemory workingMemory = new ReteooWorkingMemory(0, ruleBase);
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 

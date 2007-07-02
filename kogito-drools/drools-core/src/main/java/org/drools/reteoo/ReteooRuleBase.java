@@ -222,7 +222,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         }
         
         ExecutorService executor = this.config.getExecutorService();
-        final ReteooStatefulSession session = new ReteooStatefulSession( this.workingMemoryCounter++,
+        final ReteooStatefulSession session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
                                                                          this,
                                                                          executor );
         
@@ -245,19 +245,13 @@ public class ReteooRuleBase extends AbstractRuleBase {
     }
     
     public StatelessSession newStatelessSession() {
-        ExecutorService executor = this.config.getExecutorService();
-
+        
         //orders the rules
         if ( this.config.isSequential() ) {
             this.reteooBuilder.order();
-        }
+        }                             
         
-        ReteooWorkingMemory wm = new ReteooWorkingMemory( this.workingMemoryCounter++,
-                                                          this  );
-        
-        executor.setCommandExecutor( new CommandExecutor( wm ) );
-        
-        return new ReteooStatelessSession( wm, executor );
+        return new ReteooStatelessSession( this );
     }    
 
     protected synchronized void addRule(final Rule rule) throws InvalidPatternException {
