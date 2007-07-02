@@ -180,6 +180,19 @@ public class StatefulSessionTest extends TestCase {
         assertTrue( futureFireAllRules.getException() instanceof Exception );
     }    
     
+    public void testSequentialException() {
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setSequential( true );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase( config );
+        
+        try {
+            ruleBase.newStatefulSession();
+            fail("cannot have a stateful session with sequential set to true" );
+        } catch ( Exception e ) {
+            
+        }
+    }
+    
     private StatefulSession getExceptionSession() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
