@@ -1,25 +1,25 @@
 package org.drools.integrationtests.sequential;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.drools.Cheese;
-import org.drools.Person;
-import org.drools.PersonInterface;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.StatelessSession;
-import org.drools.WorkingMemory;
-import org.drools.compiler.PackageBuilder;
-import org.drools.rule.Package;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
+import org.drools.Cheese;
+import org.drools.Person;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
+import org.drools.StatelessSession;
+import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageBuilder;
+import org.drools.rule.Package;
+
 public class SequentialTest extends TestCase {
-    public void test1() throws Exception {
+    public void testBasicOperation() throws Exception {
 
         // postponed while I sort out KnowledgeHelperFixer
         final PackageBuilder builder = new PackageBuilder();
@@ -55,15 +55,50 @@ public class SequentialTest extends TestCase {
 
     }
     
-    public void FIXME_testProfile() throws Exception {
+    public void testProfileSequential() throws Exception {
 
+        runTestProfileManyRulesAndFacts(true, "Sequential mode", 0 );
+        runTestProfileManyRulesAndFacts(true, "Sequential mode", 0);
+
+        System.gc();
+        Thread.sleep( 100 );
+    }
+    
+    public void testProfileRETE() throws Exception {
+        runTestProfileManyRulesAndFacts(false, "Normal RETE mode", 0);
+        runTestProfileManyRulesAndFacts(false, "Normal RETE mode", 0);
+        
+        System.gc();
+        Thread.sleep( 100 );
+    }
+    
+    
+    public void testNumberofIterationsSeq() throws Exception {
+        //test throughput
+        runTestProfileManyRulesAndFacts( true, "SEQUENTIAL", 6000 );
+    }
+    public void testNumberofIterationsRETE() throws Exception {
+        //test throughput
+        runTestProfileManyRulesAndFacts( false, "RETE", 6000 );
+        
+    }
+    
+
+
+    private void runTestProfileManyRulesAndFacts(boolean sequentialMode, String message, int timetoMeasureIterations) throws DroolsParserException,
+                                                  IOException,
+                                                  Exception {
         // postponed while I sort out KnowledgeHelperFixer
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "sequentialProfile.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setSequential( true );
+        Properties properties = new Properties();
+        properties.setProperty( "drools.shadowProxyExcludes", "org.drools.*" );
+
+        RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
+        conf.setSequential( sequentialMode );
+        
         final RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
         final StatelessSession session = ruleBase.newStatelessSession();
@@ -86,11 +121,35 @@ public class SequentialTest extends TestCase {
             }
         }
         
-        long start = System.currentTimeMillis();
-        session.execute( data );
-        System.out.println("Time for seq:" + (System.currentTimeMillis() - start));
-        assertTrue( 
-                      list.size() > 0);
+        if (timetoMeasureIterations == 0) {
+            //one shot measure
+            long start = System.currentTimeMillis();
+            session.execute( data );        
+            System.out.println("Time for " + message + ":" + (System.currentTimeMillis() - start));
+            assertTrue( 
+                       list.size() > 0);
+
+        } else {
+            //lots of shots
+            //test throughput
+            long start = System.currentTimeMillis();
+            long end = start + timetoMeasureIterations;
+            int count = 0;
+            while(System.currentTimeMillis() < end) {
+                StatelessSession sess2 = ruleBase.newStatelessSession();
+                List list2 = new ArrayList();
+                sess2.setGlobal( "list",
+                                   list2 );
+
+                sess2.execute( data );
+                //session.execute( data );
+                count++;
+            }
+            System.out.println("Iterations in for " +message + " : " + count);
+            
+                 
+            
+        }
 
     }    
 
