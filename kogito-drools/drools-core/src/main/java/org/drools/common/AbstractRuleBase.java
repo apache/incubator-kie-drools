@@ -507,7 +507,7 @@ abstract public class AbstractRuleBase
         return (Package) this.pkgs.get( name );
     }
 
-    public StatefulSession[] getStatefulSessions() {
+    public StatefulSession[] getStatefulSessions() {        
         return (StatefulSession[]) this.statefulSessions.toArray( new StatefulSession[this.statefulSessions.size()] );
     }
 
@@ -529,6 +529,10 @@ abstract public class AbstractRuleBase
                                               final boolean keepReference) throws IOException,
                                                                           ClassNotFoundException {
 
+        if ( this.config.isSequential() ) {
+            throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true");
+        }
+        
         final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( stream,
                                                                                       this.packageClassLoader );
 

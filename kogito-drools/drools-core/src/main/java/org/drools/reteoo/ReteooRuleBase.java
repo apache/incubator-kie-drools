@@ -217,6 +217,10 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * @see RuleBase
      */
     public synchronized StatefulSession newStatefulSession(final boolean keepReference) {
+        if ( this.config.isSequential() ) {
+            throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true");
+        }
+        
         ExecutorService executor = this.config.getExecutorService();
         final ReteooStatefulSession session = new ReteooStatefulSession( this.workingMemoryCounter++,
                                                                          this,
