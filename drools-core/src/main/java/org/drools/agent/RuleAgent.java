@@ -24,7 +24,7 @@ import org.drools.rule.Package;
  * This manages a single rulebase, based on the properties given
  * This one does most of the actual work !
  *
- * CONFIG OPTIONS:
+ * CONFIG OPTIONS (to be passed in as properties):
  *  <code>newInstance</code>: means that each time the rules are changed
  *   a new instance of the rulebase is created (as opposed to updated in place)
  *   the default is to update in place. DEFAULT: false. If you set this to true, 
@@ -71,6 +71,8 @@ public class RuleAgent {
                                                               FileScanner.class );
                                                          put( DIRECTORY,
                                                               DirectoryScanner.class );
+                                                         put ( URLS,
+                                                               URLScanner.class );
                                                      }
                                                  };
 
