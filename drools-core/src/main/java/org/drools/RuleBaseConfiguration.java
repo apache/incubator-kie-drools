@@ -51,6 +51,8 @@ import org.drools.util.ChainedProperties;
  */
 
 /**
+ * drools.sequential = <true|false>
+ * drools.sequential.agenda = <sequential|dynamic>
  * drools.removeIdentities = <true|false>
  * drools.shareAlphaNodes  = <true|false>
  * drools.shareBetaNodes = <true|false>
@@ -59,8 +61,8 @@ import org.drools.util.ChainedProperties;
  * drools.compositeKeyDepth  =<1..3>
  * drools.indexLeftBetaMemory = <true/false>
  * drools.indexRightBetaMemory = <true/false>
- * drools.assertBehaviour = <IDENTITY|EQUALITY>
- * drools.logicalOverride = <DISCARD|PRESERVE>
+ * drools.assertBehaviour = <identity|equality>
+ * drools.logicalOverride = <discard|preserve>
  * drools.executorService = <qualified class name>
  * drools.conflictResolver = <qualified class name>
  * 
@@ -74,8 +76,9 @@ public class RuleBaseConfiguration
     private ChainedProperties   chainedProperties;
 
     private boolean             immutable;
-    
+
     private boolean             sequential;
+    private SequentialAgenda    sequentialAgenda;
 
     private boolean             maintainTms;
     private boolean             removeIdentities;
@@ -111,9 +114,12 @@ public class RuleBaseConfiguration
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
         }
-        
+
+        setSequentialAgenda( SequentialAgenda.determineSequentialAgenda( this.chainedProperties.getProperty( "drools.sequential.agenda",
+                                                                                                             "sequential" ) ) );
+
         setSequential( Boolean.valueOf( this.chainedProperties.getProperty( "drools.sequential",
-                        "false" ) ).booleanValue() );        
+                                                                            "false" ) ).booleanValue() );
 
         setMaintainTms( Boolean.valueOf( this.chainedProperties.getProperty( "drools.maintainTms",
                                                                              "true" ) ).booleanValue() );
@@ -142,9 +148,9 @@ public class RuleBaseConfiguration
                                                                                       "true" ) ).booleanValue() );
 
         setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( this.chainedProperties.getProperty( "drools.assertBehaviour",
-                                                                                                          "IDENTITY" ) ) );
+                                                                                                          "identity" ) ) );
         setLogicalOverride( LogicalOverride.determineLogicalOverride( this.chainedProperties.getProperty( "drools.logicalOverride",
-                                                                                                          "DISCARD" ) ) );
+                                                                                                          "discard" ) ) );
 
         setExecutorService( RuleBaseConfiguration.determineExecutorService( this.chainedProperties.getProperty( "drools.executorService",
                                                                                                                 "org.drools.concurrent.DefaultExecutorService" ) ) );
@@ -178,11 +184,11 @@ public class RuleBaseConfiguration
             throw new UnsupportedOperationException( "Can't set a property after configuration becomes immutable" );
         }
     }
-    
+
     public void setSequential(boolean sequential) {
         this.sequential = sequential;
     }
-    
+
     public boolean isSequential() {
         return this.sequential;
     }
@@ -341,9 +347,9 @@ public class RuleBaseConfiguration
         }
 
         public static AssertBehaviour determineAssertBehaviour(final String value) {
-            if ( value.equals( "IDENTITY" ) ) {
+            if ( "IDENTITY".equalsIgnoreCase( value ) ) {
                 return IDENTITY;
-            } else if ( value.equals( "EQUALITY" ) ) {
+            } else if ( "EQUALITY".equalsIgnoreCase( value ) ) {
                 return EQUALITY;
             } else {
                 throw new IllegalArgumentException( "Illegal enum value '" + value + "' for AssertBehaviour" );
@@ -381,9 +387,9 @@ public class RuleBaseConfiguration
         }
 
         public static LogicalOverride determineLogicalOverride(final String value) {
-            if ( value.equals( "PRESERVE" ) ) {
+            if ( "PRESERVE".equalsIgnoreCase( value ) ) {
                 return PRESERVE;
-            } else if ( value.equals( "DISCARD" ) ) {
+            } else if ( "DISCARD".equalsIgnoreCase( value ) ) {
                 return DISCARD;
             } else {
                 throw new IllegalArgumentException( "Illegal enum value '" + value + "' for LogicalOverride" );
@@ -406,15 +412,67 @@ public class RuleBaseConfiguration
         }
     }
 
+    public static class SequentialAgenda
+        implements
+        Serializable {
+        private static final long            serialVersionUID  = 320L;
+
+        public static final SequentialAgenda SEQUENTIAL = new SequentialAgenda( 0 );
+        public static final SequentialAgenda DYNAMIC    = new SequentialAgenda( 1 );
+
+        private int                          value;
+
+        private SequentialAgenda(final int value) {
+            this.value = value;
+        }
+
+        public static SequentialAgenda determineSequentialAgenda(final String value) {
+            if ( "sequential".equalsIgnoreCase( value ) ) {
+                return SEQUENTIAL;
+            } else if ( "dynamic".equalsIgnoreCase( value ) ) {
+                return DYNAMIC;
+            } else {
+                throw new IllegalArgumentException( "Illegal enum value '" + value + "' for SequentialAgenda" );
+            }
+        }
+
+        private Object readResolve() throws java.io.ObjectStreamException {
+            switch ( this.value ) {
+                case 0 :
+                    return SEQUENTIAL;
+                case 1 :
+                    return DYNAMIC;
+                default :
+                    throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for SequentialAgenda" );
+            }
+        }
+
+        public String toString() {
+            return "SequentialAgenda : " + ((this.value == 0) ? "sequential" : "dynamic");
+        }
+    }
+
     public AgendaGroupFactory getAgendaGroupFactory() {
         if ( isSequential() ) {
-            return ArrayAgendaGroupFactory.getInstance();
-            //return PriorityQueueAgendaGroupFactory.getInstance();
+            if ( this.sequentialAgenda == SequentialAgenda.SEQUENTIAL ) {
+                return ArrayAgendaGroupFactory.getInstance();
+            } else {
+                return PriorityQueueAgendaGroupFactory.getInstance();
+            }
         } else {
             return PriorityQueueAgendaGroupFactory.getInstance();
         }
     }
-    
+
+    public SequentialAgenda getSequentialAgenda() {
+        return this.sequentialAgenda;
+    }
+
+    public void setSequentialAgenda(final SequentialAgenda sequentialAgenda) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.sequentialAgenda = sequentialAgenda;
+    }
+
     private static ConflictResolver determineConflictResolver(String className) {
         Class clazz = null;
         try {
