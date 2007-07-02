@@ -3,6 +3,8 @@ package org.drools;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Person
     implements
@@ -26,6 +28,16 @@ public class Person
     private String            status;
 
     private Cheese            cheese;
+
+    private List              addresses = new ArrayList();
+    
+    public List getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List addresses) {
+        this.addresses = addresses;
+    }
 
     public Person() {
 
