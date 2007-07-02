@@ -10,6 +10,7 @@ import org.drools.PersonInterface;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
@@ -53,6 +54,45 @@ public class SequentialTest extends TestCase {
                       list.size() );
 
     }
+    
+    public void FIXME_testProfile() throws Exception {
+
+        // postponed while I sort out KnowledgeHelperFixer
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "sequentialProfile.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setSequential( true );
+        final RuleBase ruleBase = getRuleBase( conf );
+        ruleBase.addPackage( pkg );
+        final StatelessSession session = ruleBase.newStatelessSession();
+
+        
+        final List list = new ArrayList();
+        session.setGlobal( "list",
+                           list );
+        
+        Object[] data = new Object[50000];
+        for ( int i = 0; i < data.length; i++ ) {
+            
+            if (i % 2 == 0) {
+                final Person p = new Person( "p" + i,
+                "stilton" );
+                data[i] = p;
+            } else {
+                    data[i] = new Cheese( "cheddar",
+                                i );
+            }
+        }
+        
+        long start = System.currentTimeMillis();
+        session.execute( data );
+        System.out.println("Time for seq:" + (System.currentTimeMillis() - start));
+        assertTrue( 
+                      list.size() > 0);
+
+    }    
 
     protected RuleBase getRuleBase() throws Exception {
 
