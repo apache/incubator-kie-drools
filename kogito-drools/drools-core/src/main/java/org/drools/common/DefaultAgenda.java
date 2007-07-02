@@ -88,7 +88,9 @@ public class DefaultAgenda
 
     private final AgendaGroup           main;
 
-    private KnowledgeHelper      knowledgeHelper;
+    private AgendaGroupFactory          agendaGroupFactory;
+
+    private KnowledgeHelper             knowledgeHelper;
 
     public int                          activeActivations;
 
@@ -111,16 +113,18 @@ public class DefaultAgenda
         if ( ((InternalRuleBase) this.workingMemory.getRuleBase()).getConfiguration().isSequential() ) {
             this.knowledgeHelper = new SequentialKnowledgeHelper( this.workingMemory );
         } else {
-            this.knowledgeHelper = new DefaultKnowledgeHelper( this.workingMemory ); 
+            this.knowledgeHelper = new DefaultKnowledgeHelper( this.workingMemory );
         }
         this.agendaGroups = new HashMap();
         this.activationGroups = new HashMap();
         this.ruleFlowGroups = new HashMap();
         this.focusStack = new LinkedList();
 
+        this.agendaGroupFactory = ((InternalRuleBase) this.workingMemory.getRuleBase()).getConfiguration().getAgendaGroupFactory();
+
         // MAIN should always be the first AgendaGroup and can never be removed
-        AgendaGroupFactory factory = ((InternalRuleBase) this.workingMemory.getRuleBase()).getConfiguration().getAgendaGroupFactory();
-        this.main = factory.createAgendaGroup( AgendaGroup.MAIN, ((InternalRuleBase) this.workingMemory.getRuleBase()) );        
+        this.main = agendaGroupFactory.createAgendaGroup( AgendaGroup.MAIN,
+                                                          ((InternalRuleBase) this.workingMemory.getRuleBase()) );
 
         this.agendaGroups.put( AgendaGroup.MAIN,
                                this.main );
@@ -252,8 +256,8 @@ public class DefaultAgenda
         if ( agendaGroup == null ) {
             // The AgendaGroup is defined but not yet added to the
             // Agenda, so create the AgendaGroup and add to the Agenda.
-            AgendaGroupFactory factory = ((InternalRuleBase) this.workingMemory.getRuleBase()).getConfiguration().getAgendaGroupFactory();
-            agendaGroup = factory.createAgendaGroup( name, ((InternalRuleBase) this.workingMemory.getRuleBase()) );
+            agendaGroup = agendaGroupFactory.createAgendaGroup( name,
+                                                                ((InternalRuleBase) this.workingMemory.getRuleBase()) );
             addAgendaGroup( agendaGroup );
         }
         return agendaGroup;
