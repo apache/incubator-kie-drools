@@ -54,80 +54,91 @@ public class SequentialTest extends TestCase {
                       list.size() );
 
     }
-    
+
     public void XXtestProfileSequential() throws Exception {
 
-        runTestProfileManyRulesAndFacts(true, "Sequential mode", 0 );
-        runTestProfileManyRulesAndFacts(true, "Sequential mode", 0);
+        runTestProfileManyRulesAndFacts( true,
+                                         "Sequential mode",
+                                         0 );
+        runTestProfileManyRulesAndFacts( true,
+                                         "Sequential mode",
+                                         0 );
 
         System.gc();
         Thread.sleep( 100 );
     }
-    
+
     public void XXtestProfileRETE() throws Exception {
-        runTestProfileManyRulesAndFacts(false, "Normal RETE mode", 0);
-        runTestProfileManyRulesAndFacts(false, "Normal RETE mode", 0);
-        
+        runTestProfileManyRulesAndFacts( false,
+                                         "Normal RETE mode",
+                                         0 );
+        runTestProfileManyRulesAndFacts( false,
+                                         "Normal RETE mode",
+                                         0 );
+
         System.gc();
         Thread.sleep( 100 );
     }
-    
-    
+
     public void testNumberofIterationsSeq() throws Exception {
         //test throughput
-        runTestProfileManyRulesAndFacts( true, "SEQUENTIAL", 2000 );
+        runTestProfileManyRulesAndFacts( true,
+                                         "SEQUENTIAL",
+                                         2000 );
     }
+
     public void testNumberofIterationsRETE() throws Exception {
         //test throughput
-        runTestProfileManyRulesAndFacts( false, "RETE", 2000 );
-        
+        runTestProfileManyRulesAndFacts( false,
+                                         "RETE",
+                                         2000 );
+
     }
-    
 
-
-    private void runTestProfileManyRulesAndFacts(boolean sequentialMode, String message, int timetoMeasureIterations) throws DroolsParserException,
-                                                  IOException,
-                                                  Exception {
+    private void runTestProfileManyRulesAndFacts(boolean sequentialMode,
+                                                 String message,
+                                                 int timetoMeasureIterations) throws DroolsParserException,
+                                                                             IOException,
+                                                                             Exception {
         // postponed while I sort out KnowledgeHelperFixer
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "sequentialProfile.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         Properties properties = new Properties();
-        properties.setProperty( "drools.shadowProxyExcludes", "org.drools.*" );
+        properties.setProperty( "drools.shadowProxyExcludes",
+                                "org.drools.*" );
 
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
+        RuleBaseConfiguration conf = new RuleBaseConfiguration( properties );
         conf.setSequential( sequentialMode );
-        
+
         final RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
         final StatelessSession session = ruleBase.newStatelessSession();
 
-        
         final List list = new ArrayList();
         session.setGlobal( "list",
                            list );
-        
+
         Object[] data = new Object[50000];
         for ( int i = 0; i < data.length; i++ ) {
-            
-            if (i % 2 == 0) {
+
+            if ( i % 2 == 0 ) {
                 final Person p = new Person( "p" + i,
-                "stilton" );
+                                             "stilton" );
                 data[i] = p;
             } else {
-                    data[i] = new Cheese( "cheddar",
-                                i );
+                data[i] = new Cheese( "cheddar",
+                                      i );
             }
         }
-        
-        if (timetoMeasureIterations == 0) {
+
+        if ( timetoMeasureIterations == 0 ) {
             //one shot measure
             long start = System.currentTimeMillis();
-            session.execute( data );        
-            System.out.println("Time for " + message + ":" + (System.currentTimeMillis() - start));
-            assertTrue( 
-                       list.size() > 0);
+            session.execute( data );
+            System.out.println( "Time for " + message + ":" + (System.currentTimeMillis() - start) );
+            assertTrue( list.size() > 0 );
 
         } else {
             //lots of shots
@@ -135,23 +146,21 @@ public class SequentialTest extends TestCase {
             long start = System.currentTimeMillis();
             long end = start + timetoMeasureIterations;
             int count = 0;
-            while(System.currentTimeMillis() < end) {
+            while ( System.currentTimeMillis() < end ) {
                 StatelessSession sess2 = ruleBase.newStatelessSession();
                 List list2 = new ArrayList();
                 sess2.setGlobal( "list",
-                                   list2 );
+                                 list2 );
 
                 sess2.execute( data );
                 //session.execute( data );
                 count++;
             }
-            System.out.println("Iterations in for " +message + " : " + count);
-            
-                 
-            
+            System.out.println( "Iterations in for " + message + " : " + count );
+
         }
 
-    }    
+    }
 
     protected RuleBase getRuleBase() throws Exception {
 
