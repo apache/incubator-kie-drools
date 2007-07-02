@@ -2,63 +2,245 @@
 <!DOCTYPE section PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
 "http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
 <section>
-
   <section>
-    <title>Quick guide and concepts</title>	
-  </section>
+    <title>Quick start guide</title>
 
-  <section>
-    <title>BRMS concepts</title>	
-    <section><title>Categorisation</title></section>
-    <section><title>Status management</title></section>
-    <section><title>Package management</title></section>
-    <section><title>Version management</title></section>
+    <para>If you are reading this, you must be the impatient type who wants to
+    kick the tyres (and light the fires) and have a look around as soon as
+    possible. This section will provide a quick end to end tour of the steps
+    involved (but not go through the concepts in detail). This assumes you
+    have installed the repository correctly, and are able to access the main
+    login screen.</para>
+
+    <para>You can also consult the wiki:
+    http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository for some
+    tutorials and user tips.</para>
+
     <section>
-	<title>Navigating and finding rules</title>
-	<para>The two main ways of viewing the repository are by using user-driven Categorisation (tagging) as outlined above. This provides a way to navigate your rules in a way that makes sense to your organisation. An alternative and more technical view is to use the package explorer. This shows the rules (assets) closer to how they are actually stored in the database, and also seperates rules into packages (name spaces) and their type of rule.</para>
+      <title>Initial configuration</title>
 
+      <para>Some initial setup is required the first time. The first time the
+      server starts up, it will create an empty repository, then take the
+      following steps:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Once deployed, go to "http://&lt;your
+          server&gt;/drools-jbrms/" (This will show the initial info
+          screen)</para>
+        </listitem>
+
+        <listitem>
+          <para>If it is a brand new repository, you will want to go to
+          "Admin", and choose "Manage Categories"</para>
+
+          <para>(Add a few categories of your choosing, categories are only
+          for classification, not for execution or anything else.)</para>
+        </listitem>
+
+        <listitem>
+          <para>Rules need a fact model (object model) to work off, so next
+          you will want to go to the Package management feature. From here you
+          can click on the icon to create a new package (give it a meaningful
+          name, with no spaces).</para>
+        </listitem>
+
+        <listitem>
+          <para>To upload a model, use a jar which has the fact model (API)
+          that you will be using in your rules and your code (go and make one
+          now if you need to !). Then click on the icon for uploading a new
+          model. When you are in the model editor screen, you can upload a jar
+          file, choose the package name from the list that you created in the
+          previous step.</para>
+        </listitem>
+
+        <listitem>
+          <para>Now edit your package configuration (you just created) to
+          import the fact types you just uploaded (add import statements), and
+          save the changes.</para>
+        </listitem>
+
+        <listitem>
+          <para>At this point, the package is configured and ready to go (you
+          generally won't have to go through that step very often).</para>
+
+          <para>(Note that you can also import an existing drl package - it
+          will store the rules in the repository as individual assets).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Writing some rules</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Once you have at least one category and one package setup, you
+          can author rules.</para>
+        </listitem>
+
+        <listitem>
+          <para>There are multiple rule "formats", but from the BRMS point of
+          view, they are all "assets".</para>
+        </listitem>
+
+        <listitem>
+          <para>You create a rule by clicking the icon with the rules logo
+          (the head), and from that you enter a name.</para>
+        </listitem>
+
+        <listitem>
+          <para>You will also have to choose one category. Cateogies provide a
+          way of viewing rules that is seperate to packages (and you can make
+          rules appear in multiple packages) - think of it like
+          tagging.</para>
+        </listitem>
+
+        <listitem>
+          <para>Chose the "Business rule (guided editor)" formats.</para>
+        </listitem>
+
+        <listitem>
+          <para>This will open a rule modeller, which is a guided editor. You
+          can add and edit conditions and actions based on the model that is
+          in use in the current package. Also, any DSL sentence templates
+          setup for the package will be available.</para>
+        </listitem>
+
+        <listitem>
+          <para>When you are done with rule editing, you can check in the
+          changes (save), or you can validate or "view source" (for the
+          effective source).</para>
+        </listitem>
+
+        <listitem>
+          <para>You can also add/remove categories from the rule editor, and
+          other attributes such as documentation (if you aren't sure what to
+          do, write a document in natural language describing the rule, and
+          check it in, that can also serve as a template later)</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Finding stuff</title>
+
+      <para>In terms of navigating, you can either use the Rules feature,
+      which shows things grouped by categories, or you can use the Package
+      feature, and view by package (and rule type). If you know the name or
+      part of the name of an asset, you can also use the "Quick find", start
+      typing a rule name and it will return a list of matches as you type (so
+      if you have a sensible naming scheme, it will make it very quick to find
+      stuff).</para>
+    </section>
+
+    <section>
+      <title>Deployment</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>After you have edited some rules in a package, you can click
+          on the package feature, open the package that you wish, and build
+          the whole package.</para>
+        </listitem>
+
+        <listitem>
+          <para>If that succeeds, then you will be able to download a binary
+          package file which can be deployed into a runtime system.</para>
+        </listitem>
+
+        <listitem>
+          <para>You can also take a "snapshot" of a package for deployment.
+          This freezes the package at that point in time, so any concurrent
+          changes to not effect the package. It also makes the package
+          available on a URL of the form: "http://&lt;your
+          server&gt;/drools-jbrms/org.drools.brms.JBRMS/packages/&lt;packageName&gt;/&lt;snapshotName&gt;"
+          (where you can use that URL and downloads will be covered in the
+          section on deployment).</para>
+        </listitem>
+      </itemizedlist>
     </section>
   </section>
 
-
   <section>
-        <title>Rule authoring</title>
+    <title>BRMS concepts</title>
+
+    <section>
+      <title>Categorisation</title>
+    </section>
+
+    <section>
+      <title>Rule types and formats</title>
+
+      <para>[enumerate and have some screenshots of different rule assets,
+      including functions, briefly describe]</para>
+
+      <para>Vanilla DRL - regular DRL "files" can be managed in the BRMs. A
+      DRL can either be a whole chunk of rules, or an individual rule. if its
+      an individual rule, no package statement or imports are required.
+      Normally you would use the IDE to edit raw DRL files, since it has all
+      the advanced tooling and content assistance and debugging.</para>
+
+      <para>If you import a vanilla DRL into a new package, it will
+      automatically break apart the rules in to separate assets. </para>
+    </section>
+
+    <section>
+      <title>Status management</title>
+    </section>
+
+    <section>
+      <title>Package management</title>
+    </section>
+
+    <section>
+      <title>Version management</title>
+      	<para>Asset versions</para>
+    </section>
+
+    <section>
+      <title>Deployment management</title>
+      	<para>Snapshots, URLS and binary packages</para>
+    </section>
+
+
+    <section>
+      <title>Navigating and finding rules</title>
+
+      <para>The two main ways of viewing the repository are by using
+      user-driven Categorisation (tagging) as outlined above, and the package
+      explorer view.</para>
+
+      <para>The category view provides a way to navigate your rules in a way
+      that makes sense to your organisation.</para>
+
+      <para>The alternative and more technical view is to use the package
+      explorer. This shows the rules (assets) closer to how they are actually
+      stored in the database, and also seperates rules into packages (name
+      spaces) and their type (format, as rules can be in many different
+      formats).</para>
+    </section>
   </section>
 
+  <section>
+    <title>Rule authoring</title>
+
+    <para>[detail on guided editor, how to use DSLs, dsl editor, upload rf +
+    dt etc]</para>
+  </section>
 
   <section>
-        <title>Integrating with your applications</title>
+    <title>The business user perspective</title>
+  </section>
+
+  <section>
+    <title>Integrating with your applications</title>
+
+    <para>[ how to use agent etc... ]</para>
   </section>
   
   <section>
-    <title>Data management</title>
-
-    <para>Various aspects of the system can be customised, either by editing
-    configuration files, or via the web interface directly.</para>
-
-    <section>
-      <title>Customising table views</title>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title>Categories</title>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title>Statuses</title>
-
-      <para></para>
-    </section>
-
-    <section>
-      <title>Import and Export</title>
-
-      <para></para>
-    </section>
-  </section>  
-    
+  	<title>Using the RuleAgent for deployment</title>
+  	
+  </section>
 </section>
