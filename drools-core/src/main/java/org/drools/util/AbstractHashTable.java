@@ -239,7 +239,7 @@ public abstract class AbstractHashTable
         /* (non-Javadoc)
          * @see org.drools.util.Iterator#next()
          */
-        public Entry next() {
+        public Object next() {
             if ( this.entry == null ) {
                 // keep skipping rows until we come to the end, or find one that is populated
                 while ( this.entry == null ) {
@@ -252,7 +252,7 @@ public abstract class AbstractHashTable
             } else {
                 this.entry = this.entry.getNext();
                 if ( this.entry == null ) {
-                    this.entry = next();
+                    this.entry = (Entry) next();
                 }
             }
 

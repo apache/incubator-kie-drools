@@ -1,0 +1,68 @@
+/**
+ * 
+ */
+package org.drools.util;
+
+import org.drools.common.InternalFactHandle;
+import org.drools.reteoo.FactHandleMemory;
+import org.drools.reteoo.ReteTuple;
+
+public class FactList
+    implements
+    FactHandleMemory {
+    private static final long serialVersionUID = 320L;
+
+    private final LinkedList list;
+    
+    public FactList() {
+        this.list = new LinkedList();
+    }
+
+    public Iterator iterator(final ReteTuple tuple) {
+        return iterator();
+    }
+
+    public boolean add(final InternalFactHandle handle) {
+        return add( handle,
+                    true );
+    }
+
+    public boolean add(final InternalFactHandle handle,
+                       final boolean checkExists) {
+        this.list.add( new LinkedListEntry( handle ) );
+        return true;
+    }
+
+    public boolean contains(final InternalFactHandle handle) {
+        Iterator it = this.list.iterator();
+        for ( Object object = it.next(); object != null; object = it.next() ) {
+            if ( handle.equals( ((LinkedListEntry)object).getObject() ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean remove(final InternalFactHandle handle) {
+        Iterator it = this.list.iterator();
+        for ( Object object = it.next(); object != null; object = it.next() ) {
+            if ( handle.equals( ((LinkedListEntry)object).getObject() ) ) {
+                this.list.remove( (LinkedListEntry)object );
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public Iterator iterator() {
+        return this.list.iterator();
+    }
+
+    public int size() {
+        return  this.list.size();
+    }
+
+    public boolean isIndexed() {
+        return false;
+    }
+}

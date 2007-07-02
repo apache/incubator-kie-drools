@@ -21,6 +21,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConflictResolver;
 import org.drools.util.BinaryHeapQueue;
+import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.PrimitiveLongMap;
@@ -149,7 +150,7 @@ public class ArrayAgendaGroup
         for ( int i = 0; i < this.array.length; i++ ) {;
             LinkedList list = this.array[i];
             if ( list != null ) {
-                LinkedListIterator it = list.iterator();
+                Iterator it = list.iterator();
                 Activation activation = ( Activation ) ((LinkedListEntry)it.next()).getObject();
                 while ( activation != null) {
                     activations[j++] = activation;

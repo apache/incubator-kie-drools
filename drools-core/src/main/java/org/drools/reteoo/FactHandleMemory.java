@@ -22,6 +22,6 @@ public interface FactHandleMemory {
 
     public int size();
 
-    public Entry[] getTable();
+//    public Entry[] getTable();
 
 }

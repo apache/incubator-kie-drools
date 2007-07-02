@@ -408,7 +408,8 @@ public class RuleBaseConfiguration
 
     public AgendaGroupFactory getAgendaGroupFactory() {
         if ( isSequential() ) {
-            return ArrayAgendaGroupFactory.getInstance();
+            //return ArrayAgendaGroupFactory.getInstance();
+            return PriorityQueueAgendaGroupFactory.getInstance();
         } else {
             return PriorityQueueAgendaGroupFactory.getInstance();
         }

@@ -102,7 +102,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         /* (non-Javadoc)
          * @see org.drools.util.Iterator#next()
          */
-        public Entry next() {
+        public Object next() {
             final Entry current = this.entry;
             this.entry = (this.entry != null) ? this.entry.getNext() : null;
             return current;
