@@ -40,17 +40,17 @@ public class FactHashTable extends AbstractHashTable
 
         // scan the linked entries to see if it exists
         if ( checkExists ) {
-            FactEntry current = (FactEntry) this.table[index];
+            FactEntryImpl current = (FactEntryImpl) this.table[index];
             while ( current != null ) {
                 if ( hashCode == current.hashCode && handle.getId() == current.handle.getId() ) {
                     return false;
                 }
-                current = (FactHashTable.FactEntry) current.getNext();
+                current = (FactHashTable.FactEntryImpl) current.getNext();
             }
         }
 
         // We aren't checking the key exists, or it didn't find the key
-        final FactEntry entry = new FactEntry( handle,
+        final FactEntryImpl entry = new FactEntryImpl( handle,
                                                hashCode );
         entry.next = this.table[index];
         this.table[index] = entry;
@@ -66,12 +66,12 @@ public class FactHashTable extends AbstractHashTable
         final int index = indexOf( hashCode,
                                    this.table.length );
 
-        FactEntry current = (FactEntry) this.table[index];
+        FactEntryImpl current = (FactEntryImpl) this.table[index];
         while ( current != null ) {
             if ( hashCode == current.hashCode && handle.getId() == current.handle.getId() ) {
                 return true;
             }
-            current = (FactEntry) current.getNext();
+            current = (FactEntryImpl) current.getNext();
         }
         return false;
     }
@@ -81,10 +81,10 @@ public class FactHashTable extends AbstractHashTable
         final int index = indexOf( hashCode,
                                    this.table.length );
 
-        FactEntry previous = (FactEntry) this.table[index];
-        FactEntry current = previous;
+        FactEntryImpl previous = (FactEntryImpl) this.table[index];
+        FactEntryImpl current = previous;
         while ( current != null ) {
-            final FactEntry next = (FactEntry) current.getNext();
+            final FactEntryImpl next = (FactEntryImpl) current.getNext();
             if ( hashCode == current.hashCode && handle.getId() == current.handle.getId() ) {
                 if ( previous == current ) {
                     this.table[index] = next;

@@ -9,7 +9,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.StringFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.util.AbstractHashTable.FactEntry;
+import org.drools.util.AbstractHashTable.FactEntryImpl;
 import org.drools.util.AbstractHashTable.FieldIndex;
 import org.drools.util.AbstractHashTable.SingleIndex;
 import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
@@ -43,7 +43,7 @@ public class FieldIndexEntryTest extends TestCase {
         // test add
         index.add( h1 );
 
-        final FactEntry entry1 = index.getFirst();
+        final FactEntryImpl entry1 = index.getFirst();
         assertSame( h1,
                     entry1.getFactHandle() );
         assertNull( entry1.getNext() );
@@ -51,7 +51,7 @@ public class FieldIndexEntryTest extends TestCase {
                     index.get( h1 ) );
 
         // test get
-        final FactEntry entry2 = index.get( h1 );
+        final FactEntryImpl entry2 = index.get( h1 );
         assertSame( entry1,
                     entry2 );
 
@@ -88,7 +88,7 @@ public class FieldIndexEntryTest extends TestCase {
         assertEquals( h2,
                       index.getFirst().getFactHandle() );
         assertEquals( h1,
-                      ((FactEntry) index.getFirst().getNext()).getFactHandle() );
+                      ((FactEntryImpl) index.getFirst().getNext()).getFactHandle() );
 
         // test get
         assertEquals( h1,
@@ -145,9 +145,9 @@ public class FieldIndexEntryTest extends TestCase {
         assertEquals( h3,
                       index.getFirst().getFactHandle() );
         assertEquals( h2,
-                      ((FactEntry) index.getFirst().getNext()).getFactHandle() );
+                      ((FactEntryImpl) index.getFirst().getNext()).getFactHandle() );
         assertEquals( h1,
-                      ((FactEntry) index.getFirst().getNext().getNext()).getFactHandle() );
+                      ((FactEntryImpl) index.getFirst().getNext().getNext()).getFactHandle() );
 
         // test get
         assertEquals( h1,
@@ -163,21 +163,21 @@ public class FieldIndexEntryTest extends TestCase {
         assertEquals( h2,
                       index.getFirst().getFactHandle() );
         assertEquals( h1,
-                      ((FactEntry) index.getFirst().getNext()).getFactHandle() );
+                      ((FactEntryImpl) index.getFirst().getNext()).getFactHandle() );
 
         index.add( h3 );
         index.remove( h2 );
         assertEquals( h3,
                       index.getFirst().getFactHandle() );
         assertEquals( h1,
-                      ((FactEntry) index.getFirst().getNext()).getFactHandle() );
+                      ((FactEntryImpl) index.getFirst().getNext()).getFactHandle() );
 
         index.add( h2 );
         index.remove( h1 );
         assertEquals( h2,
                       index.getFirst().getFactHandle() );
         assertEquals( h3,
-                      ((FactEntry) index.getFirst().getNext()).getFactHandle() );
+                      ((FactEntryImpl) index.getFirst().getNext()).getFactHandle() );
 
         index.remove( index.getFirst().getFactHandle() );
         // check index type does not change, as this fact is removed

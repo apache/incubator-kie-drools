@@ -28,9 +28,10 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
-import org.drools.util.AbstractHashTable.FactEntry;
+import org.drools.util.AbstractHashTable.FactEntryImpl;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
