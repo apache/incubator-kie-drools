@@ -10,8 +10,7 @@ rule type1
   when
 	$id : Something( duration == "foo")
   then
-  	The.end();
-  	end;
+  	The.method();
   	attributes;
   	rule;
   	package;
