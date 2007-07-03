@@ -221,8 +221,19 @@
 
       <para>The view above shows the category editor/viewer that is seen when
       you open an asset. In this example you can see the asset belongs to 2
-      categories, with a "+" button to add additional items. This means that
-      when either category is viewed, you will see that asset.</para>
+      categories, with a "+" button to add additional items (use the trash can
+      item to remove them). This means that when either category is used to
+      show a list of assets, you will see that asset.</para>
+
+      <para>In the above example, the first Category "Finance" is a "top
+      level" category. The second one: "HR/Awards/QAS" is a still a single
+      category, but its a nested category: categories are hierarchical. This
+      means there is a category called "HR", which contains a category
+      "Awards" (it will in fact have more sub-categories of course), and
+      "Awards" has a sub-category of QAS. The screen shows this as
+      "HR/Awards/QAS" - its very much like a folder structure you would have
+      on your hard disk (the notable exception is of course that rules can
+      appear in multiple places).</para>
 
       <para>When you open an asset to view or edit, it will show a list of
       categories that it currently belongs to If you make a change (remove or
@@ -230,9 +241,28 @@
       item in the version history. Changing the categories of a rule has no
       effect on its execution.</para>
 
-      <para>[pic of admin, show that they can be hierarchical]</para>
+      <para><figure>
+          <title>Assets can have multiple categories</title>
 
-      <para>[some general guidelines on names, depth of hierarchy etc]</para>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="AdminCats.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure> The above view shows the administration screen for setting
+      up categories (there) are no categories in the system by default. As the
+      categories can be hierachical you chose the "parent" category that you
+      want to create a sub-category for. From here categories can also be
+      removed (but only if they are not in use by any current versions of
+      assets).</para>
+
+      <para>As a general rule, an asset should only belong to 1 or 2
+      categories at a time. Categories are critical in cases where you have
+      large numbers of rules. The hierarchies do not need to be too deep, but
+      should be able to see how this can help you break down rules/assets into
+      manageable chunks. Its ok if its not clear at first, you are free to
+      change categories as you go.</para>
     </section>
 
     <section>
