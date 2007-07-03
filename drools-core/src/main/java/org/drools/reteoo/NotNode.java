@@ -103,7 +103,10 @@ public class NotNode extends BetaNode {
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.getTupleMemory().add( leftTuple );
+        
+        if ( !workingMemory.isSequential() ) {
+            memory.getTupleMemory().add( leftTuple );
+        }
 
         final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( workingMemory,
@@ -142,6 +145,11 @@ public class NotNode extends BetaNode {
                              final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getFactHandleMemory().add( handle );
+        
+        if ( workingMemory.isSequential() ) {
+            // do nothing here, as we know there are no left tuples at this stage in sequential mode.
+            return;
+        }        
 
         final Iterator it = memory.getTupleMemory().iterator( handle );
         this.constraints.updateFromFactHandle( workingMemory,
