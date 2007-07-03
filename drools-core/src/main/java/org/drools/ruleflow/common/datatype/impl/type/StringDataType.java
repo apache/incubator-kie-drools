@@ -27,7 +27,7 @@ public class StringDataType
     implements
     DataType {
 
-    private static final long serialVersionUID = 3258416135924758834L;
+    private static final long serialVersionUID = 400L;
 
     public boolean verifyDataType(final Object value) {
         if ( value instanceof String ) {

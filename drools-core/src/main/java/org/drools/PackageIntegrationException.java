@@ -34,7 +34,7 @@ public class PackageIntegrationException extends IntegrationException {
     /**
      * 
      */
-    private static final long serialVersionUID = 8186145333819048883L;
+    private static final long serialVersionUID = 400L;
     /** The rule. */
     private final Package     pkg;
 

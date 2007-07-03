@@ -23,7 +23,7 @@ public class Guest
     /**
      * 
      */
-    private static final long serialVersionUID = 7806377320634586221L;
+    private static final long serialVersionUID = 400L;
 
     private String            name;
 

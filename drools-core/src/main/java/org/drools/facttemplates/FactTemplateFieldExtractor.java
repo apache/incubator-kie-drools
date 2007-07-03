@@ -11,7 +11,7 @@ public class FactTemplateFieldExtractor
     implements
     FieldExtractor {
 
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
     private FactTemplate      factTemplate;
     private int               fieldIndex;
 

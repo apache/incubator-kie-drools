@@ -23,7 +23,7 @@ public class PatternDescr extends BaseDescr {
     /**
      * 
      */
-    private static final long       serialVersionUID     = 63959215220308107L;
+    private static final long       serialVersionUID = 400L;
     private String                  objectType;
     private String                  identifier;
     private ConditionalElementDescr constraint          = new AndDescr();

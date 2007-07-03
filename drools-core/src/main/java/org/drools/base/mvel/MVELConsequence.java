@@ -11,7 +11,7 @@ public class MVELConsequence
     implements
     Consequence,
     Serializable  {
-    private static final long       serialVersionUID = 320L;
+    private static final long       serialVersionUID = 400L;
 
     private final Serializable      expr;
     private final DroolsMVELFactory factory;

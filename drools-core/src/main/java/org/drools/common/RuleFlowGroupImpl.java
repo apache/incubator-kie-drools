@@ -41,7 +41,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
     implements
     InternalRuleFlowGroup {
 
-    private static final long serialVersionUID = 320L;
+    private static final long serialVersionUID = 400L;
 
     private InternalWorkingMemory 	workingMemory;
     private final String      		name;

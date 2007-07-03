@@ -59,7 +59,7 @@ public class ReteooBuilder
     /**
      * 
      */
-    private static final long                 serialVersionUID = 1737643968218792944L;
+    private static final long                 serialVersionUID = 400L;
 
     /** The RuleBase */
     private transient InternalRuleBase          ruleBase;

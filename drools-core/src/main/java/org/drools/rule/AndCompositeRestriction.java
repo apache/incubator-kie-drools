@@ -7,7 +7,7 @@ import org.drools.spi.Restriction;
 
 public class AndCompositeRestriction extends AbstractCompositeRestriction {
 
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
 
     public AndCompositeRestriction(final Restriction[] restriction) {
         super( restriction );

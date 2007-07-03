@@ -71,7 +71,7 @@ public class BigDecimalFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalEqualEvaluator();
 
         private BigDecimalEqualEvaluator() {
@@ -130,7 +130,7 @@ public class BigDecimalFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalNotEqualEvaluator();
 
         private BigDecimalNotEqualEvaluator() {
@@ -188,7 +188,7 @@ public class BigDecimalFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalLessEvaluator();
 
         private BigDecimalLessEvaluator() {
@@ -244,7 +244,7 @@ public class BigDecimalFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalLessOrEqualEvaluator();
 
         private BigDecimalLessOrEqualEvaluator() {
@@ -300,7 +300,7 @@ public class BigDecimalFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalGreaterEvaluator();
 
         private BigDecimalGreaterEvaluator() {
@@ -356,7 +356,7 @@ public class BigDecimalFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new BigDecimalGreaterOrEqualEvaluator();
 
         private BigDecimalGreaterOrEqualEvaluator() {
@@ -410,7 +410,7 @@ public class BigDecimalFactory
 
     static class BigDecimalMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalMemberOfEvaluator();
 
         private BigDecimalMemberOfEvaluator() {
@@ -427,7 +427,7 @@ public class BigDecimalFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalNotMemberOfEvaluator();
 
         private BigDecimalNotMemberOfEvaluator() {

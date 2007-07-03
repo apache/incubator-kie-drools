@@ -32,7 +32,7 @@ public class VariableImpl
     Variable,
     Serializable {
 
-    private static final long serialVersionUID = 320L;
+    private static final long serialVersionUID = 400L;
 
     private String            name;
     private DataType         type;

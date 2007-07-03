@@ -34,7 +34,7 @@ public class TestWorkingMemoryEventListener
     /**
      * 
      */
-    private static final long serialVersionUID = 5049624024436577561L;
+    private static final long serialVersionUID = 400L;
     public int                asserted;
     public int                modified;
     public int                retracted;

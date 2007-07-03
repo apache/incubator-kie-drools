@@ -42,7 +42,7 @@ public class RightInputAdapterNode extends ObjectSource
     TupleSink,
     NodeMemory {
 
-    private static final long serialVersionUID = 320L;
+    private static final long serialVersionUID = 400L;
 
     private final TupleSource tupleSource;
 

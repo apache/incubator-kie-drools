@@ -69,7 +69,7 @@ public class ShortFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortEqualEvaluator();
 
         private ShortEqualEvaluator() {
@@ -133,7 +133,7 @@ public class ShortFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortNotEqualEvaluator();
 
         private ShortNotEqualEvaluator() {
@@ -197,7 +197,7 @@ public class ShortFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortLessEvaluator();
 
         private ShortLessEvaluator() {
@@ -249,7 +249,7 @@ public class ShortFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortLessOrEqualEvaluator();
 
         private ShortLessOrEqualEvaluator() {
@@ -301,7 +301,7 @@ public class ShortFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortGreaterEvaluator();
 
         private ShortGreaterEvaluator() {
@@ -353,7 +353,7 @@ public class ShortFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortGreaterOrEqualEvaluator();
 
         private ShortGreaterOrEqualEvaluator() {
@@ -403,7 +403,7 @@ public class ShortFactory
 
     static class ShortMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ShortMemberOfEvaluator();
 
         private ShortMemberOfEvaluator() {
@@ -418,7 +418,7 @@ public class ShortFactory
 
     static class ShortNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ShortNotMemberOfEvaluator();
 
         private ShortNotMemberOfEvaluator() {

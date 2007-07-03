@@ -46,7 +46,7 @@ public class LeftInputAdapterNode extends TupleSource
     /**
      * 
      */
-    private static final long  serialVersionUID = 320L;
+    private static final long  serialVersionUID = 400L;
     private final ObjectSource objectSource;
 
     private ObjectSinkNode     previousObjectSinkNode;

@@ -25,7 +25,7 @@ public class BaseDescr
     implements
     Serializable {
 
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
     private int               startCharacter   = -1;
     private int               endCharacter     = -1;
     private int               line             = -1;

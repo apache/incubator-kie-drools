@@ -67,7 +67,7 @@ public class FloatFactory
 
     static class FloatEqualEvaluator extends BaseEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatEqualEvaluator();
 
         private FloatEqualEvaluator() {
@@ -135,7 +135,7 @@ public class FloatFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatNotEqualEvaluator();
 
         private FloatNotEqualEvaluator() {
@@ -203,7 +203,7 @@ public class FloatFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatLessEvaluator();
 
         private FloatLessEvaluator() {
@@ -259,7 +259,7 @@ public class FloatFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatLessOrEqualEvaluator();
 
         private FloatLessOrEqualEvaluator() {
@@ -315,7 +315,7 @@ public class FloatFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatGreaterEvaluator();
 
         private FloatGreaterEvaluator() {
@@ -371,7 +371,7 @@ public class FloatFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new FloatGreaterOrEqualEvaluator();
 
         private FloatGreaterOrEqualEvaluator() {
@@ -425,7 +425,7 @@ public class FloatFactory
     
     static class FloatMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatMemberOfEvaluator();
 
         private FloatMemberOfEvaluator() {
@@ -440,7 +440,7 @@ public class FloatFactory
 
     static class FloatNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatNotMemberOfEvaluator();
 
         private FloatNotMemberOfEvaluator() {

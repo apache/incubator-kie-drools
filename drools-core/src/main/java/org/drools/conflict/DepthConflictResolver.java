@@ -9,7 +9,7 @@ public class DepthConflictResolver
     /**
      * 
      */
-    private static final long                 serialVersionUID = 7967558633422820901L;
+    private static final long                 serialVersionUID = 400L;
     public static final DepthConflictResolver INSTANCE         = new DepthConflictResolver();
 
     public static DepthConflictResolver getInstance() {

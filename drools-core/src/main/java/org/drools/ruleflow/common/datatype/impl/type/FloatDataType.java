@@ -27,7 +27,7 @@ public final class FloatDataType
     implements
     DataType {
 
-    private static final long serialVersionUID = 3257008760991069747L;
+    private static final long serialVersionUID = 400L;
 
     public boolean verifyDataType(final Object value) {
         if ( value instanceof Float ) {

@@ -69,7 +69,7 @@ public class DoubleFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleEqualEvaluator();
 
         private DoubleEqualEvaluator() {
@@ -135,7 +135,7 @@ public class DoubleFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleNotEqualEvaluator();
 
         private DoubleNotEqualEvaluator() {
@@ -203,7 +203,7 @@ public class DoubleFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleLessEvaluator();
 
         private DoubleLessEvaluator() {
@@ -259,7 +259,7 @@ public class DoubleFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleLessOrEqualEvaluator();
 
         private DoubleLessOrEqualEvaluator() {
@@ -315,7 +315,7 @@ public class DoubleFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleGreaterEvaluator();
 
         private DoubleGreaterEvaluator() {
@@ -371,7 +371,7 @@ public class DoubleFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new DoubleGreaterOrEqualEvaluator();
 
         private DoubleGreaterOrEqualEvaluator() {
@@ -425,7 +425,7 @@ public class DoubleFactory
     
     static class DoubleMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleMemberOfEvaluator();
 
         private DoubleMemberOfEvaluator() {
@@ -440,7 +440,7 @@ public class DoubleFactory
 
     static class DoubleNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleNotMemberOfEvaluator();
 
         private DoubleNotMemberOfEvaluator() {

@@ -28,7 +28,7 @@ public class ForallDescr extends BaseDescr
     implements
     ConditionalElementDescr {
 
-    private static final long serialVersionUID = 1742161904829304893L;
+    private static final long serialVersionUID = 400L;
 
     private List              patterns;
 

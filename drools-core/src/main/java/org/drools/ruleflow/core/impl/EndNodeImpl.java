@@ -30,7 +30,7 @@ public class EndNodeImpl extends NodeImpl
     implements
     EndNode {
 
-    private static final long serialVersionUID = 3906930075512484153L;
+    private static final long serialVersionUID = 400L;
 
     public Connection getFrom() {
         final List list = getIncomingConnections();

@@ -28,7 +28,7 @@ public class EvalCondition extends ConditionalElement {
     /**
      * 
      */
-    private static final long          serialVersionUID   = 4479634725392322326L;
+    private static final long          serialVersionUID = 400L;
 
     private EvalExpression             expression;
 

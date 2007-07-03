@@ -30,7 +30,7 @@ public class StartNodeImpl extends NodeImpl
     implements
     StartNode {
 
-    private static final long serialVersionUID = 3257564005806782517L;
+    private static final long serialVersionUID = 400L;
 
     public Connection getTo() {
         final List list = getOutgoingConnections();

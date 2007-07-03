@@ -36,7 +36,7 @@ public class TotalRecencyConflictResolver extends AbstractConflictResolver {
     /**
      * 
      */
-    private static final long                         serialVersionUID = 1525679879305714538L;
+    private static final long                         serialVersionUID = 400L;
     /** Singleton instance. */
     private static final TotalRecencyConflictResolver INSTANCE         = new TotalRecencyConflictResolver();
 

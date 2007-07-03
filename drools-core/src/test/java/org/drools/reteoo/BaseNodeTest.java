@@ -38,7 +38,7 @@ public class BaseNodeTest extends TestCase {
         /**
          * 
          */
-        private static final long serialVersionUID = 8794774251283685858L;
+        private static final long serialVersionUID = 400L;
 
         public MockBaseNode(final int id) {
             super( id );

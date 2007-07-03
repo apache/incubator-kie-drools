@@ -34,7 +34,7 @@ public class Pattern
     /**
      * 
      */
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
     private final ObjectType  objectType;
     private List              constraints      = Collections.EMPTY_LIST;
     final Declaration         declaration;

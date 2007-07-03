@@ -27,7 +27,7 @@ public final class BooleanDataType
     implements
     DataType {
 
-    private static final long serialVersionUID = 3617855257384989752L;
+    private static final long serialVersionUID = 400L;
 
     public boolean verifyDataType(final Object value) {
         if ( value instanceof Boolean ) {

@@ -29,7 +29,7 @@ public class DuplicateRuleNameException extends RuleConstructionException {
     /**
      * 
      */
-    private static final long serialVersionUID = 7940684712885535254L;
+    private static final long serialVersionUID = 400L;
 
     /** The rule-set. */
     private Package           pkg;

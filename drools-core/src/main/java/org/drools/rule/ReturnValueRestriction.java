@@ -34,7 +34,7 @@ public class ReturnValueRestriction
     implements
     Restriction {
 
-    private static final long             serialVersionUID       = 320;
+    private static final long             serialVersionUID = 400L;
 
     private ReturnValueExpression         expression;
 
@@ -240,7 +240,7 @@ public class ReturnValueRestriction
         implements
         ContextEntry {
 
-        private static final long    serialVersionUID = 3563817867979321431L;
+        private static final long    serialVersionUID = 400L;
 
         public FieldExtractor        fieldExtractor;
         public Object                object;

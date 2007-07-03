@@ -89,7 +89,7 @@ public class DateFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateEqualEvaluator();
 
         private DateEqualEvaluator() {
@@ -162,7 +162,7 @@ public class DateFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateNotEqualEvaluator();
 
         private DateNotEqualEvaluator() {
@@ -234,7 +234,7 @@ public class DateFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateLessEvaluator();
 
         private DateLessEvaluator() {
@@ -294,7 +294,7 @@ public class DateFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateLessOrEqualEvaluator();
 
         private DateLessOrEqualEvaluator() {
@@ -354,7 +354,7 @@ public class DateFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateGreaterEvaluator();
 
         private DateGreaterEvaluator() {
@@ -414,7 +414,7 @@ public class DateFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new DateGreaterOrEqualEvaluator();
 
         private DateGreaterOrEqualEvaluator() {
@@ -472,7 +472,7 @@ public class DateFactory
 
     static class DateMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateMemberOfEvaluator();
 
         private DateMemberOfEvaluator() {
@@ -487,7 +487,7 @@ public class DateFactory
 
     static class DateNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateNotMemberOfEvaluator();
 
         private DateNotMemberOfEvaluator() {

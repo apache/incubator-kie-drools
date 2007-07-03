@@ -44,7 +44,7 @@ import org.drools.util.AbstractHashTable.FactEntryImpl;
  */
 public class NotNode extends BetaNode {
 
-    private static final long serialVersionUID = 320L;
+    private static final long serialVersionUID = 400L;
     static int                notAssertObject  = 0;
     static int                notAssertTuple   = 0;
 

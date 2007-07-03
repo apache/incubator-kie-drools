@@ -47,7 +47,7 @@ public final class QueryTerminalNode extends BaseNode
     /**
      * 
      */
-    private static final long  serialVersionUID = 1010704050163661495L;
+    private static final long  serialVersionUID = 400L;
     /** The rule to invoke upon match. */
     private final Rule         rule;
     private final GroupElement subrule;

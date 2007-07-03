@@ -66,7 +66,7 @@ public final class RuleTerminalNode extends BaseNode
     /**
      * 
      */
-    private static final long  serialVersionUID = 320;
+    private static final long  serialVersionUID = 400L;
     /** The rule to invoke upon match. */
     private final Rule         rule;
     /** 
@@ -519,7 +519,7 @@ public final class RuleTerminalNode extends BaseNode
     class TerminalNodeMemory
         implements
         Serializable {
-        private static final long serialVersionUID = 320L;
+        private static final long serialVersionUID = 400L;
 
         private InternalAgendaGroup   agendaGroup;
 

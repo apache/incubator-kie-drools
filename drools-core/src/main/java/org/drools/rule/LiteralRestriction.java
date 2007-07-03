@@ -29,7 +29,7 @@ public class LiteralRestriction
     implements
     Restriction {
 
-    private static final long          serialVersionUID     = 320;
+    private static final long          serialVersionUID = 400L;
 
     private final FieldValue           field;
 

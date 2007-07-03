@@ -27,7 +27,7 @@ public class AccumulateDescr extends PatternSourceDescr
     ConditionalElementDescr,
     PatternDestinationDescr {
 
-    private static final long serialVersionUID = 2831283873824863255L;
+    private static final long serialVersionUID = 400L;
 
     private PatternDescr      inputPattern;
     private String            initCode;

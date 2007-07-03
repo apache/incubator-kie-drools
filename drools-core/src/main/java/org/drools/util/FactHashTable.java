@@ -10,7 +10,7 @@ import org.drools.reteoo.ReteTuple;
 public class FactHashTable extends AbstractHashTable
     implements
     FactHandleMemory {
-    private static final long serialVersionUID = 320L;
+    private static final long serialVersionUID = 400L;
 
     public FactHashTable() {
         this( 16,

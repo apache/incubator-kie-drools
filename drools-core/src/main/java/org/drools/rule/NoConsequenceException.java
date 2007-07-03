@@ -30,7 +30,7 @@ public class NoConsequenceException extends InvalidRuleException {
     /**
      * 
      */
-    private static final long serialVersionUID = 689390109396320998L;
+    private static final long serialVersionUID = 400L;
 
     /**
      * Construct.

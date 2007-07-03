@@ -25,7 +25,7 @@ public class PackageDescr extends BaseDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 4491974850482281807L;
+    private static final long serialVersionUID = 400L;
     private final String      name;
     private final String      documentation;
 

@@ -22,7 +22,7 @@ public class ActivationCancelledEvent extends ActivationEvent {
     /**
      * 
      */
-    private static final long serialVersionUID = 320L;
+    private static final long serialVersionUID = 400L;
 
     public ActivationCancelledEvent(final Activation activation) {
         super( activation );

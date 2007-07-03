@@ -22,7 +22,7 @@ public class DroolsParserException extends CheckedDroolsException {
     /**
      * 
      */
-    private static final long serialVersionUID = 5478531718450682607L;
+    private static final long serialVersionUID = 400L;
 
     /**
      * @see java.lang.Exception#Exception()

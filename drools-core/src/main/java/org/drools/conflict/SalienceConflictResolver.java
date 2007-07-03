@@ -40,7 +40,7 @@ public class SalienceConflictResolver extends AbstractConflictResolver {
     /**
      * 
      */
-    private static final long                     serialVersionUID = 5472580281375896966L;
+    private static final long                     serialVersionUID = 400L;
     /** Singleton instance. */
     private static final SalienceConflictResolver INSTANCE         = new SalienceConflictResolver();
 

@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class RestrictionConnectiveDescr extends RestrictionDescr {
 
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
     public final static int   AND              = 0;
     public final static int   OR               = 1;
 

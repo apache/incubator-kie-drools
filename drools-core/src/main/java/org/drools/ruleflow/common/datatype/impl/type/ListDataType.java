@@ -33,7 +33,7 @@ public class ListDataType
     DataType,
     Serializable {
 
-    private static final long serialVersionUID = 3689069551774415161L;
+    private static final long serialVersionUID = 400L;
 
     private DataType         dataType;
 

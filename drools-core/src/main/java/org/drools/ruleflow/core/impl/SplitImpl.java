@@ -35,7 +35,7 @@ public class SplitImpl extends NodeImpl
     implements
     Split {
 
-    private static final long serialVersionUID = 3258413949669159736L;
+    private static final long serialVersionUID = 400L;
 
     private int               type;
     private Map               constraints;

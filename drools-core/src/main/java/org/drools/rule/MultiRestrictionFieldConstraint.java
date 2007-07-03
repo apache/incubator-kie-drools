@@ -15,7 +15,7 @@ public class MultiRestrictionFieldConstraint
     /**
      * 
      */
-    private static final long    serialVersionUID = 320;
+    private static final long    serialVersionUID = 400L;
 
     private final FieldExtractor extractor;
 

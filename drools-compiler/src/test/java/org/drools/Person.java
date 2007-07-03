@@ -13,7 +13,7 @@ public class Person
     /**
      * 
      */
-    private static final long serialVersionUID = 2640286967578736742L;
+    private static final long serialVersionUID = 400L;
     private String            name;
     private String            likes;
     private int               age;

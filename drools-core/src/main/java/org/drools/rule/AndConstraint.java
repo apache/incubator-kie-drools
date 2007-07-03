@@ -34,7 +34,7 @@ import org.drools.util.ArrayUtils;
  */
 public class AndConstraint extends AbstractCompositeConstraint {
 
-    private static final long serialVersionUID = 6662526903112926549L;
+    private static final long serialVersionUID = 400L;
 
     /**
      * {@inheritDoc}

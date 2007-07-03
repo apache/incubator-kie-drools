@@ -43,7 +43,7 @@ public class TruthMaintenanceSystem
     implements
     Serializable {
 
-    private static final long           serialVersionUID = 320L;
+    private static final long           serialVersionUID = 400L;
 
     private final AbstractWorkingMemory workingMemory;
 

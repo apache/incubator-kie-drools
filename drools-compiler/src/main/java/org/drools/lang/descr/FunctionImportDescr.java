@@ -23,7 +23,7 @@ package org.drools.lang.descr;
  */
 public class FunctionImportDescr extends ImportDescr {
 
-    private static final long serialVersionUID = 3549259347577832528L;
+    private static final long serialVersionUID = 400L;
 
     public FunctionImportDescr() {
     }

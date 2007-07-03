@@ -30,7 +30,7 @@ public class ConnectionImpl
     org.drools.ruleflow.core.Connection,
     Serializable {
 
-    private static final long serialVersionUID = 320L;
+    private static final long serialVersionUID = 400L;
 
     private int               type;
     private NodeImpl              from;

@@ -234,7 +234,7 @@ public class PredicateConstraint
         implements
         ContextEntry {
 
-        private static final long    serialVersionUID = 4217315252579887635L;
+        private static final long    serialVersionUID = 400L;
 
         public ReteTuple             leftTuple;
         public Object                rightObject;

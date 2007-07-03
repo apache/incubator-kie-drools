@@ -61,7 +61,7 @@ public class BooleanFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new BooleanEqualEvaluator();
 
         private BooleanEqualEvaluator() {
@@ -126,7 +126,7 @@ public class BooleanFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BooleanNotEqualEvaluator();
 
         private BooleanNotEqualEvaluator() {
@@ -187,7 +187,7 @@ public class BooleanFactory
 
     static class BooleanMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BooleanMemberOfEvaluator();
 
         private BooleanMemberOfEvaluator() {
@@ -202,7 +202,7 @@ public class BooleanFactory
 
     static class BooleanNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BooleanNotMemberOfEvaluator();
 
         private BooleanNotMemberOfEvaluator() {

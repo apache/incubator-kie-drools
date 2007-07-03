@@ -28,7 +28,7 @@ public class VariableConstraint
     AlphaNodeFieldConstraint,
     BetaNodeFieldConstraint {
 
-    private static final long         serialVersionUID = 320L;
+    private static final long         serialVersionUID = 400L;
 
     private final FieldExtractor      fieldExtractor;
     private final VariableRestriction restriction;

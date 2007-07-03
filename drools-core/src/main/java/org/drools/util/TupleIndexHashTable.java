@@ -310,7 +310,7 @@ public class TupleIndexHashTable extends AbstractHashTable
         implements
         Entry {
 
-        private static final long serialVersionUID = 8160842495541574574L;
+        private static final long serialVersionUID = 400L;
         private Entry             next;
         private ReteTuple         first;
         private final int         hashCode;

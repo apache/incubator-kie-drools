@@ -35,7 +35,7 @@ public class MockObjectType
     /**
      * 
      */
-    private static final long serialVersionUID = 7771710152014261852L;
+    private static final long serialVersionUID = 400L;
     /** Java object class. */
     private boolean           matches;
 

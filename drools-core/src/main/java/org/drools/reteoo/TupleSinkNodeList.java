@@ -46,7 +46,7 @@ import java.util.NoSuchElementException;
 public class TupleSinkNodeList
     implements
     Serializable {
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
 
     private TupleSinkNode     firstNode;
     private TupleSinkNode     lastNode;

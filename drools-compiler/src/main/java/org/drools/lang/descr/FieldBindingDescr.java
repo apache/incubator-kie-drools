@@ -20,7 +20,7 @@ public class FieldBindingDescr extends BaseDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 1996404511986883239L;
+    private static final long serialVersionUID = 400L;
     private String            fieldName;
     private String            identifier;
 

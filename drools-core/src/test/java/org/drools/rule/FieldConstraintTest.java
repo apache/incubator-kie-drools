@@ -260,7 +260,7 @@ public class FieldConstraintTest extends TestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = 5673999834006100045L;
+            private static final long serialVersionUID = 400L;
 
             public FieldValue evaluate(Object object,
                                        Tuple tuple, // ?price

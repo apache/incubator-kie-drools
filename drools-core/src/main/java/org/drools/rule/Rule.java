@@ -47,7 +47,7 @@ public class Rule
     /**
      * 
      */
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
 
     /**   */
     // ------------------------------------------------------------

@@ -28,7 +28,7 @@ public class RuleConstructionException extends RuntimeDroolsException {
     /**
      * 
      */
-    private static final long serialVersionUID = 1589136521202357674L;
+    private static final long serialVersionUID = 400L;
 
     /**
      * @see java.lang.Exception#Exception()

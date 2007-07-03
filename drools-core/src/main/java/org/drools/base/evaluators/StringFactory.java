@@ -72,7 +72,7 @@ public class StringFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringEqualEvaluator();
 
         private StringEqualEvaluator() {
@@ -131,7 +131,7 @@ public class StringFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotEqualEvaluator();
 
         private StringNotEqualEvaluator() {
@@ -189,7 +189,7 @@ public class StringFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringMatchesEvaluator();
 
         private StringMatchesEvaluator() {
@@ -247,7 +247,7 @@ public class StringFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotMatchesEvaluator();
 
         private StringNotMatchesEvaluator() {
@@ -303,7 +303,7 @@ public class StringFactory
     
     static class StringMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringMemberOfEvaluator();
 
         private StringMemberOfEvaluator() {
@@ -318,7 +318,7 @@ public class StringFactory
 
     static class StringNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotMemberOfEvaluator();
 
         private StringNotMemberOfEvaluator() {

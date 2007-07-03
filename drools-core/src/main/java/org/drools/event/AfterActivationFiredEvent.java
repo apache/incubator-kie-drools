@@ -22,7 +22,7 @@ public class AfterActivationFiredEvent extends ActivationEvent {
     /**
      * 
      */
-    private static final long serialVersionUID = 3346503468898146700L;
+    private static final long serialVersionUID = 400L;
 
     public AfterActivationFiredEvent(final Activation activation) {
         super( activation );

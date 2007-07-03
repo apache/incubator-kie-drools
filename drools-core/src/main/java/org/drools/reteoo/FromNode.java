@@ -23,7 +23,7 @@ public class FromNode extends TupleSource
     /**
      * 
      */
-    private static final long          serialVersionUID = 320;
+    private static final long          serialVersionUID = 400L;
 
     private DataProvider               dataProvider;
     private TupleSource                tupleSource;

@@ -11,7 +11,7 @@ public class SalienceInteger
     /**
      * 
      */
-    private static final long serialVersionUID = 3079388298026708336L;
+    private static final long serialVersionUID = 400L;
 
     public static final Salience DEFAULT_SALIENCE = new SalienceInteger( 0 );
     

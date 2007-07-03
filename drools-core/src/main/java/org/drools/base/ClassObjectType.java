@@ -38,7 +38,7 @@ public class ClassObjectType
     /**
      * 
      */
-    private static final long              serialVersionUID = 320;
+    private static final long              serialVersionUID = 400L;
 
     /** Java object class. */
     protected Class                        objectTypeClass;

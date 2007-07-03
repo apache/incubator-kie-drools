@@ -32,7 +32,7 @@ public class PatternExtractor
     /**
      * 
      */
-    private static final long serialVersionUID = 320L;
+    private static final long serialVersionUID = 400L;
     private ObjectType        objectType;
 
     public PatternExtractor(final ObjectType objectType) {

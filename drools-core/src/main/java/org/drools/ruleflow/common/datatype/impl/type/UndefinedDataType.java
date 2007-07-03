@@ -27,7 +27,7 @@ public final class UndefinedDataType
     implements
     DataType {
 
-    private static final long        serialVersionUID = 3690196546763699768L;
+    private static final long        serialVersionUID = 400L;
     private static UndefinedDataType instance;
 
     public static UndefinedDataType getInstance() {

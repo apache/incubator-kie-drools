@@ -26,7 +26,7 @@ public class EqualityAssertMapComparator
     /**
      * 
      */
-    private static final long serialVersionUID = 320L;
+    private static final long serialVersionUID = 400L;
 
     public EqualityAssertMapComparator() {
     }

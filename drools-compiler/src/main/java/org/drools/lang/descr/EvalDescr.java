@@ -25,7 +25,7 @@ public class EvalDescr extends BaseDescr
     /**
      * 
      */
-    private static final long serialVersionUID = 325264120108029570L;
+    private static final long serialVersionUID = 400L;
 
     private Object            content;
 
