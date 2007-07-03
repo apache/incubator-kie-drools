@@ -8,13 +8,14 @@
     <para>If you are reading this, you must be the impatient type who wants to
     kick the tyres (and light the fires) and have a look around as soon as
     possible. This section will provide a quick end to end tour of the steps
-    involved (but not go through the concepts in detail). This assumes you
-    have installed the repository correctly, and are able to access the main
-    login screen.</para>
+    involved (but does not go through the concepts in detail). This assumes
+    you have installed the repository correctly, and are able to access the
+    main login screen.</para>
 
     <para>You can also consult the wiki:
     http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository for some
-    tutorials and user tips.</para>
+    tutorials and user tips (it IS a wiki, so you can even contribute your own
+    tips and examples and even upload files if you desire !).</para>
 
     <section>
       <title>Initial configuration</title>
@@ -26,8 +27,8 @@
       <itemizedlist>
         <listitem>
           <para>Once deployed, go to "http://&lt;your
-          server&gt;/drools-jbrms/" (This will show the initial info
-          screen)</para>
+          server&gt;/drools-jbrms/" (This will show the initial info screen -
+          or login screen depending on the configuration).</para>
         </listitem>
 
         <listitem>
@@ -166,7 +167,72 @@
     <title>BRMS concepts</title>
 
     <section>
+      <title>Rules are assets</title>
+
+      <para>As the BRMS can manage many different types of rules (and more),
+      they are all classes as "assets". An asset is anything that can be
+      stored as a version in the repository. This includes decision tables,
+      models, DSLs and more. Sometimes the word "rule" will be used to really
+      mean "asset" (ie the things you can do also apply to the other asset
+      types). You can think of asset as a lot like a file in a folder. Assets
+      are grouped together for viewing, or to make a package for deployment
+      etc.</para>
+    </section>
+
+    <section>
       <title>Categorisation</title>
+
+      <figure>
+        <title>Categories</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="CatZoom.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Categories allow rules (assets) to be labelled (or tagged) with
+      any number of categories that you define. This means that you can then
+      view a list of rules that match a specific category. Rules can belong to
+      any number of categories. In the above diagram, you can see this can in
+      effect create a folder/explorer like view of assets. The names can be
+      anything you want, and are defined by the BRMS administrator (you can
+      also remove/add new categories - you can only remove them if they are
+      not currently in use).</para>
+
+      <para>Generally categories are created with meaningful name that match
+      the area of the business the rule applies to (if the rule applies to
+      multiple areas, multiple categories can be attached). Categories can
+      also be used to "tag" rules as part of their lifecycle, for example to
+      mark as "Draft" or "For Review".</para>
+
+      <figure>
+        <title>Assets can have multiple categories</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="CatEdit.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The view above shows the category editor/viewer that is seen when
+      you open an asset. In this example you can see the asset belongs to 2
+      categories, with a "+" button to add additional items. This means that
+      when either category is viewed, you will see that asset.</para>
+
+      <para>When you open an asset to view or edit, it will show a list of
+      categories that it currently belongs to If you make a change (remove or
+      add a category) you will need to save the asset - this will create a new
+      item in the version history. Changing the categories of a rule has no
+      effect on its execution.</para>
+
+      <para>[pic of admin, show that they can be hierarchical]</para>
+
+      <para>[some general guidelines on names, depth of hierarchy etc]</para>
     </section>
 
     <section>
@@ -182,7 +248,7 @@
       the advanced tooling and content assistance and debugging.</para>
 
       <para>If you import a vanilla DRL into a new package, it will
-      automatically break apart the rules in to separate assets. </para>
+      automatically break apart the rules in to separate assets.</para>
     </section>
 
     <section>
@@ -195,14 +261,15 @@
 
     <section>
       <title>Version management</title>
-      	<para>Asset versions</para>
+
+      <para>Asset versions</para>
     </section>
 
     <section>
       <title>Deployment management</title>
-      	<para>Snapshots, URLS and binary packages</para>
-    </section>
 
+      <para>Snapshots, URLS and binary packages</para>
+    </section>
 
     <section>
       <title>Navigating and finding rules</title>
@@ -238,9 +305,8 @@
 
     <para>[ how to use agent etc... ]</para>
   </section>
-  
+
   <section>
-  	<title>Using the RuleAgent for deployment</title>
-  	
+    <title>Using the RuleAgent for deployment</title>
   </section>
 </section>

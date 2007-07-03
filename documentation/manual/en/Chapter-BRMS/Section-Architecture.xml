@@ -150,6 +150,11 @@
     you could in theory combine it with your own application (with some care)
     - but it is easier to keep it as a seperate war, and will make it easier
     to upgrade to newer releases as they come out.</para>
+    
+    <para>The JBRMS.html file can be customised - for example to change logos or embed
+    the BRMS in another page. Take a look at the JBRMS.html file for details (its 
+    very simple).    
+    </para>
   </section>
 
   <section>
