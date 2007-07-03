@@ -30,7 +30,8 @@
     <para>Once the drools-jbrms.war has been placed in the deployment
     directory, and the application server started, you should navigate to
     http://localhost/drools-jbrms and check that the BRMS appears. (Obviously
-    substitute the URL for what your application is configured to).</para>
+    substitute the URL for what your application server is configured
+    to).</para>
 
     <para>Once that shows up, you are deployed and ready to go !</para>
 
@@ -296,14 +297,14 @@
       directory.</para>
 
       <para>Ideally you will either stop the BRMS application while a file
-      backup is being done, or ensure that no one is using it. </para>
+      backup is being done, or ensure that no one is using it.</para>
 
       <para>In the case of using an external database (eg Oracle, MySQL), then
       the normal scheme can apply that you would use to backup those database
       (you do back them up, right?). In this case, when restoring, it is also
       a good idea to clear the indexes (delete the directory where the indexes
       are) so they are created fresh from the data (and thus guaranteed to be
-      in sync). </para>
+      in sync).</para>
     </section>
 
     <section>
@@ -317,16 +318,56 @@
     </section>
 
     <section>
+      <title>Adding your own logos or styles to the BRMS web GUI</title>
+
+      <para>Everyone loves having their own logo on screen - this is to ensure
+      that the people using the application don't forget who they work for or
+      what product they are using for more then a nanosecond (the consequences
+      of them forgetting are too terrible con contemplate).</para>
+
+      <para>To achieve, this, you can "explode" the deployment war file, and
+      locate the JBRMS.html file. <programlisting>
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta name='gwt:module' content='org.drools.brms.JBRMS'&gt;
+  &lt;link rel='stylesheet' href='JBRMS.css'&gt;
+  &lt;title&gt;JBoss Business Rules Management System&lt;/title&gt;
+     &lt;link rel="shortcut icon" href="images/drools.gif" type="image/gif"&gt;
+     &lt;link rel="icon" href="images/drools.gif" type="image/gif"&gt;
+ &lt;/head&gt;
+ &lt;body&gt;
+     &lt;div class="headerBarblue"&gt;&lt;img src="images/jbossrules_hdrlogo.png" width="279" height="70" /&gt;&lt;/d
+ &lt;!-- This script is the bootstrap stuff that simply must be there; it is sent down uncompressed --&gt; 
+  &lt;script language='javascript' src='gwt.js'&gt;&lt;/script&gt;
+  &lt;iframe id='__gwt_historyFrame' style='width:0;height:0;border:0'&gt;&lt;/iframe&gt;
+&lt;/body&gt;
+&lt;/html&gt;</programlisting> The above is the contents of the JBRMS.html
+      file - it is faily empty (as most of the work is done by the GWT - the
+      GUI is built dynamically in the browser). The parts you can customise
+      are the style sheet - you can either edit the JBRMS.css (or better yet,
+      take a copy, and change the style to be what you need), the "shortcut
+      icon" (its what shows in the address bar in the browser etc - also
+      change the "icon" link to be the same so it works in IE), and the header
+      logo. The rest should be left as is, to allow the GWT components to be
+      loaded and attached to the page. This html page is loaded only once by
+      the browser when the user accesses the BRMS web GUI.</para>
+
+      <para>The best way to customise is to take a copy of the JBRMS.html -
+      and then edit. You can also change the URL by editing the web.xml via
+      the normal means. </para>
+    </section>
+
+    <section>
       <title>Import and Export</title>
 
       <para>A JCR standard export/import feature is available from the Admin
-      part of the web interface. </para>
+      part of the web interface.</para>
 
       <para>This will export the entire repository to an XML format as defined
-      by the JCR standard. </para>
+      by the JCR standard.</para>
 
       <para>In the case of import, it will clear any existing content in the
-      database. </para>
+      database.</para>
 
       <para>This is not a substitute for backup but can be useful when
       migrating. It is important to note that version history is not exported
