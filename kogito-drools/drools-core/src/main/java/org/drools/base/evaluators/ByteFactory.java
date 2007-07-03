@@ -134,7 +134,7 @@ public class ByteFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 1745720793613936221L;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteNotEqualEvaluator();
 
         private ByteNotEqualEvaluator() {
@@ -198,7 +198,7 @@ public class ByteFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 7327200711399789849L;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteLessEvaluator();
 
         private ByteLessEvaluator() {
@@ -250,7 +250,7 @@ public class ByteFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 5455645713080692170L;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteLessOrEqualEvaluator();
 
         private ByteLessOrEqualEvaluator() {
@@ -354,7 +354,7 @@ public class ByteFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 8173066470532237341L;
+        private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new ByteGreaterOrEqualEvaluator();
 
         private ByteGreaterOrEqualEvaluator() {
@@ -404,7 +404,7 @@ public class ByteFactory
 
     static class ByteMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteMemberOfEvaluator();
 
         private ByteMemberOfEvaluator() {
@@ -419,7 +419,7 @@ public class ByteFactory
 
     static class ByteNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteNotMemberOfEvaluator();
 
         private ByteNotMemberOfEvaluator() {

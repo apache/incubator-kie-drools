@@ -35,7 +35,7 @@ public class MockAccumulator
     implements
     Accumulator {
 
-    private static final long serialVersionUID = 8959310397185256783L;
+    private static final long serialVersionUID = 400L;
 
     private Tuple             leftTuple        = null;
     private List              matchingObjects  = Collections.EMPTY_LIST;

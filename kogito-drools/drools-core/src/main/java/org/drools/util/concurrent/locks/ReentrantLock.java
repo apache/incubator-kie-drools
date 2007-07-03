@@ -21,14 +21,14 @@ public class ReentrantLock
     implements
     Lock,
     java.io.Serializable {
-    private static final long serialVersionUID = 7373984872572414699L;
+    private static final long serialVersionUID = 400L;
 
     private final NonfairSync sync;
 
     final static class NonfairSync
         implements
         Serializable {
-        private static final long  serialVersionUID = 7316153563782823691L;
+        private static final long  serialVersionUID = 400L;
 
         protected transient Thread owner_           = null;
         protected transient int    holds_           = 0;

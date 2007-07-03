@@ -88,7 +88,7 @@ public class ObjectFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectEqualEvaluator();
 
         private ObjectEqualEvaluator() {
@@ -147,7 +147,7 @@ public class ObjectFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectNotEqualEvaluator();
 
         private ObjectNotEqualEvaluator() {
@@ -202,7 +202,7 @@ public class ObjectFactory
     }
 
     static class ObjectLessEvaluator extends BaseEvaluator {
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectLessEvaluator();
 
         private ObjectLessEvaluator() {
@@ -258,7 +258,7 @@ public class ObjectFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectLessOrEqualEvaluator();
 
         private ObjectLessOrEqualEvaluator() {
@@ -314,7 +314,7 @@ public class ObjectFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectGreaterEvaluator();
 
         private ObjectGreaterEvaluator() {
@@ -370,7 +370,7 @@ public class ObjectFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectGreaterOrEqualEvaluator();
 
         private ObjectGreaterOrEqualEvaluator() {
@@ -426,7 +426,7 @@ public class ObjectFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectContainsEvaluator();
 
         private ObjectContainsEvaluator() {
@@ -474,7 +474,7 @@ public class ObjectFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectExcludesEvaluator();
 
         private ObjectExcludesEvaluator() {
@@ -520,7 +520,7 @@ public class ObjectFactory
 
     static class ObjectMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectMemberOfEvaluator();
 
         private ObjectMemberOfEvaluator() {
@@ -535,7 +535,7 @@ public class ObjectFactory
 
     static class ObjectNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectNotMemberOfEvaluator();
 
         private ObjectNotMemberOfEvaluator() {

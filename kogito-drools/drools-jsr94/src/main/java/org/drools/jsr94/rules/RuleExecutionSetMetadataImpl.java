@@ -31,7 +31,7 @@ public class RuleExecutionSetMetadataImpl
     /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 400L;
 
     /** The URI for this <code>RuleExecutionSet</code>. */
     private final String      uri;

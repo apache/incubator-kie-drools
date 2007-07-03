@@ -30,7 +30,7 @@ public class MockConstraint
     /**
      * 
      */
-    private static final long serialVersionUID = 2137215908326401659L;
+    private static final long serialVersionUID = 400L;
 
     public Declaration[]      declarations;
 

@@ -7,7 +7,7 @@ import org.drools.util.AbstractHashTable.EqualityEquals;
 
 public class ObjectHashSet extends AbstractHashTable {
 
-    private static final long serialVersionUID = 929633553699602561L;
+    private static final long serialVersionUID = 400L;
 
     public ObjectHashSet() {
         this( 16,

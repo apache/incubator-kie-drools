@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class FieldConstraintDescr extends BaseDescr {
 
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
     private String            fieldName;
     private RestrictionConnectiveDescr restriction     = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.AND );
 

@@ -71,7 +71,7 @@ public class ArrayFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ArrayEqualEvaluator();
 
         private ArrayEqualEvaluator() {
@@ -130,7 +130,7 @@ public class ArrayFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ArrayNotEqualEvaluator();
 
         private ArrayNotEqualEvaluator() {
@@ -188,7 +188,7 @@ public class ArrayFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ArrayContainsEvaluator();
 
         private ArrayContainsEvaluator() {
@@ -249,7 +249,7 @@ public class ArrayFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ArrayExcludesEvaluator();
 
         private ArrayExcludesEvaluator() {
@@ -310,7 +310,7 @@ public class ArrayFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ArrayMemberOfEvaluator();
 
         private ArrayMemberOfEvaluator() {
@@ -371,7 +371,7 @@ public class ArrayFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ArrayNotMemberOfEvaluator();
 
         private ArrayNotMemberOfEvaluator() {

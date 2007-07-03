@@ -36,7 +36,7 @@ public class FactTemplateFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = 1384322764502834134L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new FactTemplateFactory();
 
     private FactTemplateFactory() {
@@ -64,7 +64,7 @@ public class FactTemplateFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FactTemplateEqualEvaluator();
 
         private FactTemplateEqualEvaluator() {
@@ -123,7 +123,7 @@ public class FactTemplateFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FactTemplateNotEqualEvaluator();
 
         private FactTemplateNotEqualEvaluator() {

@@ -274,7 +274,7 @@ public abstract class AbstractHashTable
         implements
         ObjectComparator {
 
-        private static final long      serialVersionUID = 1835792402650440794L;
+        private static final long      serialVersionUID = 400L;
         public static ObjectComparator INSTANCE         = new InstanceEquals();
 
         public static ObjectComparator getInstance() {
@@ -307,7 +307,7 @@ public abstract class AbstractHashTable
         implements
         ObjectComparator {
 
-        private static final long      serialVersionUID = 8004812231695147987L;
+        private static final long      serialVersionUID = 400L;
         public static ObjectComparator INSTANCE         = new EqualityEquals();
 
         public static ObjectComparator getInstance() {
@@ -344,7 +344,7 @@ public abstract class AbstractHashTable
         FactEntry,
         Entry {
 
-        private static final long serialVersionUID = 1776798977330980128L;
+        private static final long serialVersionUID = 400L;
 
         public InternalFactHandle handle;
 

@@ -40,7 +40,7 @@ import org.mvel.MVEL;
  */
 public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
     
-    private static final long serialVersionUID = 1435386838162518010L;
+    private static final long serialVersionUID = 400L;
 
     private CompiledExpression mvelExpression = null;
     private Map extractors = null;

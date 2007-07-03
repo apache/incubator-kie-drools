@@ -66,7 +66,7 @@ public class ObjectTypeNode extends ObjectSource
     /**
      * 
      */
-    private static final long serialVersionUID = 320L;
+    private static final long serialVersionUID = 400L;
 
     /** The <code>ObjectType</code> semantic module. */
     private final ObjectType  objectType;

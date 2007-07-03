@@ -69,7 +69,7 @@ public class CharacterFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterEqualEvaluator();
 
         private CharacterEqualEvaluator() {
@@ -133,7 +133,7 @@ public class CharacterFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterNotEqualEvaluator();
 
         private CharacterNotEqualEvaluator() {
@@ -197,7 +197,7 @@ public class CharacterFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterLessEvaluator();
 
         private CharacterLessEvaluator() {
@@ -249,7 +249,7 @@ public class CharacterFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterLessOrEqualEvaluator();
 
         private CharacterLessOrEqualEvaluator() {
@@ -301,7 +301,7 @@ public class CharacterFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterGreaterEvaluator();
 
         private CharacterGreaterEvaluator() {
@@ -353,7 +353,7 @@ public class CharacterFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new CharacterGreaterOrEqualEvaluator();
 
         private CharacterGreaterOrEqualEvaluator() {
@@ -403,7 +403,7 @@ public class CharacterFactory
 
     static class CharacterMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterMemberOfEvaluator();
 
         private CharacterMemberOfEvaluator() {
@@ -418,7 +418,7 @@ public class CharacterFactory
 
     static class CharacterNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterNotMemberOfEvaluator();
 
         private CharacterNotMemberOfEvaluator() {

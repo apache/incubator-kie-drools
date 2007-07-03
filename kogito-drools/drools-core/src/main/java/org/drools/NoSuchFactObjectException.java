@@ -34,7 +34,7 @@ public class NoSuchFactObjectException extends FactException {
     /**
      * 
      */
-    private static final long serialVersionUID = 7335134332412968869L;
+    private static final long serialVersionUID = 400L;
     /** Invalid fact handle. */
     private final FactHandle  handle;
 

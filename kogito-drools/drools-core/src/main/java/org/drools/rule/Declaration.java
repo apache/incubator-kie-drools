@@ -78,7 +78,7 @@ public class Declaration
     /**
      * 
      */
-    private static final long serialVersionUID = 248608383490386902L;
+    private static final long serialVersionUID = 400L;
 
     /** The identifier for the variable. */
     private final String      identifier;

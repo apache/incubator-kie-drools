@@ -31,7 +31,7 @@ public class Collect extends ConditionalElement
     implements
     PatternSource {
 
-    private static final long serialVersionUID = 6064290134136990287L;
+    private static final long serialVersionUID = 400L;
 
     private Pattern           sourcePattern;
     private Pattern           resultPattern;

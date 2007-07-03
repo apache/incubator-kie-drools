@@ -25,7 +25,7 @@ public class LiteralRestrictionDescr extends RestrictionDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
     private String            evaluator;
     private String            text;
 

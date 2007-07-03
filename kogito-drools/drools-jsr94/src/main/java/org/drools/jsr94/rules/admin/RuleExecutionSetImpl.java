@@ -52,7 +52,7 @@ public class RuleExecutionSetImpl
     /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 400L;
 
     /**
      * A description of this rule execution set or null if no

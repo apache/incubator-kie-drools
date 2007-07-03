@@ -40,7 +40,7 @@ public class RuleFlowProcessImpl extends ProcessImpl
 
     public static final String RULEFLOW_TYPE    = "RuleFlow";
 
-    private static final long  serialVersionUID = 3257005445309609272L;
+    private static final long  serialVersionUID = 400L;
 
     private Map                nodes;
     private List               variables;

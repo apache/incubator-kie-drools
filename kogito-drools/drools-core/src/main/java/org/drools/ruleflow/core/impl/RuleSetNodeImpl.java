@@ -31,7 +31,7 @@ public class RuleSetNodeImpl extends NodeImpl
     implements
     RuleSetNode {
 
-    private static final long serialVersionUID = 3257285846544691769L;
+    private static final long serialVersionUID = 400L;
 
     private String            ruleFlowGroup;
 

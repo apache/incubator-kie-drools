@@ -39,7 +39,7 @@ public class ClassFieldExtractor
     /**
      * 
      */
-    private static final long        serialVersionUID = 320;
+    private static final long        serialVersionUID = 400L;
     private String                   fieldName;
     private Class                    clazz;
     private transient FieldExtractor extractor;

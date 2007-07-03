@@ -29,7 +29,7 @@ public class LongFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = 4184811148799115566L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new LongFactory();
 
     private LongFactory() {
@@ -69,7 +69,7 @@ public class LongFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongEqualEvaluator();
 
         private LongEqualEvaluator() {
@@ -133,7 +133,7 @@ public class LongFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongNotEqualEvaluator();
 
         private LongNotEqualEvaluator() {
@@ -197,7 +197,7 @@ public class LongFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongLessEvaluator();
 
         private LongLessEvaluator() {
@@ -249,7 +249,7 @@ public class LongFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongLessOrEqualEvaluator();
 
         private LongLessOrEqualEvaluator() {
@@ -301,7 +301,7 @@ public class LongFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongGreaterEvaluator();
 
         private LongGreaterEvaluator() {
@@ -353,7 +353,7 @@ public class LongFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new LongGreaterOrEqualEvaluator();
 
         private LongGreaterOrEqualEvaluator() {
@@ -403,7 +403,7 @@ public class LongFactory
 
     static class LongMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongMemberOfEvaluator();
 
         private LongMemberOfEvaluator() {
@@ -418,7 +418,7 @@ public class LongFactory
 
     static class LongNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongNotMemberOfEvaluator();
 
         private LongNotMemberOfEvaluator() {

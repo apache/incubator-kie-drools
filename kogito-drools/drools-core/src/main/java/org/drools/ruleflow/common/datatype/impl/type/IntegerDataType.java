@@ -27,7 +27,7 @@ public class IntegerDataType
     implements
     DataType {
 
-    private static final long serialVersionUID = 3256443611980838707L;
+    private static final long serialVersionUID = 400L;
 
     public boolean verifyDataType(final Object value) {
         if ( value instanceof Integer ) {

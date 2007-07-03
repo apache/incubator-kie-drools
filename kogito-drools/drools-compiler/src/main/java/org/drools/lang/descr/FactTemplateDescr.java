@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FactTemplateDescr extends BaseDescr {
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
 
     String                    name;
     List                      fields           = new ArrayList( 1 );

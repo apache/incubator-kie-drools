@@ -28,7 +28,7 @@ public class JoinImpl extends NodeImpl
     implements
     Join {
 
-    private static final long serialVersionUID = 3257004367155573815L;
+    private static final long serialVersionUID = 400L;
 
     private int               type;
 

@@ -36,7 +36,7 @@ public class FactTemplateObjectType
     /**
      * 
      */
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
 
     /** FieldTemplate. */
     protected FactTemplate    factTemplate;

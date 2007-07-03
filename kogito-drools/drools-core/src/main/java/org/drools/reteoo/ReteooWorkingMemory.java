@@ -48,7 +48,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     /**
      * 
      */
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
 
     /**
      * Construct.

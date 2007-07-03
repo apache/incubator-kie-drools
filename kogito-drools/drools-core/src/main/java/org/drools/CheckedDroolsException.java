@@ -26,7 +26,7 @@ public class CheckedDroolsException extends Exception {
     /**
      * 
      */
-    private static final long serialVersionUID = 8748057033307755380L;
+    private static final long serialVersionUID = 400L;
 
     /**
      * @see java.lang.Exception#Exception()

@@ -35,7 +35,7 @@ public class MockEvalCondition extends EvalCondition {
                                                       /**
                                                        * 
                                                        */
-                                                      private static final long serialVersionUID = 5706933277222496253L;
+                                                      private static final long serialVersionUID = 400L;
 
                                                       public boolean evaluate(Tuple tuple,
                                                                               Declaration[] requiredDeclarations,

@@ -27,7 +27,7 @@ public class BooleanFieldImpl
     implements
     FieldValue {
 
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
     private final boolean     value;
 
     public BooleanFieldImpl(final boolean value) {

@@ -31,7 +31,7 @@ public class BigIntegerFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = 4180922947425495749L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new BigIntegerFactory();
 
     private BigIntegerFactory() {
@@ -71,7 +71,7 @@ public class BigIntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerEqualEvaluator();
 
         private BigIntegerEqualEvaluator() {
@@ -129,7 +129,7 @@ public class BigIntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerNotEqualEvaluator();
 
         private BigIntegerNotEqualEvaluator() {
@@ -187,7 +187,7 @@ public class BigIntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerLessEvaluator();
 
         private BigIntegerLessEvaluator() {
@@ -243,7 +243,7 @@ public class BigIntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerLessOrEqualEvaluator();
 
         private BigIntegerLessOrEqualEvaluator() {
@@ -299,7 +299,7 @@ public class BigIntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerGreaterEvaluator();
 
         private BigIntegerGreaterEvaluator() {
@@ -355,7 +355,7 @@ public class BigIntegerFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new BigIntegerGreaterOrEqualEvaluator();
 
         private BigIntegerGreaterOrEqualEvaluator() {
@@ -409,7 +409,7 @@ public class BigIntegerFactory
     
     static class BigIntegerMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerMemberOfEvaluator();
 
         private BigIntegerMemberOfEvaluator() {
@@ -426,7 +426,7 @@ public class BigIntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerNotMemberOfEvaluator();
 
         private BigIntegerNotMemberOfEvaluator() {

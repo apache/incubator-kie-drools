@@ -48,7 +48,7 @@ import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
 public class RuleRuntimeImpl
     implements
     RuleRuntime {
-    private static final long          serialVersionUID = 1L;
+    private static final long          serialVersionUID = 400L;
 
     private RuleExecutionSetRepository repository;
 

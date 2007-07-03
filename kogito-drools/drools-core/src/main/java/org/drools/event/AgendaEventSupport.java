@@ -35,7 +35,7 @@ public class AgendaEventSupport
     /**
      * 
      */
-    private static final long   serialVersionUID = 320L;
+    private static final long   serialVersionUID = 400L;
     private final List          listeners        = Collections.synchronizedList( new ArrayList() );
 
     public AgendaEventSupport() {

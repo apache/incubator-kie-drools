@@ -9,7 +9,7 @@ import org.drools.common.InternalWorkingMemory;
 
 public abstract class BaseShortClassFieldExtractor extends BaseClassFieldExtractor {
 
-    private static final long serialVersionUID = 2031113412843487706L;
+    private static final long serialVersionUID = 400L;
 
     public BaseShortClassFieldExtractor(final Class clazz,
                                         final String fieldName) {

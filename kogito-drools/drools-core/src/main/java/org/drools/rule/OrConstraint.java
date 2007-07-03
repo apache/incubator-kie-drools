@@ -32,7 +32,7 @@ import org.drools.util.ArrayUtils;
  */
 public class OrConstraint extends AbstractCompositeConstraint {
 
-    private static final long serialVersionUID = 7176363058353868367L;
+    private static final long serialVersionUID = 400L;
 
     public OrConstraint() {
     }

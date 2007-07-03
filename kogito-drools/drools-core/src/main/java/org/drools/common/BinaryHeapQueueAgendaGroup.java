@@ -39,7 +39,7 @@ public class BinaryHeapQueueAgendaGroup
     implements
     InternalAgendaGroup {
 
-    private static final long     serialVersionUID = 320L;
+    private static final long     serialVersionUID = 400L;
 
     private final String          name;
 

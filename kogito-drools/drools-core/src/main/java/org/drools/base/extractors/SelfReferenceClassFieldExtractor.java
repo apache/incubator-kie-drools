@@ -27,7 +27,7 @@ import org.drools.common.InternalWorkingMemory;
  */
 public class SelfReferenceClassFieldExtractor extends BaseObjectClassFieldExtractor {
 
-    private static final long serialVersionUID = 3258380877818552472L;
+    private static final long serialVersionUID = 400L;
 
     public SelfReferenceClassFieldExtractor(final Class clazz,
                                             final String fieldName) {

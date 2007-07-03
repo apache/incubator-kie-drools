@@ -32,7 +32,7 @@ public class Accumulate extends ConditionalElement
     implements PatternSource  
     {
 
-    private static final long serialVersionUID = 4608000398919355806L;
+    private static final long serialVersionUID = 400L;
 
     private Accumulator       accumulator;
     private Pattern           sourcePattern;

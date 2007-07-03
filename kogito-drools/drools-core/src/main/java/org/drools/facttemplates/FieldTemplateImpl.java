@@ -6,7 +6,7 @@ public class FieldTemplateImpl
     implements
     FieldTemplate {
 
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
 
     private final String      name;
     private final int         index;

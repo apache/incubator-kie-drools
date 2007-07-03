@@ -35,7 +35,7 @@ public class DefaultKnowledgeHelper
     implements
     KnowledgeHelper {
 
-    private static final long                  serialVersionUID = 3692991484157215686L;
+    private static final long                  serialVersionUID = 400L;
 
     private Rule                               rule;
     private GroupElement                       subrule;

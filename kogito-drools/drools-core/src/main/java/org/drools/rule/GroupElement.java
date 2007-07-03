@@ -28,7 +28,7 @@ import org.drools.RuntimeDroolsException;
 
 public class GroupElement extends ConditionalElement {
 
-    private static final long serialVersionUID = 125354210439500614L;
+    private static final long serialVersionUID = 400L;
 
     public static final Type  AND              = new AndType();
     public static final Type  OR               = new OrType();
@@ -430,7 +430,7 @@ public class GroupElement extends ConditionalElement {
      */
     private static class OrType extends AbstractType {
 
-        private static final long serialVersionUID = 8108203371968455372L;
+        private static final long serialVersionUID = 400L;
 
         OrType() {
         }

@@ -20,7 +20,7 @@ public class PredicateDescr extends BaseDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
     //private final String fieldName;
     private Object            content;
 

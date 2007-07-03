@@ -25,7 +25,7 @@ public class ObjectFieldImpl
     implements
     FieldValue {
 
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
     private final Object      value;
     
     private final boolean     isCollection;

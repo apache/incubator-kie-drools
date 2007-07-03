@@ -75,7 +75,7 @@ public class Rete extends ObjectSource
     /**
      * 
      */
-    private static final long          serialVersionUID = 320L;
+    private static final long          serialVersionUID = 400L;
     /** The <code>Map</code> of <code>ObjectTypeNodes</code>. */
     private final ObjectHashMap        objectTypeNodes;
 

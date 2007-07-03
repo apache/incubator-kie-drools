@@ -69,7 +69,7 @@ public class IntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerEqualEvaluator();
 
         private IntegerEqualEvaluator() {
@@ -134,7 +134,7 @@ public class IntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerNotEqualEvaluator();
 
         private IntegerNotEqualEvaluator() {
@@ -198,7 +198,7 @@ public class IntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerLessEvaluator();
 
         private IntegerLessEvaluator() {
@@ -250,7 +250,7 @@ public class IntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerLessOrEqualEvaluator();
 
         private IntegerLessOrEqualEvaluator() {
@@ -302,7 +302,7 @@ public class IntegerFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerGreaterEvaluator();
 
         private IntegerGreaterEvaluator() {
@@ -354,7 +354,7 @@ public class IntegerFactory
         /**
          * 
          */
-        private static final long      serialVersionUID = 320;
+        private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new IntegerGreaterOrEqualEvaluator();
 
         private IntegerGreaterOrEqualEvaluator() {
@@ -404,7 +404,7 @@ public class IntegerFactory
     
     static class IntegerMemberOfEvaluator extends BaseMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerMemberOfEvaluator();
 
         private IntegerMemberOfEvaluator() {
@@ -419,7 +419,7 @@ public class IntegerFactory
 
     static class IntegerNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
 
-        private static final long     serialVersionUID = 320;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerNotMemberOfEvaluator();
 
         private IntegerNotMemberOfEvaluator() {

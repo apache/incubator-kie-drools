@@ -23,7 +23,7 @@ import org.drools.spi.FactHandleFactory;
 
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
 
-    private static final long serialVersionUID = 300;
+    private static final long serialVersionUID = 400L;
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)

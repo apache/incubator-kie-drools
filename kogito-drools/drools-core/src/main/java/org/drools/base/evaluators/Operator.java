@@ -8,7 +8,7 @@ public class Operator
     implements
     Serializable {
 
-    private static final long    serialVersionUID = 320;
+    private static final long    serialVersionUID = 400L;
 
     public static final Operator EQUAL            = new Operator( "==" );
     public static final Operator NOT_EQUAL        = new Operator( "!=" );

@@ -35,7 +35,7 @@ public class AnalysisResult implements Serializable {
     }
     
     static class ReportItem implements Serializable {
-        private static final long serialVersionUID = 3674119457586457238L;
+        private static final long serialVersionUID = 400L;
         public String rule;
         public String message;
         

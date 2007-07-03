@@ -819,7 +819,7 @@ public class EvaluatorFactoryTest extends TestCase {
         implements
         FieldExtractor {
 
-        private static final long serialVersionUID = 2759666130893301563L;
+        private static final long serialVersionUID = 400L;
 
         public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Boolean) object).booleanValue() : false;

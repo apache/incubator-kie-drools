@@ -29,7 +29,7 @@ public class MockObjectSource extends ObjectSource {
     /**
      * 
      */
-    private static final long serialVersionUID = 5137841417495725497L;
+    private static final long serialVersionUID = 400L;
 
     private int               attached;
 

@@ -6,7 +6,7 @@ import org.drools.clp.VariableValueHandler;
 
 
 public class NamedShellVariableValue extends BaseValueHandler implements VariableValueHandler {
-    private static final long serialVersionUID = 320L;    
+    private static final long serialVersionUID = 400L;    
 
     /** The identifier for the variable. */
     private final String      identifier;    

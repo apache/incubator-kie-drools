@@ -28,7 +28,7 @@ public class ConstraintImpl
     org.drools.ruleflow.core.Constraint,
     Serializable {
 
-    private static final long serialVersionUID = 3257849861633422902L;
+    private static final long serialVersionUID = 400L;
 
     private String            name;
     private String            constraint;

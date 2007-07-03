@@ -33,7 +33,7 @@ public class JavaAccumulatorFunctionExecutor
     implements
     Accumulator {
 
-    private static final long           serialVersionUID = 1081306132058101176L;
+    private static final long           serialVersionUID = 400L;
 
     private ReturnValueExpression expression;
     private final AccumulateFunction   function;

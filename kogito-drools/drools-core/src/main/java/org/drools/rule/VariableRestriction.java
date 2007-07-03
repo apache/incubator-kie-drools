@@ -31,7 +31,7 @@ public class VariableRestriction
     implements
     Restriction {
 
-    private static final long          serialVersionUID = 320;
+    private static final long          serialVersionUID = 400L;
 
     private final Declaration          declaration;
 
@@ -189,7 +189,7 @@ public class VariableRestriction
 
     public static class ObjectVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = 3607107040739298581L;
+        private static final long serialVersionUID = 400L;
         public Object             left;
         public Object             right;
 
@@ -258,7 +258,7 @@ public class VariableRestriction
 
     public static class DoubleVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = 6996094205302851397L;
+        private static final long serialVersionUID = 400L;
 
         public double             left;
         public double             right;

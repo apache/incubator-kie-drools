@@ -26,7 +26,7 @@ public class InstanceNotEqualsConstraint
     implements
     BetaNodeFieldConstraint {
 
-    private static final long          serialVersionUID = 320L;
+    private static final long          serialVersionUID = 400L;
 
     private static final Declaration[] declarations     = new Declaration[0];
 

@@ -45,7 +45,7 @@ import java.io.ObjectStreamException;
 public abstract class TimeUnit implements java.io.Serializable {
 
     public static final TimeUnit NANOSECONDS = new TimeUnit(0, "NANOSECONDS") {
-        private final static long serialVersionUID = 535148490883208361L;
+        private final static long serialVersionUID = 400L;
         public long toNanos(long d)   { return d; }
         public long toMicros(long d)  { return d/(C1/C0); }
         public long toMillis(long d)  { return d/(C2/C0); }
@@ -57,7 +57,7 @@ public abstract class TimeUnit implements java.io.Serializable {
         int excessNanos(long d, long m) { return (int)(d - (m*C2)); }
     };
     public static final TimeUnit MICROSECONDS = new TimeUnit(1, "MICROSECONDS") {
-        private final static long serialVersionUID = 2185906575929579108L;
+        private final static long serialVersionUID = 400L;
         public long toNanos(long d)   { return x(d, C1/C0, MAX/(C1/C0)); }
         public long toMicros(long d)  { return d; }
         public long toMillis(long d)  { return d/(C2/C1); }
@@ -69,7 +69,7 @@ public abstract class TimeUnit implements java.io.Serializable {
         int excessNanos(long d, long m) { return (int)((d*C1) - (m*C2)); }
     };
     public static final TimeUnit MILLISECONDS = new TimeUnit(2, "MILLISECONDS") {
-        private final static long serialVersionUID = 9032047794123325184L;
+        private final static long serialVersionUID = 400L;
         public long toNanos(long d)   { return x(d, C2/C0, MAX/(C2/C0)); }
         public long toMicros(long d)  { return x(d, C2/C1, MAX/(C2/C1)); }
         public long toMillis(long d)  { return d; }
@@ -81,7 +81,7 @@ public abstract class TimeUnit implements java.io.Serializable {
         int excessNanos(long d, long m) { return 0; }
     };
     public static final TimeUnit SECONDS = new TimeUnit(3, "SECONDS") {
-        private final static long serialVersionUID = 227755028449378390L;
+        private final static long serialVersionUID = 400L;
         public long toNanos(long d)   { return x(d, C3/C0, MAX/(C3/C0)); }
         public long toMicros(long d)  { return x(d, C3/C1, MAX/(C3/C1)); }
         public long toMillis(long d)  { return x(d, C3/C2, MAX/(C3/C2)); }
@@ -93,7 +93,7 @@ public abstract class TimeUnit implements java.io.Serializable {
         int excessNanos(long d, long m) { return 0; }
     };
     public static final TimeUnit MINUTES = new TimeUnit(4, "MINUTES") {
-        private final static long serialVersionUID = 1827351566402609187L;
+        private final static long serialVersionUID = 400L;
         public long toNanos(long d)   { return x(d, C4/C0, MAX/(C4/C0)); }
         public long toMicros(long d)  { return x(d, C4/C1, MAX/(C4/C1)); }
         public long toMillis(long d)  { return x(d, C4/C2, MAX/(C4/C2)); }
@@ -117,7 +117,7 @@ public abstract class TimeUnit implements java.io.Serializable {
         int excessNanos(long d, long m) { return 0; }
     };
     public static final TimeUnit DAYS = new TimeUnit(6, "DAYS") {
-        private final static long serialVersionUID = 567463171959674600L;
+        private final static long serialVersionUID = 400L;
         public long toNanos(long d)   { return x(d, C6/C0, MAX/(C6/C0)); }
         public long toMicros(long d)  { return x(d, C6/C1, MAX/(C6/C1)); }
         public long toMillis(long d)  { return x(d, C6/C2, MAX/(C6/C2)); }

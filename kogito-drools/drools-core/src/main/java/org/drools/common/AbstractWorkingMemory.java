@@ -109,7 +109,7 @@ public abstract class AbstractWorkingMemory
     protected GlobalResolver                  globalResolver;
 
     protected static final Object             NULL                                          = new Serializable() {
-                                                                                                private static final long serialVersionUID = 320L;
+                                                                                                private static final long serialVersionUID = 400L;
                                                                                             };
 
     /** The eventSupport */

@@ -31,7 +31,7 @@ import org.drools.common.InternalWorkingMemory;
  */
 public abstract class BaseBooleanClassFieldExtractor extends BaseClassFieldExtractor {
 
-    private static final long serialVersionUID = 9104214567753008212L;
+    private static final long serialVersionUID = 400L;
 
     public BaseBooleanClassFieldExtractor(final Class clazz,
                                           final String fieldName) {

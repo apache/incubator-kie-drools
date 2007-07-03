@@ -10,7 +10,7 @@ package org.drools.lang.descr;
  */
 public class FieldAccessDescr extends DeclarativeInvokerDescr {
 
-    private static final long serialVersionUID = 3262446325341307441L;
+    private static final long serialVersionUID = 400L;
 
     private String            fieldName;
     private String            argument;

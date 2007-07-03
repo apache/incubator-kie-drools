@@ -33,7 +33,7 @@ import javax.rules.admin.RuleExecutionSetRegisterException;
 public final class RuleExecutionSetRepository
     implements
     Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 400L;
 
     /** The Singleton instance of the repository. */
     // private static RuleExecutionSetRepository REPOSITORY;

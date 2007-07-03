@@ -13,7 +13,7 @@ public abstract class AbstractCompositeRestriction
     implements
     Restriction {
 
-    private static final long             serialVersionUID = 320L;
+    private static final long             serialVersionUID = 400L;
 
     protected final Restriction[]         restrictions;
     protected final CompositeContextEntry contextEntry;

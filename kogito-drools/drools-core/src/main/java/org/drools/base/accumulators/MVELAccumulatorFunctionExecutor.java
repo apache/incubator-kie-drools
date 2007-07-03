@@ -36,7 +36,7 @@ public class MVELAccumulatorFunctionExecutor
     implements
     Accumulator {
 
-    private static final long         serialVersionUID = 1081306132058101176L;
+    private static final long         serialVersionUID = 400L;
 
     private final Object              dummy            = new Object();
     private final DroolsMVELFactory   factory;

@@ -45,7 +45,7 @@ import java.util.NoSuchElementException;
 public class LinkedList
     implements
     Serializable {
-    private static final long  serialVersionUID = 320;
+    private static final long  serialVersionUID = 400L;
 
     private LinkedListNode     firstNode;
     private LinkedListNode     lastNode;

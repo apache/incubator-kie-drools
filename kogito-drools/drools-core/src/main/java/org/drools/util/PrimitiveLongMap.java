@@ -30,7 +30,7 @@ public class PrimitiveLongMap
     /**
      * 
      */
-    private static final long   serialVersionUID = 199618748057741463L;
+    private static final long   serialVersionUID = 400L;
 
     private final static Object NULL             = new Serializable() {
 

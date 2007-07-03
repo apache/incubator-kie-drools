@@ -72,7 +72,7 @@ import org.drools.util.ChainedProperties;
 public class RuleBaseConfiguration
     implements
     Serializable {
-    private static final long   serialVersionUID = 320L;
+    private static final long   serialVersionUID = 400L;
 
     private ChainedProperties   chainedProperties;
 
@@ -481,7 +481,7 @@ public class RuleBaseConfiguration
     public static class AssertBehaviour
         implements
         Serializable {
-        private static final long           serialVersionUID = 320L;
+        private static final long           serialVersionUID = 400L;
 
         public static final AssertBehaviour IDENTITY         = new AssertBehaviour( 0 );
         public static final AssertBehaviour EQUALITY         = new AssertBehaviour( 1 );
@@ -521,7 +521,7 @@ public class RuleBaseConfiguration
     public static class LogicalOverride
         implements
         Serializable {
-        private static final long           serialVersionUID = 320L;
+        private static final long           serialVersionUID = 400L;
 
         public static final LogicalOverride PRESERVE         = new LogicalOverride( 0 );
         public static final LogicalOverride DISCARD          = new LogicalOverride( 1 );
@@ -561,7 +561,7 @@ public class RuleBaseConfiguration
     public static class SequentialAgenda
         implements
         Serializable {
-        private static final long            serialVersionUID = 320L;
+        private static final long            serialVersionUID = 400L;
 
         public static final SequentialAgenda SEQUENTIAL       = new SequentialAgenda( 0 );
         public static final SequentialAgenda DYNAMIC          = new SequentialAgenda( 1 );

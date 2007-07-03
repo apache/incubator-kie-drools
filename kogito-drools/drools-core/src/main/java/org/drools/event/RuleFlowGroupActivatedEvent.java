@@ -23,7 +23,7 @@ import org.drools.spi.RuleFlowGroup;
  */
 public class RuleFlowGroupActivatedEvent extends RuleFlowGroupEvent {
 
-	private static final long serialVersionUID = 6711533652198215540L;
+	private static final long serialVersionUID = 400L;
 
 	public RuleFlowGroupActivatedEvent(final RuleFlowGroup ruleFlowGroup) {
         super( ruleFlowGroup );

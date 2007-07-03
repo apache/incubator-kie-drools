@@ -30,7 +30,7 @@ public class BaseDuration
     /**
      * 
      */
-    private static final long serialVersionUID = 8677999540061540878L;
+    private static final long serialVersionUID = 400L;
 
     /** The number of seconds of the duration. */
     private long              seconds;

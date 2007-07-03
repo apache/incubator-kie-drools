@@ -469,7 +469,7 @@ public class PackageBuilder {
     }
 
     public static class MissingPackageNameException extends IllegalArgumentException {
-        private static final long serialVersionUID = 320L;
+        private static final long serialVersionUID = 400L;
 
         public MissingPackageNameException(final String message) {
             super( message );

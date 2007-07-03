@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class FunctionDescr extends BaseDescr {
-    private static final long serialVersionUID = 320;
+    private static final long serialVersionUID = 400L;
 
     private final String      name;
     private final String      returnType;

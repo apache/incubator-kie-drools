@@ -69,7 +69,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
     /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 400L;
     
     private StatefulSession session;
 

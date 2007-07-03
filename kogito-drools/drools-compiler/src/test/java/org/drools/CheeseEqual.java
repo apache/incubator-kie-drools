@@ -24,7 +24,7 @@ public class CheeseEqual
     /**
      * 
      */
-    private static final long serialVersionUID = 10880087244353711L;
+    private static final long serialVersionUID = 400L;
     protected String          type;
     protected int             price;
 

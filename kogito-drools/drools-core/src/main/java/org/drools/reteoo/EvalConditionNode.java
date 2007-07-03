@@ -52,7 +52,7 @@ public class EvalConditionNode extends TupleSource
     /**
      * 
      */
-    private static final long   serialVersionUID = 1986131208174298080L;
+    private static final long   serialVersionUID = 400L;
 
     /** The semantic <code>Test</code>. */
     private final EvalCondition condition;
