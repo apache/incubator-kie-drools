@@ -59,10 +59,10 @@ public class SequentialTest extends TestCase {
 
         runTestProfileManyRulesAndFacts( true,
                                          "Sequential mode",
-                                         0 );
+                                         0, "sequentialProfile.drl"  );
         runTestProfileManyRulesAndFacts( true,
                                          "Sequential mode",
-                                         0 );
+                                         0, "sequentialProfile.drl"  );
 
         System.gc();
         Thread.sleep( 100 );
@@ -71,10 +71,10 @@ public class SequentialTest extends TestCase {
     public void XXtestProfileRETE() throws Exception {
         runTestProfileManyRulesAndFacts( false,
                                          "Normal RETE mode",
-                                         0 );
+                                         0, "sequentialProfile.drl"  );
         runTestProfileManyRulesAndFacts( false,
                                          "Normal RETE mode",
-                                         0 );
+                                         0, "sequentialProfile.drl"  );
 
         System.gc();
         Thread.sleep( 100 );
@@ -84,25 +84,42 @@ public class SequentialTest extends TestCase {
         //test throughput
         runTestProfileManyRulesAndFacts( true,
                                          "SEQUENTIAL",
-                                         2000 );
+                                         2000, "sequentialProfile.drl"  );
     }
 
     public void testNumberofIterationsRETE() throws Exception {
         //test throughput
         runTestProfileManyRulesAndFacts( false,
                                          "RETE",
-                                         2000 );
+                                         2000, "sequentialProfile.drl"  );
 
     }
+    
+    public void XXtestPerfJDT() throws Exception {
+        runTestProfileManyRulesAndFacts( true,
+                                         "JDT",
+                                         2000, "sequentialProfile.drl"  );
+        
+    }    
+    
+    public void XXtestPerfMVEL() throws Exception {
+        runTestProfileManyRulesAndFacts( true,
+                                         "MVEL",
+                                         2000, "sequentialProfileMVEL.drl"  );
+        
+    }
+    
+
+    
 
     private void runTestProfileManyRulesAndFacts(boolean sequentialMode,
                                                  String message,
-                                                 int timetoMeasureIterations) throws DroolsParserException,
+                                                 int timetoMeasureIterations, String file) throws DroolsParserException,
                                                                              IOException,
                                                                              Exception {
         // postponed while I sort out KnowledgeHelperFixer
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "sequentialProfile.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( file ) ) );
         final Package pkg = builder.getPackage();
 
         Properties properties = new Properties();
