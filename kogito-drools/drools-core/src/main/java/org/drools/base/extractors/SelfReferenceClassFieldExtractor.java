@@ -16,7 +16,6 @@
 
 package org.drools.base.extractors;
 
-import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 
@@ -37,7 +36,8 @@ public class SelfReferenceClassFieldExtractor extends BaseObjectClassFieldExtrac
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return (object instanceof ShadowProxy) ? ((ShadowProxy) object).getShadowedObject() : object;
+        //return (object instanceof ShadowProxy) ? ((ShadowProxy) object).getShadowedObject() : object;
+        return object;
     }   
     
     public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {

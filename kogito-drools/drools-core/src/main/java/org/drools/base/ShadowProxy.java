@@ -24,5 +24,7 @@ public interface ShadowProxy {
     public void updateProxy();
 
     public Object getShadowedObject();
+    
+    public void setShadowedObject(Object object);
 
 }

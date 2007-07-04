@@ -19,8 +19,8 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.FactException;
@@ -310,7 +310,6 @@ public class Rete extends ObjectSource
         protected boolean                      shadowEnabled;
         protected Class                        shadowClass;
         protected transient ObjectInstantiator instantiator;
-        protected transient Field              delegate;
 
         //private final InternalRuleBase ruleBase;
 
@@ -355,7 +354,6 @@ public class Rete extends ObjectSource
                 this.shadowClass = shadowClass;
                 this.shadowEnabled = true;
                 setInstantiator();
-                setDelegateFieldObject();
             }
         }
 
@@ -372,32 +370,25 @@ public class Rete extends ObjectSource
             this.instantiator = OBJENESIS.getInstantiatorOf( this.shadowClass );
         }
 
-        /**
-         * 
-         */
-        private void setDelegateFieldObject() {
-            try {
-                this.delegate = this.shadowClass.getDeclaredField( ShadowProxyFactory.DELEGATE_FIELD_NAME );
-                this.delegate.setAccessible( true );
-            } catch ( final Exception e ) {
-                throw new RuntimeDroolsException( "Error retriving delegate field for shadow proxy class: " + this.shadowClass.getName(),
-                                                  e );
-            }
-        }
-
         public Object getShadow(final Object fact) throws RuntimeDroolsException {
             ShadowProxy proxy = null;
             if ( isShadowEnabled() ) {
                 try {
-                    if ( this.delegate == null ) {
-                        this.setDelegateFieldObject();
+                    if( Collection.class.isAssignableFrom( this.shadowClass ) ) {
+                        // if it is a collection, try to instantiate using constructor
+                        try {
+                            proxy = (ShadowProxy) this.shadowClass.getConstructor( new Class[] { cls } ).newInstance( new Object[] { fact } );
+                        } catch ( Exception e ) {
+                            // not possible to instantiate using constructor
+                        }
                     }
-                    if ( this.instantiator == null ) {
-                        this.setInstantiator();
+                    if( proxy == null ) {
+                        if ( this.instantiator == null ) {
+                            this.setInstantiator();
+                        }
+                        proxy = (ShadowProxy) this.instantiator.newInstance();
                     }
-                    proxy = (ShadowProxy) this.instantiator.newInstance();
-                    this.delegate.set( proxy,
-                                       fact );
+                    proxy.setShadowedObject( fact );
                 } catch ( final Exception e ) {
                     throw new RuntimeDroolsException( "Error creating shadow fact for object: " + fact,
                                                       e );

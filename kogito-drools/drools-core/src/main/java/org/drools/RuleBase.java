@@ -19,7 +19,6 @@ package org.drools;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.Set;
 
 import org.drools.rule.Package;
 import org.drools.ruleflow.common.core.Process;
