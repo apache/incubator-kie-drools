@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
@@ -374,7 +375,8 @@ public class Rete extends ObjectSource
             ShadowProxy proxy = null;
             if ( isShadowEnabled() ) {
                 try {
-                    if( Collection.class.isAssignableFrom( this.shadowClass ) ) {
+                    if( Collection.class.isAssignableFrom( this.shadowClass ) ||
+                        Map.class.isAssignableFrom( this.shadowClass ) ) {
                         // if it is a collection, try to instantiate using constructor
                         try {
                             proxy = (ShadowProxy) this.shadowClass.getConstructor( new Class[] { cls } ).newInstance( new Object[] { fact } );

@@ -147,6 +147,10 @@ public class ShadowProxyFactory {
                           className,
                           cw );
 
+        buildConstructor( clazz,
+                          className,
+                          cw );
+
         buildField( ShadowProxyFactory.DELEGATE_FIELD_NAME,
                     Type.getDescriptor( clazz ),
                     cw );
@@ -171,6 +175,10 @@ public class ShadowProxyFactory {
             buildCollectionClass( clazz,
                                   className,
                                   cw );
+        } else if ( Map.class.isAssignableFrom( clazz ) ) {
+            buildMapClass( clazz,
+                           className,
+                           cw );
         } else {
             buildRegularClass( clazz,
                                className,
@@ -184,13 +192,19 @@ public class ShadowProxyFactory {
                                              final String className,
                                              final ClassWriter cw) {
 
-        buildConstructor( clazz,
-                          className,
-                          cw );
-
         buildCollectionUpdateProxyMethod( clazz,
                                           className,
                                           cw );
+
+    }
+
+    private static void buildMapClass(final Class clazz,
+                                      final String className,
+                                      final ClassWriter cw) {
+
+        buildMapUpdateProxyMethod( clazz,
+                                   className,
+                                   cw );
 
     }
 
@@ -229,10 +243,6 @@ public class ShadowProxyFactory {
                 }
             }
         }
-
-        buildConstructor( clazz,
-                          className,
-                          cw );
 
         buildUpdateProxyMethod( fieldTypes,
                                 className,
@@ -709,7 +719,8 @@ public class ShadowProxyFactory {
                            className,
                            DELEGATE_FIELD_NAME,
                            Type.getDescriptor( clazz ) );
-        if ( Collection.class.isAssignableFrom( clazz ) ) {
+        if ( Collection.class.isAssignableFrom( clazz ) ||
+             Map.class.isAssignableFrom( clazz ) ) {
             Label l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitVarInsn( Opcodes.ALOAD,
@@ -742,6 +753,18 @@ public class ShadowProxyFactory {
         mv.visitEnd();
     }
 
+    /**
+     * Creates an update proxy method for Map classes
+     * 
+     * public void updateProxy() {
+     *     this.clear();
+     *     this.addAll( this.delegate );
+     * }
+     * 
+     * @param clazz
+     * @param className
+     * @param cw
+     */
     protected static void buildCollectionUpdateProxyMethod(final Class clazz,
                                                            final String className,
                                                            final ClassWriter cw) {
@@ -779,6 +802,70 @@ public class ShadowProxyFactory {
                             Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
                                                       new Type[]{Type.getType( Collection.class )} ) );
         mv.visitInsn( Opcodes.POP );
+        Label l2 = new Label();
+        mv.visitLabel( l2 );
+        mv.visitInsn( Opcodes.RETURN );
+        Label l3 = new Label();
+        mv.visitLabel( l3 );
+        mv.visitLocalVariable( "this",
+                               "L" + className + ";",
+                               null,
+                               l0,
+                               l3,
+                               0 );
+        mv.visitMaxs( 0,
+                      0 );
+        mv.visitEnd();
+    }
+
+    /**
+     * Creates an update proxy method for Map classes
+     * 
+     * public void updateProxy() {
+     *     this.clear();
+     *     this.putAll( this.delegate );
+     * }
+     * 
+     * @param clazz
+     * @param className
+     * @param cw
+     */
+    protected static void buildMapUpdateProxyMethod(final Class clazz,
+                                                    final String className,
+                                                    final ClassWriter cw) {
+        final MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                                                 ShadowProxyFactory.UPDATE_PROXY,
+                                                 Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                                           new Type[]{} ),
+                                                 null,
+                                                 null );
+        mv.visitCode();
+        final Label l0 = new Label();
+        mv.visitLabel( l0 );
+        // this.clear();
+        mv.visitVarInsn( Opcodes.ALOAD,
+                         0 );
+        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                            className,
+                            "clear",
+                            Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                      new Type[0] ) );
+        Label l1 = new Label();
+        mv.visitLabel( l1 );
+        // this.putAll( this.delegate );
+        mv.visitVarInsn( Opcodes.ALOAD,
+                         0 );
+        mv.visitVarInsn( Opcodes.ALOAD,
+                         0 );
+        mv.visitFieldInsn( Opcodes.GETFIELD,
+                           className,
+                           DELEGATE_FIELD_NAME,
+                           Type.getDescriptor( clazz ) );
+        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                            className,
+                            "putAll",
+                            Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                      new Type[]{Type.getType( Map.class )} ) );
         Label l2 = new Label();
         mv.visitLabel( l2 );
         mv.visitInsn( Opcodes.RETURN );
@@ -1251,7 +1338,7 @@ public class ShadowProxyFactory {
             mv.visitJumpInsn( Opcodes.IFNE,
                               l1 );
             Label l2 = new Label();
-            
+
             //    this.__hashCache = this.delegate.hashCode();
             mv.visitLabel( l2 );
             mv.visitVarInsn( Opcodes.ALOAD,
@@ -1273,7 +1360,7 @@ public class ShadowProxyFactory {
                                Type.INT_TYPE.getDescriptor() );
             // }
             mv.visitLabel( l1 );
-            
+
             // return this.__hashCache;
             mv.visitVarInsn( Opcodes.ALOAD,
                              0 );
