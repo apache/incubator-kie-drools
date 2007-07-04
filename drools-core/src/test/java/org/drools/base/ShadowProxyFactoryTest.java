@@ -1,7 +1,9 @@
 package org.drools.base;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -334,6 +336,48 @@ public class ShadowProxyFactoryTest extends TestCase {
             // proxy must recongnize the original object on equals() calls
             Assert.assertEquals( listProxy,
                                  originalList );
+        } catch ( final Exception e ) {
+            e.printStackTrace();
+            fail( "Error: " + e.getMessage() );
+        }
+    }
+
+    public void testProxyForMaps() {
+        try {
+            // creating original object
+            Map originalMap = new HashMap();
+            originalMap.put( "name", "Edson" );
+            originalMap.put( "surname", "Tirelli" );
+            originalMap.put( "age", "28" );
+            
+            // creating proxy
+            final Class proxy = ShadowProxyFactory.getProxy( originalMap.getClass() );
+            final Map mapProxy = (Map) proxy.getConstructor( new Class[]{originalMap.getClass()} ).newInstance( new Object[]{originalMap} );
+            ((ShadowProxy)mapProxy).setShadowedObject( originalMap );
+
+            // proxy is proxying the values
+            Assert.assertEquals( "Edson",
+                                 mapProxy.get( "name" ) );
+            Assert.assertTrue( mapProxy.containsKey( "age" ) );
+            Assert.assertSame( originalMap,
+                               ((ShadowProxy) mapProxy).getShadowedObject() );
+
+            // proxy must recongnize the original object on equals() calls
+            Assert.assertEquals( mapProxy,
+                                 originalMap );
+            
+            originalMap.remove( "age" );
+            originalMap.put( "hair", "brown" );
+            Assert.assertTrue( mapProxy.containsKey( "age" ) );
+            Assert.assertFalse( mapProxy.containsKey( "hair" ) );
+            
+            ((ShadowProxy)mapProxy).updateProxy();
+            Assert.assertFalse( mapProxy.containsKey( "age" ) );
+            Assert.assertTrue( mapProxy.containsKey( "hair" ) );
+            
+            // proxy must recongnize the original object on equals() calls
+            Assert.assertEquals( mapProxy,
+                                 originalMap );
         } catch ( final Exception e ) {
             e.printStackTrace();
             fail( "Error: " + e.getMessage() );
