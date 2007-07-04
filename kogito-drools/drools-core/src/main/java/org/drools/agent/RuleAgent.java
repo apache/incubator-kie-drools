@@ -21,11 +21,15 @@ import org.drools.RuntimeDroolsException;
 import org.drools.rule.Package;
 
 /**
- * This manages a single rulebase, based on the properties given
- * This one does most of the actual work !
+ * This manages a single rulebase, based on the properties given.
+ * You should only have ONE instance of this agent per rulebase configuration.
+ * You can get the rulebase from this agent repeatedly, as needed, or if you keep the rulebase, 
+ * under most configurations it will be automatically updated. 
+ * 
+ * How this behaves depends on the properties that you pass into it (documented below)
  *
  * CONFIG OPTIONS (to be passed in as properties):
- *  <code>newInstance</code>: means that each time the rules are changed
+ *  <code>newInstance</code>: setting this to "true" means that each time the rules are changed
  *   a new instance of the rulebase is created (as opposed to updated in place)
  *   the default is to update in place. DEFAULT: false. If you set this to true, 
  *   then you will need to call getRuleBase() each time you want to use it. If it is false, 
@@ -33,17 +37,31 @@ import org.drools.rule.Package;
  *   (as well as any stateful sessions). 
  *
  *  <code>poll</code>The number of seconds to poll for changes. Polling 
- *  happens in a background thread.
+ *  happens in a background thread. eg: poll=30 #30 second polling.
  *
  *  <code>file</code>: a space seperated listing of files that make up the 
  *  packages of the rulebase. Each package can only be in one file. You can't have 
- *  packages spread across files.
+ *  packages spread across files. eg: file=/your/dir/file1.pkg file=/your/dir/file2.pkg
  *  
  *  <code>dir</code>: a single file system directory to monitor for packages.
  *  As with files, each package must be in its own file.
+ *  eg: dir=/your/dir
  *  
  *  <code>url</code>: A space seperated URL to a binary rulebase in the BRMS.
- * 
+ *  eg: url=http://server/drools-jbrms/packages/somePakage/VERSION_1
+ *  For URL you will also want a local cache directory setup:
+ *  eg: localCacheDir=/some/dir/that/exists
+ *  This is needed so that the runtime can startup and load packages even if the BRMS
+ *  is not available (or the network).
+ *  
+ *  <code>name</code>
+ *  the Name is used in any logging, so each agent can be differentiated (you may have one agent per rulebase
+ *  that you need in your application).
+ *  
+ *  There is also an AgentEventListener interface which you can provide which will call back when lifecycle 
+ *  events happen, or errors/warnings occur. As the updating happens in a background thread, this may be important.
+ *  The default event listener logs to the System.err output stream.
+ *  
  * @author Michael Neale
  */
 public class RuleAgent {
