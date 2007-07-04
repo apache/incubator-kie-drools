@@ -417,7 +417,7 @@ public class Rete extends ObjectSource
         private void buildCache(final Object object) throws FactException {
             final List cache = new ArrayList();
 
-            final Iterator it = ruleBase.getRete().getObjectTypeNodes().iterator();
+            final Iterator it = ruleBase.getRete().getObjectTypeNodes().newIterator();
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 final ObjectTypeNode node = (ObjectTypeNode) entry.getValue();
                 if ( node.matches( object ) ) {

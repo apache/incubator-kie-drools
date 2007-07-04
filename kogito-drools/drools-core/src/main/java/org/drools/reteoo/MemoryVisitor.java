@@ -38,7 +38,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
     public void visitRete(final Rete rete) {
         final ObjectHashMap map = rete.getObjectTypeNodes();
 
-        final Iterator it = map.iterator();
+        final Iterator it = map.newIterator();
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             visit( entry.getValue() );
         }
