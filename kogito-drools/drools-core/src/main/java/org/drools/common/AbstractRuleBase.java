@@ -249,6 +249,10 @@ abstract public class AbstractRuleBase
     public Package[] getPackages() {
         return (Package[]) this.pkgs.values().toArray( new Package[this.pkgs.size()] );
     }
+    
+    public Map getPackagesMap() {
+        return this.pkgs;
+    }
 
     public Map getGlobals() {
         return this.globals;
@@ -549,11 +553,11 @@ abstract public class AbstractRuleBase
                                                                                       this.packageClassLoader );
 
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) streamWithLoader.readObject();
+        
         synchronized ( this.pkgs ) {
             workingMemory.setRuleBase( this );
+            return (StatefulSession) workingMemory;
         }
-
-        return (StatefulSession) workingMemory;
     }
 
     public void addClass(String className,

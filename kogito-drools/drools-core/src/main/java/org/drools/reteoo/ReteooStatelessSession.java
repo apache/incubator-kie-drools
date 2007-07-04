@@ -49,18 +49,20 @@ public class ReteooStatelessSession
     }
 
     public InternalWorkingMemory newWorkingMemory() {
-        InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
-                                                            this.ruleBase );
+        synchronized ( this.ruleBase.getPackagesMap() ) {
+            InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
+                                                                this.ruleBase );
 
-        wm.setGlobals( globals );
-        if ( globalResolver != null ) {
-            wm.setGlobalResolver( this.globalResolver );
+            wm.setGlobals( globals );
+            if ( globalResolver != null ) {
+                wm.setGlobalResolver( this.globalResolver );
+            }
+            wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
+            wm.setAgendaEventSupport( this.agendaEventSupport );
+            wm.setRuleFlowEventSupport( ruleFlowEventSupport );
+
+            return wm;
         }
-        wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
-        wm.setAgendaEventSupport( this.agendaEventSupport );
-        wm.setRuleFlowEventSupport( ruleFlowEventSupport );
-
-        return wm;
     }
 
     public void addEventListener(final WorkingMemoryEventListener listener) {
@@ -113,16 +115,16 @@ public class ReteooStatelessSession
         this.globalResolver = globalResolver;
     }
 
-    public void execute(Object object) {        
+    public void execute(Object object) {
         InternalWorkingMemory wm = newWorkingMemory();
-        
+
         wm.insert( object );
         wm.fireAllRules( this.agendaFilter );
     }
 
     public void execute(Object[] array) {
         InternalWorkingMemory wm = newWorkingMemory();
-        
+
         for ( int i = 0, length = array.length; i < length; i++ ) {
             wm.insert( array[i] );
         }
@@ -131,7 +133,7 @@ public class ReteooStatelessSession
 
     public void execute(Collection collection) {
         InternalWorkingMemory wm = newWorkingMemory();
-        
+
         for ( Iterator it = collection.iterator(); it.hasNext(); ) {
             wm.insert( it.next() );
         }
@@ -140,37 +142,37 @@ public class ReteooStatelessSession
 
     public void asyncExecute(final Object object) {
         InternalWorkingMemory wm = newWorkingMemory();
-        
+
         final AssertObject assertObject = new AssertObject( object );
         ExecutorService executor = this.ruleBase.getConfiguration().getExecutorService();
-        executor.setCommandExecutor( new CommandExecutor( wm ) );        
+        executor.setCommandExecutor( new CommandExecutor( wm ) );
         executor.submit( assertObject );
         executor.submit( new FireAllRules( this.agendaFilter ) );
     }
 
     public void asyncExecute(final Object[] array) {
         InternalWorkingMemory wm = newWorkingMemory();
-        
+
         final AssertObjects assertObjects = new AssertObjects( array );
         ExecutorService executor = this.ruleBase.getConfiguration().getExecutorService();
-        executor.setCommandExecutor( new CommandExecutor( wm ) );        
+        executor.setCommandExecutor( new CommandExecutor( wm ) );
         executor.submit( assertObjects );
         executor.submit( new FireAllRules( this.agendaFilter ) );
     }
 
     public void asyncExecute(final Collection collection) {
         InternalWorkingMemory wm = newWorkingMemory();
-        
+
         final AssertObjects assertObjects = new AssertObjects( collection );
         ExecutorService executor = this.ruleBase.getConfiguration().getExecutorService();
-        executor.setCommandExecutor( new CommandExecutor( wm ) );        
+        executor.setCommandExecutor( new CommandExecutor( wm ) );
         executor.submit( assertObjects );
         executor.submit( new FireAllRules( this.agendaFilter ) );
     }
 
     public StatelessSessionResult executeWithResults(Object object) {
         InternalWorkingMemory wm = newWorkingMemory();
-        
+
         wm.insert( object );
         wm.fireAllRules( this.agendaFilter );
         return new ReteStatelessSessionResult( wm );
@@ -178,7 +180,7 @@ public class ReteooStatelessSession
 
     public StatelessSessionResult executeWithResults(Object[] array) {
         InternalWorkingMemory wm = newWorkingMemory();
-        
+
         for ( int i = 0, length = array.length; i < length; i++ ) {
             wm.insert( array[i] );
         }
@@ -188,7 +190,7 @@ public class ReteooStatelessSession
 
     public StatelessSessionResult executeWithResults(Collection collection) {
         InternalWorkingMemory wm = newWorkingMemory();
-        
+
         for ( Iterator it = collection.iterator(); it.hasNext(); ) {
             wm.insert( it.next() );
         }
