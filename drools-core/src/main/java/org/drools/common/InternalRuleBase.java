@@ -52,6 +52,8 @@ public interface InternalRuleBase
     public RuleBaseConfiguration getConfiguration();
     
     public Package getPackage(String name);
+    
+    public Map getPackagesMap();
 
     void disposeStatefulSession(StatefulSession statefulSession);
 
