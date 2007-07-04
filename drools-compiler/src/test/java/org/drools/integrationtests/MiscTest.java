@@ -61,7 +61,6 @@ import org.drools.State;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
-import org.drools.brms.client.modeldriven.brl.RuleAttribute;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.compiler.DrlParser;

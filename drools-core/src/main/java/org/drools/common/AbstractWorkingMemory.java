@@ -1167,7 +1167,7 @@ public abstract class AbstractWorkingMemory
                                                                                       this.agenda.getDormantActivations() );
             doRetract( handle,
                        propagationContext );
-
+            
             if ( (originalObject != object) || (this.ruleBase.getConfiguration().getAssertBehaviour() != AssertBehaviour.IDENTITY) ) {
                 // as assertMap may be using an "identity" equality comparator,
                 // we need to remove the handle from the map, before replacing the object

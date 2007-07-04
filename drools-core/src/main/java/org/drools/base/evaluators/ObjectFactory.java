@@ -19,6 +19,7 @@ package org.drools.base.evaluators;
 import java.util.Collection;
 
 import org.drools.base.BaseEvaluator;
+import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
@@ -104,6 +105,9 @@ public class ObjectFactory
             if ( value1 == null ) {
                 return value2 == null;
             }
+            if( value2 != null && value2 instanceof ShadowProxy ) {
+                return value2.equals( value1 );
+            }
             return value1.equals( value2 );
         }
 
@@ -113,6 +117,9 @@ public class ObjectFactory
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right == null;
             }
+            if( ((ObjectVariableContextEntry) context).right != null && ((ObjectVariableContextEntry) context).right instanceof ShadowProxy ) {
+                return ((ObjectVariableContextEntry) context).right.equals( value );
+            }
             return value.equals( ((ObjectVariableContextEntry) context).right );
         }
 
@@ -121,6 +128,9 @@ public class ObjectFactory
             final Object value = context.extractor.getValue( workingMemory, right );
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value == null;
+            }
+            if( value != null && value instanceof ShadowProxy ) {
+                return value.equals( ((ObjectVariableContextEntry) context).left );
             }
             return ((ObjectVariableContextEntry) context).left.equals( value );
         }
@@ -133,6 +143,9 @@ public class ObjectFactory
             final Object value2 = extractor2.getValue( workingMemory, object2 );
             if ( value1 == null ) {
                 return value2 == null;
+            }
+            if( value2 != null && value2 instanceof ShadowProxy ) {
+                return value2.equals( value1 );
             }
             return value1.equals( value2 );
         }
