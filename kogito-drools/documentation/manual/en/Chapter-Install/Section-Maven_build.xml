@@ -6,99 +6,44 @@
     <title>Building the Source</title>
 
     <para>Now that we have the source the next step is to build and install
-    the source. We do this with <indexterm>
-        <primary>Ant</primary>
-      </indexterm>Ant, which uses maven 2 under the covers to get the needed
-    dependencies (you don't need to have maven 2 installed to build). Note
-    that the plug in is built seperatly, but the build process will update the
-    plug ins dependencies (refer to the section on building the plug in if you
-    need to build a new version of the plug in).</para>
+    the source. We do this with</para>
 
-    <para>Type <literal>'ant' </literal>to get a listing of what capabilities
-    the build script has (from the root of the project). You should then see a
-    listing which contains further instructions: <programlisting>
-<literal>C:\Projects\jboss-rules-new&gt;ant
-Buildfile: build.xml
+    <para>Since version 3.1 Drools uses <indexterm>
+        <primary>maven2</primary>
+      </indexterm> as default to build the system. There are two profiles
+    available which enable the associated modules "documentation" and
+    "eclipse"; this enables quicker building of the core modules for
+    developers. The eclipse profile will download eclipse into the
+    drools-eclipse folder, which is over 100MB download, however this only
+    needs to be done once; if you wish you can move that eclipse download into
+    another location and specify it with
+    -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror. The
+    following builds all the jars, the documentation and the eclipse zip with
+    a local folder specified to avoid downloading eclipse:</para>
 
-help:
-     [echo] Drools Build Help
-     [echo] -----------------
-     [echo]
-     [echo] The build process is for the following four modules:
-     [echo] drools-core
-     [echo] drools-compiler
-     [echo] drools-decisiontables
-     [echo] drools-jsr94
-     [echo]
-     [echo] Further to this there are two Eclipse project:
-     [echo] drools-examples - To use open Eclipse and import.
-     [echo]                   Requires the Drools Eclipse plugin.
-     [echo]                   Either build the plugin from drools-ide
-     [echo]                   or install from the Eclipse update site
-     [echo]                   http://anonsvn.labs.jboss.com/labs/jbossrules/updates
-     [echo] drools-ide      - To use open Eclipse and import.
-     [echo]                   Select export and plugin fragements to
-     [echo]                   generate the Drools Eclipse plugin
-     [echo]                   Depends on all the depencies being copied
-     [echo]                   to its lib directory at the end of build-all,
-     [echo]                   which calls copy-deps.
-     [echo]
-     [echo] Targets
-     [echo] -----
-     [echo]
-     [echo] clean-all - cleans all directories
-     [echo]
-     [echo] build-all - builds all modules
-     [echo]
-     [echo] javadocs  - generates the javadoc at target/docs
-     [echo]
-     [echo] manual    - generates the docbook documentation in
-     [echo]             html and single_html format at target/docs
-     [echo]
-     [echo] dist-all  - generates the distribution builds for
-     [echo]             src, bin, bin-withdeps and examples
-     [echo]
-     [echo] Each module can individually be executed with clean, compile,
-     [echo] test and build. To use simply use the following commands,
-     [echo] replace ${module} with one of the module names:
-     [echo] clean-${module}
-     [echo] compile-${module}
-     [echo] test-${module}
-     [echo] build-${module}
-     [echo]
-     [echo] Generates specific distribution builds:
-     [echo] dist-src
-     [echo] dist-bin
-     [echo] dist-bin-withdeps
-     [echo] dist-examples
-     [echo]
-     [echo] You may also pass the following system properties:
-     [echo] -Dtest.skip=true
-     [echo] -Djavadocs.skip=true
-     [echo] -Dmanual.skip=true
-     [echo]
-     [echo] Targets may be combined:
-     [echo] ant -Dtest.skip clean-all build-all
-     [echo]
-     [echo] For more help use the build system to generate the manual
-     [echo] or you can find the manual online at:
-     [echo] http://labs.jboss.com/portal/jbossrules/docs/index.html
+    <para><programlisting>mvn -Declipse=true -Ddocumentation=true clean install -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror </programlisting></para>
 
-BUILD SUCCESSFUL
+    <para>You can produce distribution builds, which puts everything into
+    zips, as follows:<programlisting>mvn -Declipse=true -Ddocumentation=true clean install -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror
 
-</literal>
-</programlisting></para>
+mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly:assembly -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror
+    </programlisting></para>
 
-    <para>The most common pair of tasks to run is 'ant clean-all build-all'
-    which will clear old artifacts, and then test and built the source, and
-    report on any errors.</para>
+    <para>Note that install must be done first as javadoc:javadoc won't work
+    unless the jars are in the local maven repo, but the tests can be skipped
+    on the second run. assembly:assembly fails unless you increase the
+    available memory to Maven, on windows the following command worked well:
+    set MAVEN_OPTS=-Xmx512m</para>
+
+    <para>Type mvn clean to clear old artifacts, and then test and built the
+    source, and report on any errors.</para>
 
     <para>The resulting jars are put in the /target directory from the top
     level of the project.</para>
 
-    <para>As Ant builds each module it will install the resulting jars in the
-    local Maven 2 repository automatically. Where it can be easily used from
-    other project <literal>pom.xml</literal> or copied else where.</para>
+    <para>As maven builds each module it will install the resulting jars in
+    the local Maven 2 repository automatically. Where it can be easily used
+    from other project <literal>pom.xml</literal> or copied else where.</para>
 
     <screenshot>
       <screeninfo>Installed Drools Jars</screeninfo>

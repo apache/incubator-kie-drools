@@ -7,30 +7,40 @@
 
     <releaseinfo>4.0.0.SNAPSHOT</releaseinfo>
 
-
     <author>
       <firstname>Mark</firstname>
+
       <surname>Proctor</surname>
     </author>
 
     <author>
       <firstname>Michael</firstname>
+
       <surname>Neale</surname>
     </author>
 
     <author>
       <firstname>Michael</firstname>
+
       <surname>Frandsen</surname>
     </author>
-    
+
     <author>
-      <firstname>Sam</firstname>      
+      <firstname>Sam</firstname>
+
       <surname>Griffith Jr.</surname>
     </author>
 
     <author>
-      <firstname>Edson</firstname>      
+      <firstname>Edson</firstname>
+
       <surname>Tirelli</surname>
+    </author>
+
+    <author>
+      <firstname>Fernando</firstname>
+
+      <surname>Meyer</surname>
     </author>
   </bookinfo>
 
@@ -129,12 +139,13 @@
       <xi:include href="Chapter-IDE/Section-QuickStart.xml" />
     </chapter>
 
-	<chapter>
-		<title>The BRMS (Business Rule Management System)</title>
-		<xi:include href="Chapter-BRMS/Section-Introduction.xml" />
-		<xi:include href="Chapter-BRMS/Section-AdminGuide.xml" />
-	</chapter>
+    <chapter>
+      <title>The BRMS (Business Rule Management System)</title>
 
+      <xi:include href="Chapter-BRMS/Section-Introduction.xml" />
+
+      <xi:include href="Chapter-BRMS/Section-AdminGuide.xml" />
+    </chapter>
 
     <chapter>
       <title>The Java Rule Engine API</title>
