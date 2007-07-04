@@ -331,12 +331,169 @@
   </section>
 
   <section>
-    <title>Integrating with your applications</title>
+    <title>Deployment: Integrating rules with your applications</title>
 
-    <para>[ how to use agent etc... ]</para>
-  </section>
+    <para>Its all very interesting to manage rules, but how to you use or
+    "consume" them in your application? This section covers the usage of the
+    RuleAgent deployment component that automates most of this for you.</para>
 
-  <section>
-    <title>Using the RuleAgent for deployment</title>
+    <section>
+      <title>The Rule Agent</title>
+
+      <para>The rule agent is a component which is embedded in the core
+      runtime of the rules engine. To use this, you don't need any extra
+      components. In fact, if you are using the BRMS, your application should
+      only need to include the drools-core.jar in its classpath, and no other
+      rules specific dependencies.</para>
+
+      <para>Once you have "built" your rules in a package in the BRMS, you are
+      ready to use the agent in your target application.</para>
+
+      <para>To use the rule agent, you will use a call in your applications
+      code like:</para>
+
+      <programlisting>RuleAgent agent = RuleAgent.newInstance("/MyRules.properties");     
+RuleBase rb = agent.getRuleBase(); 
+rb.newStatefulSession.... 
+//now assert your facts into the session and away you go !
+</programlisting>
+
+      <para>IMPORTANT: You should only have one instance of the RuleAgent per
+      rulebase you are using. This means you should (for example) keep the
+      RuleBase in JNDI.</para>
+
+      <para>This assumes that there is a MyRules.properties in the root of
+      your classpath. You can also pass in a Properties object with the
+      parameters set up (the parameters are discussed next).</para>
+
+      <para>The following shows the content of MyRules.properties:
+      <programlisting>##
+## RuleAgent configuration file example
+##
+
+newInstance=true
+file=/foo/bar/boo.pkg /foo/bar/boo2.pkg
+dir=/my/dir
+url=http://some.url/here http://some.url/here
+localCacheDir=/foo/bar/cache
+poll=30
+
+
+name=MyConfig</programlisting></para>
+
+      <para>You can only have one type of key in each configuration (eg only
+      one "file", "dir" etc - even though you can specify multiple items by
+      space separating them).</para>
+
+      <para>Referring to the above example, the "keys" in the properties are:
+      <itemizedlist>
+          <listitem>
+            <para>newInstance</para>
+
+            <para>Setting this to "true" means that the RuleBase instance will
+            be created fresh each time there is a change. this means you need
+            to do agent.getRuleBase() to get the new updated rulebase (any
+            existing ones in use will be untouched). The default is false,
+            which means rulebases are updated "in place" - ie you don't need
+            to keep calling getRuleBase() to make sure you have the latest
+            rules (also any StatefulSessions will be updated automatically
+            with rule changes).</para>
+          </listitem>
+
+          <listitem>
+            <para>file</para>
+
+            <para>This is a space-separated list of files - each file is a
+            binary package as exported by the BRMS. You can have one or many.
+            The name of the file is not important. Each package must be in its
+            own file.</para>
+          </listitem>
+
+          <listitem>
+            <para>dir</para>
+
+            <para>This is similar to file, except that instead of specifying a
+            list of files you specify a directory, and it will pick up all the
+            files in there (each one is a package) and add them to the
+            rulebase. Each package must be in its own file.</para>
+          </listitem>
+
+          <listitem>
+            <para>url</para>
+
+            <para>This is a space separated list of URLs to the BRMS which is
+            exposing the packages (see below for more details).</para>
+          </listitem>
+
+          <listitem>
+            <para>localCacheDir</para>
+
+            <para>This is used in conjunction with the url above, so that if
+            the BRMS is down (the url is not accessable) then if the runtime
+            has to start up, it can start up with the last known "good"
+            versions of the packages.</para>
+          </listitem>
+
+          <listitem>
+            <para>poll</para>
+
+            <para>This is set to the number of seconds to check for changes to
+            the resources (a timer is used).</para>
+          </listitem>
+
+          <listitem>
+            <para>name</para>
+
+            <para>This is used to specify the name of the agent which is used
+            when logging events (as typically you would have multiple agents
+            in a system).</para>
+          </listitem>
+        </itemizedlist></para>
+
+      <para>Following shows the deployment screen of the BRMS, which provides
+      URLs and downloads of packages. <figure>
+          <title>Snapshot deployment</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="SnapshotDeploy.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure></para>
+
+      <para>You can see the "Package URI" - this is the URL that you would
+      copy and paste into the agent .properties file to specify that you want
+      this package. It specifies an exact version (in this case to a snapshot)
+      - each snapshot has its own URL. If you want the "latest" - then replace
+      "NewSnapshot" with "LATEST".</para>
+
+      <para>You can also download a .pkg file from here, which you can drop in
+      a directory and use the "file" or "dir" feature of the RuleAgent if
+      needed (in some cases people will not want to have the runtime
+      automatically contact the BRMS for updates - but that is generally the
+      easiest way for many people).</para>
+    </section>
+
+    <section>
+      <title>Manual deployment</title>
+
+      <para>This section is only needed for advanced users who are integrating
+      deployment into their own mechanism. Normally you should use the rule
+      agent.</para>
+
+      <para>For those who do not wish to use the automatic deployment of the
+      RuleAgent, "rolling your own" is quite simple. The binary packages
+      emitted by the BRMS are serialized Package objects. You can deserialize
+      them and add them into any rulebase - essentially that is all you need
+      to do.</para>
+
+      <para>From the BRMS, binary packages are provided either from the latest
+      version of a package (once you have successfully validated and built a
+      package) or from the deployment snapshots. The URLs that the BRMS web
+      application exposes provide the binary package via http. You can also
+      issue a "HEAD" command to get the last time a package was
+      updated.</para>
+    </section>
   </section>
 </section>
