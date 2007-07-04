@@ -35,6 +35,15 @@
 
     <listitem>
       <para><indexterm>
+          <primary>maven</primary>
+        </indexterm>Maven 2.0.7</para>
+
+      <para>http://maven.apache.org/</para>
+    </listitem>
+
+
+    <listitem>
+      <para><indexterm>
           <primary>ant</primary>
         </indexterm>Ant 1.6</para>
 
@@ -43,21 +52,22 @@
 
   </itemizedlist>
 
-  <para>Ensure the executeables for ant and java are in your <indexterm>
+  <para>Ensure the executables for ant, maven and java are in your <indexterm>
       <primary>path</primary>
     </indexterm>path. The examples given illustrative and are for a win32
   system:</para>
 
-  <literallayout>Path=D:\java\j2sdk1.4.2_10\bin;D:\java\apache-ant-1.6.5\bin;</literallayout>
+  <literallayout>Path=D:\java\j2sdk1.4.2_10\bin;D:\java\apache-ant-1.6.5\bin;D:\java\maven2.0.7\bin</literallayout>
 
   <para>Following environment variables will also need to be set. The examples
   given illustrative and are for a win32 system::</para>
 
   <literallayout>JAVA_HOME=D:\java\j2sdk1.4.2_10
 ANT_HOME=D:\java\apache-ant-1.6.5
+MAVEN_HOME=D:\java\maven2.0.7
 
 </literallayout>
 	<para>
-		Past releases used to use maven 2 as the build mechanism, but now ant is used as the primary mechanism. Maven is used underneath the covers as the mechanism for managing project dependencies etc. (You can of course still have maven 2 installed and use it if needed - there is a pom.xml structure for each module - this is what is used for dependency management).
+		Past releases used to use ant as the build mechanism, but now maven is used as the primary mechanism. Ant is used for document building proposes
 	</para>
 </section>
