@@ -73,7 +73,7 @@ abstract public class AbstractRuleBase
     protected Map                                   pkgs;
 
     protected Map                                   processes;
-    
+
     protected Map                                   agendaGroupRuleTotals;
 
     protected transient CompositePackageClassLoader packageClassLoader;
@@ -98,7 +98,7 @@ abstract public class AbstractRuleBase
     public AbstractRuleBase() {
 
     }
-    
+
     public synchronized int nextWorkingMemoryCounter() {
         return this.workingMemoryCounter++;
     }
@@ -120,7 +120,7 @@ abstract public class AbstractRuleBase
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
         this.factHandleFactory = factHandleFactory;
-        
+
         if ( this.config.isSequential() ) {
             this.agendaGroupRuleTotals = new HashMap();
         }
@@ -257,6 +257,7 @@ abstract public class AbstractRuleBase
     public Map getAgendaGroupRuleTotals() {
         return this.agendaGroupRuleTotals;
     }
+
     /**
      * Add a <code>Package</code> to the network. Iterates through the
      * <code>Package</code> adding Each individual <code>Rule</code> to the
@@ -275,71 +276,74 @@ abstract public class AbstractRuleBase
      */
     public synchronized void addPackage(final Package newPkg) throws PackageIntegrationException {
         newPkg.checkValidity();
-        final Package pkg = (Package) this.pkgs.get( newPkg.getName() );
-        // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
-        // in the working memory array 
-        int lastAquiredLock = 0;
-        // get a snapshot of current working memories for locking
-        final InternalWorkingMemory[] wms = getWorkingMemories();
 
-        try {
-            // Iterate each workingMemory and lock it
-            // This is so we don't update the Rete network during propagation
-            for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
-                wms[lastAquiredLock].getLock().lock();
-            }
+        synchronized ( this.pkgs ) {
+            final Package pkg = (Package) this.pkgs.get( newPkg.getName() );
+            // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
+            // in the working memory array 
+            int lastAquiredLock = 0;
+            // get a snapshot of current working memories for locking
+            final InternalWorkingMemory[] wms = getWorkingMemories();
 
-            if ( pkg != null ) {
-                mergePackage( pkg,
-                              newPkg );
-            } else {
-                this.pkgs.put( newPkg.getName(),
-                               newPkg );
-            }
+            try {
+                // Iterate each workingMemory and lock it
+                // This is so we don't update the Rete network during propagation
+                for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
+                    wms[lastAquiredLock].getLock().lock();
+                }
 
-            final Map newGlobals = newPkg.getGlobals();
+                if ( pkg != null ) {
+                    mergePackage( pkg,
+                                  newPkg );
+                } else {
+                    this.pkgs.put( newPkg.getName(),
+                                   newPkg );
+                }
 
-            // Check that the global data is valid, we cannot change the type
-            // of an already declared global variable
-            for ( final Iterator it = newGlobals.keySet().iterator(); it.hasNext(); ) {
-                final String identifier = (String) it.next();
-                final Class type = (Class) newGlobals.get( identifier );
-                final boolean f = this.globals.containsKey( identifier );
-                if ( f ) {
-                    final boolean y = !this.globals.get( identifier ).equals( type );
-                    if ( f && y ) {
-                        throw new PackageIntegrationException( pkg );
+                final Map newGlobals = newPkg.getGlobals();
+
+                // Check that the global data is valid, we cannot change the type
+                // of an already declared global variable
+                for ( final Iterator it = newGlobals.keySet().iterator(); it.hasNext(); ) {
+                    final String identifier = (String) it.next();
+                    final Class type = (Class) newGlobals.get( identifier );
+                    final boolean f = this.globals.containsKey( identifier );
+                    if ( f ) {
+                        final boolean y = !this.globals.get( identifier ).equals( type );
+                        if ( f && y ) {
+                            throw new PackageIntegrationException( pkg );
+                        }
                     }
                 }
-            }
-            this.globals.putAll( newGlobals );
+                this.globals.putAll( newGlobals );
 
-            final Rule[] rules = newPkg.getRules();
+                final Rule[] rules = newPkg.getRules();
 
-            for ( int i = 0; i < rules.length; ++i ) {
-                addRule( rules[i] );
-            }
-
-            //and now the rule flows
-            if ( newPkg.getRuleFlows() != Collections.EMPTY_MAP ) {
-                Map flows = newPkg.getRuleFlows();
-                for ( Iterator iter = flows.entrySet().iterator(); iter.hasNext(); ) {
-                    Entry flow = (Entry) iter.next();
-                    this.processes.put( flow.getKey(),
-                                        flow.getValue() );
+                for ( int i = 0; i < rules.length; ++i ) {
+                    addRule( rules[i] );
                 }
-            }
 
-            this.packageClassLoader.addClassLoader( newPkg.getPackageCompilationData().getClassLoader() );
+                //and now the rule flows
+                if ( newPkg.getRuleFlows() != Collections.EMPTY_MAP ) {
+                    Map flows = newPkg.getRuleFlows();
+                    for ( Iterator iter = flows.entrySet().iterator(); iter.hasNext(); ) {
+                        Entry flow = (Entry) iter.next();
+                        this.processes.put( flow.getKey(),
+                                            flow.getValue() );
+                    }
+                }
 
-        } finally {
-            // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
-            // of the new rule addition. Unlock after fireAllRules();
+                this.packageClassLoader.addClassLoader( newPkg.getPackageCompilationData().getClassLoader() );
 
-            // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
-            for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
-                wms[lastAquiredLock].fireAllRules();
-                wms[lastAquiredLock].getLock().unlock();
+            } finally {
+                // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
+                // of the new rule addition. Unlock after fireAllRules();
+
+                // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
+                for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
+                    wms[lastAquiredLock].fireAllRules();
+                    wms[lastAquiredLock].getLock().unlock();
+                }
             }
         }
 
@@ -402,88 +406,92 @@ abstract public class AbstractRuleBase
     }
 
     public synchronized void removePackage(final String packageName) {
-        final Package pkg = (Package) this.pkgs.get( packageName );
+        synchronized ( this.pkgs ) {
+            final Package pkg = (Package) this.pkgs.get( packageName );
 
-        // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
-        // in the working memory array 
-        int lastAquiredLock = 0;
-        // get a snapshot of current working memories for locking
-        final InternalWorkingMemory[] wms = getWorkingMemories();
+            // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
+            // in the working memory array 
+            int lastAquiredLock = 0;
+            // get a snapshot of current working memories for locking
+            final InternalWorkingMemory[] wms = getWorkingMemories();
 
-        try {
-            // Iterate each workingMemory and lock it
-            // This is so we don't update the Rete network during propagation
-            for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
-                wms[lastAquiredLock].getLock().lock();
-            }
-
-            final Rule[] rules = pkg.getRules();
-
-            for ( int i = 0; i < rules.length; ++i ) {
-                removeRule( rules[i] );
-            }
-
-            this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
-
-            pkg.clear();
-
-            // getting the list of referenced globals 
-            final Set referencedGlobals = new HashSet();
-            for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
-                final org.drools.rule.Package pkgref = (org.drools.rule.Package) it.next();
-                if ( pkgref != pkg ) {
-                    referencedGlobals.addAll( pkgref.getGlobals().keySet() );
+            try {
+                // Iterate each workingMemory and lock it
+                // This is so we don't update the Rete network during propagation
+                for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
+                    wms[lastAquiredLock].getLock().lock();
                 }
-            }
-            // removing globals declared inside the package that are not shared
-            for ( final Iterator it = pkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
-                final String globalName = (String) it.next();
-                if ( !referencedGlobals.contains( globalName ) ) {
-                    this.globals.remove( globalName );
-                }
-            }
-            // removing the package itself from the list
-            this.pkgs.remove( pkg.getName() );
-        } finally {
-            // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
-            // of the new rule addition. Unlock after fireAllRules();
 
-            // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
-            for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
-                wms[lastAquiredLock].fireAllRules();
-                wms[lastAquiredLock].getLock().unlock();
+                final Rule[] rules = pkg.getRules();
+
+                for ( int i = 0; i < rules.length; ++i ) {
+                    removeRule( rules[i] );
+                }
+
+                this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
+
+                pkg.clear();
+
+                // getting the list of referenced globals 
+                final Set referencedGlobals = new HashSet();
+                for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
+                    final org.drools.rule.Package pkgref = (org.drools.rule.Package) it.next();
+                    if ( pkgref != pkg ) {
+                        referencedGlobals.addAll( pkgref.getGlobals().keySet() );
+                    }
+                }
+                // removing globals declared inside the package that are not shared
+                for ( final Iterator it = pkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
+                    final String globalName = (String) it.next();
+                    if ( !referencedGlobals.contains( globalName ) ) {
+                        this.globals.remove( globalName );
+                    }
+                }
+                // removing the package itself from the list
+                this.pkgs.remove( pkg.getName() );
+            } finally {
+                // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
+                // of the new rule addition. Unlock after fireAllRules();
+
+                // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
+                for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
+                    wms[lastAquiredLock].fireAllRules();
+                    wms[lastAquiredLock].getLock().unlock();
+                }
             }
         }
     }
 
-    public synchronized void removeRule(final String packageName,
-                                        final String ruleName) {
-        final Package pkg = (Package) this.pkgs.get( packageName );
-        final Rule rule = pkg.getRule( ruleName );
+    public void removeRule(final String packageName,
+                           final String ruleName) {
+        synchronized ( this.pkgs ) {
+            final Package pkg = (Package) this.pkgs.get( packageName );
+            final Rule rule = pkg.getRule( ruleName );
 
-        // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
-        // in the working memory array 
-        int lastAquiredLock = 0;
-        // get a snapshot of current working memories for locking
-        final InternalWorkingMemory[] wms = getWorkingMemories();
+            // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
+            // in the working memory array 
+            int lastAquiredLock = 0;
+            // get a snapshot of current working memories for locking
+            final InternalWorkingMemory[] wms = getWorkingMemories();
 
-        try {
-            // Iterate each workingMemory and lock it
-            // This is so we don't update the Rete network during propagation
-            for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
-                wms[lastAquiredLock].getLock().lock();
-            }
+            try {
+                // Iterate each workingMemory and lock it
+                // This is so we don't update the Rete network during propagation
+                for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
+                    wms[lastAquiredLock].getLock().lock();
+                }
 
-            removeRule( rule );
-            pkg.removeRule( rule );
+                removeRule( rule );
+                pkg.removeRule( rule );
 
-        } finally {
-            // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
-            // of the new rule addition. Unlock after fireAllRules();
+            } finally {
+                // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
+                // of the new rule addition. Unlock after fireAllRules();
 
-            // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
-            for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
-                wms[lastAquiredLock].getLock().unlock();
+                // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
+                for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
+                    wms[lastAquiredLock].getLock().unlock();
+                }
             }
         }
     }
@@ -511,7 +519,7 @@ abstract public class AbstractRuleBase
         return (Package) this.pkgs.get( name );
     }
 
-    public StatefulSession[] getStatefulSessions() {        
+    public StatefulSession[] getStatefulSessions() {
         return (StatefulSession[]) this.statefulSessions.toArray( new StatefulSession[this.statefulSessions.size()] );
     }
 
@@ -534,14 +542,16 @@ abstract public class AbstractRuleBase
                                                                           ClassNotFoundException {
 
         if ( this.config.isSequential() ) {
-            throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true");
+            throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
-        
+
         final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( stream,
                                                                                       this.packageClassLoader );
 
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) streamWithLoader.readObject();
-        workingMemory.setRuleBase( this );
+        synchronized ( this.pkgs ) {
+            workingMemory.setRuleBase( this );
+        }
 
         return (StatefulSession) workingMemory;
     }

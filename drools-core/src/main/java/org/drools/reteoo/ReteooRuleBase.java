@@ -126,7 +126,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         super( id,
                config,
                factHandleFactory );
-        this.rete = new Rete(this);
+        this.rete = new Rete( this );
         this.reteooBuilder = new ReteooBuilder( this );
     }
 
@@ -218,41 +218,44 @@ public class ReteooRuleBase extends AbstractRuleBase {
      */
     public synchronized StatefulSession newStatefulSession(final boolean keepReference) {
         if ( this.config.isSequential() ) {
-            throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true");
+            throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
+        ReteooStatefulSession session = null;
         
-        ExecutorService executor = this.config.getExecutorService();
-        final ReteooStatefulSession session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
-                                                                         this,
-                                                                         executor );
-        
-        
-        executor.setCommandExecutor( new CommandExecutor( session ) );
+        synchronized ( this.pkgs ) {
+            ExecutorService executor = this.config.getExecutorService();
+            session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
+                                                 this,
+                                                 executor );
 
-        if ( keepReference ) {
-            super.addStatefulSession( session );
+            executor.setCommandExecutor( new CommandExecutor( session ) );
+
+            if ( keepReference ) {
+                super.addStatefulSession( session );
+            }
+
+            final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
+
+            session.queueWorkingMemoryAction( session.new WorkingMemoryReteAssertAction( handle,
+                                                                                         false,
+                                                                                         true,
+                                                                                         null,
+                                                                                         null ) );
         }
-
-        final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
-
-        session.queueWorkingMemoryAction( session.new WorkingMemoryReteAssertAction( handle,
-                                                                                     false,
-                                                                                     true,
-                                                                                     null,
-                                                                                     null ) );
-
         return session;
     }
-    
+
     public StatelessSession newStatelessSession() {
-        
+
         //orders the rules
         if ( this.config.isSequential() ) {
             this.reteooBuilder.order();
-        }                             
-        
-        return new ReteooStatelessSession( this );
-    }    
+        }
+
+        synchronized ( this.pkgs ) {
+            return new ReteooStatelessSession( this );
+        }
+    }
 
     protected synchronized void addRule(final Rule rule) throws InvalidPatternException {
         super.addRule( rule );
