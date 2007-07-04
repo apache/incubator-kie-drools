@@ -179,7 +179,7 @@ public class CompositeObjectSinkAdapter
         final List sinks = new ArrayList();
 
         //iterate twice as custom iterator is immutable
-        final Iterator mapIt = this.hashedSinkMap.iterator();
+        final Iterator mapIt = this.hashedSinkMap.newIterator();
         for ( ObjectHashMap.ObjectEntry e = (ObjectHashMap.ObjectEntry) mapIt.next(); e != null; ) {
 
             sinks.add( e.getValue() );
@@ -350,7 +350,7 @@ public class CompositeObjectSinkAdapter
                     }
                 }
             } else if ( this.hashedSinkMap != null ) {
-                final Iterator it = this.hashedSinkMap.iterator();
+                final Iterator it = this.hashedSinkMap.newIterator();
                 for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                     final ObjectSink sink = (ObjectSink) entry.getValue();
                     sink.retractObject( handle,
@@ -395,7 +395,7 @@ public class CompositeObjectSinkAdapter
         }
 
         if ( this.hashedSinkMap != null ) {
-            final Iterator it = this.hashedSinkMap.iterator();
+            final Iterator it = this.hashedSinkMap.newIterator();
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 final ObjectSink sink = (ObjectSink) entry.getValue();
                 list.add( sink );

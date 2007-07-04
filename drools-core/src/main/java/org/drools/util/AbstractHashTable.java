@@ -59,6 +59,13 @@ public abstract class AbstractHashTable
         this.iterator.reset();
         return this.iterator;
     }
+    
+    public Iterator newIterator() {
+        HashTableIterator iterator = new HashTableIterator( this );
+        iterator.reset();
+        return iterator;
+        
+    }
 
     public void setComparator(final ObjectComparator comparator) {
         this.comparator = comparator;
