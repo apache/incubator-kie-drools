@@ -84,13 +84,15 @@ public class RightInputAdapterNode extends ObjectSource
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
 
-        final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
-
         // creating a dummy fact handle to wrap the tuple
         final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple );
-        // add it to a memory mapping
-        memory.put( tuple,
-                    handle );
+        
+        if ( !workingMemory.isSequential() ) {
+            final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
+            // add it to a memory mapping
+            memory.put( tuple,
+                        handle );
+        }
 
         // propagate it
         this.sink.propagateAssertObject( handle,
