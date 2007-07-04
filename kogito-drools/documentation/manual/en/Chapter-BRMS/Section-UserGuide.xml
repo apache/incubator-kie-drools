@@ -49,10 +49,9 @@
         <listitem>
           <para>To upload a model, use a jar which has the fact model (API)
           that you will be using in your rules and your code (go and make one
-          now if you need to !). Then click on the icon for uploading a new
-          model. When you are in the model editor screen, you can upload a jar
-          file, choose the package name from the list that you created in the
-          previous step.</para>
+          now if you need to !). When you are in the model editor screen, you
+          can upload a jar file, choose the package name from the list that
+          you created in the previous step.</para>
         </listitem>
 
         <listitem>
@@ -227,7 +226,7 @@
 
       <para>In the above example, the first Category "Finance" is a "top
       level" category. The second one: "HR/Awards/QAS" is a still a single
-      category, but its a nested category: categories are hierarchical. This
+      category, but its a nested category: Categories are hierarchical. This
       means there is a category called "HR", which contains a category
       "Awards" (it will in fact have more sub-categories of course), and
       "Awards" has a sub-category of QAS. The screen shows this as
