@@ -57,7 +57,7 @@ public class SnippetBuilder {
             throw new RuntimeException( "Script template is null - check for missing script definition." );
         }
 
-        if ( this._template.indexOf( SnippetBuilder.PARAM_PREFIX + "1" ) > 0 ) {
+        if ( this._template.indexOf( SnippetBuilder.PARAM_PREFIX + "1" ) >= 0 ) {
             return buildMulti( cellValue );
         } else {
             return buildSingle( cellValue );
