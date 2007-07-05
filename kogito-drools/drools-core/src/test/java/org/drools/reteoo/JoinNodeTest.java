@@ -190,9 +190,6 @@ public class JoinNodeTest extends DroolsTestCase {
 
         this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
 
-        this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
-
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "cheese" );
         final ReteTuple tuple0 = new ReteTuple( f0 );
@@ -211,7 +208,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         assertNull( this.memory.getTupleMemory() );
 
-        assertEquals( 0,
+        assertEquals( 1,
                       this.memory.getFactHandleMemory().size() );
 
         assertEquals( new ReteTuple( tuple0,

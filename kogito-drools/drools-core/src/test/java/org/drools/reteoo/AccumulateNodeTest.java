@@ -18,6 +18,7 @@ package org.drools.reteoo;
 import junit.framework.Assert;
 
 import org.drools.DroolsTestCase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
@@ -25,8 +26,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.rule.Accumulate;
-import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
+import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.ObjectType;
@@ -73,9 +74,6 @@ public class AccumulateNodeTest extends DroolsTestCase {
         final ObjectType srcObjType = new ClassObjectType( String.class );
         final Pattern sourcePattern = new Pattern( 0,
                                                 srcObjType );
-        final ObjectType resultObjType = new ClassObjectType( String.class );
-        final Pattern resultPattern = new Pattern( 1,
-                                                resultObjType );
         this.accumulate = new Accumulate( sourcePattern,
                                           new Declaration[0],
                                           new Declaration[0],
@@ -377,6 +375,59 @@ public class AccumulateNodeTest extends DroolsTestCase {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( accumulateNode );
 
         assertNotNull( memory );
+    }
+
+    /**
+     * Test just tuple assertions
+     * 
+     * @throws AssertionException
+     */
+    public void testAssertTupleSequentialMode() throws Exception {
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setSequential( true );
+
+        this.workingMemory = new ReteooWorkingMemory( 1,
+                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
+        
+        this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
+
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+
+        final ReteTuple tuple0 = new ReteTuple( f0 );
+
+        this.node.assertObject( f0,
+                                this.context,
+                                this.workingMemory );
+        this.node.assertObject( f1,
+                                this.context,
+                                this.workingMemory );
+
+        // assert tuple, should not add to left memory, since we are in sequential mode
+        this.node.assertTuple( tuple0,
+                               this.context,
+                               this.workingMemory );
+        // check memories 
+        assertNull( this.memory.getTupleMemory() );
+        assertEquals( 2,
+                      this.memory.getFactHandleMemory().size() );
+        Assert.assertEquals( "Wrong number of elements in matching objects list ",
+                             2,
+                             this.accumulator.getMatchingObjects().size() );
+
+        // assert tuple, should not add left memory 
+        final ReteTuple tuple1 = new ReteTuple( f1 );
+        this.node.assertTuple( tuple1,
+                               this.context,
+                               this.workingMemory );
+        assertNull( this.memory.getTupleMemory() );
+        Assert.assertEquals( "Wrong number of elements in matching objects list ",
+                             2,
+                             this.accumulator.getMatchingObjects().size() );
+
+        Assert.assertEquals( "Two tuples should have been propagated",
+                             2,
+                             this.sink.getAsserted().size() );
     }
 
 }
