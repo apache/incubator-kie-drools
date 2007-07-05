@@ -46,6 +46,6 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
     }
 
     public Class getFactHandleType() {
-        return DefaultFactHandle.class;
+        return Jsr94FactHandle.class;
     }
 }
