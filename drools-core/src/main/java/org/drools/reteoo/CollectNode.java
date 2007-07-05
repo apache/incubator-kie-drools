@@ -30,7 +30,6 @@ import org.drools.util.ArrayUtils;
 import org.drools.util.Entry;
 import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
-import org.drools.util.AbstractHashTable.FactEntryImpl;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
@@ -130,16 +129,20 @@ public class CollectNode extends BetaNode
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        memory.getTupleMemory().add( leftTuple );
-
         final Collection result = this.collect.instantiateResultObject();
         final InternalFactHandle resultHandle = workingMemory.getFactHandleFactory().newFactHandle( result );
         CollectResult colresult = new CollectResult();
         colresult.handle = resultHandle;
         colresult.propagated = false;
-        memory.getCreatedHandles().put( leftTuple,
-                                        colresult,
-                                        false );
+        
+        // do not add tuple and result to the memory in sequential mode
+        if( ! workingMemory.isSequential() ) {
+            memory.getTupleMemory().add( leftTuple );
+            memory.getCreatedHandles().put( leftTuple,
+                                            colresult,
+                                            false );
+        }
+
 
         final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( workingMemory,
@@ -217,6 +220,11 @@ public class CollectNode extends BetaNode
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getFactHandleMemory().add( handle );
+        
+        if ( workingMemory.isSequential() ) {
+            // do nothing here, as we know there are no left tuples at this stage in sequential mode.
+            return;
+        }        
 
         this.constraints.updateFromFactHandle( workingMemory,
                                                handle );
