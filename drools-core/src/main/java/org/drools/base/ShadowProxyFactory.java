@@ -32,6 +32,7 @@ import org.drools.asm.Label;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
 import org.drools.asm.Type;
+import org.drools.util.ShadowProxyUtils;
 
 /**
  * A factory for ShadowProxy classes
@@ -511,41 +512,78 @@ public class ShadowProxyFactory {
                            fieldFlag,
                            Type.BOOLEAN_TYPE.getDescriptor() );
 
-        //     __field = this.delegate.method();
-        final Label l2 = new Label();
-        mv.visitLabel( l2 );
-        mv.visitVarInsn( Opcodes.ALOAD,
-                         0 );
-        mv.visitVarInsn( Opcodes.ALOAD,
-                         0 );
-        mv.visitFieldInsn( Opcodes.GETFIELD,
-                           className,
-                           ShadowProxyFactory.DELEGATE_FIELD_NAME,
-                           Type.getDescriptor( clazz ) );
-        if ( clazz.isInterface() ) {
-            mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                Type.getInternalName( clazz ),
-                                method.getName(),
-                                Type.getMethodDescriptor( method ) );
-        } else {
-            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( clazz ),
-                                method.getName(),
-                                Type.getMethodDescriptor( method ) );
-        }
-        mv.visitFieldInsn( Opcodes.PUTFIELD,
-                           className,
-                           fieldName,
-                           Type.getDescriptor( fieldType ) );
+        if ( Map.class.isAssignableFrom( fieldType ) || Collection.class.isAssignableFrom( fieldType ) || fieldType.isArray() ) {
 
-        //    this.__hashCache = 0;
-        mv.visitVarInsn( Opcodes.ALOAD,
-                         0 );
-        mv.visitInsn( Opcodes.ICONST_0 );
-        mv.visitFieldInsn( Opcodes.PUTFIELD,
-                           className,
-                           ShadowProxyFactory.HASHCACHE_FIELD_NAME,
-                           Type.getDescriptor( int.class ) );
+            // FieldType aux = this.delegate.getField();
+            Label l01 = new Label();
+            mv.visitLabel( l01 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             0 );
+            mv.visitFieldInsn( Opcodes.GETFIELD,
+                               className,
+                               DELEGATE_FIELD_NAME,
+                               Type.getDescriptor( clazz ) );
+            if ( clazz.isInterface() ) {
+                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                    Type.getInternalName( clazz ),
+                                    method.getName(),
+                                    Type.getMethodDescriptor( method ) );
+            } else {
+                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                    Type.getInternalName( clazz ),
+                                    method.getName(),
+                                    Type.getMethodDescriptor( method ) );
+            }
+            mv.visitVarInsn( Opcodes.ASTORE,
+                             1 );
+
+            // this.field = (FieldType) ShadoProxyUtils.clone( aux );
+            Label l11 = new Label();
+            mv.visitLabel( l11 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             0 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             1 );
+            mv.visitMethodInsn( Opcodes.INVOKESTATIC,
+                                Type.getInternalName( ShadowProxyUtils.class ),
+                                "cloneObject",
+                                "(Ljava/lang/Object;)Ljava/lang/Object;" );
+            mv.visitTypeInsn( Opcodes.CHECKCAST,
+                              Type.getInternalName( fieldType ) );
+            mv.visitFieldInsn( Opcodes.PUTFIELD,
+                               className,
+                               fieldName,
+                               Type.getDescriptor( fieldType ) );
+
+        } else {
+            //     __field = this.delegate.method();
+            final Label l2 = new Label();
+            mv.visitLabel( l2 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             0 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             0 );
+            mv.visitFieldInsn( Opcodes.GETFIELD,
+                               className,
+                               ShadowProxyFactory.DELEGATE_FIELD_NAME,
+                               Type.getDescriptor( clazz ) );
+            if ( clazz.isInterface() ) {
+                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                    Type.getInternalName( clazz ),
+                                    method.getName(),
+                                    Type.getMethodDescriptor( method ) );
+            } else {
+                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                    Type.getInternalName( clazz ),
+                                    method.getName(),
+                                    Type.getMethodDescriptor( method ) );
+            }
+            mv.visitFieldInsn( Opcodes.PUTFIELD,
+                               className,
+                               fieldName,
+                               Type.getDescriptor( fieldType ) );
+
+        }
 
         // }
         // return __field;
@@ -719,8 +757,7 @@ public class ShadowProxyFactory {
                            className,
                            DELEGATE_FIELD_NAME,
                            Type.getDescriptor( clazz ) );
-        if ( Collection.class.isAssignableFrom( clazz ) ||
-             Map.class.isAssignableFrom( clazz ) ) {
+        if ( Collection.class.isAssignableFrom( clazz ) || Map.class.isAssignableFrom( clazz ) ) {
             Label l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitVarInsn( Opcodes.ALOAD,

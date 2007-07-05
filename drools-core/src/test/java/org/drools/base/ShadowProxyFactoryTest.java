@@ -8,8 +8,10 @@ import java.util.Map;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.drools.Address;
 import org.drools.Cheese;
 import org.drools.CheeseInterface;
+import org.drools.Person;
 
 public class ShadowProxyFactoryTest extends TestCase {
 
@@ -237,13 +239,13 @@ public class ShadowProxyFactoryTest extends TestCase {
     //        }
     //    }
 
-//    private int cheeseHashCode(final Cheese cheese) {
-//        final int PRIME = 31;
-//        int result = 1;
-//        result = PRIME * result + ((cheese.getType() == null) ? 0 : cheese.getType().hashCode());
-//        result = PRIME * result + cheese.getPrice();
-//        return result;
-//    }
+    //    private int cheeseHashCode(final Cheese cheese) {
+    //        final int PRIME = 31;
+    //        int result = 1;
+    //        result = PRIME * result + ((cheese.getType() == null) ? 0 : cheese.getType().hashCode());
+    //        result = PRIME * result + cheese.getPrice();
+    //        return result;
+    //    }
 
     public void testClassWithStaticMethod() {
         try {
@@ -307,11 +309,11 @@ public class ShadowProxyFactoryTest extends TestCase {
             originalList.add( "b" );
             originalList.add( "c" );
             originalList.add( "d" );
-            
+
             // creating proxy
             final Class proxy = ShadowProxyFactory.getProxy( originalList.getClass() );
             final List listProxy = (List) proxy.getConstructor( new Class[]{originalList.getClass()} ).newInstance( new Object[]{originalList} );
-            ((ShadowProxy)listProxy).setShadowedObject( originalList );
+            ((ShadowProxy) listProxy).setShadowedObject( originalList );
 
             // proxy is proxying the values
             Assert.assertEquals( "a",
@@ -323,16 +325,16 @@ public class ShadowProxyFactoryTest extends TestCase {
             // proxy must recongnize the original object on equals() calls
             Assert.assertEquals( listProxy,
                                  originalList );
-            
+
             originalList.remove( "c" );
             originalList.add( "e" );
             Assert.assertTrue( listProxy.contains( "c" ) );
             Assert.assertFalse( listProxy.contains( "e" ) );
-            
-            ((ShadowProxy)listProxy).updateProxy();
+
+            ((ShadowProxy) listProxy).updateProxy();
             Assert.assertFalse( listProxy.contains( "c" ) );
             Assert.assertTrue( listProxy.contains( "e" ) );
-            
+
             // proxy must recongnize the original object on equals() calls
             Assert.assertEquals( listProxy,
                                  originalList );
@@ -346,14 +348,17 @@ public class ShadowProxyFactoryTest extends TestCase {
         try {
             // creating original object
             Map originalMap = new HashMap();
-            originalMap.put( "name", "Edson" );
-            originalMap.put( "surname", "Tirelli" );
-            originalMap.put( "age", "28" );
-            
+            originalMap.put( "name",
+                             "Edson" );
+            originalMap.put( "surname",
+                             "Tirelli" );
+            originalMap.put( "age",
+                             "28" );
+
             // creating proxy
             final Class proxy = ShadowProxyFactory.getProxy( originalMap.getClass() );
             final Map mapProxy = (Map) proxy.getConstructor( new Class[]{originalMap.getClass()} ).newInstance( new Object[]{originalMap} );
-            ((ShadowProxy)mapProxy).setShadowedObject( originalMap );
+            ((ShadowProxy) mapProxy).setShadowedObject( originalMap );
 
             // proxy is proxying the values
             Assert.assertEquals( "Edson",
@@ -365,16 +370,17 @@ public class ShadowProxyFactoryTest extends TestCase {
             // proxy must recongnize the original object on equals() calls
             Assert.assertEquals( mapProxy,
                                  originalMap );
-            
+
             originalMap.remove( "age" );
-            originalMap.put( "hair", "brown" );
+            originalMap.put( "hair",
+                             "brown" );
             Assert.assertTrue( mapProxy.containsKey( "age" ) );
             Assert.assertFalse( mapProxy.containsKey( "hair" ) );
-            
-            ((ShadowProxy)mapProxy).updateProxy();
+
+            ((ShadowProxy) mapProxy).updateProxy();
             Assert.assertFalse( mapProxy.containsKey( "age" ) );
             Assert.assertTrue( mapProxy.containsKey( "hair" ) );
-            
+
             // proxy must recongnize the original object on equals() calls
             Assert.assertEquals( mapProxy,
                                  originalMap );
@@ -384,4 +390,172 @@ public class ShadowProxyFactoryTest extends TestCase {
         }
     }
 
+    public void testProxyForMapsAttributes() {
+        try {
+            Person bob = new Person( "bob",
+                                     30 );
+            Address addr1 = new Address( "street 1",
+                                         "111",
+                                         "11-1111-1111" );
+            Address addr2 = new Address( "street 2",
+                                         "222",
+                                         "22-2222-2222" );
+            Address addr3 = new Address( "street 3",
+                                         "333",
+                                         "33-3333-3333" );
+            Address addr4 = new Address( "street 4",
+                                         "444",
+                                         "44-4444-4444" );
+            Map addresses = new HashMap();
+            addresses.put( "home",
+                           addr1 );
+            addresses.put( "business",
+                           addr2 );
+            bob.setAddresses( addresses );
+
+            // creating proxy
+            final Class proxy = ShadowProxyFactory.getProxy( bob.getClass() );
+            final Person bobProxy = (Person) proxy.getConstructor( new Class[]{bob.getClass()} ).newInstance( new Object[]{bob} );
+            ((ShadowProxy) bobProxy).setShadowedObject( bob );
+
+            // proxy is proxying the values
+            Assert.assertEquals( bob.getAddresses().get( "business" ),
+                                 bobProxy.getAddresses().get( "business" ) );
+            Assert.assertSame( bob,
+                               ((ShadowProxy) bobProxy).getShadowedObject() );
+
+            // proxy must recongnize the original object on equals() calls
+            Assert.assertEquals( bobProxy,
+                                 bob );
+
+            bob.getAddresses().remove( "business" );
+            bob.getAddresses().put( "parents",
+                                    addr3 );
+            bob.getAddresses().put( "home",
+                                    addr4 );
+            Assert.assertTrue( bobProxy.getAddresses().containsKey( "business" ) );
+            Assert.assertFalse( bobProxy.getAddresses().containsKey( "parents" ) );
+            Assert.assertEquals( addr1,
+                                 bobProxy.getAddresses().get( "home" ) );
+
+            ((ShadowProxy) bobProxy).updateProxy();
+            Assert.assertFalse( bobProxy.getAddresses().containsKey( "business" ) );
+            Assert.assertTrue( bobProxy.getAddresses().containsKey( "parents" ) );
+            Assert.assertEquals( addr4,
+                                 bobProxy.getAddresses().get( "home" ) );
+
+            // proxy must recongnize the original object on equals() calls
+            Assert.assertEquals( bobProxy,
+                                 bob );
+        } catch ( final Exception e ) {
+            e.printStackTrace();
+            fail( "Error: " + e.getMessage() );
+        }
+    }
+
+    public void testProxyForCollectionAttributes() {
+        try {
+            Person bob = new Person( "bob",
+                                     30 );
+            Address addr1 = new Address( "street 1",
+                                         "111",
+                                         "11-1111-1111" );
+            Address addr2 = new Address( "street 2",
+                                         "222",
+                                         "22-2222-2222" );
+            Address addr3 = new Address( "street 3",
+                                         "333",
+                                         "33-3333-3333" );
+            bob.getAddressList().add( addr1 );
+            bob.getAddressList().add( addr2 );
+
+            // creating proxy
+            final Class proxy = ShadowProxyFactory.getProxy( bob.getClass() );
+            final Person bobProxy = (Person) proxy.getConstructor( new Class[]{bob.getClass()} ).newInstance( new Object[]{bob} );
+            ((ShadowProxy) bobProxy).setShadowedObject( bob );
+
+            // proxy is proxying the values
+            Assert.assertEquals( 2,
+                                 bobProxy.getAddressList().size() );
+            Assert.assertSame( bob,
+                               ((ShadowProxy) bobProxy).getShadowedObject() );
+
+            // proxy must recongnize the original object on equals() calls
+            Assert.assertEquals( bobProxy,
+                                 bob );
+
+            bob.getAddressList().remove( addr2 );
+            bob.getAddressList().add( addr3 );
+
+            Assert.assertTrue( bobProxy.getAddressList().contains( addr2 ) );
+            Assert.assertFalse( bobProxy.getAddressList().contains( addr3 ) );
+
+            ((ShadowProxy) bobProxy).updateProxy();
+            Assert.assertFalse( bobProxy.getAddressList().contains( addr2 ) );
+            Assert.assertTrue( bobProxy.getAddressList().contains( addr3 ) );
+
+            // proxy must recongnize the original object on equals() calls
+            Assert.assertEquals( bobProxy,
+                                 bob );
+        } catch ( final Exception e ) {
+            e.printStackTrace();
+            fail( "Error: " + e.getMessage() );
+        }
+    }
+
+    public void testProxyForArrayAttributes() {
+        try {
+            Person bob = new Person( "bob",
+                                     30 );
+            Address addr1 = new Address( "street 1",
+                                         "111",
+                                         "11-1111-1111" );
+            Address addr2 = new Address( "street 2",
+                                         "222",
+                                         "22-2222-2222" );
+            Address addr3 = new Address( "street 3",
+                                         "333",
+                                         "33-3333-3333" );
+            bob.getAddressArray()[0] = addr1;
+            bob.getAddressArray()[1] = addr2;
+
+            // creating proxy
+            final Class proxy = ShadowProxyFactory.getProxy( bob.getClass() );
+            final Person bobProxy = (Person) proxy.getConstructor( new Class[]{bob.getClass()} ).newInstance( new Object[]{bob} );
+            ((ShadowProxy) bobProxy).setShadowedObject( bob );
+
+            // proxy is proxying the values
+            Assert.assertEquals( addr1,
+                                 bobProxy.getAddressArray()[0] );
+            Assert.assertEquals( addr2,
+                                 bobProxy.getAddressArray()[1] );
+            Assert.assertSame( bob,
+                               ((ShadowProxy) bobProxy).getShadowedObject() );
+
+            // proxy must recongnize the original object on equals() calls
+            Assert.assertEquals( bobProxy,
+                                 bob );
+
+            bob.getAddressArray()[1] = addr3;
+
+            Assert.assertEquals( addr1,
+                                 bobProxy.getAddressArray()[0] );
+            Assert.assertEquals( addr2,
+                                 bobProxy.getAddressArray()[1] );
+
+            ((ShadowProxy) bobProxy).updateProxy();
+            Assert.assertEquals( addr1,
+                                 bobProxy.getAddressArray()[0] );
+            Assert.assertEquals( addr3,
+                                 bobProxy.getAddressArray()[1] );
+
+            // proxy must recongnize the original object on equals() calls
+            Assert.assertEquals( bobProxy,
+                                 bob );
+        } catch ( final Exception e ) {
+            e.printStackTrace();
+            fail( "Error: " + e.getMessage() );
+        }
+    }
+    
 }
