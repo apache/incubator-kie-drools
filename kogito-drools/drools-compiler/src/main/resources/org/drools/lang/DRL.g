@@ -103,17 +103,29 @@ grammar DRL;
                 message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
                 if ( e instanceof MismatchedTokenException ) {
                         MismatchedTokenException mte = (MismatchedTokenException)e;
-                        message.append("mismatched token: "+
+                        if( mte.expecting >=0 && mte.expecting < tokenNames.length ) {
+	                        message.append("mismatched token: "+
                                                            e.token+
                                                            "; expecting type "+
                                                            tokenNames[mte.expecting]);
+                        } else {
+	                        message.append("mismatched token: "+
+                                                           e.token+
+                                                           ";");
+                        }
                 }
                 else if ( e instanceof MismatchedTreeNodeException ) {
                         MismatchedTreeNodeException mtne = (MismatchedTreeNodeException)e;
-                        message.append("mismatched tree node: "+
+                        if( mtne.expecting >=0 && mtne.expecting < tokenNames.length ) {
+	                        message.append("mismatched tree node: "+
                                                            mtne.toString() +
                                                            "; expecting type "+
                                                            tokenNames[mtne.expecting]);
+                        } else {
+	                        message.append("mismatched tree node: "+
+                                                           mtne.toString() +
+                                                           ";");
+                        }
                 }
                 else if ( e instanceof NoViableAltException ) {
                         NoViableAltException nvae = (NoViableAltException)e;
