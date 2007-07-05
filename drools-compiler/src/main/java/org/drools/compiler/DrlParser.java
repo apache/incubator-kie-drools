@@ -176,6 +176,8 @@ public class DrlParser {
             makeErrorList( parser );
         } catch ( final RecognitionException e ) {
             throw new DroolsParserException( e );
+        } catch ( Exception e ) {
+            throw new DroolsParserException( "Unknown error while parsing. This is a bug. Please contact the Development team.", e);
         }
     }
 
