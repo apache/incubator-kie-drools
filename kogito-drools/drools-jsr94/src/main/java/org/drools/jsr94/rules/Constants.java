@@ -37,4 +37,18 @@ public final class Constants {
 
     /** <code>RuleExecutionSet</code> description constant. */
     public static final String RES_DESCRIPTION = "javax.rules.admin.RuleExecutionSet.description";
+    
+    public static final String RES_SOURCE = "javax.rules.admin.RuleExecutionSet.source";
+    
+    public static final String RES_SOURCE_TYPE_XML = "javax.rules.admin.RuleExecutionSet.source.xml";
+    
+    public static final String RES_SOURCE_TYPE_DECISION_TABLE = "javax.rules.admin.RuleExecutionSet.source.decisiontable";
+    
+    public static final String RES_DSRL = "javax.rules.admin.RuleExecutionSet.dsrl";
+           
+    /** <code>RuleExecutionSet</code> rulebase config constant. */
+    public static final String RES_RULEBASE_CONFIG = "javax.rules.admin.RuleExecutionSet.ruleBaseConfiguration";
+    
+    /** <code>RuleExecutionSet</code> package builder config constant. */
+    public static final String RES_PACKAGEBUILDER_CONFIG = "javax.rules.admin.RuleExecutionSet.ruleBaseConfiguration";    
 }
