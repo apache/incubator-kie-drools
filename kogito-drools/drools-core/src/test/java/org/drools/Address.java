@@ -32,5 +32,9 @@ public class Address {
     public void setStreet(String street) {
         this.street = street;
     }
+    
+    public String toString() {
+        return "Address( "+this.street+", "+this.number+" - phone: "+this.phone+" )";
+    }
 
 }

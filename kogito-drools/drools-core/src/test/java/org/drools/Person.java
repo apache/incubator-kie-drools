@@ -1,6 +1,8 @@
 package org.drools;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Person {
@@ -14,12 +16,21 @@ public class Person {
     private String country;
     
     private Map addresses;
+    
+    private List addressList;
+    
+    private Address[] addressArray;
 
+    public Person() {
+    }
+    
     public Person(final String name,
                   final int age) {
         this.name = name;
         this.age = age;
         this.addresses = new HashMap();
+        this.addressList = new ArrayList();
+        this.addressArray = new Address[10];
     }
 
     /**
@@ -90,4 +101,20 @@ public class Person {
         this.addresses = addresses;
     }
 
+    public List getAddressList() {
+        return addressList;
+    }
+
+    public void setAddressList(List addressList) {
+        this.addressList = addressList;
+    }
+
+    public Address[] getAddressArray() {
+        return addressArray;
+    }
+
+    public void setAddressArray(Address[] addressArray) {
+        this.addressArray = addressArray;
+    }
+    
 }
