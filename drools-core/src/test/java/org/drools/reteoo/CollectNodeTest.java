@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import junit.framework.Assert;
 
 import org.drools.DroolsTestCase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
@@ -362,6 +363,54 @@ public class CollectNodeTest extends DroolsTestCase {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( collectNode );
 
         assertNotNull( memory );
+    }
+
+    public void testAssertTupleSequentialMode() {
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setSequential( true );
+
+        this.workingMemory = new ReteooWorkingMemory( 1,
+                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
+        
+        this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
+
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+
+        final ReteTuple tuple0 = new ReteTuple( f0 );
+
+        this.node.assertObject( f0,
+                                this.contextAssert,
+                                this.workingMemory );
+        this.node.assertObject( f1,
+                                this.contextAssert,
+                                this.workingMemory );
+
+        // assert tuple, should not add to left memory, since we are in sequential mode
+        this.node.assertTuple( tuple0,
+                               this.contextAssert,
+                               this.workingMemory );
+        // check memories 
+        assertNull( this.memory.getTupleMemory() );
+        assertEquals( 2,
+                      this.memory.getFactHandleMemory().size() );
+        Assert.assertEquals( "Wrong number of elements in matching objects list ",
+                             2,
+                             ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0]).get( 1 )).getObject()).size() );
+
+        // assert tuple, should not add to left memory, since we are in sequential mode
+        final ReteTuple tuple1 = new ReteTuple( f1 );
+        this.node.assertTuple( tuple1,
+                               this.contextAssert,
+                               this.workingMemory );
+        assertNull( this.memory.getTupleMemory() );
+        Assert.assertEquals( "Wrong number of elements in matching objects list ",
+                             2,
+                             ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 1 ))[0]).get( 1 )).getObject()).size() );
+
+        Assert.assertEquals( "Two tuples should have been propagated",
+                             2,
+                             this.sink.getAsserted().size() );
     }
 
 }

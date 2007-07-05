@@ -308,5 +308,53 @@ public class NotNodeTest extends DroolsTestCase {
         assertEquals( 0,
                       constraints.length );
     }
+    
+    /**
+     * Test just tuple assertions
+     * 
+     * @throws AssertionException
+     */
+    public void testAssertTupleSequentialMode() throws Exception {
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setSequential( true );
+
+        this.workingMemory = new ReteooWorkingMemory( 1,
+                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
+
+        // override setup, so its working in sequential mode
+        this.node = new NotNode( 15,
+                                  this.tupleSource,
+                                  this.objectSource,
+                                  new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
+                                                              conf ) );
+
+        this.node.addTupleSink( this.sink );
+
+        this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
+
+        final DefaultFactHandle f0 = new DefaultFactHandle( 0,
+                                                            "cheese" );
+        final ReteTuple tuple0 = new ReteTuple( f0 );
+
+        this.node.assertObject( f0,
+                                this.context,
+                                this.workingMemory );
+
+        // assert tuple
+        this.node.assertTuple( tuple0,
+                               this.context,
+                               this.workingMemory );
+
+        assertEquals( 0,
+                      this.sink.getAsserted().size() );
+
+        assertNull( this.memory.getTupleMemory() );
+
+        assertEquals( 1,
+                      this.memory.getFactHandleMemory().size() );
+
+    }
+
+    
 
 }
