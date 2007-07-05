@@ -30,6 +30,10 @@ import javax.rules.admin.RuleExecutionSetCreateException;
 import org.drools.IntegrationException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.decisiontable.InputType;
+import org.drools.decisiontable.SpreadsheetCompiler;
+import org.drools.jsr94.rules.Constants;
 import org.drools.rule.Package;
 
 /**
@@ -73,8 +77,23 @@ public class LocalRuleExecutionSetProviderImpl
      * @return The created <code>RuleExecutionSet</code>.
      */
     public RuleExecutionSet createRuleExecutionSet(final InputStream ruleExecutionSetStream,
-                                                   final Map properties) throws RuleExecutionSetCreateException {        
-        return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream ), properties);
+                                                   final Map properties) throws RuleExecutionSetCreateException {
+        if ( properties != null ) {
+            String source = ( String ) properties.get( Constants.RES_SOURCE );
+            if ( source == null ) {
+                // support legacy name
+                source = ( String ) properties.get( "source" );
+            }
+            if ( source != null && source.equals( Constants.RES_SOURCE_TYPE_DECISION_TABLE ) ) {
+                final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+                final String drl = converter.compile( ruleExecutionSetStream,
+                                                      InputType.XLS );
+                return createRuleExecutionSet( new StringReader( drl ), properties );
+            } else {
+                return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream ), properties);                
+            }
+        } else         
+            return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream ), properties);
     }
     
 
@@ -99,37 +118,56 @@ public class LocalRuleExecutionSetProviderImpl
     public RuleExecutionSet createRuleExecutionSet(final Reader ruleExecutionSetReader,
                                                    final Map properties) throws RuleExecutionSetCreateException {
         try {
-            final PackageBuilder builder = new PackageBuilder();
-            Object dsl = null;
+            PackageBuilderConfiguration config= null;
+            
+            if ( properties != null ) {
+                config = (PackageBuilderConfiguration) properties.get( Constants.RES_PACKAGEBUILDER_CONFIG );
+            }
+            
+            PackageBuilder builder = null;
+            if ( config != null ) {
+                builder = new PackageBuilder(config);    
+            } else {
+                builder = new PackageBuilder();
+            }
+            
+            Object dsrl = null;
             String source = null;
             
             if ( properties != null ) {
-                dsl = properties.get( "dsl" );
-                source = ( String ) properties.get( "source" );
+                dsrl = properties.get( Constants.RES_DSRL );
+                if ( dsrl ==  null ) {
+                    // check for old legacy name ending
+                    dsrl = properties.get( "dsl" );    
+                }
+                source = ( String ) properties.get( Constants.RES_SOURCE );
+                if ( source == null ) {
+                    // check for old legacy name ending
+                    source = ( String ) properties.get( "source" );
+                }
             }
             
             if ( source == null ) {
                 source = "drl";
-            }
+            }            
             
-            
-            if ( dsl == null ) {
-                if ( source.equals( "xml" ) ) {
+            if ( dsrl == null ) {
+                if ( source.equals( Constants.RES_SOURCE_TYPE_XML ) || source.equals( "xml" ) ) {
                     builder.addPackageFromXml( ruleExecutionSetReader );
                 } else {
                     builder.addPackageFromDrl( ruleExecutionSetReader );
                 }
             } else {
-                if ( source.equals( "xml" ) ) {
+                if ( source.equals( Constants.RES_SOURCE_TYPE_XML ) || source.equals( "xml" ) ) {
                     // xml cannot specify a dsl
                     builder.addPackageFromXml( ruleExecutionSetReader );
                 } else {
-                    if  ( dsl instanceof Reader ) {
+                    if  ( dsrl instanceof Reader ) {
                         builder.addPackageFromDrl( ruleExecutionSetReader,
-                                                   (Reader) dsl );                        
+                                                   (Reader) dsrl );                        
                     } else {
                         builder.addPackageFromDrl( ruleExecutionSetReader,
-                                                   new StringReader( (String) dsl ) );
+                                                   new StringReader( (String) dsrl ) );
                     }
                 }               
             }

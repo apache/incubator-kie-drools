@@ -86,7 +86,7 @@ public class ExampleRuleEngineFacade {
         this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
 
         this.ruleSetProvider = this.ruleAdministrator.getLocalRuleExecutionSetProvider( null );
-    }
+    }    
 
     public void addRuleExecutionSet(final String bindUri,
                                     final InputStream resourceAsStream) throws Exception {

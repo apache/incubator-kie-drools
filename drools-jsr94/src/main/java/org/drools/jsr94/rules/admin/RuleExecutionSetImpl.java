@@ -26,9 +26,11 @@ import javax.rules.admin.RuleExecutionSet;
 
 import org.drools.IntegrationException;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleIntegrationException;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
+import org.drools.jsr94.rules.Constants;
 import org.drools.jsr94.rules.Jsr94FactHandleFactory;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -114,9 +116,17 @@ public class RuleExecutionSetImpl
         }
         this.pkg = pkg;
         this.description = pkg.getName();//..getDocumentation( );
-
-        final org.drools.reteoo.ReteooRuleBase ruleBase = new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString(),
-                                                                                                new Jsr94FactHandleFactory() );
+        
+        RuleBaseConfiguration config = ( RuleBaseConfiguration ) this.properties.get( Constants.RES_RULEBASE_CONFIG );
+        org.drools.reteoo.ReteooRuleBase ruleBase;
+        if ( config != null ) {
+            ruleBase = new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString(),
+                                                             config,
+                                                             new Jsr94FactHandleFactory() );
+        } else {
+            ruleBase = new org.drools.reteoo.ReteooRuleBase( UUIDGenerator.getInstance().generateRandomBasedUUID().toString(),
+                                                             new Jsr94FactHandleFactory() );            
+        }
         ruleBase.addPackage( pkg );
 
         this.ruleBase = ruleBase;
