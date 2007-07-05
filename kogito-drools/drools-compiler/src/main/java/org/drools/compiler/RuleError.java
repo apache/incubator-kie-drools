@@ -66,7 +66,11 @@ public class RuleError extends DroolsError {
         if ( this.object instanceof CompilationProblem[] ) {
             final CompilationProblem[] problem = (CompilationProblem[]) this.object;
             for ( int i = 0; i < problem.length; i++ ) {
-                summary = summary + " " + problem[i].getMessage();
+                if (i != 0) {
+                    summary = summary + "\n" + problem[i].getMessage();
+                } else {
+                    summary = summary + " " + problem[i].getMessage();
+                }
             }
 
         }
