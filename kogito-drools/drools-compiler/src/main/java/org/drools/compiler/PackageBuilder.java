@@ -343,7 +343,7 @@ public class PackageBuilder {
                 pkg.addGlobal( identifier,
                                clazz );
             } catch ( final ClassNotFoundException e ) {
-                new GlobalError( identifier );
+                this.results.add(new GlobalError( identifier ));
             }
         }
     }
