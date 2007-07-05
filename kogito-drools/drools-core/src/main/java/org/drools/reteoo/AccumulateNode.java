@@ -29,7 +29,6 @@ import org.drools.util.ArrayUtils;
 import org.drools.util.Entry;
 import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
-import org.drools.util.AbstractHashTable.FactEntryImpl;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
@@ -119,12 +118,14 @@ public class AccumulateNode extends BetaNode {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        memory.getTupleMemory().add( leftTuple );
-
         AccumulateResult accresult = new AccumulateResult();
-        memory.getCreatedHandles().put( leftTuple,
-                                        accresult,
-                                        false );
+
+        if ( !workingMemory.isSequential() ) {
+            memory.getTupleMemory().add( leftTuple );
+            memory.getCreatedHandles().put( leftTuple,
+                                            accresult,
+                                            false );
+        }
 
         final Object accContext = this.accumulate.createContext();
 
@@ -222,6 +223,11 @@ public class AccumulateNode extends BetaNode {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getFactHandleMemory().add( handle );
+
+        if ( workingMemory.isSequential() ) {
+            // do nothing here, as we know there are no left tuples at this stage in sequential mode.
+            return;
+        }        
 
         this.constraints.updateFromFactHandle( workingMemory,
                                                handle );
