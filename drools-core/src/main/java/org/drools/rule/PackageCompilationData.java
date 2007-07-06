@@ -24,6 +24,9 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +36,7 @@ import java.util.Map;
 
 import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
+import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.spi.Accumulator;
@@ -49,6 +53,8 @@ public class PackageCompilationData
      * 
      */
     private static final long            serialVersionUID = 400L;
+    
+    private static final ProtectionDomain PROTECTION_DOMAIN;    
 
     private Map                          invokerLookups;
 
@@ -62,6 +68,15 @@ public class PackageCompilationData
 
     private transient ClassLoader        parentClassLoader;
 
+    
+    static {
+        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
+            public Object run() {
+                return PackageCompilationData.class.getProtectionDomain();
+            }
+        } );
+    }    
+    
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it 
      * will result in an invalid state for the instance.
@@ -302,7 +317,8 @@ public class PackageCompilationData
                     return defineClass( name,
                                         clazzBytes,
                                         0,
-                                        clazzBytes.length );
+                                        clazzBytes.length,
+                                        PROTECTION_DOMAIN );
                 }
             }
 

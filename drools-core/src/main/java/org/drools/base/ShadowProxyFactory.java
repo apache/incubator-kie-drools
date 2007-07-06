@@ -18,6 +18,9 @@ package org.drools.base;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +35,7 @@ import org.drools.asm.Label;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
 import org.drools.asm.Type;
+import org.drools.rule.MapBackedClassLoader;
 import org.drools.util.ShadowProxyUtils;
 
 /**
@@ -51,6 +55,16 @@ public class ShadowProxyFactory {
     public static final String  DELEGATE_FIELD_NAME  = "delegate";
 
     public static final String  HASHCACHE_FIELD_NAME = "__hashCache";
+    
+    private static final ProtectionDomain PROTECTION_DOMAIN;
+    
+    static {
+        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
+            public Object run() {
+                return ShadowProxyFactory.class.getProtectionDomain();
+            }
+        } );
+    }      
 
     public static Class getProxy(final Class clazz) {
         try {
@@ -66,7 +80,8 @@ public class ShadowProxyFactory {
             final ByteArrayClassLoader classLoader = new ByteArrayClassLoader( Thread.currentThread().getContextClassLoader() );
             final Class newClass = classLoader.defineClass( className.replace( '/',
                                                                                '.' ),
-                                                            bytes );
+                                                            bytes,
+                                                            PROTECTION_DOMAIN );
             return newClass;
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
@@ -1443,11 +1458,13 @@ public class ShadowProxyFactory {
         }
 
         public Class defineClass(final String name,
-                                 final byte[] bytes) {
+                                 final byte[] bytes,
+                                 final ProtectionDomain PROTECTION_DOMAIN) {
             return defineClass( name,
                                 bytes,
                                 0,
-                                bytes.length );
+                                bytes.length,
+                                PROTECTION_DOMAIN );
         }
     }
 
