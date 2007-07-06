@@ -39,6 +39,12 @@ public class MapBackedClassLoader extends ClassLoader
         super( parentClassLoader );
         this.store = new HashMap();
     }
+    
+    public void addResource(String className,
+                            byte[] bytes) {
+        addClass(className, 
+                 bytes);
+    }
 
     public void addClass(String className,
                          byte[] bytes) {
