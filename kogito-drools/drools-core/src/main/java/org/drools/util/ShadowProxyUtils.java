@@ -20,6 +20,7 @@ package org.drools.util;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -28,6 +29,12 @@ import java.util.Map;
  * @author etirelli
  */
 public class ShadowProxyUtils {
+
+    /* Collections.UnmodifiableCollection is a package
+     * private class, thus the confusing bit above
+     * to get a Class to compare to. */
+    private static final Class UNMODIFIABLE_MAP        = Collections.unmodifiableMap( Collections.EMPTY_MAP ).getClass();
+    private static final Class UNMODIFIABLE_COLLECTION = Collections.unmodifiableCollection( Collections.EMPTY_LIST ).getClass();
 
     private ShadowProxyUtils() {
     }
@@ -41,24 +48,37 @@ public class ShadowProxyUtils {
                 clone = cloneMethod.invoke( original,
                                             new Object[0] );
             } catch ( Exception e ) {
-                // Nothing to do
+                /* Failed to clone.  Don't worry about it, and just return
+                 * the original object. */
             }
         }
 
         if ( clone == null ) {
             try {
-                if ( original instanceof Map ) {
+                if ( original instanceof Map && 
+                     original != Collections.EMPTY_MAP && 
+                     !UNMODIFIABLE_MAP.isAssignableFrom( original.getClass() ) ) {
+                    
+                    /* empty and unmodifiable maps can't (and don't need to) be shadowed */
                     clone = original.getClass().newInstance();
                     ((Map) clone).putAll( (Map) original );
-                } else if ( original instanceof Collection ) {
+                    
+                } else if ( original instanceof Collection && 
+                            original != Collections.EMPTY_LIST && 
+                            original != Collections.EMPTY_SET && 
+                            !UNMODIFIABLE_COLLECTION.isAssignableFrom( original.getClass() ) ) {
+                    
+                    /* empty and unmodifiable collections can't (and don't need to) be shadowed */
                     clone = original.getClass().newInstance();
                     ((Collection) clone).addAll( (Collection) original );
+                    
                 } else if ( original.getClass().isArray() ) {
                     clone = cloneArray( original );
                 }
+                
             } catch ( Exception e ) {
-                e.printStackTrace();
-                // nothing to do
+                /* Failed to clone.  Don't worry about it, and just return
+                 * the original object. */
             }
         }
 
@@ -85,10 +105,13 @@ public class ShadowProxyUtils {
                 // cannot be invoked reflectively, so need to do copy construction:
                 result = Array.newInstance( componentType,
                                             arrayLength );
-                
-                if( componentType.isArray() ) {
-                    for( int i = 0; i < arrayLength; i++ ) {
-                        Array.set( result, i, cloneArray( Array.get( original, i ) ) );
+
+                if ( componentType.isArray() ) {
+                    for ( int i = 0; i < arrayLength; i++ ) {
+                        Array.set( result,
+                                   i,
+                                   cloneArray( Array.get( original,
+                                                          i ) ) );
                     }
                 } else {
                     System.arraycopy( original,
