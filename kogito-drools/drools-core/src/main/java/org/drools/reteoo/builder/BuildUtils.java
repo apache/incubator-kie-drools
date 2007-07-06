@@ -87,14 +87,15 @@ public class BuildUtils {
     public BaseNode attachNode(final BuildContext context,
                                final BaseNode candidate) {
         BaseNode node = null;
-        if( isSharingEnabledForNode( context, candidate ) ) {
-            if ( candidate instanceof ObjectTypeNode ) {
-                ObjectTypeNode otn = (ObjectTypeNode) candidate;
-                otn = (ObjectTypeNode) context.getRuleBase().getRete().getObjectTypeNodes().get( otn.getObjectType() );
-                if ( otn != null ) {
-                    node = otn;
-                }
-            } else if ( (context.getTupleSource() != null) && ( candidate instanceof TupleSink ) ) {
+        if( candidate instanceof ObjectTypeNode ) {
+            // object type nodes are always shared
+            ObjectTypeNode otn = (ObjectTypeNode) candidate;
+            otn = (ObjectTypeNode) context.getRuleBase().getRete().getObjectTypeNodes().get( otn.getObjectType() );
+            if ( otn != null ) {
+                node = otn;
+            }
+        } else if( isSharingEnabledForNode( context, candidate ) ) {
+            if ( (context.getTupleSource() != null) && ( candidate instanceof TupleSink ) ) {
                 TupleSink[] sinks = context.getTupleSource().getSinkPropagator().getSinks(); 
                 for( int i = 0; i < sinks.length; i++ ) {
                     if( candidate.equals( sinks[i] ) ) {
