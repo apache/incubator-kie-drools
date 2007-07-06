@@ -56,6 +56,8 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         
         if ( value instanceof Character ) {
             return ((Character) value).charValue();
+        } else if( value instanceof String && ((String)value).length() == 1 ) {
+            return ((String)value).charAt( 0 );
         }
         throw new RuntimeDroolsException( "Conversion to char not supported from " + value.getClass().getName() );
     }

@@ -125,6 +125,9 @@ public class VariableRestriction
             } else if ( fieldExtractor.getValueType().isIntegerNumber() ) {
                 return new LongVariableContextEntry( fieldExtractor,
                                                      this.declaration );
+            } else if ( fieldExtractor.getValueType().isChar() ) {
+                return new CharVariableContextEntry( fieldExtractor,
+                                                     this.declaration );
             } else {
                 return new ObjectVariableContextEntry( fieldExtractor,
                                                        this.declaration );
@@ -250,6 +253,46 @@ public class VariableRestriction
             
             if ( !rightNull ) { // avoid a NullPointerException
                 this.right = this.extractor.getLongValue( workingMemory, handle.getObject() );
+            } else {
+                this.right = 0;
+            }
+        }
+    }
+
+    public static class CharVariableContextEntry extends VariableContextEntry {
+
+        private static final long serialVersionUID = -5316792696755228175L;
+
+        public char               left;
+        public char               right;
+
+        public CharVariableContextEntry(final FieldExtractor extractor,
+                                        final Declaration declaration) {
+            super( extractor,
+                   declaration );
+        }
+
+        public void updateFromTuple(final InternalWorkingMemory workingMemory,
+                                    final ReteTuple tuple) {
+            this.reteTuple = tuple;
+            this.workingMemory = workingMemory;
+            this.leftNull = this.declaration.getExtractor().isNullValue( workingMemory, tuple.get( this.declaration ).getObject() );
+            
+            if (!leftNull) {
+                this.left = this.declaration.getExtractor().getCharValue( workingMemory, tuple.get( this.declaration ).getObject() );
+            } else {
+                this.left = 0;
+            }
+        }
+
+        public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+                                         final InternalFactHandle handle) {
+            this.object = handle.getObject();
+            this.workingMemory = workingMemory;
+            this.rightNull = this.extractor.isNullValue( workingMemory, handle.getObject() );
+            
+            if ( !rightNull ) { // avoid a NullPointerException
+                this.right = this.extractor.getCharValue( workingMemory, handle.getObject() );
             } else {
                 this.right = 0;
             }

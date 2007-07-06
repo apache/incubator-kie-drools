@@ -3109,5 +3109,38 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testCharComparisons() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_charComparisons.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        Primitives p1 = new Primitives();
+        p1.setCharPrimitive( 'a' );
+        p1.setStringAttribute( "b" );
+        Primitives p2 = new Primitives();
+        p2.setCharPrimitive( 'b' );
+        p2.setStringAttribute( "a" );
+        
+        workingMemory.insert( p1 );
+        workingMemory.insert( p2 );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 3, results.size() );
+        assertEquals( "1", results.get( 0 ));
+        assertEquals( "2", results.get( 1 ));
+        assertEquals( "3", results.get( 2 ));
+
+    }
+
 
 }
