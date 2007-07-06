@@ -201,8 +201,7 @@ public class PackageBuilder {
             if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;
             }
-            throw new RuntimeDroolsException( "Unable to load process.",
-                                              e );
+            this.results.add( new RuleFlowLoadError("Unable to load the rule flow.", e) );
         }
     }
 
