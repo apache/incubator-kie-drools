@@ -41,6 +41,9 @@ public interface RuleFlowProcessValidationError {
     String JOIN_WITHOUT_OUTGOING_CONNECTION             = "Join node has no outgoing connection.";
     String VARIABLE_WITHOUT_TYPE                        = "A variable has no type.";
     String ALL_NODES_CONNECTED_TO_START                 = "A node is not connected to the start node.";
+    String MILESTONE_NODE_WITHOUT_INCOMING_CONNECTIONS  = "Milestone node has no incoming connection.";
+    String MILESTONE_NODE_WITHOUT_OUTGOING_CONNECTIONS  = "Milestone node has no outgoing connection.";
+    String MILESTONE_WITHOUT_CONSTRAINT                 = "A milestone node has no constraint.";
 
     String getType();
 }

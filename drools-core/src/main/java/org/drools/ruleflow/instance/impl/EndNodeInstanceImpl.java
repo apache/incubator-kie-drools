@@ -30,8 +30,4 @@ public class EndNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
         getProcessInstance().setState( ProcessInstance.STATE_COMPLETED );
     }
 
-    public void triggerCompleted() {
-        // this should never occur
-        throw new IllegalArgumentException( "End nodes cannot be completed." );
-    }
 }

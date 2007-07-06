@@ -16,32 +16,41 @@ package org.drools.ruleflow.instance.impl;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.core.RuleSetNode;
+import java.util.Iterator;
+
+import org.drools.common.RuleFlowGroupNode;
+import org.drools.ruleflow.core.MilestoneNode;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
+import org.drools.spi.Activation;
+import org.drools.spi.RuleFlowGroup;
 
 /**
  * Runtime counterpart of a ruleset node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowSequenceNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
+public class MilestoneNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
 
-    protected RuleSetNode getRuleSetNode() {
-        return (RuleSetNode) getNode();
+    protected MilestoneNode getMilestoneNode() {
+        return (MilestoneNode) getNode();
     }
 
     public void trigger(final RuleFlowNodeInstance from) {
-        getProcessInstance().getAgenda().activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
+    	RuleFlowGroup systemRuleFlowGroup = getProcessInstance().getAgenda().getRuleFlowGroup("DROOLS_SYSTEM");
+    	String rule = "RuleFlow-" + getProcessInstance().getProcess().getId()
+    		+ "-" + getNode().getId();
+    	for (Iterator activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
+    		Activation activation = ((RuleFlowGroupNode) activations.next()).getActivation();
+    		if (rule.equals(activation.getRule().getName())) {
+    			triggerCompleted();
+        		break;
+    		}
+    	}
     }
 
     public void triggerCompleted() {
-        getProcessInstance().getNodeInstance( getRuleSetNode().getTo().getTo() ).trigger( this );
+        getProcessInstance().getNodeInstance( getMilestoneNode().getTo().getTo() ).trigger( this );
         getProcessInstance().removeNodeInstance(this);
-    }
-    
-    public void cancel() {
-    	getProcessInstance().getAgenda().deactivateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
-    	super.cancel();
     }
 
 }

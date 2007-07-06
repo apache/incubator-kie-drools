@@ -36,5 +36,7 @@ public class StartNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
 
     public void triggerCompleted() {
         getProcessInstance().getNodeInstance( getStartNode().getTo().getTo() ).trigger( this );
+        getProcessInstance().removeNodeInstance(this);
     }
+    
 }
