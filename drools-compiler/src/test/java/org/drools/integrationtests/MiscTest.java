@@ -50,6 +50,7 @@ import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
 import org.drools.PersonInterface;
+import org.drools.PersonWithEquals;
 import org.drools.Primitives;
 import org.drools.QueryResults;
 import org.drools.RandomNumber;
@@ -3080,5 +3081,33 @@ public class MiscTest extends TestCase {
         assertEquals( 2, results.size() );
         assertEquals( "not memberOf", results.get( 1 ));
     }
+    
+    public void testEqualitySupport() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_equalitySupport.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY  );
+        final RuleBase ruleBase = getRuleBase(conf);
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        PersonWithEquals person = new PersonWithEquals("bob", 30);
+        
+        workingMemory.insert( person );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1, results.size() );
+        assertEquals( "mark", results.get( 0 ));
+
+    }
+
 
 }
