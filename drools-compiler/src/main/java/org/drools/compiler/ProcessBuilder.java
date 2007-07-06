@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.drools.ruleflow.common.core.Process;
 import org.drools.ruleflow.core.Connection;
+import org.drools.ruleflow.core.MilestoneNode;
 import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.Split;
@@ -98,6 +99,9 @@ public class ProcessBuilder {
     						 result += createSplitRule(process, connection, split.getConstraint(connection).getConstraint());
     					 }
     				 }
+    			 } else if (nodes[i] instanceof MilestoneNode) {
+    				 MilestoneNode milestone = (MilestoneNode) nodes[i];
+    				 result += createMilestoneRule(process, milestone);
     			 }
     		}
     	}
@@ -111,6 +115,16 @@ public class ProcessBuilder {
 			"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
 			"    when \n" + 
 			"      " + constraint + "\n" +
+			"    then \n" +
+			"end \n\n";
+    }
+    
+    private String createMilestoneRule(Process process, MilestoneNode milestone) {
+		return 
+    		"rule \"RuleFlow-" + process.getId() + "-" + milestone.getId() + "\" \n" + 
+			"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
+			"    when \n" + 
+			"      " + milestone.getConstraint() + "\n" +
 			"    then \n" +
 			"end \n\n";
     }
