@@ -9,16 +9,31 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.common.DroolsObjectInputStream;
 
 public class MapBackedClassLoader extends ClassLoader
     implements
     DroolsClassLoader,
     Serializable {
+    
+    private static final ProtectionDomain PROTECTION_DOMAIN;
+    
     private Map store;
+    
+    static {
+        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
+            public Object run() {
+                return MapBackedClassLoader.class.getProtectionDomain();
+            }
+        } );
+    }    
 
     public MapBackedClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
@@ -40,7 +55,8 @@ public class MapBackedClassLoader extends ClassLoader
                 return defineClass( name,
                                     clazzBytes,
                                     0,
-                                    clazzBytes.length );
+                                    clazzBytes.length,
+                                    PROTECTION_DOMAIN );
             }
         }
 
