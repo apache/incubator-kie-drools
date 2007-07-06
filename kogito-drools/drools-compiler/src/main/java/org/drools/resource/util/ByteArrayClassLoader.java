@@ -18,8 +18,13 @@ package org.drools.resource.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.rule.MapBackedClassLoader;
 
 /**
  * A class loader for in memory byte[] resources
@@ -27,6 +32,15 @@ import java.util.Map;
  * @author etirelli
  */
 public class ByteArrayClassLoader extends ClassLoader {
+    private static final ProtectionDomain PROTECTION_DOMAIN;    
+    
+    static {
+        PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
+            public Object run() {
+                return ByteArrayClassLoader.class.getProtectionDomain();
+            }
+        } );
+    }        
 
     private final Map resources = new HashMap();
 
@@ -49,7 +63,8 @@ public class ByteArrayClassLoader extends ClassLoader {
                 return defineClass( name,
                                     clazzBytes,
                                     0,
-                                    clazzBytes.length );
+                                    clazzBytes.length,
+                                    PROTECTION_DOMAIN );
             }
         }
 
