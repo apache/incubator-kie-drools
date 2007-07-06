@@ -282,9 +282,9 @@ public class @{invokerClassName} implements org.drools.spi.Consequence
         org.drools.rule.Declaration[] declarations = rule.getDeclarations();                                                  
 
         @foreach{declarationTypes, declarations, indexes, notPatterns as type, declr, index, notPattern}
-          @if{notPattern}@{declr.identifier}org.drools.common.InternalFactHandle __Handle__ =  (org.drools.common.InternalFactHandle) knowledgeHelper.getWorkingMemory().getFactHandle( @{declr.identifier} );@else{}
-          org.drools.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( knowledgeHelper.getDeclaration( declarations[@{index}].getIdentifier() ) );@end{}
+          org.drools.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( knowledgeHelper.getDeclaration( declarations[@{index}].getIdentifier() ) );        
           @{type} @{declr.identifier} = ( @{type} )  declarations[@{index}].@{declr.extractor.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, @{declr.identifier}__Handle__.getObject() );
+          @if{notPattern}@{declr.identifier}__Handle__ =  (org.drools.common.InternalFactHandle) knowledgeHelper.getWorkingMemory().getFactHandle( @{declr.identifier} );@end{}
         @end{}
         
         @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" ); 
