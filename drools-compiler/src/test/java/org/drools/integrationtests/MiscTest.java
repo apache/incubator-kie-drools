@@ -3142,5 +3142,31 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testAlphaNodeSharing() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_alphaNodeSharing.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setShareAlphaNodes( false );
+        final RuleBase ruleBase = getRuleBase(conf);
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        Person p1 = new Person( "bob", 5 );
+        workingMemory.insert( p1 );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2, results.size() );
+        assertEquals( "1", results.get( 0 ));
+        assertEquals( "2", results.get( 1 ));
+
+    }
 
 }

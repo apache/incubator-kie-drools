@@ -1,0 +1,19 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "First"
+salience 10
+ when
+  c: Person(age <= 10)
+ then
+  results.add("1");
+end
+ 
+rule "Second"
+salience 5
+ when
+     c: Person(age <= 10)
+ then
+  results.add("2");
+end 
