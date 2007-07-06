@@ -74,7 +74,6 @@ public class JavaConsequenceBuilder extends AbstractJavaBuilder
         //final int[] indexes = new int[declarations.length];
         final Integer[] indexes = new Integer[declarations.length];
 
-        // have to user a String[] as boolean[] is broken in stringtemplate
         final Boolean[] notPatterns = new Boolean[declarations.length];
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
             indexes[i] = new Integer( list.indexOf( declarations[i] ) );
