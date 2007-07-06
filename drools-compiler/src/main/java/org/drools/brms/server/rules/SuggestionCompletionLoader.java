@@ -23,7 +23,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DSLMapping;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingFile;
-import org.drools.resource.util.ByteArrayClassLoader;
+import org.drools.rule.MapBackedClassLoader;
 import org.drools.util.asm.ClassFieldInspector;
 
 /**
@@ -45,7 +45,7 @@ public class SuggestionCompletionLoader {
 
     private final SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
     private final DrlParser                         parser  = new DrlParser();
-    private final ByteArrayClassLoader              loader;
+    private final MapBackedClassLoader              loader;
     protected List                                  errors  = new ArrayList();
     // iterating over the import list
     final ClassTypeResolver resolver;
@@ -69,7 +69,7 @@ public class SuggestionCompletionLoader {
                 classLoader = this.getClass().getClassLoader();
             }
         }
-        this.loader = new ByteArrayClassLoader( classLoader );
+        this.loader = new MapBackedClassLoader( classLoader );
         this.resolver = new ClassTypeResolver(new ArrayList(), this.loader);
     }
 

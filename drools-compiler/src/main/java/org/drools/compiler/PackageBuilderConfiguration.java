@@ -109,7 +109,7 @@ public class PackageBuilderConfiguration {
 
         setJavaLanguageLevel( getDefaultLanguageLevel() );
 
-        setCompiler( getDefaultCompiler() );
+        setCompiler( getDefaultCompiler() );                
 
         this.dialects = new HashMap();
         this.chainedProperties.mapStartsWith( this.dialects,
