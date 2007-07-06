@@ -323,18 +323,64 @@
     <section>
       <title>Status management</title>
       
+      <para>
+		Each asset (and also package) in the BRMS has a status flag set.
+		The values of the status flag are set in the Administration section of the BRMS.
+		(you can add your own status names).
+		Similar to Categories, Statuses do NOT effect the execution in any way, and are purely informational.
+		Unlike categories, assets only have one status AT A TIME. 
+	  </para>	
+	  
+	  <para>
+	  	Using statuses is completely optional. You can use it to manage the lifecycle of assets 
+	  	(which you can also do with categories if you like).
+	  </para>
       
+      <para>      
+      <figure>
+          <title>Asset status</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="AssetChangeStatus.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+        You can change the status of an individual asset (like in the diagram above).
+        Its change takes effect immediately, no seperate save is needed.
+      </para>
+
+
+      <para>      
+      <figure>
+          <title>Asset status</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="PackageChangeStatus.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+        You can change the status of a whole package - this sets the status flag on the package itself,
+        but it ALSO changes the statuses on ALL the assets that belong to this package in one hit (to be the same as what you set the package to).
+      </para>
+
       
     </section>
 
     <section>
       <title>Package management</title>
+      
+      <para>[pix on package editor, talk about models etc]</para>
     </section>
 
     <section>
       <title>Version management</title>
 
-
+	<para>Both assets and whole packages of assets are "versioned" in the BRMS, but the mechanism is slightly different. Individual assets are saved a bit like a version of a file in a source control system. However, packages of assets are versioned "on demand" by taking a snapshot (typically which is used for deployment).
+	The next section talks about deployment management and snapshots.</para>
 
       <para>
       <figure>
@@ -375,6 +421,8 @@
       stored in the database, and also seperates rules into packages (name
       spaces) and their type (format, as rules can be in many different
       formats).</para>
+      
+      <para>[picture of rules explorer list, and package explorer]</para>
     </section>
   </section>
 
