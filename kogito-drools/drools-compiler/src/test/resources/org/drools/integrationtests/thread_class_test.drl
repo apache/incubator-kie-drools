@@ -1,0 +1,17 @@
+package nesting;
+
+#dialect "mvel"
+
+import org.drools.Person
+import org.drools.Address
+
+
+
+rule "test something"
+	
+	when
+		p: Person( name=="Michael", addresses != null)
+	then
+		p.setName("goo");
+		System.out.println(p.getName());	
+end
