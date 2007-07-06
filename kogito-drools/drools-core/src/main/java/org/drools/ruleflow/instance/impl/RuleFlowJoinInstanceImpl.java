@@ -88,5 +88,5 @@ public class RuleFlowJoinInstanceImpl extends RuleFlowNodeInstanceImpl
     public void triggerCompleted() {
         getProcessInstance().getNodeInstance( getJoinNode().getTo().getTo() ).trigger( this );
     }
-
+    
 }

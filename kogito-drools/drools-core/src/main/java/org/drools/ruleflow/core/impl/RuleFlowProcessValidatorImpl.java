@@ -25,6 +25,7 @@ import java.util.Map;
 import org.drools.ruleflow.core.Connection;
 import org.drools.ruleflow.core.EndNode;
 import org.drools.ruleflow.core.Join;
+import org.drools.ruleflow.core.MilestoneNode;
 import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.RuleFlowProcessValidationError;
@@ -130,6 +131,18 @@ public class RuleFlowProcessValidatorImpl
                 }
                 if ( join.getTo() == null ) {
                     errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.JOIN_WITHOUT_OUTGOING_CONNECTION ) );
+                }
+            } else if ( node instanceof MilestoneNode ) {
+                final MilestoneNode milestone = (MilestoneNode) node;
+                if ( milestone.getFrom() == null ) {
+                    errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.MILESTONE_NODE_WITHOUT_INCOMING_CONNECTIONS ) );
+                }
+
+                if ( milestone.getTo() == null ) {
+                    errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.MILESTONE_NODE_WITHOUT_OUTGOING_CONNECTIONS ) );
+                }
+                if ( milestone.getConstraint() == null ) {
+                    errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.MILESTONE_WITHOUT_CONSTRAINT ) );
                 }
             }
         }

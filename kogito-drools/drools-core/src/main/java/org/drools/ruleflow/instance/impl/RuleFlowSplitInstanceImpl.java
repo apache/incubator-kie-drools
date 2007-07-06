@@ -105,9 +105,4 @@ public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl
         }
     }
 
-    public void triggerCompleted() {
-        // TODO Auto-generated method stub
-
-    }
-
 }

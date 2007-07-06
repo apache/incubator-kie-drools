@@ -60,4 +60,9 @@ public abstract class RuleFlowNodeInstanceImpl
     protected Node getNode() {
         return this.processInstance.getRuleFlowProcess().getNode( this.nodeId );
     }
+    
+    public void cancel() {
+    	getProcessInstance().removeNodeInstance(this);
+    }
+
 }

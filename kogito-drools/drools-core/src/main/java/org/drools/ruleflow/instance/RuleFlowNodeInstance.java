@@ -40,6 +40,6 @@ public interface RuleFlowNodeInstance {
 
     void trigger(RuleFlowNodeInstance from);
 
-    void triggerCompleted();
+    void cancel();
 
 }
