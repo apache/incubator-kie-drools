@@ -16,18 +16,14 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import java.util.List;
-
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.QueryResults;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 

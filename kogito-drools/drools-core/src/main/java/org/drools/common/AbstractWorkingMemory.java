@@ -84,69 +84,70 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
-    protected static final Class[]            ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    protected static final Class[]         ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected final long                      id;
+    protected final long                   id;
 
     /** The arguments used when adding/removing a property change listener. */
-    protected final Object[]                  addRemovePropertyChangeListenerArgs           = new Object[]{this};
+    protected final Object[]               addRemovePropertyChangeListenerArgs           = new Object[]{this};
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected final PrimitiveLongMap          nodeMemories                                  = new PrimitiveLongMap( 32,
-                                                                                                                    8 );
+    protected final PrimitiveLongMap       nodeMemories                                  = new PrimitiveLongMap( 32,
+                                                                                                                 8 );
 
     /** Global values which are associated with this memory. */
-    protected Map                             globals                                       = new HashMap();
+    protected Map                          globals                                       = new HashMap();
 
     /** Object-to-handle mapping. */
-    private final ObjectHashMap               assertMap;
+    private final ObjectHashMap            assertMap;
+    private final ObjectHashMap            identityMap;
 
-    protected Map                             queryResults                                  = Collections.EMPTY_MAP;
+    protected Map                          queryResults                                  = Collections.EMPTY_MAP;
 
-    protected GlobalResolver                  globalResolver;
+    protected GlobalResolver               globalResolver;
 
-    protected static final Object             NULL                                          = new Serializable() {
-                                                                                                private static final long serialVersionUID = 400L;
-                                                                                            };
+    protected static final Object          NULL                                          = new Serializable() {
+                                                                                             private static final long serialVersionUID = 400L;
+                                                                                         };
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport workingMemoryEventSupport                     = new WorkingMemoryEventSupport( );
+    protected WorkingMemoryEventSupport    workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
 
-    protected AgendaEventSupport        agendaEventSupport                            = new AgendaEventSupport( );
+    protected AgendaEventSupport           agendaEventSupport                            = new AgendaEventSupport();
 
-    protected RuleFlowEventSupport      ruleFlowEventSupport                          = new RuleFlowEventSupport( );
+    protected RuleFlowEventSupport         ruleFlowEventSupport                          = new RuleFlowEventSupport();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected transient InternalRuleBase      ruleBase;
+    protected transient InternalRuleBase   ruleBase;
 
-    protected final FactHandleFactory         handleFactory;
+    protected final FactHandleFactory      handleFactory;
 
-    protected final TruthMaintenanceSystem    tms;
+    protected final TruthMaintenanceSystem tms;
 
     /** Rule-firing agenda. */
-    protected DefaultAgenda                   agenda;
+    protected DefaultAgenda                agenda;
 
-    protected final List                      actionQueue                                   = new ArrayList();
+    protected final List                   actionQueue                                   = new ArrayList();
 
-    protected final ReentrantLock             lock                                          = new ReentrantLock();
+    protected final ReentrantLock          lock                                          = new ReentrantLock();
 
-    protected final boolean                   discardOnLogicalOverride;
+    protected final boolean                discardOnLogicalOverride;
 
-    protected long                            propagationIdCounter;
+    protected long                         propagationIdCounter;
 
-    private final boolean                     maintainTms;
+    private final boolean                  maintainTms;
 
-    private final boolean                     sequential;
+    private final boolean                  sequential;
 
-    private List                              liaPropagations                               = Collections.EMPTY_LIST;
+    private List                           liaPropagations                               = Collections.EMPTY_LIST;
 
     /** Flag to determine if a rule is currently being fired. */
-    protected boolean                         firing;
+    protected boolean                      firing;
 
-    protected boolean                         halt;
+    protected boolean                      halt;
 
     // ------------------------------------------------------------
     // Constructors
@@ -178,8 +179,11 @@ public abstract class AbstractWorkingMemory
 
         if ( conf.getAssertBehaviour() == AssertBehaviour.IDENTITY ) {
             this.assertMap.setComparator( new IdentityAssertMapComparator() );
+            this.identityMap = assertMap;
         } else {
             this.assertMap.setComparator( new EqualityAssertMapComparator() );
+            this.identityMap = new ObjectHashMap();
+            this.identityMap.setComparator( new IdentityAssertMapComparator() );
         }
 
         // Only takes effect if are using idententity behaviour for assert        
@@ -198,7 +202,7 @@ public abstract class AbstractWorkingMemory
     void setRuleBase(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
-    
+
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport) {
         this.workingMemoryEventSupport = workingMemoryEventSupport;
     }
@@ -571,7 +575,7 @@ public abstract class AbstractWorkingMemory
     public FactHandle getFactHandle(final Object object) {
         try {
             this.lock.lock();
-            final FactHandle factHandle = (FactHandle) this.assertMap.get( object );
+            final FactHandle factHandle = (FactHandle) this.identityMap.get( object );
 
             return factHandle;
         } finally {
@@ -703,6 +707,11 @@ public abstract class AbstractWorkingMemory
             this.assertMap.put( handle,
                                 handle,
                                 false );
+            if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+                this.identityMap.put( handle,
+                                      handle,
+                                      false );
+            }
             insert( handle,
                     object,
                     rule,
@@ -757,6 +766,12 @@ public abstract class AbstractWorkingMemory
                     this.assertMap.put( handle,
                                         handle,
                                         false );
+                    if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+                        this.identityMap.put( handle,
+                                              handle,
+                                              false );
+                    }
+                    
                     key = new EqualityKey( handle );
                     handle.setEqualityKey( key );
                     this.tms.put( key );
@@ -804,6 +819,13 @@ public abstract class AbstractWorkingMemory
                             this.assertMap.put( handle,
                                                 handle,
                                                 false );
+                            
+                            if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+                                this.identityMap.put( handle,
+                                                      handle,
+                                                      false );
+                            }
+                            
                         }
 
                     } else {
@@ -813,6 +835,12 @@ public abstract class AbstractWorkingMemory
                                             false );
                         key.addFactHandle( handle );
                         handle.setEqualityKey( key );
+                        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+                            this.identityMap.put( handle,
+                                                  handle,
+                                                  false );
+                        }
+                        
                     }
 
                 } else {
@@ -839,6 +867,12 @@ public abstract class AbstractWorkingMemory
                 this.assertMap.put( handle,
                                     handle,
                                     false );
+                if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+                    this.identityMap.put( handle,
+                                          handle,
+                                          false );
+                }
+                
             }
 
             if ( dynamic ) {
@@ -1005,6 +1039,10 @@ public abstract class AbstractWorkingMemory
                                                                 this );
 
             this.assertMap.remove( handle );
+            if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+                this.identityMap.remove( handle );
+            }
+
 
             this.handleFactory.destroyFactHandle( handle );
 
@@ -1167,17 +1205,26 @@ public abstract class AbstractWorkingMemory
                                                                                       this.agenda.getDormantActivations() );
             doRetract( handle,
                        propagationContext );
-            
+
             if ( (originalObject != object) || (this.ruleBase.getConfiguration().getAssertBehaviour() != AssertBehaviour.IDENTITY) ) {
                 // as assertMap may be using an "identity" equality comparator,
                 // we need to remove the handle from the map, before replacing the object
                 // and then re-add the handle. Otherwise we may end up with a leak.
                 this.assertMap.remove( handle );
+                if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+                    this.identityMap.remove( handle );
+                }
+
                 // set anyway, so that it updates the hashCodes
                 handle.setObject( object );
                 this.assertMap.put( handle,
                                     handle,
                                     false );
+                if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+                    this.identityMap.put( handle,
+                                          handle,
+                                          false );
+                }
             }
 
             if ( this.maintainTms ) {
@@ -1346,7 +1393,8 @@ public abstract class AbstractWorkingMemory
             processInstance.setProcess( process );
             processInstance.start();
 
-            getRuleFlowEventSupport().fireRuleFlowProcessStarted( processInstance, this );
+            getRuleFlowEventSupport().fireRuleFlowProcessStarted( processInstance,
+                                                                  this );
 
             return processInstance;
         } else {

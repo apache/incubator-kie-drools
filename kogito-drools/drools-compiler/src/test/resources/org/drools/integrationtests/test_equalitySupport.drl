@@ -1,0 +1,21 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test equality support"
+	salience 10
+when
+    $p : PersonWithEquals( name == "bob" )
+then
+    $p.setName( "mark" );
+    results.add( $p.getName() );
+    update( $p );
+end
+
+rule "test 2"
+when
+    $p : PersonWithEquals( name == "bob" )
+then
+    results.add( "This rule should NEVER fire" );
+end
+
