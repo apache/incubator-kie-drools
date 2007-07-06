@@ -16,7 +16,6 @@ package org.drools.decisiontable;
  * limitations under the License.
  */
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +24,6 @@ import java.util.Map;
 import javax.rules.RuleRuntime;
 import javax.rules.RuleServiceProvider;
 import javax.rules.RuleServiceProviderManager;
-import javax.rules.RuleSession;
 import javax.rules.StatefulRuleSession;
 import javax.rules.admin.LocalRuleExecutionSetProvider;
 import javax.rules.admin.RuleAdministrator;
@@ -33,16 +31,9 @@ import javax.rules.admin.RuleExecutionSet;
 
 import junit.framework.TestCase;
 
-import org.acme.insurance.launcher.PricingRuleLauncher;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.WorkingMemory;
-import org.drools.compiler.PackageBuilder;
 import org.drools.jsr94.rules.Constants;
 import org.drools.jsr94.rules.ExampleRuleEngineFacade;
-import org.drools.jsr94.rules.RuleEngineTestBase;
 import org.drools.jsr94.rules.RuleServiceProviderImpl;
-import org.drools.rule.Package;
 
 public class SpreadsheetIntegrationTest extends TestCase {
 
