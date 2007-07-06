@@ -704,14 +704,7 @@ public abstract class AbstractWorkingMemory
 
         if ( isSequential() ) {
             handle = this.handleFactory.newFactHandle( object );
-            this.assertMap.put( handle,
-                                handle,
-                                false );
-            if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-                this.identityMap.put( handle,
-                                      handle,
-                                      false );
-            }
+            addHandleToMaps( handle );
             insert( handle,
                     object,
                     rule,
@@ -763,14 +756,7 @@ public abstract class AbstractWorkingMemory
                     // key is also null, so treat as a totally new stated/logical
                     // assert
                     handle = this.handleFactory.newFactHandle( object );
-                    this.assertMap.put( handle,
-                                        handle,
-                                        false );
-                    if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-                        this.identityMap.put( handle,
-                                              handle,
-                                              false );
-                    }
+                    addHandleToMaps( handle );
                     
                     key = new EqualityKey( handle );
                     handle.setEqualityKey( key );
@@ -816,30 +802,15 @@ public abstract class AbstractWorkingMemory
                             handle = this.handleFactory.newFactHandle( object );
                             handle.setEqualityKey( key );
                             key.addFactHandle( handle );
-                            this.assertMap.put( handle,
-                                                handle,
-                                                false );
-                            
-                            if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-                                this.identityMap.put( handle,
-                                                      handle,
-                                                      false );
-                            }
+                            addHandleToMaps( handle );
                             
                         }
 
                     } else {
                         handle = this.handleFactory.newFactHandle( object );
-                        this.assertMap.put( handle,
-                                            handle,
-                                            false );
+                        addHandleToMaps( handle );
                         key.addFactHandle( handle );
                         handle.setEqualityKey( key );
-                        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-                            this.identityMap.put( handle,
-                                                  handle,
-                                                  false );
-                        }
                         
                     }
 
@@ -864,14 +835,7 @@ public abstract class AbstractWorkingMemory
                     return handle;
                 }
                 handle = this.handleFactory.newFactHandle( object );
-                this.assertMap.put( handle,
-                                    handle,
-                                    false );
-                if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-                    this.identityMap.put( handle,
-                                          handle,
-                                          false );
-                }
+                addHandleToMaps( handle );
                 
             }
 
@@ -1038,10 +1002,7 @@ public abstract class AbstractWorkingMemory
                                                                 object,
                                                                 this );
 
-            this.assertMap.remove( handle );
-            if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-                this.identityMap.remove( handle );
-            }
+            removeHandleFromMaps( handle );
 
 
             this.handleFactory.destroyFactHandle( handle );
@@ -1051,6 +1012,24 @@ public abstract class AbstractWorkingMemory
             }
         } finally {
             this.lock.unlock();
+        }
+    }
+
+    private void addHandleToMaps(InternalFactHandle handle) {
+        this.assertMap.put( handle,
+                            handle,
+                            false );
+        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+            this.identityMap.put( handle,
+                                  handle,
+                                  false );
+        }
+    }
+
+    private void removeHandleFromMaps(final InternalFactHandle handle) {
+        this.assertMap.remove( handle );
+        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+            this.identityMap.remove( handle );
         }
     }
 
@@ -1207,24 +1186,11 @@ public abstract class AbstractWorkingMemory
                        propagationContext );
 
             if ( (originalObject != object) || (this.ruleBase.getConfiguration().getAssertBehaviour() != AssertBehaviour.IDENTITY) ) {
-                // as assertMap may be using an "identity" equality comparator,
-                // we need to remove the handle from the map, before replacing the object
-                // and then re-add the handle. Otherwise we may end up with a leak.
-                this.assertMap.remove( handle );
-                if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-                    this.identityMap.remove( handle );
-                }
+                removeHandleFromMaps( handle );
 
                 // set anyway, so that it updates the hashCodes
                 handle.setObject( object );
-                this.assertMap.put( handle,
-                                    handle,
-                                    false );
-                if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-                    this.identityMap.put( handle,
-                                          handle,
-                                          false );
-                }
+                addHandleToMaps( handle );
             }
 
             if ( this.maintainTms ) {
