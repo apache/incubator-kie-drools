@@ -19,7 +19,7 @@ package org.drools.base.evaluators;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.VariableRestriction.LongVariableContextEntry;
+import org.drools.rule.VariableRestriction.CharVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
@@ -97,7 +97,7 @@ public class CharacterFactory
                 return false;
             }
             
-            return context.declaration.getExtractor().getCharValue( workingMemory, left ) == ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getCharValue( workingMemory, left ) == ((CharVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -108,7 +108,7 @@ public class CharacterFactory
                 return false;
             }
             
-            return ((LongVariableContextEntry) context).left == context.extractor.getCharValue( workingMemory, right );
+            return ((CharVariableContextEntry) context).left == context.extractor.getCharValue( workingMemory, right );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -161,7 +161,7 @@ public class CharacterFactory
                 return true;
             }
             
-            return context.declaration.getExtractor().getCharValue( workingMemory, left ) != ((LongVariableContextEntry) context).right;
+            return context.declaration.getExtractor().getCharValue( workingMemory, left ) != ((CharVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -172,7 +172,7 @@ public class CharacterFactory
                 return true;
             }
             
-            return ((LongVariableContextEntry) context).left != context.extractor.getCharValue( workingMemory, right );
+            return ((CharVariableContextEntry) context).left != context.extractor.getCharValue( workingMemory, right );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -219,7 +219,7 @@ public class CharacterFactory
             if( context.rightNull ) {
                 return false;
             }
-            return ((LongVariableContextEntry) context).right < context.declaration.getExtractor().getCharValue( workingMemory, left );
+            return ((CharVariableContextEntry) context).right < context.declaration.getExtractor().getCharValue( workingMemory, left );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -227,7 +227,7 @@ public class CharacterFactory
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            return context.extractor.getCharValue( workingMemory, right ) < ((LongVariableContextEntry) context).left;
+            return context.extractor.getCharValue( workingMemory, right ) < ((CharVariableContextEntry) context).left;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -271,7 +271,7 @@ public class CharacterFactory
             if( context.rightNull ) {
                 return false;
             }
-            return ((LongVariableContextEntry) context).right <= context.declaration.getExtractor().getCharValue( workingMemory, left );
+            return ((CharVariableContextEntry) context).right <= context.declaration.getExtractor().getCharValue( workingMemory, left );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -279,7 +279,7 @@ public class CharacterFactory
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            return context.extractor.getCharValue( workingMemory, right ) <= ((LongVariableContextEntry) context).left;
+            return context.extractor.getCharValue( workingMemory, right ) <= ((CharVariableContextEntry) context).left;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -323,7 +323,7 @@ public class CharacterFactory
             if( context.rightNull ) {
                 return false;
             }
-            return ((LongVariableContextEntry) context).right > context.declaration.getExtractor().getCharValue( workingMemory, left );
+            return ((CharVariableContextEntry) context).right > context.declaration.getExtractor().getCharValue( workingMemory, left );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -331,7 +331,7 @@ public class CharacterFactory
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            return context.extractor.getCharValue( workingMemory, right ) > ((LongVariableContextEntry) context).left;
+            return context.extractor.getCharValue( workingMemory, right ) > ((CharVariableContextEntry) context).left;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -375,7 +375,7 @@ public class CharacterFactory
             if( context.rightNull ) {
                 return false;
             }
-            return ((LongVariableContextEntry) context).right >= context.declaration.getExtractor().getCharValue( workingMemory, left );
+            return ((CharVariableContextEntry) context).right >= context.declaration.getExtractor().getCharValue( workingMemory, left );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -383,7 +383,7 @@ public class CharacterFactory
             if( context.extractor.isNullValue( workingMemory, right ) ) {
                 return false;
             }
-            return context.extractor.getCharValue( workingMemory, right ) >= ((LongVariableContextEntry) context).left;
+            return context.extractor.getCharValue( workingMemory, right ) >= ((CharVariableContextEntry) context).left;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,

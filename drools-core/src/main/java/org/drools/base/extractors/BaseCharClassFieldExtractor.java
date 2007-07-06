@@ -33,7 +33,7 @@ public abstract class BaseCharClassFieldExtractor extends BaseClassFieldExtracto
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Long( getCharValue( workingMemory, object ) );
+        return new Character( getCharValue( workingMemory, object ) );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {

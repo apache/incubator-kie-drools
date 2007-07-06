@@ -33,6 +33,7 @@ import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
+import org.drools.rule.VariableRestriction.CharVariableContextEntry;
 import org.drools.rule.VariableRestriction.DoubleVariableContextEntry;
 import org.drools.rule.VariableRestriction.LongVariableContextEntry;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
@@ -735,34 +736,36 @@ public class EvaluatorFactoryTest extends TestCase {
             return context;
             
         } else {
-            if ( valueType.isIntegerNumber() || valueType.isChar() ) {
+            if ( valueType.isIntegerNumber() ) {
                 final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
                                                                                  declaration );
                 
-                if ( valueType.isChar() ) {
-                    if (row[2] == null) {
-                        context.leftNull = true;
-                    } else {
-                        context.left = ((Character) row[2]).charValue();
-                    }
-                    
-                    if (row[0] == null) {
-                        context.rightNull = true;
-                    } else {
-                        context.right = ((Character) row[0]).charValue();
-                    }
+                if (row[2] == null) {
+                    context.leftNull = true;
                 } else {
-                    if (row[2] == null) {
-                        context.leftNull = true;
-                    } else {
-                        context.left = ((Number) row[2]).longValue();
-                    }
-                    
-                    if (row[0] == null) {
-                        context.rightNull = true;
-                    } else {
-                        context.right = ((Number) row[0]).longValue();
-                    }
+                    context.left = ((Number) row[2]).longValue();
+                }
+                
+                if (row[0] == null) {
+                    context.rightNull = true;
+                } else {
+                    context.right = ((Number) row[0]).longValue();
+                }
+                return context;
+            } else if ( valueType.isChar() ) {
+                final CharVariableContextEntry context = new CharVariableContextEntry( extractor,
+                                                                                       declaration );
+                      
+                if (row[2] == null) {
+                    context.leftNull = true;
+                } else {
+                    context.left = ((Character) row[2]).charValue();
+                }
+                
+                if (row[0] == null) {
+                    context.rightNull = true;
+                } else {
+                    context.right = ((Character) row[0]).charValue();
                 }
                 return context;
             } else if ( valueType.isBoolean() ) {

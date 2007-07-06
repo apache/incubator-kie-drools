@@ -28,6 +28,7 @@ public class Primitives {
 
     private float    floatPrimitive;
     private float    doublePrimitive;
+    private String   stringAttribute;
     private Object[] arrayAttribute;
     private int[]    primitiveArrayAttribute;
     private String[] stringArray;
@@ -124,6 +125,14 @@ public class Primitives {
 
     public void setStringArray(String[] stringArray) {
         this.stringArray = stringArray;
+    }
+
+    public String getStringAttribute() {
+        return stringAttribute;
+    }
+
+    public void setStringAttribute(String stringAttribute) {
+        this.stringAttribute = stringAttribute;
     }
 
 }
