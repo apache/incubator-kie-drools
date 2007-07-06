@@ -11,6 +11,39 @@
     involved (but does not go through the concepts in detail). This assumes
     you have installed the repository correctly, and are able to access the
     main login screen.</para>
+    
+    <figure>
+        <title>Main feature areas of BRMS</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="BRMSFeatures.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+    </figure>
+    
+    <para>
+    	The above picture shows the main feature areas of the BRMS.
+    	<itemizedlist>
+		<listitem><para>    		 
+    	Info: This is the initial screen, with links to resources.</para>
+    	</listitem>
+		<listitem><para>    		     	
+    	Rules: This is the category and business user perspective.</para>
+    	</listitem>
+		<listitem><para>    		 
+    	Package: This is where packages are configured and managed.</para>
+    	</listitem>
+		<listitem><para>    		 
+    	Deployment: this is where deployment snapshots are managed.</para>
+    	</listitem>
+		<listitem><para>    		 
+    	Admin: Administrative functions (categories, statuses, import and export)</para>
+    	</listitem>
+    	
+    	</itemizedlist>
+    </para>
 
     <para>You can also consult the wiki:
     http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository for some
@@ -264,6 +297,13 @@
       change categories as you go.</para>
     </section>
 
+	<section>
+		<title>The asset editor</title>
+		<para>
+			[shots on overall asset editor - annotated]
+		</para>
+	</section>
+
     <section>
       <title>Rule types and formats</title>
 
@@ -282,6 +322,9 @@
 
     <section>
       <title>Status management</title>
+      
+      
+      
     </section>
 
     <section>
@@ -291,7 +334,24 @@
     <section>
       <title>Version management</title>
 
-      <para>Asset versions</para>
+
+
+      <para>
+      <figure>
+          <title>Asset versions</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="AssetVersionHistory.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+        Each time you make a change to an asset, it creates a new item in the version history.
+        This is a bit like having an unlimited undo. You can look back through the history
+        of an individual asset like the list above, and view it (and restore it) from that point in time.
+        
+      </para>
     </section>
 
     <section>
