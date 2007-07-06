@@ -120,6 +120,8 @@ public interface RuleBase
                                                          ClassNotFoundException;
 
     Package[] getPackages();
+    
+    Package getPackage(String name);
 
     void addPackage(Package pkg) throws Exception;
 
