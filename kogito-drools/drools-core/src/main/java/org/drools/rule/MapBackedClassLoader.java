@@ -1,13 +1,7 @@
 package org.drools.rule;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -15,18 +9,17 @@ import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.base.ClassFieldExtractorFactory;
-import org.drools.common.DroolsObjectInputStream;
-
 public class MapBackedClassLoader extends ClassLoader
     implements
     DroolsClassLoader,
     Serializable {
-    
-    private static final ProtectionDomain PROTECTION_DOMAIN;
+	
+	private static final long serialVersionUID = 400L;
+
+	private static final ProtectionDomain PROTECTION_DOMAIN;
     
     private Map store;
-    
+
     static {
         PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
             public Object run() {
@@ -45,10 +38,16 @@ public class MapBackedClassLoader extends ClassLoader
         addClass(className, 
                  bytes);
     }
+    
+    private String convertResourcePathToClassName(final String pName) {
+    	return pName.replaceAll(".java$|.class$", "").replace('/', '.');
+    }
+    
 
-    public void addClass(String className,
+    public void addClass(final String className,
                          byte[] bytes) {
-        this.store.put( className,
+    	
+        this.store.put( convertResourcePathToClassName(className),
                         bytes );
     }
 
@@ -65,7 +64,6 @@ public class MapBackedClassLoader extends ClassLoader
                                     PROTECTION_DOMAIN );
             }
         }
-
         return clazz;
     }
 
