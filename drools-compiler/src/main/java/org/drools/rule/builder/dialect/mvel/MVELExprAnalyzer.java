@@ -56,7 +56,7 @@ public class MVELExprAnalyzer {
         ExpressionCompiler compiler = new ExpressionCompiler( expr);
         compiler.compile();  
         
-        return analyze( compiler.getInputs(),
+        return analyze( compiler.getParserContextState().getInputs().keySet(),
                         availableIdentifiers );
     }
 

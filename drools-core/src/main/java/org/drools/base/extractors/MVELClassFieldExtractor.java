@@ -58,7 +58,7 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
         ExpressionCompiler compiler = new ExpressionCompiler( fieldName );
         this.mvelExpression = compiler.compile();
         
-        Set inputs = compiler.getInputs();
+        Set inputs = compiler.getParserContextState().getInputs().keySet();
         for( Iterator it = inputs.iterator(); it.hasNext(); ) {
             String basefield = (String) it.next();
                         

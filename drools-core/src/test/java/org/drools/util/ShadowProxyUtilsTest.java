@@ -52,7 +52,7 @@ public class ShadowProxyUtilsTest extends TestCase {
 
         int[][] clone = (int[][]) ShadowProxyUtils.cloneObject( array );
         assertTrue( ArrayUtils.deepEquals( array,
-                                       clone ) );
+                                           clone ) );
         assertNotSame( array,
                        clone );
     }
@@ -85,7 +85,7 @@ public class ShadowProxyUtilsTest extends TestCase {
         assertSame( unmod,
                     clone );
     }
-    
+
     public void testCloneEmptyList() {
         List list = Collections.EMPTY_LIST;
 
@@ -115,9 +115,9 @@ public class ShadowProxyUtilsTest extends TestCase {
         assertSame( map,
                     clone );
     }
-    
+
     public void testCloneRegularObject() {
-        // this is never supposed to happen, 
+        // this is never supposed to happen,
         // but we don't want the method to blow up if it happens
         Object obj = new Object();
 
@@ -126,9 +126,7 @@ public class ShadowProxyUtilsTest extends TestCase {
                       clone );
         assertSame( obj,
                     clone );
-        
+
     }
-    
-    
 
 }
