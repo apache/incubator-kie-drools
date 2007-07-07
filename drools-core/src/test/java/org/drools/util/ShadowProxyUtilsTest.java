@@ -51,7 +51,7 @@ public class ShadowProxyUtilsTest extends TestCase {
         int[][] array = new int[][]{{0, 0}, {0, 1}, {1, 0}, {1, 1}};
 
         int[][] clone = (int[][]) ShadowProxyUtils.cloneObject( array );
-        assertTrue( Arrays.deepEquals( array,
+        assertTrue( ArrayUtils.deepEquals( array,
                                        clone ) );
         assertNotSame( array,
                        clone );
