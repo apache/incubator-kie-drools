@@ -9,6 +9,7 @@ import org.drools.brms.client.modeldriven.brl.ActionSetField;
 import org.drools.brms.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.brms.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.brms.client.modeldriven.brl.ConnectiveConstraint;
+import org.drools.brms.client.modeldriven.brl.DSLSentence;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
 import org.drools.brms.client.modeldriven.brl.IAction;
 import org.drools.brms.client.modeldriven.brl.IPattern;
@@ -351,6 +352,35 @@ public class RuleModelTest extends TestCase {
                       m.attributes.length );
         assertEquals( at2,
                       m.attributes[0] );
+    }
+    
+    public void testIsDSLEnhanced() throws Exception {
+        RuleModel m = new RuleModel();
+        
+        assertFalse(m.hasDSLSentences());
+        
+        m.addLhsItem( new FactPattern() );
+        assertFalse(m.hasDSLSentences());
+        
+        m.addRhsItem( new ActionSetField("q") );
+        
+        assertFalse(m.hasDSLSentences());
+        
+        m.addLhsItem( new DSLSentence() );
+        assertTrue(m.hasDSLSentences());
+        
+        m.addRhsItem( new DSLSentence() );
+        assertTrue(m.hasDSLSentences());
+        
+        m = new RuleModel();
+        
+        m.addLhsItem( new DSLSentence() );
+        assertTrue(m.hasDSLSentences());
+        
+        m = new RuleModel();
+        m.addRhsItem( new DSLSentence() );
+        assertTrue(m.hasDSLSentences());
+        
     }
 
 }
