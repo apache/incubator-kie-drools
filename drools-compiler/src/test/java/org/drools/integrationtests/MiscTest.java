@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
@@ -1495,7 +1496,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void XXtestSerializable() throws Exception {
+    public void testSerializable() throws Exception {
 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
 
@@ -1510,8 +1511,11 @@ public class MiscTest extends TestCase {
 
         ruleBase.addPackage( pkg );
 
-        final byte[] ast = serializeOut( ruleBase );
-        ruleBase = (RuleBase) serializeIn( ast );
+        Map map = new HashMap();
+        map.put( "x", ruleBase );
+        final byte[] ast = serializeOut( map );
+        map = (Map) serializeIn( ast );
+        ruleBase = ( RuleBase ) map.get( "x" );
         final Rule[] rules = ruleBase.getPackages()[0].getRules();
         assertEquals( 4,
                       rules.length );
@@ -1632,7 +1636,7 @@ public class MiscTest extends TestCase {
 
     protected Object serializeIn(final byte[] bytes) throws IOException,
                                                     ClassNotFoundException {
-        final ObjectInput in = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ) );
+        final ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
         final Object obj = in.readObject();
         in.close();
         return obj;
