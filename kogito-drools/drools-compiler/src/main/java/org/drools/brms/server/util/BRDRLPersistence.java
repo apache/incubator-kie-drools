@@ -43,17 +43,8 @@ public class BRDRLPersistence
      * @see org.drools.brms.server.util.BRLPersistence#marshal(org.drools.brms.client.modeldriven.brl.RuleModel)
      */
     public String marshal(RuleModel model) {
-        boolean isDSLEnhanced = false;
-        for ( int i = 0; !isDSLEnhanced && i < model.lhs.length; i++ ) {
-            if ( model.lhs[i] instanceof DSLSentence ) {
-                isDSLEnhanced = true;
-            }
-        }
-        for ( int i = 0; !isDSLEnhanced && i < model.rhs.length; i++ ) {
-            if ( model.rhs[i] instanceof DSLSentence ) {
-                isDSLEnhanced = true;
-            }
-        }
+        boolean isDSLEnhanced = model.hasDSLSentences();
+
 
         StringBuffer buf = new StringBuffer();
         buf.append( "rule \"" + model.name + "\"\n" );

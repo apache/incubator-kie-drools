@@ -74,5 +74,14 @@ public class SnippetBuilderTest extends TestCase {
                       result );
 
     }
+    
+    public void testStartWithParam() {
+        final String snippet = "$1 goo $2";
+        final SnippetBuilder snip = new SnippetBuilder( snippet );
+        final String result = snip.build( "x, y" );
+        assertEquals( "x goo y",
+                      result );
+        
+    }
 
 }

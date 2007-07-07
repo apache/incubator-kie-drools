@@ -270,4 +270,28 @@ public class RuleModel
         return getAllVariables().contains( s );
     }
 
+    /**
+     * Returns true if any DSLSentences are used.
+     */
+    public boolean hasDSLSentences() {
+        
+        if (this.lhs != null) {
+            for ( int i = 0; i < this.lhs.length; i++ ) {
+                if ( lhs[i] instanceof DSLSentence ) {
+                    return true;
+                }
+            }
+        }
+        
+        if (this.rhs != null) {
+            for ( int i = 0; i < this.rhs.length; i++ ) {
+                if ( rhs[i] instanceof DSLSentence ) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+   }
+
 }
