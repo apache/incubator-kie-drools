@@ -162,7 +162,7 @@ public class ArrayUtils {
             Object e2 = a2[i];
             if ( e1 == e2 ) continue;
             if ( e1 == null ) return false;
-            boolean eq = (e1.getClass() != e2.getClass() || e1.getClass().isArray()) ? e1.equals( e2 ) : (e1 instanceof Object[] && e2 instanceof Object[]) ? deepEquals( (Object[]) e1,
+            boolean eq = (e1.getClass() != e2.getClass() || !e1.getClass().isArray()  || !e2.getClass().isArray() ) ? e1.equals( e2 ) : (e1 instanceof Object[] && e2 instanceof Object[]) ? deepEquals( (Object[]) e1,
                                                                                                                                                                           (Object[]) e2 ) : (e1 instanceof byte[] && e2 instanceof byte[]) ? equals( (byte[]) e1,
                                                                                                                                                                                                                                                      (byte[]) e2 ) : (e1 instanceof short[] && e2 instanceof short[]) ? equals( (short[]) e1,
                                                                                                                                                                                                                                                                                                                                 (short[]) e2 ) : (e1 instanceof int[] && e2 instanceof int[]) ? equals( (int[]) e1,
