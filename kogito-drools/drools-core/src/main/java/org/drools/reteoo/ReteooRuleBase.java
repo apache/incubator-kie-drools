@@ -155,8 +155,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
         this.rete = (Rete) objects[0];
         this.reteooBuilder = (ReteooBuilder) objects[1];
-
-        this.reteooBuilder.setRete( this.rete );
     }
 
     // ------------------------------------------------------------

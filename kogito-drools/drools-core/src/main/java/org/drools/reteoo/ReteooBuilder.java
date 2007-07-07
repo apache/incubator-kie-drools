@@ -97,14 +97,6 @@ public class ReteooBuilder
         this.ruleBase = ((DroolsObjectInputStream) stream).getRuleBase();
     }
 
-    /**
-     * Allow this to be settable, otherwise we get infinite recursion on serialisation
-     * @param ruleBase
-     */
-    void setRete(final Rete rete) {
-
-    }
-
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------

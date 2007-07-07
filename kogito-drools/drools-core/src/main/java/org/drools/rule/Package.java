@@ -126,7 +126,7 @@ public class Package
         this.globals = Collections.EMPTY_MAP;
         this.factTemplates = Collections.EMPTY_MAP;
         this.functions = Collections.EMPTY_LIST;
-        
+
         // This classloader test should only be here for unit testing, too much legacy api to want to change by hand at the moment
         if ( parentClassLoader == null ) {
             parentClassLoader = Thread.currentThread().getContextClassLoader();
@@ -149,7 +149,7 @@ public class Package
         stream.writeObject( this.staticImports );
         stream.writeObject( this.globals );
         stream.writeObject( this.ruleFlows );
-        
+
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -173,13 +173,13 @@ public class Package
         this.staticImports = (List) stream.readObject();
         this.globals = (Map) stream.readObject();
         this.ruleFlows = (Map) stream.readObject();
-        
+
         // Return the rules stored as a byte[]
         final byte[] bytes = (byte[]) stream.readObject();
 
         //  Use a custom ObjectInputStream that can resolve against a given classLoader
         final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ),
-                                                                                              this.packageCompilationData.getClassLoader() );
+                                                                                      this.packageCompilationData.getClassLoader() );
 
         this.rules = (Map) streamWithLoader.readObject();
     }
@@ -289,17 +289,18 @@ public class Package
                         rule );
         rule.setLoadOrder( this.rules.size() );
     }
-    
+
     /**
      * Add a rule flow to this package.
      */
     public void addRuleFlow(Process process) {
-        if (this.ruleFlows == Collections.EMPTY_MAP) {
+        if ( this.ruleFlows == Collections.EMPTY_MAP ) {
             this.ruleFlows = new HashMap();
         }
-        this.ruleFlows.put(process.getId(), process );
+        this.ruleFlows.put( process.getId(),
+                            process );
     }
-    
+
     /**
      * Get the rule flows for this package. The key is the ruleflow id.
      * It will be Collections.EMPTY_MAP if none have been added.
@@ -307,18 +308,16 @@ public class Package
     public Map getRuleFlows() {
         return this.ruleFlows;
     }
-    
-    
+
     /**
      * Rule flows can be removed by ID. 
      */
     public void removeRuleFlow(String id) {
-        if (!this.ruleFlows.containsKey( id )) {
-            throw new IllegalArgumentException("The rule flow with id [" + id + "] is not part of this package.");
+        if ( !this.ruleFlows.containsKey( id ) ) {
+            throw new IllegalArgumentException( "The rule flow with id [" + id + "] is not part of this package." );
         }
         this.ruleFlows.remove( id );
     }
-    
 
     public void removeRule(final Rule rule) {
         this.rules.remove( rule.getName() );

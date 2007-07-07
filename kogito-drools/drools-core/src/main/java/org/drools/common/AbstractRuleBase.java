@@ -173,21 +173,27 @@ abstract public class AbstractRuleBase
     public void doReadExternal(final ObjectInput stream,
                                final Object[] objects) throws IOException,
                                                       ClassNotFoundException {
-        // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
-        DroolsObjectInputStream parentStream = (DroolsObjectInputStream) stream;
-        parentStream.setRuleBase( this );
-        this.pkgs = (Map) parentStream.readObject();
+        // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules        
+        this.pkgs = (Map) stream.readObject();
 
-        this.packageClassLoader = new CompositePackageClassLoader( parentStream.getClassLoader() );
+        if ( stream instanceof DroolsObjectInputStream ) {
+            DroolsObjectInputStream parentStream = (DroolsObjectInputStream) stream;
+            parentStream.setRuleBase( this );
+            this.packageClassLoader = new CompositePackageClassLoader( parentStream.getClassLoader() );
+            this.classLoader = new MapBackedClassLoader( parentStream.getClassLoader() );
+        } else {
+            this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
+            this.classLoader = new MapBackedClassLoader( Thread.currentThread().getContextClassLoader() );
+        }
+            
+        this.packageClassLoader.addClassLoader( this.classLoader );
+        
         for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
             this.packageClassLoader.addClassLoader( ((Package) it.next()).getPackageCompilationData().getClassLoader() );
-        }
-
-        this.classLoader = new MapBackedClassLoader( parentStream.getClassLoader() );
-        this.packageClassLoader.addClassLoader( this.classLoader );
+        }       
 
         // Return the rules stored as a byte[]
-        final byte[] bytes = (byte[]) parentStream.readObject();
+        final byte[] bytes = (byte[]) stream.readObject();
 
         //  Use a custom ObjectInputStream that can resolve against a given classLoader
         final DroolsObjectInputStream childStream = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ),
