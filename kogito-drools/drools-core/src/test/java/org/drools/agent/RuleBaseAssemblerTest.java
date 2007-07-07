@@ -69,7 +69,9 @@ public class RuleBaseAssemblerTest extends TestCase {
     }
 
     private static File tempDir() {
-        return new File("__temp_test_drools_packages");
+        File tmp = new File(System.getProperty( "java.io.tmpdir" ));
+        
+        return new File(tmp, "__temp_test_drools_packages");
     }
     
     public static boolean deleteDir(File dir) {
