@@ -125,8 +125,12 @@ public class PackageCompilationData
      */
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
-        DroolsObjectInputStream droolsStream = ( DroolsObjectInputStream ) stream;
-        initClassLoader( droolsStream.getClassLoader() );
+        if ( stream instanceof DroolsObjectInputStream ) {
+            DroolsObjectInputStream droolsStream = ( DroolsObjectInputStream ) stream;
+            initClassLoader( droolsStream.getClassLoader() );
+        } else {
+            initClassLoader( Thread.currentThread().getContextClassLoader() );            
+        }
 
         this.store = (Map) stream.readObject();
         this.AST = stream.readObject();

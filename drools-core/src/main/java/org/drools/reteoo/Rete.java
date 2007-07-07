@@ -92,10 +92,6 @@ public class Rete extends ObjectSource
         this.ruleBase = ruleBase;
     }
 
-    public void setRuleBase(InternalRuleBase ruleBase) {
-        this.ruleBase = ruleBase;
-    }
-
     private void readObject(ObjectInputStream stream) throws IOException,
                                                      ClassNotFoundException {
         stream.defaultReadObject();
