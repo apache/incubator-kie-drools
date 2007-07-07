@@ -5,7 +5,7 @@ import @{importEntry};
 @end{}
 
 public class @{className} {
-    private static final long serialVersionUID  = 320L;
+    private static final long serialVersionUID  = 400L;
         
     public static @{returnType} @{methodName}(@foreach{parameterTypes, parameterNames as type, name}@{type} @{name}@end{","}) throws Exception {
         @{text}
