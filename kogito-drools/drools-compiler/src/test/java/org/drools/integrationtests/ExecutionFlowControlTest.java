@@ -552,13 +552,10 @@ public class ExecutionFlowControlTest extends TestCase {
     public void testRuleFlow() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rf" ) ) );
         final Package pkg = builder.getPackage();
-        final ProcessBuilder processBuilder = new ProcessBuilder(builder);
-        processBuilder.addProcessFromFile( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rf" ) ) );
-
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase.addProcess( processBuilder.getProcesses()[0] );
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
