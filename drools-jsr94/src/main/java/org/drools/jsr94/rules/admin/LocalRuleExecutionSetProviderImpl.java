@@ -135,7 +135,7 @@ public class LocalRuleExecutionSetProviderImpl
             String source = null;
             
             if ( properties != null ) {
-                dsrl = properties.get( Constants.RES_DSRL );
+                dsrl = properties.get( Constants.RES_DSL );
                 if ( dsrl ==  null ) {
                     // check for old legacy name ending
                     dsrl = properties.get( "dsl" );    

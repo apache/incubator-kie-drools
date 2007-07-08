@@ -44,7 +44,7 @@ public final class Constants {
     
     public static final String RES_SOURCE_TYPE_DECISION_TABLE = "javax.rules.admin.RuleExecutionSet.source.decisiontable";
     
-    public static final String RES_DSRL = "javax.rules.admin.RuleExecutionSet.dsrl";
+    public static final String RES_DSL = "javax.rules.admin.RuleExecutionSet.dsl";
            
     /** <code>RuleExecutionSet</code> rulebase config constant. */
     public static final String RES_RULEBASE_CONFIG = "javax.rules.admin.RuleExecutionSet.ruleBaseConfiguration";
