@@ -407,6 +407,15 @@ abstract public class AbstractRuleBase
                 pkg.addRule( newRule );
             }
         }
+        
+        //and now the rule flows
+        if ( newPkg.getRuleFlows() != Collections.EMPTY_MAP ) {
+            Map flows = newPkg.getRuleFlows();
+            for ( Iterator iter = flows.values().iterator(); iter.hasNext(); ) {
+                Process flow = (Process) iter.next();
+                pkg.addRuleFlow(flow);
+            }
+        }
     }
 
     protected synchronized void addRule(final Rule rule) throws InvalidPatternException {
@@ -456,6 +465,11 @@ abstract public class AbstractRuleBase
                     if ( !referencedGlobals.contains( globalName ) ) {
                         this.globals.remove( globalName );
                     }
+                }
+                //and now the rule flows
+                Map flows = pkg.getRuleFlows();
+                for ( Iterator iter = flows.keySet().iterator(); iter.hasNext(); ) {
+                    removeProcess((String) iter.next());
                 }
                 // removing the package itself from the list
                 this.pkgs.remove( pkg.getName() );
