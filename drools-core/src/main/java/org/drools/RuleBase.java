@@ -127,12 +127,6 @@ public interface RuleBase
 
     void removePackage(String packageName);
 
-    void addProcess(Process process);
-
-    void removeProcess(String id);
-
-    Process getProcess(String id);
-
     void removeRule(String packageName,
                     String ruleName);
 

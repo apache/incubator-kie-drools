@@ -29,6 +29,7 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
+import org.drools.ruleflow.common.core.Process;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 
@@ -99,4 +100,7 @@ public interface InternalRuleBase
     public Rete getRete();
     
     public InternalWorkingMemory[] getWorkingMemories();
+    
+    public Process getProcess(String id);
+
 }

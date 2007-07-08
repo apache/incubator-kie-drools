@@ -1349,7 +1349,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public ProcessInstance startProcess(final String processId) {
-        final Process process = getRuleBase().getProcess( processId );
+        final Process process = ((InternalRuleBase) getRuleBase()).getProcess( processId );
         if ( process == null ) {
             throw new IllegalArgumentException( "Unknown process ID: " + processId );
         }
