@@ -34,7 +34,7 @@ import org.mvel.integration.impl.MapVariableResolver;
  * 
  */
 public class MVELExprAnalyzer {
-    
+
     public MVELExprAnalyzer() {
         // intentionally left blank.
     }
@@ -58,15 +58,16 @@ public class MVELExprAnalyzer {
     public MVELAnalysisResult analyzeExpression(final RuleBuildContext context,
                                                 final String expr,
                                                 final Set[] availableIdentifiers) throws RecognitionException {
-        ExpressionCompiler compiler = new ExpressionCompiler( expr);
-        
+        ExpressionCompiler compiler = new ExpressionCompiler( expr );
+
         ParserContext parserContext = new ParserContext();
-        parserContext.setStrictTypeEnforcement( false );       
+        parserContext.setStrictTypeEnforcement( false );
         MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-        parserContext.setImports( dialect.getClassImportResolverFactory().getImportedClasses() );        
+        parserContext.setImports( dialect.getClassImportResolverFactory().getImportedClasses() );
+        parserContext.setInterceptors( dialect.getInterceptors() );
         
-        compiler.compile(parserContext);  
-        
+        compiler.compile( parserContext );
+
         return analyze( compiler.getParserContextState().getInputs().keySet(),
                         availableIdentifiers );
     }
@@ -85,7 +86,7 @@ public class MVELExprAnalyzer {
      *             If an error occurs in the parser.
      */
     private MVELAnalysisResult analyze(final Set identifiers,
-                           final Set[] availableIdentifiers) throws RecognitionException {
+                                       final Set[] availableIdentifiers) throws RecognitionException {
 
         MVELAnalysisResult result = new MVELAnalysisResult();
         result.setIdentifiers( new ArrayList( identifiers ) );
@@ -109,6 +110,6 @@ public class MVELExprAnalyzer {
         result.setBoundIdentifiers( used );
         result.setNotBoundedIdentifiers( new ArrayList( notBound ) );
 
-        return result;      
+        return result;
     }
 }

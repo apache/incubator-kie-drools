@@ -473,7 +473,7 @@ public class AccumulateTest extends TestCase {
                              results.size() );
 
     }
-    
+
     public void testAccumulateMax() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateMax.drl" ) );
@@ -487,11 +487,11 @@ public class AccumulateTest extends TestCase {
 
         final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
                                                          4 ), new Cheese( "stilton",
-                                                                           2 ), new Cheese( "stilton",
-                                                                                            3 ), new Cheese( "brie",
-                                                                                                              15 ), new Cheese( "brie",
-                                                                                                                                17 ), new Cheese( "provolone",
-                                                                                                                                                  8 )};
+                                                                          2 ), new Cheese( "stilton",
+                                                                                           3 ), new Cheese( "brie",
+                                                                                                            15 ), new Cheese( "brie",
+                                                                                                                              17 ), new Cheese( "provolone",
+                                                                                                                                                8 )};
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
@@ -542,7 +542,7 @@ public class AccumulateTest extends TestCase {
                              results.size() );
 
     }
-    
+
     public void testAccumulateMin() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateMin.drl" ) );
@@ -556,11 +556,11 @@ public class AccumulateTest extends TestCase {
 
         final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
                                                          8 ), new Cheese( "stilton",
-                                                                           10 ), new Cheese( "stilton",
+                                                                          10 ), new Cheese( "stilton",
                                                                                             9 ), new Cheese( "brie",
-                                                                                                              4 ), new Cheese( "brie",
-                                                                                                                                1 ), new Cheese( "provolone",
-                                                                                                                                                  8 )};
+                                                                                                             4 ), new Cheese( "brie",
+                                                                                                                              1 ), new Cheese( "provolone",
+                                                                                                                                               8 )};
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
@@ -611,7 +611,7 @@ public class AccumulateTest extends TestCase {
                              results.size() );
 
     }
-    
+
     public void testAccumulateCount() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateCount.drl" ) );
@@ -625,11 +625,11 @@ public class AccumulateTest extends TestCase {
 
         final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
                                                          8 ), new Cheese( "stilton",
-                                                                           10 ), new Cheese( "stilton",
+                                                                          10 ), new Cheese( "stilton",
                                                                                             9 ), new Cheese( "brie",
-                                                                                                              4 ), new Cheese( "brie",
-                                                                                                                                1 ), new Cheese( "provolone",
-                                                                                                                                                  8 )};
+                                                                                                             4 ), new Cheese( "brie",
+                                                                                                                              1 ), new Cheese( "provolone",
+                                                                                                                                               8 )};
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
@@ -681,7 +681,7 @@ public class AccumulateTest extends TestCase {
                              results.size() );
 
     }
-    
+
     public void testAccumulateWithFromChaining() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateWithFromChaining.drl" ) );
@@ -695,20 +695,20 @@ public class AccumulateTest extends TestCase {
 
         final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
                                                          8 ), new Cheese( "stilton",
-                                                                           10 ), new Cheese( "stilton",
+                                                                          10 ), new Cheese( "stilton",
                                                                                             9 ), new Cheese( "brie",
-                                                                                                              4 ), new Cheese( "brie",
-                                                                                                                                1 ), new Cheese( "provolone",
-                                                                                                                                                  8 )};
+                                                                                                             4 ), new Cheese( "brie",
+                                                                                                                              1 ), new Cheese( "provolone",
+                                                                                                                                               8 )};
 
         Cheesery cheesery = new Cheesery();
-        
-        for( int i = 0; i < cheese.length; i++ ) {
+
+        for ( int i = 0; i < cheese.length; i++ ) {
             cheesery.addCheese( cheese[i] );
         }
-        
+
         FactHandle cheeseryHandle = wm.insert( cheesery );
-        
+
         final Person bob = new Person( "Bob",
                                        "stilton" );
 

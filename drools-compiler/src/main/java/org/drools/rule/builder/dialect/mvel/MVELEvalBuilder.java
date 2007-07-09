@@ -88,7 +88,7 @@ public class MVELEvalBuilder
 
             final EvalCondition eval = new EvalCondition( declarations );                        
             
-            Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) evalDescr.getContent(), analysis, context );
+            Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) evalDescr.getContent(), analysis, null, context );
 
             eval.setEvalExpression( new MVELEvalExpression( expr,
                                                             factory ) );

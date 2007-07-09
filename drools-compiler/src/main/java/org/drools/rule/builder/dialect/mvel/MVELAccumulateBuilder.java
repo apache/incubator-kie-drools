@@ -69,13 +69,15 @@ public class MVELAccumulateBuilder
         if ( sourcePattern == null ) {
             return null;
         }
+        
+        MVELDialect dialect = (MVELDialect) context.getDialect();
 
         final Declaration[] sourceDeclArr = (Declaration[]) sourcePattern.getOuterDeclarations().values().toArray( new Declaration[0] );
 
         final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                  sourcePattern.getOuterDeclarations(),
                                                                  context.getPkg().getGlobals() );
-        factory.setNextFactory( ((MVELDialect) context.getDialect()).getClassImportResolverFactory() );
+        factory.setNextFactory( dialect.getClassImportResolverFactory() );
 
         Accumulator accumulator = null;
         Declaration[] declarations = null;
@@ -120,19 +122,28 @@ public class MVELAccumulateBuilder
             for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
                 declarations[i] = context.getDeclarationResolver().getDeclaration( (String) requiredDeclarations.get( i ) );
             }
+            
+            final Serializable init = dialect.compile( (String) accumDescr.getInitCode(), analysis1, null, context );
+            final Serializable action = dialect.compile((String) accumDescr.getActionCode(), analysis2, null, context );
 
-            final Serializable init = MVEL.compileExpression( (String) accumDescr.getInitCode(),
-                                                              ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
-            final Serializable action = MVEL.compileExpression( (String) accumDescr.getActionCode(),
-                                                                ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+            
+           
+
+//            final Serializable init = MVEL.compileExpression( (String) accumDescr.getInitCode(),
+//                                                              ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+//            final Serializable action = MVEL.compileExpression( (String) accumDescr.getActionCode(),
+//                                                                ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
             Serializable reverse = null;
             if ( accumDescr.getReverseCode() != null ) {
-                reverse = MVEL.compileExpression( (String) accumDescr.getReverseCode(),
-                                                  ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+//                reverse = MVEL.compileExpression( (String) accumDescr.getReverseCode(),
+//                                                  ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+                reverse = dialect.compile( (String) accumDescr.getReverseCode(), analysis3, null, context );
             }
-            final Serializable result = MVEL.compileExpression( (String) accumDescr.getResultCode(),
-                                                                ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+//            final Serializable result = MVEL.compileExpression( (String) accumDescr.getResultCode(),
+//                                                                ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
 
+            final Serializable result = dialect.compile((String) accumDescr.getResultCode(), analysis3, null, context );
+            
             accumulator = new MVELAccumulator( factory,
                                                init,
                                                action,
