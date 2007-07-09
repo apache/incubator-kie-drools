@@ -4,6 +4,10 @@ package @{package};
 import @{importEntry};
 @end{}
 
+@foreach{staticImports as importEntry}
+import static @{importEntry};
+@end{}
+
 public class @{className} {
     private static final long serialVersionUID  = 400L;
         

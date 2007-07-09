@@ -64,7 +64,6 @@ import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
 import org.drools.common.AbstractWorkingMemory;
-import org.drools.common.DroolsObjectInputStream;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -533,7 +532,7 @@ public class MiscTest extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "nested_fields.drl" ) ) );
 
-        assertFalse(builder.hasErrors());
+        assertFalse(builder.getErrors().toString(), builder.hasErrors());
         
         DrlParser parser = new DrlParser();
         PackageDescr desc = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nested_fields.drl" ) ) );
@@ -3172,5 +3171,26 @@ public class MiscTest extends TestCase {
         assertEquals( "2", results.get( 1 ));
 
     }
+    
+    public void testFunctionCallingFunction() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_functionCallingFunction.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+    }
+
+    
 
 }

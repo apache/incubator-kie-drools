@@ -48,6 +48,9 @@ public class JavaFunctionBuilder
         vars.put( "imports",
                   pkg.getImports() );
 
+        vars.put( "staticImports",
+                  pkg.getStaticImports() );
+
         vars.put( "className",
                   StringUtils.ucFirst( functionDescr.getName() ) );
 

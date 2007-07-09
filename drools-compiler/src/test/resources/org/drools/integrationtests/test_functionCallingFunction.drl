@@ -1,0 +1,18 @@
+package org.drools;
+
+global java.util.List results;
+
+function boolean f1() {
+    return f2();
+}
+
+function boolean f2() {
+    return true;
+}
+
+rule "X"
+when
+    eval( f1() )
+then
+    results.add( "OK" );
+end
