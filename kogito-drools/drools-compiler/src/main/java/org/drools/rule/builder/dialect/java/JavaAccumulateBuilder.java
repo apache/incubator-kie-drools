@@ -48,15 +48,15 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
     AccumulateBuilder {
 
     public RuleConditionElement build(final RuleBuildContext context,
-                                    final BaseDescr descr) {
+                                      final BaseDescr descr) {
         return build( context,
                       descr,
                       null );
     }
 
     public RuleConditionElement build(final RuleBuildContext context,
-                                    final BaseDescr descr,
-                                    final Pattern prefixPattern) {
+                                      final BaseDescr descr,
+                                      final Pattern prefixPattern) {
 
         final AccumulateDescr accumDescr = (AccumulateDescr) descr;
 
@@ -119,23 +119,31 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
             final String className = "Accumulate" + context.getNextId();
             accumDescr.setClassName( className );
 
-            final JavaAnalysisResult analysis1 = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
+            final JavaAnalysisResult initCodeAnalysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                          accumDescr,
                                                                                                          accumDescr.getInitCode() );
-            final Dialect.AnalysisResult analysis2 = context.getDialect().analyzeBlock( context,
+            final Dialect.AnalysisResult actionCodeAnalysis = context.getDialect().analyzeBlock( context,
                                                                                         accumDescr,
                                                                                         accumDescr.getActionCode() );
-            final Dialect.AnalysisResult analysis3 = context.getDialect().analyzeExpression( context,
+            final Dialect.AnalysisResult resultCodeAnalysis = context.getDialect().analyzeExpression( context,
                                                                                              accumDescr,
                                                                                              accumDescr.getResultCode() );
 
-            final List requiredDeclarations = new ArrayList( analysis1.getBoundIdentifiers()[0] );
-            requiredDeclarations.addAll( analysis2.getBoundIdentifiers()[0] );
-            requiredDeclarations.addAll( analysis3.getBoundIdentifiers()[0] );
+            final List requiredDeclarations = new ArrayList( initCodeAnalysis.getBoundIdentifiers()[0] );
+            requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers()[0] );
+            requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers()[0] );
 
-            final List requiredGlobals = new ArrayList( analysis1.getBoundIdentifiers()[1] );
-            requiredGlobals.addAll( analysis2.getBoundIdentifiers()[1] );
-            requiredGlobals.addAll( analysis3.getBoundIdentifiers()[1] );
+            final List requiredGlobals = new ArrayList( initCodeAnalysis.getBoundIdentifiers()[1] );
+            requiredGlobals.addAll( actionCodeAnalysis.getBoundIdentifiers()[1] );
+            requiredGlobals.addAll( resultCodeAnalysis.getBoundIdentifiers()[1] );
+
+            if ( accumDescr.getReverseCode() != null ) {
+                final Dialect.AnalysisResult reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
+                                                                                                      accumDescr,
+                                                                                                      accumDescr.getActionCode() );
+                requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers()[0] );
+                requiredGlobals.addAll( reverseCodeAnalysis.getBoundIdentifiers()[1] );
+            }
 
             final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
             for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
@@ -157,15 +165,15 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
             map.put( "innerDeclarations",
                      sourceDeclArr );
 
-            final String initCode = this.fixInitCode( analysis1,
+            final String initCode = this.fixInitCode( initCodeAnalysis,
                                                       accumDescr.getInitCode() );
             final String actionCode = accumDescr.getActionCode();
             final String resultCode = accumDescr.getResultCode();
 
-            String[] attributesTypes = new String[analysis1.getLocalVariablesMap().size()];
-            String[] attributes = new String[analysis1.getLocalVariablesMap().size()];
+            String[] attributesTypes = new String[initCodeAnalysis.getLocalVariablesMap().size()];
+            String[] attributes = new String[initCodeAnalysis.getLocalVariablesMap().size()];
             int index = 0;
-            for ( Iterator it = analysis1.getLocalVariablesMap().entrySet().iterator(); it.hasNext(); ) {
+            for ( Iterator it = initCodeAnalysis.getLocalVariablesMap().entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) it.next();
                 attributes[index] = (String) entry.getKey();
                 attributesTypes[index] = ((JavaLocalDeclarationDescr) entry.getValue()).getType();
