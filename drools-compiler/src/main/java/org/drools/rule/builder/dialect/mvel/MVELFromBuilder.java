@@ -27,10 +27,13 @@ import org.drools.lang.descr.FromDescr;
 import org.drools.rule.From;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
+import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.DataProvider;
+import org.mvel.ExpressionCompiler;
 import org.mvel.MVEL;
+import org.mvel.ParserContext;
 import org.mvel.integration.impl.ClassImportResolverFactory;
 
 /**
@@ -62,14 +65,21 @@ public class MVELFromBuilder
                                                                      context.getPkg().getGlobals() );
 
             // This builder is re-usable in other dialects, so specify by name
-            final ClassImportResolverFactory classImportResolverFactory = ((MVELDialect) context.getDialect( "mvel" )).getClassImportResolverFactory();
+            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
+
+            final ClassImportResolverFactory classImportResolverFactory = dialect.getClassImportResolverFactory();
             factory.setNextFactory( classImportResolverFactory );
 
-            //parser.setValueHandlerFactory( factory );
-            final Serializable compiled = MVEL.compileExpression( accessor.toString(),
-                                                                  classImportResolverFactory.getImportedClasses() );
+            String text = (String) accessor.toString();
+            Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
+                                                                         descr,
+                                                                         text );
 
-            dataProvider = new MVELDataProvider( compiled,
+            final Serializable expr = dialect.compile( text,
+                                                       analysis,
+                                                       context );
+
+            dataProvider = new MVELDataProvider( expr,
                                                  factory );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),

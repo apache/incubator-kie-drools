@@ -5,9 +5,12 @@ import java.io.Serializable;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.compiler.RuleError;
+import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.SalienceBuilder;
+import org.mvel.ExpressionCompiler;
 import org.mvel.MVEL;
+import org.mvel.ParserContext;
 import org.mvel.integration.impl.ClassImportResolverFactory;
 
 public class MVELSalienceBuilder
@@ -22,12 +25,18 @@ public class MVELSalienceBuilder
             final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                      null,
                                                                      context.getPkg().getGlobals() );
+            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
             // This builder is re-usable in other dialects, so specify by name
-            final ClassImportResolverFactory classImportResolverFactory = ((MVELDialect) context.getDialect( "mvel" )).getClassImportResolverFactory();
+            final ClassImportResolverFactory classImportResolverFactory = dialect.getClassImportResolverFactory();
             factory.setNextFactory( classImportResolverFactory );
 
-            final Serializable expr = MVEL.compileExpression( (String) context.getRuleDescr().getSalience(),
-                                                              classImportResolverFactory.getImportedClasses() );
+            Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
+                                                                         context.getRuleDescr(),
+                                                                         (String) context.getRuleDescr().getSalience() );
+
+            final Serializable expr = dialect.compile( (String) context.getRuleDescr().getSalience(),
+                                                                                    analysis,
+                                                                                    context );
 
             MVELSalienceExpression salience = new MVELSalienceExpression( expr,
                                                                           factory );

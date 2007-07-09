@@ -17,13 +17,17 @@ package org.drools.rule.builder.dialect.mvel;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
+import org.drools.rule.builder.RuleBuildContext;
 import org.mvel.ExpressionCompiler;
+import org.mvel.ParserContext;
+import org.mvel.integration.impl.MapVariableResolver;
 
 /**
  * Expression analyzer.
@@ -51,10 +55,17 @@ public class MVELExprAnalyzer {
      * @throws RecognitionException 
      *             If an error occurs in the parser.
      */
-    public MVELAnalysisResult analyzeExpression(final String expr,
-                                    final Set[] availableIdentifiers) throws RecognitionException {
+    public MVELAnalysisResult analyzeExpression(final RuleBuildContext context,
+                                                final String expr,
+                                                final Set[] availableIdentifiers) throws RecognitionException {
         ExpressionCompiler compiler = new ExpressionCompiler( expr);
-        compiler.compile();  
+        
+        ParserContext parserContext = new ParserContext();
+        parserContext.setStrictTypeEnforcement( false );       
+        MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
+        parserContext.setImports( dialect.getClassImportResolverFactory().getImportedClasses() );        
+        
+        compiler.compile(parserContext);  
         
         return analyze( compiler.getParserContextState().getInputs().keySet(),
                         availableIdentifiers );

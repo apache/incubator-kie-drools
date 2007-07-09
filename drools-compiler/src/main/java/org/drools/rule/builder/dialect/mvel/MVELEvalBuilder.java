@@ -17,7 +17,9 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELEvalExpression;
@@ -31,7 +33,11 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
+import org.drools.spi.DeclarationScopeResolver;
+import org.mvel.ExpressionCompiler;
 import org.mvel.MVEL;
+import org.mvel.ParserContext;
+import org.mvel.util.ParseTools;
 
 /**
  * @author etirelli
@@ -80,9 +86,9 @@ public class MVELEvalBuilder
                 declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
             }
 
-            final EvalCondition eval = new EvalCondition( declarations );
-            final Serializable expr = MVEL.compileExpression( (String) evalDescr.getContent(),
-                                                              ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+            final EvalCondition eval = new EvalCondition( declarations );                        
+            
+            Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) evalDescr.getContent(), analysis, context );
 
             eval.setEvalExpression( new MVELEvalExpression( expr,
                                                             factory ) );

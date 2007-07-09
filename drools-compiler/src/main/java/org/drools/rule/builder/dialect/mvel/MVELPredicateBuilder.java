@@ -27,9 +27,12 @@ import org.drools.compiler.RuleError;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
+import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.mvel.ExpressionCompiler;
 import org.mvel.MVEL;
+import org.mvel.ParserContext;
 
 /**
  * @author etirelli
@@ -62,9 +65,16 @@ public class MVELPredicateBuilder
                                                                      localMap,
                                                                      context.getPkg().getGlobals() );
             factory.setNextFactory( ((MVELDialect) context.getDialect()).getClassImportResolverFactory() );
-
-            final Serializable expr = MVEL.compileExpression( (String) predicateDescr.getContent(),
-                                                              ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
+            
+            final ParserContext parserContext = new ParserContext(((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses(), null, null);
+            parserContext.setStrictTypeEnforcement( true );           
+            
+            Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                                      predicateDescr,
+                                                                                      predicateDescr.getContent() );
+            
+            final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) predicateDescr.getContent(), analysis, context );            
+            
             predicate.setPredicateExpression( new MVELPredicateExpression( expr,
                                                                            factory ) );
         } catch ( final Exception e ) {

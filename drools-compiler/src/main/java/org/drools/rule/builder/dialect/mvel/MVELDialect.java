@@ -1,8 +1,10 @@
 package org.drools.rule.builder.dialect.mvel;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +41,10 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
+import org.drools.spi.DeclarationScopeResolver;
 import org.mvel.AbstractParser;
+import org.mvel.ExpressionCompiler;
+import org.mvel.ParserContext;
 import org.mvel.integration.impl.ClassImportResolverFactory;
 import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 
@@ -211,7 +216,8 @@ public class MVELDialect
                                                     Object content) {
         Dialect.AnalysisResult result = null;
         try {
-            result = this.analyzer.analyzeExpression( (String) content,
+            result = this.analyzer.analyzeExpression( context,
+                                                      (String) content,
                                                       new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
@@ -227,7 +233,8 @@ public class MVELDialect
                                                String text) {
         Dialect.AnalysisResult result = null;
         try {
-            result = this.analyzer.analyzeExpression( text,
+            result = this.analyzer.analyzeExpression( context,
+                                                      text,
                                                       new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
@@ -236,6 +243,28 @@ public class MVELDialect
                                                     "Unable to determine the used declarations" ) );
         }
         return result;
+    }
+    
+    public Serializable compile(final String text, final Dialect.AnalysisResult analysis, final RuleBuildContext context) {
+        final ParserContext parserContext = new ParserContext( getClassImportResolverFactory().getImportedClasses(), null, null);
+        parserContext.setStrictTypeEnforcement( true );
+        
+        List list[] = analysis.getBoundIdentifiers();
+        DeclarationScopeResolver resolver = context.getDeclarationResolver();
+        for ( Iterator it = list[0].iterator(); it.hasNext(); ) {
+            String identifier = (String) it.next();
+            Class cls = resolver.getDeclaration( identifier ).getExtractor().getExtractToClass();
+            parserContext.addInput( identifier, cls );
+        }
+        
+        Map globalTypes = context.getPkg().getGlobals();
+        for ( Iterator it = list[1].iterator(); it.hasNext(); ) {
+            String identifier = (String) it.next();
+            parserContext.addInput( identifier, ( Class ) globalTypes.get( identifier ) );
+        }                
+        
+        ExpressionCompiler compiler = new ExpressionCompiler( text );
+        return compiler.compile( parserContext );
     }
 
     public RuleConditionBuilder getBuilder(final Class clazz) {
