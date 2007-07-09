@@ -11,39 +11,45 @@
     involved (but does not go through the concepts in detail). This assumes
     you have installed the repository correctly, and are able to access the
     main login screen.</para>
-    
-    <figure>
-        <title>Main feature areas of BRMS</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="BRMSFeatures.png" format="PNG"
-                       scalefit="1" />
-          </imageobject>
-        </mediaobject>
+    <figure>
+      <title>Main feature areas of BRMS</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="BRMSFeatures.png" format="PNG"
+                     scalefit="1" />
+        </imageobject>
+      </mediaobject>
     </figure>
-    
-    <para>
-    	The above picture shows the main feature areas of the BRMS.
-    	<itemizedlist>
-		<listitem><para>    		 
-    	Info: This is the initial screen, with links to resources.</para>
-    	</listitem>
-		<listitem><para>    		     	
-    	Rules: This is the category and business user perspective.</para>
-    	</listitem>
-		<listitem><para>    		 
-    	Package: This is where packages are configured and managed.</para>
-    	</listitem>
-		<listitem><para>    		 
-    	Deployment: this is where deployment snapshots are managed.</para>
-    	</listitem>
-		<listitem><para>    		 
-    	Admin: Administrative functions (categories, statuses, import and export)</para>
-    	</listitem>
-    	
-    	</itemizedlist>
-    </para>
+
+    <para>The above picture shows the main feature areas of the BRMS.
+    <itemizedlist>
+        <listitem>
+          <para>Info: This is the initial screen, with links to
+          resources.</para>
+        </listitem>
+
+        <listitem>
+          <para>Rules: This is the category and business user
+          perspective.</para>
+        </listitem>
+
+        <listitem>
+          <para>Package: This is where packages are configured and
+          managed.</para>
+        </listitem>
+
+        <listitem>
+          <para>Deployment: this is where deployment snapshots are
+          managed.</para>
+        </listitem>
+
+        <listitem>
+          <para>Admin: Administrative functions (categories, statuses, import
+          and export)</para>
+        </listitem>
+      </itemizedlist></para>
 
     <para>You can also consult the wiki:
     http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository for some
@@ -202,7 +208,7 @@
       <title>Rules are assets</title>
 
       <para>As the BRMS can manage many different types of rules (and more),
-      they are all classes as "assets". An asset is anything that can be
+      they are all classed as "assets". An asset is anything that can be
       stored as a version in the repository. This includes decision tables,
       models, DSLs and more. Sometimes the word "rule" will be used to really
       mean "asset" (ie the things you can do also apply to the other asset
@@ -274,7 +280,7 @@
       effect on its execution.</para>
 
       <para><figure>
-          <title>Assets can have multiple categories</title>
+          <title>Creating categories</title>
 
           <mediaobject>
             <imageobject>
@@ -297,12 +303,99 @@
       change categories as you go.</para>
     </section>
 
-	<section>
-		<title>The asset editor</title>
-		<para>
-			[shots on overall asset editor - annotated]
-		</para>
-	</section>
+    <section>
+      <title>The asset editor</title>
+
+      <para><figure>
+          <title>The Asset editor view</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="AssetEditor.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure> The above diagram shows the "asset editor" with some
+      annotated areas. The asset editor is where all rule changes are made.
+      Below is a list which describes the different parts of the editor.
+      <itemizedlist>
+          <listitem>
+            <para>A</para>
+
+            <para>This is where the "editor widget" lives - exactly what form
+            the editor takes depends on the asset or rule type. </para>
+          </listitem>
+
+          <listitem>
+            <para>B</para>
+
+            <para>This is the documentation area - a free text area where
+            descriptions of the rule can live. It is encouraged to write a
+            plain description in the rule here before editing.</para>
+          </listitem>
+
+          <listitem>
+            <para>C</para>
+
+            <para>These are the actions - for saving, archiving, changing
+            status etc. Archiving is the equivalent of deleting an
+            asset.</para>
+          </listitem>
+
+          <listitem>
+            <para>D</para>
+
+            <para>This has the asset name, as well as the list of categories
+            that the asset belongs to.</para>
+          </listitem>
+
+          <listitem>
+            <para>E</para>
+
+            <para>This section contains read-only meta data, including when
+            changes were made, and by whom.</para>
+
+            <para>"Modified on:" - this is the last modified date.</para>
+
+            <para>"By:" - who made the last change.</para>
+
+            <para>"Note:" - this is the comment made when the asset was last
+            updated (ie why a change was made)</para>
+
+            <para>"Version:" - this is a number which is incremented by 1 each
+            time a change is checked in (saved).</para>
+
+            <para>"Created on:" - the date and time the asset was
+            created.</para>
+
+            <para>"Created by:" - this initial author of the asset.</para>
+
+            <para>"Format:" - the short format name of the type of
+            asset.</para>
+          </listitem>
+
+          <listitem>
+            <para>F</para>
+
+            <para>This shows what package the asset belong to (you can also
+            change it from here). </para>
+          </listitem>
+
+          <listitem>
+            <para>G</para>
+
+            <para>This is some more (optional) meta data (taken from the
+            Dublin Core meta data standard)</para>
+          </listitem>
+
+          <listitem>
+            <para>H</para>
+
+            <para>This will show the version history list when
+            requested.</para>
+          </listitem>
+        </itemizedlist></para>
+    </section>
 
     <section>
       <title>Rule types and formats</title>
@@ -322,82 +415,76 @@
 
     <section>
       <title>Status management</title>
-      
-      <para>
-		Each asset (and also package) in the BRMS has a status flag set.
-		The values of the status flag are set in the Administration section of the BRMS.
-		(you can add your own status names).
-		Similar to Categories, Statuses do NOT effect the execution in any way, and are purely informational.
-		Unlike categories, assets only have one status AT A TIME. 
-	  </para>	
-	  
-	  <para>
-	  	Using statuses is completely optional. You can use it to manage the lifecycle of assets 
-	  	(which you can also do with categories if you like).
-	  </para>
-      
-      <para>      
-      <figure>
+
+      <para>Each asset (and also package) in the BRMS has a status flag set.
+      The values of the status flag are set in the Administration section of
+      the BRMS. (you can add your own status names). Similar to Categories,
+      Statuses do NOT effect the execution in any way, and are purely
+      informational. Unlike categories, assets only have one status AT A
+      TIME.</para>
+
+      <para>Using statuses is completely optional. You can use it to manage
+      the lifecycle of assets (which you can alternatively do with categories
+      if you like).</para>
+
+      <para><figure>
           <title>Asset status</title>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="AssetChangeStatus.png" format="PNG"
-                         scalefit="1" />
+              <imagedata align="center" fileref="AssetChangeStatus.png"
+                         format="PNG" scalefit="1" />
             </imageobject>
           </mediaobject>
-        </figure>
-        You can change the status of an individual asset (like in the diagram above).
-        Its change takes effect immediately, no seperate save is needed.
-      </para>
+        </figure> You can change the status of an individual asset (like in
+      the diagram above). Its change takes effect immediately, no seperate
+      save is needed.</para>
 
-
-      <para>      
-      <figure>
+      <para><figure>
           <title>Asset status</title>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="PackageChangeStatus.png" format="PNG"
-                         scalefit="1" />
+              <imagedata align="center" fileref="PackageChangeStatus.png"
+                         format="PNG" scalefit="1" />
             </imageobject>
           </mediaobject>
-        </figure>
-        You can change the status of a whole package - this sets the status flag on the package itself,
-        but it ALSO changes the statuses on ALL the assets that belong to this package in one hit (to be the same as what you set the package to).
-      </para>
-
-      
+        </figure> You can change the status of a whole package - this sets the
+      status flag on the package itself, but it ALSO changes the statuses on
+      ALL the assets that belong to this package in one hit (to be the same as
+      what you set the package to).</para>
     </section>
 
     <section>
       <title>Package management</title>
-      
+
       <para>[pix on package editor, talk about models etc]</para>
     </section>
 
     <section>
       <title>Version management</title>
 
-	<para>Both assets and whole packages of assets are "versioned" in the BRMS, but the mechanism is slightly different. Individual assets are saved a bit like a version of a file in a source control system. However, packages of assets are versioned "on demand" by taking a snapshot (typically which is used for deployment).
-	The next section talks about deployment management and snapshots.</para>
+      <para>Both assets and whole packages of assets are "versioned" in the
+      BRMS, but the mechanism is slightly different. Individual assets are
+      saved a bit like a version of a file in a source control system.
+      However, packages of assets are versioned "on demand" by taking a
+      snapshot (typically which is used for deployment). The next section
+      talks about deployment management and snapshots.</para>
 
-      <para>
-      <figure>
+      <para><figure>
           <title>Asset versions</title>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="AssetVersionHistory.png" format="PNG"
-                         scalefit="1" />
+              <imagedata align="center" fileref="AssetVersionHistory.png"
+                         format="PNG" scalefit="1" />
             </imageobject>
           </mediaobject>
-        </figure>
-        Each time you make a change to an asset, it creates a new item in the version history.
-        This is a bit like having an unlimited undo. You can look back through the history
-        of an individual asset like the list above, and view it (and restore it) from that point in time.
-        
-      </para>
+        </figure> Each time you make a change to an asset, it creates a new
+      item in the version history. This is a bit like having an unlimited
+      undo. You can look back through the history of an individual asset like
+      the list above, and view it (and restore it) from that point in
+      time.</para>
     </section>
 
     <section>
@@ -421,7 +508,7 @@
       stored in the database, and also seperates rules into packages (name
       spaces) and their type (format, as rules can be in many different
       formats).</para>
-      
+
       <para>[picture of rules explorer list, and package explorer]</para>
     </section>
   </section>
