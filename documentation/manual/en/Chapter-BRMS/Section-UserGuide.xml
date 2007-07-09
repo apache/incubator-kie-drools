@@ -2,6 +2,8 @@
 <!DOCTYPE section PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
 "http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
 <section>
+
+    <title>Quick start guide</title>
   <section>
     <title>Quick start guide</title>
 
@@ -23,7 +25,7 @@
       </mediaobject>
     </figure>
 
-    <para>The above picture shows the main feature areas of the BRMS.
+    <para>The above picture shows the main feature areas of the BRMS.</para>
     <itemizedlist>
         <listitem>
           <para>Info: This is the initial screen, with links to
@@ -49,7 +51,7 @@
           <para>Admin: Administrative functions (categories, statuses, import
           and export)</para>
         </listitem>
-      </itemizedlist></para>
+      </itemizedlist>
 
     <para>You can also consult the wiki:
     http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository for some
@@ -279,7 +281,7 @@
       item in the version history. Changing the categories of a rule has no
       effect on its execution.</para>
 
-      <para><figure>
+      <figure>
           <title>Creating categories</title>
 
           <mediaobject>
@@ -288,7 +290,7 @@
                          scalefit="1" />
             </imageobject>
           </mediaobject>
-        </figure> The above view shows the administration screen for setting
+        </figure> <para> The above view shows the administration screen for setting
       up categories (there) are no categories in the system by default. As the
       categories can be hierachical you chose the "parent" category that you
       want to create a sub-category for. From here categories can also be
@@ -306,7 +308,7 @@
     <section>
       <title>The asset editor</title>
 
-      <para><figure>
+      <figure>
           <title>The Asset editor view</title>
 
           <mediaobject>
@@ -315,9 +317,9 @@
                          scalefit="1" />
             </imageobject>
           </mediaobject>
-        </figure> The above diagram shows the "asset editor" with some
+        </figure> <para> The above diagram shows the "asset editor" with some
       annotated areas. The asset editor is where all rule changes are made.
-      Below is a list which describes the different parts of the editor.
+      Below is a list which describes the different parts of the editor.</para>
       <itemizedlist>
           <listitem>
             <para>A</para>
@@ -394,7 +396,7 @@
             <para>This will show the version history list when
             requested.</para>
           </listitem>
-        </itemizedlist></para>
+        </itemizedlist>
     </section>
 
     <section>
@@ -427,7 +429,7 @@
       the lifecycle of assets (which you can alternatively do with categories
       if you like).</para>
 
-      <para><figure>
+      <figure>
           <title>Asset status</title>
 
           <mediaobject>
@@ -436,11 +438,11 @@
                          format="PNG" scalefit="1" />
             </imageobject>
           </mediaobject>
-        </figure> You can change the status of an individual asset (like in
+        </figure><para> You can change the status of an individual asset (like in
       the diagram above). Its change takes effect immediately, no seperate
       save is needed.</para>
 
-      <para><figure>
+      <figure>
           <title>Asset status</title>
 
           <mediaobject>
@@ -449,7 +451,7 @@
                          format="PNG" scalefit="1" />
             </imageobject>
           </mediaobject>
-        </figure> You can change the status of a whole package - this sets the
+        </figure><para> You can change the status of a whole package - this sets the
       status flag on the package itself, but it ALSO changes the statuses on
       ALL the assets that belong to this package in one hit (to be the same as
       what you set the package to).</para>
@@ -471,7 +473,7 @@
       snapshot (typically which is used for deployment). The next section
       talks about deployment management and snapshots.</para>
 
-      <para><figure>
+      <figure>
           <title>Asset versions</title>
 
           <mediaobject>
@@ -480,7 +482,7 @@
                          format="PNG" scalefit="1" />
             </imageobject>
           </mediaobject>
-        </figure> Each time you make a change to an asset, it creates a new
+        </figure> <para> Each time you make a change to an asset, it creates a new
       item in the version history. This is a bit like having an unlimited
       undo. You can look back through the history of an individual asset like
       the list above, and view it (and restore it) from that point in
@@ -586,7 +588,7 @@ rb.newStatefulSession....
       your classpath. You can also pass in a Properties object with the
       parameters set up (the parameters are discussed next).</para>
 
-      <para>The following shows the content of MyRules.properties:
+      <para>The following shows the content of MyRules.properties: </para>
       <programlisting>##
 ## RuleAgent configuration file example
 ##
@@ -599,13 +601,13 @@ localCacheDir=/foo/bar/cache
 poll=30
 
 
-name=MyConfig</programlisting></para>
+name=MyConfig</programlisting>
 
       <para>You can only have one type of key in each configuration (eg only
       one "file", "dir" etc - even though you can specify multiple items by
       space separating them).</para>
 
-      <para>Referring to the above example, the "keys" in the properties are:
+      <para>Referring to the above example, the "keys" in the properties are:</para>
       <itemizedlist>
           <listitem>
             <para>newInstance</para>
@@ -668,10 +670,11 @@ name=MyConfig</programlisting></para>
             when logging events (as typically you would have multiple agents
             in a system).</para>
           </listitem>
-        </itemizedlist></para>
+        </itemizedlist>
 
       <para>Following shows the deployment screen of the BRMS, which provides
-      URLs and downloads of packages. <figure>
+      URLs and downloads of packages. </para>
+        <figure>
           <title>Snapshot deployment</title>
 
           <mediaobject>
@@ -680,7 +683,7 @@ name=MyConfig</programlisting></para>
                          format="PNG" scalefit="1" />
             </imageobject>
           </mediaobject>
-        </figure></para>
+        </figure>
 
       <para>You can see the "Package URI" - this is the URL that you would
       copy and paste into the agent .properties file to specify that you want

@@ -108,7 +108,7 @@
       components.xml file in the WEB-INF directory. This is a JBoss Seam
       configuration file (Seam is the framework used) which allows various
       parts of the system to be customised. When you have located the
-      components.xml file, you should see something like the following:
+      components.xml file, you should see something like the following:</para>
       <programlisting>&lt;component name="repositoryConfiguration"&gt;
  &lt;!--
   *** This is for configuring the "home" directory for the repo storage. the directory must exist. ***
@@ -117,7 +117,7 @@
 
    ...
 &lt;/component&gt;
-</programlisting></para>
+</programlisting>
 
       <para>Find the component with a name of "repositoryConfiguration" and
       the property with the name of "homeDirectory".</para>
@@ -326,7 +326,7 @@
       of them forgetting are too terrible con contemplate).</para>
 
       <para>To achieve, this, you can "explode" the deployment war file, and
-      locate the JBRMS.html file. <programlisting>
+      locate the JBRMS.html file.</para> <programlisting>
 &lt;html&gt;
 &lt;head&gt;
   &lt;meta name='gwt:module' content='org.drools.brms.JBRMS'&gt;
@@ -341,7 +341,7 @@
   &lt;script language='javascript' src='gwt.js'&gt;&lt;/script&gt;
   &lt;iframe id='__gwt_historyFrame' style='width:0;height:0;border:0'&gt;&lt;/iframe&gt;
 &lt;/body&gt;
-&lt;/html&gt;</programlisting> The above is the contents of the JBRMS.html
+&lt;/html&gt;</programlisting><para> The above is the contents of the JBRMS.html
       file - it is faily empty (as most of the work is done by the GWT - the
       GUI is built dynamically in the browser). The parts you can customise
       are the style sheet - you can either edit the JBRMS.css (or better yet,

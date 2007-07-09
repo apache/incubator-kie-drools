@@ -161,7 +161,7 @@
           <imagedata align="center" fileref="wizards.jpg" format="JPG" />
         </imageobject>
       </mediaobject>
-    </figure>
+	    </figure>
 
     <para>The wizard will ask for some basic options for generating a rule
     resource. These are just hints, you can change your mind later !. In terms
@@ -576,99 +576,104 @@
     with each change, which may provide performance improvements if your IDE
     becomes sluggish with very large numbers of rules.</para>
   </section>
-  
-  <section>
-    <title>Debugging rules</title>
 
-    <para>You can debug rules during the execution of your Drools application.
-    You can add breakpoints in the consequences of your rules, and whenever
-    such a breakpoint is encounted during the execution of the rules, the execution
-    is halted.  You can then inspect the variables known at that point and use any
-    of the default debugging actions to decide what should happen next (step over,
-    continue, etc.).  You can also use the debug views to inspect the content of the
-    working memory and agenda.</para>
 
-   <title>Creating breakpoints</title>
-   <para>You can add/remove rule breakpoints in drl files in two ways, similar to adding
-   breakpoints to Java files:</para>
-    <itemizedlist>
-      <listitem>
-        <para>Double-click the ruler of the DRL editor at the line where you want to
-        add a breakpoint.  Note that rule breakpoints can only be created in the
-        consequence of a rule.  Double-clicking on a line where no breakpoint is allowed
-        will do nothing.  A breakpoint can be removed by double-clicking the ruler once more.
-        </para>
-      </listitem>
-      <listitem>
-        <para>If you right-click the ruler, a popup menu will show up, containing the 
-        "Toggle breakpoint" action.  Note that rule breakpoints can only be created in the
-        consequence of a rule.  The action is automatically disabled if no rule
-        breakpoint is allowed at that line.  Clicking the action will add a breakpoint at the
-        selected line, or remove it if there was one already.</para>
-      </listitem>
-   </itemizedlist>
-   <para>The Debug Perspective contains a Breakpoints view which can be used to see
-   all defined breakpoints, get their properties, enable/disable or remove them, etc.</para>
-    
-   <title>Debugging rules</title>
-   <para>Drools breakpoints are only enabled if you debug your application as
-    a Drools Application.  You can do this like this:</para>
-    <itemizedlist>
-      <listitem>
-        <para>Select the main class of your application. Right click it and select the
-        "Debug As >" sub-menu.  There, select the "Debug ..." menu item to open a
-        new dialog for creating, managing and running debug configurations (see
-        screenshot below)</para>
-      </listitem>
-      <listitem>
-        <para>Select the "JBoss Rules Application" item in the left tree and click the "New
-        launch configuration" button (leftmost icon in the toolbar above the tree).  This
-        will create a new configuration and already fill in some of the properties
-        (like the project and main class) based on main class you selected in the beginning.
-        All properties shown here are the same as any standard Java program.</para>
-      </listitem>
-      <listitem>
-        <para>Change the name of your debug configuration to something meaningful.
-        You can just accept the defaults for all other properties.  For more information
-        about these properties, please check the eclipse jdt documentation.</para>
-      </listitem>
-      <listitem>
-        <para>Click the "Debug" button on the botton to start debugging your application.
-        </para>
-      </listitem>
-   </itemizedlist>
-   
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="debug_rules_configuration.JPG" />
-      </imageobject>
-    </mediaobject>
+    <section>
 
-   <para>You only have to define your debug configuration once.  The next time you try to run your
-   JBoss Rules application, you don't have to create a new one but select the one you defined
-   previously by selecting it in the tree on the left, as a sub-element of the "JBoss Rules Application"
-   tree node, and then click the Debug button.  The eclipse toolbar also contains shortcut
-   buttons to quickly re-execute the one of your previous configurations (at least when the
-   Java, Java Debug, or JBoss Rules perspective has been selected).
-   </para>
+      <title>Debugging rules</title>
 
-   <para>After clicking the "Debug" button, the application starts executing and will halt if any
-   breakpoint is encountered.  This can be a Drools rule breakpoint, or any other standard
-   Java breakpoint.  Whenever a Drools rule breakpoint is encountered, the corresponding drl
-   file is opened and the active line is highlighted.  The Variables view also contains all rule
-   parameters and their value.You can then use the default Java debug actions
-   to decide what to do next (resume, terminate, step over, etc.).  The debug views can also
-   be used to determine the contents of the working memory and agenda at that time as well
-   (you don't have to select a working memory now, the current executing working memory
-   is automatically shown).
-   </para>
+      <para>You can debug rules during the execution of your Drools application.
+      You can add breakpoints in the consequences of your rules, and whenever
+      such a breakpoint is encounted during the execution of the rules, the execution
+      is halted.  You can then inspect the variables known at that point and use any
+      of the default debugging actions to decide what should happen next (step over,
+      continue, etc.).  You can also use the debug views to inspect the content of the
+      working memory and agenda.</para>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="debug_rules_configuration.JPG" />
-      </imageobject>
-    </mediaobject>
+<section>
+     <title>Creating breakpoints</title>
+     <para>You can add/remove rule breakpoints in drl files in two ways, similar to adding
+     breakpoints to Java files:</para>
+      <itemizedlist>
+        <listitem>
+          <para>Double-click the ruler of the DRL editor at the line where you want to
+          add a breakpoint.  Note that rule breakpoints can only be created in the
+          consequence of a rule.  Double-clicking on a line where no breakpoint is allowed
+          will do nothing.  A breakpoint can be removed by double-clicking the ruler once more.
+          </para>
+        </listitem>
+        <listitem>
+          <para>If you right-click the ruler, a popup menu will show up, containing the
+          "Toggle breakpoint" action.  Note that rule breakpoints can only be created in the
+          consequence of a rule.  The action is automatically disabled if no rule
+          breakpoint is allowed at that line.  Clicking the action will add a breakpoint at the
+          selected line, or remove it if there was one already.</para>
+        </listitem>
+     </itemizedlist>
+     <para>The Debug Perspective contains a Breakpoints view which can be used to see
+     all defined breakpoints, get their properties, enable/disable or remove them, etc.</para>
+</section>
+<section>
+     <title>Debugging rules</title>
+     <para>Drools breakpoints are only enabled if you debug your application as
+      a Drools Application.  You can do this like this:</para>
+      <itemizedlist>
+        <listitem>
+          <para>Select the main class of your application. Right click it and select the
+          "Debug As >" sub-menu.  There, select the "Debug ..." menu item to open a
+          new dialog for creating, managing and running debug configurations (see
+          screenshot below)</para>
+        </listitem>
+        <listitem>
+          <para>Select the "JBoss Rules Application" item in the left tree and click the "New
+          launch configuration" button (leftmost icon in the toolbar above the tree).  This
+          will create a new configuration and already fill in some of the properties
+          (like the project and main class) based on main class you selected in the beginning.
+          All properties shown here are the same as any standard Java program.</para>
+        </listitem>
+        <listitem>
+          <para>Change the name of your debug configuration to something meaningful.
+          You can just accept the defaults for all other properties.  For more information
+          about these properties, please check the eclipse jdt documentation.</para>
+        </listitem>
+        <listitem>
+          <para>Click the "Debug" button on the botton to start debugging your application.
+          </para>
+        </listitem>
+     </itemizedlist>
 
-  </section>
-    
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="debug_rules_configuration.JPG" />
+        </imageobject>
+      </mediaobject>
+
+     <para>You only have to define your debug configuration once.  The next time you try to run your
+     JBoss Rules application, you don't have to create a new one but select the one you defined
+     previously by selecting it in the tree on the left, as a sub-element of the "JBoss Rules Application"
+     tree node, and then click the Debug button.  The eclipse toolbar also contains shortcut
+     buttons to quickly re-execute the one of your previous configurations (at least when the
+     Java, Java Debug, or JBoss Rules perspective has been selected).
+     </para>
+
+     <para>After clicking the "Debug" button, the application starts executing and will halt if any
+     breakpoint is encountered.  This can be a Drools rule breakpoint, or any other standard
+     Java breakpoint.  Whenever a Drools rule breakpoint is encountered, the corresponding drl
+     file is opened and the active line is highlighted.  The Variables view also contains all rule
+     parameters and their value.You can then use the default Java debug actions
+     to decide what to do next (resume, terminate, step over, etc.).  The debug views can also
+     be used to determine the contents of the working memory and agenda at that time as well
+     (you don't have to select a working memory now, the current executing working memory
+     is automatically shown).
+     </para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="debug_rules_configuration.JPG" />
+        </imageobject>
+      </mediaobject>
+    </section>
+    </section>
+
+
 </section>

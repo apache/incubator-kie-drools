@@ -12,7 +12,7 @@
   <para>You may want to build from source if you want to re-use components, or
   embed the application in your own.</para>
 
-  <para><figure>
+  <figure>
       <title>Architectural diagram</title>
 
       <mediaobject>
@@ -21,7 +21,7 @@
                      scalefit="1" />
         </imageobject>
       </mediaobject>
-    </figure></para>
+    </figure>
 
   <para>The above diagram shows the major components of the system and how
   they integrate and are deployed. The Admin guide has more details on the

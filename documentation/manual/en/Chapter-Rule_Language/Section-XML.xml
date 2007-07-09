@@ -20,11 +20,11 @@
     rules.</para>
 
     <para>If you do want to edit XML by hand, use a good schema aware editor
-    that provides nice heirarchical views of the XML, ideally visually
+    that provides nice hierarchical views of the XML, ideally visually
     (commercial tools like XMLSpy, Oxygen etc are good, but cost money, but
     then so do headache tablets).</para>
 
-    <para>Other scenarious where you may want to use the XML format are if you
+    <para>Other scenarios where you may want to use the XML format are if you
     have a tool that generates rules from some input (programmatically
     generated rules), or perhaps interchange from another rule language, or
     from another tool that emits XML (using XSLT you can easily transform
@@ -51,11 +51,12 @@
         </indexterm></title>
 
       <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
 &lt;package name="com.sample"
-         xmlns="http://drools.org/drools-3.0"
+         xmlns="http://drools.org/drools-4.0"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-         xs:schemaLocation="http://drools.org/drools-3.0 drools-3.0.xsd"&gt;
-         
+         xs:schemaLocation="http://drools.org/drools-4.0 drools-4.0.xsd"&gt;
+
 &lt;import name="java.util.HashMap" /&gt;
 &lt;import name="org.drools.*" /&gt;
 
@@ -65,32 +66,144 @@
 &lt;function return-type="void" name="myFunc"&gt;
     &lt;parameter identifier="foo" type="Bar" /&gt;
     &lt;parameter identifier="bada" type="Bing" /&gt;
-        
+
     &lt;body&gt;
-        System.out.println("hello world");
+     System.out.println("hello world");
     &lt;/body&gt;
 &lt;/function&gt;
 
-&lt;rule name="my rule"&gt;
-  &lt;rule-attribute name="salience" value="10" /&gt;
+&lt;rule name="simple_rule"&gt;
+&lt;rule-attribute name="salience" value="10" /&gt;
+&lt;rule-attribute name="no-loop" value="true" /&gt;
+&lt;rule-attribute name="agenda-group" value="agenda-group" /&gt;
+&lt;rule-attribute name="activation-group" value="activation-group" /&gt;
 
-  &lt;lhs&gt;
-       &lt;column object-type="Foo" /&gt;
+&lt;lhs&gt;
+		&lt;pattern identifier="foo2" object-type="Bar" &gt;
+            &lt;or-constraint-connective&gt;
+                &lt;and-constraint-connective&gt;
+                    &lt;field-constraint field-name="a"&gt;
+                        &lt;or-restriction-connective&gt;
+                            &lt;and-restriction-connective&gt;
+                                &lt;literal-restriction evaluator="&gt;" value="60" /&gt;
+                                &lt;literal-restriction evaluator="&lt;" value="70" /&gt;
+                            &lt;/and-restriction-connective&gt;
+                            &lt;and-restriction-connective&gt;
+                                &lt;literal-restriction evaluator="&lt;" value="50" /&gt;
+                                &lt;literal-restriction evaluator="&gt;" value="55" /&gt;
+                            &lt;/and-restriction-connective&gt;
+                        &lt;/or-restriction-connective&gt;
+                    &lt;/field-constraint&gt;
+
+                    &lt;field-constraint field-name="a3"&gt;
+                        &lt;literal-restriction evaluator="==" value="black" /&gt;
+                    &lt;/field-constraint&gt;
+                &lt;/and-constraint-connective&gt;
+
+                &lt;and-constraint-connective&gt;
+                    &lt;field-constraint field-name="a"&gt;
+                        &lt;literal-restriction evaluator="==" value="40" /&gt;
+                    &lt;/field-constraint&gt;
+
+                    &lt;field-constraint field-name="a3"&gt;
+                        &lt;literal-restriction evaluator="==" value="pink" /&gt;
+                    &lt;/field-constraint&gt;
+                &lt;/and-constraint-connective&gt;
+
+                &lt;and-constraint-connective&gt;
+                    &lt;field-constraint field-name="a"&gt;
+                        &lt;literal-restriction evaluator="==" value="12"/&gt;
+                    &lt;/field-constraint&gt;
+
+                    &lt;field-constraint field-name="a3"&gt;
+                        &lt;or-restriction-connective&gt;
+                            &lt;literal-restriction evaluator="==" value="yellow"/&gt;
+                            &lt;literal-restriction evaluator="==" value="blue" /&gt;
+                        &lt;/or-restriction-connective&gt;
+                    &lt;/field-constraint&gt;
+                &lt;/and-constraint-connective&gt;
+            &lt;/or-constraint-connective&gt;
+        &lt;/pattern&gt;
+
+        &lt;not&gt;
+            &lt;pattern object-type="Person"&gt;
+                &lt;field-constraint field-name="likes"&gt;
+                    &lt;variable-restriction evaluator="==" identifier="type"/&gt;
+                &lt;/field-constraint&gt;
+            &lt;/pattern&gt;
+
+            &lt;exists&gt;
+                &lt;pattern object-type="Person"&gt;
+                    &lt;field-constraint field-name="likes"&gt;
+                        &lt;variable-restriction evaluator="==" identifier="type"/&gt;
+                    &lt;/field-constraint&gt;
+                &lt;/pattern&gt;                
+            &lt;/exists&gt;
+        &lt;/not&gt;
+
+        &lt;or-conditional-element&gt;
+            &lt;pattern identifier="foo3" object-type="Bar" &gt;
+                &lt;field-constraint field-name="a"&gt;
+                    &lt;or-restriction-connective&gt;
+                        &lt;literal-restriction evaluator="==" value="3" /&gt;
+                        &lt;literal-restriction evaluator="==" value="4" /&gt;
+                    &lt;/or-restriction-connective&gt;
+                &lt;/field-constraint&gt;
+                &lt;field-constraint field-name="a3"&gt;
+                    &lt;literal-restriction evaluator="==" value="hello" /&gt;
+                &lt;/field-constraint&gt;
+                &lt;field-constraint field-name="a4"&gt;
+                    &lt;literal-restriction evaluator="==" value="null" /&gt;
+                &lt;/field-constraint&gt;
+            &lt;/pattern&gt;
+
+            &lt;pattern identifier="foo4" object-type="Bar" &gt;
+                &lt;field-binding field-name="a" identifier="a4" /&gt;
+                &lt;field-constraint field-name="a"&gt;
+                    &lt;literal-restriction evaluator="!=" value="4" /&gt;
+                    &lt;literal-restriction evaluator="!=" value="5" /&gt;
+                &lt;/field-constraint&gt;
+            &lt;/pattern&gt;
+        &lt;/or-conditional-element&gt;
+
+        &lt;pattern identifier="foo5" object-type="Bar" &gt;
+            &lt;field-constraint field-name="b"&gt;
+                &lt;or-restriction-connective&gt;
+                    &lt;return-value-restriction evaluator="==" &gt;a4 + 1&lt;/return-value-restriction&gt;
+                    &lt;variable-restriction evaluator="&gt;" identifier="a4" /&gt;
+                    &lt;qualified-identifier-restriction evaluator="=="&gt;
+                        org.drools.Bar.BAR_ENUM_VALUE
+                    &lt;/qualified-identifier-restriction&gt;
+                &lt;/or-restriction-connective&gt;
+            &lt;/field-constraint&gt;            
+        &lt;/pattern&gt;
+
+        &lt;pattern identifier="foo6" object-type="Bar" &gt;
+            &lt;field-binding field-name="a" identifier="a4" /&gt;
+            &lt;field-constraint field-name="b"&gt;
+                &lt;literal-restriction evaluator="==" value="6" /&gt;
+            &lt;/field-constraint&gt;
+        &lt;/pattern&gt;
   &lt;/lhs&gt;
-
-  &lt;rhs&gt;
-    System.out.println( "hello" );    
-&lt;/rhs&gt;
+ &lt;rhs&gt;
+    if ( a == b ) {
+      assert( foo3 );
+    } else {
+      retract( foo4 );
+    }
+    System.out.println( a4 );
+   &lt;/rhs&gt;
 &lt;/rule&gt;
+
 &lt;/package&gt;
+	
 </programlisting>
     </example>
 
     <para>Referring to the above example: Notice the key parts, the
-    declaration for the Drools 3, schema, imports, globals (application-data
-    in drools 2), functions, and the rules. Most of the elements are self
-    explanatory if you have some understanding of the Drools 3
-    features.</para>
+    declaration for the Drools 4, schema, imports, globals, functions, and the
+    rules. Most of the elements are self explanatory if you have some
+    understanding of the Drools 4 features.</para>
 
     <para>Imports: import the types you wish to use in the rule.</para>
 
@@ -106,52 +219,44 @@
     <example>
       <title>Detail of rule element</title>
 
-      <programlisting>&lt;rule name="my rule"&gt;
- &lt;lhs&gt;
+      <programlisting>&lt;rule name="simple_rule"&gt;
+&lt;rule-attribute name="salience" value="10" /&gt;
+&lt;rule-attribute name="no-loop" value="true" /&gt;
+&lt;rule-attribute name="agenda-group" value="agenda-group" /&gt;
+&lt;rule-attribute name="activation-group" value="activation-group" /&gt;
 
-  &lt;column object-type="Foo" /&gt;
-  &lt;column identifier="bar" object-type="Bar" /&gt;
+&lt;lhs&gt;
+    &lt;pattern identifier="cheese" object-type="Cheese"&gt;
+        &lt;from&gt;
+            &lt;accumulate&gt;
+                &lt;pattern object-type="Person"&gt;&lt;/pattern&gt;
+                &lt;init&gt;
+                    int total = 0;
+                &lt;/init&gt;
+                &lt;action&gt;
+                    total += $cheese.getPrice();
+                &lt;/action&gt;
+                &lt;result&gt;
+                    new Integer( total ) );
+                &lt;/result&gt;
+            &lt;/accumulate&gt;
+        &lt;/from&gt;
+    &lt;/pattern&gt;
 
-  &lt;column object-type="Foo"&gt;
-    &lt;literal field-name="field1" evaluator="==" value="value1" /&gt;
-    &lt;predicate field-name="field1" identifier="var1" expression="1==1" /&gt;
-    &lt;return-value field-name="field1" evaluator="==" expression="1==1" /&gt;
-    &lt;field-binding field-name="field1" identifier="var1" /&gt;
-    &lt;bound-variable field-name="field1" evaluator="==" identifier="var1" /&gt;
-  &lt;/column&gt;
-
-  &lt;not&gt;
-    &lt;column object-type="Bar" /&gt;
-  &lt;/not&gt;
-
-  &lt;exists&gt;
-    &lt;column object-type="Bar" /&gt;
-  &lt;/exists&gt;
-
-  &lt;and&gt;
-    &lt;or&gt;
-      &lt;column object-type="Bar" /&gt;
-    &lt;/or&gt;
-    &lt;column object-type="Yada" /&gt;
-  &lt;/and&gt;
-
-  &lt;or&gt;
-    &lt;and&gt;
-      &lt;column object-type="Foo" /&gt;
-    &lt;/and&gt;
-    &lt;column object-type="Zaa" /&gt;
-  &lt;/or&gt;
-
-  &lt;eval&gt;
-    1==1
-  &lt;/eval&gt;
- &lt;/lhs&gt;
-
- &lt;rhs&gt;
-   /* semantic actions here */
- &lt;/rhs&gt;
+    &lt;pattern identifier="max" object-type="Number"&gt;
+        &lt;from&gt;
+            &lt;accumulate&gt;
+                &lt;pattern identifier="cheese" object-type="Cheese"&gt;&lt;/pattern&gt;
+                &lt;external-function evaluator="max" expression="$price"/&gt;
+            &lt;/accumulate&gt;
+        &lt;/from&gt;
+    &lt;/pattern&gt;
+&lt;/lhs&gt;
+&lt;rhs&gt;
+    list1.add( $cheese );
+&lt;/rhs&gt;
 &lt;/rule&gt;
-</programlisting>
+	</programlisting>
     </example>
 
     <para>Referring to the above rule detail:</para>
@@ -159,19 +264,30 @@
     <para>The rule has a LHS and RHS (conditions and consequence) sections.
     The RHS is simple, it is just a block of semantic code that will be
     executed when the rule is activated. The LHS is slightly more complicated,
-    certainly more so then Drools 2.x.</para>
+    certainly more so then past versions.</para>
 
-    <para>A key element of the LHS is the Column element. This allows you to
+
+<!--
+	TODO: explain about 
+	
+	conditional-element 
+	constraint-connective
+	restriction-connective
+	
+	accumulate and external functions
+-->
+
+    <para>A key element of the LHS is the Pattern element. This allows you to
     specify a type (class) and perhaps bind a variable to an instance of that
-    class. Nested under the column object are constraints that have to be met.
-    The Predicate and Return Value constraints allow java expressions to be
-    embedded.</para>
+    class. Nested under the pattern object are constraints and conditional
+	elements that have to be met. The Predicate and Return Value constraints 
+	allow java expressions to be embedded.</para>
 
     <para>That leaves the conditional elements, not, exists, and, or etc. They
     work like their DRL counterparts. Elements that are nested under and an
     "and" element are logically "anded" together. Likewise with "or" (and you
-    can nest things further). "Exists" and "Not" work around Columns, to check
-    for the existence or non existance of a fact meeting its
+    can nest things further). "Exists" and "Not" work around Patterns, to check
+    for the existence or non existence of a fact meeting its
     constraints.</para>
 
     <para>The Eval element allows the execution of a valid snippet of java
@@ -184,61 +300,7 @@
 
   <section>
     <title>Legacy Drools 2.x XML rule format</title>
-
-    <para>The Drools 2.x legacy XML format is somewhat different to the Drools
-    3 format that you can see above.</para>
-
-    <para>However, there are some similarities. Basically the imports, globals
-    (which replace application-data in drools 2.x) work the same. Functions
-    are also similar, except that they are specified one at a time (in Drools
-    2 they where specified in a single block).</para>
-
-    <para />
-
-    <example>
-      <title>Drools 2.x xml</title>
-
-      <programlisting>  &lt;rule name="Goodbye Cruel World"&gt;
-    &lt;parameter identifier="goodbye"&gt;
-      &lt;class&gt;String&lt;/class&gt;
-    &lt;/parameter&gt;
-
-    &lt;java:condition&gt;goodbye.equals("Goodbye")&lt;/java:condition&gt;
-
-    &lt;java:consequence&gt;
-      goodbyeWorld( goodbye );
-    &lt;/java:consequence&gt;
-  &lt;/rule&gt;</programlisting>
-    </example>
-
-    <section>
-      <title>Migrating to Drools 3</title>
-
-      <para>It is possible generally to migrate from drools 2 to drools 3 XML
-      format, if you have existing rulebases you want to port to drools 3.
-      This may be done with a stylesheet, possibly. Note that Drools 2.x DSLs
-      will not be trivial to port to drools 3 XML. You would be best to look
-      at the new DSL features in Drools 3 DRL.</para>
-
-      <para>Note that while "eval" allows you to more or less directly migrate
-      your conditions from Drools 2.x to 3, it is far more powerful, and
-      performant, to use constraints on columns where possible, as it utilises
-      the full power of the engine.</para>
-
-      <example>
-        <title>Drools 3 XML equivalent</title>
-
-        <programlisting>&lt;rule name="Goodbye Cruel World"&gt;
- &lt;lhs&gt;
-   &lt;column identifier='goodbye' object-type='String' &gt;
-   &lt;eval&gt;goodbye.equals("Goodbye")&lt;/eval&gt;
- &lt;/lhs&gt;
- &lt;rhs&gt;
-   goodbyeWorld( goodbye );
- &lt;/rhs&gt;
-&lt;/rule&gt;</programlisting>
-      </example>
-    </section>
+    <para>The Drools 2.x legacy XML format is no longer supported by Drools XML parser</para>
   </section>
 
   <section>
