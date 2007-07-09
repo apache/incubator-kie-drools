@@ -423,9 +423,6 @@ public class JavaDialect
                             final TypeResolver typeResolver) {
 
         final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
-        this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
-        functionDescr.setClassName( functionClassName );
-
         this.pkg.addFunction( functionDescr.getName() );
 
         final String functionSrc = getFunctionBuilder().build( this.pkg,

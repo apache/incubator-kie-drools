@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
@@ -253,6 +252,14 @@ public class PackageBuilder {
         if ( !hasErrors() ) {
             for ( final Iterator it = packageDescr.getFactTemplates().iterator(); it.hasNext(); ) {
                 addFactTemplate( (FactTemplateDescr) it.next() );
+            }
+            
+            // add static imports for all functions
+            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+                FunctionDescr functionDescr = (FunctionDescr) it.next();
+                final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
+                functionDescr.setClassName( functionClassName );
+                this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
             }
 
             // iterate and compile
@@ -582,4 +589,7 @@ public class PackageBuilder {
 
     }
 
+    private String ucFirst(final String name) {
+        return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
+    }
 }
