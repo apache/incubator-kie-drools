@@ -233,12 +233,11 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitNotDescr(final NotDescr descr) {
         this.template = new String();
-        if ( descr.getDescrs().isEmpty() ) {
-            this.template = "\t   not " + processDescrList( descr.getDescrs() );
+        if ( !descr.getDescrs().isEmpty() ) {
+            this.template = "\t   not ( " + processDescrList( descr.getDescrs() ) +")";
         } else {
             this.template = "";
         }
-
     }
 
     public void visitOrDescr(final OrDescr descr) {
@@ -283,13 +282,22 @@ public class DrlDumper extends ReflectiveVisitor
 
     public void visitQueryDescr(final QueryDescr descr) {
         this.template = new String();
-        this.template = "<query name=\"" + descr.getName() + "\">" + "<lhs>" + processDescrList( descr.getLhs().getDescrs() ) + "</lhs>" + "</query>";
+        this.template = "query \"" + descr.getName() + "\"" + processDescrList( descr.getLhs().getDescrs() )  + "end";
     }
+    
 
     private String processRules(final List rules) {
         String ruleList = "";
+        Object ruleobj;
         for ( final Iterator iterator = rules.iterator(); iterator.hasNext(); ) {
-            final RuleDescr ruleDescr = (RuleDescr) iterator.next();
+        	ruleobj = iterator.next();
+        	if ( ruleobj instanceof QueryDescr ) {
+        		visitQueryDescr((QueryDescr) ruleobj);
+        		ruleList += this.template;
+        		break;
+        	}
+
+        	final RuleDescr ruleDescr = (RuleDescr) ruleobj;
             String rule = "rule \"" + ruleDescr.getName() + "\" " + DrlDumper.eol;
             final String attribute = processAttribute( ruleDescr.getAttributes() );
             String lhs = "";

@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 
 public class DumperTest extends TestCase {
 
-
     // Xml Dumper test
     
     public void testRoundTripAccumulateXml() throws Exception {
@@ -21,7 +20,7 @@ public class DumperTest extends TestCase {
     public void testRoundTripCollectXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseCollect.xml" );
     }
-
+    
     public void testRoundTripExistsXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseExists.xml" );
     }
@@ -67,4 +66,15 @@ public class DumperTest extends TestCase {
     public void testRoundTripSimpleRuleDrl() throws Exception {
         DumperTestHelper.DrlFile( "test_simplerule.drl" );
     }
+
+    public void testRoundTripPComplexDrl() throws Exception {
+        DumperTestHelper.DrlFile( "test_complex.drl" );
+    }
+    
+    public void testRoundTripPComplexXml() throws Exception {
+        DumperTestHelper.XmlFile( "test_ParseComplex.xml" );
+    }
+    
+
+    
 }

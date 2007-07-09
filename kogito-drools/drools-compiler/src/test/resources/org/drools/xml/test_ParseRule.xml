@@ -10,7 +10,7 @@
 
 	<global identifier="x" type="com.sample.X" />
 	<global identifier="yada" type="com.sample.Yada" />
-	
+
 	<function return-type="void" name="myFunc">
 	    <parameter identifier="foo" type="Bar" />
 	    <parameter identifier="bada" type="Bing" />
@@ -85,7 +85,7 @@
                     <field-constraint field-name="likes">
                         <variable-restriction evaluator="==" identifier="type"/>
                     </field-constraint>
-                </pattern>                
+                </pattern>
             </exists>
         </not>
 
@@ -123,7 +123,7 @@
                         org.drools.Bar.BAR_ENUM_VALUE
                     </qualified-identifier-restriction>
                 </or-restriction-connective>
-            </field-constraint>            
+            </field-constraint>
         </pattern>
 
         <pattern identifier="foo6" object-type="Bar" >
