@@ -104,27 +104,34 @@ public class MVELAccumulateBuilder
                                                                function );
         } else {
             // it is a custom accumulate
-            final Dialect.AnalysisResult analysis1 = context.getDialect().analyzeBlock( context,
+            final Dialect.AnalysisResult initCodeAnalysis = context.getDialect().analyzeBlock( context,
                                                                                         accumDescr,
                                                                                         accumDescr.getInitCode() );
-            final Dialect.AnalysisResult analysis2 = context.getDialect().analyzeBlock( context,
+            final Dialect.AnalysisResult actionCodeAnalysis = context.getDialect().analyzeBlock( context,
                                                                                         accumDescr,
                                                                                         accumDescr.getActionCode() );
-            final Dialect.AnalysisResult analysis3 = context.getDialect().analyzeExpression( context,
+            final Dialect.AnalysisResult resultCodeAnalysis = context.getDialect().analyzeExpression( context,
                                                                                              accumDescr,
                                                                                              accumDescr.getResultCode() );
 
-            final List requiredDeclarations = new ArrayList( analysis1.getBoundIdentifiers()[0] );
-            requiredDeclarations.addAll( analysis2.getBoundIdentifiers()[0] );
-            requiredDeclarations.addAll( analysis3.getBoundIdentifiers()[0] );
+            final List requiredDeclarations = new ArrayList( initCodeAnalysis.getBoundIdentifiers()[0] );
+            requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers()[0] );
+            requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers()[0] );
+
+            if ( accumDescr.getReverseCode() != null ) {
+                final Dialect.AnalysisResult reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
+                                                                                                      accumDescr,
+                                                                                                      accumDescr.getActionCode() );
+                requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers()[0] );
+            }
 
             declarations = new Declaration[requiredDeclarations.size()];
             for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
                 declarations[i] = context.getDeclarationResolver().getDeclaration( (String) requiredDeclarations.get( i ) );
             }
             
-            final Serializable init = dialect.compile( (String) accumDescr.getInitCode(), analysis1, null, context );
-            final Serializable action = dialect.compile((String) accumDescr.getActionCode(), analysis2, null, context );
+            final Serializable init = dialect.compile( (String) accumDescr.getInitCode(), initCodeAnalysis, null, context );
+            final Serializable action = dialect.compile((String) accumDescr.getActionCode(), actionCodeAnalysis, null, context );
 
             
            
@@ -137,12 +144,12 @@ public class MVELAccumulateBuilder
             if ( accumDescr.getReverseCode() != null ) {
 //                reverse = MVEL.compileExpression( (String) accumDescr.getReverseCode(),
 //                                                  ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
-                reverse = dialect.compile( (String) accumDescr.getReverseCode(), analysis3, null, context );
+                reverse = dialect.compile( (String) accumDescr.getReverseCode(), resultCodeAnalysis, null, context );
             }
 //            final Serializable result = MVEL.compileExpression( (String) accumDescr.getResultCode(),
 //                                                                ((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses() );
 
-            final Serializable result = dialect.compile((String) accumDescr.getResultCode(), analysis3, null, context );
+            final Serializable result = dialect.compile((String) accumDescr.getResultCode(), resultCodeAnalysis, null, context );
             
             accumulator = new MVELAccumulator( factory,
                                                init,
