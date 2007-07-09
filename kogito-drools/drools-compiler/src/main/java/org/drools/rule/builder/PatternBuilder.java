@@ -161,16 +161,17 @@ public class PatternBuilder
                              object,
                              null );
         }
-        
-        if( patternDescr.getSource() != null ) {
+
+        if ( patternDescr.getSource() != null ) {
             // we have a pattern source, so build it
             RuleConditionBuilder builder = context.getDialect().getBuilder( patternDescr.getSource().getClass() );
-            
-            PatternSource source = (PatternSource) builder.build( context, patternDescr.getSource() );
-            
+
+            PatternSource source = (PatternSource) builder.build( context,
+                                                                  patternDescr.getSource() );
+
             pattern.setSource( source );
         }
-        
+
         // poping the pattern
         context.getBuildStack().pop();
         return pattern;
@@ -319,10 +320,10 @@ public class PatternBuilder
         dumper.visitFieldConstraintDescr( fieldConstraintDescr );
         predicateDescr.setContent( dumper.getTemplate() );
 
-        this.build( context,
-                    pattern,
-                    predicateDescr,
-                    container );
+        build( context,
+               pattern,
+               predicateDescr,
+               container );
 
         // fall back to original dialect
         context.setDialect( dialect );
@@ -474,9 +475,9 @@ public class PatternBuilder
         for ( int i = 0, size = unboundIdentifiers.size(); i < size; i++ ) {
             final String identifier = (String) unboundIdentifiers.get( i );
 
-            Declaration declaration = this.createDeclarationObject( context,
-                                                                    identifier,
-                                                                    pattern );
+            Declaration declaration = createDeclarationObject( context,
+                                                               identifier,
+                                                               pattern );
 
             if ( declaration != null ) {
                 factDeclarations.add( declaration );

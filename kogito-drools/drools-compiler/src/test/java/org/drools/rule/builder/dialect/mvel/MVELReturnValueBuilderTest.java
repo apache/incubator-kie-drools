@@ -40,7 +40,7 @@ public class MVELReturnValueBuilderTest extends TestCase {
 
         MVELDialect mvelDialect = new MVELDialect( new PackageBuilder( pkg ) );
         DialectRegistry registry = new DialectRegistry();
-        registry.addDialect( "default",
+        registry.addDialect( "mvel",
                              mvelDialect );
         final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
 
@@ -115,9 +115,6 @@ public class MVELReturnValueBuilderTest extends TestCase {
         final InternalFactHandle f1 = (InternalFactHandle) wm.insert( stilton );
         tuple = new ReteTuple( tuple,
                                f1 );
-
-        final PredicateContextEntry predicateContext = new PredicateContextEntry();
-        predicateContext.leftTuple = tuple;
 
         final Cheese brie = new Cheese( "brie",
                                         20 );
