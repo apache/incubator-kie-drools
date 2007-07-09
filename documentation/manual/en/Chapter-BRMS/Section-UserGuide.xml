@@ -518,6 +518,8 @@
 
     <para>[detail on guided editor, how to use DSLs, dsl editor, upload rf +
     dt etc]</para>
+
+    <para>[also mention possibility of creating templates to copy etc]</para>
   </section>
 
   <section>
@@ -554,7 +556,7 @@ rb.newStatefulSession....
 
       <para>IMPORTANT: You should only have one instance of the RuleAgent per
       rulebase you are using. This means you should (for example) keep the
-      RuleBase in JNDI.</para>
+      RuleBase in JNDI (or similar).</para>
 
       <para>This assumes that there is a MyRules.properties in the root of
       your classpath. You can also pass in a Properties object with the
