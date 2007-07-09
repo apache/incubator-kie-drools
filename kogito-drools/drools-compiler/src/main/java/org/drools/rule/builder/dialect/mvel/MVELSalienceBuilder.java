@@ -36,6 +36,7 @@ public class MVELSalienceBuilder
 
             final Serializable expr = dialect.compile( (String) context.getRuleDescr().getSalience(),
                                                                                     analysis,
+                                                                                    null,
                                                                                     context );
 
             MVELSalienceExpression salience = new MVELSalienceExpression( expr,

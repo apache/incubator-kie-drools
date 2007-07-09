@@ -73,7 +73,7 @@ public class MVELPredicateBuilder
                                                                                       predicateDescr,
                                                                                       predicateDescr.getContent() );
             
-            final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) predicateDescr.getContent(), analysis, context );            
+            final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) predicateDescr.getContent(), analysis, null, context );            
             
             predicate.setPredicateExpression( new MVELPredicateExpression( expr,
                                                                            factory ) );

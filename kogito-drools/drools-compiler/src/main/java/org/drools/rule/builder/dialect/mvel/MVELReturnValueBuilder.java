@@ -73,7 +73,7 @@ public class MVELReturnValueBuilder
                                                                                   returnValueRestrictionDescr,
                                                                                   returnValueRestrictionDescr.getContent() );
         
-        final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) returnValueRestrictionDescr.getContent(), analysis, context );        
+        final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) returnValueRestrictionDescr.getContent(), analysis, null, context );        
         
         returnValueRestriction.setReturnValueExpression( new MVELReturnValueExpression( expr,
                                                                                         factory ) );
