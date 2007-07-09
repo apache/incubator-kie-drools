@@ -27,8 +27,9 @@ public class DumperTestHelper extends Assert {
 
         final XmlDumper dumper = new XmlDumper();
         final String result = dumper.dump( pkgOriginal );
-
+        
         String buffer = readFile( filename );
+        
         assertEqualsIgnoreWhitespace( buffer,
                                       result );
         assertNotNull( result );
