@@ -54,7 +54,7 @@ public class IndexedNumber {
     }
 
     /**
-     * @param pIndex le/la/les index à sauvegarder.
+     * @param pIndex le/la/les index sauvegarder.
      */
     public void setIndex(final int pIndex) {
         this.index = pIndex;
@@ -68,7 +68,7 @@ public class IndexedNumber {
     }
 
     /**
-     * @param pNb le/la/les nb à sauvegarder.
+     * @param pNb le/la/les nb sauvegarder.
      */
     public void setNumber(final int pNb) {
         this.number = pNb;
