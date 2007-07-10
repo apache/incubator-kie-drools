@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 
 import org.drools.FactHandle;
 import org.drools.RuleBaseFactory;
+import org.drools.base.MapGlobalResolver;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
@@ -75,13 +76,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
                  "value1" );
         map.put( "global2",
                  "value2" );
-        final GlobalResolver resolver = new GlobalResolver() {
-
-            public Object resolve(String name) {
-                return map.get( name );
-            }
-
-        };
+        final GlobalResolver resolver = new MapGlobalResolver(map);
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
         workingMemory.setGlobalResolver( resolver );

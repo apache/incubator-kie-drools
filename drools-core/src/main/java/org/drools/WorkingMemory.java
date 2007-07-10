@@ -109,13 +109,6 @@ public interface WorkingMemory
     public Agenda getAgenda();
 
     /**
-     * Retrieve all of the set application data in this memory
-     * 
-     * @return the application data as a Map
-     */
-    Map getGlobals();
-
-    /**
      * Set a specific piece of global in this working memory. Null values will return doing nothign
      * 
      * @param name
@@ -138,6 +131,8 @@ public interface WorkingMemory
      * @param globalResolver
      */
     void setGlobalResolver(GlobalResolver globalResolver);
+    
+    GlobalResolver getGlobalResolver();
 
     /**
      * Retrieve the <code>RuleBase</code> of this working memory.

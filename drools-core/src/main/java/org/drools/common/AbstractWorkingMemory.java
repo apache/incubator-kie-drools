@@ -41,6 +41,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
+import org.drools.base.MapGlobalResolver;
 import org.drools.base.ShadowProxy;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
@@ -97,16 +98,13 @@ public abstract class AbstractWorkingMemory
     /** The actual memory for the <code>JoinNode</code>s. */
     protected final PrimitiveLongMap       nodeMemories                                  = new PrimitiveLongMap( 32,
                                                                                                                  8 );
-
-    /** Global values which are associated with this memory. */
-    protected Map                          globals                                       = new HashMap();
-
     /** Object-to-handle mapping. */
     private final ObjectHashMap            assertMap;
     private final ObjectHashMap            identityMap;
 
     protected Map                          queryResults                                  = Collections.EMPTY_MAP;
 
+    /** Global values which are associated with this memory. */
     protected GlobalResolver               globalResolver;
 
     protected static final Object          NULL                                          = new Serializable() {
@@ -165,6 +163,7 @@ public abstract class AbstractWorkingMemory
         this.id = id;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
+        this.globalResolver = new MapGlobalResolver();
         this.maintainTms = this.ruleBase.getConfiguration().isMaintainTms();
         this.sequential = this.ruleBase.getConfiguration().isSequential();
 
@@ -311,26 +310,26 @@ public abstract class AbstractWorkingMemory
         return this.handleFactory;
     }
 
-    public void setGlobals(Map globals) {
-        this.globals = globals;
-    }
+//    public void setGlobals(Map globals) {
+//        //this.globals = globals;
+//    }
+
+//    /**
+//     * @see WorkingMemory
+//     */
+//    public Map getGlobals() {
+//        try {
+//            this.lock.lock();
+//            return this.globals;
+//        } finally {
+//            this.lock.unlock();
+//        }
+//    }
 
     /**
      * @see WorkingMemory
      */
-    public Map getGlobals() {
-        try {
-            this.lock.lock();
-            return this.globals;
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    /**
-     * @see WorkingMemory
-     */
-    public void setGlobal(final String name,
+    public void setGlobal(final String identifier,
                           final Object value) {
         // Cannot set null values
         if ( value == null ) {
@@ -341,15 +340,15 @@ public abstract class AbstractWorkingMemory
             this.lock.lock();
             // Make sure the global has been declared in the RuleBase
             final Map globalDefintions = this.ruleBase.getGlobals();
-            final Class type = (Class) globalDefintions.get( name );
+            final Class type = (Class) globalDefintions.get( identifier );
             if ( (type == null) ) {
-                throw new RuntimeException( "Unexpected global [" + name + "]" );
+                throw new RuntimeException( "Unexpected global [" + identifier + "]" );
             } else if ( !type.isInstance( value ) ) {
                 throw new RuntimeException( "Illegal class for global. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
 
             } else {
-                this.globals.put( name,
-                                  value );
+                this.globalResolver.setGlobal( identifier, 
+                                               value );
             }
         } finally {
             this.lock.unlock();
@@ -364,6 +363,10 @@ public abstract class AbstractWorkingMemory
             this.lock.unlock();
         }
     }
+    
+    public GlobalResolver getGlobalResolver() {
+        return this.globalResolver;
+    }
 
     public long getId() {
         return this.id;
@@ -372,14 +375,10 @@ public abstract class AbstractWorkingMemory
     /**
      * @see WorkingMemory
      */
-    public Object getGlobal(final String name) {
+    public Object getGlobal(final String identifier) {
         try {
             this.lock.lock();
-            Object object = this.globals.get( name );
-            if ( object == null && this.globalResolver != null ) {
-                object = this.globalResolver.resolve( name );
-            }
-            return object;
+            return this.globalResolver.resolveGlobal( identifier );
         } finally {
             this.lock.unlock();
         }

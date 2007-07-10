@@ -10,6 +10,7 @@ import org.drools.ObjectFilter;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.WorkingMemory;
+import org.drools.base.MapGlobalResolver;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.AssertObject;
@@ -34,8 +35,7 @@ public class ReteooStatelessSession
 
     private InternalRuleBase            ruleBase;
     private AgendaFilter                agendaFilter;
-    private Map                         globals                   = new HashMap();
-    private GlobalResolver              globalResolver;
+    private GlobalResolver              globalResolver                   = new MapGlobalResolver();
 
     /** The eventSupport */
     protected WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
@@ -53,10 +53,7 @@ public class ReteooStatelessSession
             InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
                                                                 this.ruleBase );
 
-            wm.setGlobals( globals );
-            if ( globalResolver != null ) {
-                wm.setGlobalResolver( this.globalResolver );
-            }
+            wm.setGlobalResolver( this.globalResolver );
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setRuleFlowEventSupport( ruleFlowEventSupport );
@@ -107,7 +104,7 @@ public class ReteooStatelessSession
 
     public void setGlobal(String identifier,
                           Object value) {
-        this.globals.put( identifier,
+        this.globalResolver.setGlobal( identifier,
                           value );
     }
 
