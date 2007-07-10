@@ -1,5 +1,9 @@
 package org.drools.spi;
 
-public interface GlobalResolver {
-    public Object resolve(String name);
+import java.io.Serializable;
+
+public interface GlobalResolver extends Serializable {
+    public Object resolveGlobal(String identifier);
+    
+    public void setGlobal(String identifier, Object value);
 }

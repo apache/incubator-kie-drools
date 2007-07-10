@@ -19,9 +19,7 @@ import org.drools.util.concurrent.locks.Lock;
 public interface InternalWorkingMemory
     extends
     WorkingMemory {      
-    public long getId();
-    
-    public void setGlobals(Map globals);
+    public long getId();    
     
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport);
 
