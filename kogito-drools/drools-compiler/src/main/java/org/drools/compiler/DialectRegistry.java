@@ -32,6 +32,10 @@ public class DialectRegistry {
         }
     }
     
+    public Iterator iterator() {
+        return this.map.values().iterator();
+    }
+    
     public List addResults(List list) {
         if ( list == null ) {
             list = new ArrayList();
