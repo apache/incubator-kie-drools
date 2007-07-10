@@ -113,10 +113,12 @@ public class MVELAccumulateBuilder
                                                                                     null,
                                                                                     accumDescr.getActionCode(),
                                                                                     initCodeAnalysis.getMvelVariables() );
+            actionCodeAnalysis.setMvelVariables( initCodeAnalysis.getMvelVariables() );
             final MVELAnalysisResult resultCodeAnalysis = ( MVELAnalysisResult ) dialect.analyzeExpression( context,
                                                                                          accumDescr,
                                                                                          accumDescr.getResultCode(),
                                                                                          initCodeAnalysis.getMvelVariables()  );
+            resultCodeAnalysis.setMvelVariables( initCodeAnalysis.getMvelVariables() );
 
             final List requiredDeclarations = new ArrayList( initCodeAnalysis.getBoundIdentifiers()[0] );
             requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers()[0] );

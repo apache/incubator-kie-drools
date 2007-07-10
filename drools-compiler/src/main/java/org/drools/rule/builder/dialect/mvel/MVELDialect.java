@@ -316,12 +316,15 @@ public class MVELDialect
                                     (Class) globalTypes.get( identifier ) );
         }
 
-        Map localVars = ((MVELAnalysisResult)analysis).getMvelVariables();
-        for ( Iterator it = localVars.entrySet().iterator(); it.hasNext(); ) {
-            Entry entry = (Entry) it.next();
-            parserContext.addInput( (String)entry.getKey(),
-                                    (Class) entry.getValue() );
-        }        
+        
+        Map mvelVars = ((MVELAnalysisResult)analysis).getMvelVariables();
+        if ( mvelVars != null ) {
+            for ( Iterator it = mvelVars.entrySet().iterator(); it.hasNext(); ) {
+                Entry entry = (Entry) it.next();
+                parserContext.addInput( (String)entry.getKey(),
+                                        (Class) entry.getValue() );
+            }        
+        }
         
         parserContext.addInput( "drools",
                                 KnowledgeHelper.class );
