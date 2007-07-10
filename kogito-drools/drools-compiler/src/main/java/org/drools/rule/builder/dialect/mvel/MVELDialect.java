@@ -87,6 +87,8 @@ public class MVELDialect
 
     private final StaticMethodImportResolverFactory staticImportFactory;
     private final ClassImportResolverFactory        importFactory;
+    
+    private boolean strictMode;
 
     public void addFunction(FunctionDescr functionDescr,
                             TypeResolver typeResolver) {
@@ -104,6 +106,7 @@ public class MVELDialect
         this.configuration = builder.getPackageBuilderConfiguration();
         this.typeResolver = builder.getTypeResolver();
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
+        this.strictMode = true;
 
         this.analyzer = new MVELExprAnalyzer();
 
@@ -223,6 +226,14 @@ public class MVELDialect
     public ClassImportResolverFactory getClassImportResolverFactory() {
         return this.importFactory;
     }
+        
+    public boolean isStrictMode() {
+        return strictMode;
+    }
+
+    public void setStrictMode(boolean strictMode) {
+        this.strictMode = strictMode;
+    }
 
     public void compileAll() {
     }
@@ -297,7 +308,9 @@ public class MVELDialect
                                                                null,
                                                                null );
 
-        parserContext.setStrictTypeEnforcement( true );
+        //this.configuration.get
+        
+        parserContext.setStrictTypeEnforcement( strictMode );
         if ( interceptors != null ) {
             parserContext.setInterceptors( interceptors );
         }

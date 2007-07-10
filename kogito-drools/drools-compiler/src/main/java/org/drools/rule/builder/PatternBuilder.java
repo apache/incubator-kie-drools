@@ -61,6 +61,7 @@ import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.Constraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
@@ -313,7 +314,11 @@ public class PatternBuilder
         // it is a complex expression, so we need to turn it into an MVEL predicate
         Dialect dialect = context.getDialect();
         // switch to MVEL dialect
-        context.setDialect( context.getDialect( "mvel" ) );
+        MVELDialect mvelDialect = ( MVELDialect ) context.getDialect( "mvel" );
+        boolean strictMode = mvelDialect.isStrictMode();
+        mvelDialect.setStrictMode( false );
+        
+        context.setDialect( mvelDialect );
 
         PredicateDescr predicateDescr = new PredicateDescr();
         DrlDumper dumper = new DrlDumper();
@@ -325,6 +330,7 @@ public class PatternBuilder
                predicateDescr,
                container );
 
+        mvelDialect.setStrictMode( strictMode );
         // fall back to original dialect
         context.setDialect( dialect );
     }
