@@ -1,0 +1,11 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "reversed references"
+when
+    $cheese : Cheese( )
+    Cheese( this != $cheese )
+then
+    results.add( $cheese );
+end 

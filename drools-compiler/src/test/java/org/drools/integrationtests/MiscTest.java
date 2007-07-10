@@ -3191,6 +3191,27 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    public void testSelfReference2() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SelfReference2.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        workingMemory.insert( new Cheese() );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 0,
+                      results.size() );
+    }
+
     
 
 }
