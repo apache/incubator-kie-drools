@@ -3,8 +3,8 @@
   <comment>A rule production system</comment>
   <projects>
     <project>drools-compiler</project>
-    <project>drools-decisiontables</project>
     <project>drools-core</project>
+    <project>drools-decisiontables</project>
   </projects>
   <buildSpec>
     <buildCommand>
