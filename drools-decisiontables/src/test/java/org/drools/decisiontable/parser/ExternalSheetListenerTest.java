@@ -245,10 +245,6 @@ public class ExternalSheetListenerTest extends TestCase {
 					return null;
 				}
 
-                public Map getGlobals() {
-                    return null;
-                }
-
                 public Iterator iterateFactHandles() {
                     return null;
                 }
@@ -353,6 +349,11 @@ public class ExternalSheetListenerTest extends TestCase {
 					// TODO Auto-generated method stub
 					return null;
 				}
+
+                public GlobalResolver getGlobalResolver() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
 			};
 		}
 	}
