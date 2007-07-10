@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
@@ -57,19 +58,28 @@ public class MVELExprAnalyzer {
      */
     public MVELAnalysisResult analyzeExpression(final RuleBuildContext context,
                                                 final String expr,
-                                                final Set[] availableIdentifiers) throws RecognitionException {
+                                                final Set[] availableIdentifiers,
+                                                final Map localTypes) throws RecognitionException {
         ExpressionCompiler compiler = new ExpressionCompiler( expr );
 
         ParserContext parserContext = new ParserContext();
         parserContext.setStrictTypeEnforcement( false );
         MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-        parserContext.setImports( dialect.getClassImportResolverFactory().getImportedClasses() );
+        
+        Map imports = dialect.getClassImportResolverFactory().getImportedClasses();
+        imports.putAll( dialect.getStaticMethodImportResolverFactory().getImportedMethods() );
+        
+        parserContext.setImports( imports );
         parserContext.setInterceptors( dialect.getInterceptors() );
         
         compiler.compile( parserContext );
+        
+        MVELAnalysisResult result = analyze( compiler.getParserContextState().getInputs().keySet(),
+                                             availableIdentifiers );
+        
+        result.setMvelVariables( compiler.getParserContextState().getVariables() );
 
-        return analyze( compiler.getParserContextState().getInputs().keySet(),
-                        availableIdentifiers );
+        return result;
     }
 
     /**

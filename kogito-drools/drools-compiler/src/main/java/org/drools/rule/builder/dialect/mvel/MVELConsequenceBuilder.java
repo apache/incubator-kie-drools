@@ -80,7 +80,8 @@ public class MVELConsequenceBuilder
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     context.getRuleDescr(),
                                                                     dialect.getInterceptors(),
-                                                                    text );
+                                                                    text,
+                                                                    null );
 
             final Serializable expr = dialect.compile( text,
                                                        analysis,
