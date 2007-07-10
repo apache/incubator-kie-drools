@@ -78,6 +78,7 @@ public class MVELFromBuilder
             final Serializable expr = dialect.compile( text,
                                                        analysis,
                                                        null,
+                                                       null,
                                                        context );
 
             dataProvider = new MVELDataProvider( expr,
