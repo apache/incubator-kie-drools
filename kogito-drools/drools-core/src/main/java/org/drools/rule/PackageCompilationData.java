@@ -89,7 +89,7 @@ public class PackageCompilationData
         initClassLoader( parentClassLoader );
         this.invokerLookups = new HashMap();
         this.store = new HashMap();
-        this.lineMappings = Collections.EMPTY_MAP;
+        this.lineMappings = new HashMap();
     }
 
     private void initClassLoader(ClassLoader parentClassLoader) {
@@ -282,9 +282,9 @@ public class PackageCompilationData
         return this.lineMappings;
     }
 
-    public void setLineMappings(final Map lineMappings) {
-        this.lineMappings = lineMappings;
-    }
+//    public void setLineMappings(final Map lineMappings) {
+//        this.lineMappings = lineMappings;
+//    }
 
     public LineMappings getLineMappings(final String className) {
         return (LineMappings) this.lineMappings.get( className );
