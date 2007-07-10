@@ -301,7 +301,8 @@ public class MVELDialect
         parserContext.addInput( "drools", KnowledgeHelper.class );
 
         ExpressionCompiler compiler = new ExpressionCompiler( text );
-        return compiler.compile( parserContext );
+        Serializable expr = compiler.compile( parserContext );
+        return expr;
     }
 
     public RuleConditionBuilder getBuilder(final Class clazz) {

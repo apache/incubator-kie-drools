@@ -305,7 +305,10 @@ public class PackageBuilder {
         final Package pkg = new Package( packageDescr.getName(),
                                          this.configuration.getClassLoader() );       
 
-        this.dialect.init( pkg );
+        for ( Iterator it = this.dialects.iterator(); it.hasNext(); ) {
+            Dialect dialect = ( Dialect ) it.next();
+            dialect.init( pkg );
+        }
 
         mergePackage( pkg,
                       packageDescr );
