@@ -19,6 +19,7 @@ package org.drools.rule.builder.dialect.mvel;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.rule.builder.Dialect.AnalysisResult;
 
@@ -34,6 +35,9 @@ public class MVELAnalysisResult implements AnalysisResult {
     private List identifiers = Collections.EMPTY_LIST;
     private List localVariables = Collections.EMPTY_LIST;
     private List notBoundedIdentifiers = Collections.EMPTY_LIST;
+    
+    private Map mvelVariables;
+    private Map mvelInputs;
     
     public List[] getBoundIdentifiers() {
         return boundIdentifiers;
@@ -59,4 +63,14 @@ public class MVELAnalysisResult implements AnalysisResult {
     public void setNotBoundedIdentifiers(List notBoundedIdentifiers) {
         this.notBoundedIdentifiers = notBoundedIdentifiers;
     }
+
+    public Map getMvelVariables() {
+        return mvelVariables;
+    }
+    
+    public void setMvelVariables(Map mvelVariables) {
+        this.mvelVariables = mvelVariables;
+    }
+    
+    
 }

@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
@@ -71,8 +72,8 @@ public class MVELDialect
     private final MVELConsequenceBuilder            consequence             = new MVELConsequenceBuilder();
     //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
     private final MVELFromBuilder                   from                    = new MVELFromBuilder();
-    
-    private final Map interceptors;
+
+    private final Map                               interceptors;
 
     private List                                    results;
     //private final JavaFunctionBuilder             function    = new JavaFunctionBuilder();
@@ -115,8 +116,8 @@ public class MVELDialect
 
         this.interceptors = new HashMap( 1 );
         this.interceptors.put( "Modify",
-                               new ModifyInterceptor() );   
-        
+                               new ModifyInterceptor() );
+
         this.importFactory = new ClassImportResolverFactory();
         this.staticImportFactory = new StaticMethodImportResolverFactory();
         this.importFactory.setNextFactory( this.staticImportFactory );
@@ -156,8 +157,7 @@ public class MVELDialect
 
         this.builders.put( EvalDescr.class,
                            getEvalBuilder() );
-                    
-        
+
     }
 
     public void init(Package pkg) {
@@ -229,11 +229,22 @@ public class MVELDialect
     public Dialect.AnalysisResult analyzeExpression(RuleBuildContext context,
                                                     BaseDescr descr,
                                                     Object content) {
+        return analyzeExpression( context,
+                                  descr,
+                                  content,
+                                  null );
+    }
+
+    public Dialect.AnalysisResult analyzeExpression(RuleBuildContext context,
+                                                    BaseDescr descr,
+                                                    Object content,
+                                                    Map localTypes) {
         Dialect.AnalysisResult result = null;
         try {
             result = this.analyzer.analyzeExpression( context,
                                                       (String) content,
-                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
+                                                      localTypes );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
@@ -249,18 +260,21 @@ public class MVELDialect
         return analyzeBlock( context,
                              descr,
                              null,
-                             text );
+                             text,
+                             null );
     }
 
     public Dialect.AnalysisResult analyzeBlock(RuleBuildContext context,
                                                BaseDescr descr,
                                                Map interceptors,
-                                               String text) {
+                                               String text,
+                                               Map localTypes) {
         Dialect.AnalysisResult result = null;
         try {
             result = this.analyzer.analyzeExpression( context,
                                                       text,
-                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
+                                                      localTypes );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
@@ -274,9 +288,13 @@ public class MVELDialect
                                 final Dialect.AnalysisResult analysis,
                                 final Map interceptors,
                                 final RuleBuildContext context) {
-        final ParserContext parserContext = new ParserContext( getClassImportResolverFactory().getImportedClasses(),
+        Map imports = getClassImportResolverFactory().getImportedClasses();
+        imports.putAll( getStaticMethodImportResolverFactory().getImportedMethods() );
+
+        final ParserContext parserContext = new ParserContext( imports,
                                                                null,
                                                                null );
+
         parserContext.setStrictTypeEnforcement( true );
         if ( interceptors != null ) {
             parserContext.setInterceptors( interceptors );
@@ -297,8 +315,16 @@ public class MVELDialect
             parserContext.addInput( identifier,
                                     (Class) globalTypes.get( identifier ) );
         }
+
+        Map localVars = ((MVELAnalysisResult)analysis).getMvelVariables();
+        for ( Iterator it = localVars.entrySet().iterator(); it.hasNext(); ) {
+            Entry entry = (Entry) it.next();
+            parserContext.addInput( (String)entry.getKey(),
+                                    (Class) entry.getValue() );
+        }        
         
-        parserContext.addInput( "drools", KnowledgeHelper.class );
+        parserContext.addInput( "drools",
+                                KnowledgeHelper.class );
 
         ExpressionCompiler compiler = new ExpressionCompiler( text );
         Serializable expr = compiler.compile( parserContext );
@@ -368,49 +394,48 @@ public class MVELDialect
     public TypeResolver getTypeResolver() {
         return this.typeResolver;
     }
-    
+
     public Map getInterceptors() {
         return this.interceptors;
     }
 
-    
     public static class AssertInterceptor
-    implements
-    Interceptor {
-    public int doBefore(ASTNode node,
-                        VariableResolverFactory factory) {
-        return 0;
+        implements
+        Interceptor {
+        public int doBefore(ASTNode node,
+                            VariableResolverFactory factory) {
+            return 0;
+        }
+
+        public int doAfter(Object value,
+                           ASTNode node,
+                           VariableResolverFactory factory) {
+            ((DroolsMVELFactory) factory).getWorkingMemory().insert( value );
+            return 0;
+        }
     }
 
-    public int doAfter(Object value,
-                       ASTNode node,
-                       VariableResolverFactory factory) {
-        ((DroolsMVELFactory) factory).getWorkingMemory().insert( value );
-        return 0;
-    }
-}
+    public static class ModifyInterceptor
+        implements
+        Interceptor {
+        public int doBefore(ASTNode node,
+                            VariableResolverFactory factory) {
+            Object object = ((WithNode) node).getNestedStatement().getValue( null,
+                                                                             factory );
 
-public static class ModifyInterceptor
-    implements
-    Interceptor {
-    public int doBefore(ASTNode node,
-                        VariableResolverFactory factory) {
-        Object object = ((WithNode) node).getNestedStatement().getValue( null,
-                                                                         factory );
+            DroolsMVELKnowledgeHelper resolver = (DroolsMVELKnowledgeHelper) factory.getVariableResolver( "drools" );
+            KnowledgeHelper helper = (KnowledgeHelper) resolver.getValue();
+            helper.modifyRetract( object );
+            return 0;
+        }
 
-        DroolsMVELKnowledgeHelper resolver = (DroolsMVELKnowledgeHelper) factory.getVariableResolver( "drools" );
-        KnowledgeHelper helper = (KnowledgeHelper) resolver.getValue();
-        helper.modifyRetract( object );
-        return 0;
+        public int doAfter(Object value,
+                           ASTNode node,
+                           VariableResolverFactory factory) {
+            DroolsMVELKnowledgeHelper resolver = (DroolsMVELKnowledgeHelper) factory.getVariableResolver( "drools" );
+            KnowledgeHelper helper = (KnowledgeHelper) resolver.getValue();
+            helper.modifyInsert( value );
+            return 0;
+        }
     }
-
-    public int doAfter(Object value,
-                       ASTNode node,
-                       VariableResolverFactory factory) {
-        DroolsMVELKnowledgeHelper resolver = (DroolsMVELKnowledgeHelper) factory.getVariableResolver( "drools" );
-        KnowledgeHelper helper = (KnowledgeHelper) resolver.getValue();
-        helper.modifyInsert( value );
-        return 0;
-    }
-}    
 }
