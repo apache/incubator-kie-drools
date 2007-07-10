@@ -2,8 +2,8 @@
 <!DOCTYPE section PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
 "http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
 <section>
+  <title>Quick start guide</title>
 
-    <title>Quick start guide</title>
   <section>
     <title>Quick start guide</title>
 
@@ -26,32 +26,33 @@
     </figure>
 
     <para>The above picture shows the main feature areas of the BRMS.</para>
+
     <itemizedlist>
-        <listitem>
-          <para>Info: This is the initial screen, with links to
-          resources.</para>
-        </listitem>
+      <listitem>
+        <para>Info: This is the initial screen, with links to
+        resources.</para>
+      </listitem>
 
-        <listitem>
-          <para>Rules: This is the category and business user
-          perspective.</para>
-        </listitem>
+      <listitem>
+        <para>Rules: This is the category and business user
+        perspective.</para>
+      </listitem>
 
-        <listitem>
-          <para>Package: This is where packages are configured and
-          managed.</para>
-        </listitem>
+      <listitem>
+        <para>Package: This is where packages are configured and
+        managed.</para>
+      </listitem>
 
-        <listitem>
-          <para>Deployment: this is where deployment snapshots are
-          managed.</para>
-        </listitem>
+      <listitem>
+        <para>Deployment: this is where deployment snapshots are
+        managed.</para>
+      </listitem>
 
-        <listitem>
-          <para>Admin: Administrative functions (categories, statuses, import
-          and export)</para>
-        </listitem>
-      </itemizedlist>
+      <listitem>
+        <para>Admin: Administrative functions (categories, statuses, import
+        and export)</para>
+      </listitem>
+    </itemizedlist>
 
     <para>You can also consult the wiki:
     http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository for some
@@ -282,16 +283,18 @@
       effect on its execution.</para>
 
       <figure>
-          <title>Creating categories</title>
+        <title>Creating categories</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="AdminCats.png" format="PNG"
-                         scalefit="1" />
-            </imageobject>
-          </mediaobject>
-        </figure> <para> The above view shows the administration screen for setting
-      up categories (there) are no categories in the system by default. As the
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="AdminCats.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above view shows the administration screen for setting up
+      categories (there) are no categories in the system by default. As the
       categories can be hierachical you chose the "parent" category that you
       want to create a sub-category for. From here categories can also be
       removed (but only if they are not in use by any current versions of
@@ -309,94 +312,94 @@
       <title>The asset editor</title>
 
       <figure>
-          <title>The Asset editor view</title>
+        <title>The Asset editor view</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="AssetEditor.png" format="PNG"
-                         scalefit="1" />
-            </imageobject>
-          </mediaobject>
-        </figure> <para> The above diagram shows the "asset editor" with some
-      annotated areas. The asset editor is where all rule changes are made.
-      Below is a list which describes the different parts of the editor.</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="AssetEditor.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above diagram shows the "asset editor" with some annotated
+      areas. The asset editor is where all rule changes are made. Below is a
+      list which describes the different parts of the editor.</para>
+
       <itemizedlist>
-          <listitem>
-            <para>A</para>
+        <listitem>
+          <para>A</para>
 
-            <para>This is where the "editor widget" lives - exactly what form
-            the editor takes depends on the asset or rule type.</para>
-          </listitem>
+          <para>This is where the "editor widget" lives - exactly what form
+          the editor takes depends on the asset or rule type.</para>
+        </listitem>
 
-          <listitem>
-            <para>B</para>
+        <listitem>
+          <para>B</para>
 
-            <para>This is the documentation area - a free text area where
-            descriptions of the rule can live. It is encouraged to write a
-            plain description in the rule here before editing.</para>
-          </listitem>
+          <para>This is the documentation area - a free text area where
+          descriptions of the rule can live. It is encouraged to write a plain
+          description in the rule here before editing.</para>
+        </listitem>
 
-          <listitem>
-            <para>C</para>
+        <listitem>
+          <para>C</para>
 
-            <para>These are the actions - for saving, archiving, changing
-            status etc. Archiving is the equivalent of deleting an
-            asset.</para>
-          </listitem>
+          <para>These are the actions - for saving, archiving, changing status
+          etc. Archiving is the equivalent of deleting an asset.</para>
+        </listitem>
 
-          <listitem>
-            <para>D</para>
+        <listitem>
+          <para>D</para>
 
-            <para>This has the asset name, as well as the list of categories
-            that the asset belongs to.</para>
-          </listitem>
+          <para>This has the asset name, as well as the list of categories
+          that the asset belongs to.</para>
+        </listitem>
 
-          <listitem>
-            <para>E</para>
+        <listitem>
+          <para>E</para>
 
-            <para>This section contains read-only meta data, including when
-            changes were made, and by whom.</para>
+          <para>This section contains read-only meta data, including when
+          changes were made, and by whom.</para>
 
-            <para>"Modified on:" - this is the last modified date.</para>
+          <para>"Modified on:" - this is the last modified date.</para>
 
-            <para>"By:" - who made the last change.</para>
+          <para>"By:" - who made the last change.</para>
 
-            <para>"Note:" - this is the comment made when the asset was last
-            updated (ie why a change was made)</para>
+          <para>"Note:" - this is the comment made when the asset was last
+          updated (ie why a change was made)</para>
 
-            <para>"Version:" - this is a number which is incremented by 1 each
-            time a change is checked in (saved).</para>
+          <para>"Version:" - this is a number which is incremented by 1 each
+          time a change is checked in (saved).</para>
 
-            <para>"Created on:" - the date and time the asset was
-            created.</para>
+          <para>"Created on:" - the date and time the asset was
+          created.</para>
 
-            <para>"Created by:" - this initial author of the asset.</para>
+          <para>"Created by:" - this initial author of the asset.</para>
 
-            <para>"Format:" - the short format name of the type of
-            asset.</para>
-          </listitem>
+          <para>"Format:" - the short format name of the type of asset.</para>
+        </listitem>
 
-          <listitem>
-            <para>F</para>
+        <listitem>
+          <para>F</para>
 
-            <para>This shows what package the asset belong to (you can also
-            change it from here).</para>
-          </listitem>
+          <para>This shows what package the asset belong to (you can also
+          change it from here).</para>
+        </listitem>
 
-          <listitem>
-            <para>G</para>
+        <listitem>
+          <para>G</para>
 
-            <para>This is some more (optional) meta data (taken from the
-            Dublin Core meta data standard)</para>
-          </listitem>
+          <para>This is some more (optional) meta data (taken from the Dublin
+          Core meta data standard)</para>
+        </listitem>
 
-          <listitem>
-            <para>H</para>
+        <listitem>
+          <para>H</para>
 
-            <para>This will show the version history list when
-            requested.</para>
-          </listitem>
-        </itemizedlist>
+          <para>This will show the version history list when requested.</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section>
@@ -430,28 +433,32 @@
       if you like).</para>
 
       <figure>
-          <title>Asset status</title>
+        <title>Asset status</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="AssetChangeStatus.png"
-                         format="PNG" scalefit="1" />
-            </imageobject>
-          </mediaobject>
-        </figure><para> You can change the status of an individual asset (like in
-      the diagram above). Its change takes effect immediately, no seperate
-      save is needed.</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="AssetChangeStatus.png"
+                       format="PNG" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>You can change the status of an individual asset (like in the
+      diagram above). Its change takes effect immediately, no seperate save is
+      needed.</para>
 
       <figure>
-          <title>Asset status</title>
+        <title>Asset status</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="PackageChangeStatus.png"
-                         format="PNG" scalefit="1" />
-            </imageobject>
-          </mediaobject>
-        </figure><para> You can change the status of a whole package - this sets the
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="PackageChangeStatus.png"
+                       format="PNG" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>You can change the status of a whole package - this sets the
       status flag on the package itself, but it ALSO changes the statuses on
       ALL the assets that belong to this package in one hit (to be the same as
       what you set the package to).</para>
@@ -460,7 +467,118 @@
     <section>
       <title>Package management</title>
 
-      <para>[pix on package editor, talk about models etc]</para>
+      <para>Configuring packages is generally something that is done once, and
+      by someone with some experience with rules/models. Generally speaking,
+      very few people will need to configure packages, and once they are
+      setup, they can be copied over and over if needed. Package configuration
+      is most definately a technical task that requires the appropriate
+      expertise.</para>
+
+      <para>All assets live in "packages" in the BRMS - a package is like a
+      folder (it also serves as a "namespace"). A home folder for rule assets
+      to live in. Rules in particular need to know what the fact model is,
+      what the namespace is etc.</para>
+
+      <para><figure>
+          <title>The package explorer</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="PackageExplorer.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>The above picture shows the package explorer. Clicking on an
+      asset type will show a list of matches (for packages with thousands of
+      rules, showing the list may take several seconds - hence the importance
+      of using categories to help you find your way around).</para>
+
+      <para>So whilst rules (and assets in general) can appear in any number
+      of categories, they only live in one package. If you think of the BRMS
+      as a file system, then each package is a folder, and the assets live in
+      that folder - as one big happy list of files. When you create a
+      deployment snapshot of a package, you are effectively copying all the
+      assets in that "folder" into another special "folder".</para>
+
+      <para>The package management feature allows you to see a list of
+      packages, and then "expand" them, to show lists of each "type" of asset
+      (there are many assets, so some of them are grouped together):</para>
+
+      <para>The asset types: <itemizedlist>
+          <listitem>
+            <para>Business rule assets: this shows a list of all "business
+            rule" types, which include decision tables, business rules
+            etc.</para>
+          </listitem>
+
+          <listitem>
+            <para>Technical rule assets: this is a list of rules that would be
+            considered technical (eg DRL files).</para>
+          </listitem>
+
+          <listitem>
+            <para>Functions: In the BRMS you can also have functions defined
+            (optionally of course).</para>
+          </listitem>
+
+          <listitem>
+            <para>DSL: Domain Specific Lanaguages can also be stored as an
+            asset. If they exist (generally there is only one), then they will
+            be used in the appropriate editor GUIs.</para>
+          </listitem>
+
+          <listitem>
+            <para>Model: A package requires at least one model - for the
+            rules.</para>
+          </listitem>
+        </itemizedlist></para>
+
+      <para><figure>
+          <title>Creating new assets</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="PackageNewItemTooltip.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure> From the package explorer you can create new rules, or new
+      assets. Some assets you can only create from the package explorer. The
+      above picture shows the icons which launch wizards for this purpose. If
+      you hover the mouse over them, a tooltip will tell you what they
+      do.</para>
+
+      <para><figure>
+          <title>Package configuration</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="PackageConfig.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>One of the most critical things you need to do is configure
+      packages. This is mostly importing the classes used by the rules, and
+      globals variables. Once you make a change, you need to save it, and that
+      package is then configured and ready to be built. For example, you may
+      add a model which has a class called "com.something.Hello", you would
+      then add "import com.something.Hello" in your package configuration and
+      save the change.</para>
+
+      <para><figure>
+          <title>Package building</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="PackageBuild.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>Finally you would "build" a package. Any errors caught are
+      then shown at this point. If the build was successful, then you will
+      have the option to create a snapshot for deployment. You can also view
+      the "drl" that this package results in. WARNING: in cases of large
+      numbers of rules, all these operations can take some time.</para>
     </section>
 
     <section>
@@ -474,19 +592,20 @@
       talks about deployment management and snapshots.</para>
 
       <figure>
-          <title>Asset versions</title>
+        <title>Asset versions</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="AssetVersionHistory.png"
-                         format="PNG" scalefit="1" />
-            </imageobject>
-          </mediaobject>
-        </figure> <para> Each time you make a change to an asset, it creates a new
-      item in the version history. This is a bit like having an unlimited
-      undo. You can look back through the history of an individual asset like
-      the list above, and view it (and restore it) from that point in
-      time.</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="AssetVersionHistory.png"
+                       format="PNG" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Each time you make a change to an asset, it creates a new item in
+      the version history. This is a bit like having an unlimited undo. You
+      can look back through the history of an individual asset like the list
+      above, and view it (and restore it) from that point in time.</para>
     </section>
 
     <section>
@@ -546,7 +665,7 @@
     developer/technical person who will set the foundations for all the rules.
     They may also create "templates" which are rules which may be copied (they
     would typically live in a "dummy" package, and have a category of
-    "template" - this can also help ease the way). </para>
+    "template" - this can also help ease the way).</para>
 
     <para>Deployment should also not be done by non technical users (as
     mentioned previously this happens from the "Package" feature).</para>
@@ -588,7 +707,8 @@ rb.newStatefulSession....
       your classpath. You can also pass in a Properties object with the
       parameters set up (the parameters are discussed next).</para>
 
-      <para>The following shows the content of MyRules.properties: </para>
+      <para>The following shows the content of MyRules.properties:</para>
+
       <programlisting>##
 ## RuleAgent configuration file example
 ##
@@ -607,83 +727,86 @@ name=MyConfig</programlisting>
       one "file", "dir" etc - even though you can specify multiple items by
       space separating them).</para>
 
-      <para>Referring to the above example, the "keys" in the properties are:</para>
+      <para>Referring to the above example, the "keys" in the properties
+      are:</para>
+
       <itemizedlist>
-          <listitem>
-            <para>newInstance</para>
+        <listitem>
+          <para>newInstance</para>
 
-            <para>Setting this to "true" means that the RuleBase instance will
-            be created fresh each time there is a change. this means you need
-            to do agent.getRuleBase() to get the new updated rulebase (any
-            existing ones in use will be untouched). The default is false,
-            which means rulebases are updated "in place" - ie you don't need
-            to keep calling getRuleBase() to make sure you have the latest
-            rules (also any StatefulSessions will be updated automatically
-            with rule changes).</para>
-          </listitem>
+          <para>Setting this to "true" means that the RuleBase instance will
+          be created fresh each time there is a change. this means you need to
+          do agent.getRuleBase() to get the new updated rulebase (any existing
+          ones in use will be untouched). The default is false, which means
+          rulebases are updated "in place" - ie you don't need to keep calling
+          getRuleBase() to make sure you have the latest rules (also any
+          StatefulSessions will be updated automatically with rule
+          changes).</para>
+        </listitem>
 
-          <listitem>
-            <para>file</para>
+        <listitem>
+          <para>file</para>
 
-            <para>This is a space-separated list of files - each file is a
-            binary package as exported by the BRMS. You can have one or many.
-            The name of the file is not important. Each package must be in its
-            own file.</para>
-          </listitem>
+          <para>This is a space-separated list of files - each file is a
+          binary package as exported by the BRMS. You can have one or many.
+          The name of the file is not important. Each package must be in its
+          own file.</para>
+        </listitem>
 
-          <listitem>
-            <para>dir</para>
+        <listitem>
+          <para>dir</para>
 
-            <para>This is similar to file, except that instead of specifying a
-            list of files you specify a directory, and it will pick up all the
-            files in there (each one is a package) and add them to the
-            rulebase. Each package must be in its own file.</para>
-          </listitem>
+          <para>This is similar to file, except that instead of specifying a
+          list of files you specify a directory, and it will pick up all the
+          files in there (each one is a package) and add them to the rulebase.
+          Each package must be in its own file.</para>
+        </listitem>
 
-          <listitem>
-            <para>url</para>
+        <listitem>
+          <para>url</para>
 
-            <para>This is a space separated list of URLs to the BRMS which is
-            exposing the packages (see below for more details).</para>
-          </listitem>
+          <para>This is a space separated list of URLs to the BRMS which is
+          exposing the packages (see below for more details).</para>
+        </listitem>
 
-          <listitem>
-            <para>localCacheDir</para>
+        <listitem>
+          <para>localCacheDir</para>
 
-            <para>This is used in conjunction with the url above, so that if
-            the BRMS is down (the url is not accessable) then if the runtime
-            has to start up, it can start up with the last known "good"
-            versions of the packages.</para>
-          </listitem>
+          <para>This is used in conjunction with the url above, so that if the
+          BRMS is down (the url is not accessable) then if the runtime has to
+          start up, it can start up with the last known "good" versions of the
+          packages.</para>
+        </listitem>
 
-          <listitem>
-            <para>poll</para>
+        <listitem>
+          <para>poll</para>
 
-            <para>This is set to the number of seconds to check for changes to
-            the resources (a timer is used).</para>
-          </listitem>
+          <para>This is set to the number of seconds to check for changes to
+          the resources (a timer is used).</para>
+        </listitem>
 
-          <listitem>
-            <para>name</para>
+        <listitem>
+          <para>name</para>
 
-            <para>This is used to specify the name of the agent which is used
-            when logging events (as typically you would have multiple agents
-            in a system).</para>
-          </listitem>
-        </itemizedlist>
+          <para>This is used to specify the name of the agent which is used
+          when logging events (as typically you would have multiple agents in
+          a system).</para>
+        </listitem>
+      </itemizedlist>
 
       <para>Following shows the deployment screen of the BRMS, which provides
-      URLs and downloads of packages. </para>
-        <figure>
-          <title>Snapshot deployment</title>
+      URLs and downloads of packages.</para>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="SnapshotDeploy.png"
-                         format="PNG" scalefit="1" />
-            </imageobject>
-          </mediaobject>
-        </figure>
+      <figure>
+        <title>Snapshot deployment</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="SnapshotDeploy.png"
+                       format="PNG" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
       <para>You can see the "Package URI" - this is the URL that you would
       copy and paste into the agent .properties file to specify that you want
