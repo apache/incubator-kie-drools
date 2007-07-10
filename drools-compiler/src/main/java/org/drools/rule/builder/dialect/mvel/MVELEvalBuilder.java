@@ -86,9 +86,13 @@ public class MVELEvalBuilder
                 declarations[i] = context.getDeclarationResolver().getDeclaration( (String) usedIdentifiers[0].get( i ) );
             }
 
-            final EvalCondition eval = new EvalCondition( declarations );                        
-            
-            Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) evalDescr.getContent(), analysis, null, context );
+            final EvalCondition eval = new EvalCondition( declarations );
+
+            Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) evalDescr.getContent(),
+                                                                              analysis,
+                                                                              null,
+                                                                              null,
+                                                                              context );
 
             eval.setEvalExpression( new MVELEvalExpression( expr,
                                                             factory ) );

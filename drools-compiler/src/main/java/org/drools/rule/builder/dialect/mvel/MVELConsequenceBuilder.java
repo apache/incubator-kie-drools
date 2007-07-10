@@ -86,6 +86,7 @@ public class MVELConsequenceBuilder
             final Serializable expr = dialect.compile( text,
                                                        analysis,
                                                        dialect.getInterceptors(),
+                                                       null,
                                                        context );
 
             context.getRule().setConsequence( new MVELConsequence( expr,

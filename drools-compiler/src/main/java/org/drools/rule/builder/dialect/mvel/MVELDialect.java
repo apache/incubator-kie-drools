@@ -30,6 +30,7 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
@@ -287,6 +288,7 @@ public class MVELDialect
     public Serializable compile(final String text,
                                 final Dialect.AnalysisResult analysis,
                                 final Map interceptors,
+                                final Map outerDeclarations,
                                 final RuleBuildContext context) {
         Map imports = getClassImportResolverFactory().getImportedClasses();
         imports.putAll( getStaticMethodImportResolverFactory().getImportedMethods() );
@@ -324,6 +326,14 @@ public class MVELDialect
                 parserContext.addInput( (String)entry.getKey(),
                                         (Class) entry.getValue() );
             }        
+        }
+        
+        if ( outerDeclarations != null ) {
+            for ( Iterator it = outerDeclarations.entrySet().iterator(); it.hasNext(); ) {
+                Entry entry = (Entry) it.next();
+                parserContext.addInput( (String)entry.getKey(),
+                                        ((Declaration) entry.getValue()).getExtractor().getExtractToClass() );
+            }
         }
         
         parserContext.addInput( "drools",
