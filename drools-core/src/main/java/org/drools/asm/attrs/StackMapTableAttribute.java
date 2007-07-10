@@ -43,9 +43,9 @@ import org.drools.asm.Type;
 
 /**
  * The stack map attribute is used during the process of verification by
- * typechecking (§4.11.1). <br> <br> A stack map attribute consists of zero or
+ * typechecking (4.11.1). <br> <br> A stack map attribute consists of zero or
  * more stack map frames. Each stack map frame specifies (either explicitly or
- * implicitly) a bytecode offset, the verification types (§4.11.1) for the local
+ * implicitly) a bytecode offset, the verification types (4.11.1) for the local
  * variables, and the verification types for the operand stack. <br> <br> The
  * type checker deals with and manipulates the expected types of a method's
  * local variables and operand stack. Throughout this section, a location refers
