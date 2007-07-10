@@ -574,7 +574,7 @@
       <para>To use the rule agent, you will use a call in your applications
       code like:</para>
 
-      <programlisting>RuleAgent agent = RuleAgent.newInstance("/MyRules.properties");     
+      <programlisting>RuleAgent agent = RuleAgent.newRuleAgent("/MyRules.properties");     
 RuleBase rb = agent.getRuleBase(); 
 rb.newStatefulSession.... 
 //now assert your facts into the session and away you go !
