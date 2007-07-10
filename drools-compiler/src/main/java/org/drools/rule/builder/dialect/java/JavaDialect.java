@@ -173,18 +173,13 @@ public class JavaDialect
         this.results = new ArrayList();
 
         this.src = new MemoryResourceReader();
-        if ( pkg != null ) {
-            this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData(),
-                                                         this.results );
-            this.lineMappings = pkg.getPackageCompilationData().getLineMappings();
-        }
 
         this.generatedClassList = new ArrayList();
 
         this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData(),
                                                      this.results );
-        this.lineMappings = new HashMap();
-        pkg.getPackageCompilationData().setLineMappings( this.lineMappings );
+        
+        this.lineMappings = pkg.getPackageCompilationData().getLineMappings();
     }
 
     public void init(final RuleDescr ruleDescr) {
