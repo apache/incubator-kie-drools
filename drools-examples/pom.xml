@@ -53,6 +53,14 @@
     <project.mainClass>org.drools.benchmark.waltz.WaltzBenchmark</project.mainClass>
   </properties>
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/rules</directory>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

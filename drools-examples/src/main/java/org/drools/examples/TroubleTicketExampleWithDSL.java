@@ -75,12 +75,12 @@ public class TroubleTicketExampleWithDSL {
     }
 
     private static Reader getDSL() {
-        return new InputStreamReader( TroubleTicketExampleWithDSL.class.getResourceAsStream( "/ticketing.dsl" ) );
+        return new InputStreamReader( TroubleTicketExampleWithDSL.class.getResourceAsStream( "ticketing.dsl" ) );
 
     }
 
     private static InputStreamReader getSource() {
-        return new InputStreamReader( TroubleTicketExampleWithDSL.class.getResourceAsStream( "/TroubleTicketWithDSL.drl" ) );
+        return new InputStreamReader( TroubleTicketExampleWithDSL.class.getResourceAsStream( "TroubleTicketWithDSL.drl" ) );
     }
 
     public static class Customer {
