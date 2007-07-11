@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 
 public class GolfingExample {
@@ -30,7 +29,7 @@ public class GolfingExample {
         for ( int n = 0; n < names.length; n++ ) {
             for ( int c = 0; c < colors.length; c++ ) {
                 for ( int p = 0; p < positions.length; p++ ) {
-                    session.assertObject( new Golfer( names[n], colors[c], positions[p]) );
+                    session.insert( new Golfer( names[n], colors[c], positions[p]) );
                 }                
             }            
         }

@@ -7,7 +7,7 @@ rule "We have an honest Politician"
 	when
 		exists( Politician( honest == true ) )
 	then
-		assertLogical( new Hope() );
+		insertLogical( new Hope() );
 end
 
 rule "Hope Lives"
@@ -33,6 +33,6 @@ rule "Currupt the Honest"
 	then
 	    System.out.println( "I'm an evil corporation and I have corrupted " + politician.getName() );
 		politician.setHonest( false );
-		modify( politician );
+		update( politician );
 end
 

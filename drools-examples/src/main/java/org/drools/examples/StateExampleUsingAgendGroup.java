@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
 import org.drools.event.AfterActivationFiredEvent;
@@ -28,7 +27,8 @@ public class StateExampleUsingAgendGroup {
 
         session.addEventListener( new DefaultAgendaEventListener() {
             public void afterActivationFired(final AfterActivationFiredEvent arg0) {
-                super.afterActivationFired( arg0, session );
+                super.afterActivationFired( arg0,
+                                            session );
             }
         } );
 
@@ -44,14 +44,14 @@ public class StateExampleUsingAgendGroup {
         // PropertyChangeListeners so you don't have to call modifyObject().
         final boolean dynamic = true;
 
-        session.assertObject( a,
-                                    dynamic );
-        session.assertObject( b,
-                                    dynamic );
-        session.assertObject( c,
-                                    dynamic );
-        session.assertObject( d,
-                                    dynamic );
+        session.insert( a,
+                        dynamic );
+        session.insert( b,
+                        dynamic );
+        session.insert( c,
+                        dynamic );
+        session.insert( d,
+                        dynamic );
 
         session.fireAllRules();
         session.dispose();

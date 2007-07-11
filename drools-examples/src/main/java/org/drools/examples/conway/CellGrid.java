@@ -16,9 +16,9 @@ import org.drools.examples.conway.patterns.ConwayPattern;
  */
 public class CellGrid {
 
-    private final Cell[][] cells;
+    private final Cell[][]  cells;
 
-    private StatefulSession  session;
+    private StatefulSession session;
 
     /**
      * Constructs a CellGrid
@@ -46,7 +46,7 @@ public class CellGrid {
 
         this.session.addEventListener( listener );
 
-        this.session.assertObject( this );
+        this.session.insert( this );
 
         // populate the array of Cells and hook each
         // cell up with its neighbors...
@@ -55,7 +55,7 @@ public class CellGrid {
                 final Cell newCell = new Cell( column,
                                                row );
                 this.cells[row][column] = newCell;
-                this.session.assertObject( newCell );
+                this.session.insert( newCell );
             }
         }
         this.session.setFocus( "register neighbor" );
@@ -154,8 +154,8 @@ public class CellGrid {
                     final Cell cell = getCellAt( row + rowOffset,
                                                  column + columnOffset );
                     cell.setCellState( CellState.LIVE );
-                    this.session.modifyObject( this.session.getFactHandle( cell ),
-                                                     cell );
+                    this.session.update( this.session.getFactHandle( cell ),
+                                         cell );
                 }
             }
         }
@@ -168,7 +168,7 @@ public class CellGrid {
             this.session.dispose();
         }
     }
-    
+
     public String toString() {
         StringBuffer buf = new StringBuffer();
 

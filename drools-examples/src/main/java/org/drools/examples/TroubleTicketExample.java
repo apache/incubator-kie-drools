@@ -6,7 +6,6 @@ import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
 
@@ -42,22 +41,22 @@ public class TroubleTicketExample {
         final Ticket t3 = new Ticket( c );
         final Ticket t4 = new Ticket( d );
 
-        final FactHandle fa = session.assertObject( a );
-        final FactHandle fb = session.assertObject( b );
-        final FactHandle fc = session.assertObject( c );
-        final FactHandle fd = session.assertObject( d );
+        final FactHandle fa = session.insert( a );
+        final FactHandle fb = session.insert( b );
+        final FactHandle fc = session.insert( c );
+        final FactHandle fd = session.insert( d );
 
-        final FactHandle ft1 = session.assertObject( t1 );
-        final FactHandle ft2 = session.assertObject( t2 );
-        final FactHandle ft3 = session.assertObject( t3 );
-        final FactHandle ft4 = session.assertObject( t4 );
+        final FactHandle ft1 = session.insert( t1 );
+        final FactHandle ft2 = session.insert( t2 );
+        final FactHandle ft3 = session.insert( t3 );
+        final FactHandle ft4 = session.insert( t4 );
 
         session.fireAllRules();
 
         t3.setStatus( "Done" );
 
-        session.modifyObject( ft3,
-                                    t3 );
+        session.update( ft3,
+                        t3 );
 
         try {
             System.err.println( "[[ Sleeping 5 seconds ]]" );
@@ -67,7 +66,7 @@ public class TroubleTicketExample {
         }
 
         System.err.println( "[[ awake ]]" );
-        
+
         session.dispose();
 
         logger.writeToDisk();
@@ -78,9 +77,9 @@ public class TroubleTicketExample {
         private String subscription;
 
         public Customer() {
-        	
+
         }
-        
+
         public Customer(final String name,
                         final String subscription) {
             super();
@@ -107,9 +106,9 @@ public class TroubleTicketExample {
         private String   status;
 
         public Ticket() {
-        	
+
         }
-        
+
         public Ticket(final Customer customer) {
             super();
             this.customer = customer;

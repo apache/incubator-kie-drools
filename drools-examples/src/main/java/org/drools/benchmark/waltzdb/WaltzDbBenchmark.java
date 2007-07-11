@@ -7,12 +7,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.RuleBase;
-import org.drools.rule.Package;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
+import org.drools.rule.Package;
 
 
 public class WaltzDbBenchmark {
@@ -35,19 +34,19 @@ public class WaltzDbBenchmark {
         	Iterator iter =lines.iterator();
         	while(iter.hasNext()){
         		Line line = (Line)iter.next();
-        		session.assertObject(line);
+        		session.insert(line);
         		System.out.println(line.getP1() + " " +  line.getP2());
         	}
         	
         	iter =labels.iterator();
         	while(iter.hasNext()){
         		Label label = (Label)iter.next();
-        		session.assertObject(label);
+        		session.insert(label);
         		System.out.println(label.getId() + " " +  label.getType());
         	}
             
             Stage stage = new Stage(Stage.DUPLICATE);
-            session.assertObject( stage );
+            session.insert( stage );
             session.fireAllRules();        
         	System.out.println("Time: " + (System.currentTimeMillis() - now));
         	session.dispose();
