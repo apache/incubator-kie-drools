@@ -405,35 +405,39 @@
     <section>
       <title>Rule authoring</title>
 
-	  <para> </para>
-      
-      <para>
-      	Guided editor style "Business rules": (also known as "BRL format"). These rules use the guided GUI which controls and propts user input based on knowledge of the 
-      	object model. This can also be augmented with DSL sentences. 
-      </para>
-      
-      <para>
-		DSL rules:
-	  </para>
+      <para>The BRMS supports a (growing) list of formats of assets (rules).
+      Here the key ones are described. Some of these are covered in other
+      parts of the manual, and the detail will not be repeated here.</para>
 
-      <para>
-		Spreadsheet decision tables:
-	  </para>
+      <para>Guided editor style "Business rules": (also known as "BRL
+      format"). These rules use the guided GUI which controls and propts user
+      input based on knowledge of the object model. This can also be augmented
+      with DSL sentences.</para>
 
+      <para>DSL rules:</para>
 
-	  <para>
-		Technical (drl) rules: Rules stored as drl text can be managed in the BRMS, as well as more "traditional" drl files. A
-      DRL can either be a whole chunk of rules, or an individual rule. if its
-      an individual rule, no package statement or imports are required (in fact, you can skip the "rule" statement altogether, just use 
-"when" and "then" to mark the condition and action sections respectively).
-      Normally you would use the IDE to edit raw DRL files, since it has all
-      the advanced tooling and content assistance and debugging, however there are times when a rule may have to deal with something fairly technical.
-      </para>
+      <para>Spreadsheet decision tables:</para>
 
-	  <para>Rule flows: Rule flows allow you to visually describe the steps taken - so not all rules are evaluated at once, but there is a flow of logic. Rule flows are not covered in this chapter on the BRMS, but you can use the IDE to graphically draw ruleflows, and upload the .rf file to the BRMS.</para>
+      <para>Technical (drl) rules: Rules stored as drl text can be managed in
+      the BRMS, as well as more "traditional" drl files. A DRL can either be a
+      whole chunk of rules, or an individual rule. if its an individual rule,
+      no package statement or imports are required (in fact, you can skip the
+      "rule" statement altogether, just use "when" and "then" to mark the
+      condition and action sections respectively). Normally you would use the
+      IDE to edit raw DRL files, since it has all the advanced tooling and
+      content assistance and debugging, however there are times when a rule
+      may have to deal with something fairly technical.</para>
 
-	  <para>Suggestion: As you may have many similar rules, you can create rule templates, which are simply rules which are kept in an inactive package - you can then categories templates accordingly, and copy them as needed (choosing a live package as the target package).</para>
+      <para>Rule flows: Rule flows allow you to visually describe the steps
+      taken - so not all rules are evaluated at once, but there is a flow of
+      logic. Rule flows are not covered in this chapter on the BRMS, but you
+      can use the IDE to graphically draw ruleflows, and upload the .rf file
+      to the BRMS.</para>
 
+      <para>Suggestion: As you may have many similar rules, you can create
+      rule templates, which are simply rules which are kept in an inactive
+      package - you can then categories templates accordingly, and copy them
+      as needed (choosing a live package as the target package).</para>
     </section>
 
     <section>
@@ -524,8 +528,8 @@
 
       <para>The asset types: <itemizedlist>
           <listitem>
-            <para>Business assets: this shows a list of all "business
-            rule" types, which include decision tables, business rules etc.
+            <para>Business assets: this shows a list of all "business rule"
+            types, which include decision tables, business rules etc.
             etc.</para>
           </listitem>
 
@@ -597,15 +601,18 @@
       have the option to create a snapshot for deployment. You can also view
       the "drl" that this package results in. WARNING: in cases of large
       numbers of rules, all these operations can take some time.</para>
-      
+
       <section>
-      	<title>Importing drl packages</title>
-      	<para>It is also possible to create a package by importing an existing "drl" file.
-      	When you choose to create a new package, you can choose an option to upload a .drl file. The BRMS
-      	will then attempt to understand that drl, break create a package for you. The rules in it will be stored as individual assets (but still as drl text content).
-      	Note that to actually build the package, you will need to upload an appropriate model (as a jar) to validate against, as a separate step.</para>
+        <title>Importing drl packages</title>
+
+        <para>It is also possible to create a package by importing an existing
+        "drl" file. When you choose to create a new package, you can choose an
+        option to upload a .drl file. The BRMS will then attempt to understand
+        that drl, break create a package for you. The rules in it will be
+        stored as individual assets (but still as drl text content). Note that
+        to actually build the package, you will need to upload an appropriate
+        model (as a jar) to validate against, as a separate step.</para>
       </section>
-      
     </section>
 
     <section>
@@ -660,7 +667,6 @@
       <para>[picture of rules explorer list, and package explorer]</para>
     </section>
   </section>
-
 
   <section>
     <title>The business user perspective</title>
