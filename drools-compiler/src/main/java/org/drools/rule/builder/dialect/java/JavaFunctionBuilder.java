@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +50,15 @@ public class JavaFunctionBuilder
         vars.put( "imports",
                   pkg.getImports() );
 
+        final List staticImports = new LinkedList();
+        for( Iterator it = pkg.getStaticImports().iterator(); it.hasNext(); ) {
+            final String staticImport = (String) it.next();
+            if( ! staticImport.startsWith( functionDescr.getClassName() ) ) {
+                staticImports.add( staticImport );
+            }
+        }
         vars.put( "staticImports",
-                  pkg.getStaticImports() );
+                  staticImports );
 
         vars.put( "className",
                   StringUtils.ucFirst( functionDescr.getName() ) );
