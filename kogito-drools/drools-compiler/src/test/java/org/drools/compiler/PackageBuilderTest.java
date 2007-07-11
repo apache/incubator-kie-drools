@@ -1238,6 +1238,20 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( pkg.getRuleFlows().containsKey( "1" ) );
 
     }
+    
+    public void testJaninoWithStaticImports() throws Exception {
+        PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+        cfg.setCompiler( PackageBuilderConfiguration.JANINO );
+        
+        
+        PackageBuilder bldr = new PackageBuilder(cfg);
+        bldr.addPackageFromDrl( new StringReader("package testBuilderPackageConfig \n import java.util.List") );
+        bldr.addPackageFromDrl( new StringReader("function void doSomething() {\n System.err.println(List.class.toString()); }"));
+        
+        assertFalse(bldr.hasErrors());
+        
+    }
+    
 
     class MockRuleFlow
         implements
