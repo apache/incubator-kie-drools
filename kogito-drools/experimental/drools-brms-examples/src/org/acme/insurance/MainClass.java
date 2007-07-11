@@ -1,5 +1,8 @@
 package org.acme.insurance;
 
+/**
+ * @author fernandomeyer
+ */
 
 public class MainClass {
 	
