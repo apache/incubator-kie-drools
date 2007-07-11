@@ -12,9 +12,9 @@ public class InsuranceBusiness {
 	public void executeExample() throws Exception {
 		RuleBase ruleBase = loadRuleBase();
 
-		testUnsafeDriver(ruleBase);
+//		testUnsafeDriver(ruleBase);
 		testSafeMature(ruleBase);
-		testUnsafeAreaAndPriors(ruleBase);
+//		testUnsafeAreaAndPriors(ruleBase);
 	}
 
 	/**
@@ -59,8 +59,6 @@ public class InsuranceBusiness {
         Future futureAssertDrv = session.asyncInsert( driver );
         Future futureAssertPol = session.asyncInsert( policy );
         Future futureFireAllRules = session.asyncFireAllRules();
-		
-		System.out.println("Policy approved: " + policy.isApproved());
 	}		
 	
 	private void testUnsafeAreaAndPriors(RuleBase ruleBase) {
@@ -78,8 +76,6 @@ public class InsuranceBusiness {
         Future futureAssertDrv = session.asyncInsert( driver );
         Future futureAssertPol = session.asyncInsert( policy );
         Future futureFireAllRules = session.asyncFireAllRules();
-		
-		System.out.println("Policy approved: " + policy.isApproved());
 	}
 	
 }
