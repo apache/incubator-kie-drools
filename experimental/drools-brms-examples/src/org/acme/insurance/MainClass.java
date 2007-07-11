@@ -2,6 +2,7 @@ package org.acme.insurance;
 
 
 public class MainClass {
+	
 	public static void main(String[] args) {
 
 		InsuranceBusiness launcher = new InsuranceBusiness();
@@ -10,5 +11,6 @@ public class MainClass {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 }
