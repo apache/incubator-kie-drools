@@ -18,8 +18,8 @@ when
 	$cell: Cell( $row : row > 0, $col : col < ( $numberOfColumns - 1 ) )			
 	$northEast : Cell( row  == ($row - 1), col == $col )	
 then					
-	assert( new Neighbor( $cell, $northEast ) );
-	assert( new Neighbor( $northEast, $cell ) );		
+	insert( new Neighbor( $cell, $northEast ) );
+	insert( new Neighbor( $northEast, $cell ) );		
 end
 
 rule "register north"
@@ -28,8 +28,8 @@ when
 	$cell: Cell( $row : row > 0, $col : col )	
 	$north : Cell( row  == ($row - 1), col == $col )	
 then		
-	assert( new Neighbor( $cell, $north ) );
-	assert( new Neighbor( $north, $cell ) );		
+	insert( new Neighbor( $cell, $north ) );
+	insert( new Neighbor( $north, $cell ) );		
 end
 
 rule "register north west"
@@ -38,8 +38,8 @@ when
 	$cell: Cell( $row : row > 0, $col : col > 0 )			
 	$northWest : Cell( row  == ($row - 1), col == ( $col - 1 ) )						
 then		
-	assert( new Neighbor( $cell, $northWest ) );
-	assert( new Neighbor( $northWest, $cell ) );		
+	insert( new Neighbor( $cell, $northWest ) );
+	insert( new Neighbor( $northWest, $cell ) );		
 end
 
 rule "register west"
@@ -48,8 +48,8 @@ when
 	$cell: Cell( $row : row > 0, $col : col > 0 )			
 	$west : Cell( row  == $row, col == ( $col - 1 ) )						
 then		
-	assert( new Neighbor( $cell, $west ) );
-	assert( new Neighbor( $west, $cell ) );			
+	insert( new Neighbor( $cell, $west ) );
+	insert( new Neighbor( $west, $cell ) );			
 end
 
 rule "Kill The Lonely"
@@ -60,7 +60,7 @@ when
 	theCell: Cell(liveNeighbors < 2, cellState == CellState.LIVE, phase == Phase.EVALUATE)
 then
 	theCell.setPhase(Phase.KILL);
-	modify( theCell );
+	update( theCell );
 end
 
 rule "Kill The Overcrowded"
@@ -71,7 +71,7 @@ when
 	theCell: Cell(liveNeighbors > 3, cellState == CellState.LIVE, phase == Phase.EVALUATE)
 then
 	theCell.setPhase(Phase.KILL);
-	modify( theCell );
+	update( theCell );
 end
 
 rule "Give Birth"
@@ -82,7 +82,7 @@ when
 	theCell: Cell(liveNeighbors == 3, cellState == CellState.DEAD, phase == Phase.EVALUATE)
 then
 	theCell.setPhase(Phase.BIRTH);
-	modify( theCell );
+	update( theCell );
 end
 
 rule "reset calculate"
@@ -98,12 +98,10 @@ rule "kill"
 	no-loop
 when
 	theCell: Cell(phase == Phase.KILL)
-	
-	Person(age == a.b[0].[key])
 then
 	theCell.setCellState(CellState.DEAD);
 	theCell.setPhase(Phase.DONE);	
-	modify( theCell );
+	update( theCell );
 end	
  
 rule "birth"
@@ -114,7 +112,7 @@ when
 then
 	theCell.setCellState(CellState.LIVE);
 	theCell.setPhase(Phase.DONE);
-	modify( theCell );	
+	update( theCell );	
 end	
 
 rule "Calculate Live"
@@ -126,7 +124,7 @@ when
 then
 	$neighbor.setLiveNeighbors( $neighbor.getLiveNeighbors() + 1 );
 	$neighbor.setPhase( Phase.EVALUATE );	
-	modify( $neighbor );
+	update( $neighbor );
 end	
 
 rule "Calculate Dead"
@@ -138,7 +136,7 @@ when
 then
 	$neighbor.setLiveNeighbors( $neighbor.getLiveNeighbors() - 1 );
 	$neighbor.setPhase( Phase.EVALUATE );
-	modify( $neighbor );	
+	update( $neighbor );	
 end	
 
 rule "Kill All"
@@ -148,5 +146,5 @@ when
 	theCell: Cell(cellState == CellState.LIVE)
 then
 	theCell.setCellState(CellState.DEAD);
-	modify( theCell );
+	update( theCell );
 end

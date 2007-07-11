@@ -9,7 +9,7 @@ rule "Hello World"
 		System.out.println( message ); 
 		m.setMessage( "Goodbye cruel world" );
 		m.setStatus( Message.GOODBYE );
-		modify( m );
+		update( m );
 end
 
 rule "GoodBye"

@@ -25,8 +25,8 @@ rule "reverse_edges"
 	then
 		System.out.println( "Edge " + $p1 + " " + $p2 );
 		System.out.println( "Edge " + $p2 + " " + $p1 );
-		assert( new Edge( $p1, $p2, false ) );
-		assert( new Edge( $p2, $p1, false ) );
+		insert( new Edge( $p1, $p2, false ) );
+		insert( new Edge( $p2, $p1, false ) );
 		retract( $line ); 
 end
 # Reversing is done
@@ -41,7 +41,7 @@ rule "done_reversing"
 		not ( Line( ) )
 	then
 		$stage.setValue( Stage.DETECT_JUNCTIONS );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.DETECT_JUNCTIONS" );
 end
 
@@ -69,7 +69,7 @@ rule "make_3_junction"
 		$edge3 : Edge( p1 == $basePoint, $p3 : p2 != $p1, p2 != $p2, joined == false )
 	then
 		Junction junction = new Junction( $basePoint, "3j", "make_3_junction " + $basePoint + " " + $p1 + " " + " " + $p2 + " " + $p3, "no" );
-		assert( junction );
+		insert( junction );
 		System.out.println( junction.toString( ) );
 		$edge1.setJoined( true );
 		$edge1.setType( "3j" );
@@ -77,9 +77,9 @@ rule "make_3_junction"
 		$edge2.setType( "3j" );
 		$edge3.setJoined( true );
 		$edge3.setType( "3j" );
-		modify( $edge1 );
-		modify( $edge2 );
-		modify( $edge3 );
+		update( $edge1 );
+		update( $edge2 );
+		update( $edge3 );
 end
 /*
 (p make_L
@@ -107,14 +107,14 @@ rule "make_L"
 		not( Edge( p1 == $basePoint, p2 != $p2, p2 != $p3 ) )
 	then
 		Junction junction = new Junction( "2j", "L", $basePoint, $p2, $p3, "no" );
-		assert( junction );
+		insert( junction );
 		System.out.println( junction.toString() );
 		$edge1.setJoined( true );
 		$edge1.setType( "2j" );
 		$edge2.setJoined( true );
 		$edge2.setType( "2j" );
-		modify( $edge1 );
-		modify( $edge2 );
+		update( $edge1 );
+		update( $edge2 );
 end
 
 /*
@@ -131,7 +131,7 @@ rule "done_detecting"
 		not( Edge ( joined == false ) )
 	then
 		$stage.setValue( Stage.FIND_INITIAL_BOUNDARY );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage: FIND_INITIAL_BOUNDARY" );
 end
 
@@ -157,11 +157,11 @@ rule "initial_boundary_junction_L"
 		not Junction( type == "2j", basePoint > $basePoint )//type == "2j" not in original
 	then
 		$junction.setVisited( "yes" );
-		modify( $junction );
-		assert( new EdgeLabel( $basePoint, $p1, "B", "1" ) );
-		assert( new EdgeLabel( $basePoint, $p2, "B", "1" ) );
+		update( $junction );
+		insert( new EdgeLabel( $basePoint, $p1, "B", "1" ) );
+		insert( new EdgeLabel( $basePoint, $p2, "B", "1" ) );
 		$stage.setValue( Stage.FIND_SECOND_BOUDARY );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.FIND_SECOND_BOUDARY" );
 end
 /*
@@ -191,12 +191,12 @@ rule "initial_boundary_junction_arrow"
 		not ( Junction( basePoint > $basePoint ) )
 	then
 		$junction.setVisited( "yes" );
-		modify( $junction );
-		assert( new EdgeLabel( $basePoint, $p1, "B", "14" ) );
-		assert( new EdgeLabel( $basePoint, $p2, "+", "14" ) );
-		assert( new EdgeLabel( $basePoint, $p3, "B", "14" ) );
+		update( $junction );
+		insert( new EdgeLabel( $basePoint, $p1, "B", "14" ) );
+		insert( new EdgeLabel( $basePoint, $p2, "+", "14" ) );
+		insert( new EdgeLabel( $basePoint, $p3, "B", "14" ) );
 		$stage.setValue( Stage.FIND_SECOND_BOUDARY );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.FIND_SECOND_BOUDARY" );
 end
 
@@ -224,11 +224,11 @@ rule "second_boundary_junction_L"
 		not (Junction ( basePoint < $basePoint ) )
 	then
 		$junction.setVisited( "yes" );
-		modify( $junction );
-		assert( new EdgeLabel( $basePoint, $p1, "B", "1" ) );
-		assert( new EdgeLabel($basePoint, $p2, "B", "1" ) );
+		update( $junction );
+		insert( new EdgeLabel( $basePoint, $p1, "B", "1" ) );
+		insert( new EdgeLabel($basePoint, $p2, "B", "1" ) );
 		$stage.setValue( Stage.LABELING );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.LABELING" );
 end
 
@@ -259,12 +259,12 @@ rule "second_boundary_junction_arrow"
 		not ( Junction( basePoint < $basePoint ) )
 	then
 		$junction.setVisited( "yes" );
-		modify( $junction );
-		assert( new EdgeLabel( $basePoint, $p1, "B", "14" ) );
-		assert( new EdgeLabel( $basePoint, $p2, "+", "14" ) );
-		assert( new EdgeLabel( $basePoint, $p3, "B", "14" ) );
+		update( $junction );
+		insert( new EdgeLabel( $basePoint, $p1, "B", "14" ) );
+		insert( new EdgeLabel( $basePoint, $p2, "+", "14" ) );
+		insert( new EdgeLabel( $basePoint, $p3, "B", "14" ) );
 		$stage.setValue( Stage.LABELING );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.LABELING" );
 end
 
@@ -283,9 +283,9 @@ rule "start_visit_3_junction"
 		$junction : Junction( type == "3j", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "no" )
 	then
 		$stage.setValue( Stage.VISITING_3J );
-		modify( $stage );
+		update( $stage );
 		$junction.setVisited( "now" );
-		modify( $junction );
+		update( $junction );
 		System.out.println( "Stage.VISITING_3J" );
 end
 
@@ -320,9 +320,9 @@ rule "visit_3j_0"
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		assert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
@@ -357,9 +357,9 @@ rule "visit_3j_1"
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		assert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
@@ -394,9 +394,9 @@ rule "visit_3j_2"
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		assert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
@@ -431,9 +431,9 @@ rule "visit_3j_3"
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		assert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
@@ -468,9 +468,9 @@ rule "visit_3j_4"
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		assert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
@@ -505,9 +505,9 @@ rule "visit_3j_5"
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		assert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
@@ -542,9 +542,9 @@ rule "visit_3j_6"
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		assert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
@@ -579,9 +579,9 @@ rule "visit_3j_7"
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		assert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
@@ -600,10 +600,10 @@ rule "start_visit_2_junction"
 		$junction : Junction( $basePoint : basePoint, type == "2j", $p1 : p1, $p2 : p2, visited == "no" )
 	then
 		$stage.setValue( Stage.VISITING_2J );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.VISITING_2J" );
 		$junction.setVisited( "now" );
-		modify( $junction );
+		update( $junction );
 end
 
 /*
@@ -634,8 +634,8 @@ rule "visit_2j_0"
 	then
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
 end
 
 /*
@@ -665,8 +665,8 @@ rule "visit_2j_1"
 	then
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
 end	
 
 /*
@@ -696,8 +696,8 @@ rule "visit_2j_2"
 	then
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
 end
 
 /*
@@ -728,8 +728,8 @@ rule "visit_2j_3"
 	then
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
 		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		assert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		assert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
 end
 
 /*
@@ -747,7 +747,7 @@ rule "end_visit"
 		$junction : Junction( visited == "now" )
 	then
 		$stage.setValue( Stage.MARKING );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.MARKING" );
 end
 /*
@@ -768,7 +768,7 @@ rule "marking"
 		$junction : Junction( basePoint == $p1, visited == "yes" )
 	then
 		$junction.setVisited( "check" );
-		modify( $junction );
+		update( $junction );
 end
 
 /*
@@ -785,7 +785,7 @@ rule "stop_marking"
 		$junction : Junction( $basePoint : basePoint, visited == "now" )
 	then
 		$junction.setVisited( "yes" );
-		modify( $junction );
+		update( $junction );
 end
 		
 /*
@@ -799,7 +799,7 @@ rule "start_checking"
 		$stage : Stage( value == Stage.MARKING )
 	then
 		$stage.setValue( Stage.CHECKING );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.CHECKING" );
 end
 
@@ -823,9 +823,9 @@ rule "checking1"
 		not ( EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $labelName ) ) 
 	then
 		$stage.setValue( Stage.REMOVE_LABEL );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.REMOVE_LABEL" );
-		assert ( new Illegal( $basePoint, $labelId ) );
+		insert ( new Illegal( $basePoint, $labelId ) );
 end
 /*
 (p remove_label_3j
@@ -855,7 +855,7 @@ rule "remove_label_3j"
 		$edgeLabel3 : EdgeLabel( p1 == $basePoint, p2 == $p3, labelId == $labelId )
 	then
 		$stage.setValue( Stage.CHECKING );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.CHECKING" );
 		retract( $illegal );
 		retract( $edgeLabel1 );
@@ -887,7 +887,7 @@ rule "remove_edge_2j"
 		$edgeLabel2 : EdgeLabel( p1 == $basePoint, p2 == $p2, labelId == $labelId )
 	then
 		$stage.setValue( Stage.CHECKING );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.CHECKING" );
 		retract( $illegal );
 		retract( $edgeLabel1 );
@@ -908,7 +908,7 @@ rule "checking2"
 		$junction : Junction( $basePoint : basePoint, visited == "check" )
 	then
 		$junction.setVisited( "yes" );
-		modify( $junction );
+		update( $junction );
 end
 
 /*
@@ -922,7 +922,7 @@ rule "stop_checking"
 		$stage : Stage( value == Stage.CHECKING )
 	then
 		$stage.setValue( Stage.LABELING );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.LABELING" );
 end
 /*
@@ -936,7 +936,7 @@ rule "done_labeling"
 		$stage : Stage( value == Stage.LABELING )
 	then
 		$stage.setValue( Stage.PRINTING );
-		modify( $stage );
+		update( $stage );
 		System.out.println( "Stage.PRINTING" );
 end
 

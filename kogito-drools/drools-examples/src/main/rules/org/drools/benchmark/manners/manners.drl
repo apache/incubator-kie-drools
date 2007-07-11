@@ -9,18 +9,18 @@ rule assignFirstSeat
         String guestName = guest.getName();
         
         Seating seating =  new Seating( count.getValue(), 1, true, 1, guestName, 1, guestName);
-        assert( seating );
+        insert( seating );
         
         Path path = new Path( count.getValue(), 1, guestName );
-        assert( path );
+        insert( path );
         
         count.setValue(  count.getValue() + 1 );        
-        modify( count );
+        update( count );
 
 		System.out.println( "assign first seat :  " + seating + " : " + path );
 
         context.setState( Context.ASSIGN_SEATS );        
-        modify( context );
+        update( context );
 end
 
 rule findSeating
@@ -40,21 +40,21 @@ rule findSeating
        int countValue = count.getValue();
        
        Seating seating = new Seating( countValue, seatId, false, rightSeat, seatingRightGuestName, rightSeat + 1, leftGuestName );
-       assert( seating );     
+       insert( seating );     
                             
        Path path = new Path( countValue, rightSeat + 1, leftGuestName  );
-       assert( path );
+       insert( path );
        
        Chosen chosen = new Chosen( seatId, leftGuestName, rightGuestHobby );
-       assert( chosen  );
+       insert( chosen  );
 
 	   System.err.println( "find seating : " + seating + " : " + path + " : " + chosen);
 
        count.setValue(  countValue + 1 );
-       modify( count );       
+       update( count );       
 
        context.setState( Context.MAKE_PATH );
-       modify( context );
+       update( context );
        
        retract ( $s );
 end
@@ -66,7 +66,7 @@ rule makePath
         Path( id == seatingPid, pathGuestName:guestName, pathSeat:seat )
         not Path( id == seatingId, guestName == pathGuestName )
     then
-        assert( new Path( seatingId, pathSeat, pathGuestName ) );
+        insert( new Path( seatingId, pathSeat, pathGuestName ) );
 end 
 
 rule pathDone
@@ -75,10 +75,10 @@ rule pathDone
         seating : Seating( pathDone == false ) 
     then
         seating.setPathDone( true ); 
-        modify( seating );
+        update( seating );
         
         context.setState( Context.CHECK_DONE ); 
-		modify( context );
+		update( context );
 end
 
 
@@ -89,7 +89,7 @@ rule areWeDone
         Seating( rightSeat == lastSeat ) 
     then
         context.setState(Context.PRINT_RESULTS ); 
-        modify( context );
+        update( context );
 end
 
 rule continue
@@ -97,7 +97,7 @@ rule continue
         context : Context( state == Context.CHECK_DONE ) 
     then
         context.setState( Context.ASSIGN_SEATS ); 
-        modify( context );
+        update( context );
 end
 
 

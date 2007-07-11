@@ -15,7 +15,7 @@ rule "not s then i"
     	if (l.size() < 10) {
     		l.add(new Integer(0));
     		System.out.println("Logical assert i");
-	   		assertLogical(i);
+	   		insertLogical(i);
 	   	}
 end
 rule "i then s"
@@ -25,6 +25,6 @@ rule "i then s"
     	if (l.size() < 10) {
 	   		l.add(new Integer(0));
     		System.out.println("Logical assert s");	   		
-			assertLogical(s);
+			insertLogical(s);
 	   	}
 end

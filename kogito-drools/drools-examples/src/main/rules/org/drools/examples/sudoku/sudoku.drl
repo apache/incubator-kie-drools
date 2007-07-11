@@ -8,15 +8,15 @@ rule "Rule 1: If a field has the value 0, it is empty: remove it and insert the 
 	when
 		$field : Field( value == 0, $row : row, $column : column, $zone : zone )
 	then
-		assert( new PossibleValue("1", $field ) );
-		assert( new PossibleValue("2", $field ) );
-		assert( new PossibleValue("3", $field ) );
-		assert( new PossibleValue("4", $field ) );
-		assert( new PossibleValue("5", $field ) );
-		assert( new PossibleValue("6", $field ) );
-		assert( new PossibleValue("7", $field ) );
-		assert( new PossibleValue("8", $field ) );
-		assert( new PossibleValue("9", $field ) );
+		insert( new PossibleValue("1", $field ) );
+		insert( new PossibleValue("2", $field ) );
+		insert( new PossibleValue("3", $field ) );
+		insert( new PossibleValue("4", $field ) );
+		insert( new PossibleValue("5", $field ) );
+		insert( new PossibleValue("6", $field ) );
+		insert( new PossibleValue("7", $field ) );
+		insert( new PossibleValue("8", $field ) );
+		insert( new PossibleValue("9", $field ) );
 		retract( $field );
 		#System.out.println("Rule 1 fired.");
 end  
@@ -27,7 +27,7 @@ rule "Rule 2: If there is one PossibleValue left at a certain position, it shoul
 		$pv : PossibleValue ( $row : row, $zone : zone, $column : column, $value : value )
 		not ( PossibleValue ( row == $row, zone == $zone, column == $column, value != $value ) )
 	then
-		assert( new Field( $value, $column, $row, $zone ) );
+		insert( new Field( $value, $column, $row, $zone ) );
 		retract( $pv );
 		#System.out.println("Rule 2 fired.");
 end  
@@ -82,7 +82,7 @@ rule "Rule 7: If there is only one PossibleValue left in a zone, it must have th
 		not (Field( value == $value, row == $row) )
 		not (Field( value == $value, column == $col) )
 	then
-		assert( new Field( $value, $col, $row, $zone ) );
+		insert( new Field( $value, $col, $row, $zone ) );
 		retract( $pv );
 		#System.out.println("Rule 7 fired.");
 end
@@ -96,7 +96,7 @@ rule "Rule 8: If there is only one PossibleValue left in a column, it must have 
 		not (Field( value == $value, row == $row) )
 		not (Field( value == $value, column == $col) )
 	then
-		assert( new Field( $value, $col, $row, $zone ) );
+		insert( new Field( $value, $col, $row, $zone ) );
 		retract( $pv1 );
 		#System.out.println("Rule 8 fired.");
 end
@@ -110,7 +110,7 @@ rule "Rule 9: If there is only one PossibleValue left in a row, it must have the
 		not (Field( value == $value, row == $row) )
 		not (Field( value == $value, column == $col) )
 	then
-		assert( new Field( $value, $col, $row, $zone ) );
+		insert( new Field( $value, $col, $row, $zone ) );
 		retract( $pv );
 		#System.out.println("Rule 9 fired.");
 end

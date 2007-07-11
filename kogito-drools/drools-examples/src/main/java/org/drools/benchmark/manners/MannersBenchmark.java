@@ -15,7 +15,6 @@ import java.util.StringTokenizer;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 
@@ -56,10 +55,10 @@ public class MannersBenchmark {
 		List list = getInputObjects(is);
 		for (Iterator it = list.iterator(); it.hasNext();) {
 			Object object = it.next();
-			session.assertObject(object);
+			session.insert(object);
 		}
 
-		session.assertObject(new Count(1));
+		session.insert(new Count(1));
 
 		long start = System.currentTimeMillis();
 		session.fireAllRules();

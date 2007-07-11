@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
 
@@ -37,16 +36,16 @@ public class StateExampleWithDynamicRules {
         // PropertyChangeListeners so you don't have to call modifyObject().
         final boolean dynamic = true;
 
-        session.assertObject( a,
-                                    dynamic );
-        session.assertObject( b,
-                                    dynamic );
-        session.assertObject( c,
-                                    dynamic );
-        session.assertObject( d,
-                                    dynamic );
-        session.assertObject( e,
-                                    dynamic );
+        session.insert( a,
+                        dynamic );
+        session.insert( b,
+                        dynamic );
+        session.insert( c,
+                        dynamic );
+        session.insert( d,
+                        dynamic );
+        session.insert( e,
+                        dynamic );
 
         session.fireAllRules();
 

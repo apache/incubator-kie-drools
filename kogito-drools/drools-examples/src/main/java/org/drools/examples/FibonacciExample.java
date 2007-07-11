@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
 
@@ -31,7 +30,7 @@ public class FibonacciExample {
         // PropertyChangeListeners so you don't have to call modifyObject().
         final boolean dynamic = false;
 
-        session.assertObject( new Fibonacci( 50 ),
+        session.insert( new Fibonacci( 50 ),
                                     dynamic );
 
         session.fireAllRules();

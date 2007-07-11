@@ -57,7 +57,7 @@ public abstract class WaltzBenchmark {
             loadLines( session, filename );
             
             Stage stage = new Stage(Stage.DUPLICATE);
-            session.assertObject( stage );
+            session.insert( stage );
             
             long start = System.currentTimeMillis();
             session.fireAllRules();
@@ -75,7 +75,7 @@ public abstract class WaltzBenchmark {
             if(m.matches()) {
                 Line l = new Line(Integer.parseInt( m.group( 1 ) ),
                                   Integer.parseInt( m.group( 2 ) ) );
-                wm.assertObject( l );
+                wm.insert( l );
             }
             line = reader.readLine();
         }

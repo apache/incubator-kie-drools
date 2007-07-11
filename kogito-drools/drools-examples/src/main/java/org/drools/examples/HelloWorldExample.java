@@ -6,7 +6,6 @@ import java.io.Reader;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 
@@ -24,7 +23,7 @@ public class HelloWorldExample {
             final Message message = new Message();
             message.setMessage( "Hello World" );
             message.setStatus( Message.HELLO );
-            session.assertObject( message );
+            session.insert( message );
             session.fireAllRules();
             session.dispose();
     }
