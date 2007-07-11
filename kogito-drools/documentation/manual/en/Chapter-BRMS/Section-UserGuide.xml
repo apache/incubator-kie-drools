@@ -133,7 +133,7 @@
 
         <listitem>
           <para>You will also have to choose one category. Cateogies provide a
-          way of viewing rules that is seperate to packages (and you can make
+          way of viewing rules that is separate to packages (and you can make
           rules appear in multiple packages) - think of it like
           tagging.</para>
         </listitem>
@@ -444,7 +444,7 @@
       </figure>
 
       <para>You can change the status of an individual asset (like in the
-      diagram above). Its change takes effect immediately, no seperate save is
+      diagram above). Its change takes effect immediately, no separate save is
       needed.</para>
 
       <figure>
@@ -579,6 +579,15 @@
       have the option to create a snapshot for deployment. You can also view
       the "drl" that this package results in. WARNING: in cases of large
       numbers of rules, all these operations can take some time.</para>
+      
+      <section>
+      	<title>Importing drl packages</title>
+      	<para>It is also possible to create a package by importing an existing "drl" file.
+      	When you choose to create a new package, you can choose an option to upload a .drl file. The BRMS
+      	will then attempt to understand that drl, break create a package for you. The rules in it will be stored as individual assets (but still as drl text content).
+      	Note that to actually build the package, you will need to upload an appropriate model (as a jar) to validate against, as a separate step.
+      </section>
+      
     </section>
 
     <section>
@@ -626,7 +635,7 @@
 
       <para>The alternative and more technical view is to use the package
       explorer. This shows the rules (assets) closer to how they are actually
-      stored in the database, and also seperates rules into packages (name
+      stored in the database, and also separates rules into packages (name
       spaces) and their type (format, as rules can be in many different
       formats).</para>
 
@@ -725,7 +734,9 @@ name=MyConfig</programlisting>
 
       <para>You can only have one type of key in each configuration (eg only
       one "file", "dir" etc - even though you can specify multiple items by
-      space separating them).</para>
+      space separating them). Note also, instead of a discrete properties
+      file, you can construct a java.utils.Properties object, and pass it in
+      to the RuleBase methods.</para>
 
       <para>Referring to the above example, the "keys" in the properties
       are:</para>
