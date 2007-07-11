@@ -16,7 +16,7 @@ rule "register north east"
 when
     CellGrid( $numberOfColumns : numberOfColumns )
 	$cell: Cell( $row : row > 0, $col : col < ( $numberOfColumns - 1 ) )			
-	$northEast : Cell( row  == ($row - 1), col == $col )	
+	$northEast : Cell( row  == ($row - 1), col == ( $col + 1 ) )	
 then					
 	insert( new Neighbor( $cell, $northEast ) );
 	insert( new Neighbor( $northEast, $cell ) );		
@@ -45,7 +45,7 @@ end
 rule "register west"
 	agenda-group "register neighbor"
 when
-	$cell: Cell( $row : row > 0, $col : col > 0 )			
+	$cell: Cell( $row : row >= 0, $col : col > 0 )			
 	$west : Cell( row  == $row, col == ( $col - 1 ) )						
 then		
 	insert( new Neighbor( $cell, $west ) );
