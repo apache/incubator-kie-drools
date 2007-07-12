@@ -1,0 +1,12 @@
+package org.drools.package2
+
+import org.drools.Cheese
+
+global java.util.List results;
+
+rule "rule 1"
+when
+    Cheese( type == "stilton" )
+then
+    results.add("p2.r1");
+end

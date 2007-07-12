@@ -481,23 +481,26 @@ public class Rule
         return "[Rule name=" + this.name + ", agendaGroup=" + this.agendaGroup + ", salience=" + this.salience + ", no-loop=" + this.noLoop + "]";
     }
 
-    public boolean equals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
-
-        if ( object == null || object.getClass() != Rule.class ) {
-            return false;
-        }
-
-        final Rule other = (Rule) object;
-
-        return (this.name.equals( other.name ) && this.agendaGroup.equals( other.agendaGroup )
-                && ((this.activationGroup == null && other.activationGroup == null) || (this.activationGroup != null && this.activationGroup.equals( other.activationGroup ))) && this.salience == other.salience && this.noLoop == other.noLoop);
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+        result = PRIME * result + ((pkg == null) ? 0 : pkg.hashCode());
+        return result;
     }
 
-    public int hashCode() {
-        return this.name.hashCode();
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( !super.equals( obj ) ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        final Rule other = (Rule) obj;
+        if ( name == null ) {
+            if ( other.name != null ) return false;
+        } else if ( !name.equals( other.name ) ) return false;
+        if ( pkg == null ) {
+            if ( other.pkg != null ) return false;
+        } else if ( !pkg.equals( other.pkg ) ) return false;
+        return true;
     }
 
     public void setSemanticallyValid(final boolean valid) {

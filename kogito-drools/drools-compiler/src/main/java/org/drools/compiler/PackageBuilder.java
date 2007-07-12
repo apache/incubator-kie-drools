@@ -278,13 +278,16 @@ public class PackageBuilder {
     }
 
     private void validatePackageName(final PackageDescr packageDescr) {
-        if ( this.pkg != null ) {
-            return;
-        }
-        if ( packageDescr.getName() == null || "".equals( packageDescr.getName() ) ) {
-
+        if ( ( this.pkg == null || this.pkg.getName() == null || this.pkg.getName().equals( "" ) )
+                && ( packageDescr.getName() == null || "".equals( packageDescr.getName() ) ) ) {
             throw new MissingPackageNameException( "Missing package name for rule package." );
         }
+        if ( this.pkg != null && packageDescr.getName() != null && 
+             ! "".equals( packageDescr.getName() ) && 
+             ! this.pkg.getName().equals( packageDescr.getName() ) ) {
+            throw new PackageMergeException( "Can't merge packages with different names. This package: "+this.pkg.getName()+" - New package: "+packageDescr.getName() ) ;
+        }
+        return;
     }
 
     private void validateUniqueRuleNames(final PackageDescr packageDescr) {
@@ -481,6 +484,15 @@ public class PackageBuilder {
         private static final long serialVersionUID = 400L;
 
         public MissingPackageNameException(final String message) {
+            super( message );
+        }
+
+    }
+
+    public static class PackageMergeException extends IllegalArgumentException {
+        private static final long serialVersionUID = 400L;
+
+        public PackageMergeException(final String message) {
             super( message );
         }
 

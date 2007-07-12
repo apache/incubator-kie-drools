@@ -1,0 +1,12 @@
+package org.drools.package1
+
+import org.drools.Cheese
+
+global java.util.List results;
+
+rule "rule 1"
+when
+    Cheese( type == "brie" )
+then
+    results.add("p1.r1");
+end
