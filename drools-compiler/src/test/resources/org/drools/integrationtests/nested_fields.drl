@@ -15,6 +15,7 @@ rule "test something"
 								addresses[0].street == "High"  )
 								)
 	then
-		p.name = "goober"
-		System.out.println(p.name)		
+		p.name = "goober";
+		System.out.println(p.name);	
+		insert(new Address("Latona"));	
 end
