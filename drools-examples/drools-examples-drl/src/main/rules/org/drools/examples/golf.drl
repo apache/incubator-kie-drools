@@ -1,0 +1,55 @@
+package org.drools.examples;
+
+import org.drools.examples.GolfingExample.Golfer;
+
+rule "find solution"
+    when
+        // There is a golfer named Fred, 
+        // Whose positions is $p1
+        Golfer( $fredsName : name == "Fred", 
+                $fredsPosition : position, 
+                $fredsColor : color  )
+
+  		// The golfer to Fred's immediate right
+  		// is wearing blue pants
+        Golfer( $unknownsName : name != "Fred", 
+                $unknownsPosition :  position == ( $fredsPosition + 1 ),
+                $unknownsColor : color == "blue",
+                color != $fredsColor )
+
+        // Joe is in position 2  		          
+        Golfer( $joesName : name == "Joe", 
+                $joesPosition  : position == 2, 
+                position != $fredsPosition,
+                $joesColor : color != $fredsColor )
+
+ 		// Bob is wearing plaid pants        
+        Golfer( $bobsName : name == "Bob", 
+                name != $unknownsName,
+                $bobsPosition : position != $fredsPosition,
+                position != $unknownsPosition,              
+                position != $joesPosition,                                                  
+                $bobsColor : color == "plaid",
+                color != $fredsColor,
+                color != $joesColor,
+                color != $unknownsColor )
+ 		  		
+        // Tom isn't in position 1 or 4
+        // and isn't wearing orange	
+        Golfer( $tomsName : name == "Tom", 
+                $tomsPosition : position != 1,
+                position != 4,
+                position != $fredsPosition,
+                position != $joesPosition, 
+                position != $bobsPosition,                                
+                $tomsColor : color != "orange",
+                color != "blue",
+                color != $fredsColor,
+                color != $joesColor,
+                color != $bobsColor )                
+	then
+        System.out.println( "Fred " + $fredsPosition + " " + $fredsColor );
+        System.out.println( "Joe " + $joesPosition + " " + $joesColor );
+        System.out.println( "Bob " + $bobsPosition + " " + $bobsColor );
+        System.out.println( "Tom " + $tomsPosition + " " + $tomsColor );   
+end    
