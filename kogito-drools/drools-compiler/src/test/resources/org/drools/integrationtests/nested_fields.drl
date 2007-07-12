@@ -1,6 +1,7 @@
-package nesting;
+package org.drools;
 
 dialect "mvel"
+
 
 import org.drools.Person
 import org.drools.Address
