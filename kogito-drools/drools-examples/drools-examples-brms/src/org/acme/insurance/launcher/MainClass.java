@@ -1,4 +1,4 @@
-package org.acme.insurance;
+package org.acme.insurance.launcher;
 
 /**
  * @author fernandomeyer

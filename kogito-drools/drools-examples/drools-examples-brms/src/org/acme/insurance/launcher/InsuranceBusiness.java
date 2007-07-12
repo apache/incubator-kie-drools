@@ -1,7 +1,9 @@
-package org.acme.insurance;
+package org.acme.insurance.launcher;
 
 import java.io.IOException;
 
+import org.acme.insurance.Driver;
+import org.acme.insurance.Policy;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.agent.RuleAgent;
@@ -26,8 +28,6 @@ public class InsuranceBusiness {
 
 		return rb;
 	}
-	
-	
 
 	private void testUnsafeDriver(RuleBase ruleBase) {
 		StatefulSession session = ruleBase.newStatefulSession();
@@ -75,4 +75,5 @@ public class InsuranceBusiness {
 		session.insert(policy);
 		session.fireAllRules();
 	}
+	
 }
