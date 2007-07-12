@@ -39,7 +39,6 @@
 
     <author>
       <firstname>Fernando</firstname>
-
       <surname>Meyer</surname>
     </author>
   </bookinfo>
@@ -149,6 +148,8 @@
       <xi:include href="Chapter-BRMS/Section-Architecture.xml" />
 
       <xi:include href="Chapter-BRMS/Section-UserGuide.xml" />
+
+      <xi:include href="Chapter-BRMS/Section-ExamplesAndTutorials.xml" />
     </chapter>
 
     <chapter>
