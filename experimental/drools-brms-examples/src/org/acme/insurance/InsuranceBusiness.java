@@ -2,6 +2,7 @@ package org.acme.insurance;
 
 import java.io.IOException;
 
+import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.agent.RuleAgent;
@@ -12,9 +13,10 @@ public class InsuranceBusiness {
 	public void executeExample() throws Exception {
 		RuleBase ruleBase = loadRuleBase();
 
-//		testUnsafeDriver(ruleBase);
+		testUnsafeDriver(ruleBase);
 		testSafeMature(ruleBase);
-//		testUnsafeAreaAndPriors(ruleBase);
+		testUnsafeAreaAndPriors(ruleBase);
+		
 	}
 
 	/**
@@ -27,6 +29,8 @@ public class InsuranceBusiness {
 
 		return rb;
 	}
+	
+	
 
 	private void testUnsafeDriver(RuleBase ruleBase) {
 		StatefulSession session = ruleBase.newStatefulSession();
