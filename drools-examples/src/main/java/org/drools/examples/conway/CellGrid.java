@@ -38,9 +38,9 @@ public class CellGrid {
         DefaultAgendaEventListener listener = new DefaultAgendaEventListener() {
             public void agendaGroupPopped(AgendaGroupPoppedEvent event,
                                           WorkingMemory workingMemory) {
-                System.out.println( "popped AgendaGroup = '" + event.getAgendaGroup().getName() + "'" );
-                System.out.println( CellGrid.this.toString() );
-                System.out.println( "" );
+//                System.out.println( "popped AgendaGroup = '" + event.getAgendaGroup().getName() + "'" );
+//                System.out.println( CellGrid.this.toString() );
+//                System.out.println( "" );
             }
         };
 
@@ -98,7 +98,7 @@ public class CellGrid {
      * @see #transitionState()
      */
     public boolean nextGeneration() {
-        System.out.println( "next generation" );
+        //System.out.println( "next generation" );
         session.setFocus( "calculate" );
         session.setFocus( "kill" );
         session.setFocus( "birth" );

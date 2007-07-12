@@ -40,6 +40,24 @@ public class SpreadsheetCompiler {
     /**
      * Generates DRL from the input stream containing the spreadsheet.
      * 
+     * @param pkg 
+     *            Uses this package definition as the default definitions for the spreadsheet
+     * @param xlsStream
+     *            The stream to the spreadsheet. Uses the first worksheet found
+     *            for the decision tables, ignores others.
+     * @return DRL xml, ready for use in drools.
+     */
+    public String compile(final org.drools.rule.Package pkg,
+                          final InputStream xlsStream,
+                          final InputType type) {
+        return compile( xlsStream,
+                        type,
+                        new DefaultRuleSheetListener( pkg ) );
+    }
+
+    /**
+     * Generates DRL from the input stream containing the spreadsheet.
+     * 
      * @param xlsStream
      *            The stream to the spreadsheet. Uses the first worksheet found
      *            for the decision tables, ignores others.
@@ -54,7 +72,7 @@ public class SpreadsheetCompiler {
 
     /**
      * Generates DRL from the input stream containing the spreadsheet.
-     * 
+     *
      * @param xlsStream
      *            The stream to the spreadsheet. Uses the first worksheet found
      *            for the decision tables, ignores others.

@@ -61,7 +61,7 @@ import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 public class DefaultRuleSheetListener
     implements
     RuleSheetListener {
-
+    
     //keywords
     public static final String      FUNCTIONS_TAG          = "Functions";
     public static final String      IMPORT_TAG             = "Import";
@@ -93,6 +93,16 @@ public class DefaultRuleSheetListener
     
     private final PropertiesSheetListener _propertiesListner     = new PropertiesSheetListener();
 
+    private final org.drools.rule.Package defaultPackage;
+
+    public DefaultRuleSheetListener() {
+        this( null );
+    }
+    
+    public DefaultRuleSheetListener( final org.drools.rule.Package pkg ) {
+        this.defaultPackage = pkg;
+    }
+    
     /* (non-Javadoc)
      * @see org.drools.decisiontable.parser.RuleSheetListener#getProperties()
      */
@@ -120,8 +130,9 @@ public class DefaultRuleSheetListener
     }
 
     private Package buildRuleSet() {
+        final String defaultPackageName = this.defaultPackage != null ? this.defaultPackage.getName() : "rule_table";
         final String rulesetName = getProperties().getProperty( DefaultRuleSheetListener.RULESET_TAG,
-                                                          "rule_table" );
+                                                          defaultPackageName );
         final Package ruleset = new Package( rulesetName );
         for ( final Iterator it = this._ruleList.iterator(); it.hasNext(); ) {
             ruleset.addRule( (Rule) it.next() );
