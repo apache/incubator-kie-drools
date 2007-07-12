@@ -1,0 +1,168 @@
+package org.drools.examples.sudoku
+ 
+import org.drools.examples.sudoku.Field;
+import org.drools.examples.sudoku.PossibleValue;
+
+rule "Rule 1: If a field has the value 0, it is empty: remove it and insert the PossibleValues"
+	salience 100
+	when
+		$field : Field( value == 0, $row : row, $column : column, $zone : zone )
+	then
+		insert( new PossibleValue("1", $field ) );
+		insert( new PossibleValue("2", $field ) );
+		insert( new PossibleValue("3", $field ) );
+		insert( new PossibleValue("4", $field ) );
+		insert( new PossibleValue("5", $field ) );
+		insert( new PossibleValue("6", $field ) );
+		insert( new PossibleValue("7", $field ) );
+		insert( new PossibleValue("8", $field ) );
+		insert( new PossibleValue("9", $field ) );
+		retract( $field );
+		#System.out.println("Rule 1 fired.");
+end  
+
+rule "Rule 2: If there is one PossibleValue left at a certain position, it should be the Fields value"
+	salience 5
+	when
+		$pv : PossibleValue ( $row : row, $zone : zone, $column : column, $value : value )
+		not ( PossibleValue ( row == $row, zone == $zone, column == $column, value != $value ) )
+	then
+		insert( new Field( $value, $column, $row, $zone ) );
+		retract( $pv );
+		#System.out.println("Rule 2 fired.");
+end  
+
+
+rule "Rule 3: If there is a field with a value in a row, remove all PossibleValues with this value in this row"
+	salience 15
+	when		
+		$field2 : Field( $row : row, $value : value != 0 )
+		$possible : PossibleValue( row == $row, value == $value )
+	then
+		retract( $possible );
+		#System.out.println("Rule 3 fired.");
+end
+
+rule "Rule 4: If there is a field with a value in a column, remove all PossibleValues with this value in this column"
+	salience 15
+	when		
+		$field1 : Field( $column : column, $value : value != 0 )
+		$possible : PossibleValue( column == $column, value == $value )
+	then
+		retract( $possible );
+		#System.out.println("Rule 4 fired.");
+end
+
+rule "Rule 5: If there is a field with a value in a zone, remove all PossibleValues with this value in this zone"
+	salience 15
+	when		
+		$field1 : Field( $zone : zone, $value : value != 0 )
+		$possible : PossibleValue( zone == $zone, value == $value )
+	then
+		retract( $possible );
+		#System.out.println("Rule 5 fired.");
+end
+
+rule "Rule 6: For fields with a value remove all PossibleValues"
+	salience 250
+	when
+		Field( value != 0, $col : column, $row : row, $zone : zone )
+		$pv : PossibleValue( column == $col, row == $row, zone == $zone )
+	then
+		retract( $pv );
+		#System.out.println("Rule 6 fired.");
+end
+
+rule "Rule 7: If there is only one PossibleValue left in a zone, it must have the value of the field"
+	salience 4
+	when		
+		$pv : PossibleValue( $zone : zone, $value : value, $col : column, $row : row)
+		not (PossibleValue( zone == $zone, value == $value ))
+		not (Field( value == $value, zone == $zone) )
+		not (Field( value == $value, row == $row) )
+		not (Field( value == $value, column == $col) )
+	then
+		insert( new Field( $value, $col, $row, $zone ) );
+		retract( $pv );
+		#System.out.println("Rule 7 fired.");
+end
+
+rule "Rule 8: If there is only one PossibleValue left in a column, it must have the value of the field"
+	salience 4
+	when		
+		$pv1 : PossibleValue( $zone : zone, $value : value, $col : column, $row : row)
+		not (PossibleValue( column == $col, value == $value ))
+		not (Field( value == $value, zone == $zone) )
+		not (Field( value == $value, row == $row) )
+		not (Field( value == $value, column == $col) )
+	then
+		insert( new Field( $value, $col, $row, $zone ) );
+		retract( $pv1 );
+		#System.out.println("Rule 8 fired.");
+end
+
+rule "Rule 9: If there is only one PossibleValue left in a row, it must have the value of the field"
+	salience 4
+	when		
+		$pv : PossibleValue( $zone : zone, $value : value, $col : column, $row : row)
+		not (PossibleValue( row == $row, value == $value ))
+		not (Field( value == $value, zone == $zone) )
+		not (Field( value == $value, row == $row) )
+		not (Field( value == $value, column == $col) )
+	then
+		insert( new Field( $value, $col, $row, $zone ) );
+		retract( $pv );
+		#System.out.println("Rule 9 fired.");
+end
+
+rule "Rule 10: If there are two fields with only two possible values, remove the PossibleValues for the same Value in the rest of the zone"
+	salience 1
+	when
+		PossibleValue( $zone : zone, $val1 : value, $row1 : row, $col1 : column )
+		PossibleValue( zone == $zone, value == $val1, $row2 : row, $col2 : column != $col1)
+		PossibleValue( zone == $zone, row == $row1, column == $col1, $val2 : value )
+		PossibleValue( zone == $zone, row == $row2, column == $col2, value == $val2 )
+		not ( PossibleValue( zone == $zone, row == $row1, column == $col1, value != $val1, value != $val2 ) )
+		not ( PossibleValue( zone == $zone, row == $row2, column == $col2, value != $val1, value != $val2 ) )
+		$pv : PossibleValue( zone == $zone, value == $val1)
+	then
+		retract( $pv );
+		#System.out.println("Rule 10 fired.");
+end
+
+# This rule differs from the one above, that the 2nd PV should not be in the same row (above: not in the same column
+rule "Rule 11: If there are two fields with only two possible values, remove the PossibleValues for the same Value in the rest of the zone"
+	salience 1
+	when
+		PossibleValue( $zone : zone, $val1 : value, $row1 : row, $col1 : column )
+		PossibleValue( zone == $zone, value == $val1, $row2 : row != $row1, $col2 : column)
+		PossibleValue( zone == $zone, row == $row1, column == $col1, $val2 : value )
+		PossibleValue( zone == $zone, row == $row2, column == $col2, value == $val2 )
+		not ( PossibleValue( zone == $zone, row == $row1, column == $col1, value != $val1, value != $val2 ) )
+		not ( PossibleValue( zone == $zone, row == $row2, column == $col2, value != $val1, value != $val2 ) )
+		$pv : PossibleValue( zone == $zone, value == $val1)
+	then
+		retract( $pv );
+		#System.out.println("Rule 11 fired.");
+end
+
+##################################################
+# Rules not needed, just for debugging purpose:
+##################################################
+rule "log PossibleValues from certain row"
+	salience -25
+	when
+		$pos1 : PossibleValue ( row == 1, $value : value)
+	then
+		System.out.println("Left PV: " + $pos1.getRow() + $pos1.getColumn() + $pos1.getZone() + ":" + $pos1.getValue() );#+ $pos2.getValue());
+end
+
+
+
+rule "log all fields"
+	salience -20
+	when
+		$field : Field ( value == 0 )
+	then
+		System.out.println("left Field " + $field.toString());
+end
