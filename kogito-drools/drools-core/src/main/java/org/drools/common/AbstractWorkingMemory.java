@@ -23,7 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -857,6 +856,10 @@ public abstract class AbstractWorkingMemory
                         Object object,
                         Rule rule,
                         Activation activation) {
+        if( activation != null ) {
+            // release resources so that they can be GC'ed
+            activation.getPropagationContext().releaseResources();
+        }
         final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                   PropagationContext.ASSERTION,
                                                                                   rule,
@@ -964,6 +967,10 @@ public abstract class AbstractWorkingMemory
             }
             removePropertyChangeListener( handle );
 
+            if( activation != null ) {
+                // release resources so that they can be GC'ed
+                activation.getPropagationContext().releaseResources();
+            }
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.RETRACTION,
                                                                                       rule,
@@ -1055,6 +1062,10 @@ public abstract class AbstractWorkingMemory
             return;
         }
 
+        if( activation != null ) {
+            // release resources so that they can be GC'ed
+            activation.getPropagationContext().releaseResources();
+        }
         // Nowretract any trace  of the original fact
         final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                   PropagationContext.MODIFICATION,
@@ -1112,6 +1123,10 @@ public abstract class AbstractWorkingMemory
 
             this.handleFactory.increaseFactHandleRecency( handle );
 
+            if( activation != null ) {
+                // release resources so that they can be GC'ed
+                activation.getPropagationContext().releaseResources();
+            }
             // Nowretract any trace  of the original fact
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.MODIFICATION,
@@ -1174,6 +1189,10 @@ public abstract class AbstractWorkingMemory
                 return;
             }
 
+            if( activation != null ) {
+                // release resources so that they can be GC'ed
+                activation.getPropagationContext().releaseResources();
+            }
             // Nowretract any trace  of the original fact
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.MODIFICATION,

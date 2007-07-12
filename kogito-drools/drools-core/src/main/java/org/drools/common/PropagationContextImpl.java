@@ -28,9 +28,9 @@ public class PropagationContextImpl
     PropagationContext {
     private final int        type;
 
-    private final Rule       rule;
+    private Rule       rule;
 
-    private final Activation activation;
+    private Activation activation;
 
     private final long       propagationNumber;
 
@@ -138,5 +138,11 @@ public class PropagationContextImpl
 
     public void clearRetractedTuples() {
         this.retracted = null;
+    }
+
+    public void releaseResources() {
+        this.activation = null;
+        this.retracted = null;
+        this.rule = null;
     }
 }

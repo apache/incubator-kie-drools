@@ -98,4 +98,5 @@ public interface Activation
     public RuleFlowGroupNode getRuleFlowGroupNode();
 
     public void setRuleFlowGroupNode(RuleFlowGroupNode ruleFlowGroupNode);
+    
 }
