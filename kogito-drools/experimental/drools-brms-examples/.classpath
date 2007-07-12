@@ -4,6 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/insuranceModel.jar"/>
 	<classpathentry kind="lib" path="lib/drools-core-4.0.0.SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/mvel14-1.2pre1.jar"/>
+	<classpathentry kind="lib" path="lib/mvel14-1.2pre2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
