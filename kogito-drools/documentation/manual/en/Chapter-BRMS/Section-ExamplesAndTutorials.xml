@@ -5,25 +5,73 @@
   <title>Examples and tutorials</title>
 
   <section>
-    <title>Fernando's discount insurance brokers</title>
+    <title>Discount insurance brokers</title>
 
-    <para>This example takes you through the key steps in using the BRMS, and using rules in a very
-    very simple application.</para>
+	<section>
+			<title>Quick Start</title>
+			
+		    <para>This example takes you through the key steps in using the BRMS, and using rules in a very
+		    very simple application.</para>
+			
+			
+			<itemizedlist>
+				<listitem>
+					<para>
+						Download the latest version of BRMS from http://cruisecontrol.jboss.com/cc/artifacts/jboss-rules 
+						Deploy BRMS the WAR file into JBoss4.2 AS or JBossWeb, others containers can be used as well you just need to add JBoss Seam's dependencies.   
+					</para>
+				</listitem>
 
-	<!-- this shows how to embed a PNG picture/screen shot 
-	
-		<figure>
-          <title>Package building</title>
+				<listitem>
+					<para>
+						Check out the demo project from the Drools subversion repository 
+						http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/drools-examples/drools-examples-brms/
+					</para>
+				</listitem>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="PackageBuild.png"
-                         format="PNG" scalefit="1" />
-            </imageobject>
-          </mediaobject>
-        </figure>	
-	
-	-->
+				<listitem>
+					<para>
+						Import the demo business rules insurance repository file into BRMS, the compressed can be found at file folder in demo project
+					</para>
+				</listitem>
 
+				<listitem>
+					<para>
+						Navigate through the web application to see how things are placed and organized and try to create some rules.
+						On BRMS build the org.acme.insurance and generate a snapshot for deployment
+					</para>
+				</listitem>
+
+				<listitem>
+					<para>
+						Grab the snapshot url and update brmsdeployedrules.properties
+					</para>
+				</listitem>
+
+				<listitem>
+					<para>
+						To use a file or directory in rule agent just update brmsdeployedrules.properties according the documents
+					</para>
+				</listitem>
+				
+				<listitem>
+					<para>
+						Import the example project into eclipse and execute the MainClass.
+						The program will show the following trace. 
+					</para>
+					<programlisting>
+RuleAgent(insuranceconfig) INFO (Thu Jul 12 20:06:02 BRT 2007): Configuring with newInstance=true, secondsToRefresh=30
+RuleAgent(insuranceconfig) INFO (Thu Jul 12 20:06:02 BRT 2007): Configuring package provider : URLScanner monitoring URLs: http://localhost:8080/drools-jbrms/org.drools.brms.JBRMS/package/org.acme.insurance/fmeyer With local cache dir of /Users/fernandomeyer/projects/jbossrules/drools-examples/drools-examples-brms/cache
+RuleAgent(insuranceconfig) INFO (Thu Jul 12 20:06:02 BRT 2007): Applying changes to the rulebase.
+RuleAgent(insuranceconfig) INFO (Thu Jul 12 20:06:02 BRT 2007): Creating a new rulebase as per settings.
+RuleAgent(insuranceconfig) INFO (Thu Jul 12 20:06:02 BRT 2007): Adding package called org.acme.insurance
+APPROVED: due to no objections.
+APPROVED: Driver is safe and mature.
+APPROVED: due to no objections.
+REJECTED: Too many accidents						
+					</programlisting>					
+				</listitem>
+			</itemizedlist>
+	</section>
   </section>
 </section>
