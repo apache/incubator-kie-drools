@@ -2,11 +2,9 @@ package org.acme.insurance;
 
 import java.io.IOException;
 
-import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.agent.RuleAgent;
-import org.drools.concurrent.Future;
 
 public class InsuranceBusiness {
 	
@@ -16,7 +14,6 @@ public class InsuranceBusiness {
 		testUnsafeDriver(ruleBase);
 		testSafeMature(ruleBase);
 		testUnsafeAreaAndPriors(ruleBase);
-		
 	}
 
 	/**
@@ -36,17 +33,14 @@ public class InsuranceBusiness {
 		StatefulSession session = ruleBase.newStatefulSession();
 		
 		Driver driver = new Driver();
-		driver.setPriorClaims(new Integer(4));
+		driver.setPriorClaims(new Integer(1));
 		Policy policy = new Policy();
 		policy.setType("COMPREHENSIVE");
 		policy.setApproved(false);
 		
-		
-        Future futureAssertDrv = session.asyncInsert( driver );
-        Future futureAssertPol = session.asyncInsert( policy );
-        Future futureFireAllRules = session.asyncFireAllRules();
-
-        System.out.println("Policy approved: " + policy.isApproved());
+		session.insert(driver);
+		session.insert(policy);
+		session.fireAllRules();
 	}		
 
 	private void testSafeMature(RuleBase ruleBase) {
@@ -60,16 +54,16 @@ public class InsuranceBusiness {
 		policy.setType("COMPREHENSIVE");
 		policy.setApproved(false);
 		
-        Future futureAssertDrv = session.asyncInsert( driver );
-        Future futureAssertPol = session.asyncInsert( policy );
-        Future futureFireAllRules = session.asyncFireAllRules();
+		session.insert(driver);
+		session.insert(policy);
+		session.fireAllRules();
 	}		
 	
 	private void testUnsafeAreaAndPriors(RuleBase ruleBase) {
 		StatefulSession session = ruleBase.newStatefulSession();
 		
 		Driver driver = new Driver();
-		driver.setPriorClaims(new Integer(2));
+		driver.setPriorClaims(new Integer(20));
 		driver.setAge(new Integer(55));
 		driver.setLocationRiskProfile("LOW");
 		
@@ -77,9 +71,8 @@ public class InsuranceBusiness {
 		policy.setType("COMPREHENSIVE");
 		policy.setApproved(false);
 		
-        Future futureAssertDrv = session.asyncInsert( driver );
-        Future futureAssertPol = session.asyncInsert( policy );
-        Future futureFireAllRules = session.asyncFireAllRules();
+		session.insert(driver);
+		session.insert(policy);
+		session.fireAllRules();
 	}
-	
 }
