@@ -3315,7 +3315,7 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void FIXME_testOutOfMemory() throws Exception {
+    public void testOutOfMemory() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OutOfMemory.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -3326,7 +3326,7 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( new Cheese( "stilton", 1 ) );
 
-        workingMemory.fireAllRules(2907000);
+        workingMemory.fireAllRules(3000000);
         
         // just for profiling
         //Thread.currentThread().wait();

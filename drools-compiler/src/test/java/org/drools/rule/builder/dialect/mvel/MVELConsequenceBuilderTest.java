@@ -13,6 +13,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.PropagationContextImpl;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -78,7 +79,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final AgendaItem item = new AgendaItem( 0,
                                                 tuple,
                                                 10,
-                                                null,
+                                                new PropagationContextImpl(1, 1, null, null),
                                                 context.getRule(),
                                                 null );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );

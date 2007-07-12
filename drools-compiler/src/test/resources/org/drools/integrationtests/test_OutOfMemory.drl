@@ -1,0 +1,21 @@
+package org.drools;
+
+rule "Rule 1"
+        when
+                c: Cheese( type == "stilton" )
+        then
+                c.setPrice( c.getPrice() + 1 );
+                c.setType( "brie" );
+                update( c );
+end
+ 
+rule "Rule 2"
+        when
+                c: Cheese( type == "brie" )
+        then
+                c.setPrice( c.getPrice() + 1 );
+                c.setType( "stilton" );
+                update( c );
+end
+
+

@@ -49,5 +49,7 @@ public interface PropagationContext
                                            ReteTuple tuple);
 
     public void clearRetractedTuples();
+    
+    public void releaseResources();
 
 }
