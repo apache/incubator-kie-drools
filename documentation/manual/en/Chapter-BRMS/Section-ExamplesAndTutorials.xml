@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD Simplified DocBook XML V1.0//EN"
+"http://www.oasis-open.org/docbook/xml/simple/1.0/sdocbook.dtd">
+<section>
+  <title>Examples and tutorials</title>
+
+  <section>
+    <title>Fernando's discount insurance brokers</title>
+
+    <para>This example takes you through the key steps in using the BRMS, and using rules in a very
+    very simple application.</para>
+
+	<!-- this shows how to embed a PNG picture/screen shot 
+	
+		<figure>
+          <title>Package building</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="PackageBuild.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>	
+	
+	-->
+
+  </section>
+</section>

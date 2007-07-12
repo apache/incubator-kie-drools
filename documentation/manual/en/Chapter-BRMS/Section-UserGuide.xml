@@ -645,7 +645,22 @@
     <section>
       <title>Deployment management</title>
 
-      <para>Snapshots, URLS and binary packages</para>
+      <para>Snapshots, URLS and binary packages:</para>
+
+      <para>URLs are central to how built packages are provided. The BRMS
+      provides packages via URLs (for download and use by the Rule Agent).
+      These URLs take the form of:
+      http://&lt;server&gt;/drools-jbrms/org.drools.brms.JBRMS/package/&lt;packageName&gt;/&lt;packageVersion&gt;</para>
+
+      <para>&lt;packageName&gt; is the name you gave the package.
+      &lt;packageVersion&gt; is either the name of a snapshot, or "LATEST" (if
+      its LATEST, then it will be the latest built version from the main
+      package, not a snapshot). You can use these in the agent, or you can
+      paste them into your browser and it will download them as a file.</para>
+
+      <para>Refer to the section on the Rule Agent for details on how you can
+      use these URLs (and binary downloads) in your application, and how rules
+      can be updated on the fly.</para>
     </section>
 
     <section>
