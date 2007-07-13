@@ -11,6 +11,7 @@ public class MainClass {
 		InsuranceBusiness launcher = new InsuranceBusiness();
 		try {
 			launcher.executeExample();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
