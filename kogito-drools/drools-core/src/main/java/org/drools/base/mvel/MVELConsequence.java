@@ -27,7 +27,8 @@ public class MVELConsequence
         this.factory.setContext( knowledgeHelper.getTuple(),
                                  knowledgeHelper,
                                  null,
-                                 workingMemory );
+                                 workingMemory,
+                                 null );
         MVEL.executeExpression( this.expr,
                                 null,
                                 this.factory );

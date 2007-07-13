@@ -43,7 +43,6 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory implements Se
         this.previousDeclarations = previousDeclarations;
         this.localDeclarations = localDeclarations;
         this.globals = globals;
-        //this.variables = new HashMap();
     }
 
     public Object getObject() {
@@ -57,11 +56,13 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory implements Se
     public void setContext(final Tuple tuple,
                            final KnowledgeHelper knowledgeHelper,
                            final Object object,
-                           final WorkingMemory workingMemory) {
+                           final WorkingMemory workingMemory,
+                           final Map variables) {
         this.tuple = tuple;
         this.knowledgeHelper = knowledgeHelper;
         this.object = object;
         this.workingMemory = workingMemory;
+        this.variables = variables;
     }
 
     public KnowledgeHelper getKnowledgeHelper() {

@@ -28,7 +28,8 @@ public class MVELSalienceExpression
         this.factory.setContext( tuple,
                                  null,
                                  null,
-                                 workingMemory );
+                                 workingMemory,
+                                 null );
         return ((Integer) MVEL.executeExpression( this.expr,
                                                   this.factory )).intValue();
     }

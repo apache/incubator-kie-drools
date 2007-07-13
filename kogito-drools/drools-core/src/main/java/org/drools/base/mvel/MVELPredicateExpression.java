@@ -31,7 +31,8 @@ public class MVELPredicateExpression
         this.factory.setContext( tuple,
                                  null,
                                  object,
-                                 workingMemory );
+                                 workingMemory,
+                                 null );
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
                                                                  null,
                                                                  this.factory );
