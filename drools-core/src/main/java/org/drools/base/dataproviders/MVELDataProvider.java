@@ -38,7 +38,8 @@ public class MVELDataProvider
         this.factory.setContext( tuple,
                                  null,
                                  null,
-                                 wm );
+                                 wm,
+                                 null );
 
         //this.expression.
         final Object result = MVEL.executeExpression( this.expression,

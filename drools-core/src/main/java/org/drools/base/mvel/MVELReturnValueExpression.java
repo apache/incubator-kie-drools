@@ -32,7 +32,8 @@ public class MVELReturnValueExpression
         this.factory.setContext( tuple,
                                  null,
                                  object,
-                                 workingMemory );
+                                 workingMemory,
+                                 null );
 
         return org.drools.base.FieldFactory.getFieldValue( MVEL.executeExpression( this.expr,
                                                                                    null,
