@@ -88,11 +88,13 @@ public class Accumulate extends ConditionalElement
      * @param workingMemory
      * @throws Exception
      */
-    public void init(final Object context,
+    public void init(final Object workingMemoryContext,
+                     final Object context,
                      final Tuple leftTuple,
                      final WorkingMemory workingMemory) {
         try {
-            this.accumulator.init( context,
+            this.accumulator.init( workingMemoryContext,
+                                   context,
                                    leftTuple,
                                    this.requiredDeclarations,
                                    workingMemory );
@@ -111,12 +113,14 @@ public class Accumulate extends ConditionalElement
      * @param workingMemory
      * @throws Exception
      */
-    public void accumulate(final Object context,
+    public void accumulate(final Object workingMemoryContext,
+                           final Object context,
                            final Tuple leftTuple,
                            final InternalFactHandle handle,
                            final WorkingMemory workingMemory) {
         try {
-            this.accumulator.accumulate( context,
+            this.accumulator.accumulate( workingMemoryContext,
+                                         context,
                                          leftTuple,
                                          handle,
                                          this.requiredDeclarations,
@@ -137,12 +141,14 @@ public class Accumulate extends ConditionalElement
      * @param workingMemory
      * @throws Exception
      */
-    public void reverse(final Object context,
+    public void reverse(final Object workingMemoryContext,
+                        final Object context,
                         final Tuple leftTuple,
                         final InternalFactHandle handle,
                         final WorkingMemory workingMemory) {
         try {
-            this.accumulator.reverse( context,
+            this.accumulator.reverse( workingMemoryContext,
+                                      context,
                                       leftTuple,
                                       handle,
                                       this.requiredDeclarations,
@@ -162,11 +168,13 @@ public class Accumulate extends ConditionalElement
      * @return
      * @throws Exception
      */
-    public Object getResult(final Object context,
+    public Object getResult(final Object workingMemoryContext,
+                            final Object context,
                             final Tuple leftTuple,
                             final WorkingMemory workingMemory) {
         try {
-            return this.accumulator.getResult( context,
+            return this.accumulator.getResult( workingMemoryContext,
+                                               context,
                                                leftTuple,
                                                this.requiredDeclarations,
                                                workingMemory );
@@ -207,6 +215,10 @@ public class Accumulate extends ConditionalElement
      */
     public Declaration resolveDeclaration(final String identifier) {
         return (Declaration) this.sourcePattern.getInnerDeclarations().get( identifier );
+    }
+    
+    public Object createWorkingMemoryContext() {
+        return this.accumulator.createWorkingMemoryContext();
     }
 
 }

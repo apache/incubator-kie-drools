@@ -171,7 +171,8 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         return new @{ruleClassName}.@{className}();
     }
     
-    public void init(java.lang.Object context,
+    public void init(java.lang.Object workingMemoryContext,
+                     java.lang.Object context,
                      org.drools.spi.Tuple leftTuple,
                      org.drools.rule.Declaration[] declarations,
                      org.drools.WorkingMemory workingMemory) throws Exception {
@@ -186,7 +187,8 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         
     }
 
-    public void accumulate(java.lang.Object context,
+    public void accumulate(java.lang.Object workingMemoryContext,
+                           java.lang.Object context,
                            org.drools.spi.Tuple leftTuple,
                            org.drools.common.InternalFactHandle handle,
                            org.drools.rule.Declaration[] declarations,
@@ -205,7 +207,8 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 	        @foreach{globals as identifier} @{identifier}@end{","} );
     }
 
-    public void reverse(java.lang.Object context,
+    public void reverse(java.lang.Object workingMemoryContext,
+                           java.lang.Object context,
                            org.drools.spi.Tuple leftTuple,
                            org.drools.common.InternalFactHandle handle,
                            org.drools.rule.Declaration[] declarations,
@@ -224,7 +227,8 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 	        @foreach{globals as identifier} @{identifier}@end{","} );
     }
 
-    public Object getResult(java.lang.Object context,
+    public Object getResult(java.lang.Object workingMemoryContext,
+                            java.lang.Object context,
                             org.drools.spi.Tuple leftTuple,
                             org.drools.rule.Declaration[] declarations,
                             org.drools.WorkingMemory workingMemory) throws Exception {
@@ -240,6 +244,10 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
     
     public boolean supportsReverse() {
         return @{supportsReverse};
+    }
+
+    public Object createWorkingMemoryContext() {
+        return null;
     }
     
     @includeByRef{hashCode(hashCode = hashCode)}

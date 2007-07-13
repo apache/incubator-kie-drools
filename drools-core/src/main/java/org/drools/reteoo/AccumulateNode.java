@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import java.util.Arrays;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -82,7 +83,7 @@ public class AccumulateNode extends BetaNode {
                           final BetaConstraints sourceBinder,
                           final BetaConstraints resultBinder,
                           final Accumulate accumulate,
-                          final boolean unwrapRightObject ) {
+                          final boolean unwrapRightObject) {
         super( id,
                leftInput,
                rightInput,
@@ -116,13 +117,13 @@ public class AccumulateNode extends BetaNode {
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
 
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
         AccumulateResult accresult = new AccumulateResult();
 
         if ( !workingMemory.isSequential() ) {
-            memory.getTupleMemory().add( leftTuple );
-            memory.getCreatedHandles().put( leftTuple,
+            memory.betaMemory.getTupleMemory().add( leftTuple );
+            memory.betaMemory.getCreatedHandles().put( leftTuple,
                                             accresult,
                                             false );
         }
@@ -130,29 +131,32 @@ public class AccumulateNode extends BetaNode {
         final Object accContext = this.accumulate.createContext();
 
         accresult.context = accContext;
-        this.accumulate.init( accContext,
+        this.accumulate.init( memory.workingMemoryContext,
+                              accContext,
                               leftTuple,
                               workingMemory );
 
-        final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
+        final Iterator it = memory.betaMemory.getFactHandleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( workingMemory,
                                           leftTuple );
 
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
             InternalFactHandle handle = entry.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
-                if( this.unwrapRightObject ) {
+                if ( this.unwrapRightObject ) {
                     // if there is a subnetwork, handle must be unwrapped
-                    handle = ((ReteTuple) handle.getObject()).getLastHandle(); 
+                    handle = ((ReteTuple) handle.getObject()).getLastHandle();
                 }
-                this.accumulate.accumulate( accContext,
+                this.accumulate.accumulate( memory.workingMemoryContext,
+                                            accContext,
                                             leftTuple,
                                             handle,
                                             workingMemory );
             }
         }
 
-        final Object result = this.accumulate.getResult( accContext,
+        final Object result = this.accumulate.getResult( memory.workingMemoryContext,
+                                                         accContext,
                                                          leftTuple,
                                                          workingMemory );
 
@@ -191,9 +195,9 @@ public class AccumulateNode extends BetaNode {
     public void retractTuple(final ReteTuple leftTuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.getTupleMemory().remove( leftTuple );
-        final AccumulateResult accresult = (AccumulateResult) memory.getCreatedHandles().remove( leftTuple );
+        final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
+        memory.betaMemory.getTupleMemory().remove( leftTuple );
+        final AccumulateResult accresult = (AccumulateResult) memory.betaMemory.getCreatedHandles().remove( leftTuple );
 
         // if tuple was propagated
         if ( accresult.handle != null ) {
@@ -221,23 +225,23 @@ public class AccumulateNode extends BetaNode {
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
 
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.getFactHandleMemory().add( handle );
+        final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
+        memory.betaMemory.getFactHandleMemory().add( handle );
 
         if ( workingMemory.isSequential() ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
             return;
-        }        
+        }
 
         this.constraints.updateFromFactHandle( workingMemory,
                                                handle );
 
         // need to clone the tuples to avoid concurrent modification exceptions
-        Entry[] tuples = memory.getTupleMemory().toArray();
+        Entry[] tuples = memory.betaMemory.getTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
-                if( this.accumulate.supportsReverse() || context.getType() == PropagationContext.ASSERTION ) {
+                if ( this.accumulate.supportsReverse() || context.getType() == PropagationContext.ASSERTION ) {
                     modifyTuple( true,
                                  tuple,
                                  handle,
@@ -265,15 +269,15 @@ public class AccumulateNode extends BetaNode {
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        if ( !memory.getFactHandleMemory().remove( handle ) ) {
+        final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
+        if ( !memory.betaMemory.getFactHandleMemory().remove( handle ) ) {
             return;
         }
 
         this.constraints.updateFromFactHandle( workingMemory,
                                                handle );
         // need to clone the tuples to avoid concurrent modification exceptions
-        Entry[] tuples = memory.getTupleMemory().toArray();
+        Entry[] tuples = memory.betaMemory.getTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
@@ -301,8 +305,8 @@ public class AccumulateNode extends BetaNode {
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
 
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        AccumulateResult accresult = (AccumulateResult) memory.getCreatedHandles().get( leftTuple );
+        final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
+        AccumulateResult accresult = (AccumulateResult) memory.betaMemory.getCreatedHandles().get( leftTuple );
 
         // if tuple was propagated
         if ( accresult.handle != null ) {
@@ -316,49 +320,55 @@ public class AccumulateNode extends BetaNode {
             accresult.handle = null;
         }
 
-        if( this.unwrapRightObject ) {
+        if ( this.unwrapRightObject ) {
             // if there is a subnetwork, handle must be unwrapped
-            handle = ((ReteTuple) handle.getObject()).getLastHandle(); 
+            handle = ((ReteTuple) handle.getObject()).getLastHandle();
         }
-        
+
         if ( context.getType() == PropagationContext.ASSERTION ) {
             // assertion
             if ( accresult.context == null ) {
                 final Object accContext = this.accumulate.createContext();
 
-                this.accumulate.init( accContext,
+                this.accumulate.init( memory.workingMemoryContext,
+                                      accContext,
                                       leftTuple,
                                       workingMemory );
 
                 accresult.context = accContext;
             }
 
-            this.accumulate.accumulate( accresult.context,
+            this.accumulate.accumulate( memory.workingMemoryContext,
+                                        accresult.context,
                                         leftTuple,
                                         handle,
                                         workingMemory );
-        } else if( context.getType() == PropagationContext.MODIFICATION ) {
+        } else if ( context.getType() == PropagationContext.MODIFICATION ) {
             // modification
-            if( isAssert ) {
-                this.accumulate.accumulate( accresult.context,
+            if ( isAssert ) {
+                this.accumulate.accumulate( memory.workingMemoryContext,
+                                            accresult.context,
                                             leftTuple,
                                             handle,
                                             workingMemory );
             } else {
-                this.accumulate.reverse( accresult.context,
+                this.accumulate.reverse( memory.workingMemoryContext,
+                                         accresult.context,
                                          leftTuple,
                                          handle,
                                          workingMemory );
             }
         } else {
             // retraction
-            this.accumulate.reverse( accresult.context,
+            this.accumulate.reverse( memory.workingMemoryContext,
+                                     accresult.context,
                                      leftTuple,
                                      handle,
                                      workingMemory );
         }
 
-        final Object result = this.accumulate.getResult( accresult.context,
+        final Object result = this.accumulate.getResult( memory.workingMemoryContext,
+                                                         accresult.context,
                                                          leftTuple,
                                                          workingMemory );
 
@@ -389,9 +399,9 @@ public class AccumulateNode extends BetaNode {
     public void updateSink(final TupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
-        final Iterator it = memory.getCreatedHandles().iterator();
+        final Iterator it = memory.betaMemory.getCreatedHandles().iterator();
 
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             AccumulateResult accresult = (AccumulateResult) entry.getValue();
@@ -435,9 +445,27 @@ public class AccumulateNode extends BetaNode {
         return "[ " + this.getClass().getName() + "(" + this.id + ") ]";
     }
 
+    /**
+     * Creates a BetaMemory for the BetaNode's memory.
+     */
+    public Object createMemory(final RuleBaseConfiguration config) {
+        AccumulateMemory memory = new AccumulateMemory();
+        memory.betaMemory = this.constraints.createBetaMemory( config );
+        memory.workingMemoryContext = this.accumulate.createWorkingMemoryContext();
+        return memory;
+    }
+
+    private static class AccumulateMemory {
+        private static final long serialVersionUID = -5487673715134696118L;
+        
+        public Object workingMemoryContext;
+        public BetaMemory betaMemory;
+    }
+
     private static class AccumulateResult {
         // keeping attributes public just for performance
         public InternalFactHandle handle;
         public Object             context;
     }
+
 }

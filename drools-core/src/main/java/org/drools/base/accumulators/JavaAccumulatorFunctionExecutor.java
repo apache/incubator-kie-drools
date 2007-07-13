@@ -53,7 +53,8 @@ public class JavaAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#init(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
      */
-    public void init(Object context,
+    public void init(Object workingMemoryContext,
+                     Object context,
                      Tuple leftTuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
@@ -63,7 +64,8 @@ public class JavaAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#accumulate(java.lang.Object, org.drools.spi.Tuple, org.drools.common.InternalFactHandle, org.drools.rule.Declaration[], org.drools.rule.Declaration[], org.drools.WorkingMemory)
      */
-    public void accumulate(Object context,
+    public void accumulate(Object workingMemoryContext,
+                           Object context,
                            Tuple leftTuple,
                            InternalFactHandle handle,
                            Declaration[] declarations,
@@ -78,7 +80,8 @@ public class JavaAccumulatorFunctionExecutor
                                   value );
     }
 
-    public void reverse(Object context,
+    public void reverse(Object workingMemoryContext,
+                        Object context,
                         Tuple leftTuple,
                         InternalFactHandle handle,
                         Declaration[] declarations,
@@ -96,7 +99,8 @@ public class JavaAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#getResult(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
      */
-    public Object getResult(Object context,
+    public Object getResult(Object workingMemoryContext,
+                            Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
@@ -115,4 +119,8 @@ public class JavaAccumulatorFunctionExecutor
         this.expression = expression;
     }
 
+    public Object createWorkingMemoryContext() {
+        // no working memory context needed 
+        return null;
+    }
 }

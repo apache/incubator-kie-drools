@@ -57,7 +57,8 @@ public class MockAccumulator
         return this;
     }
 
-    public void init(Object context,
+    public void init(Object workingMemoryContext,
+                     Object context,
                      Tuple leftTuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
@@ -66,7 +67,8 @@ public class MockAccumulator
         this.workingMemory = workingMemory;
     }
 
-    public void accumulate(Object context,
+    public void accumulate(Object workingMemoryContext,
+                           Object context,
                            Tuple leftTuple,
                            InternalFactHandle handle,
                            Declaration[] declarations,
@@ -75,14 +77,16 @@ public class MockAccumulator
         this.matchingObjects.add( handle.getObject() );
     }
 
-    public Object getResult(Object context,
+    public Object getResult(Object workingMemoryContext,
+                            Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
         return this.matchingObjects;
     }
 
-    public void reverse(Object context,
+    public void reverse(Object workingMemoryContext,
+                        Object context,
                         Tuple leftTuple,
                         InternalFactHandle handle,
                         Declaration[] declarations,
@@ -93,6 +97,10 @@ public class MockAccumulator
 
     public boolean supportsReverse() {
         return false;
+    }
+
+    public Object createWorkingMemoryContext() {
+        return null;
     }
 
 }

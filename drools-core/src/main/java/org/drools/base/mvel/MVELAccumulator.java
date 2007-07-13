@@ -19,6 +19,7 @@ package org.drools.base.mvel;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
@@ -38,7 +39,7 @@ public class MVELAccumulator
 
     private static final long       serialVersionUID = 400L;
 
-    private final DroolsMVELFactory factory;
+    private final DroolsMVELFactory model;
     private final Serializable      init;
     private final Serializable      action;
     private final Serializable      reverse;
@@ -50,7 +51,7 @@ public class MVELAccumulator
                            final Serializable reverse,
                            final Serializable result) {
         super();
-        this.factory = factory;
+        this.model = factory;
         this.init = init;
         this.action = action;
         this.reverse = reverse;
@@ -67,71 +68,87 @@ public class MVELAccumulator
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#init(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
      */
-    public void init(Object context,
+    public void init(Object workingMemoryContext,
+                     Object context,
                      Tuple leftTuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
-        this.factory.setContext( leftTuple,
-                                 null,
-                                 null,
-                                 workingMemory );
+        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+        factory.setContext( leftTuple,
+                            null,
+                            null,
+                            workingMemory,
+                            (Map) context );
         MVEL.executeExpression( this.init,
-                                context,
-                                this.factory );
+                                null,
+                                factory );
     }
 
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#accumulate(java.lang.Object, org.drools.spi.Tuple, org.drools.common.InternalFactHandle, org.drools.rule.Declaration[], org.drools.rule.Declaration[], org.drools.WorkingMemory)
      */
-    public void accumulate(Object context,
+    public void accumulate(Object workingMemoryContext,
+                           Object context,
                            Tuple leftTuple,
                            InternalFactHandle handle,
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
-        this.factory.setContext( leftTuple,
-                                 null,
-                                 handle.getObject(),
-                                 workingMemory );
+        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+        factory.setContext( leftTuple,
+                            null,
+                            handle.getObject(),
+                            workingMemory,
+                            (Map) context );
         MVEL.executeExpression( this.action,
-                                context,
-                                this.factory );
+                                null,
+                                factory );
     }
 
-    public void reverse(Object context,
+    public void reverse(Object workingMemoryContext,
+                        Object context,
                         Tuple leftTuple,
                         InternalFactHandle handle,
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        this.factory.setContext( leftTuple,
-                                 null,
-                                 handle.getObject(),
-                                 workingMemory );
+        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+        factory.setContext( leftTuple,
+                            null,
+                            handle.getObject(),
+                            workingMemory,
+                            (Map) context );
         MVEL.executeExpression( this.reverse,
-                                context,
-                                this.factory );
+                                null,
+                                factory );
     }
 
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#getResult(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
      */
-    public Object getResult(Object context,
+    public Object getResult(Object workingMemoryContext,
+                            Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
-        this.factory.setContext( leftTuple,
-                                 null,
-                                 null,
-                                 workingMemory );
+        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+        factory.setContext( leftTuple,
+                            null,
+                            null,
+                            workingMemory,
+                            (Map) context );
         final Object result = MVEL.executeExpression( this.result,
-                                                      context,
-                                                      this.factory );
+                                                      null,
+                                                      factory );
         return result;
     }
 
     public boolean supportsReverse() {
-        return this.reverse != null ;
+        return this.reverse != null;
+    }
+
+    public Object createWorkingMemoryContext() {
+        return this.model.clone();
     }
 
 }

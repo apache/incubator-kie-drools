@@ -1,24 +1,25 @@
 package org.drools.base.mvel;
 
-import org.drools.FactHandle;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 import org.mvel.CompileException;
 import org.mvel.integration.VariableResolver;
-import org.mvel.integration.VariableResolverFactory;
 import org.mvel.integration.impl.BaseVariableResolverFactory;
-import org.mvel.integration.impl.ClassImportResolverFactory;
 import org.mvel.integration.impl.MapVariableResolver;
-import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+public class DroolsMVELFactory extends BaseVariableResolverFactory
+    implements
+    Serializable,
+    Cloneable {
 
-public class DroolsMVELFactory extends BaseVariableResolverFactory implements Serializable {
+    private static final long serialVersionUID = 1504379613555271045L;
+
     /**
      * Holds the instance of the variables.
      */
@@ -26,16 +27,16 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory implements Se
     //    public DroolsMVELFactory(Map variables) {
     //        this.variables = variables;
     //    }
-    private Tuple           tuple;
-    private KnowledgeHelper knowledgeHelper;
-    private Object          object;
-    private Map             localDeclarations;
-    private Map             previousDeclarations;
-    private Map             globals;
+    private Tuple             tuple;
+    private KnowledgeHelper   knowledgeHelper;
+    private Object            object;
+    private Map               localDeclarations;
+    private Map               previousDeclarations;
+    private Map               globals;
 
-    private WorkingMemory   workingMemory;
+    private WorkingMemory     workingMemory;
 
-    private Map             variables;
+    private Map               variables;
 
     public DroolsMVELFactory(final Map previousDeclarations,
                              final Map localDeclarations,
@@ -115,7 +116,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory implements Se
     }
 
     public boolean isResolveable(String name) {
-        if ( DroolsMVELKnowledgeHelper.DROOLS.equals( name  ) ) {
+        if ( DroolsMVELKnowledgeHelper.DROOLS.equals( name ) ) {
             addResolver( DroolsMVELKnowledgeHelper.DROOLS,
                          new DroolsMVELKnowledgeHelper( this ) );
             return true;
@@ -165,5 +166,11 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory implements Se
         } else {
             return false;
         }
+    }
+
+    public Object clone() {
+        return new DroolsMVELFactory( this.previousDeclarations,
+                                      this.localDeclarations,
+                                      this.globals );
     }
 }
