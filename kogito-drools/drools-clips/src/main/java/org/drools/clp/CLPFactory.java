@@ -9,6 +9,7 @@ import org.drools.base.ValueType;
 import org.drools.clp.valuehandlers.CLPGlobalVariable;
 import org.drools.clp.valuehandlers.CLPLocalDeclarationVariable;
 import org.drools.clp.valuehandlers.CLPPreviousDeclarationVariable;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.spi.Tuple;
 import org.mvel.integration.VariableResolver;
@@ -22,7 +23,7 @@ public class CLPFactory {
 
     private Map           resolvers;
     //private
-    private WorkingMemory workingMemory;
+    private InternalWorkingMemory workingMemory;
 
     public CLPFactory() {
         this.resolvers = Collections.EMPTY_MAP;
@@ -52,7 +53,7 @@ public class CLPFactory {
 
     public void setContext(Tuple tuple,
                            Object object,
-                           WorkingMemory workingMemory) {
+                           InternalWorkingMemory workingMemory) {
         this.tuple = tuple;
         this.object = object;
         this.workingMemory = workingMemory;
@@ -88,9 +89,9 @@ public class CLPFactory {
         }
 
         if ( this.previousDeclarations != null && this.previousDeclarations.containsKey( name ) ) {
-            resolver = new CLPPreviousDeclarationVariable( (Declaration) this.previousDeclarations.get( name ) );
+            resolver = new CLPPreviousDeclarationVariable( (Declaration) this.previousDeclarations.get( name ), workingMemory);
         } else if ( this.localDeclarations != null && this.localDeclarations.containsKey( name ) ) {
-            resolver = new CLPLocalDeclarationVariable( (Declaration) this.localDeclarations.get( name ) );
+            resolver = new CLPLocalDeclarationVariable( (Declaration) this.localDeclarations.get( name ), workingMemory );
         } else {
             Class clazz = (Class) this.globals.get( name );
             resolver = new CLPGlobalVariable( name,

@@ -9,21 +9,21 @@ import junit.framework.TestCase;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.clp.valuehandlers.DoubleValueHandler;
 import org.drools.clp.valuehandlers.FunctionCaller;
 import org.drools.clp.valuehandlers.LongValueHandler;
-import org.drools.compiler.SwitchingCommonTokenStream;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -386,7 +386,7 @@ public class LhsClpParserTest extends TestCase {
     }
 
     private TokenStream newTokenStream(final Lexer lexer) {
-        return new SwitchingCommonTokenStream( lexer );
+        return new CommonTokenStream( lexer );
     }
 
     private CLPParser newParser(final TokenStream tokenStream) {

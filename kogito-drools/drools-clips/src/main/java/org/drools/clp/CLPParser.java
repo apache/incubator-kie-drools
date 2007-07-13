@@ -2,20 +2,46 @@
 
 	package org.drools.clp;
 	
-	import org.drools.clp.valuehandlers.*;
-	import java.util.List;
 	import java.util.ArrayList;
-	import java.util.Iterator;
-	import java.util.HashMap;	
-	import java.util.StringTokenizer;
-	import org.drools.lang.descr.*;
-	import org.drools.compiler.SwitchingCommonTokenStream;
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
+
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.MismatchedNotSetException;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.MismatchedTokenException;
+import org.antlr.runtime.MismatchedTreeNodeException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
+import org.drools.clp.valuehandlers.BooleanValueHandler;
+import org.drools.clp.valuehandlers.DoubleValueHandler;
+import org.drools.clp.valuehandlers.FunctionCaller;
+import org.drools.clp.valuehandlers.LongValueHandler;
+import org.drools.clp.valuehandlers.ObjectValueHandler;
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.ConditionalElementDescr;
+import org.drools.lang.descr.DescrFactory;
+import org.drools.lang.descr.EvalDescr;
+import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.NotDescr;
+import org.drools.lang.descr.OrDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 
 public class CLPParser extends Parser {
     public static final String[] tokenNames = new String[] {

@@ -6,13 +6,16 @@ import java.math.BigInteger;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.ValueHandler;
 import org.drools.clp.VariableValueHandler;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
 
 public class CLPLocalDeclarationVariable implements VariableValueHandler {
     
     private Declaration declaration;
+	private InternalWorkingMemory workingmemory;
        
-    public CLPLocalDeclarationVariable(Declaration declaration) {
+    public CLPLocalDeclarationVariable(Declaration declaration, InternalWorkingMemory workingMemory) {
+    	this.workingmemory = workingMemory;
         this.declaration = declaration;
     }  
     
@@ -38,11 +41,11 @@ public class CLPLocalDeclarationVariable implements VariableValueHandler {
     }
     
     public Object getObject(ExecutionContext context) {
-        return declaration.getValue( context.getObject() );
+        return declaration.getValue(workingmemory, context.getObject());
     }
     
     public BigDecimal getBigDecimalValue(ExecutionContext context) throws NumberFormatException {
-        Object object = declaration.getValue( context.getObject() );
+        Object object = declaration.getValue(workingmemory, context.getObject() );
         if ( object instanceof BigDecimal ) {
             return (BigDecimal) object;
         } else {
@@ -51,7 +54,7 @@ public class CLPLocalDeclarationVariable implements VariableValueHandler {
     }
 
     public BigInteger getBigIntegerValue(ExecutionContext context) throws NumberFormatException {
-        Object object = declaration.getValue( context.getObject() );
+        Object object = declaration.getValue(workingmemory, context.getObject() );
         if ( object instanceof BigInteger ) {
             return (BigInteger) object;
         } else {
@@ -60,31 +63,31 @@ public class CLPLocalDeclarationVariable implements VariableValueHandler {
     }    
 
     public boolean getBooleanValue(ExecutionContext context) throws ClassCastException {
-        return declaration.getBooleanValue( context.getObject() );
+        return declaration.getBooleanValue(workingmemory, context.getObject() );
     }
 
     public double getDoubleValue(ExecutionContext context) throws NumberFormatException {
-        return declaration.getDoubleValue( context.getObject() );
+        return declaration.getDoubleValue(workingmemory, context.getObject() );
     }
 
     public float getFloatValue(ExecutionContext context) throws NumberFormatException {
-        return declaration.getFloatValue( context.getObject() );
+        return declaration.getFloatValue( workingmemory,context.getObject() );
     }
 
     public int getIntValue(ExecutionContext context) throws NumberFormatException {
-        return declaration.getIntValue( context.getObject() );
+        return declaration.getIntValue( workingmemory, context.getObject() );
     }
 
     public long getLongValue(ExecutionContext context) throws NumberFormatException {
-        return declaration.getLongValue( context.getObject() );
+        return declaration.getLongValue(workingmemory, context.getObject() );
     }
 
     public short getShortValue(ExecutionContext context) throws NumberFormatException {
-        return declaration.getShortValue( context.getObject() );
+        return declaration.getShortValue(workingmemory, context.getObject() );
     }
 
     public String getStringValue(ExecutionContext context) {
-        return (String) declaration.getValue( context.getObject() );
+        return (String) declaration.getValue(workingmemory, context.getObject() );
     }
     
     public String toString() {
