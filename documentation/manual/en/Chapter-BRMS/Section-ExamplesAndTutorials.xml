@@ -21,7 +21,7 @@
       <itemizedlist>
         <listitem>
           <para>Download the latest version of BRMS from
-          http://cruisecontrol.jboss.com/cc/artifacts/jboss-rules </para>
+          http://cruisecontrol.jboss.com/cc/artifacts/jboss-rules</para>
 
           <para>Deploy BRMS WAR file into JBoss4.2 AS or JBossWeb, other
           containers can be used as well (possibly with some tweaking of
@@ -50,10 +50,10 @@
 
         <listitem>
           <para>Navigate through the BRMS web application to see how things
-          are placed and organized and try to create some rules. </para>
+          are placed and organized and try to create some rules.</para>
 
           <para>Go to the "Packages" feature and build the package (you should
-          see no errors). </para>
+          see no errors).</para>
         </listitem>
 
         <listitem>
@@ -66,7 +66,7 @@
 
           <para>Copy the snapshot url that is displayed.</para>
 
-          <para>Located the file brmsdeployedrules.properties</para>
+          <para>Locate the file brmsdeployedrules.properties</para>
 
           <para>Place the copied URL in the brmsdeployedrules.properties
           file.</para>
@@ -94,13 +94,11 @@ APPROVED: Driver is safe and mature.
 APPROVED: due to no objections.
 REJECTED: Too many accidents
 </programlisting>
-		
-		<para>
-			The Rule Agent will pick up any changes that happen automatically - as soon as you create a new snapshot of the rules you want to deploy.
-		</para>
 
+          <para>The Rule Agent will pick up any changes that happen
+          automatically - as soon as you create a new snapshot of the rules
+          you want to deploy.</para>
         </listitem>
-        
       </itemizedlist>
     </section>
   </section>
