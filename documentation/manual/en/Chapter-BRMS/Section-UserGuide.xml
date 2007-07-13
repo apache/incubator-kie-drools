@@ -409,35 +409,295 @@
       Here the key ones are described. Some of these are covered in other
       parts of the manual, and the detail will not be repeated here.</para>
 
-      <para>Guided editor style "Business rules": (also known as "BRL
-      format"). These rules use the guided GUI which controls and propts user
-      input based on knowledge of the object model. This can also be augmented
-      with DSL sentences.</para>
+      <section>
+        <title>Business rules with the guided editor</title>
 
-      <para>DSL rules:</para>
+        <para>Guided editor style "Business rules": (also known as "BRL
+        format"). These rules use the guided GUI which controls and propts
+        user input based on knowledge of the object model. This can also be
+        augmented with DSL sentences.</para>
 
-      <para>Spreadsheet decision tables:</para>
+        <para>IMPORTANT: to use the BRL guided editor, someone will need to
+        have you package configured before hand.</para>
 
-      <para>Technical (drl) rules: Rules stored as drl text can be managed in
-      the BRMS, as well as more "traditional" drl files. A DRL can either be a
-      whole chunk of rules, or an individual rule. if its an individual rule,
-      no package statement or imports are required (in fact, you can skip the
-      "rule" statement altogether, just use "when" and "then" to mark the
-      condition and action sections respectively). Normally you would use the
-      IDE to edit raw DRL files, since it has all the advanced tooling and
-      content assistance and debugging, however there are times when a rule
-      may have to deal with something fairly technical.</para>
+        <para>Also note that there is a guided editor in the Eclipse plug in,
+        most of the details in this section can also apply to it.</para>
 
-      <para>Rule flows: Rule flows allow you to visually describe the steps
-      taken - so not all rules are evaluated at once, but there is a flow of
-      logic. Rule flows are not covered in this chapter on the BRMS, but you
-      can use the IDE to graphically draw ruleflows, and upload the .rf file
-      to the BRMS.</para>
+        <figure>
+          <title>The guided BRL editor</title>
 
-      <para>Suggestion: As you may have many similar rules, you can create
-      rule templates, which are simply rules which are kept in an inactive
-      package - you can then categories templates accordingly, and copy them
-      as needed (choosing a live package as the target package).</para>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="GuidedEditor.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>The above diagram shows the editor in action. The following
+        description apply to the letter boxes in the diagram above:</para>
+
+        <para>A: The different parts of a rule. The "WHEN" part is the
+        condition, "THEN" action, and "(options)" are optional attributes that
+        may effect the operation of the rule.</para>
+
+        <para>B: This shows a pattern which is declaring that the rule is
+        looking for a "Driver" fact (the fields are listed below, in this case
+        just "age"). Note the green triangle, it will popup a list of options
+        to add to the fact declaration: you can add more fields (eg their
+        "location"), or you can assign a variable name to the fact (which you
+        can use later on if needs be). As well as adding more fields to this
+        pattern - you can add "multiple field" constraints - ie constraints
+        that span across fields (eg age &gt; 42 or risk &gt; 2). The popup
+        dialog shows the options.</para>
+
+        <para>C: The small "-" icons indicate you can remove something - in
+        this case it would remove the whole Driver fact declaration. If its
+        the one below, it would remove just the age constraint.</para>
+
+        <para>D: The "+" symbols allow you to add more patterns to the
+        condition or the action part of the rule, or more attributes. In all
+        cases, a popup option box is provided. For the "WHEN" part of the
+        rule, you can choose to add a constraint on a fact (it will give you a
+        list of facts), or you can use another conditional element, the
+        choices which are : "There is no" - which means the fact+constraints
+        must not exist, "There exists" - which means that there exists at
+        least one match (but there only needs to be one - it will not trigger
+        for each match), and "Any of" - which means that any of the patterns
+        can match (you then add patterns to these higher level patterns). If
+        you just put a fact (like is shown above) then all the patterns are
+        combined together so they are all true ("and").</para>
+
+        <para>E: This shows the constraint for the "age" field. (Looking from
+        left to right) the green triangle allows you to "assign" a variable
+        name to the "age" field, which you may use later on in the rule. Next
+        is the list of constraint operations - this list changes depending on
+        the data type. After that is the value field - the value field will be
+        one of: a) a literal value (eg number, text), b) a "formula" - in
+        which case it is an expression which is calculated (this is for
+        advanced users) or b) a variable (in which case a list will be
+        provided to choose values from). After this there is a horizontal
+        arrow icon, this is for "connective constraints" : these are
+        constraints which allow you to have alternative values to check a
+        field against, for example: "age is less than 42 or age is not equal
+        to 39" is possibly this way.</para>
+
+        <para>F: This shows an "action" of the rule, a rule consists of a list
+        of actions. In this case, we are asserting/inserting a new fact, which
+        is a rejection (with the "reason" field set to an explanation). There
+        are quite a few other types of actions you can use: you can modify an
+        existing fact (which tells the engine the fact has changed) - or you
+        can simply set a field on a fact (in which case the engine doesn't
+        know about the change - normally because you are setting a result).
+        You can also retract a fact. In most cases the green arrow will give
+        you a list of fields you can add so you can change the value. The
+        values you enter are "literal" - in the sense that what you type is
+        what the value is. If it needs to be a calculation, then add an "=" at
+        the start of the value - this will be interpreted as a "formula" (for
+        advanced users only) ! and the calculation will be performed (not
+        unlike a spreadsheet).</para>
+
+        <para>G: This is where the rule options live. In this case, only
+        salience is used which is a numeric value representing the rules
+        "priority". This would probably be the most common option to
+        use.</para>
+
+        <para>Augmenting with DSL sentences: If the package the rule is part
+        of has a dsl configuration, when when you add conditions or actions,
+        then it will provide a list of "DSL Sentences" which you can choose
+        from - when you choose one, it will add a row to the rule - where the
+        DSL specifies values come from a user, then a edit box (text) will be
+        shown (so it ends up looking a bit like a form). This is optional, and
+        there is another DSL editor. Please note that the DSL capabilities in
+        this editor are slightly less then the full set of DSL features
+        (basically you can do [when] and [then] sections of the DSL only -
+        which is no different to drools 3 in effect).</para>
+
+        <para>The following diagram shows the DSL sentences in action in the
+        guided editor:</para>
+
+        <figure>
+          <title>DSL in guided editor</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="GuidedDSL.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>A more complex example:</para>
+
+        <figure>
+          <title>A more complex BRL example</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="GuidedComplex.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>In the above example, you can see it is using a mixture of
+        literal values, and formulas. The second constraint on the "Person"
+        fact, is a formula (in this case it is doing a silly calculation on
+        the persons age, and checking something against their name - both
+        "age" and "name" are fields of the Person fact in this case. In the
+        3rd line (which says "age is less than .." - it is also using a
+        formula, although, in this case the formula does a calculation and
+        returns a value (which is used in the comparison) - in the former
+        case, it had to return True or False (in this case, its a value).
+        Obvious formulas are basically pieces of code - so this is for
+        experienced users only.</para>
+
+        <para>Looking at the "Board" pattern (the second pattern with the
+        horizontal grey bar): this uses a top level conditional element
+        ("There is no") - this means that the pattern is actually looking for
+        the "non existence" of a fact that matches the pattern. Note the "Any
+        of:" - this means that EITHER the "type" field constraint is matched,
+        or the "name" field is matched (to "myname" in the case above). This
+        is what is termed a Multiple field constraint (you can nest these, and
+        have it as complex as you like, depending on how much you want the
+        next person to hate you: Some paraphrased advice: Write your rules in
+        such as way as the person who has to read/maintain them is a
+        psychopath, has a gun, and knows where you live).</para>
+
+        <figure>
+          <title>Adding constraints</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="GuidedLHSConstraints.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>The above dialog is what you will get when you want to add
+        constraints to the Person fact. In the top half are the simple
+        options: you can either add a field straight away (a list of fields of
+        the Person fact will be shown), or you can add a "Multiple field
+        constraint" - of a given type (which is described above). The Advanced
+        options: you can add a formula (which resolves to True or False - this
+        is like in the example above: "age &lt; (age * 2) ...."). You can also
+        assign a Variable name to the Person fact (which means you can then
+        access that variable on the action part of the rule, to set a value
+        etc).</para>
+      </section>
+
+      <section>
+        <title>DSL rules</title>
+
+        <para>DSL rules are textual rules, that use a language configuration
+        asset to control how they appear.</para>
+
+        <figure>
+          <title>DSL rule</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="DSLRule.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>A dsl rule is a single rule. Refering to the picture above, you
+        can a text editor. You can use the icons to the right to provide lists
+        of conditions and actions to choose from (or else press Control +
+        Space at the same time to pop up a list).</para>
+      </section>
+
+      <section>
+        <title>Spreadsheet decision tables</title>
+
+        <para>Multiple rules can be stored in a spreadsheet (each row is a
+        rule). The details of the spreadsheet are not covered in this chapter
+        (as there is a separate chapter for them).</para>
+
+        <figure>
+          <title>Spreadsheet decision table</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="DecisionTable.png"
+                         format="PNG" scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>To use a spreadsheet, you upload an xls (and can download the
+        current version, as per the picture above). To create a new decision
+        table, when you launch the rule wizard, you will get an option to
+        create one (after that point, you can upload the xls file).</para>
+      </section>
+
+      <section>
+        <title>Rule flows</title>
+
+        <para>Rule flows: Rule flows allow you to visually describe the steps
+        taken - so not all rules are evaluated at once, but there is a flow of
+        logic. Rule flows are not covered in this chapter on the BRMS, but you
+        can use the IDE to graphically draw ruleflows, and upload the .rf file
+        to the BRMS.</para>
+
+        <para>Similar to spreadsheets, you upload/download ruleflow files (the
+        eclipse IDE has a graphical editor for them). The details of Rule
+        Flows are not discussed here.</para>
+      </section>
+
+      <section>
+        <title>Technical rules (drl)</title>
+
+        <para>Technical (drl) rules are stored as text - they can be managed
+        in the BRMS. A DRL can either be a whole chunk of rules, or an
+        individual rule. if its an individual rule, no package statement or
+        imports are required (in fact, you can skip the "rule" statement
+        altogether, just use "when" and "then" to mark the condition and
+        action sections respectively). Normally you would use the IDE to edit
+        raw DRL files, since it has all the advanced tooling and content
+        assistance and debugging, however there are times when a rule may have
+        to deal with something fairly technical. In any typical package of
+        rules, you generally have a been for some "technical rules" - you can
+        mix and match all the rule types together of course.</para>
+
+        <figure>
+          <title>DRL technical rule</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="DRLRule.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Functions</title>
+
+        <para>Functions are another asset type. They are NOT rules, and should
+        only be used when necessary. The function editor is a textual editor.
+        Functions</para>
+
+        <figure>
+          <title>Function</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="Function.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <para>Tip: As you may have many similar rules, you can create rule
+      templates, which are simply rules which are kept in an inactive package
+      - you can then categories templates accordingly, and copy them as needed
+      (choosing a live package as the target package).</para>
     </section>
 
     <section>
@@ -661,6 +921,23 @@
       <para>Refer to the section on the Rule Agent for details on how you can
       use these URLs (and binary downloads) in your application, and how rules
       can be updated on the fly.</para>
+
+      <figure>
+        <title>Deployment snapshots</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="Snapshots.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above shows deployment snapshots view. On the left there is a
+      list of packages. Clilcking on a specific package will show you a list
+      of snapshots for that package (if any). From there you can copy, remove
+      or view an asset snapshot. Each snapshot is available for download or
+      access via a URL for deployment.</para>
     </section>
 
     <section>
@@ -673,13 +950,40 @@
       <para>The category view provides a way to navigate your rules in a way
       that makes sense to your organisation.</para>
 
+      <figure>
+        <title>Category view</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="CategoryExplorer.png"
+                       format="PNG" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above diagram shows categories in action. Generally under each
+      category you should have no more then a few dozen rules, if
+      possible.</para>
+
       <para>The alternative and more technical view is to use the package
       explorer. This shows the rules (assets) closer to how they are actually
       stored in the database, and also separates rules into packages (name
       spaces) and their type (format, as rules can be in many different
       formats).</para>
 
-      <para>[picture of rules explorer list, and package explorer]</para>
+      <figure>
+        <title>Package view</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="PackageExplorer.png"
+                       format="PNG" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above shows the alternate way of exploring - using
+      packages.</para>
     </section>
   </section>
 
