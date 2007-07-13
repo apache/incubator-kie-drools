@@ -18,6 +18,7 @@
 package org.drools.base.accumulators;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.drools.WorkingMemory;
 import org.drools.base.mvel.DroolsMVELFactory;
@@ -36,18 +37,18 @@ public class MVELAccumulatorFunctionExecutor
     implements
     Accumulator {
 
-    private static final long         serialVersionUID = 400L;
+    private static final long        serialVersionUID = 400L;
 
-    private final Object              dummy            = new Object();
-    private final DroolsMVELFactory   factory;
-    private final Serializable        expression;
+    private final Object             dummy            = new Object();
+    private final DroolsMVELFactory  model;
+    private final Serializable       expression;
     private final AccumulateFunction function;
 
     public MVELAccumulatorFunctionExecutor(final DroolsMVELFactory factory,
                                            final Serializable expression,
                                            final AccumulateFunction function) {
         super();
-        this.factory = factory;
+        this.model = factory;
         this.expression = expression;
         this.function = function;
     }
@@ -62,7 +63,8 @@ public class MVELAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#init(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
      */
-    public void init(Object context,
+    public void init(Object workingMemoryContext,
+                     Object context,
                      Tuple leftTuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
@@ -72,43 +74,51 @@ public class MVELAccumulatorFunctionExecutor
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#accumulate(java.lang.Object, org.drools.spi.Tuple, org.drools.common.InternalFactHandle, org.drools.rule.Declaration[], org.drools.rule.Declaration[], org.drools.WorkingMemory)
      */
-    public void accumulate(Object context,
+    public void accumulate(Object workingMemoryContext,
+                           Object context,
                            Tuple leftTuple,
                            InternalFactHandle handle,
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
-        this.factory.setContext( leftTuple,
-                                 null,
-                                 handle.getObject(),
-                                 workingMemory );
+        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+        factory.setContext( leftTuple,
+                            null,
+                            handle.getObject(),
+                            workingMemory,
+                            (Map) context );
         final Object value = MVEL.executeExpression( this.expression,
                                                      this.dummy,
-                                                     this.factory );
+                                                     factory );
         this.function.accumulate( context,
                                   value );
     }
 
-    public void reverse(Object context,
+    public void reverse(Object workingMemoryContext,
+                        Object context,
                         Tuple leftTuple,
                         InternalFactHandle handle,
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        this.factory.setContext( leftTuple,
-                                 null,
-                                 handle.getObject(),
-                                 workingMemory );
+        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
+        factory.setContext( leftTuple,
+                               null,
+                               handle.getObject(),
+                               workingMemory,
+                               (Map) context );
         final Object value = MVEL.executeExpression( this.expression,
                                                      this.dummy,
-                                                     this.factory );
-        this.function.reverse( context, value );
+                                                     factory );
+        this.function.reverse( context,
+                               value );
     }
 
     /* (non-Javadoc)
      * @see org.drools.spi.Accumulator#getResult(java.lang.Object, org.drools.spi.Tuple, org.drools.rule.Declaration[], org.drools.WorkingMemory)
      */
-    public Object getResult(Object context,
+    public Object getResult(Object workingMemoryContext,
+                            Object context,
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
@@ -117,6 +127,10 @@ public class MVELAccumulatorFunctionExecutor
 
     public boolean supportsReverse() {
         return this.function.supportsReverse();
+    }
+
+    public Object createWorkingMemoryContext() {
+        return this.model.clone();
     }
 
 }

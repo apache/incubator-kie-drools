@@ -6,7 +6,7 @@ import org.drools.Cheesery;
 
 global java.util.List results;
 
-rule "AccumulateTest" salience 100
+/*rule "AccumulateTest" salience 100
 	dialect "mvel"
     when
     	$totalAmount : Integer() from accumulate( $cheese : Cheese( ),
@@ -27,7 +27,7 @@ rule "Accumulate with Bindings" salience 90
                                                   result( total ) )
     then
         results.add($totalAmount);
-end  
+end*/  
 
 rule "Constraints everywhere" salience 80
 	dialect "mvel"
@@ -39,10 +39,10 @@ rule "Constraints everywhere" salience 80
     	                                        action( cheesery.addCheese( $cheese ); ),
                                                 result( cheesery ) );
     then
-        results.add(new Integer($cheesery.getTotalAmount()));
+        results.add($cheesery.getTotalAmount());
 end  
 
-rule "Source pattern binds" salience 70
+/*rule "Source pattern binds" salience 70
 	dialect "mvel"
     when
         $person      : Person( name == "Bob", $likes : likes )
@@ -65,4 +65,4 @@ rule "Accumulate with previous Bindings" salience 60
     then
         results.add($totalAmount);
 end  
-
+*/

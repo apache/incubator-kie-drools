@@ -33,6 +33,13 @@ public interface Accumulator
     Invoker {
     
     /**
+     * Creates and return a context object for each working memory instance
+     * 
+     * @return
+     */
+    public Object createWorkingMemoryContext();
+    
+    /**
      * Creates the context object for an accumulator session.
      * The context is passed as a parameter to every subsequent accumulator
      * method call in the same session.
@@ -49,7 +56,8 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    public void init(Object context,
+    public void init(Object workingMemoryContext,
+                     Object context,
                      Tuple leftTuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception;
@@ -64,7 +72,8 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    public void accumulate(Object context,
+    public void accumulate(Object workingMemoryContext,
+                           Object context,
                            Tuple leftTuple,
                            InternalFactHandle handle,
                            Declaration[] declarations,
@@ -89,7 +98,8 @@ public interface Accumulator
      * @param workingMemory
      * @throws Exception
      */
-    public void reverse(Object context,
+    public void reverse(Object workingMemoryContext,
+                        Object context,
                         Tuple leftTuple,
                         InternalFactHandle handle,
                         Declaration[] declarations,
@@ -105,7 +115,8 @@ public interface Accumulator
      * @return
      * @throws Exception
      */
-    public Object getResult(Object context, 
+    public Object getResult(Object workingMemoryContext,
+                            Object context, 
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception;
