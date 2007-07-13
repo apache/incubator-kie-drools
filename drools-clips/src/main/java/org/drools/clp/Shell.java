@@ -10,16 +10,15 @@ import java.util.Map;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.clp.valuehandlers.FunctionCaller;
 import org.drools.clp.valuehandlers.NamedShellVariableValue;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.SwitchingCommonTokenStream;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -27,7 +26,8 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.spi.GlobalResolver;
 
 public class  Shell implements ParserHandler, GlobalResolver, BuildContext {
-    private FunctionRegistry registry;
+	private static final long serialVersionUID = 1L;
+	private FunctionRegistry registry;
     private Map variables;
     private Map              properties = Collections.EMPTY_MAP;
     
@@ -43,7 +43,7 @@ public class  Shell implements ParserHandler, GlobalResolver, BuildContext {
     
     public void evalReader(Reader reader)  {
         try {
-            CLPParser parser = new CLPParser( new SwitchingCommonTokenStream( new DRLLexer( new ANTLRReaderStream( reader ) ) ) );
+            CLPParser parser = new CLPParser( new CommonTokenStream( new DRLLexer( new ANTLRReaderStream( reader ) ) ) );
             evalParser( parser );    
         } catch (Exception e) {
             throw new RuntimeException( "Unable to parser Reader", e);
@@ -112,7 +112,7 @@ public class  Shell implements ParserHandler, GlobalResolver, BuildContext {
     }
 
     private TokenStream newTokenStream(final Lexer lexer) {
-        return new SwitchingCommonTokenStream( lexer );
+        return new CommonTokenStream( lexer );
     }
 
     public Object resolve(String name) {
@@ -164,5 +164,15 @@ public class  Shell implements ParserHandler, GlobalResolver, BuildContext {
     public void addVariable(VariableValueHandler var) {
         this.variables.put( var.getIdentifier(), var );
     }
+
+	public Object resolveGlobal(String identifier) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setGlobal(String identifier, Object value) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

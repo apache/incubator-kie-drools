@@ -59,7 +59,7 @@ public class AddFunctionTest extends TestCase {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
-        InternalFactHandle factHandle = (InternalFactHandle) workingMemory.assertObject( new BigDecimal( 10 ) );
+        InternalFactHandle factHandle = (InternalFactHandle) workingMemory.insert( new BigDecimal( 10 ) );
         ReteTuple tuple = new ReteTuple( factHandle );
 
         ObjectType objectType = new ClassObjectType( BigDecimal.class );
@@ -69,23 +69,16 @@ public class AddFunctionTest extends TestCase {
                                         objectType );
         PatternExtractor extractor = new PatternExtractor( objectType );
 
-        //        VariableValueHandler pd = new CLPPreviousDeclarationVariable( new Declaration( "pd",
-        //                                                                                       extractor,
-        //                                                                                       column0 ) );
-        //
-        //        VariableValueHandler ld = new CLPLocalDeclarationVariable( new Declaration( "ld",
-        //                                                                                    extractor,
-        //                                                                                    column1 ) );
-
         Map variables = new HashMap();
         variables.put( "pd",
                        new CLPPreviousDeclarationVariable( new Declaration( "pd",
                                                                             extractor,
-                                                                            pattern0 ) ) );
+                                                                            pattern0 ), workingMemory ) );
         variables.put( "ld",
                        new CLPLocalDeclarationVariable( new Declaration( "ld",
                                                                          extractor,
-                                                                         pattern1 ) ) );
+                                                                         pattern1
+                                                                         ), workingMemory ) );
 
         ValueHandler val1 = new TempTokenVariable( "pd" );
         ValueHandler val2 = new IndexedLocalVariableValue( "lv",

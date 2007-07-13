@@ -6,23 +6,21 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import junit.framework.TestCase;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.Person;
-import org.drools.clp.valuehandlers.ListValueHandler;
 import org.drools.clp.valuehandlers.IndexedLocalVariableValue;
+import org.drools.clp.valuehandlers.ListValueHandler;
 import org.drools.clp.valuehandlers.LongValueHandler;
 import org.drools.clp.valuehandlers.ObjectValueHandler;
-import org.drools.compiler.SwitchingCommonTokenStream;
-
-import junit.framework.TestCase;
 
 public class CompiledFunctionsTest extends TestCase {
     private CLPParser parser;
@@ -323,7 +321,7 @@ public class CompiledFunctionsTest extends TestCase {
     }
 
     private TokenStream newTokenStream(final Lexer lexer) {
-        return new SwitchingCommonTokenStream( lexer );
+        return new CommonTokenStream( lexer );
     }
 
     private CLPParser newParser(final TokenStream tokenStream) {
