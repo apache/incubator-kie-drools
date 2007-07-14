@@ -881,7 +881,10 @@ public abstract class AbstractWorkingMemory
                               this.addRemovePropertyChangeListenerArgs );
             }
         } catch ( final NoSuchMethodException e ) {
-            throw new RuntimeDroolsException( "The removePropertyChangeListener method on the class was not found so Drools will be unable to stop processing JavaBean PropertyChangeEvents on the retracted Object." );
+            // The removePropertyChangeListener method on the class
+            // was not found so Drools will be unable to
+            // stop processing JavaBean PropertyChangeEvents
+            // on the retracted Object
         } catch ( final IllegalArgumentException e ) {
             throw new RuntimeDroolsException(  "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " does not take a simple PropertyChangeListener argument so Drools will be unable to stop processing JavaBean"
                                 + " PropertyChangeEvents on the retracted Object" );
