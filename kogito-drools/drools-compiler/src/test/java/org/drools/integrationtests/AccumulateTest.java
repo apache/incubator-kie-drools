@@ -57,7 +57,7 @@ public class AccumulateTest extends TestCase {
         return ruleBase;
     }
 
-    public void xxxtestAccumulateModify() throws Exception {
+    public void testAccumulateModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModify.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -125,7 +125,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void xxxtestAccumulate() throws Exception {
+    public void testAccumulate() throws Exception {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Accumulate.drl" ) );
@@ -189,19 +189,19 @@ public class AccumulateTest extends TestCase {
 
         wm.fireAllRules();
 
-//        Assert.assertEquals( new Integer( 165 ),
-//                             results.get( 0 ) );
-//        Assert.assertEquals( new Integer( 10 ),
-//                             results.get( 1 ) );
-        Assert.assertEquals( new Integer( 150 ),
+        Assert.assertEquals( new Integer( 165 ),
                              results.get( 0 ) );
-//        Assert.assertEquals( new Integer( 10 ),
-//                             results.get( 3 ) );
-//        Assert.assertEquals( new Integer( 210 ),
-//                             results.get( 4 ) );
+        Assert.assertEquals( new Integer( 10 ),
+                             results.get( 1 ) );
+        Assert.assertEquals( new Integer( 150 ),
+                             results.get( 2 ) );
+        Assert.assertEquals( new Integer( 10 ),
+                             results.get( 3 ) );
+        Assert.assertEquals( new Integer( 210 ),
+                             results.get( 4 ) );
     }
 
-    public void xxxtestAccumulateModifyMVEL() throws Exception {
+    public void testAccumulateModifyMVEL() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModifyMVEL.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -269,7 +269,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void xxxtestAccumulateReverseModify() throws Exception {
+    public void testAccumulateReverseModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModify.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -337,7 +337,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void xxxtestAccumulateReverseModifyMVEL() throws Exception {
+    public void testAccumulateReverseModifyMVEL() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModifyMVEL.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -405,7 +405,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void xxxtestAccumulateAverage() throws Exception {
+    public void testAccumulateAverage() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateAverage.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -474,7 +474,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void xxxtestAccumulateMax() throws Exception {
+    public void testAccumulateMax() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateMax.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -543,7 +543,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void xxxtestAccumulateMin() throws Exception {
+    public void testAccumulateMin() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateMin.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -612,7 +612,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void xxxtestAccumulateCount() throws Exception {
+    public void testAccumulateCount() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateCount.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -682,7 +682,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void xxxtestAccumulateWithFromChaining() throws Exception {
+    public void testAccumulateWithFromChaining() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateWithFromChaining.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -757,7 +757,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void xxxtestMVELAccumulate2WM() throws Exception {
+    public void testMVELAccumulate2WM() throws Exception {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateMVEL.drl" ) );
@@ -781,27 +781,27 @@ public class AccumulateTest extends TestCase {
         wm1.insert( new Person( "Mark",
                                 "provolone" ) );
 
-        //        wm2.insert( new Person( "Bob",
-        //                                "stilton",
-        //                                20 ) );
-        //        wm2.insert( new Person( "Mark",
-        //                                "provolone" ) );
+        wm2.insert( new Person( "Bob",
+                                "stilton",
+                                20 ) );
+        wm2.insert( new Person( "Mark",
+                                "provolone" ) );
 
         wm1.insert( new Cheese( "stilton",
                                 10 ) );
         wm1.insert( new Cheese( "brie",
                                 5 ) );
-        //        wm2.insert( new Cheese( "stilton",
-        //                                10 ) );
+        wm2.insert( new Cheese( "stilton",
+                                10 ) );
         wm1.insert( new Cheese( "provolone",
                                 150 ) );
-        //        wm2.insert( new Cheese( "brie",
-        //                                5 ) );
-        //        wm2.insert( new Cheese( "provolone",
-        //                                150 ) );
+        wm2.insert( new Cheese( "brie",
+                                5 ) );
+        wm2.insert( new Cheese( "provolone",
+                                150 ) );
         wm1.fireAllRules();
 
-        //        wm2.fireAllRules();
+        wm2.fireAllRules();
 
         Assert.assertEquals( new Integer( 165 ),
                              results1.get( 0 ) );
