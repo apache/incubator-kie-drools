@@ -1,0 +1,16 @@
+package org.drools
+
+import java.util.ArrayList;
+
+global org.drools.Cheesery cheesery;
+global java.util.List results;
+
+rule MyRule
+    dialect "java"
+when
+	$i : ArrayList() from collect(Cheese() from cheesery.getCheeses())
+    $k : ArrayList() from collect(Cheese() from cheesery.getCheeses())
+then
+    results.add( $i );
+    results.add( $k );
+end

@@ -56,8 +56,9 @@ public class CollectBuilder
         // get builder for the pattern
         final ReteooComponentBuilder builder = utils.getBuilderFor( sourcePattern );
 
-        // save tuple source for later if needed
+        // save tuple source and pattern offset for later if needed
         final TupleSource tupleSource = context.getTupleSource();
+        final int currentPatternIndex = context.getCurrentPatternOffset();
         
         // builds the source pattern
         builder.build( context,
@@ -97,6 +98,7 @@ public class CollectBuilder
                                                                                  existSubNetwort ) ) );
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
+        context.setCurrentPatternOffset( currentPatternIndex );
     }
 
     /**
