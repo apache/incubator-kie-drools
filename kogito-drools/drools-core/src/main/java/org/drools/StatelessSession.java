@@ -19,26 +19,8 @@ import org.drools.spi.GlobalResolver;
  * Care should be used when using the async versions of the methods, consult the javadoc for 
  * the specific information.
  */
-public interface StatelessSession {
-    public void addEventListener(final WorkingMemoryEventListener listener);
-
-    public void removeEventListener(final WorkingMemoryEventListener listener);
-
-    public List getWorkingMemoryEventListeners();
-
-    public void addEventListener(final AgendaEventListener listener);
-
-    public void removeEventListener(final AgendaEventListener listener);
-
-    public List getAgendaEventListeners();
-
-    public void addEventListener(final RuleFlowEventListener listener);
-
-    public void removeEventListener(final RuleFlowEventListener listener);
-
-    public List getRuleFlowEventListeners();
-    
-    
+public interface StatelessSession extends EventManager {
+        
     void setAgendaFilter(AgendaFilter agendaFilter);
     
     /**

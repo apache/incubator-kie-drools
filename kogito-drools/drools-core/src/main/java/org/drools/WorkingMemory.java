@@ -39,72 +39,8 @@ import org.drools.spi.GlobalResolver;
  * the RuleBase reference is transient. Please see the RuleBase interface for serializing
  * in WorkingMemories from an InputStream.
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
-public interface WorkingMemory
-    extends
-    Serializable {
-    /**
-     * Add an event listener.
-     * 
-     * @param listener
-     *            The listener to add.
-     */
-    public void addEventListener(WorkingMemoryEventListener listener);
-
-    /**
-     * Remove an event listener.
-     * 
-     * @param listener
-     *            The listener to remove.
-     */
-    public void removeEventListener(WorkingMemoryEventListener listener);
-
-    /**
-     * Returns all event listeners.
-     * 
-     * @return listeners The listeners.
-     */
-    public List getWorkingMemoryEventListeners();
-
-    /**
-     * Add an event listener.
-     * 
-     * @param listener
-     *            The listener to add.
-     */
-    public void addEventListener(AgendaEventListener listener);
-
-    /**
-     * Remove an event listener.
-     * 
-     * @param listener
-     *            The listener to remove.
-     */
-    public void removeEventListener(AgendaEventListener listener);
-
-    /**
-     * Add an event listener.
-     * 
-     * @param listener
-     *            The listener to add.
-     */
-    public void addEventListener(RuleFlowEventListener listener);
-
-    /**
-     * Remove an event listener.
-     * 
-     * @param listener
-     *            The listener to remove.
-     */
-    public void removeEventListener(RuleFlowEventListener listener);
-
-    /**
-     * Returns all event listeners.
-     * 
-     * @return listeners The listeners.
-     */
-    public List getAgendaEventListeners();
+public interface WorkingMemory extends EventManager {
 
     public Agenda getAgenda();
 

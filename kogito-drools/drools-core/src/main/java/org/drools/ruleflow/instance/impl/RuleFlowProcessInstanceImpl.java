@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.Agenda;
-import org.drools.WorkingMemory;
 import org.drools.common.EventSupport;
+import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;

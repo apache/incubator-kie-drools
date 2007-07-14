@@ -18,11 +18,11 @@ package org.drools.reteoo;
 
 import java.io.Serializable;
 
+import org.drools.common.EventSupport;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
-import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;

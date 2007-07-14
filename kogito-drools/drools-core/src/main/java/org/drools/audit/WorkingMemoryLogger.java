@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.EventManager;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.audit.event.ActivationLogEvent;
@@ -71,18 +72,18 @@ public abstract class WorkingMemoryLogger
     RuleFlowEventListener {
 
     private final List    filters = new ArrayList();
-    private WorkingMemory workingMemory;
+    private EventManager eventManager;
 
     /**
      * Creates a new working memory logger for the given working memory.
      * 
      * @param workingMemory
      */
-    public WorkingMemoryLogger(final WorkingMemory workingMemory) {
-        this.workingMemory = workingMemory;
-        workingMemory.addEventListener( (WorkingMemoryEventListener) this );
-        workingMemory.addEventListener( (AgendaEventListener) this );
-        workingMemory.addEventListener( (RuleFlowEventListener) this );
+    public WorkingMemoryLogger(final EventManager eventManager) {
+        this.eventManager = eventManager;
+        this.eventManager.addEventListener( (WorkingMemoryEventListener) this );
+        this.eventManager.addEventListener( (AgendaEventListener) this );
+        this.eventManager.addEventListener( (RuleFlowEventListener) this );
     }
 
     /**
@@ -181,7 +182,7 @@ public abstract class WorkingMemoryLogger
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CREATED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation() ),
+                                                extractDeclarations( event.getActivation(), workingMemory ),
     											event.getActivation().getRule().getRuleFlowGroup() ) );
 	}
 
@@ -193,7 +194,7 @@ public abstract class WorkingMemoryLogger
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CANCELLED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation() ),
+                                                extractDeclarations( event.getActivation(), workingMemory ),
     											event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
@@ -205,7 +206,7 @@ public abstract class WorkingMemoryLogger
         filterLogEvent( new ActivationLogEvent( LogEvent.BEFORE_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation() ),
+                                                extractDeclarations( event.getActivation(), workingMemory ),
     											event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
@@ -217,7 +218,7 @@ public abstract class WorkingMemoryLogger
         filterLogEvent( new ActivationLogEvent( LogEvent.AFTER_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation() ),
+                                                extractDeclarations( event.getActivation(), workingMemory ),
     											event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
@@ -231,7 +232,7 @@ public abstract class WorkingMemoryLogger
      * @param activation The activation from which the declarations should be extracted
      * @return A String represetation of the declarations of the activation.
      */
-    private String extractDeclarations(final Activation activation) {
+    private String extractDeclarations(final Activation activation,  final WorkingMemory workingMemory) {
         final StringBuffer result = new StringBuffer();
         final Tuple tuple = activation.getTuple();
         final Declaration[] declarations = activation.getRule().getDeclarations();
@@ -244,7 +245,7 @@ public abstract class WorkingMemoryLogger
                     // This handle is now invalid, probably due to an fact retraction
                     continue;
                 }
-                final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, this.workingMemory.getObject( handle ) );
+                final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, workingMemory.getObject( handle ) );
 
                 result.append( declaration.getIdentifier() );
                 result.append( "=" );
