@@ -12,8 +12,6 @@ import junit.framework.TestCase;
 import org.drools.Agenda;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.NoSuchFactHandleException;
-import org.drools.NoSuchFactObjectException;
 import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
@@ -166,8 +164,7 @@ public class ExternalSheetListenerTest extends TestCase {
 					return null;
 				}
 
-				public FactHandle getFactHandle(Object arg0)
-						throws NoSuchFactHandleException {
+				public FactHandle getFactHandle(Object arg0) {
 					return null;
 				}
 
@@ -183,8 +180,7 @@ public class ExternalSheetListenerTest extends TestCase {
 					return null;
 				}
 
-				public Object getObject(FactHandle arg0)
-						throws NoSuchFactObjectException {
+				public Object getObject(FactHandle arg0) {
 					return null;
 				}
 
@@ -351,6 +347,11 @@ public class ExternalSheetListenerTest extends TestCase {
 				}
 
                 public GlobalResolver getGlobalResolver() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public List getRuleFlowEventListeners() {
                     // TODO Auto-generated method stub
                     return null;
                 }
