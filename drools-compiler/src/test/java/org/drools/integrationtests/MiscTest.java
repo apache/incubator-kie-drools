@@ -3357,6 +3357,33 @@ public class MiscTest extends TestCase {
                       results.get(1) );
     }
 
-    
+    public void testMultipleFroms() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_multipleFroms.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+        
+        final Cheesery cheesery = new Cheesery();
+        cheesery.addCheese( new Cheese( "stilton", 15 ) );
+        cheesery.addCheese( new Cheese( "brie", 10 ) );
+
+        workingMemory.setGlobal( "cheesery", cheesery );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( 2,
+                      ((List)results.get(0)).size() );
+        assertEquals( 2,
+                      ((List)results.get(1)).size() );
+    }
 
 }
