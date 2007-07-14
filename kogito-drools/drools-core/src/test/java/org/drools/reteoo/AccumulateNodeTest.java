@@ -25,6 +25,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
@@ -86,7 +87,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         this.node.addTupleSink( this.sink );
 
-        this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
+        this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;
 
         // check memories are empty
         assertEquals( 0,
@@ -372,7 +373,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                   objectSource,
                                                                   this.accumulate );
 
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( accumulateNode );
+        final BetaMemory memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;
 
         assertNotNull( memory );
     }
@@ -389,7 +390,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         this.workingMemory = new ReteooWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
         
-        this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
+        this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;
 
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );

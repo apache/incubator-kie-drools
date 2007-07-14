@@ -11,7 +11,6 @@ import org.drools.spi.Tuple;
 import org.mvel.CompileException;
 import org.mvel.integration.VariableResolver;
 import org.mvel.integration.impl.BaseVariableResolverFactory;
-import org.mvel.integration.impl.MapVariableResolver;
 
 public class DroolsMVELFactory extends BaseVariableResolverFactory
     implements
@@ -23,10 +22,6 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     /**
      * Holds the instance of the variables.
      */
-    //private Map           variables;
-    //    public DroolsMVELFactory(Map variables) {
-    //        this.variables = variables;
-    //    }
     private Tuple             tuple;
     private KnowledgeHelper   knowledgeHelper;
     private Object            object;
@@ -36,7 +31,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
 
     private WorkingMemory     workingMemory;
 
-    private Map               variables;
+    private Map               localVariables;
 
     public DroolsMVELFactory(final Map previousDeclarations,
                              final Map localDeclarations,
@@ -63,7 +58,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         this.knowledgeHelper = knowledgeHelper;
         this.object = object;
         this.workingMemory = workingMemory;
-        this.variables = variables;
+        this.localVariables = variables;
     }
 
     public KnowledgeHelper getKnowledgeHelper() {
@@ -78,6 +73,16 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         return this.workingMemory.getGlobal( identifier );
     }
 
+    public Object getLocalValue(final String identifier) {
+        return this.localVariables.get( identifier );
+    }
+
+    public void setLocalValue(final String identifier,
+                              final Object value) {
+        this.localVariables.put( identifier,
+                                 value );
+    }
+
     public VariableResolver createVariable(String name,
                                            Object value) {
         VariableResolver vr = getVariableResolver( name );
@@ -85,12 +90,12 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
             vr.setValue( value );
             return vr;
         } else {
-            if ( this.variables == null ) {
-                this.variables = new HashMap();
+            if ( this.localVariables == null ) {
+                this.localVariables = new HashMap();
             }
             addResolver( name,
-                         vr = new MapVariableResolver( this.variables,
-                                                       name ) );
+                         vr = new LocalVariableResolver( this,
+                                                         name ) );
             vr.setValue( value );
             return vr;
         }
@@ -103,13 +108,13 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         if ( vr != null && vr.getType() != null ) {
             throw new CompileException( "variable already defined within scope: " + vr.getType() + " " + name );
         } else {
-            if ( this.variables == null ) {
-                this.variables = new HashMap();
+            if ( this.localVariables == null ) {
+                this.localVariables = new HashMap();
             }
             addResolver( name,
-                         vr = new MapVariableResolver( this.variables,
-                                                       name,
-                                                       type ) );
+                         vr = new LocalVariableResolver( this,
+                                                         name,
+                                                         type ) );
             vr.setValue( value );
             return vr;
         }
@@ -141,8 +146,8 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
             return true;
         } else if ( this.variableResolvers != null && this.variableResolvers.containsKey( name ) ) {
             addResolver( name,
-                         new MapVariableResolver( this.variableResolvers,
-                                                  name ) );
+                         new LocalVariableResolver( this,
+                                                    name ) );
             return true;
         } else if ( nextFactory != null ) {
             return nextFactory.isResolveable( name );

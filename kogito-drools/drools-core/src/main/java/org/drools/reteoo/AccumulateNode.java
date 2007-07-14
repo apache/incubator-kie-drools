@@ -455,7 +455,7 @@ public class AccumulateNode extends BetaNode {
         return memory;
     }
 
-    private static class AccumulateMemory {
+    public static class AccumulateMemory {
         private static final long serialVersionUID = -5487673715134696118L;
         
         public Object workingMemoryContext;
