@@ -1,0 +1,11 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "bindings"
+when
+    Cheese( $t : type == "stilton" || $p : price == 10 )
+then
+    results.add( $t );
+    results.add( new Integer( $p ) );
+end 

@@ -3332,6 +3332,31 @@ public class MiscTest extends TestCase {
         //Thread.currentThread().wait();
     }
 
+    public void testBindingsOnConnectiveExpressions() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_bindings.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        workingMemory.insert( new Cheese( "stilton", 15 ) );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( "stilton",
+                      results.get(0) );
+        assertEquals( new Integer(15),
+                      results.get(1) );
+    }
+
     
 
 }
