@@ -54,6 +54,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
         final List list = new ArrayList();
         list.add( "foo" );
+        list.add( null );
 
         Collection col = Arrays.asList( new String[] { "foo", "bar", null} );
 
@@ -63,6 +64,9 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {"foo", "!=", "bar", Boolean.TRUE}, 
                                  {list, "contains", "foo", Boolean.TRUE}, 
                                  {list, "contains", "bar", Boolean.FALSE},
+                                 {list, "contains", null, Boolean.TRUE},
+                                 {null, "contains", "bar", Boolean.FALSE},
+                                 {null, "contains", null, Boolean.FALSE},
                                  {list, "==", null, Boolean.FALSE}, 
                                  {list, "!=", null, Boolean.TRUE}, 
                                  {null, "==", null, Boolean.TRUE}, 

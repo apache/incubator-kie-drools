@@ -464,21 +464,21 @@ public class ObjectFactory
                                 final Object object1, final FieldValue object2) {
             final Object value = object2.getValue();
             final Collection col = (Collection) extractor.getValue( workingMemory, object1 );
-            return col.contains( value );
+            return ( col == null ) ? false : col.contains( value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
             final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
             final Collection col = (Collection) ((ObjectVariableContextEntry) context).right;
-            return col.contains( value );
+            return ( col == null ) ? false : col.contains( value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
             final Object value = ((ObjectVariableContextEntry) context).left;
             final Collection col = (Collection) context.extractor.getValue( workingMemory, right );
-            return col.contains( value );
+            return ( col == null ) ? false : col.contains( value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -487,7 +487,7 @@ public class ObjectFactory
                                 final Extractor extractor2, final Object object2) {
             final Object value = extractor2.getValue( workingMemory, object2 );
             final Collection col = (Collection) extractor1.getValue( workingMemory, object1 );
-            return col.contains( value );
+            return ( col == null ) ? false : col.contains( value );
         }
 
         public String toString() {
