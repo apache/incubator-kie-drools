@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.rule.builder.Dialect;
 
 public class DialectRegistry {
     private Map map;
@@ -15,20 +14,27 @@ public class DialectRegistry {
         this.map = new HashMap();
     }
 
-    public void addDialect(final String name,
-                           final Dialect dialect) {
+    public void addDialectConfiguration(final String name,
+                           final DialectConfiguration dialect) {
         this.map.put( name,
                       dialect );
     }
 
-    public Dialect getDialect(final String name) {
-        return (Dialect) this.map.get( name );
+    public DialectConfiguration getDialectConfiguration(final String name) {
+        return (DialectConfiguration) this.map.get( name );
+    }
+    
+    public void initAll(PackageBuilder builder) {
+        for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
+            DialectConfiguration dialect = ( DialectConfiguration ) it.next();
+            dialect.getDialect().init( builder );
+        }        
     }
     
     public void compileAll() {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            Dialect dialect = ( Dialect ) it.next();
-            dialect.compileAll();
+            DialectConfiguration dialect = ( DialectConfiguration ) it.next();
+            dialect.getDialect().compileAll();
         }
     }
     
@@ -41,23 +47,26 @@ public class DialectRegistry {
             list = new ArrayList();
         }
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            Dialect dialect = ( Dialect ) it.next();
-            list.addAll( dialect.getResults() );
+            DialectConfiguration dialect = ( DialectConfiguration ) it.next();
+            List results = dialect.getDialect().getResults();
+            if ( results != null ) {
+                list.addAll( results );
+            }
         }        
         return list;
     }
 
     public void addImport(String importEntry) {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            Dialect dialect = ( Dialect ) it.next();
-            dialect.addImport( importEntry );
+            DialectConfiguration dialect = ( DialectConfiguration ) it.next();
+            dialect.getDialect().addImport( importEntry );
         }
     }
     
     public void addStaticImport(String staticImportEntry) {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            Dialect dialect = ( Dialect ) it.next();
-            dialect.addStaticImport( staticImportEntry );
+            DialectConfiguration dialect = ( DialectConfiguration ) it.next();
+            dialect.getDialect().addStaticImport( staticImportEntry );
         }        
     }
     

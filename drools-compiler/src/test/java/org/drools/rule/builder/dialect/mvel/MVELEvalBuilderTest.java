@@ -12,6 +12,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
+import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -32,17 +33,15 @@ public class MVELEvalBuilderTest extends TestCase {
     public void testSimpleExpression() {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
-
-        MVELDialect mvelDialect = new MVELDialect( new PackageBuilder( pkg ) );
-        DialectRegistry registry = new DialectRegistry();
-        registry.addDialect( "mvel",
-                             mvelDialect );
-        final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+               
+        PackageBuilder pkgBuilder = new PackageBuilder( pkg );
+        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+        MVELDialect mvelDialect = ( MVELDialect ) ( (DialectConfiguration) conf.getDialectConfiguration( "mvel" ) ).getDialect();
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
                                                                                pkg,
                                                                                ruleDescr,
-                                                                               registry,
+                                                                               conf.getDialectRegistry(),
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();

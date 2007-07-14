@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
+import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
@@ -84,14 +85,13 @@ public class RuleBuilderTest extends TestCase {
         typeResolver.addImport( pkgDescr.getName() + ".*" );
         typeResolver.addImport( "java.lang.*" );
 
-        final RuleBuilder builder = new RuleBuilder( );        
+        final RuleBuilder builder = new RuleBuilder( );                
         
-        JavaDialect dialect =  new JavaDialect( new PackageBuilder(pkg) ) ;  
-        DialectRegistry registry = new DialectRegistry();
-        registry.addDialect( "java", dialect );
+        final PackageBuilder pkgBulider = new PackageBuilder(pkg);
+        final PackageBuilderConfiguration conf = pkgBulider.getPackageBuilderConfiguration();
+        Dialect dialect = pkgBulider.getPackageBuilderConfiguration().getDialectRegistry().getDialectConfiguration( "java" ).getDialect();
         
-        final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        RuleBuildContext context = new RuleBuildContext(conf, pkg, ruleDescr, registry, dialect);
+        RuleBuildContext context = new RuleBuildContext(conf, pkg, ruleDescr, conf.getDialectRegistry(), dialect);
       
         builder.build( context );
 

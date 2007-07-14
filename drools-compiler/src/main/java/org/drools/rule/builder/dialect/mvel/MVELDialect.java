@@ -14,6 +14,7 @@ import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
+import org.drools.compiler.Dialect;
 import org.drools.compiler.ImportError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -34,7 +35,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
-import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.PatternBuilder;
@@ -61,34 +61,34 @@ public class MVELDialect
     implements
     Dialect {
 
-    private final static String                     EXPRESSION_DIALECT_NAME = "MVEL";
+    private final static String               EXPRESSION_DIALECT_NAME = "MVEL";
 
-    private final PatternBuilder                    pattern                 = new PatternBuilder();
-    private final QueryBuilder                      query                   = new QueryBuilder();
-    private final MVELAccumulateBuilder             accumulate              = new MVELAccumulateBuilder();
-    private final SalienceBuilder                   salience                = new MVELSalienceBuilder();
-    private final MVELEvalBuilder                   eval                    = new MVELEvalBuilder();
-    private final MVELPredicateBuilder              predicate               = new MVELPredicateBuilder();
-    private final MVELReturnValueBuilder            returnValue             = new MVELReturnValueBuilder();
-    private final MVELConsequenceBuilder            consequence             = new MVELConsequenceBuilder();
+    private final PatternBuilder              pattern                 = new PatternBuilder();
+    private final QueryBuilder                query                   = new QueryBuilder();
+    private final MVELAccumulateBuilder       accumulate              = new MVELAccumulateBuilder();
+    private final SalienceBuilder             salience                = new MVELSalienceBuilder();
+    private final MVELEvalBuilder             eval                    = new MVELEvalBuilder();
+    private final MVELPredicateBuilder        predicate               = new MVELPredicateBuilder();
+    private final MVELReturnValueBuilder      returnValue             = new MVELReturnValueBuilder();
+    private final MVELConsequenceBuilder      consequence             = new MVELConsequenceBuilder();
     //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
-    private final MVELFromBuilder                   from                    = new MVELFromBuilder();
+    private final MVELFromBuilder             from                    = new MVELFromBuilder();
 
-    private final Map                               interceptors;
+    private Map                               interceptors;
 
-    private List                                    results;
+    private List                              results;
     //private final JavaFunctionBuilder             function    = new JavaFunctionBuilder();
 
-    private Package                                 pkg;
-    private PackageBuilderConfiguration             configuration;
-    private final TypeResolver                      typeResolver;
-    private final ClassFieldExtractorCache          classFieldExtractorCache;
-    private final MVELExprAnalyzer                  analyzer;
+    private Package                           pkg;
+    private MVELDialectConfiguration          configuration;
+    private TypeResolver                      typeResolver;
+    private ClassFieldExtractorCache          classFieldExtractorCache;
+    private MVELExprAnalyzer                  analyzer;
 
-    private final StaticMethodImportResolverFactory staticImportFactory;
-    private final ClassImportResolverFactory        importFactory;
-    
-    private boolean strictMode;
+    private StaticMethodImportResolverFactory staticImportFactory;
+    private ClassImportResolverFactory        importFactory;
+
+    private boolean                           strictMode;
 
     public void addFunction(FunctionDescr functionDescr,
                             TypeResolver typeResolver) {
@@ -99,14 +99,17 @@ public class MVELDialect
     // a map of registered builders
     private Map builders;
 
-    public MVELDialect(final PackageBuilder builder) {
+    public MVELDialect() {
+    }
+
+    public void init(PackageBuilder builder) {
         AbstractParser.setLanguageLevel( 4 );
 
         this.pkg = builder.getPackage();
-        this.configuration = builder.getPackageBuilderConfiguration();
+        this.configuration = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );
         this.typeResolver = builder.getTypeResolver();
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
-        this.strictMode = true;
+        this.strictMode = this.configuration.isStrict();
 
         this.analyzer = new MVELExprAnalyzer();
 
@@ -205,7 +208,7 @@ public class MVELDialect
                                                          index + 1 );
 
         try {
-            Class cls = configuration.getClassLoader().loadClass( className );
+            Class cls = this.configuration.getPackageBuilderConfiguration().getClassLoader().loadClass( className );
             Method[] methods = cls.getDeclaredMethods();
             for ( int i = 0; i < methods.length; i++ ) {
                 if ( methods[i].equals( "methodName" ) ) {
@@ -226,7 +229,7 @@ public class MVELDialect
     public ClassImportResolverFactory getClassImportResolverFactory() {
         return this.importFactory;
     }
-        
+
     public boolean isStrictMode() {
         return strictMode;
     }
@@ -309,7 +312,7 @@ public class MVELDialect
                                                                null );
 
         //this.configuration.get
-        
+
         parserContext.setStrictTypeEnforcement( strictMode );
         if ( interceptors != null ) {
             parserContext.setInterceptors( interceptors );
@@ -331,24 +334,23 @@ public class MVELDialect
                                     (Class) globalTypes.get( identifier ) );
         }
 
-        
-        Map mvelVars = ((MVELAnalysisResult)analysis).getMvelVariables();
+        Map mvelVars = ((MVELAnalysisResult) analysis).getMvelVariables();
         if ( mvelVars != null ) {
             for ( Iterator it = mvelVars.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
-                parserContext.addInput( (String)entry.getKey(),
+                parserContext.addInput( (String) entry.getKey(),
                                         (Class) entry.getValue() );
-            }        
+            }
         }
-        
+
         if ( outerDeclarations != null ) {
             for ( Iterator it = outerDeclarations.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
-                parserContext.addInput( (String)entry.getKey(),
+                parserContext.addInput( (String) entry.getKey(),
                                         ((Declaration) entry.getValue()).getExtractor().getExtractToClass() );
             }
         }
-        
+
         parserContext.addInput( "drools",
                                 KnowledgeHelper.class );
 

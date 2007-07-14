@@ -81,6 +81,7 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.dialect.java.JavaDialect;
+import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.ruleflow.common.core.Process;
 import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 import org.drools.spi.Activation;
@@ -1010,7 +1011,8 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // test JANINO with property settings
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        conf.setCompiler( PackageBuilderConfiguration.JANINO );
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
+        javaConf.setCompiler( JavaDialectConfiguration.JANINO );
         builder = new PackageBuilder( conf );
         dialect = (JavaDialect) dialectField.get( builder );
         compiler = (JavaCompiler) compilerField.get( dialect );
@@ -1019,7 +1021,8 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // test eclipse jdt core with property settings and default source level
         conf = new PackageBuilderConfiguration();
-        conf.setCompiler( PackageBuilderConfiguration.ECLIPSE );
+        javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
+        javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         builder = new PackageBuilder( conf );
         dialect = (JavaDialect) dialectField.get( builder );
         compiler = (JavaCompiler) compilerField.get( dialect );
@@ -1241,7 +1244,8 @@ public class PackageBuilderTest extends DroolsTestCase {
     
     public void testJaninoWithStaticImports() throws Exception {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        cfg.setCompiler( PackageBuilderConfiguration.JANINO );
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) cfg.getDialectConfiguration( "java" );
+        javaConf.setCompiler( JavaDialectConfiguration.JANINO );
         
         
         PackageBuilder bldr = new PackageBuilder(cfg);

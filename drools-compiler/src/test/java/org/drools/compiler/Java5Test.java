@@ -3,6 +3,7 @@ package org.drools.compiler;
 import java.io.InputStreamReader;
 
 import org.drools.DroolsTestCase;
+import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 
 public class Java5Test extends DroolsTestCase {
 
@@ -15,16 +16,19 @@ public class Java5Test extends DroolsTestCase {
             return;
         }
         final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        conf.setCompiler( PackageBuilderConfiguration.ECLIPSE );
-        conf.setJavaLanguageLevel( "1.5" );
-        final PackageBuilder builder = new PackageBuilder( conf );
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
+        javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
+        javaConf.setJavaLanguageLevel( "1.5" );
+        
+        final PackageBuilder builder = new PackageBuilder( );
         builder.addPackageFromDrl( new InputStreamReader( this.getClass().getResourceAsStream( "java5_rule.drl" ) ) );
         assertFalse( builder.hasErrors() );
     }
 
     public void testJava14Defaults() throws Exception {
         final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        conf.setCompiler( PackageBuilderConfiguration.JANINO );
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
+        javaConf.setCompiler( JavaDialectConfiguration.JANINO );
         final PackageBuilder builder = new PackageBuilder( conf );
         builder.addPackageFromDrl( new InputStreamReader( this.getClass().getResourceAsStream( "java5_rule.drl" ) ) );
         assertTrue( builder.hasErrors() );

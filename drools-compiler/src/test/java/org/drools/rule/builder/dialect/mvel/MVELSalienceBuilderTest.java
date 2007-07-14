@@ -11,6 +11,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
+import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -30,16 +31,14 @@ public class MVELSalienceBuilderTest extends TestCase {
         ruleDescr.setSalience( "p.age + 20" );
         ruleDescr.setConsequence( "" );
 
-        MVELDialect mvelDialect = new MVELDialect( new PackageBuilder( pkg ) );
-        DialectRegistry registry = new DialectRegistry();
-        registry.addDialect( "mvel",
-                             mvelDialect );
-        final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        PackageBuilder pkgBuilder = new PackageBuilder( pkg );
+        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+        MVELDialect mvelDialect = ( MVELDialect ) ( (DialectConfiguration) conf.getDialectConfiguration( "mvel" ) ).getDialect();
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
                                                                                pkg,
                                                                                ruleDescr,
-                                                                               registry,
+                                                                               conf.getDialectRegistry(),
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();

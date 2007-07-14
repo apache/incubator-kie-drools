@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.drools.base.dataproviders.MVELDataProvider;
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.compiler.Dialect;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
@@ -27,7 +28,6 @@ import org.drools.lang.descr.FromDescr;
 import org.drools.rule.From;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
-import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.DataProvider;

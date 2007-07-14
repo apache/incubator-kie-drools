@@ -1,4 +1,4 @@
-package org.drools.rule.builder;
+package org.drools.compiler;
 
 import java.util.List;
 import java.util.Map;
@@ -9,8 +9,21 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
+import org.drools.rule.builder.AccumulateBuilder;
+import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.FromBuilder;
+import org.drools.rule.builder.PatternBuilder;
+import org.drools.rule.builder.PredicateBuilder;
+import org.drools.rule.builder.QueryBuilder;
+import org.drools.rule.builder.ReturnValueBuilder;
+import org.drools.rule.builder.RuleBuildContext;
+import org.drools.rule.builder.RuleClassBuilder;
+import org.drools.rule.builder.RuleConditionBuilder;
+import org.drools.rule.builder.SalienceBuilder;
 
 public interface Dialect {
+    void init(PackageBuilder builder);
+    
     // this is needed because some dialects use other dialects
     // to build complex expressions. Example: java dialect uses MVEL
     // to execute complex expressions 
