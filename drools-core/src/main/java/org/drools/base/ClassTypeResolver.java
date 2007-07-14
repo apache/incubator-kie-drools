@@ -30,7 +30,7 @@ import org.drools.RuntimeDroolsException;
 public class ClassTypeResolver
     implements
     TypeResolver {
-    private List             imports;
+    private List             imports          = Collections.EMPTY_LIST;
 
     private ClassLoader      classLoader;
 
@@ -63,14 +63,14 @@ public class ClassTypeResolver
         if ( classLoader == null ) {
             throw new RuntimeDroolsException( "ClassTypeResolver cannot have a null parent ClassLoader" );
         }
-        
+
         this.classLoader = classLoader;
     }
 
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
-    
+
     /*
      * (non-Javadoc)
      * 

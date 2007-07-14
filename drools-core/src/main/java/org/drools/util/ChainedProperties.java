@@ -130,29 +130,38 @@ public class ChainedProperties implements Serializable {
     }
 
     public void mapStartsWith(Map map,
-                              String startsWith) {
+                              String startsWith,
+                              boolean includeSubProperties) {
         for ( Iterator it = this.props.iterator(); it.hasNext(); ) {
             Properties props = (Properties) it.next();
             mapStartsWith( map,
                            props,
-                           startsWith );
+                           startsWith,
+                           includeSubProperties );
         }
         
         for ( Iterator it = this.defaultProps.iterator(); it.hasNext(); ) {
             Properties props = (Properties) it.next();
             mapStartsWith( map,
                            props,
-                           startsWith );
+                           startsWith,
+                           includeSubProperties );
         }        
     }
 
     private void mapStartsWith(Map map,
                                Properties properties,
-                               String startsWith) {
+                               String startsWith,
+                               boolean includeSubProperties) {
         Enumeration enumeration = properties.propertyNames();
         while ( enumeration.hasMoreElements() ) {
             String key = (String) enumeration.nextElement();
-            if ( key.startsWith( startsWith ) ) {
+            if ( key.startsWith( startsWith ) ) {                
+                if ( !includeSubProperties && key.substring( startsWith.length() + 1 ).indexOf( '.' ) > 0 ) {
+                    // +1 to the length, as we do allow the direct property, just not ones below it
+                    // This key has sub properties beyond the given startsWith, so skip
+                    continue;
+                }
                 if ( !map.containsKey( key ) ) {
                     map.put( key,
                              properties.getProperty( key ) );
