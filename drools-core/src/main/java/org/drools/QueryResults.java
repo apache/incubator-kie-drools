@@ -25,6 +25,11 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Query;
 import org.drools.spi.Tuple;
 
+/**
+ * Returned QueryResults instance for a requested named query. from here you can iterate the returned data, or
+ * get a specific row. All the available Declarations used in the query can also be accessed.
+ *
+ */
 public class QueryResults {
     private Query           query;
 
@@ -50,10 +55,22 @@ public class QueryResults {
                                 this );
     }
 
+    /**
+     * Returns an Iterator for the results.
+     * 
+     * @return
+     */
     public Iterator iterator() {
         return new QueryResultsIterator( this.results.iterator() );
     }
 
+    /**
+     * Return a map of Declarations where the key is the identifier and the value
+     * is the Declaration.
+     * 
+     * @return
+     *      The Map of Declarations.
+     */
     public Map getDeclarations() {
 
         final Declaration[] declarations = this.query.getDeclarations();
@@ -67,11 +84,15 @@ public class QueryResults {
         return this.declarations;
     }
 
+    /**
+     * The results size
+     * @return
+     */
     public int size() {
         return this.results.size();
     }
 
-    class QueryResultsIterator
+    private class QueryResultsIterator
         implements
         Iterator {
         private Iterator iterator;
