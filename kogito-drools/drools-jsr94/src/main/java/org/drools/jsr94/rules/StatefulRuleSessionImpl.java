@@ -32,7 +32,6 @@ import javax.rules.StatefulRuleSession;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.NoSuchFactObjectException;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
