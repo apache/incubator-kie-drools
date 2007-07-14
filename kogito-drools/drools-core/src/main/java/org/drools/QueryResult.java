@@ -37,23 +37,53 @@ public class QueryResult {
         this.queryResults = queryResults;
     }
 
+    /**
+     * Return a map of Declarations where the key is the identifier and the value
+     * is the Declaration.
+     * 
+     * @return
+     *      The Map of Declarations.
+     */    
     public Map getDeclarations() {
         return this.queryResults.getDeclarations();
     }
 
+    /**
+     * Returns the Object for int position in the Tuple
+     * 
+     * @param i
+     * @return
+     *     The Object
+     */
     public Object get(final int i) {
         //adjust for the DroolsQuery object
         return getObject( this.tuple.get( i + 1 ));
     }
 
+    /** 
+     * Return the Object for the given Declaration identifer.
+     * @param identifier
+     * @return
+     *      The Object
+     */
     public Object get(final String identifier) {
         return get( (Declaration) this.queryResults.getDeclarations().get( identifier ) );
     }
 
+    /** 
+     * Return the Object for the given Declaration.
+     * @param identifier
+     * @return
+     *      The Object
+     */    
     public Object get(final Declaration declaration) {
         return declaration.getValue( (InternalWorkingMemory) workingMemory, getObject( this.tuple.get( declaration ) ) );
     }
 
+    /**
+     * Return the FactHandles for the Tuple.
+     * @return
+     */
     public FactHandle[] getFactHandles() {
         // Strip the DroolsQuery fact
         final FactHandle[] src = this.tuple.getFactHandles();
@@ -66,12 +96,22 @@ public class QueryResult {
         return dst;
     }
 
+    /**
+     * The size of the Tuple; i.e. the number of columns (FactHandles) in this row result.
+     * @return
+     */
     public int size() {
         // Adjust for the DroolsQuery object
         return this.tuple.getFactHandles().length - 1;
     }
     
-    private Object getObject(InternalFactHandle handle) {
+    /**
+     * Get the Object for the given FactHandle
+     * @param handle
+     * @return
+     */
+    private Object getObject(FactHandle factHandle) {
+        InternalFactHandle handle = ( InternalFactHandle ) factHandle; 
         if ( handle.isShadowFact() ) {
             return ((ShadowProxy) handle.getObject()).getShadowedObject();
         } else {
