@@ -42,36 +42,52 @@ import org.drools.spi.GlobalResolver;
  */
 public interface WorkingMemory extends EventManager {
 
+    /**
+     * Returns the Agenda for this WorkingMemory. While the WorkingMemory interface is considered public, the Agenda interface 
+     * is more subject to change.
+     * @return
+     *         the Agenda
+     */
     public Agenda getAgenda();
 
     /**
-     * Set a specific piece of global in this working memory. Null values will return doing nothign
+     * Set a specific instance as a global in this working memory. Null values will return doing nothing.
+     * The global identifier and its type must be declared in the drl.
      * 
-     * @param name
-     *            the name under which to populate the data
+     * @param identifier
+     *            the identifier under which to populate the data
      * @param value
      *            the global value, cannot be null
      */
-    void setGlobal(String name,
+    void setGlobal(String identifier,
                    Object value);
 
     /**
-     * Retrieve a specific piece of global data by name
+     * Retrieve a specific instance of global data by identifier
      * 
-     * @return application data or null if nothing is set under this name
+     * @return application data or null if nothing is set under this identifier
      */
-    Object getGlobal(String name);
+    Object getGlobal(String identifier);
 
+    
     /**
-     * Delegate used to resolve any global names not found in the global map.
+     * Sets the GlobalResolver instance to be used when resolving globals, replaces the current GlobalResolver.
+     * Typcicaly a delegating GlobalResolver is created that first gets a reference to the current GlobalResolver,
+     * for delegating
+     * 
      * @param globalResolver
      */
     void setGlobalResolver(GlobalResolver globalResolver);
     
+    /**
+     * Returns the current GlobalResolver
+     * 
+     * @return
+     */
     GlobalResolver getGlobalResolver();
 
     /**
-     * Retrieve the <code>RuleBase</code> of this working memory.
+     * Retrieve the <code>RuleBase</code> for this working memory.
      * 
      * @return The <code>RuleBase</code>.
      */
@@ -81,7 +97,7 @@ public interface WorkingMemory extends EventManager {
      * Fire all items on the agenda until empty.
      * 
      * @throws FactException
-     *             If an error occurs.
+     *             If a RuntimeException error occurs.
      */
     void fireAllRules() throws FactException;
 
@@ -89,7 +105,7 @@ public interface WorkingMemory extends EventManager {
      * Fire all items on the agenda until empty, using the given AgendaFiler
      * 
      * @throws FactException
-     *             If an error occurs.
+     *             If a RuntimeException error occurs.
      */
     void fireAllRules(AgendaFilter agendaFilter) throws FactException;
       
@@ -97,7 +113,7 @@ public interface WorkingMemory extends EventManager {
      * Fire all items on the agenda until empty or at most 'fireLimit' rules have fired
      * 
      * @throws FactException
-     *             If an error occurs.
+     *             If a RuntimeException error occurs.
      */
     void fireAllRules( int fireLimit ) throws FactException;
 
@@ -106,54 +122,84 @@ public interface WorkingMemory extends EventManager {
      * until empty or at most 'fireLimit' rules have fired
      * 
      * @throws FactException
-     *             If an error occurs.
+     *             If a RuntimeException error occurs.
      */
     void fireAllRules(final AgendaFilter agendaFilter, int fireLimit ) throws FactException;
 
     /**
      * Retrieve the object associated with a <code>FactHandle</code>.
      * 
-     * @see #containsObject
      * 
      * @param handle
      *            The fact handle.
      * 
      * @return The associated object.
-     * 
-     * @throws NoSuchFactObjectException
-     *             If no object is known to be associated with the specified
-     *             handle.
      */
-    Object getObject(FactHandle handle) throws NoSuchFactObjectException;
+    Object getObject(FactHandle handle);
 
     /**
      * Retrieve the <code>FactHandle</code> associated with an Object.
-     * 
-     * @see #containsObject
      * 
      * @param object
      *            The object.
      * 
      * @return The associated fact handle.
-     * 
-     * @throws NoSuchFactHandleException
-     *             If no handle is known to be associated with the specified
-     *             object.
      */
-    FactHandle getFactHandle(Object object) throws NoSuchFactHandleException;
+    FactHandle getFactHandle(Object object);
 
+    /**
+     * Returns an Iterator for the Objects in the Working Memory. This Iterator is not thread safe.
+     * @return
+     *     the Iterator
+     */
     Iterator iterateObjects();
     
+    /**
+     *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
+     *  any objects that the ObjectFilter does not accept. This Iterator is not thread safe.
+     *  
+     * @param filter
+     * 
+     * @return
+     *     the Iterator
+     */    
     Iterator iterateObjects(ObjectFilter filter);
 
+    /**
+     * Returns an Iterator for the FactHandles in the Working Memory. This Iterator is not thread safe.
+     * @return
+     *     the Iterator
+     */    
     Iterator iterateFactHandles();
     
+    /**
+     *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
+     *  any objects that the ObjectFilter does not accept. This Iterator is not thread safe.
+     *  
+     * @param filter
+     * 
+     * @return
+     *     the Iterator
+     */        
     Iterator iterateFactHandles(ObjectFilter filter);    
     
+    /**
+     * Returns the AgendaGroup which has the current WorkingMemory focus. The AgendaGroup interface is subject to change.
+     * @return
+     *     the AgendaGroup
+     */
     public AgendaGroup getFocus();
 
+    /**
+     * Set the focus to the specified AgendaGroup
+     * @param focus
+     */
     void setFocus(String focus);
 
+    /**
+     * Set the focus to the specified AgendaGroup
+     * @param focus
+     */    
     void setFocus(AgendaGroup focus);
         
 
@@ -166,7 +212,7 @@ public interface WorkingMemory extends EventManager {
      * @return The new fact-handle associated with the object.
      * 
      * @throws FactException
-     *             If an error occurs.
+     *             If a RuntimeException error occurs.
      */
     FactHandle insert(Object object) throws FactException;
 
@@ -184,10 +230,25 @@ public interface WorkingMemory extends EventManager {
      */
     public QueryResults getQueryResults(String query);
     
+    /**
+     * Retrieve the QueryResults of the specified query and arguments
+     *
+     * @param query
+     *            The name of the query.
+     *            
+     * @param arguments
+     *            The arguments used for the query
+     *
+     * @return The QueryResults of the specified query.
+     *         If no results match the query it is empty.
+     *         
+     * @throws IllegalArgumentException 
+     *         if no query named "query" is found in the rulebase         
+     */    
     public QueryResults getQueryResults(String query, Object[] arguments);
 
     /**
-     * Assert a fact registering JavaBean <code>PropertyChangeListeners</code>
+     * Insert a fact registering JavaBean <code>PropertyChangeListeners</code>
      * on the Object to automatically trigger <code>update</code> calls
      * if <code>dynamic</code> is <code>true</code>.
      * 
@@ -200,7 +261,7 @@ public interface WorkingMemory extends EventManager {
      * @return The new fact-handle associated with the object.
      * 
      * @throws FactException
-     *             If an error occurs.
+     *             If a RuntimeException error occurs.
      */
     FactHandle insert(Object object,
                             boolean dynamic) throws FactException;
@@ -212,12 +273,13 @@ public interface WorkingMemory extends EventManager {
      *            The fact-handle associated with the fact to retract.
      * 
      * @throws FactException
-     *             If an error occurs.
+     *             If a RuntimeException error occurs.
      */
     void retract(FactHandle handle) throws FactException;
 
     /**
-     * Modify a fact.
+     * Inform the WorkingMemory that a Fact has been modified and that it
+     * should now update the network.
      * 
      * @param handle
      *            The fact-handle associated with the fact to modify.
@@ -225,13 +287,22 @@ public interface WorkingMemory extends EventManager {
      *            The new value of the fact.
      * 
      * @throws FactException
-     *             If an error occurs.
+     *             If a RuntimeException error occurs.
      */
     void update(FactHandle handle,
                       Object object) throws FactException;
     
+    /**
+     * 
+     * @param factHandle
+     */
     public void modifyRetract(final FactHandle factHandle);
     
+    /**
+     * 
+     * @param factHandle
+     * @param object
+     */
     public void modifyInsert(final FactHandle factHandle,
                              final Object object);    
 
@@ -244,13 +315,12 @@ public interface WorkingMemory extends EventManager {
     void setAsyncExceptionHandler(AsyncExceptionHandler handler);
 
     /**
-     * Clear the Agenda
-     * 
+     * Clear the Agenda. Iterates over each AgendaGroup cancalling all Activations.
      */
     void clearAgenda();
 
     /**
-     * Clear the Agenda Group
+     * Clear the Agenda Group, cancelling all its Activations.
      */
     public void clearAgendaGroup(String group);
 
