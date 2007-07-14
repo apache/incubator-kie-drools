@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.rule.builder.Dialect.AnalysisResult;
+import org.drools.compiler.Dialect.AnalysisResult;
 
 /**
  * An analysis result implementation for the MVEL dialect

@@ -20,11 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.Dialect;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.ConsequenceBuilder;
-import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.PatternExtractor;
 

@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELSalienceExpression;
+import org.drools.compiler.Dialect;
 import org.drools.compiler.RuleError;
-import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.SalienceBuilder;
 import org.mvel.ExpressionCompiler;

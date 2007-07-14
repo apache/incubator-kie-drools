@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.drools.base.evaluators.DateFactory;
+import org.drools.compiler.Dialect;
+import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
@@ -119,7 +121,7 @@ public class RuleBuildContext {
                        ruleDescr.getAttributes() );
 
         this.dialectRegistry = dialectRegistry;
-        this.dialect = (this.rule.getDialect() != null) ? this.dialectRegistry.getDialect( this.rule.getDialect() ) : defaultDialect;
+        this.dialect = (this.rule.getDialect() != null) ? this.dialectRegistry.getDialectConfiguration( this.rule.getDialect() ).getDialect() : defaultDialect;
 
         getDialect().init( ruleDescr );
     }
@@ -136,7 +138,7 @@ public class RuleBuildContext {
     }
 
     public Dialect getDialect(String dialectName) {
-        return (Dialect) this.dialectRegistry.getDialect( dialectName );
+        return ( (DialectConfiguration) this.dialectRegistry.getDialectConfiguration( dialectName ) ).getDialect();
     }
 
     /**

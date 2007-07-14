@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.accumulators.AccumulateFunction;
-import org.drools.rule.builder.Dialect;
 import org.drools.util.ChainedProperties;
 
 /**
@@ -44,22 +43,18 @@ import org.drools.util.ChainedProperties;
  * system property "drools.compiler.lnglevel". Valid values are 1.4, 1.5 and 1.6.
  */
 public class PackageBuilderConfiguration {
-    public static final int      ECLIPSE                    = 0;
-    public static final int      JANINO                     = 1;
 
-    public static final String[] LANGUAGE_LEVELS            = new String[]{"1.4", "1.5", "1.6"};
 
     private static final String  ACCUMULATE_FUNCTION_PREFIX = "drools.accumulate.function.";
 
     private Map                  dialects;
+    
+    private DialectRegistry      dialectRegistry;
 
     private String               defaultDialect;
 
-    private int                  compiler;
-
     private ClassLoader          classLoader;
 
-    private String               languageLevel;
 
     private ChainedProperties    chainedProperties;
 
@@ -105,41 +100,24 @@ public class PackageBuilderConfiguration {
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
-        }
-
-        setJavaLanguageLevel( getDefaultLanguageLevel() );
-
-        setCompiler( getDefaultCompiler() );                
+        }              
 
         this.dialects = new HashMap();
         this.chainedProperties.mapStartsWith( this.dialects,
-                                              "drools.dialect" );
+                                              "drools.dialect",
+                                              false );
         setDefaultDialect( (String) this.dialects.remove( "drools.dialect.default" ) );
+        
+        this.dialectRegistry = buildDialectRegistry( );
 
         buildAccumulateFunctionsMap();
     }
-
-    public int getCompiler() {
-        return this.compiler;
+    
+    public ChainedProperties getChainedProperties() {
+        return this.chainedProperties;
     }
 
-    public String getJavaLanguageLevel() {
-        return this.languageLevel;
-    }
-
-    /**
-     * You cannot set language level below 1.5, as we need static imports, 1.5 is now the default.
-     * @param level
-     */
-    public void setJavaLanguageLevel(final String languageLevel) {
-        if ( Arrays.binarySearch( LANGUAGE_LEVELS,
-                                  languageLevel ) < 0 ) {
-            throw new RuntimeDroolsException( "value '" + languageLevel + "' is not a valid language level" );
-        }
-        this.languageLevel = languageLevel;
-    }
-
-    public DialectRegistry buildDialectRegistry(PackageBuilder packageBuilder) {
+    public DialectRegistry buildDialectRegistry() {
         DialectRegistry registry = new DialectRegistry();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         for ( Iterator it = this.dialects.entrySet().iterator(); it.hasNext(); ) {
@@ -149,39 +127,36 @@ public class PackageBuilderConfiguration {
             String dialectClass = (String) entry.getValue();
             try {
                 Class cls = classLoader.loadClass( dialectClass );
-                Constructor cons = cls.getConstructor( new Class[]{PackageBuilder.class} );
-                registry.addDialect( dialectName,
-                                     (Dialect) cons.newInstance( new Object[]{packageBuilder} ) );
+                DialectConfiguration dialectConf = ( DialectConfiguration ) cls.newInstance();
+                dialectConf.init( this );
+                registry.addDialectConfiguration( dialectName,
+                                     dialectConf );
             } catch ( Exception e ) {
-                throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + "'" );
+                throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + "'", e );
             }
         }
         return registry;
     }
+    
+    public DialectRegistry getDialectRegistry() {
+        return this.dialectRegistry;
+    }
 
-    public String getDefaultDialect() {
-        return this.defaultDialect;
+    public Dialect getDefaultDialect() {
+        return this.dialectRegistry.getDialectConfiguration( this.defaultDialect ).getDialect();
     }
 
     public void setDefaultDialect(String defaultDialect) {
         this.defaultDialect = defaultDialect;
     }
-
-    /** 
-     * Set the compiler to be used when building the rules semantic code blocks.
-     * This overrides the default, and even what was set as a system property. 
-     */
-    public void setCompiler(final int compiler) {
-        switch ( compiler ) {
-            case PackageBuilderConfiguration.ECLIPSE :
-                this.compiler = PackageBuilderConfiguration.ECLIPSE;
-                break;
-            case PackageBuilderConfiguration.JANINO :
-                this.compiler = PackageBuilderConfiguration.JANINO;
-                break;
-            default :
-                throw new RuntimeDroolsException( "value '" + compiler + "' is not a valid compiler" );
-        }
+    
+    public DialectConfiguration getDialectConfiguration(String name) {
+        return ( DialectConfiguration ) this.dialectRegistry.getDialectConfiguration( name );
+    }
+    
+    public void setDialectConfiguration(String name, DialectConfiguration configuration) {
+        this.dialects.put( name, 
+                           configuration );
     }
 
     public ClassLoader getClassLoader() {
@@ -195,59 +170,12 @@ public class PackageBuilderConfiguration {
         }
     }
 
-    /**
-     * This will attempt to read the System property to work out what default to set.
-     * This should only be done once when the class is loaded. After that point, you will have
-     * to programmatically override it.
-     */
-    private int getDefaultCompiler() {
-        try {
-            final String prop = this.chainedProperties.getProperty( "drools.compiler",
-                                                                    "ECLIPSE" );
-            if ( prop.equals( "ECLIPSE".intern() ) ) {
-                return PackageBuilderConfiguration.ECLIPSE;
-            } else if ( prop.equals( "JANINO" ) ) {
-                return PackageBuilderConfiguration.JANINO;
-            } else {
-                System.err.println( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );
-                return PackageBuilderConfiguration.ECLIPSE;
-            }
-        } catch ( final SecurityException e ) {
-            System.err.println( "Drools config: unable to read the drools.compiler property. Using default." );
-            return PackageBuilderConfiguration.ECLIPSE;
-        }
-    }
-
-    private String getDefaultLanguageLevel() {
-        String level = this.chainedProperties.getProperty( "drools.compiler.lnglevel",
-                                                           null );
-
-        if ( level == null ) {
-            String version = System.getProperty( "java.version" );
-            if ( version.startsWith( "1.4" ) ) {
-                level = "1.4";
-            } else if ( version.startsWith( "1.5" ) ) {
-                level = "1.5";
-            } else if ( version.startsWith( "1.6" ) ) {
-                level = "1.6";
-            } else {
-                level = "1.4";
-            }
-        }
-
-        if ( Arrays.binarySearch( LANGUAGE_LEVELS,
-                                  level ) < 0 ) {
-            throw new RuntimeDroolsException( "value '" + level + "' is not a valid language level" );
-        }
-
-        return level;
-    }
-
     private void buildAccumulateFunctionsMap() {
         this.accumulateFunctions = new HashMap();
         Map temp = new HashMap();
         this.chainedProperties.mapStartsWith( temp,
-                                              ACCUMULATE_FUNCTION_PREFIX );
+                                              ACCUMULATE_FUNCTION_PREFIX,
+                                              true );
         for ( Iterator it = temp.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             String identifier = ((String) entry.getKey()).trim().substring( ACCUMULATE_FUNCTION_PREFIX.length() );

@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELEvalExpression;
+import org.drools.compiler.Dialect;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
@@ -30,7 +31,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
-import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.spi.DeclarationScopeResolver;

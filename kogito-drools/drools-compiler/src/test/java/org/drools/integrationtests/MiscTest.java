@@ -94,6 +94,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.xml.XmlDumper;
 
 /** Run all the tests with the ReteOO engine implementation */
@@ -642,7 +643,9 @@ public class MiscTest extends TestCase {
 
     public void testJaninoEval() throws Exception {
         final PackageBuilderConfiguration config = new PackageBuilderConfiguration();
-        config.setCompiler( PackageBuilderConfiguration.JANINO );
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) config.getDialectConfiguration( "java" );
+        javaConf.setCompiler( JavaDialectConfiguration.JANINO );
+        
         final PackageBuilder builder = new PackageBuilder( config );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();

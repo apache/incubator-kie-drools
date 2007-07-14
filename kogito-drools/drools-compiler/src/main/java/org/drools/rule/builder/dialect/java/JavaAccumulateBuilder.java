@@ -25,6 +25,7 @@ import java.util.TreeSet;
 
 import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
+import org.drools.compiler.Dialect;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -33,7 +34,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;

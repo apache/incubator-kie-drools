@@ -17,6 +17,7 @@ import org.drools.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.commons.jci.readers.ResourceReader;
+import org.drools.compiler.Dialect;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.RuleError;
@@ -44,7 +45,6 @@ import org.drools.rule.Rule;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
-import org.drools.rule.builder.Dialect;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.FunctionBuilder;
@@ -79,11 +79,11 @@ public class JavaDialect
     private final JavaFunctionBuilder      function                = new JavaFunctionBuilder();
 
     // 
-    private final KnowledgeHelperFixer     knowledgeHelperFixer;
-    private final DeclarationTypeFixer     typeFixer;
-    private final JavaExprAnalyzer         analyzer;
+    private KnowledgeHelperFixer     knowledgeHelperFixer;
+    private DeclarationTypeFixer     typeFixer;
+    private JavaExprAnalyzer         analyzer;
 
-    private PackageBuilderConfiguration    configuration;
+    private JavaDialectConfiguration       configuration;
 
     private Package                        pkg;
     private JavaCompiler                   compiler;
@@ -96,15 +96,19 @@ public class JavaDialect
     // the class name for the rule    
     private String                         ruleClass;
 
-    private final TypeResolver             typeResolver;
-    private final ClassFieldExtractorCache classFieldExtractorCache;
+    private TypeResolver             typeResolver;
+    private ClassFieldExtractorCache classFieldExtractorCache;
 
     // a map of registered builders
     private Map                            builders;
 
-    public JavaDialect(final PackageBuilder builder) {
+    public JavaDialect() {
+
+    }
+    
+    public void init(PackageBuilder builder) {
         this.pkg = builder.getPackage();
-        this.configuration = builder.getPackageBuilderConfiguration();
+        this.configuration = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
         this.typeResolver = builder.getTypeResolver();
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
 
@@ -471,11 +475,11 @@ public class JavaDialect
 
     private void loadCompiler() {
         switch ( this.configuration.getCompiler() ) {
-            case PackageBuilderConfiguration.JANINO : {
+            case JavaDialectConfiguration.JANINO : {
                 this.compiler = JavaCompilerFactory.getInstance().createCompiler( "janino" );
                 break;
             }
-            case PackageBuilderConfiguration.ECLIPSE :
+            case JavaDialectConfiguration.ECLIPSE :
             default : {
                 this.compiler = JavaCompilerFactory.getInstance().createCompiler( "eclipse" );
                 JavaCompilerSettings settings = this.compiler.createDefaultSettings();    

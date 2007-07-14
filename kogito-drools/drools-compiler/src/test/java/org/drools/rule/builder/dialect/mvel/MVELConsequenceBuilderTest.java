@@ -2,6 +2,7 @@ package org.drools.rule.builder.dialect.mvel;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import junit.framework.TestCase;
 
@@ -14,6 +15,7 @@ import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -35,16 +37,14 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setConsequence( "modify (cheese) {price = 5 }; retract (cheese)" );
 
-        MVELDialect mvelDialect = new MVELDialect( new PackageBuilder( pkg ) );
-        DialectRegistry registry = new DialectRegistry();
-        registry.addDialect( "mvel",
-                             mvelDialect );
-        final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        PackageBuilder pkgBuilder = new PackageBuilder( pkg );
+        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+        MVELDialect mvelDialect = ( MVELDialect ) ( (DialectConfiguration) conf.getDialectConfiguration( "mvel" ) ).getDialect();
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
                                                                                pkg,
                                                                                ruleDescr,
-                                                                               registry,
+                                                                               conf.getDialectRegistry(),
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
@@ -100,16 +100,17 @@ public class MVELConsequenceBuilderTest extends TestCase {
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.setConsequence( "if (cheese.price == 10) { cheese.price = 5; }" );
 
-        MVELDialect mvelDialect = new MVELDialect( new PackageBuilder( pkg ) );
-        DialectRegistry registry = new DialectRegistry();
-        registry.addDialect( "default",
-                             mvelDialect );
+        Properties properties = new Properties();
+        properties.setProperty( "drools.dialect.default",
+                                "mvel" );        
+        PackageBuilderConfiguration cfg1 = new PackageBuilderConfiguration( properties );
+        MVELDialect mvelDialect = ( MVELDialect) cfg1.getDefaultDialect();
         final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
                                                                                pkg,
                                                                                ruleDescr,
-                                                                               registry,
+                                                                               conf.getDialectRegistry(),
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
