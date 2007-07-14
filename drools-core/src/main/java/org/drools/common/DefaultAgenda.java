@@ -161,13 +161,6 @@ public class DefaultAgenda
         item.cancel();
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.common.AgendaI#getScheduledItems()
-     */
-    public org.drools.util.LinkedList getScheduledItems() {
-        return this.scheduledActivations;
-    }
-
     public void addAgendaGroup(final AgendaGroup agendaGroup) {
         this.agendaGroups.put( agendaGroup.getName(),
                                agendaGroup );

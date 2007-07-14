@@ -33,10 +33,6 @@ import org.drools.ruleflow.common.core.Process;
  * </p>
  * 
  * @see WorkingMemory
- * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * 
- * @version $Id: RuleBase.java,v 1.2 2005/08/04 23:33:30 mproctor Exp $
  */
 public interface RuleBase
     extends

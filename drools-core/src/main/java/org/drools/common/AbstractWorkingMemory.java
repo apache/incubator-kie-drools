@@ -30,13 +30,12 @@ import java.util.Map;
 import org.drools.Agenda;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.NoSuchFactHandleException;
-import org.drools.NoSuchFactObjectException;
 import org.drools.ObjectFilter;
 import org.drools.Otherwise;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
+import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
@@ -309,25 +308,6 @@ public abstract class AbstractWorkingMemory
         return this.handleFactory;
     }
 
-//    public void setGlobals(Map globals) {
-//        //this.globals = globals;
-//    }
-
-//    /**
-//     * @see WorkingMemory
-//     */
-//    public Map getGlobals() {
-//        try {
-//            this.lock.lock();
-//            return this.globals;
-//        } finally {
-//            this.lock.unlock();
-//        }
-//    }
-
-    /**
-     * @see WorkingMemory
-     */
     public void setGlobal(final String identifier,
                           final Object value) {
         // Cannot set null values
@@ -346,7 +326,7 @@ public abstract class AbstractWorkingMemory
                 throw new RuntimeException( "Illegal class for global. " + "Expected [" + type.getName() + "], " + "found [" + value.getClass().getName() + "]." );
 
             } else {
-                this.globalResolver.setGlobal( identifier, 
+                this.globalResolver.setGlobal( identifier,
                                                value );
             }
         } finally {
@@ -362,7 +342,7 @@ public abstract class AbstractWorkingMemory
             this.lock.unlock();
         }
     }
-    
+
     public GlobalResolver getGlobalResolver() {
         return this.globalResolver;
     }
@@ -371,9 +351,6 @@ public abstract class AbstractWorkingMemory
         return this.id;
     }
 
-    /**
-     * @see WorkingMemory
-     */
     public Object getGlobal(final String identifier) {
         try {
             this.lock.lock();
@@ -383,33 +360,18 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    /**
-     * Retrieve the rule-firing <code>Agenda</code> for this
-     * <code>WorkingMemory</code>.
-     * 
-     * @return The <code>Agenda</code>.
-     */
     public Agenda getAgenda() {
         return this.agenda;
     }
 
-    /**
-     * Clear the Agenda
-     */
     public void clearAgenda() {
         this.agenda.clearAgenda();
     }
 
-    /**
-     * Clear the Agenda Group
-     */
     public void clearAgendaGroup(final String group) {
         this.agenda.clearAgendaGroup( group );
     }
 
-    /**
-     * @see WorkingMemory
-     */
     public RuleBase getRuleBase() {
         return this.ruleBase;
     }
@@ -418,9 +380,6 @@ public abstract class AbstractWorkingMemory
         this.halt = true;
     }
 
-    /**
-     * @see WorkingMemory
-     */
     public synchronized void fireAllRules() throws FactException {
         fireAllRules( null,
                       -1 );
@@ -469,10 +428,11 @@ public abstract class AbstractWorkingMemory
                 }
             } finally {
                 this.firing = false;
-                if ( noneFired ) {
-                    doOtherwise( agendaFilter,
-                                 fireLimit );
-                }
+                // @todo (mproctor) disabling Otherwise management for now, not happy with the current implementation
+//                if ( noneFired ) {
+//                    doOtherwise( agendaFilter,
+//                                 fireLimit );
+//                }
 
             }
         }
@@ -755,7 +715,7 @@ public abstract class AbstractWorkingMemory
                     // assert
                     handle = this.handleFactory.newFactHandle( object );
                     addHandleToMaps( handle );
-                    
+
                     key = new EqualityKey( handle );
                     handle.setEqualityKey( key );
                     this.tms.put( key );
@@ -801,7 +761,7 @@ public abstract class AbstractWorkingMemory
                             handle.setEqualityKey( key );
                             key.addFactHandle( handle );
                             addHandleToMaps( handle );
-                            
+
                         }
 
                     } else {
@@ -809,7 +769,7 @@ public abstract class AbstractWorkingMemory
                         addHandleToMaps( handle );
                         key.addFactHandle( handle );
                         handle.setEqualityKey( key );
-                        
+
                     }
 
                 } else {
@@ -834,7 +794,7 @@ public abstract class AbstractWorkingMemory
                 }
                 handle = this.handleFactory.newFactHandle( object );
                 addHandleToMaps( handle );
-                
+
             }
 
             if ( dynamic ) {
@@ -856,7 +816,7 @@ public abstract class AbstractWorkingMemory
                         Object object,
                         Rule rule,
                         Activation activation) {
-        if( activation != null ) {
+        if ( activation != null ) {
             // release resources so that they can be GC'ed
             activation.getPropagationContext().releaseResources();
         }
@@ -908,7 +868,7 @@ public abstract class AbstractWorkingMemory
                                   Object object,
                                   PropagationContext propagationContext) throws FactException;
 
-    protected void removePropertyChangeListener(final FactHandle handle) throws NoSuchFactObjectException {
+    protected void removePropertyChangeListener(final FactHandle handle) {
         Object object = null;
         try {
             object = getObject( handle );
@@ -921,20 +881,17 @@ public abstract class AbstractWorkingMemory
                               this.addRemovePropertyChangeListenerArgs );
             }
         } catch ( final NoSuchMethodException e ) {
-            // The removePropertyChangeListener method on the class
-            // was not found so Drools will be unable to
-            // stop processing JavaBean PropertyChangeEvents
-            // on the retracted Object
+            throw new RuntimeDroolsException( "The removePropertyChangeListener method on the class was not found so Drools will be unable to stop processing JavaBean PropertyChangeEvents on the retracted Object." );
         } catch ( final IllegalArgumentException e ) {
-            System.err.println( "Warning: The removePropertyChangeListener method" + " on the class " + object.getClass() + " does not take" + " a simple PropertyChangeListener argument" + " so Drools will be unable to stop processing JavaBean"
+            throw new RuntimeDroolsException(  "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " does not take a simple PropertyChangeListener argument so Drools will be unable to stop processing JavaBean"
                                 + " PropertyChangeEvents on the retracted Object" );
         } catch ( final IllegalAccessException e ) {
-            System.err.println( "Warning: The removePropertyChangeListener method" + " on the class " + object.getClass() + " is not public" + " so Drools will be unable to stop processing JavaBean" + " PropertyChangeEvents on the retracted Object" );
+            throw new RuntimeDroolsException(  "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " is not public so Drools will be unable to stop processing JavaBean PropertyChangeEvents on the retracted Object" );
         } catch ( final InvocationTargetException e ) {
-            System.err.println( "Warning: The removePropertyChangeL istener method" + " on the class " + object.getClass() + " threw an InvocationTargetException" + " so Drools will be unable to stop processing JavaBean"
+            throw new RuntimeDroolsException(  "Warning: The removePropertyChangeL istener method on the class " + object.getClass() + " threw an InvocationTargetException so Drools will be unable to stop processing JavaBean"
                                 + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
         } catch ( final SecurityException e ) {
-            System.err.println( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a" + " removePropertyChangeListener method" + " so Drools will be unable to stop processing JavaBean"
+            throw new RuntimeDroolsException(  "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a removePropertyChangeListener method so Drools will be unable to stop processing JavaBean"
                                 + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
         }
     }
@@ -967,7 +924,7 @@ public abstract class AbstractWorkingMemory
             }
             removePropertyChangeListener( handle );
 
-            if( activation != null ) {
+            if ( activation != null ) {
                 // release resources so that they can be GC'ed
                 activation.getPropagationContext().releaseResources();
             }
@@ -1009,7 +966,6 @@ public abstract class AbstractWorkingMemory
                                                                 this );
 
             removeHandleFromMaps( handle );
-
 
             this.handleFactory.destroyFactHandle( handle );
 
@@ -1062,7 +1018,7 @@ public abstract class AbstractWorkingMemory
             return;
         }
 
-        if( activation != null ) {
+        if ( activation != null ) {
             // release resources so that they can be GC'ed
             activation.getPropagationContext().releaseResources();
         }
@@ -1123,7 +1079,7 @@ public abstract class AbstractWorkingMemory
 
             this.handleFactory.increaseFactHandleRecency( handle );
 
-            if( activation != null ) {
+            if ( activation != null ) {
                 // release resources so that they can be GC'ed
                 activation.getPropagationContext().releaseResources();
             }
@@ -1189,7 +1145,7 @@ public abstract class AbstractWorkingMemory
                 return;
             }
 
-            if( activation != null ) {
+            if ( activation != null ) {
                 // release resources so that they can be GC'ed
                 activation.getPropagationContext().releaseResources();
             }
@@ -1344,8 +1300,6 @@ public abstract class AbstractWorkingMemory
         try {
             update( getFactHandle( object ),
                     object );
-        } catch ( final NoSuchFactHandleException e ) {
-            // Not a fact so unable to process the chnage event
         } catch ( final FactException e ) {
             throw new RuntimeException( e.getMessage() );
         }

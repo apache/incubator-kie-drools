@@ -25,10 +25,6 @@ import org.drools.rule.Package;
  * @see RuleBase#addRule
  * @see RuleBase#addPackage
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
- * 
- * @version $Id: RuleIntegrationException.java,v 1.6 2004/09/17 00:14:06
- *          mproctor Exp $
  */
 public class PackageIntegrationException extends IntegrationException {
     /**
