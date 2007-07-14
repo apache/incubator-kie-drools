@@ -3,6 +3,6 @@
 	<classpathentry excluding="resources/" kind="src" path="src/main"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/drools-core"/>
+	<classpathentry kind="con" path="DROOLS/JBoss Rules"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
