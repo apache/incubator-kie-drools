@@ -122,7 +122,7 @@ public class CompositeObjectSinkAdapter
                         this.hashableSinks.remove( (ObjectSinkNode) sink );
                     }
 
-                    if ( this.hashableSinks.isEmpty() ) {
+                    if ( this.hashableSinks != null && this.hashableSinks.isEmpty() ) {
                         this.hashableSinks = null;
                     }
 
