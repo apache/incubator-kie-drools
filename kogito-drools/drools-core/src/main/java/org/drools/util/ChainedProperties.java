@@ -23,8 +23,11 @@ public class ChainedProperties implements Serializable {
         this( null,
               confFileName );
     }
-    
     public ChainedProperties(ClassLoader classLoader, String confFileName) {
+        this(classLoader, confFileName, true);
+    }
+    
+    public ChainedProperties(ClassLoader classLoader, String confFileName, boolean populateDefaults) {
         if ( classLoader == null ) {
             classLoader = Thread.currentThread().getContextClassLoader();
             if ( classLoader == null ) {
@@ -68,6 +71,10 @@ public class ChainedProperties implements Serializable {
         confClassLoader = ClassLoader.getSystemClassLoader();
         if ( confClassLoader != null && confClassLoader != classLoader ) {
             loadProperties( confClassLoader.getResource( "META-INF/drools." + confFileName ), this.props );
+        }
+        
+        if ( !populateDefaults ) {
+            return;            
         }
 
         // load default, only use the first one as there should only be one
