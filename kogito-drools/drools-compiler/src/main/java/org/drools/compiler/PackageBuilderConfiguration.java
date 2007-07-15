@@ -31,16 +31,19 @@ import org.drools.util.ChainedProperties;
 
 /**
  * This class configures the package compiler. 
- * There are options to use various flavours of runtime compilers.
- * Apache JCI is used as the interface to all the runtime compilers.
- * You may also use this class to override the class loader defaults that are otherwise used.
+ * Dialects and their DialectConfigurations  are handled by the DialectRegistry
  * Normally you will not need to look at this class, unless you want to override the defaults.
  * 
- * You can also use the system property "drools.compiler" to set the desired compiler.
- * The valid values are "ECLIPSE" and "JANINO" only. 
- * s
- * The default Java language level is 1.4 but it can be configured using the 
- * system property "drools.compiler.lnglevel". Valid values are 1.4, 1.5 and 1.6.
+ * drools.dialect.default = <String>
+ * drools.accumulate.function.<function name> = <qualified class>
+ * 
+ * default dialect is java.
+ * Available preconfigured Accumulate functions are:
+ * drools.accumulate.function.average = org.drools.base.accumulators.AverageAccumulateFunction
+ * drools.accumulate.function.max = org.drools.base.accumulators.MaxAccumulateFunction
+ * drools.accumulate.function.min = org.drools.base.accumulators.MinAccumulateFunction
+ * drools.accumulate.function.count = org.drools.base.accumulators.CountAccumulateFunction
+ * drools.accumulate.function.sum = org.drools.base.accumulators.SumAccumulateFunction 
  */
 public class PackageBuilderConfiguration {
 

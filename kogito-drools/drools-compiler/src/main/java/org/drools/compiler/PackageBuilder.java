@@ -54,6 +54,12 @@ import org.xml.sax.SAXException;
  * This is the main compiler class for parsing and compiling rules and
  * assembling or merging them into a binary Package instance. This can be done
  * by merging into existing binary packages, or totally from source.
+ * 
+ * If you are using the Java dialect the JavaDialectConfiguration will attempt to 
+ * validate that the specified compiler is in the classpath, using ClassLoader.loasClass(String). 
+ * If you intented to just Janino sa the compiler you must either overload the compiler 
+ * property before instantiating this class or the PackageBuilder, or make sure Eclipse is in the 
+ * classpath, as Eclipse is the default.
  */
 public class PackageBuilder {
 
@@ -91,6 +97,11 @@ public class PackageBuilder {
               null );
     }
 
+    /**
+     * Pass a specific configuration for the PackageBuilder
+     * 
+     * @param configuration
+     */
     public PackageBuilder(final PackageBuilderConfiguration configuration) {
         this( null,
               configuration );
@@ -440,7 +451,12 @@ public class PackageBuilder {
 
         return this.pkg;
     }
-
+    
+    /**
+     * Return the PackageBuilderConfiguration for this PackageBuilder session
+     * @return
+     *      The PackageBuilderConfiguration
+     */
     public PackageBuilderConfiguration getPackageBuilderConfiguration() {
         return this.configuration;
     }
@@ -455,6 +471,11 @@ public class PackageBuilder {
         }
     }
 
+    /**
+     * Return the ClassFieldExtractorCache, this should only be used internally, and is subject to change
+     * @return
+     *      the ClsasFieldExtractorCache
+     */
     public ClassFieldExtractorCache getClassFieldExtractorCache() {
         return this.classFieldExtractorCache;
     }
