@@ -43,11 +43,6 @@ import org.drools.util.ChainedProperties;
  * mutable again. This is to avoid inconsistent behavior inside rulebase.
  * 
  * NOTE: This API is under review and may change in the future.
- *
- * Created: 16/05/2006
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a> 
- *
- * @version $Id$
  */
 
 /**
