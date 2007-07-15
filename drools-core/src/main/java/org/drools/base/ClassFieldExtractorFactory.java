@@ -123,7 +123,7 @@ public class ClassFieldExtractorFactory {
                 return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
             }
         } catch ( final Exception e ) {
-            System.out.println( e );
+            //e.printStackTrace();
             throw new RuntimeDroolsException( e );
         }
     }

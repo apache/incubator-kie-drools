@@ -857,7 +857,7 @@ primary
     |   'super' superSuffix
     |   literal
     |   'new' creator
-    |   i=Identifier { identifiers.add( $i.text );  } ('.' Identifier)* (identifierSuffix)?
+    |   i=Identifier { if( ! "(".equals( input.LT(1) == null ? "" : input.LT(1).getText() ) ) identifiers.add( $i.text );  } ('.' Identifier)* (identifierSuffix)?
     |   primitiveType ('[' ']')* '.' 'class'
     |   'void' '.' 'class'
 	;
