@@ -320,7 +320,8 @@ public class Rete extends ObjectSource
                 return;
             }
             
-            String pkgName = cls.getPackage().getName();
+            Package pkg = cls.getPackage();
+            String pkgName = (pkg != null) ? pkg.getName() : "";
             if ( "org.drools.reteoo".equals( pkgName ) || "org.drools.base".equals( pkgName ) ) {
                 // We don't shadow internal classes
                 this.shadowEnabled = false;
