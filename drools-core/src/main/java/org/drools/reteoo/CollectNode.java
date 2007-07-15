@@ -234,7 +234,8 @@ public class CollectNode extends BetaNode
         for ( int i = 0; i < tuples.length; i++ ) {
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
-                this.modifyTuple( tuple,
+                this.modifyTuple( true,
+                                  tuple,
                                   handle,
                                   context,
                                   workingMemory );
@@ -266,7 +267,8 @@ public class CollectNode extends BetaNode
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( tuple ) ) {
                 
-                this.modifyTuple( tuple,
+                this.modifyTuple( false,
+                                  tuple,
                                   handle,
                                   context,
                                   workingMemory );
@@ -283,7 +285,8 @@ public class CollectNode extends BetaNode
      * @param context
      * @param workingMemory
      */
-    public void modifyTuple(final ReteTuple leftTuple,
+    public void modifyTuple(final boolean isAssert,
+                            final ReteTuple leftTuple,
                             InternalFactHandle handle,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
@@ -311,7 +314,11 @@ public class CollectNode extends BetaNode
         } else if ( context.getType() == PropagationContext.RETRACTION ) {
             ((Collection) result.handle.getObject()).remove( handle.getObject() );
         } else if ( context.getType() == PropagationContext.MODIFICATION ) {
-            // nothing to do
+            if( isAssert ) {
+                ((Collection) result.handle.getObject()).add( handle.getObject() );
+            } else {
+                ((Collection) result.handle.getObject()).remove( handle.getObject() );
+            }
         }
 
         // First alpha node filters
