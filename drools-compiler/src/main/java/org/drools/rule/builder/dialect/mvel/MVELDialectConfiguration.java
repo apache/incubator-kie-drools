@@ -5,6 +5,15 @@ import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 
+/**
+ * The MVEL dialect.
+ * 
+ * drools.dialect.mvel.strict = <true|false>
+ * 
+ * Default strict is true, which means all expressions and the consequence are type safe.
+ * However dynamic mode is still used while executed nested accessors in the field constraints.
+ *
+ */
 public class MVELDialectConfiguration
     implements
     DialectConfiguration {

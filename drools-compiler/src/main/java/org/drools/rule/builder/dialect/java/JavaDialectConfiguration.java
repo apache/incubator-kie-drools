@@ -9,6 +9,28 @@ import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 
+/**
+ * 
+ * There are options to use various flavours of runtime compilers.
+ * Apache JCI is used as the interface to all the runtime compilers.
+ * 
+ * You can also use the system property "drools.compiler" to set the desired compiler.
+ * The valid values are "ECLIPSE" and "JANINO" only. 
+ * 
+ * drools.dialect.java.compiler = <ECLIPSE|JANINO>
+ * drools.dialect.java.lngLevel = <1.4|1.5|1.6>
+ * 
+ * The default compiler is Eclipse and the default lngLevel is 1.4.
+ * The lngLevel will attempt to autodiscover your system using the 
+ * system property "java.version"
+ * 
+ * The JavaDialectConfiguration will attempt to validate that the specified compiler
+ * is in the classpath, using ClassLoader.loasClass(String). If you intented to
+ * just Janino sa the compiler you must either overload the compiler property before 
+ * instantiating this class or the PackageBuilder, or make sure Eclipse is in the 
+ * classpath, as Eclipse is the default.
+ *
+ */
 public class JavaDialectConfiguration
     implements
     DialectConfiguration {
@@ -31,7 +53,8 @@ public class JavaDialectConfiguration
     public void init(final PackageBuilderConfiguration conf) {
         this.conf = conf;
 
-        setCompiler( getDefaultCompiler() );
+        setCompiler( getDefaultCompiler() );        
+        
         setJavaLanguageLevel( getDefaultLanguageLevel() );
     }
 
@@ -67,6 +90,21 @@ public class JavaDialectConfiguration
      * This overrides the default, and even what was set as a system property. 
      */
     public void setCompiler(final int compiler) {
+        // check that the jar for the specified compiler are present
+        if ( compiler == ECLIPSE ) {
+            try {
+                getClass().getClassLoader().loadClass( "org.eclipse.jdt.internal.compiler.Compiler" );
+            } catch ( ClassNotFoundException e ) {
+                throw new RuntimeException( "The Eclipse JDT Core jar is not in the classpath" );
+            }
+        } else if ( compiler == JANINO ){
+            try {
+                getClass().getClassLoader().loadClass( "org.codehaus.janino.Parser" );
+            } catch ( ClassNotFoundException e ) {
+                throw new RuntimeException( "The Janino jar is not in the classpath" );
+            }
+        }
+        
         switch ( compiler ) {
             case JavaDialectConfiguration.ECLIPSE :
                 this.compiler = JavaDialectConfiguration.ECLIPSE;

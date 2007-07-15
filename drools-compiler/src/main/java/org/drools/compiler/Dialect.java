@@ -21,6 +21,12 @@ import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 
+/**
+ * A Dialect implementation handles the building and execution of code expressions and blocks for a rule.
+ * This api is considered unstable, and subject to change. Those wishing to implement their own dialects
+ * should look ove the MVEL and Java dialect implementations.
+ *
+ */
 public interface Dialect {
     void init(PackageBuilder builder);
     

@@ -45,6 +45,16 @@ import junit.framework.TestCase;
 
 public class PackageBuilderConfigurationTest extends TestCase {
 
+    protected void setUp() throws Exception {
+        System.getProperties().remove( "drools.dialect.java.compiler" );
+        System.getProperties().remove( "drools.dialect.default" );
+    }
+    
+    protected void tearDown() throws Exception {
+        System.getProperties().remove( "drools.dialect.java.compiler" );
+        System.getProperties().remove( "drools.dialect.default" );
+    }
+    
     public void testSystemProperties() {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) cfg.getDialectConfiguration( "java" );
@@ -81,10 +91,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
         final PackageBuilderConfiguration cfg3 = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf3 = ( JavaDialectConfiguration ) cfg3.getDialectConfiguration( "java" );
         assertEquals( javaConf.getCompiler(),
-                      javaConf3.getCompiler() );
-        
-        System.getProperties().remove( "drools.dialect.java.compiler" );
-
+                      javaConf3.getCompiler() );               
     }
 
     public void testProgrammaticProperties() {
@@ -99,7 +106,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
         final PackageBuilderConfiguration cfg2 = new PackageBuilderConfiguration(properties);
         assertEquals( cfg1.getDefaultDialect().getClass(),
-                      cfg2.getDefaultDialect().getClass() );        
+                      cfg2.getDefaultDialect().getClass() );            
     }
     
     public void testMockDialect() {

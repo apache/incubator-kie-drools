@@ -641,7 +641,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void testJaninoEval() throws Exception {
+    public void testJaninoEval() throws Exception {        
         final PackageBuilderConfiguration config = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) config.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
