@@ -462,6 +462,67 @@ public class FirstOrderLogicTest extends TestCase {
 
     }
 
+    public void testCollectModifyAlphaRestriction() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectAlphaRestriction.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+                                                         10 ), new Cheese( "stilton",
+                                                                           2 ), new Cheese( "stilton",
+                                                                                            5 ), new Cheese( "brie",
+                                                                                                             15 ), new Cheese( "brie",
+                                                                                                                               16 ), new Cheese( "provolone",
+                                                                                                                                                 8 )};
+
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        for ( int i = 0; i < cheese.length; i++ ) {
+            cheeseHandles[i] = wm.insert( cheese[i] );
+        }
+
+        // ---------------- 1st scenario
+        int fireCount = 0;
+        wm.fireAllRules();
+        Assert.assertEquals( ++fireCount,
+                             results.size() );
+        Assert.assertEquals( 3,
+                             ((Collection) results.get( fireCount - 1 )).size() );
+        Assert.assertEquals( ArrayList.class.getName(),
+                             results.get( fireCount - 1 ).getClass().getName() );
+
+        // ---------------- 2nd scenario
+        final int index = 1;
+        cheese[index].setType( "brie" );
+        wm.update( cheeseHandles[index],
+                   cheese[index] );
+        wm.fireAllRules();
+
+        Assert.assertEquals( ++fireCount,
+                             results.size() );
+        Assert.assertEquals( 2,
+                             ((Collection) results.get( fireCount - 1 )).size() );
+        Assert.assertEquals( ArrayList.class.getName(),
+                             results.get( fireCount - 1 ).getClass().getName() );
+
+        // ---------------- 3rd scenario
+        wm.retract( cheeseHandles[2] );
+        wm.fireAllRules();
+
+        Assert.assertEquals( ++fireCount,
+                             results.size() );
+        Assert.assertEquals( 1,
+                             ((Collection) results.get( fireCount - 1 )).size() );
+        Assert.assertEquals( ArrayList.class.getName(),
+                             results.get( fireCount - 1 ).getClass().getName() );
+
+    }
+
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
                                                       DroolsParserException,
                                                       Exception {
