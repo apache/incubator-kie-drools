@@ -1,4 +1,4 @@
-// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g 2007-07-01 14:08:51
+// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g 2007-07-15 10:51:13
 
 	package org.drools.rule.builder.dialect.java.parser;
 	import java.util.Iterator;
@@ -11745,9 +11745,9 @@ public class JavaParser extends Parser {
                     i=(Token)input.LT(1);
                     match(input,Identifier,FOLLOW_Identifier_in_primary3793); if (failed) return ;
                     if ( backtracking==0 ) {
-                       identifiers.add( i.getText() );  
+                       if( ! "(".equals( input.LT(1) == null ? "" : input.LT(1).getText() ) ) identifiers.add( i.getText() );  
                     }
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:55: ( '.' Identifier )*
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:126: ( '.' Identifier )*
                     loop153:
                     do {
                         int alt153=2;
@@ -11772,7 +11772,7 @@ public class JavaParser extends Parser {
 
                         switch (alt153) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:56: '.' Identifier
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:127: '.' Identifier
                     	    {
                     	    match(input,28,FOLLOW_28_in_primary3798); if (failed) return ;
                     	    match(input,Identifier,FOLLOW_Identifier_in_primary3800); if (failed) return ;
@@ -11785,7 +11785,7 @@ public class JavaParser extends Parser {
                         }
                     } while (true);
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:73: ( identifierSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:144: ( identifierSuffix )?
                     int alt154=2;
                     switch ( input.LA(1) ) {
                         case 41:
@@ -12039,7 +12039,7 @@ public class JavaParser extends Parser {
 
                     switch (alt154) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:74: identifierSuffix
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:145: identifierSuffix
                             {
                             pushFollow(FOLLOW_identifierSuffix_in_primary3805);
                             identifierSuffix();
@@ -14192,8 +14192,8 @@ public class JavaParser extends Parser {
 
     // $ANTLR start synpred238
     public final void synpred238_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:56: ( '.' Identifier )
-        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:56: '.' Identifier
+        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:127: ( '.' Identifier )
+        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:127: '.' Identifier
         {
         match(input,28,FOLLOW_28_in_synpred2383798); if (failed) return ;
         match(input,Identifier,FOLLOW_Identifier_in_synpred2383800); if (failed) return ;
@@ -14204,8 +14204,8 @@ public class JavaParser extends Parser {
 
     // $ANTLR start synpred239
     public final void synpred239_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:74: ( identifierSuffix )
-        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:74: identifierSuffix
+        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:145: ( identifierSuffix )
+        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:860:145: identifierSuffix
         {
         pushFollow(FOLLOW_identifierSuffix_in_synpred2393805);
         identifierSuffix();
