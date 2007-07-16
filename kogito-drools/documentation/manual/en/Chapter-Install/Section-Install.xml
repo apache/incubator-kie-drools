@@ -124,12 +124,15 @@
 
       <para>If you don't have GEF installed, you can install it using the
       built in update mechanism (or downloading GEF from the eclipse.org
-      website). JBoss IDE has GEF already, as do many other "distributions" of
+      website not recommended). JBoss IDE has GEF already, as do many other "distributions" of
       Eclipse, so this step may be redundant for some people.</para>
 
       <para>First you open the Help-&gt;Software updates-&gt;Find and install
       from the help menu. Then you choose the Calisto update site:</para>
 
+	  <para>If you aren't using Calisto you can use the following update site do download GEF</para>
+	  <programlisting>http://europa-mirror1.eclipse.org/tools/gef/update-site/releases/</programlisting>
+	
       <screenshot>
         <mediaobject>
           <imageobject>
