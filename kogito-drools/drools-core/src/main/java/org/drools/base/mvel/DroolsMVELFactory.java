@@ -17,7 +17,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     Serializable,
     Cloneable {
 
-    private static final long serialVersionUID = 1504379613555271045L;
+    private static final long serialVersionUID = 400L;
 
     /**
      * Holds the instance of the variables.
@@ -39,6 +39,10 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         this.previousDeclarations = previousDeclarations;
         this.localDeclarations = localDeclarations;
         this.globals = globals;
+    }
+    
+    public Map getVariableResolvers() {
+        return this.variableResolvers;
     }
 
     public Object getObject() {
