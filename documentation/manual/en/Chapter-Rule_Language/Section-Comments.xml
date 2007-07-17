@@ -2,8 +2,13 @@
 <section>
   <title>Comments</title>
 
+  <note>
+    <para><replaceable>(updated to Drools 4.0)</replaceable></para>
+  </note>
+
   <para>Comments are sections of text that are ignored by the rule engine.
-  They are effectively stripped out when they are encountered. </para>
+  They are stripped out when they are encountered, except inside semantic code
+  blocks, like the RHS of a rule.</para>
 
   <section>
     <title>Single line comment</title>
@@ -24,7 +29,20 @@
       </mediaobject>
     </figure>
 
-    <para></para>
+    <para>To create single line comments, you can use either '#' or '//'. The
+    parser will ignore anything in the line after the comment symbol.
+    Example:</para>
+
+    <programlisting>rule "Testing Comments"
+when
+    # this is a single line comment
+    // this is also a single line comment
+    eval( true ) # this is a comment in the same line of a pattern
+then
+    // this is a comment inside a semantic code block
+    # this is another comment in a semantic code block
+end
+</programlisting>
   </section>
 
   <section>
@@ -46,7 +64,17 @@
       </mediaobject>
     </figure>
 
-    <para></para>
-  </section>
+    <para>Multi-line comments are used to comment blocks of text, both in and
+    outside semantic code blocks. Example:</para>
 
+    <programlisting>rule "Test Multi-line Comments"
+when
+    /* this is a multi-line comment
+       in the left hand side of a rule */
+    eval( true )
+then
+    /* and this is a multi-line comment
+       in the right hand side of a rule */
+end </programlisting>
+  </section>
 </section>
