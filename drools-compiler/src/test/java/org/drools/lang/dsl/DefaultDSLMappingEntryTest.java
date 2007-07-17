@@ -25,7 +25,7 @@ public class DefaultDSLMappingEntryTest extends TestCase {
         final String inputKey = "The Customer name is {name} and surname is {surname} and it has US$ 50,00 on his {pocket}";
         final String inputValue = "Customer( name == \"{name}\", surname == \"{surname}\", money > $money )";
 
-        final String expectedKeyP = "(\\W|^)The\\s*Customer\\s*name\\s*is\\s*(.*?)\\s*and\\s*surname\\s*is\\s*(.*?)\\s*and\\s*it\\s*has\\s*US\\$\\s*50,00\\s*on\\s*his\\s*(.*?)$";
+        final String expectedKeyP = "(\\W|^)The\\s+Customer\\s+name\\s+is\\s+(.*?)\\s+and\\s+surname\\s+is\\s+(.*?)\\s+and\\s+it\\s+has\\s+US\\$\\s+50,00\\s+on\\s+his\\s+(.*?)$";
         final String expectedValP = "Customer( name == \"$2\", surname == \"$3\", money > \\$money )";
 
         final DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
@@ -48,7 +48,7 @@ public class DefaultDSLMappingEntryTest extends TestCase {
         final String inputKey = "-name is {name}";
         final String inputValue = "name == \"{name}\"";
 
-        final String expectedKeyP = "(\\W|^)-\\s*name\\s*is\\s*(.*?)$";
+        final String expectedKeyP = "(\\W|^)-\\s*name\\s+is\\s+(.*?)$";
         final String expectedValP = "name == \"$2\"";
 
         final DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
@@ -71,7 +71,7 @@ public class DefaultDSLMappingEntryTest extends TestCase {
         final String inputKey = "- name is {name}";
         final String inputValue = "name == \"{name}\"";
 
-        final String expectedKeyP = "(\\W|^)-\\s*name\\s*is\\s*(.*?)$";
+        final String expectedKeyP = "(\\W|^)-\\s*name\\s+is\\s+(.*?)$";
         final String expectedValP = "name == \"$2\"";
 
         final DSLMappingEntry entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
@@ -81,7 +81,8 @@ public class DefaultDSLMappingEntryTest extends TestCase {
 
         assertEquals( inputKey,
                       entry.getMappingKey() );
-        assertEquals( expectedKeyP,
+        assertEquals( entry.getKeyPattern().pattern(),
+                      expectedKeyP,
                       entry.getKeyPattern().pattern() );
         assertEquals( inputValue,
                       entry.getMappingValue() );
@@ -132,4 +133,65 @@ public class DefaultDSLMappingEntryTest extends TestCase {
         assertEquals( "SomeFact(value==\"  bl  ah  \")",
                       result );
     }
+    
+    public void testExpandWithDots() {
+        final String inputKey = "- {prop} is {val} ";
+        final String inputValue = "{prop} == {val}";
+
+        this.entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                            null,
+                                            inputKey,
+                                            inputValue );
+        
+        String result = this.entry.getKeyPattern().matcher( "- type is ClientServiceType.TypeGOLD" ).replaceAll( this.entry.getValuePattern() );
+        assertEquals( result,
+                      "type == ClientServiceType.TypeGOLD",
+                      result );
+    }
+    
+    public void testExpandPartialWords() {
+        final String inputKey = "- {prop} is {val} ";
+        final String inputValue = "{prop} == {val}";
+
+        this.entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                            null,
+                                            inputKey,
+                                            inputValue );
+        // not supposed to expand
+        String result = this.entry.getKeyPattern().matcher( "- type is_not ClientServiceType.TypeGOLD" ).replaceAll( this.entry.getValuePattern() );
+        assertEquals( result,
+                      "- type is_not ClientServiceType.TypeGOLD",
+                      result );
+    }
+    
+    public void testExpandPartialWords2() {
+        final String inputKey = "- {prop} is_not {val} ";
+        final String inputValue = "{prop} != {val}";
+
+        this.entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                            null,
+                                            inputKey,
+                                            inputValue );
+
+        String result = this.entry.getKeyPattern().matcher( "- type is_not ClientServiceType.TypeGOLD" ).replaceAll( this.entry.getValuePattern() );
+        assertEquals( result,
+                      "type != ClientServiceType.TypeGOLD",
+                      result );
+    }
+    
+    public void testExpandPartialWords3() {
+        final String inputKey = "- {prop} is not {val} ";
+        final String inputValue = "{prop} != {val}";
+
+        this.entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                            null,
+                                            inputKey,
+                                            inputValue );
+
+        String result = this.entry.getKeyPattern().matcher( "- type is not ClientServiceType.TypeGOLD" ).replaceAll( this.entry.getValuePattern() );
+        assertEquals( result,
+                      "type != ClientServiceType.TypeGOLD",
+                      result );
+    }
+    
 }
