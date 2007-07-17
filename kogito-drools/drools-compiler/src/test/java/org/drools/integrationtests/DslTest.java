@@ -29,7 +29,7 @@ public class DslTest extends TestCase {
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
     }
-    
+
     public void testWithExpanderDSL() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl.drl" ) );
@@ -55,9 +55,9 @@ public class DslTest extends TestCase {
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
         wm.insert( new Person( "Bob",
-                                     "http://foo.bar" ) );
+                               "http://foo.bar" ) );
         wm.insert( new Cheese( "stilton",
-                                     42 ) );
+                               42 ) );
 
         final List messages = new ArrayList();
         wm.setGlobal( "messages",
@@ -95,7 +95,7 @@ public class DslTest extends TestCase {
         final WorkingMemory wm = ruleBase.newStatefulSession();
         wm.insert( new Person( "rage" ) );
         wm.insert( new Cheese( "cheddar",
-                                     15 ) );
+                               15 ) );
 
         final List messages = new ArrayList();
         wm.setGlobal( "messages",
@@ -114,15 +114,15 @@ public class DslTest extends TestCase {
                       messages.size() );
 
         wm.insert( new Cheese( "brie",
-                                     15 ) );
+                               15 ) );
 
         wm.fireAllRules();
 
         // YOUR FIRED
         assertEquals( 1,
-                      messages.size() );        
-    }   
-    
+                      messages.size() );
+    }
+
     public void testEmptyDSL() throws Exception {
         final String DSL = "# This is an empty dsl file.";
         final PackageBuilder builder = new PackageBuilder();
@@ -134,5 +134,45 @@ public class DslTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         assertFalse( pkg.isValid() );
-    }    
+    }
+
+    public void testDSLWithIndividualConstraintMappings() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        final Reader source = new InputStreamReader( getClass().getResourceAsStream( "test_dslWithIndividualConstraints.dslr" ) );
+        final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_dslWithIndividualConstraints.dsl" ) );
+        builder.addPackageFromDrl( source,
+                                   dsl );
+
+        // the compiled package
+        final Package pkg = builder.getPackage();
+        assertTrue( pkg.getErrorSummary(),
+                    pkg.isValid() );
+        assertEquals( pkg.getErrorSummary(),
+                      null,
+                      pkg.getErrorSummary() );
+        // Check errors
+        assertEquals( 0,
+                      builder.getErrors().getErrors().length );
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        List results = new ArrayList();
+        wm.setGlobal( "results",
+                      results );
+        Cheese cheese = new Cheese( "stilton",
+                                    42 );
+        wm.insert( cheese );
+
+        wm.fireAllRules();
+
+        // should have fired
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( cheese,
+                      results.get( 0 ) );
+
+    }
+
 }

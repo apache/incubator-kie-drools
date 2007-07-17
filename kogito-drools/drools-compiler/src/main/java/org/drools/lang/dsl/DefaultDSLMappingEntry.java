@@ -102,25 +102,25 @@ public class DefaultDSLMappingEntry
     /**
      * @param key the key to set
      */
-    public void setMappingKey(final String key) {
-        this.key = key;
+    public void setMappingKey(String key) {
+        this.key = key = key.trim();
 
         if ( key != null ) {
             int substr = 0;
             // escape '$' to avoid errors  
             final Matcher m = varFinder.matcher( key.replaceAll( "\\$",
-                                                           "\\\\\\$" ) );
+                                                                 "\\\\\\$" ) );
             // retrieving variables list and creating key pattern 
             final StringBuffer buf = new StringBuffer();
 
             int counter = 1;
-            if( ! key.startsWith( "^" ) ) {
+            if ( !key.startsWith( "^" ) ) {
                 // making it start with a space char or a line start
                 buf.append( "(\\W|^)" );
                 substr += buf.length();
                 counter++;
             }
-            
+
             while ( m.find() ) {
                 if ( this.variables == Collections.EMPTY_MAP ) {
                     this.variables = new HashMap( 2 );
@@ -131,7 +131,7 @@ public class DefaultDSLMappingEntry
                                      m.group( 1 ) + "(.*?)" );
             }
             m.appendTail( buf );
-            
+
             // if pattern ends with a variable, append a line end to avoid multiple line matching
             if ( buf.toString().endsWith( "(.*?)" ) ) {
                 buf.append( "$" );
@@ -140,12 +140,13 @@ public class DefaultDSLMappingEntry
             }
 
             // setting the key pattern and making it space insensitive
-            String pat = buf.toString().replaceAll( "\\s+",
-                                                    "\\\\s*" );
+            String pat = buf.toString();
             if ( pat.substring( substr ).trim().startsWith( "-" ) && (!pat.substring( substr ).trim().startsWith( "-\\s*" )) ) {
                 pat = pat.substring( 0,
-                                     pat.indexOf( '-' ) + 1 ) + "\\s*" + pat.substring( pat.indexOf( '-' ) + 1 );
+                                     pat.indexOf( '-' ) + 1 ) + "\\s*" + pat.substring( pat.indexOf( '-' ) + 1 ).trim();
             }
+            pat = pat.replaceAll( "\\s+",
+                                  "\\\\s+" );
             this.keyPattern = Pattern.compile( pat,
                                                Pattern.DOTALL | Pattern.MULTILINE );
 
@@ -179,7 +180,7 @@ public class DefaultDSLMappingEntry
                 final int pos = ((Integer) entry.getValue()).intValue();
 
                 this.valuePattern = this.valuePattern.replaceAll( "\\{" + var + "\\}",
-                                                             "\\$" + pos );
+                                                                  "\\$" + pos );
             }
         }
     }
