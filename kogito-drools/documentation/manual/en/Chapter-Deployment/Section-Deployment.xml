@@ -11,11 +11,11 @@
   be provided to the application as data, not as part of the application (eg
   embedded in the classpath).</para>
 
-  <para>Drools 3.0 is primarily a Rule Engine, which leaves open many options
-  for rule deployment. The focus of this chapter is on deployment options, and
-  the API. A future version of Drools will have a Rule Server component for
-  managing multiple versions of rules (including locking, and automatic
-  deployment).</para>
+  <para>The recommended way of deploying depends on how you are managing your
+  rules. If you are using the BRMS, you should use the RuleAgent (the detailed
+  documentation for this is in the chapter on the BRMS). You can still use the
+  RuleAgent even without the BRMS, in which case you will need to use ant (or
+  similar) to created serialized "Package" objects of your rules.</para>
 
   <para>As every organisation is subtly different, and different deployment
   patterns will be needed. Many organisations have (or should have)
@@ -23,19 +23,97 @@
   best to think of rules as "data" rather then software in that regard.
   However, as rules can contain a considerable amount of powerful logic,
   proper procedures should be used in testing and verifying rule changes, and
-  approving changes before exposing them to the world.</para>
+  approving changes before exposing them to the world. If you need to "roll
+  your own" deployment, or have specific deployment needs, the information is
+  provided in this chapter for your reference, but for the most part, people
+  should be able to deploy either as the agent, or in the classpath.</para>
+
+  <section>
+    <title>Deployment using the RuleAgent</title>
+
+    <para>The easiest and most automated way to deploy rules is to use the
+    RuleAgent. This is described in detail in the BRMS user guide. In short,
+    the rule agent requires that you build binary packages of rules outside of
+    "your" application (ie the application that is using rules).</para>
+
+    <para>The upside of this is that your application only needs to include
+    drools-core.jar - no other dependencies (of course you need the classes
+    that form the model that the rules use as well !). It also means the agent
+    can be configured to automatically monitor for rule changes - directly to
+    the BRMS, or from a file/directory.</para>
+
+    <para>To use the rule agent in your application use the following
+    code:</para>
+
+    <programlisting>RuleAgent agent = RuleAgent.newRuleAgent("/MyRules.properties");     
+RuleBase rb = agent.getRuleBase(); 
+rb.newStatefulSession.... 
+//now assert your facts into the session and away you go !
+</programlisting>
+
+    <para>The MyRules.properties is a configyration file which (in the above
+    case) should be on the root of your classpath:</para>
+
+    <programlisting>##
+## RuleAgent configuration file example
+##
+
+
+
+dir=/my/dir
+url=http://some.url/here http://some.url/here
+localCacheDir=/foo/bar/cache
+poll=30
+
+
+name=MyConfig</programlisting>
+
+    <para>In the above config, the agent will look for binary package files in
+    /my/dir, and also at the specified URLs. It will pick up any changes for
+    these packages and apply them to the rulebase.</para>
+
+    <para>If you are using the BRMS, you can use the url feature. You can use
+    "file" or "dir" if the packages need to be manually migrated to your
+    production servers.</para>
+  </section>
+
+  <section>
+    <title>Deployment using drl source</title>
+
+    <para>In some cases people may wish to deploy drl source. In that case all
+    the drools-compiler dependencies will need to be on the classpath for your
+    application. You can then load drl from file, classpath, or a database
+    (for example) and compile as needed. The trick, as always, is knowing when
+    rules change (this is also called "in process" deployment as described
+    below).</para>
+  </section>
+
+  <section>
+    <title>Deploying rules in your classpath</title>
+
+    <para>If you have rules which do not change separate to your application,
+    you can put packaged into your classpath. This can be done either as
+    source (in which case the drl can be compiled, and the rulebase cached the
+    first time it is needed) or else you can pre-compile packages, and just
+    include the binary packages in the classpath.</para>
+
+    <para>Keep in mind with this approach to make a rule change, you will both
+    need to deploy your app (and if its a server - restart the
+    application).</para>
+  </section>
 
   <section>
     <title>Deployable objects, RuleBase, Package etc.</title>
 
     <para>In the simplest possible scenario, you would compile and construct a
-    rulebase, and then cache that rulebase. That rulebase can be shared across
-    threads, spawning new working memories to process transactions (working
-    memories are then discarded). This is essentually the stateless mode. To
-    update the rulebase, a new rulebase is loaded, and then swapped out with
-    the cached rulebase (any existing threads that happen to be using the old
-    rulebase will continue to use it until they are finished, in which case it
-    will eventually be garbage collected).</para>
+    rulebase inside your application (from drl source), and then cache that
+    rulebase. That rulebase can be shared across threads, spawning new working
+    memories to process transactions (working memories are then discarded).
+    This is essentually the stateless mode. To update the rulebase, a new
+    rulebase is loaded, and then swapped out with the cached rulebase (any
+    existing threads that happen to be using the old rulebase will continue to
+    use it until they are finished, in which case it will eventually be
+    garbage collected).</para>
 
     <para>There are many more sophisticated approaches to the above - Drools
     rule engine is very dynamic, meaning pretty much all the components can be
@@ -45,7 +123,8 @@
     then be adjusted to remove that rule without having to assert all the
     facts again. Long running working memories are useful for complex
     applications where the rule engine builds up knowledge over time to assist
-    with decision making for instance - it is in these cases that the dynamic-ness of the engine can really shine.</para>
+    with decision making for instance - it is in these cases that the
+    dynamic-ness of the engine can really shine.</para>
 
     <section>
       <title>DRL and PackageDescr</title>
@@ -56,8 +135,9 @@
       "PackageDescr" object, which means that the rules are pre-parsed (for
       syntactic errors) but not compiled into the binary form. Use the
       PackageBuilder class to achieve this. You can of course use the XML form
-      for the rules if needed. </para>
-	  <programlisting>PackageDescr, PackageBuilder, RuleBaseLoader</programlisting>
+      for the rules if needed.</para>
+
+      <programlisting>PackageDescr, PackageBuilder, RuleBaseLoader</programlisting>
     </section>
 
     <section>
@@ -76,8 +156,9 @@
       rules from the same package name can be merged together).</para>
 
       <para>Package objects themselves are serializable, hence they can be
-      sent over a network, or bound to JNDI, Session etc. </para>
-	  <programlisting>PackageBuilder, RuleBase, org.drools.rule.Package</programlisting>
+      sent over a network, or bound to JNDI, Session etc.</para>
+
+      <programlisting>PackageBuilder, RuleBase, org.drools.rule.Package</programlisting>
     </section>
 
     <section>
@@ -88,8 +169,10 @@
       can be a useful option for when rulebases are updated as a whole - for
       short lived working memories. If existing working memories need to have
       rules changed on the fly, then it is best to deploy Package objects.
-      </para>
-	  <programlisting>RuleBase, RuleBaseLoader</programlisting>
+      Also beware that rulebases take more processing effort to serialize (may
+      be an issue for some large rulebases).</para>
+
+      <programlisting>RuleBase, RuleBaseLoader</programlisting>
     </section>
 
     <section>
@@ -102,10 +185,10 @@
       in a container environment.</para>
     </section>
 
-	<para>
-		Please note that when using package builder, you may want to check the hasError() flag before continuing deploying your rules (if there are errors, you can get them from the package builder - rather then letting it fail later on when you try to deploy).
-	</para>
-
+    <para>Please note that when using package builder, you may want to check
+    the hasError() flag before continuing deploying your rules (if there are
+    errors, you can get them from the package builder - rather then letting it
+    fail later on when you try to deploy).</para>
   </section>
 
   <section>
@@ -129,33 +212,42 @@
       any errors to do with compiling are well contained and and known before
       deployment to the running system is attempted.</para>
 
-	  <para>
-		Use the PackageBuilder class out of process, and then use getPackage() to get the Package object. You can then (for example) serialize the Package object to a file (using standard java serialization). The runtime system, which only needs drools-core, can then load the file using RuleBaseFactory.newRuleBase().addPackage(deserialized package object).
-	  </para>
+      <para>Use the PackageBuilder class out of process, and then use
+      getPackage() to get the Package object. You can then (for example)
+      serialize the Package object to a file (using standard java
+      serialization). The runtime system, which only needs drools-core, can
+      then load the file using
+      RuleBaseFactory.newRuleBase().addPackage(deserialized package
+      object).</para>
     </section>
 
     <section>
       <title>Some deployment scenarios</title>
-		<para>This section contains some suggested deployment scenarios, of course you can use a variety of techologies as alternatives to the ones in the diagram.</para>
+
+      <para>This section contains some suggested deployment scenarios, of
+      course you can use a variety of techologies as alternatives to the ones
+      in the diagram.</para>
+
       <section>
         <title>Pull style</title>
+
+        <para>This pattern is what is used by the RuleAgent, by
+        default.</para>
 
         <para>In this scenario, rules are pulled from the rule repository into
         the runtime system. The repository can be as simple as a file system,
         or a database. The trigger to pull the rules could be a timed task (to
         check for changes) or a request to the runtime system (perhaps via a
         JMX interface). This is possibly the more common scenario.</para>
+      </section>
 
-
-	  </section>
-
-				<screenshot>
-				  <mediaobject>
-					<imageobject>
-					  <imagedata fileref="DeploymentPatterns1.png" />
-					</imageobject>
-				  </mediaobject>
-				</screenshot>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="DeploymentPatterns1.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
 
       <section>
         <title>Push style</title>
@@ -165,14 +257,14 @@
         form, as described above). This gives more control as to when the new
         rules take effect.</para>
       </section>
-			<screenshot>
-			  <mediaobject>
-				<imageobject>
-				  <imagedata fileref="DeploymentPatterns2.png" />
-				</imageobject>
-			  </mediaobject>
-			</screenshot>
 
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="DeploymentPatterns2.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
     </section>
   </section>
 
