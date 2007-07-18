@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.base.ShadowProxy;
+
 /**
  * Upon instantiation the EqualityKey caches the first Object's hashCode
  * this can never change. The EqualityKey has an internal datastructure 
@@ -153,7 +155,7 @@ public class EqualityKey
         if ( object instanceof EqualityKey ) {
             return this == object;
         }
-
+        
         return (this.handle.getObject().equals( object ));
     }
 

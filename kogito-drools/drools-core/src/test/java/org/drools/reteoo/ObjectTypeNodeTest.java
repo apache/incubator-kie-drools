@@ -320,10 +320,6 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testAssertObjectWithShadowEnabled() throws Exception {
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.ASSERTION,
-                                                                       null,
-                                                                       null );
 
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
@@ -331,7 +327,6 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final Rete source = ruleBase.getRete();
 
-        final Class shadowClass = ShadowProxyFactory.getProxy( Cheese.class );
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( Cheese.class  ),
                                                                   source,
@@ -339,16 +334,12 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
+        source.addObjectSink( objectTypeNode );
 
         final Object cheese = new Cheese( "muzzarela",
                                           5 );
 
         final InternalFactHandle handle1 = (InternalFactHandle) workingMemory.insert( cheese );
-
-        // should assert as ObjectType matches
-        objectTypeNode.assertObject( handle1,
-                                     context,
-                                     workingMemory );
 
         // make sure just string1 was asserted 
         final List asserted = sink.getAsserted();

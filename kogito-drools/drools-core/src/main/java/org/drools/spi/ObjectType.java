@@ -31,6 +31,18 @@ public interface ObjectType
     extends
     Serializable {
     /**
+     * Determine if the passed <code>Class</code> matches to the object type
+     * defined by this <code>objectType</code> instance.
+     * 
+     * @param clazz
+     *            The <code>Class</code> to test.
+     * 
+     * @return <code>true</code> if the <code>Class</code> matches this
+     *         object type, else <code>false</code>.
+     */
+    boolean matchesClass(Class clazz);
+
+    /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.
      * 
