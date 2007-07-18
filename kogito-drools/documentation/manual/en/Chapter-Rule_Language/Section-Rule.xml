@@ -49,11 +49,12 @@ then
 end</programlisting>
 
   <section>
-    <title>Left Hand Side</title>
+    <title id="RuleLanguage-LHS">Left Hand Side</title>
 
     <para>The Left Hand Side (LHS) is a common name for the conditional part
     of the rule. It consists of zero or more Conditional Elements; whch are
-    covered in detail in a later secion of this Chapter. If the LHS is left
+    covered in detail in <xref lang=""
+    linkend="RuleLanguage-ConditionalElements" os="" />. If the LHS is left
     empty it is re-written as eval(true), which means the rule is always
     true.</para>
 
@@ -102,9 +103,9 @@ end</programlisting>
     memory; without having to first reference a working memory
     instance.</para>
 
-    <para>"update(obj);" will tell the engine that an object has changed (one
-    that has been bound to something on the LHS) and rules may need to be
-    reconsidered.</para>
+    <para>"update(object, handle);" will tell the engine that an object has
+    changed (one that has been bound to something on the LHS) and rules may
+    need to be reconsidered.</para>
 
     <para>"insert(new Something());" will place a new object of your creation
     in working memory.</para>
@@ -113,7 +114,7 @@ end</programlisting>
     object will be automatically retracted when there are no more facts to
     support the truth of the currently firing rule.</para>
 
-    <para>"retract(obj);" removes an object from working memory.</para>
+    <para>"retract(handle);" removes an object from working memory.</para>
 
     <para>These convenience methods are basically macros that provide short
     cuts to the KnowldgeHelper instance (refer to the KnowledgeHelper
@@ -127,7 +128,10 @@ end</programlisting>
   <section>
     <title>Rule Attriutes</title>
 
-    <para />
+    <para>Rule attributes provide a declarative way to influence the behaviour
+    of the rule, some are quite simple, while others are part of complex sub
+    systems; such as ruleflow. To get the most from Drools you should make
+    sure you have a proper understanding of each attribute.</para>
 
     <figure>
       <title>rule attributes</title>
@@ -152,7 +156,8 @@ end</programlisting>
 
       <para>When the Rule's consequence modifies a fact it may cause the Rule
       to activate again, causing recursion. Setting no-loop to true means the
-      attempt to create the Activation will be ignored.</para>
+      attempt to create the Activation for the current set of data will be
+      ignored.</para>
     </section>
 
     <section>
@@ -196,7 +201,7 @@ end</programlisting>
     <section>
       <title>activation-group</title>
 
-      <para>default value N/A</para>
+      <para>default value : N/A</para>
 
       <para>type : String</para>
 
@@ -209,6 +214,42 @@ end</programlisting>
       <para>NOTE: this used to be called Xor group, but technically its not
       quite an Xor, but you may hear people mention Xor group, just swap that
       term in your mind with activation-group.</para>
+    </section>
+
+    <section>
+      <title>dialect</title>
+
+      <para>default value : as specified by the package</para>
+
+      <para>type : String</para>
+
+      <para>The dialect species the language to be used for any code
+      expressions in the LHS or the RHS code block. Currently two dialects are
+      available, Java and MVEL. While the dialect can be specified at the
+      package level, this attribute allows the package definition to be
+      overriden.</para>
+    </section>
+
+    <section>
+      <title>date-effective</title>
+
+      <para>default value : N/A</para>
+
+      <para>type : String, which contains a Date/Time definition</para>
+
+      <para>A rule can only activate if the current date and time is afer
+      date-effective attribute.</para>
+    </section>
+
+    <section>
+      <title>date-exptires</title>
+
+      <para>default value : N/A</para>
+
+      <para>type : String, which contains a Date/Time definition</para>
+
+      <para>A rule cannot activate if the current date and time is afer
+      date-expires attribute.</para>
     </section>
 
     <section>
@@ -235,6 +276,14 @@ end</programlisting>
   <section>
     <title>Pattern</title>
 
+    <para>As mentioned in <xref linkend="RuleLanguage-LHS" os="" /> the LHS is
+    made up of one or more Conditional Elements. The Pattern elment is the
+    most important Conditional Element and as such has it's own section. As
+    you already know a forward chaining rule engine is often referred to as a
+    Pattern Matching engine, because at the heart it matches the specified
+    Patterns against the available data. So lets take a look at what a Pattern
+    is.</para>
+
     <figure>
       <title>Pattern</title>
 
@@ -248,6 +297,25 @@ end</programlisting>
         </imageobject>
       </mediaobject>
     </figure>
+
+    <para>At the simplest, with no constraints, it simply matches against a
+    type, in the following casae the type is "Cheese". This meanst the pattern
+    will match against all Cheese objects in the working memory.</para>
+
+    <example>
+      <title>Pattern</title>
+
+      <programlisting>Cheese( )</programlisting>
+    </example>
+
+    <para>To be able to reference, from the consequence, the object that the
+    pattern matches against we use a pattern binding variable.</para>
+
+    <example>
+      <title>Pattern</title>
+
+      <programlisting>$c : Cheese( )</programlisting>
+    </example>
 
     <example>
       <title>Pattern</title>
@@ -723,7 +791,7 @@ Person( age == ( girlAge + 2) , sex == 'M' )
     </section>
   </section>
 
-  <section>
+  <section id="RuleLanguage-ConditionalElements">
     <title>Conditional Elements</title>
 
     <para>Conditional elements work on one or more Columns (which were
