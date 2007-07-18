@@ -657,13 +657,10 @@ Cheesery( cheeses contains $stilton )</programlisting>
 
         <para>A <indexterm>
             <primary>Predicate</primary>
-          </indexterm>Predicate constraint can use any valid Java expression
-        as long as it evaluated to a primitive boolean - avoid using any
-        Drools keywords as Declaration identifiers. Previously bound
-        declarations can be used in the expression. Functions used in a
-        Predicate Constraint must return time constant results. All bound
-        primitive declarations are boxed, there is currently no auto-unboxing
-        (if you use java 5, this is all automatic).</para>
+          </indexterm>Predicate constraint can use any valid expression as
+        long as it evaluated to a primitive boolean - avoid using any Drools
+        keywords as Declaration identifiers. Previously bound declarations can
+        be used in the expression. </para>
 
         <para>This example will find all pairs of male/femal people where the
         male is 2 years older than the female.</para>
@@ -672,8 +669,13 @@ Cheesery( cheeses contains $stilton )</programlisting>
           <title>Return Value operator</title>
 
           <programlisting>Person( girlAge : age, sex = "F" )
-Person( boyAge : age -&gt; ( girlAge.intValue() == boyAge.intValue() + 2 ), sex = 'M' )
-</programlisting>
+Person( girlAge == age + 2, sex == 'M' )
+
+//can also be written as:
+
+p: Person()
+
+Person( p.girlAge == age + 2, sex == 'M' )</programlisting>
         </example>
       </section>
 
@@ -703,9 +705,7 @@ Person( boyAge : age -&gt; ( girlAge.intValue() == boyAge.intValue() + 2 ), sex 
         primitives - avoid using any Drools keywords as Declaration
         identifiers. Functions used in a Return value Constraint must return
         time constant results. Previously bound declarations can be used in
-        the expression. All bound primitive declarations are boxed, there is
-        currently no auto-unboxing. The returned value must be boxed if its a
-        primitive..</para>
+        the expression. </para>
 
         <para>Like the Predicate example this will find all pairs of
         male/femal people where the male is 2 years older than the female.
@@ -716,7 +716,7 @@ Person( boyAge : age -&gt; ( girlAge.intValue() == boyAge.intValue() + 2 ), sex 
           <title>Return Value operator</title>
 
           <programlisting>Person( girlAge : age, sex == "F" )
-Person( age == ( new Integer(girlAge.intValue() + 2) ), sex == 'M' )
+Person( age == ( girlAge + 2) , sex == 'M' )
 </programlisting>
         </example>
       </section>
@@ -864,7 +864,12 @@ Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 )
         <programlisting>p1 : Parameter() 
 p2 : Parameter()
 eval( p1.getList().containsKey(p2.getItem()) )
-eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a function called "isValid"</programlisting>
+eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a function called "isValid"
+
+
+//there is also "inline eval":
+
+p1: Parameber( eval(list.containsKey("42")) )</programlisting>
       </example>
     </section>
 
@@ -999,25 +1004,5 @@ end</programlisting>
     </example>
   </section>
 
-  <section>
-    <title>A note on autoboxing and primitive types</title>
 
-    <para>Java 5 supports autoboxing and unboxing between primitives of
-    appropriate types. This makes for very convenient and easy to read code.
-    However, as drools runs in J2SE 1.4 as well, we can't rely on this. Thus
-    we have to autobox at times. Fields that are referred to are autoboxed in
-    the corresponding object type automatically (if they are already an
-    object, then there is no change). However, it is important to note that
-    they are not "unboxed" automatically. Thus if you bind to a field that is
-    an "int" in your object model, it will behave like an Object in the rule
-    (ie predicates, return value constraints and the RHS).</para>
-
-    <para>As a general rule, if possible, make your fields object types (at
-    least until java 5), or at least think of your fields as object types even
-    if they are not to start with). Another special note, is that for return
-    value constraints, the return value snippet of code must return an Object
-    (not a primitive). Now, I bet you can't wait for Java 5 to be the minimum
-    ! The fact that not quite *everything* in java is an object causes
-    headaches like this (keep those tablets handy).</para>
-  </section>
 </section>
