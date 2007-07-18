@@ -104,17 +104,19 @@
     of the same identifier they must be of the same type and the all reference
     the same global value. They are typically used to return data, such as a
     log of actions, or provide data or services that the rules use. Globals
-    are not asserted into the Working Memory so the engine is not aware when
+    are not inserted into the Working Memory so the engine is not aware when
     globals are modified; for this reason globals should not be used in
-    constraints unless their values are considered final. Incorrect use of
-    globals in constraints may yield suprising results - surprising in a bad
-    way, like when a doctor says "thats interesting" to a chest XRay of
-    yours.</para>
+    constraints unless their values are considered final and immuttable.
+    Incorrect use of globals in constraints may yield suprising results -
+    surprising in a bad way, like when a doctor says "thats interesting" to a
+    chest XRay of yours.</para>
 
     <para>Note that these are just named instances of objects that you pass in
     from your application to the working memory. This means you can pass in
     any object you want: you could pass in a service locator, or perhaps a
-    service itself.</para>
+    service itself. With the new 'from' element it is now common to pass a
+    global for a Hibernate session, to allow 'from' to pull data from a named
+    Hibernate query.</para>
 
     <para>One example may be an instance of a Email service. In your
     integration code that is calling the rule engine, you get your
