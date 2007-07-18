@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Rule Flow</title>
+
+  <figure>
+    <title>Ruleflow</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="RuleFlow.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>Drools already provides some functionality to define the order in
+  which rules should be executed, like salience, activation groups, etc. When
+  dealing with (possibly a lot of) large rule-sets, managing the order in
+  which rules are evaluated might become complex. Ruleflow allows you to
+  specify the order in which rule sets should be evaluated by using a flow
+  chart. This allows you to define which rule sets should be evaluated in
+  sequence or in parallel, to specify conditions under which rule sets should
+  be evaluated, etc. Here are two examples of a ruleflow:.</para>
+
+  <para>A rule flow is a graphical description of a sequence of steps that the
+  rule engine needs to take, where the order is important. The ruleflow can
+  also deal with conditional branching.</para>
+
+  <para>To use a ruleflow, you use rule attributes ("options" in the GUI) to
+  give each rule a ruleflow group to belong to - you then define a rule flow
+  graph (which is a flow chart) to describe the order in which the rules
+  should be considered.</para>
+
+  <section>
+    <title>Setting a rules ruleflow group</title>
+
+    <programlisting>
+  rule 'YourRule'
+     ruleflow-group 'group1'
+     when
+      ...
+     then
+      ...
+    end  
+  </programlisting>
+
+    <para>This rule will then be placed in the group called "group1", along
+    with any other groups that are defined in the package.</para>
+  </section>
+
+  <section>
+    <title>A simple ruleflow</title>
+
+    <figure>
+      <title>Ruleflow</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="RuleFlowSimple.png" format="PNG"
+                     role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The above rule flow specifies that the groups "Check Order" must be
+    done before "Process Order". This means that in your rules, firstly only
+    rules which are market as having a ruleflow-group of "Check Order" will be
+    considered first, and then "Process Order". Thats about it. You could
+    achieve similar to this with either salience (setting prorities, but this
+    is harder to maintain, and makes the time-relationship implicit in the
+    rules), or agenda groups. However, using a ruleflow makes the order of
+    processing explicit, almost like a meta-rule.</para>
+  </section>
+
+  <section>
+    <title>How to build a rule flow</title>
+
+    <para>Firstly you use the IDE, and when in a project, use "control+N" to
+    launch the new wizard:</para>
+
+    <figure>
+      <title>Ruleflow</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="RFNewWizard.png" format="PNG"
+                     role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Choose the section on "JBoss Rules" and then pick "RuleFlow file".
+    This will create a new .rf file.</para>
+
+    <para>Next you will see the graphical ruleflow editor. The first thing you
+    should do is switch to the "rule perspective" - this will tweak the UI so
+    it is optimal for rules. Then ensure that you can see the "properties"
+    panel down the bottom of the eclipse window:</para>
+
+    <figure>
+      <title>Groups</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="RFNameGroups.png" format="PNG"
+                     role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Click on the RuleFlowGroup icon in the Component Pallette of the GUI
+    - you can then draw a few rule flow groups. Clicking on them allows you to
+    set the name.</para>
+
+    <para>Click on a ruleflow group, and you should see the following:</para>
+
+    <figure>
+      <title>Group properties</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="RFGroupProperties.png"
+                     format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>You can see here you set the visible name, but you also need to set
+    the actual group name that is used in the rules.</para>
+
+    <para>Next step is to join the groups together (if its a simple sequence
+    of steps) - you use this by using "create connection" from the component
+    pallette. You should also create an "End" node (also from the component
+    pallette) - you only have one of these.</para>
+
+    <para>In practice, if you are using ruleflow, you will most likely be
+    doing more then setting a simple sequence of groups to progress though.
+    You are more likely modelling branches of processing. In this case you use
+    "Split" and "Join" items from the component pallette. You use connections
+    to connect from the start to ruleflow groups, or to Splits, and from
+    splits to groups, joins etc (ie basically like a simple flow chart that
+    modells your processing). You can work entirelly graphically until you get
+    the graph approximately right.</para>
+
+    <figure>
+      <title>Complex ruleflow</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="RFComplex.png" format="PNG"
+                     role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The above flow is a more complex example. This example is an
+    insurance claim processing rule flow. A description: Initially the claim
+    data validation rules are processed (these check for data integrity and
+    consistency, that all the information is there). Next there is a decision
+    "split" - based on a condition which the rule flow checks (the value of
+    the claim), it will either move on to an "autosettlement" group, or to
+    another "split", which checks if there was a fatality in the claim. If
+    there was a fatality then it determines if the "regular" of fatality
+    specific rules will take effect. And so on. What you can see from this is
+    based on a few conditions in the rule flow the steps that the processing
+    takes can be very different. Note that all the rules can be in one package
+    - making maintenance easy. You can separate out the flow control from the
+    actual rules.</para>
+
+    <figure>
+      <title>Split types</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="RFSplitType.png" format="PNG"
+                     role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Split types (refering to the above): When you click on a split, you
+    will see the above properties panel. You then have to choose the type:
+    AND, OR, and XOR. The interesting ones are OR and XOR: if you choose OR,
+    then any of the "ouputs" of the split can happen (ie processing can
+    proceed in parallel down more then one path). If you chose XOR, then it
+    will be only one path.</para>
+
+    <para>If you choose OR or XOR, then in the row that has constraints, you
+    will see a button on the right hand side that has "..." - click on this,
+    and you will see the constraint editor. From this constraint editor, you
+    set the conditions which the split will use to decide which "output path"
+    will be chosen.</para>
+
+    <figure>
+      <title>Edit constraints</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="RFEditConstraints.png"
+                     format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Choose the output path you want to set the constraints for (eg
+    Autosettlement), and then you should see the following constraint
+    editor:</para>
+
+    <figure>
+      <title>Constraint editor</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="RFConstraintEditor.png"
+                     format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>This is a text editor where the constraints (which are like the
+    condition part of a rule) are entered. These constraints operate on facts
+    in the working memory (eg. in the above example, it is checking for claims
+    with a value of less than 250). Should this condition be true, then the
+    path specified by it will be followed.</para>
+  </section>
+
+  <section>
+    <title>Using a rule flow in your application</title>
+
+    <para>Once you have a valid ruleflow (you can check its valid by pressing
+    the green "tick" icon in the IDE), you can add a rule flow to a package
+    just like a drl: <programlisting>Reader rf = ... (rule flow reader)
+packageBuilder.addRuleFlow(rf);
+</programlisting></para>
+
+    <para>Alternatively, you can upload the .rf file to the BRMS (as a
+    ruleflow asset) and it will automatically be included in packages that are
+    deployed from it.</para>
+
+    <para>To activate a particular ruleflow in your runtime code, you will
+    need to use the WorkingMemory interface. After you have asserted your
+    facts, you use: <programlisting>workingMemory.startProcess("ID_From_your_Ruleflow_properties");</programlisting>
+    And then call fireAllRules(). This tells the engine what process is in
+    effect (as you may have multiple processes to consider). Thats it !</para>
+  </section>
+</section>
