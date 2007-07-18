@@ -35,36 +35,35 @@ import org.drools.asm.Label;
 import org.drools.asm.MethodVisitor;
 import org.drools.asm.Opcodes;
 import org.drools.asm.Type;
-import org.drools.rule.MapBackedClassLoader;
 import org.drools.util.ShadowProxyUtils;
 
 /**
  * A factory for ShadowProxy classes
  */
 public class ShadowProxyFactory {
-    private static final String UPDATE_PROXY         = "updateProxy";
-    private static final String SET_SHADOWED_OBJECT  = "setShadowedObject";
-    private static final String GET_SHADOWED_OBJECT  = "getShadowedObject";
+    private static final String           UPDATE_PROXY         = "updateProxy";
+    private static final String           SET_SHADOWED_OBJECT  = "setShadowedObject";
+    private static final String           GET_SHADOWED_OBJECT  = "getShadowedObject";
 
-    private static final String BASE_INTERFACE       = Type.getInternalName( ShadowProxy.class );
+    private static final String           BASE_INTERFACE       = Type.getInternalName( ShadowProxy.class );
 
     //private static final String FIELD_NAME_PREFIX   = "__";
 
-    public static final String  FIELD_SET_FLAG       = "IsSet";
+    public static final String            FIELD_SET_FLAG       = "IsSet";
 
-    public static final String  DELEGATE_FIELD_NAME  = "delegate";
+    public static final String            DELEGATE_FIELD_NAME  = "delegate";
 
-    public static final String  HASHCACHE_FIELD_NAME = "__hashCache";
-    
+    public static final String            HASHCACHE_FIELD_NAME = "__hashCache";
+
     private static final ProtectionDomain PROTECTION_DOMAIN;
-    
+
     static {
         PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
             public Object run() {
                 return ShadowProxyFactory.class.getProtectionDomain();
             }
         } );
-    }      
+    }
 
     public static Class getProxy(final Class clazz) {
         try {
@@ -965,10 +964,17 @@ public class ShadowProxyFactory {
                              offset );
             offset += type.getSize();
         }
-        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                            Type.getInternalName( clazz ),
-                            method.getName(),
-                            Type.getMethodDescriptor( method ) );
+        if ( clazz.isInterface() ) {
+            mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                Type.getInternalName( clazz ),
+                                method.getName(),
+                                Type.getMethodDescriptor( method ) );
+        } else {
+            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                Type.getInternalName( clazz ),
+                                method.getName(),
+                                Type.getMethodDescriptor( method ) );
+        }
         mv.visitInsn( Type.getType( method.getReturnType() ).getOpcode( Opcodes.IRETURN ) );
         final Label l1 = new Label();
         mv.visitLabel( l1 );
@@ -1009,7 +1015,7 @@ public class ShadowProxyFactory {
             final Label l0 = new Label();
             mv.visitLabel( l0 );
 
-            // if ( this == object || this.delegate == object )
+            // if ( this == object || this.delegate == object || this.delegate.equals( object ) ) {
             mv.visitVarInsn( Opcodes.ALOAD,
                              0 );
             mv.visitVarInsn( Opcodes.ALOAD,
@@ -1025,17 +1031,38 @@ public class ShadowProxyFactory {
                                Type.getDescriptor( clazz ) );
             mv.visitVarInsn( Opcodes.ALOAD,
                              1 );
+            mv.visitJumpInsn( Opcodes.IF_ACMPEQ,
+                              l1 );
+            
+            mv.visitVarInsn(Opcodes.ALOAD, 0);
+            mv.visitFieldInsn( Opcodes.GETFIELD,
+                               className,
+                               DELEGATE_FIELD_NAME,
+                               Type.getDescriptor( clazz ) );
+            mv.visitVarInsn(Opcodes.ALOAD, 1);
+            if ( clazz.isInterface() ) {
+                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                    Type.getInternalName( clazz ),
+                                    "equals",
+                                    Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+                                                              new Type[]{Type.getType( Object.class )} ) );
+            } else {
+                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                    Type.getInternalName( clazz ),
+                                    "equals",
+                                    Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+                                                              new Type[]{Type.getType( Object.class )} ) );
+            }
             Label l2 = new Label();
-            mv.visitJumpInsn( Opcodes.IF_ACMPNE,
-                              l2 );
-            mv.visitLabel( l1 );
-
+            mv.visitJumpInsn(Opcodes.IFEQ, l2);
+            
             //      return true;
+            mv.visitLabel( l1 );
             mv.visitInsn( Opcodes.ICONST_1 );
             mv.visitInsn( Opcodes.IRETURN );
+            mv.visitLabel( l2 );
 
             // if (( object == null ) || ( ! ( object instanceof <class> ) ) ) 
-            mv.visitLabel( l2 );
             mv.visitVarInsn( Opcodes.ALOAD,
                              1 );
             final Label l3 = new Label();
@@ -1053,9 +1080,75 @@ public class ShadowProxyFactory {
             mv.visitLabel( l3 );
             mv.visitInsn( Opcodes.ICONST_0 );
             mv.visitInsn( Opcodes.IRETURN );
+            mv.visitLabel( l4 );
+
+            // if( object instanceof ShadowProxy && 
+            //     ( this.delegate == ((ShadowProxy)object).delegate ||
+            //       this.delegate.equals( ((ShadowProxy)object).delegate ) ) ) {
+            Label c0 = new Label();
+            mv.visitLabel( c0 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             1 );
+            mv.visitTypeInsn( Opcodes.INSTANCEOF,
+                              className );
+            Label c1 = new Label();
+            mv.visitJumpInsn( Opcodes.IFEQ,
+                              c1 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             0 );
+            mv.visitFieldInsn( Opcodes.GETFIELD,
+                               className,
+                               DELEGATE_FIELD_NAME,
+                               Type.getDescriptor( clazz ) );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             1 );
+            mv.visitTypeInsn( Opcodes.CHECKCAST,
+                              className );
+            mv.visitFieldInsn( Opcodes.GETFIELD,
+                               className,
+                               DELEGATE_FIELD_NAME,
+                               Type.getDescriptor( clazz ) );
+            Label c2 = new Label();
+            mv.visitJumpInsn( Opcodes.IF_ACMPEQ,
+                              c2 );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             0 );
+            mv.visitFieldInsn( Opcodes.GETFIELD,
+                               className,
+                               DELEGATE_FIELD_NAME,
+                               Type.getDescriptor( clazz ) );
+            mv.visitVarInsn( Opcodes.ALOAD,
+                             1 );
+            mv.visitTypeInsn( Opcodes.CHECKCAST,
+                              className );
+            mv.visitFieldInsn( Opcodes.GETFIELD,
+                               className,
+                               DELEGATE_FIELD_NAME,
+                               Type.getDescriptor( clazz ) );
+            if ( clazz.isInterface() ) {
+                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                    Type.getInternalName( clazz ),
+                                    "equals",
+                                    Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+                                                              new Type[]{Type.getType( Object.class )} ) );
+            } else {
+                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                    Type.getInternalName( clazz ),
+                                    "equals",
+                                    Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+                                                              new Type[]{Type.getType( Object.class )} ) );
+            }
+            mv.visitJumpInsn( Opcodes.IFEQ,
+                              c1 );
+            mv.visitLabel( c2 );
+            //     return true;
+            mv.visitInsn( Opcodes.ICONST_1 );
+            mv.visitInsn( Opcodes.IRETURN );
+            // }
+            mv.visitLabel( c1 );
+            
 
             // <class> other = (<class>) object;
-            mv.visitLabel( l4 );
             mv.visitVarInsn( Opcodes.ALOAD,
                              1 );
             mv.visitTypeInsn( Opcodes.CHECKCAST,
@@ -1322,11 +1415,19 @@ public class ShadowProxyFactory {
                            Type.getDescriptor( clazz ) );
         mv.visitVarInsn( Opcodes.ALOAD,
                          1 );
-        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                            Type.getInternalName( clazz ),
-                            "equals",
-                            Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
-                                                      new Type[]{Type.getType( Object.class )} ) );
+        if ( clazz.isInterface() ) {
+            mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                Type.getInternalName( clazz ),
+                                "equals",
+                                Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+                                                          new Type[]{Type.getType( Object.class )} ) );
+        } else {
+            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                Type.getInternalName( clazz ),
+                                "equals",
+                                Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+                                                          new Type[]{Type.getType( Object.class )} ) );
+        }
         mv.visitInsn( Opcodes.IRETURN );
         Label l3 = new Label();
         mv.visitLabel( l3 );
@@ -1401,11 +1502,19 @@ public class ShadowProxyFactory {
                                className,
                                DELEGATE_FIELD_NAME,
                                Type.getDescriptor( clazz ) );
-            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( clazz ),
-                                "hashCode",
-                                Type.getMethodDescriptor( Type.INT_TYPE,
-                                                          new Type[0] ) );
+            if ( clazz.isInterface() ) {
+                mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+                                    Type.getInternalName( clazz ),
+                                    "hashCode",
+                                    Type.getMethodDescriptor( Type.INT_TYPE,
+                                                              new Type[0] ) );
+            } else {
+                mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                                    Type.getInternalName( clazz ),
+                                    "hashCode",
+                                    Type.getMethodDescriptor( Type.INT_TYPE,
+                                                              new Type[0] ) );
+            }
             mv.visitFieldInsn( Opcodes.PUTFIELD,
                                className,
                                HASHCACHE_FIELD_NAME,

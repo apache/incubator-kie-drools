@@ -746,12 +746,22 @@ public abstract class AbstractWorkingMemory
                                 // we need to remove the handle from the map, before replacing the object
                                 // and then re-add the handle. Otherwise we may end up with a leak.
                                 this.assertMap.remove( handle );
-                                handle.setObject( object );
+                                Object oldObject = handle.getObject();
+                                if( oldObject instanceof ShadowProxy ) {
+                                    ((ShadowProxy) oldObject).setShadowedObject( object );
+                                } else {
+                                    handle.setObject( object );
+                                }
                                 this.assertMap.put( handle,
                                                     handle,
                                                     false );
                             } else {
-                                handle.setObject( object );
+                                Object oldObject = handle.getObject();
+                                if( oldObject instanceof ShadowProxy ) {
+                                    ((ShadowProxy) oldObject).setShadowedObject( object );
+                                } else {
+                                    handle.setObject( object );
+                                }
                             }
                             return handle;
                         } else {

@@ -128,6 +128,18 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     /**
+     * Tests the provided class to see if this <code>ObjectTypeNode</code> can receive instances of that class
+     * for assertion and retraction propagations.
+     * 
+     * @param object
+     * @return
+     *      boolean value indicating whether the <code>ObjectTypeNode</code> can receive instances of the class.
+     */
+    public boolean matchesClass(final Class clazz) {
+        return this.objectType.matchesClass( clazz );
+    }
+
+    /**
      * Propagate the <code>FactHandleimpl</code> through the <code>Rete</code> network. All
      * <code>FactHandleImpl</code> should be remembered in the node memory, so that later runtime rule attachmnents
      * can have the matched facts propagated to them.

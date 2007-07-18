@@ -187,7 +187,7 @@ public class Rete extends ObjectSource
 
         ObjectTypeConf objectTypeConf;
         if ( object instanceof ShadowProxy ) {
-            objectTypeConf = (ObjectTypeConf) memory.get( object.getClass().getSuperclass() );
+            objectTypeConf = (ObjectTypeConf) memory.get( ((ShadowProxy)object).getShadowedObject().getClass() );
         } else {
             objectTypeConf = (ObjectTypeConf) memory.get( object.getClass() );
         }
@@ -310,42 +310,47 @@ public class Rete extends ObjectSource
 
         //private final InternalRuleBase ruleBase;
 
-        public ObjectTypeConf(Class cls,
+        public ObjectTypeConf(Class clazz,
                               InternalRuleBase ruleBase) {
-            this.cls = cls;
+            this.cls = clazz;
             this.ruleBase = ruleBase;
-            Rete rete = ruleBase.getRete();
 
-            if ( !ruleBase.getConfiguration().isShadowProxy() || cls == null || !ruleBase.getConfiguration().isShadowed( cls.getName() ) ) {
+            defineShadowProxyData( clazz );
+        }
+
+        private void defineShadowProxyData(Class clazz) {
+            Rete rete = this.ruleBase.getRete();
+
+            if ( !ruleBase.getConfiguration().isShadowProxy() || clazz == null || !ruleBase.getConfiguration().isShadowed( clazz.getName() ) ) {
+                this.shadowEnabled = false;
+                this.shadowClass = null;
+                this.instantiator = null;
                 return;
             }
-            
-            Package pkg = cls.getPackage();
+
+            Package pkg = clazz.getPackage();
             String pkgName = (pkg != null) ? pkg.getName() : "";
             if ( "org.drools.reteoo".equals( pkgName ) || "org.drools.base".equals( pkgName ) ) {
                 // We don't shadow internal classes
                 this.shadowEnabled = false;
+                this.shadowClass = null;
+                this.instantiator = null;
                 return;
             }
 
-            Class shadowClass = null;
-            final String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( this.cls );
-            try {
-                // if already loaded
-                shadowClass = rete.getRuleBase().getMapBackedClassLoader().loadClass( shadowProxyName );
-            } catch ( final ClassNotFoundException cnfe ) {
-                // otherwise, create and load
-                final byte[] proxyBytes = ShadowProxyFactory.getProxyBytes( cls );
-                if ( proxyBytes != null ) {
-                    rete.getRuleBase().getMapBackedClassLoader().addClass( shadowProxyName,
-                                                                           proxyBytes );
-                    try {
-                        shadowClass = rete.getRuleBase().getMapBackedClassLoader().loadClass( shadowProxyName );
-                    } catch ( ClassNotFoundException e ) {
-                        throw new RuntimeException( "Unable to find or generate the ShadowProxy implementation for '" + this.cls.getName() + "'" );
-                    }
-                }
+            // try to generate proxy for the actual class
+            Class shadowClass = loadOrGenerateProxy( clazz,
+                                                     rete );
 
+            if ( shadowClass == null ) {
+                // if it failed, try to find a parent class
+                ObjectTypeNode[] nodes = this.getMatchingObjectTypes( clazz );
+                Class shadowClassRoot = clazz;
+                while ( shadowClass == null && (shadowClassRoot = this.findAFeasibleSuperclassOrInterface( nodes,
+                                                                                                           shadowClassRoot )) != null ) {
+                    shadowClass = loadOrGenerateProxy( shadowClassRoot,
+                                                       rete );
+                }
             }
 
             if ( shadowClass != null ) {
@@ -353,6 +358,66 @@ public class Rete extends ObjectSource
                 this.shadowEnabled = true;
                 setInstantiator();
             }
+        }
+
+        private Class loadOrGenerateProxy(Class clazz,
+                                          Rete rete) {
+            Class shadowClass = null;
+            final String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( clazz );
+            try {
+                // if already loaded
+                shadowClass = rete.getRuleBase().getMapBackedClassLoader().loadClass( shadowProxyName );
+            } catch ( final ClassNotFoundException cnfe ) {
+                // otherwise, create and load
+                final byte[] proxyBytes = ShadowProxyFactory.getProxyBytes( clazz );
+                if ( proxyBytes != null ) {
+                    rete.getRuleBase().getMapBackedClassLoader().addClass( shadowProxyName,
+                                                                           proxyBytes );
+                    try {
+                        shadowClass = rete.getRuleBase().getMapBackedClassLoader().loadClass( shadowProxyName );
+                    } catch ( ClassNotFoundException e ) {
+                        throw new RuntimeException( "Unable to find or generate the ShadowProxy implementation for '" + clazz + "'" );
+                    }
+                }
+
+            }
+            return shadowClass;
+        }
+
+        private Class findAFeasibleSuperclassOrInterface(ObjectTypeNode[] nodes,
+                                                         Class clazz) {
+
+            // check direct superclass  
+            Class ret = clazz.getSuperclass();
+            boolean isOk = ret != null && ret != Object.class; // we don't want to shadow java.lang.Object
+            if ( isOk ) {
+                for ( int i = 0; isOk && ret != null && i < nodes.length; i++ ) {
+                    isOk = nodes[i].matchesClass( ret );
+                }
+            }
+
+            if ( !isOk ) {
+                // try the interfaces now...
+                Class[] interfaces = clazz.getInterfaces();
+                boolean notFound = true;
+                isOk = interfaces.length > 0;
+                for ( int i = 0; notFound && i < interfaces.length; i++ ) {
+                    ret = interfaces[i];
+                    isOk = interfaces[i] != Serializable.class &&
+                           interfaces[i] != Cloneable.class &&
+                           interfaces[i] != Comparable.class;
+                    for ( int j = 0; isOk && j < nodes.length; j++ ) {
+                        isOk = nodes[j].matchesClass( ret );
+                    }
+                    notFound = !isOk;
+                }
+                if( notFound ) {
+                    ret = null;
+                }
+            }
+
+            // ret now contains a superclass/interface that can be shadowed or null if none
+            return ret;
         }
 
         private void readObject(ObjectInputStream stream) throws IOException,
@@ -372,16 +437,15 @@ public class Rete extends ObjectSource
             ShadowProxy proxy = null;
             if ( isShadowEnabled() ) {
                 try {
-                    if( Collection.class.isAssignableFrom( this.shadowClass ) ||
-                        Map.class.isAssignableFrom( this.shadowClass ) ) {
+                    if ( Collection.class.isAssignableFrom( this.shadowClass ) || Map.class.isAssignableFrom( this.shadowClass ) ) {
                         // if it is a collection, try to instantiate using constructor
                         try {
-                            proxy = (ShadowProxy) this.shadowClass.getConstructor( new Class[] { cls } ).newInstance( new Object[] { fact } );
+                            proxy = (ShadowProxy) this.shadowClass.getConstructor( new Class[]{cls} ).newInstance( new Object[]{fact} );
                         } catch ( Exception e ) {
                             // not possible to instantiate using constructor
                         }
                     }
-                    if( proxy == null ) {
+                    if ( proxy == null ) {
                         if ( this.instantiator == null ) {
                             this.setInstantiator();
                         }
@@ -402,6 +466,7 @@ public class Rete extends ObjectSource
 
         public void resetCache() {
             this.objectTypeNodes = null;
+            defineShadowProxyData( cls );
         }
 
         public ObjectTypeNode[] getObjectTypeNodes(final Object object) {
@@ -409,6 +474,20 @@ public class Rete extends ObjectSource
                 buildCache( object );
             }
             return this.objectTypeNodes;
+        }
+
+        private ObjectTypeNode[] getMatchingObjectTypes(final Class clazz) throws FactException {
+            final List cache = new ArrayList();
+
+            final Iterator it = ruleBase.getRete().getObjectTypeNodes().newIterator();
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                final ObjectTypeNode node = (ObjectTypeNode) entry.getValue();
+                if ( node.matchesClass( clazz ) ) {
+                    cache.add( node );
+                }
+            }
+
+            return (ObjectTypeNode[]) cache.toArray( new ObjectTypeNode[cache.size()] );
         }
 
         private void buildCache(final Object object) throws FactException {

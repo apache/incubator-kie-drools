@@ -16,12 +16,6 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import java.lang.reflect.Field;
-
-import org.drools.RuntimeDroolsException;
-import org.drools.objenesis.Objenesis;
-import org.drools.objenesis.ObjenesisStd;
-import org.drools.objenesis.instantiator.ObjectInstantiator;
 import org.drools.spi.ObjectType;
 
 /**
@@ -77,6 +71,20 @@ public class ClassObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // org.drools.spi.ObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    /**
+     * Determine if the passed <code>Class</code> matches to the object type
+     * defined by this <code>objectType</code> instance.
+     * 
+     * @param clazz
+     *            The <code>Class</code> to test.
+     * 
+     * @return <code>true</code> if the <code>Class</code> matches this
+     *         object type, else <code>false</code>.
+     */
+    public boolean matchesClass(final Class clazz) {
+        return getClassType().isAssignableFrom( clazz );
+    }
 
     /**
      * Determine if the passed <code>Object</code> belongs to the object type
