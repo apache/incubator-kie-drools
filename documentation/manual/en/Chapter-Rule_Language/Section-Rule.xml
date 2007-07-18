@@ -40,21 +40,22 @@
   The rule is terminated by the keyword "end". Rules cannot be nested of
   course.</para>
 
-  <programlisting>rule "Hello World"
-    salience 10
+  <programlisting>rule "&lt;name&gt;"
+    &lt;attribute&gt;*
 when
-  
+    &lt;constraint&gt;*
 then
+    &lt;action&gt;*
 end</programlisting>
 
   <section>
     <title>Left Hand Side</title>
 
     <para>The Left Hand Side (LHS) is a common name for the conditional part
-    of the rule.</para>
-
-    <para>To interpret the following diagram, refer to the sections below for
-    the details.</para>
+    of the rule. It consists of zero or more Conditional Elements; whch are
+    covered in detail in a later secion of this Chapter. If the LHS is left
+    empty it is re-written as eval(true), which means the rule is always
+    true.</para>
 
     <figure>
       <title>Left Hand Side</title>
@@ -239,11 +240,11 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="column.svg" format="SVG" role="" />
+          <imagedata align="center" fileref="pattern.svg" format="SVG" role="" />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="column.png" format="PNG" role="" />
+          <imagedata align="center" fileref="pattern.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
