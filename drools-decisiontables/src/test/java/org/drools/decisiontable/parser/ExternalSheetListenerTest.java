@@ -97,11 +97,11 @@ public class ExternalSheetListenerTest extends TestCase {
 		esl.newCell(4, 0, "", 0);
 		esl.newCell(4, 1, "", 0);
 		esl.newCell(4, 2, "", 0);
-		
+
 		esl.finishSheet();
 		assertEquals(2, assertedRows.size());
 	}
-	
+
 	private class TestTemplateRuleBase implements TemplateRuleBase {
 
 		public StatefulSession newStatefulSession() {
@@ -234,7 +234,7 @@ public class ExternalSheetListenerTest extends TestCase {
 				}
 
 				public void setGlobalResolver(GlobalResolver globalResolver) {
-					
+
 				}
 
 				public ProcessInstance startProcess(String processId) {
@@ -304,41 +304,41 @@ public class ExternalSheetListenerTest extends TestCase {
                                          Rule rule,
                                          Activation activation) {
                     // TODO Auto-generated method stub
-                    
+
                 }
 
                 public void modifyRetract(FactHandle factHandle,
                                           Rule rule,
                                           Activation activation) {
                     // TODO Auto-generated method stub
-                    
+
                 }
 
                 public void modifyInsert(FactHandle factHandle,
                                          Object object) {
                     // TODO Auto-generated method stub
-                    
+
                 }
 
                 public void modifyRetract(FactHandle factHandle) {
                     // TODO Auto-generated method stub
-                    
+
                 }
 
                 public void halt() {
                     // TODO Auto-generated method stub
-                    
+
                 }
 
                 public void fireAllRules(int fireLimit) throws FactException {
                     // TODO Auto-generated method stub
-                    
+
                 }
 
                 public void fireAllRules(AgendaFilter agendaFilter,
                                          int fireLimit) throws FactException {
                     // TODO Auto-generated method stub
-                    
+
                 }
 
 				public Future asyncInsert(List list) {
@@ -354,6 +354,16 @@ public class ExternalSheetListenerTest extends TestCase {
                 public List getRuleFlowEventListeners() {
                     // TODO Auto-generated method stub
                     return null;
+                }
+
+                public void clearActivationGroup(String group) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                public void clearRuleFlowGroup(String group) {
+                    // TODO Auto-generated method stub
+
                 }
 			};
 		}
