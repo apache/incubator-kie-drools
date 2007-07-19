@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Advanced Conditional Elements</title>
+
+  <note>
+    <para><replaceable>(updated to Drools 4.0)</replaceable></para>
+  </note>
+
+  <para>Drools 4.0 introduces a whole new set of conditional elements in order
+  to support full First Order Logic expressiveness, as well as some facilities
+  for handling collections of facts. This section will detail the following
+  new Conditional Elements:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>from </para>
+    </listitem>
+
+    <listitem>
+      <para>collect</para>
+    </listitem>
+
+    <listitem>
+      <para>accumulate </para>
+    </listitem>
+
+    <listitem>
+      <para>forall</para>
+    </listitem>
+  </itemizedlist>
+
+  <section>
+    <title>from</title>
+
+    <para>The <emphasis role="bold">from</emphasis> Conditional Element allows
+    users to specify a source for patterns to reason over. This allows the
+    engine to reason over data not in the Working Memory. This could be a
+    sub-field on a bound variable or the results of a method call. It is a
+    powerful construction that allows out of the box integration with other
+    application components and frameworks. One common example is the
+    integration with data retrieved on-demand from databases using hibernate
+    named queries.</para>
+
+    <para>The expression used to define the object source is any expression
+    that follows regular MVEL syntax. I.e., it allows you to easily use object
+    property navigation, execute method calls and access maps and collections
+    elements.</para>
+
+    <para>Here is a simple example of reasoning and binding on another pattern
+    sub-field: </para>
+
+    <para><programlisting>rule "validate zipcode"
+when
+    Person( $personAddress : address ) 
+    Address( zipcode == "23920W") from $personAddress 
+then
+    # zip code is ok
+end
+</programlisting></para>
+
+    <para>With all the flexibility from the new expressiveness in the Drools
+    engine you can slice and dice this problem many ways. This is the same but
+    shows how you can use a graph notation with the 'from': </para>
+
+    <para><programlisting>rule "validate zipcode"
+when
+    $p : Person( ) 
+    $a : Address( zipcode == "23920W") from $p.address 
+then
+    # zip code is ok
+end
+</programlisting></para>
+
+    <para>Previous examples were reasoning over a single pattern. The
+    <emphasis role="bold">from</emphasis> CE also support object sources that
+    return a collection of objects. In that case, <emphasis
+    role="bold">from</emphasis> will iterate over all objects in the
+    collection and try to match each of them individually. For instance, if we
+    want a rule that applies 10% discount to each item in an order, we could
+    do:</para>
+
+    <programlisting>rule "apply 10% discount to all items over US$ 100,00 in an order"
+when
+    $order : Order()
+    $item  : OrderItem( value &gt; 100 ) from $order.items
+then
+    # apply discount to $item
+end
+</programlisting>
+
+    <para>The above example will cause the rule to fire once for each item
+    whose value is greater than 100 for each given order.</para>
+
+    <para>The next example shows how we can reason over the results of a
+    hibernate query. The Restaurant pattern will reason over and bind with
+    each result in turn: </para>
+  </section>
+
+  <section>
+    <title>collect</title>
+
+    <para>The <emphasis role="bold">collect</emphasis> Conditional Element
+    allows rules to reason over collection of objects collect from the given
+    source or from the working memory. A simple example:</para>
+
+    <programlisting>import java.util.ArrayList
+
+rule "Raise priority if system has more than 3 pending alarms"
+when
+    $system : System()
+    $alarms : ArrayList( size &gt;= 3 )
+              from collect( Alarm( system == $system, status == 'pending' ) )
+then
+    # Raise priority, because system $system has
+    # 3 or more alarms pending. The pending alarms
+    # are $alarms.
+end
+</programlisting>
+
+    <para>In the above example, the rule will look for all pending alarms in
+    the working memory for each given system and group them in ArrayLists. If
+    3 or more alarms are found for a given system, the rule will fire.</para>
+
+    <para>The <emphasis role="bold">collect</emphasis> CE result pattern can
+    be any concrete class that implements tha java.util.Collection interface
+    and provides a default no-arg public constructor. I.e., you can use
+    default java collections like ArrayList, LinkedList, HashSet, etc, or your
+    own class, as long as it implements the java.util.Collection interface and
+    provide a default no-arg public constructor.</para>
+
+    <para>Both source and result patterns can be constrained as any other
+    pattern.</para>
+
+    <para>Variables bound before the <emphasis role="bold">collect</emphasis>
+    CE are in the scope of both source and result patterns and as so, you can
+    use them to constrain both your source and result patterns. Although, the
+    <emphasis>collect( ... )</emphasis> is a scope delimiter for bindings,
+    meaning that any binding made inside of it, is not available for use
+    outside of it.</para>
+
+    <para>Collect accepts nested <emphasis role="bold">from</emphasis>
+    elements, so the following example is a valid use of <emphasis
+    role="bold">collect</emphasis>:</para>
+
+    <programlisting>import java.util.LinkedList;
+
+rule "Send a message to all mothers"
+when
+    $town : Town( name == 'Paris' )
+    $mothers : LinkedList() 
+               from collect( Person( gender == 'F', children &gt; 0 ) 
+                             from $town.getPeople() 
+                           )
+then
+    # send a message to all mothers
+end
+</programlisting>
+  </section>
+</section>
