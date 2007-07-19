@@ -119,6 +119,8 @@
 
       <xi:include href="Chapter-Rule_Language/Section-XML.xml" />
 
+      <xi:include href="Chapter-Rule_Language/Section-RuleFlow.xml" />
+
       <!--xi:include href="Chapter-Rule_Language/Section-Column.xml" />
 
       <xi:include href="Chapter-Rule_Language/Section-Field_Constraints.xml" />
