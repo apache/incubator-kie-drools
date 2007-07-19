@@ -30,7 +30,7 @@
   </itemizedlist>
 
   <section>
-    <title>from</title>
+    <title>From</title>
 
     <para>The <emphasis role="bold">from</emphasis> Conditional Element allows
     users to specify a source for patterns to reason over. This allows the
@@ -97,10 +97,10 @@ end
   </section>
 
   <section>
-    <title>collect</title>
+    <title>Collect</title>
 
     <para>The <emphasis role="bold">collect</emphasis> Conditional Element
-    allows rules to reason over collection of objects collect from the given
+    allows rules to reason over collection of objects collected from the given
     source or from the working memory. A simple example:</para>
 
     <programlisting>import java.util.ArrayList
@@ -155,5 +155,162 @@ then
     # send a message to all mothers
 end
 </programlisting>
+  </section>
+
+  <section>
+    <title>Accumulate</title>
+
+    <para>The <emphasis role="bold">accumulate</emphasis> Conditional Element
+    is a more flexible and powerful form of <emphasis
+    role="bold">collect</emphasis> Conditional Element, in the sense that it
+    can be used to do what <emphasis role="bold">collect</emphasis> CE does
+    and also do things that <emphasis role="bold">collect</emphasis> CE is not
+    capable to do. Basically what it does is it allows a rule to iterate over
+    a collection of objects, executing custom actions for each of the
+    elements, and at the end return a result object.</para>
+
+    <para>The general syntax of the <emphasis
+    role="bold">accumulate</emphasis> CE is:</para>
+
+    <programlisting><replaceable>&lt;result pattern&gt;</replaceable> from accumulate( <replaceable>&lt;source pattern&gt;</replaceable>,
+                                  init( <replaceable>&lt;init code&gt;</replaceable> ),
+                                  action( <replaceable>&lt;action code&gt;</replaceable> ),
+                                  reverse( <replaceable>&lt;reverse code&gt;</replaceable> ),
+                                  result( <replaceable>&lt;result expression&gt;</replaceable> ) )
+</programlisting>
+
+    <para>The meaning of each of the elements is the following:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">&lt;source pattern&gt;</emphasis>: the
+        source pattern is a regular pattern that the engine will try to match
+        against each of the source objects.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">&lt;init code&gt;</emphasis>: this is a
+        semantic block of code in the selected dialect that will be executed
+        once for each tuple, before iterating over the source objects.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">&lt;action code&gt;</emphasis>: this is a
+        semantic block of code in the selected dialect that will be executed
+        for each of the source objects.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">&lt;reverse code&gt;</emphasis>: this is
+        an optional semantic block of code in the selected dialect that if
+        present will be executed for each source object that no longer matches
+        the source pattern. The objective of this code block is to "undo" any
+        calculation done in the &lt;action code&gt; block, so that the engine
+        can do decremental calculation when a source object is modified or
+        retracted, hugely improving performance of these operations.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">&lt;result expression&gt;</emphasis>: this
+        is a semantic expression in the selected dialect that is executed
+        after all source objects are iterated.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">&lt;result pattern&gt;</emphasis>: this is
+        a regular pattern that the engine tries to match against the object
+        returned from the &lt;result expression&gt;. If it matches, the
+        <emphasis role="bold">accumulate</emphasis> conditional element
+        evaluates to <emphasis role="bold">true</emphasis> and the engine
+        proceeds with the evaluation of the next CE in the rule. If it does
+        not matches, the <emphasis role="bold">accumulate</emphasis> CE
+        evaluates to <emphasis role="bold">false</emphasis> and the engine
+        stops evaluating CEs for that rule.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>It is easier to understand if we look at an example:</para>
+
+    <programlisting>rule "Apply 10% discount to orders over US$ 100,00"
+when
+    $order : Order()
+    $total : Number( doubleValue &gt; 100 ) 
+             from accumulate( OrderItem( order == $order, $value : value ),
+                              init( double total = 0; ),
+                              action( total += $value; ),
+                              reverse( total -= $value; ),
+                              result( total ) )
+then
+    # apply discount to $order
+end
+</programlisting>
+
+    <para>In the above example, for each Order() in the working memory, the
+    engine will execute the <emphasis role="bold">init code</emphasis>
+    initializing the total variable to zero. Then it will iterate over all
+    OrderItem() objects for that order, executing the <emphasis
+    role="bold">action</emphasis> for each one (in the example, it will sum
+    the value of all items into the total variable). After iterating over all
+    OrderItem, it will return the value corresponding to the <emphasis
+    role="bold">result expression</emphasis> (in the above example, the value
+    of the total variable). Finally, the engine will try to match the result
+    with the Number() pattern and if the double value is greater than 100, the
+    rule will fire.</para>
+
+    <para>The example used java as the semantic dialect, and as such, note
+    that the usage of ';' is mandatory in the init, action and reverse code
+    blocks. The result is an expression and as such, it does not admit ';'. If
+    the user uses any other dialect, he must comply to that dialect specific
+    syntax.</para>
+
+    <para>As mentioned before, the <emphasis role="bold">reverse
+    code</emphasis> is optional, but it is strongly recommended that the user
+    writes it in order to benefit from the <emphasis>improved performance on
+    update and retracts</emphasis>.</para>
+
+    <para>The <emphasis role="bold">accumulate</emphasis> CE can be used to
+    execute any action on source objects. The following example instantiates
+    and populates a custom object:</para>
+
+    <programlisting>rule "Accumulate using custom objects"
+when
+    $person   : Person( $likes : likes )
+    $cheesery : Cheesery( totalAmount &gt; 100 )
+                from accumulate( $cheese : Cheese( type == $likes ),
+                                 init( Cheesery cheesery = new Cheesery(); ),
+                                 action( cheesery.addCheese( $cheese ); ),
+                                 reverse( cheesery.removeCheese( $cheese ); ),
+                                 result( cheesery ) );
+then
+    // do something
+end</programlisting>
+
+    <section>
+      <title>Accumulate Functions</title>
+
+      <para>The accumulate CE is a very powerful CE, but it gets real
+      declarative and easy to use when we use predefined functions that are
+      known as Accumulate Functions. They work exactly like accumulate, but
+      instead of explicitly writing custom code in every accumulate CE, the
+      user can use predefined code for common operations. </para>
+
+      <para>For instance, the rule to apply discount on orders written in the
+      previous section, could be written in the following way, using
+      Accumulate Functions:</para>
+
+      <programlisting>rule "Apply 10% discount to orders over US$ 100,00"
+when
+    $order : Order()
+    $total : Number( doubleValue &gt; 100 ) 
+             from accumulate( OrderItem( order == $order, $value : value ),
+                              sum( $value ) )
+then
+    # apply discount to $order
+end
+</programlisting>
+
+      <para>In the above example, sum is an AccumulateFunction and will sum
+      the $value of all OrderItems and return the result.</para>
+    </section>
   </section>
 </section>
