@@ -15,6 +15,8 @@ public interface InternalRuleFlowGroup
     void addActivation(Activation activation);
 
     void removeActivation(final Activation activation);
+    
+    void clear();
 
     /**
      * Activates or deactivates this <code>RuleFlowGroup</code>.

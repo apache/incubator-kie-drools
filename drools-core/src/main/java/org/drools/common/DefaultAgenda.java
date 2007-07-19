@@ -28,6 +28,7 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
+import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaFilter;
@@ -392,7 +393,7 @@ public class DefaultAgenda
                 continue;
             }
 
-            // this must be set false before removal from the XorGroup. Otherwise the XorGroup will also try to cancel the Actvation
+            // this must be set false before removal from the activationGroup. Otherwise the activationGroup will also try to cancel the Actvation
             item.setActivated( false );
 
             if ( item.getActivationGroupNode() != null ) {
@@ -446,6 +447,44 @@ public class DefaultAgenda
         }
         activationGroup.clear();
     }
+    
+    public void clearRuleFlowGroup(final String name) {
+        final RuleFlowGroup ruleFlowGrlup = (RuleFlowGroup) this.ruleFlowGroups.get( name );
+        if ( ruleFlowGrlup != null ) {
+            clearRuleFlowGroup( ruleFlowGrlup );
+        }
+    }    
+    
+    public void clearRuleFlowGroup(final RuleFlowGroup ruleFlowGroup) {
+        final EventSupport eventsupport = (EventSupport) this.workingMemory;
+
+        
+        for ( Iterator it = ruleFlowGroup.iterator(); it.hasNext(); ) {
+            RuleFlowGroupNode node = ( RuleFlowGroupNode ) it.next();
+            AgendaItem item = ( AgendaItem ) node.getActivation();            
+            if ( item != null ) {
+                item.setActivated( false );
+                item.remove();
+                
+                if ( item.getActivationGroupNode() != null ) {
+                    item.getActivationGroupNode().getActivationGroup().removeActivation( item );
+                }                
+            }
+            
+        
+            
+            eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                          this.workingMemory );                        
+        }
+        
+        ((InternalRuleFlowGroup) ruleFlowGroup).clear();       
+        
+        if ( ruleFlowGroup.isActive() && ruleFlowGroup.isAutoDeactivate() ) {
+                // deactivate callback
+                WorkingMemoryAction action = new DeactivateCallback( (InternalRuleFlowGroup) ruleFlowGroup );
+                this.workingMemory.queueWorkingMemoryAction( action );
+        }        
+    }    
 
     /**
      * Fire the next scheduled <code>Agenda</code> item.

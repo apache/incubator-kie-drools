@@ -123,6 +123,11 @@ public class RuleAgent {
      * For logging events (important for stuff that happens in the background).
      */
     AgentEventListener          listener = getDefaultListener();
+    
+    /**
+     * Polling interval value, in seconds, used in the Timer.
+     */
+    private int secondsToRefresh;
 
 
 
@@ -246,24 +251,7 @@ public class RuleAgent {
         refreshRuleBase();
 
         if ( secondsToRefresh != -1 ) {
-            int interval = secondsToRefresh * 1000;
-            //now schedule it for polling
-            timer = new Timer( true );
-            timer.schedule( new TimerTask() {
-                                public void run() {
-                                    try {
-                                        
-                                        listener.debug( "Checking for updates." );
-                                        refreshRuleBase();
-                                        
-                                    } catch (Exception e) {
-                                        //don't want to stop execution here.                                        
-                                        listener.exception( e );
-                                    }
-                                }
-                            },
-                            interval,
-                            interval );
+            startPolling( secondsToRefresh );
         }
 
     }
@@ -342,16 +330,63 @@ public class RuleAgent {
     /**
      * Stop the polling (if it is happening)
      */
-    public void stopPolling() {
+    public synchronized void stopPolling() {
         if ( this.timer != null ) timer.cancel();
         timer = null;
+    }
+    
+    /**
+     * Will start polling. If polling is already running it does nothing.
+     *
+     */
+    public synchronized void startPolling() {
+        if ( this.timer == null ) {
+            startPolling( this.secondsToRefresh );
+        }
+    }
+    
+    /**
+     * Will start polling. If polling is already happening and of the same interval
+     * it will do nothing, if the interval is different it will stop the current Timer
+     * and create a new Timer for the new interval.
+     * @param secondsToRefresh
+     */
+    public synchronized void startPolling(int secondsToRefresh) {
+        if ( this.timer != null ) {
+            if ( this.secondsToRefresh != secondsToRefresh ) {
+                stopPolling();
+            } else {
+                // do nothing.
+                return;
+            }
+        }
+        
+        this.secondsToRefresh = secondsToRefresh;
+        int interval = this.secondsToRefresh * 1000;
+        //now schedule it for polling
+        timer = new Timer( true );
+        timer.schedule( new TimerTask() {
+                            public void run() {
+                                try {
+                                    
+                                    listener.debug( "Checking for updates." );
+                                    refreshRuleBase();
+                                    
+                                } catch (Exception e) {
+                                    //don't want to stop execution here.                                        
+                                    listener.exception( e );
+                                }
+                            }
+                        },
+                        interval,
+                        interval );        
     }
 
     boolean isNewInstance() {
         return newInstance;
     }
 
-    boolean isPolling() {
+    public synchronized boolean isPolling() {
         return this.timer != null;
     }
 

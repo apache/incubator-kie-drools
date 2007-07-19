@@ -371,6 +371,14 @@ public abstract class AbstractWorkingMemory
     public void clearAgendaGroup(final String group) {
         this.agenda.clearAgendaGroup( group );
     }
+    
+    public void clearActivationGroup(final String group) {
+        this.agenda.clearActivationGroup( group );
+    }
+    
+    public void clearRuleFlowGroup(final String group) {
+        this.agenda.clearRuleFlowGroup( group );
+    }    
 
     public RuleBase getRuleBase() {
         return this.ruleBase;
