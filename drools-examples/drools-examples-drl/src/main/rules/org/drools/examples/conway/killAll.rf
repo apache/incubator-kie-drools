@@ -1,0 +1,265 @@
+<org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper id="1" serialization="custom">
+  <org.drools.eclipse.flow.common.editor.core.ProcessWrapper>
+    <default>
+      <elements id="2">
+        <entry>
+          <string>7-Wrapper</string>
+          <org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper id="3" serialization="custom">
+            <org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+              <default>
+                <constraint id="4">
+                  <x>368</x>
+                  <y>298</y>
+                  <width>80</width>
+                  <height>40</height>
+                </constraint>
+                <element class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="5">
+                  <ruleFlowGroup>calculate</ruleFlowGroup>
+                  <id>7</id>
+                  <name>calculate</name>
+                  <incomingConnections id="6">
+                    <org.drools.ruleflow.core.impl.ConnectionImpl id="7">
+                      <type>1</type>
+                      <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="8">
+                        <ruleFlowGroup>kill all</ruleFlowGroup>
+                        <id>6</id>
+                        <name>kill all</name>
+                        <incomingConnections id="9">
+                          <org.drools.ruleflow.core.impl.ConnectionImpl id="10">
+                            <type>1</type>
+                            <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="11">
+                              <ruleFlowGroup>reset calculate</ruleFlowGroup>
+                              <id>4</id>
+                              <name>reset calculate</name>
+                              <incomingConnections id="12">
+                                <org.drools.ruleflow.core.impl.ConnectionImpl id="13">
+                                  <type>1</type>
+                                  <from class="org.drools.ruleflow.core.impl.StartNodeImpl" id="14">
+                                    <id>1</id>
+                                    <name>Start</name>
+                                    <incomingConnections id="15"/>
+                                    <outgoingConnections id="16">
+                                      <org.drools.ruleflow.core.impl.ConnectionImpl reference="13"/>
+                                    </outgoingConnections>
+                                  </from>
+                                  <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="11"/>
+                                </org.drools.ruleflow.core.impl.ConnectionImpl>
+                              </incomingConnections>
+                              <outgoingConnections id="17">
+                                <org.drools.ruleflow.core.impl.ConnectionImpl reference="10"/>
+                              </outgoingConnections>
+                            </from>
+                            <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="8"/>
+                          </org.drools.ruleflow.core.impl.ConnectionImpl>
+                        </incomingConnections>
+                        <outgoingConnections id="18">
+                          <org.drools.ruleflow.core.impl.ConnectionImpl reference="7"/>
+                        </outgoingConnections>
+                      </from>
+                      <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="5"/>
+                    </org.drools.ruleflow.core.impl.ConnectionImpl>
+                  </incomingConnections>
+                  <outgoingConnections id="19">
+                    <org.drools.ruleflow.core.impl.ConnectionImpl id="20">
+                      <type>1</type>
+                      <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="5"/>
+                      <to class="org.drools.ruleflow.core.impl.EndNodeImpl" id="21">
+                        <id>11</id>
+                        <name>End</name>
+                        <incomingConnections id="22">
+                          <org.drools.ruleflow.core.impl.ConnectionImpl reference="20"/>
+                        </incomingConnections>
+                        <outgoingConnections id="23"/>
+                      </to>
+                    </org.drools.ruleflow.core.impl.ConnectionImpl>
+                  </outgoingConnections>
+                </element>
+                <incomingConnections id="24">
+                  <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper id="25" serialization="custom">
+                    <org.drools.eclipse.flow.common.editor.core.ElementConnection>
+                      <default>
+                        <type>1</type>
+                        <bendpoints id="26"/>
+                        <source class="org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper" id="27" serialization="custom">
+                          <org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+                            <default>
+                              <constraint id="28">
+                                <x>368</x>
+                                <y>223</y>
+                                <width>80</width>
+                                <height>40</height>
+                              </constraint>
+                              <element class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="8"/>
+                              <incomingConnections id="29">
+                                <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper id="30" serialization="custom">
+                                  <org.drools.eclipse.flow.common.editor.core.ElementConnection>
+                                    <default>
+                                      <type>1</type>
+                                      <bendpoints id="31"/>
+                                      <source class="org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper" id="32" serialization="custom">
+                                        <org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+                                          <default>
+                                            <constraint id="33">
+                                              <x>368</x>
+                                              <y>154</y>
+                                              <width>80</width>
+                                              <height>40</height>
+                                            </constraint>
+                                            <element class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="11"/>
+                                            <incomingConnections id="34">
+                                              <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper id="35" serialization="custom">
+                                                <org.drools.eclipse.flow.common.editor.core.ElementConnection>
+                                                  <default>
+                                                    <type>1</type>
+                                                    <bendpoints id="36"/>
+                                                    <source class="org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper" id="37" serialization="custom">
+                                                      <org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+                                                        <default>
+                                                          <constraint id="38">
+                                                            <x>368</x>
+                                                            <y>73</y>
+                                                            <width>80</width>
+                                                            <height>40</height>
+                                                          </constraint>
+                                                          <element class="org.drools.ruleflow.core.impl.StartNodeImpl" reference="14"/>
+                                                          <incomingConnections id="39"/>
+                                                          <outgoingConnections id="40">
+                                                            <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper reference="35"/>
+                                                          </outgoingConnections>
+                                                        </default>
+                                                      </org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+                                                    </source>
+                                                    <target class="org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper" reference="32"/>
+                                                  </default>
+                                                </org.drools.eclipse.flow.common.editor.core.ElementConnection>
+                                                <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                                                  <default>
+                                                    <connection class="org.drools.ruleflow.core.impl.ConnectionImpl" reference="13"/>
+                                                  </default>
+                                                </org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                                              </org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                                            </incomingConnections>
+                                            <outgoingConnections id="41">
+                                              <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper reference="30"/>
+                                            </outgoingConnections>
+                                            <parent class="org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper" reference="1"/>
+                                          </default>
+                                        </org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+                                      </source>
+                                      <target class="org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper" reference="27"/>
+                                    </default>
+                                  </org.drools.eclipse.flow.common.editor.core.ElementConnection>
+                                  <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                                    <default>
+                                      <connection class="org.drools.ruleflow.core.impl.ConnectionImpl" reference="10"/>
+                                    </default>
+                                  </org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                                </org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                              </incomingConnections>
+                              <outgoingConnections id="42">
+                                <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper reference="25"/>
+                              </outgoingConnections>
+                              <parent class="org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper" reference="1"/>
+                            </default>
+                          </org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+                        </source>
+                        <target class="org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper" reference="3"/>
+                      </default>
+                    </org.drools.eclipse.flow.common.editor.core.ElementConnection>
+                    <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                      <default>
+                        <connection class="org.drools.ruleflow.core.impl.ConnectionImpl" reference="7"/>
+                      </default>
+                    </org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                  </org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                </incomingConnections>
+                <outgoingConnections id="43">
+                  <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper id="44" serialization="custom">
+                    <org.drools.eclipse.flow.common.editor.core.ElementConnection>
+                      <default>
+                        <type>1</type>
+                        <bendpoints id="45"/>
+                        <source class="org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper" reference="3"/>
+                        <target class="org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper" id="46" serialization="custom">
+                          <org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+                            <default>
+                              <constraint id="47">
+                                <x>368</x>
+                                <y>383</y>
+                                <width>80</width>
+                                <height>40</height>
+                              </constraint>
+                              <element class="org.drools.ruleflow.core.impl.EndNodeImpl" reference="21"/>
+                              <incomingConnections id="48">
+                                <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper reference="44"/>
+                              </incomingConnections>
+                              <outgoingConnections id="49"/>
+                              <parent class="org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper" reference="1"/>
+                            </default>
+                          </org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+                        </target>
+                      </default>
+                    </org.drools.eclipse.flow.common.editor.core.ElementConnection>
+                    <org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                      <default>
+                        <connection class="org.drools.ruleflow.core.impl.ConnectionImpl" reference="20"/>
+                      </default>
+                    </org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                  </org.drools.eclipse.flow.ruleflow.core.ConnectionWrapper>
+                </outgoingConnections>
+                <parent class="org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper" reference="1"/>
+              </default>
+            </org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
+          </org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper>
+        </entry>
+        <entry>
+          <string>4-Wrapper</string>
+          <org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper reference="32"/>
+        </entry>
+        <entry>
+          <string>11-Wrapper</string>
+          <org.drools.eclipse.flow.ruleflow.core.EndNodeWrapper reference="46"/>
+        </entry>
+        <entry>
+          <string>6-Wrapper</string>
+          <org.drools.eclipse.flow.ruleflow.core.RuleSetNodeWrapper reference="27"/>
+        </entry>
+        <entry>
+          <string>1-Wrapper</string>
+          <org.drools.eclipse.flow.ruleflow.core.StartNodeWrapper reference="37"/>
+        </entry>
+      </elements>
+      <process class="org.drools.ruleflow.core.impl.RuleFlowProcessImpl" id="50">
+        <nodes id="51">
+          <entry>
+            <long>4</long>
+            <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="11"/>
+          </entry>
+          <entry>
+            <long>6</long>
+            <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="8"/>
+          </entry>
+          <entry>
+            <long>11</long>
+            <org.drools.ruleflow.core.impl.EndNodeImpl reference="21"/>
+          </entry>
+          <entry>
+            <long>1</long>
+            <org.drools.ruleflow.core.impl.StartNodeImpl reference="14"/>
+          </entry>
+          <entry>
+            <long>7</long>
+            <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="5"/>
+          </entry>
+        </nodes>
+        <variables id="52"/>
+        <lastNodeId>11</lastNodeId>
+        <id>kill all</id>
+        <name>kill all</name>
+        <version>1</version>
+        <type>RuleFlow</type>
+      </process>
+      <routerLayout>2</routerLayout>
+    </default>
+  </org.drools.eclipse.flow.common.editor.core.ProcessWrapper>
+</org.drools.eclipse.flow.ruleflow.core.RuleFlowProcessWrapper>

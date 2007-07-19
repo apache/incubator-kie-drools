@@ -1,8 +1,14 @@
 package org.drools.examples.conway;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
+
 import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.agent.RuleAgent;
+import org.drools.compiler.PackageBuilder;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.examples.conway.patterns.ConwayPattern;
@@ -14,11 +20,15 @@ import org.drools.examples.conway.patterns.ConwayPattern;
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  * @see Cell
  */
-public class CellGrid {
+public class CellGridImpl
+    implements
+    CellGrid {
 
-    private final Cell[][]  cells;
+    private final Cell[][]     cells;
 
-    private StatefulSession session;
+    private final StatefulSession    session;
+
+    private final ConwayRuleDelegate delegate;
 
     /**
      * Constructs a CellGrid
@@ -28,19 +38,27 @@ public class CellGrid {
      * @param columns
      *            number of columns in the grid
      */
-    public CellGrid(final int rows,
-                    final int columns) {
+    public CellGridImpl(final int rows,
+                        final int columns,
+                        final int executionControl) {
+
         this.cells = new Cell[rows][columns];
 
-        final RuleBase ruleBase = ConwayRuleBaseFactory.getRuleBase();
-        this.session = ruleBase.newStatefulSession();
+        if ( executionControl == AbstractRunConway.RULEFLOWGROUP ) {
+            delegate = new RuleFlowDelegate();
+        } else {
+            delegate = new AgendaGroupDelegate();
+        }
+        
+        this.session = delegate.getSession();
 
         DefaultAgendaEventListener listener = new DefaultAgendaEventListener() {
             public void agendaGroupPopped(AgendaGroupPoppedEvent event,
                                           WorkingMemory workingMemory) {
-//                System.out.println( "popped AgendaGroup = '" + event.getAgendaGroup().getName() + "'" );
-//                System.out.println( CellGrid.this.toString() );
-//                System.out.println( "" );
+                // System.out.println( "popped AgendaGroup = '" +
+                // event.getAgendaGroup().getName() + "'" );
+                // System.out.println( CellGrid.this.toString() );
+                // System.out.println( "" );
             }
         };
 
@@ -58,73 +76,48 @@ public class CellGrid {
                 this.session.insert( newCell );
             }
         }
-        this.session.setFocus( "register neighbor" );
-        this.session.fireAllRules();
+
+        delegate.init();
     }
 
-    /**
-     * @param row
-     *            row of the requested cell
-     * @param column
-     *            column of the requested cell
-     * @return the cell at the specified coordinates
-     * @see Cell
+    /* (non-Javadoc)
+     * @see org.drools.examples.conway.CellGrid#getCellAt(int, int)
      */
     public Cell getCellAt(final int row,
                           final int column) {
         return this.cells[row][column];
     }
 
-    /**
-     * @return the number of rows in this grid
-     * @see #getNumberOfColumns()
+    /* (non-Javadoc)
+     * @see org.drools.examples.conway.CellGrid#getNumberOfRows()
      */
     public int getNumberOfRows() {
         return this.cells.length;
     }
 
-    /**
-     * @return the number of columns in this grid
-     * @see #getNumberOfRows()
+    /* (non-Javadoc)
+     * @see org.drools.examples.conway.CellGrid#getNumberOfColumns()
      */
     public int getNumberOfColumns() {
         return this.cells[0].length;
     }
 
-    /**
-     * Moves this grid to its next generation
-     * 
-     * @return <code>true</code> if the state changed, otherwise false
-     * @see #transitionState()
+    /* (non-Javadoc)
+     * @see org.drools.examples.conway.CellGrid#nextGeneration()
      */
     public boolean nextGeneration() {
-        //System.out.println( "next generation" );
-        session.setFocus( "calculate" );
-        session.setFocus( "kill" );
-        session.setFocus( "birth" );
-        session.setFocus( "reset calculate" );
-        session.setFocus( "rest" );
-        session.setFocus( "evaluate" );
-        session.fireAllRules();
-        return session.getAgenda().getAgendaGroup( "evaluate" ).size() != 0;
+        return delegate.nextGeneration();
     }
 
-    /**
-     * kills all cells in the grid
+    /* (non-Javadoc)
+     * @see org.drools.examples.conway.CellGrid#killAll()
      */
     public void killAll() {
-        this.session.setFocus( "calculate" );
-        this.session.setFocus( "kill all" );
-        this.session.setFocus( "reset calculate" );
-        this.session.fireAllRules();
+        this.delegate.killAll();
     }
 
-    /**
-     * Populates the grid with a <code>ConwayPattern</code>
-     * 
-     * @param pattern
-     *            pattern to populate the grid with
-     * @see ConwayPattern
+    /* (non-Javadoc)
+     * @see org.drools.examples.conway.CellGrid#setPattern(org.drools.examples.conway.patterns.ConwayPattern)
      */
     public void setPattern(final ConwayPattern pattern) {
         final boolean[][] gridData = pattern.getPattern();
@@ -146,7 +139,7 @@ public class CellGrid {
             rowOffset = (getNumberOfRows() - gridHeight) / 2;
         }
 
-        killAll();
+        this.delegate.killAll();
 
         for ( int column = 0; column < gridWidth; column++ ) {
             for ( int row = 0; row < gridHeight; row++ ) {
@@ -159,10 +152,13 @@ public class CellGrid {
                 }
             }
         }
-        session.setFocus( "calculate" );
-        session.fireAllRules();
+
+        this.delegate.setPattern();
     }
 
+    /* (non-Javadoc)
+     * @see org.drools.examples.conway.CellGrid#dispose()
+     */
     public void dispose() {
         if ( this.session != null ) {
             this.session.dispose();

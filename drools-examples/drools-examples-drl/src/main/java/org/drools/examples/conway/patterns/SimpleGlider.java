@@ -5,7 +5,7 @@ package org.drools.examples.conway.patterns;
  * 
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  * @see ConwayPattern
- * @see org.drools.examples.conway.CellGrid
+ * @see org.drools.examples.conway.CellGridImpl
  */
 public class SimpleGlider
     implements

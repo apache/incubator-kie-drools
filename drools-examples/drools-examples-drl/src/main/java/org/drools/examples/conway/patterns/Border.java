@@ -4,7 +4,7 @@ package org.drools.examples.conway.patterns;
  * The Border <p/>
  * 
  * @see ConwayPattern
- * @see org.drools.examples.conway.CellGrid
+ * @see org.drools.examples.conway.CellGridImpl
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  */
 public class Border

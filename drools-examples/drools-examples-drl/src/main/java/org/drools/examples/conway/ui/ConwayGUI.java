@@ -16,7 +16,9 @@ import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
+import org.drools.examples.conway.AbstractRunConway;
 import org.drools.examples.conway.CellGrid;
+import org.drools.examples.conway.CellGridImpl;
 import org.drools.examples.conway.ConwayApplicationProperties;
 import org.drools.examples.conway.patterns.ConwayPattern;
 
@@ -39,7 +41,7 @@ public class ConwayGUI extends JPanel {
     private final Timer     timer;
     private final CellGrid  grid;
 
-    public ConwayGUI() {
+    public ConwayGUI(final int executionControl) {
         super( new BorderLayout() );
         final String nextGenerationLabel = ConwayApplicationProperties.getProperty( "next.generation.label" );
         this.nextGenerationButton = new JButton( nextGenerationLabel );
@@ -47,8 +49,10 @@ public class ConwayGUI extends JPanel {
         this.startStopButton = new JButton( startLabel );
         final String clearLabel = ConwayApplicationProperties.getProperty( "clear.label" );
         this.clearButton = new JButton( clearLabel );
-        this.grid = new CellGrid( 30,
-                                  30 );
+        
+        //this.grid = new CellGridAgendaGroup( 30, 30 );
+        this.grid = new CellGridImpl( 30, 30, executionControl );
+        
         final CellGridCanvas canvas = new CellGridCanvas( grid );
         final JPanel panel = new JPanel( new BorderLayout() );
         panel.add( BorderLayout.CENTER,
@@ -229,17 +233,7 @@ public class ConwayGUI extends JPanel {
     }
 
     public static void main(final String[] args) {
-        //        if ( args.length != 1 )
-        //        {
-        //            System.out.println( "Usage: " + ConwayGUI.class.getName( ) + " [drl file]" );
-        //            return;
-        //        }
-        //        System.out.println( "Using drl: " + args[0] );
-        //
-        //        System.setProperty( "conway.drl.file",
-        //                            args[0] );
-
-        final ConwayGUI gui = new ConwayGUI();
+        final ConwayGUI gui = new ConwayGUI( AbstractRunConway.RULEFLOWGROUP );
         final String appTitle = ConwayApplicationProperties.getProperty( "app.title" );
         final JFrame f = new JFrame( appTitle );
         f.setResizable( false );
