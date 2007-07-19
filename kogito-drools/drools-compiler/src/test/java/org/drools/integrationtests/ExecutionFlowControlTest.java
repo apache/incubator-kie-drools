@@ -552,7 +552,7 @@ public class ExecutionFlowControlTest extends TestCase {
     public void testRuleFlow() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
-        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rf" ) ) );
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
         final Package pkg = builder.getPackage();
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
@@ -584,10 +584,62 @@ public class ExecutionFlowControlTest extends TestCase {
                       processInstance.getState() );
     }
     
+    public void testRuleFlowClear() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ruleflowClear.drl" ) ) );
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ruleflowClear.rfm" ) ) );
+        final Package pkg = builder.getPackage();
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+        
+        final List activations = new ArrayList();
+        AgendaEventListener listener = new DefaultAgendaEventListener() {            
+            public void activationCancelled(ActivationCancelledEvent event,
+                                            WorkingMemory workingMemory) {
+                activations.add( event.getActivation() );
+            }
+        };
+        
+        workingMemory.addEventListener( listener );
+     
+        assertEquals( 0 , workingMemory.getAgenda().getRuleFlowGroup( "flowgroup-1" ).size() );
+        
+        // We need to call fireAllRules here to get the InitialFact into the system, to the eval(true)'s kick in
+        workingMemory.fireAllRules();
+        
+        // Now we have 4 in the RuleFlow, but not yet in the agenda
+        assertEquals( 4 , workingMemory.getAgenda().getRuleFlowGroup( "flowgroup-1" ).size() );
+        
+        // Check they aren't in the Agenda
+        assertEquals( 0, workingMemory.getAgenda().getAgendaGroup( "MAIN" ).size() );
+        
+        // Start the process, which shoudl populate the Agenda
+        final ProcessInstance processInstance = workingMemory.startProcess( "ruleFlowClear" );
+        assertEquals( 4, workingMemory.getAgenda().getAgendaGroup( "MAIN" ).size() );
+        
+        
+        // Check we have 0 activation cancellation events
+        assertEquals( 0, activations.size() );
+        
+        workingMemory.getAgenda().clearRuleFlowGroup( "flowgroup-1" );
+        
+        // Check the AgendaGroup and RuleFlowGroup  are now empty
+        assertEquals( 0, workingMemory.getAgenda().getAgendaGroup( "MAIN" ).size() );
+        assertEquals( 0 , workingMemory.getAgenda().getRuleFlowGroup( "flowgroup-1" ).size() );
+        
+        // Check we have four activation cancellation events
+        assertEquals( 4, activations.size() );              
+    }
+    
     public void testRuleFlowInPackage() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
-        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rf" ) ) );
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
