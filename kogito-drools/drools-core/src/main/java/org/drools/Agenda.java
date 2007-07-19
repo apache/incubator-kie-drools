@@ -124,11 +124,15 @@ public interface Agenda {
     public void clearActivationGroup(String name);
 
     /**
-     * Clears all Activations from an Xor Group. Any Activations that are also in an Agenda Group are removed
+     * Clears all Activations from an Activation Group. Any Activations that are also in an Agenda Group are removed
      * from the Agenda Group.
      * 
      * @param activationGroup
      */
     public void clearActivationGroup(ActivationGroup activationGroup);
+    
+    public void clearRuleFlowGroup(final String name);
+    
+    public void clearRuleFlowGroup(final RuleFlowGroup ruleFlowGroup);
 
 }

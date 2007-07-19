@@ -325,6 +325,18 @@ public interface WorkingMemory extends EventManager {
     public void clearAgendaGroup(String group);
 
     /**
+     * Clears the Activation Group, cancellings all its Activations
+     * @param group
+     */
+    public void clearActivationGroup(String group);
+    
+    /**
+     * Clears the RuleFlow group, cancelling all its Activations
+     * @param group
+     */
+    public void clearRuleFlowGroup(String group);
+    
+    /**
      * Starts a new process instance for the process with the given id. 
      */
     ProcessInstance startProcess(String processId);
