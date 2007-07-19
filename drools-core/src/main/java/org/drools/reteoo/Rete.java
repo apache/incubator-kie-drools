@@ -133,9 +133,11 @@ public class Rete extends ObjectSource
                             false );
             }
         } else {
-            Class cls = object.getClass();
+            Class cls = null;
             if ( object instanceof ShadowProxy ) {
-                cls = cls.getSuperclass();
+                cls = ((ShadowProxy)object).getShadowedObject().getClass();
+            } else {
+                cls = object.getClass();
             }
 
             ojectTypeConf = (ObjectTypeConf) memory.get( cls );
