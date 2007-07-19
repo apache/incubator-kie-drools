@@ -1180,7 +1180,7 @@ public class PackageBuilderTest extends DroolsTestCase {
     public void testRuleFlow() throws Exception {
         PackageBuilder builder = new PackageBuilder();
 
-        InputStream in = this.getClass().getResourceAsStream( "/org/drools/integrationtests/ruleflow.rf" );
+        InputStream in = this.getClass().getResourceAsStream( "/org/drools/integrationtests/ruleflow.rfm" );
         assertNotNull( in );
 
         builder.addPackage( new PackageDescr( "ya" ) );
