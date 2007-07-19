@@ -1,0 +1,90 @@
+<org.drools.ruleflow.core.impl.RuleFlowProcessImpl id="1">
+  <nodes id="2">
+    <entry>
+      <long>4</long>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl id="3">
+        <ruleFlowGroup>reset calculate</ruleFlowGroup>
+        <id>4</id>
+        <name>reset calculate</name>
+        <incomingConnections id="4">
+          <org.drools.ruleflow.core.impl.ConnectionImpl id="5">
+            <type>1</type>
+            <from class="org.drools.ruleflow.core.impl.StartNodeImpl" id="6">
+              <id>1</id>
+              <name>Start</name>
+              <incomingConnections id="7"/>
+              <outgoingConnections id="8">
+                <org.drools.ruleflow.core.impl.ConnectionImpl reference="5"/>
+              </outgoingConnections>
+            </from>
+            <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="3"/>
+          </org.drools.ruleflow.core.impl.ConnectionImpl>
+        </incomingConnections>
+        <outgoingConnections id="9">
+          <org.drools.ruleflow.core.impl.ConnectionImpl id="10">
+            <type>1</type>
+            <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="3"/>
+            <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="11">
+              <ruleFlowGroup>kill all</ruleFlowGroup>
+              <id>6</id>
+              <name>kill all</name>
+              <incomingConnections id="12">
+                <org.drools.ruleflow.core.impl.ConnectionImpl reference="10"/>
+              </incomingConnections>
+              <outgoingConnections id="13">
+                <org.drools.ruleflow.core.impl.ConnectionImpl id="14">
+                  <type>1</type>
+                  <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="11"/>
+                  <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="15">
+                    <ruleFlowGroup>calculate</ruleFlowGroup>
+                    <id>7</id>
+                    <name>calculate</name>
+                    <incomingConnections id="16">
+                      <org.drools.ruleflow.core.impl.ConnectionImpl reference="14"/>
+                    </incomingConnections>
+                    <outgoingConnections id="17">
+                      <org.drools.ruleflow.core.impl.ConnectionImpl id="18">
+                        <type>1</type>
+                        <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="15"/>
+                        <to class="org.drools.ruleflow.core.impl.EndNodeImpl" id="19">
+                          <id>11</id>
+                          <name>End</name>
+                          <incomingConnections id="20">
+                            <org.drools.ruleflow.core.impl.ConnectionImpl reference="18"/>
+                          </incomingConnections>
+                          <outgoingConnections id="21"/>
+                        </to>
+                      </org.drools.ruleflow.core.impl.ConnectionImpl>
+                    </outgoingConnections>
+                  </to>
+                </org.drools.ruleflow.core.impl.ConnectionImpl>
+              </outgoingConnections>
+            </to>
+          </org.drools.ruleflow.core.impl.ConnectionImpl>
+        </outgoingConnections>
+      </org.drools.ruleflow.core.impl.RuleSetNodeImpl>
+    </entry>
+    <entry>
+      <long>6</long>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="11"/>
+    </entry>
+    <entry>
+      <long>11</long>
+      <org.drools.ruleflow.core.impl.EndNodeImpl reference="19"/>
+    </entry>
+    <entry>
+      <long>1</long>
+      <org.drools.ruleflow.core.impl.StartNodeImpl reference="6"/>
+    </entry>
+    <entry>
+      <long>7</long>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="15"/>
+    </entry>
+  </nodes>
+  <variables id="22"/>
+  <lastNodeId>11</lastNodeId>
+  <id>kill all</id>
+  <name>kill all</name>
+  <version>1</version>
+  <type>RuleFlow</type>
+</org.drools.ruleflow.core.impl.RuleFlowProcessImpl>

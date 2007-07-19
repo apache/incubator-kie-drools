@@ -6,7 +6,7 @@ package org.drools.examples.conway;
  *
  * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  * @see CellState
- * @see CellGrid
+ * @see CellGridImpl
  */
 public class Cell {
 
