@@ -91,6 +91,9 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                                            Object value) {
         VariableResolver vr = getVariableResolver( name );
         if ( vr != null ) {
+            if ( this.localVariables == null ) {
+                this.localVariables = new HashMap();
+            }            
             vr.setValue( value );
             return vr;
         } else {
