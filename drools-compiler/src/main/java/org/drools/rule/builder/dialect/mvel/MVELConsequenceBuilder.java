@@ -113,7 +113,7 @@ public class MVELConsequenceBuilder
         int brace = 0;
         int sqre = 0;
         int crly = 0;
-        char lastNonWhite = ' ';
+        char lastNonWhite = ';';
         for ( int i = 0; i < cs.length; i++ ) {
             char c = cs[i];
             switch ( c ) {
