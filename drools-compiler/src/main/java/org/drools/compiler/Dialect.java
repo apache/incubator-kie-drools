@@ -28,6 +28,8 @@ import org.drools.rule.builder.SalienceBuilder;
  *
  */
 public interface Dialect {
+    String getId();
+    
     void init(PackageBuilder builder);
     
     // this is needed because some dialects use other dialects

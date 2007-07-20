@@ -14,10 +14,10 @@ import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
+import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ImportError;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -32,6 +32,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
+import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
@@ -45,8 +46,10 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
+import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.KnowledgeHelper;
+import org.drools.util.StringUtils;
 import org.mvel.ASTNode;
 import org.mvel.AbstractParser;
 import org.mvel.ExpressionCompiler;
@@ -61,7 +64,11 @@ public class MVELDialect
     implements
     Dialect {
 
+    public final static String                ID 					  = "MVELDialect";
+
     private final static String               EXPRESSION_DIALECT_NAME = "MVEL";
+
+    private final MVELRuleClassBuilder        rule                    = new MVELRuleClassBuilder();
 
     private final PatternBuilder              pattern                 = new PatternBuilder();
     private final QueryBuilder                query                   = new QueryBuilder();
@@ -79,12 +86,13 @@ public class MVELDialect
     private List                              results;
     //private final JavaFunctionBuilder             function    = new JavaFunctionBuilder();
 
+    private MemoryResourceReader                    src;
+
     private Package                           pkg;
     private MVELDialectConfiguration          configuration;
     private TypeResolver                      typeResolver;
     private ClassFieldExtractorCache          classFieldExtractorCache;
     private MVELExprAnalyzer                  analyzer;
-
     private StaticMethodImportResolverFactory staticImportFactory;
     private ClassImportResolverFactory        importFactory;
 
@@ -170,10 +178,18 @@ public class MVELDialect
     public void init(Package pkg) {
         this.pkg = pkg;
         this.results = new ArrayList();
-
+        this.src = new MemoryResourceReader();
     }
 
     public void init(RuleDescr ruleDescr) {
+        //MVEL:test null to Fix failing test on org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
+        String pkgName = this.pkg == null? "": this.pkg.getName();
+        final String ruleClassName = JavaDialect.getUniqueLegalName( pkgName,
+        															 ruleDescr.getName(),
+        															 "mvel",
+        															 this.src );
+        ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
+        ruleDescr.setDialect( this );
     }
 
     public String getExpressionDialectName() {
@@ -181,6 +197,16 @@ public class MVELDialect
     }
 
     public void addRule(RuleBuildContext context) {
+    	//MVEL: Compiler change
+        final RuleDescr ruleDescr = context.getRuleDescr();
+
+        // setup the line mappins for this rule
+        final String name = this.pkg.getName() + "." + StringUtils.ucFirst( ruleDescr.getClassName() );
+        final LineMappings mapping = new LineMappings( name );
+        mapping.setStartLine( ruleDescr.getConsequenceLine() );
+        mapping.setOffset( ruleDescr.getConsequenceOffset() );
+
+        context.getPkg().getPackageCompilationData().getLineMappings().put( name, mapping );
 
     }
 
@@ -309,11 +335,12 @@ public class MVELDialect
 
         final ParserContext parserContext = new ParserContext( imports,
                                                                null,
-                                                               null );
+                                                               context.getPkg().getName()+"."+context.getRuleDescr().getClassName() );
 
         //this.configuration.get
 
         parserContext.setStrictTypeEnforcement( strictMode );
+
         if ( interceptors != null ) {
             parserContext.setInterceptors( interceptors );
         }
@@ -331,7 +358,7 @@ public class MVELDialect
         for ( Iterator it = list[1].iterator(); it.hasNext(); ) {
             String identifier = (String) it.next();
             parserContext.addInput( identifier,
-                                    (Class) globalTypes.get( identifier ) );
+            						(Class) globalTypes.get( identifier ) );
         }
 
         Map mvelVars = ((MVELAnalysisResult) analysis).getMvelVariables();
@@ -355,6 +382,10 @@ public class MVELDialect
                                 KnowledgeHelper.class );
 
         ExpressionCompiler compiler = new ExpressionCompiler( text );
+
+        //MVEL Debugging support
+        compiler.setDebugSymbols( true );
+
         Serializable expr = compiler.compile( parserContext );
         return expr;
     }
@@ -416,7 +447,7 @@ public class MVELDialect
     }
 
     public RuleClassBuilder getRuleClassBuilder() {
-        return null;
+        return rule;
     }
 
     public TypeResolver getTypeResolver() {
@@ -427,9 +458,15 @@ public class MVELDialect
         return this.interceptors;
     }
 
+    public String getId() {
+        return ID;
+    }
+
     public static class AssertInterceptor
         implements
-        Interceptor {
+        Interceptor, Serializable {
+        private static final long serialVersionUID = 400L;
+
         public int doBefore(ASTNode node,
                             VariableResolverFactory factory) {
             return 0;
@@ -445,7 +482,9 @@ public class MVELDialect
 
     public static class ModifyInterceptor
         implements
-        Interceptor {
+        Interceptor, Serializable {
+        private static final long serialVersionUID = 400L;
+
         public int doBefore(ASTNode node,
                             VariableResolverFactory factory) {
             Object object = ((WithNode) node).getNestedStatement().getValue( null,

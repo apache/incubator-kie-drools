@@ -13,9 +13,11 @@ import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel.ASTNode;
-import org.mvel.MVEL;
+import org.mvel.CompiledExpression;
+import org.mvel.ExpressionCompiler;
 import org.mvel.Macro;
 import org.mvel.MacroProcessor;
+import org.mvel.ParserContext;
 import org.mvel.ast.WithNode;
 import org.mvel.integration.Interceptor;
 import org.mvel.integration.VariableResolverFactory;
@@ -67,13 +69,35 @@ public class MVELConsequenceBuilder
 
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect();
+            
             final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                      null,
                                                                      context.getPkg().getGlobals() );
+
             factory.setNextFactory( dialect.getClassImportResolverFactory() );
 
             MacroProcessor macroProcessor = new MacroProcessor();
             macroProcessor.setMacros( macros );
+
+            //MVEL: Compiler change (commented after incomming changes from r13267 port
+//            String pkg = "";
+//            if (context.getPkg()!= null && context.getPkg().getName()!= null
+//            		&& context.getPkg().getName().length()>0) {
+//                pkg = context.getPkg().getName()+".";
+//            }
+//            String sourceFile = pkg + context.getRuleDescr().getClassName();
+//
+//			ParserContext parserContext = new ParserContext();
+//			parserContext.setImports(dialect.getClassImportResolverFactory().getImportedClasses());
+//
+//			parserContext.setInterceptors(this.interceptors);
+//			parserContext.setSourceFile(sourceFile);
+//			parserContext.setDebugSymbols( true );
+//
+//			ExpressionCompiler parser = new ExpressionCompiler(macroProcessor.parse( delimitExpressions( (String) context.getRuleDescr().getConsequence() )));
+//			CompiledExpression cExpr = parser.compile();
+//
+//            final Serializable expr = cExpr;
 
             String text = macroProcessor.parse( delimitExpressions( (String) context.getRuleDescr().getConsequence() ) );
 
@@ -103,7 +127,7 @@ public class MVELConsequenceBuilder
      * Allows newlines to demarcate expressions, as per MVEL command line.
      * If expression spans multiple lines (ie inside an unbalanced bracket) then
      * it is left alone.
-     * Uses character based iteration which is at least an order of magnitude faster then a single 
+     * Uses character based iteration which is at least an order of magnitude faster then a single
      * simple regex.
      */
     public String delimitExpressions(String s) {
@@ -152,4 +176,5 @@ public class MVELConsequenceBuilder
         return result.toString();
     }
 
-}
+        }
+
