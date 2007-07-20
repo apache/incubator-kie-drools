@@ -113,6 +113,8 @@
 
       <xi:include href="Chapter-Rule_Language/Section-Rule.xml" />
 
+      <xi:include href="Chapter-Rule_Language/Section-Advanced-CEs.xml" />
+
       <xi:include href="Chapter-Rule_Language/Section-Query.xml" />
 
       <xi:include href="Chapter-Rule_Language/Section-DSL.xml" />
