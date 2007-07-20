@@ -21,10 +21,10 @@
     following builds all the jars, the documentation and the eclipse zip with
     a local folder specified to avoid downloading eclipse:</para>
 
-    <para><programlisting>mvn -Declipse=true -Ddocumentation=true clean install -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror </programlisting></para>
+    <para><programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror </programlisting></para>
 
     <para>You can produce distribution builds, which puts everything into
-    zips, as follows:<programlisting>mvn -Declipse=true -Ddocumentation=true clean install -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror
+    zips, as follows:<programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror
 
 mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly:assembly -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror
     </programlisting></para>
