@@ -8,5 +8,5 @@
   <classpathentry kind="var" path="M2_REPO/xstream/xstream/1.1.3/xstream-1.1.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/xpp3/xpp3/1.1.3.4.O/xpp3-1.1.3.4.O.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2pre5/mvel14-1.2pre5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2pre5.4.r727/mvel14-1.2pre5.4.r727.jar"/>
 </classpath>

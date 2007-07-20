@@ -61,7 +61,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
         assertNotNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
                                                       null ) );
 
-                
+
         // now check that chained properties can ignore defaults
         chainedProperties = new ChainedProperties( null,
                                                    "packagebuilder.conf",
@@ -71,7 +71,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
         assertNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
                                                    null ) );
 
-        
+
         // now check it can find defaults again.
         chainedProperties = new ChainedProperties( null,
                                                    "packagebuilder.conf",
@@ -378,6 +378,11 @@ public class PackageBuilderConfigurationTest extends TestCase {
         }
 
         public TypeResolver getTypeResolver() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public String getId() {
             // TODO Auto-generated method stub
             return null;
         }

@@ -19,7 +19,6 @@ import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.RuleError;
 import org.drools.compiler.PackageBuilder.ErrorHandler;
 import org.drools.compiler.PackageBuilder.FunctionErrorHandler;
@@ -59,10 +58,13 @@ import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
+import org.drools.util.StringUtils;
 
 public class JavaDialect
     implements
     Dialect {
+
+    public static final String ID = "JavaDialect";
 
     private final static String            EXPRESSION_DIALECT_NAME = "MVEL";
     // builders
@@ -78,7 +80,7 @@ public class JavaDialect
     private final MVELFromBuilder          from                    = new MVELFromBuilder();
     private final JavaFunctionBuilder      function                = new JavaFunctionBuilder();
 
-    // 
+    //
     private KnowledgeHelperFixer     knowledgeHelperFixer;
     private DeclarationTypeFixer     typeFixer;
     private JavaExprAnalyzer         analyzer;
@@ -90,10 +92,9 @@ public class JavaDialect
     private List                           generatedClassList;
     private MemoryResourceReader           src;
     private PackageStore                   packageStoreWrapper;
-    private Map                            lineMappings;
     private Map                            errorHandlers;
     private List                           results;
-    // the class name for the rule    
+    // the class name for the rule
     private String                         ruleClass;
 
     private TypeResolver             typeResolver;
@@ -105,7 +106,7 @@ public class JavaDialect
     public JavaDialect() {
 
     }
-    
+
     public void init(PackageBuilder builder) {
         this.pkg = builder.getPackage();
         this.configuration = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
@@ -172,7 +173,9 @@ public class JavaDialect
     }
 
     public void init(final Package pkg) {
+
         this.pkg = pkg;
+        //TODO Consider lazy init for these as they might have been initialized from the constructor and maybe used meanwhile
         this.errorHandlers = new HashMap();
         this.results = new ArrayList();
 
@@ -182,8 +185,6 @@ public class JavaDialect
 
         this.packageStoreWrapper = new PackageStore( pkg.getPackageCompilationData(),
                                                      this.results );
-        
-        this.lineMappings = pkg.getPackageCompilationData().getLineMappings();
     }
 
     public void init(final RuleDescr ruleDescr) {
@@ -191,7 +192,8 @@ public class JavaDialect
                                                          ruleDescr.getName(),
                                                          "java",
                                                          this.src );
-        ruleDescr.setClassName( ucFirst( ruleClassName ) );
+        ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
+        ruleDescr.setDialect( this );
     }
 
     public void setRuleClass(final String ruleClass) {
@@ -226,7 +228,6 @@ public class JavaDialect
             result = this.analyzer.analyzeBlock( text,
                                                  new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         } catch ( final Exception e ) {
-            e.printStackTrace();
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
                                                     null,
@@ -337,9 +338,9 @@ public class JavaDialect
                 final CompilationProblem err = result.getErrors()[i];
 
                 final ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
-//                if ( handler instanceof RuleErrorHandler ) {
-//                    final RuleErrorHandler rh = (RuleErrorHandler) handler;
-//                }
+                if ( handler instanceof RuleErrorHandler ) {
+                    final RuleErrorHandler rh = (RuleErrorHandler) handler;
+                }
                 handler.addError( err );
             }
 
@@ -368,7 +369,7 @@ public class JavaDialect
      * It will not actually call the compiler
      */
     public void addRule(final RuleBuildContext context) {
-        // return if there is no ruleclass name;       
+        // return if there is no ruleclass name;
         if ( this.ruleClass == null ) {
             return;
         }
@@ -397,7 +398,6 @@ public class JavaDialect
             }
             final String text = (String) context.getInvokers().get( className );
 
-            //System.out.println( className + ":\n" + text );
             final BaseDescr descr = (BaseDescr) context.getDescrLookups().get( className );
             addClassCompileTask( className,
                                  descr,
@@ -410,24 +410,26 @@ public class JavaDialect
         }
 
         // setup the line mappins for this rule
-        final String name = this.pkg.getName() + "." + ucFirst( ruleDescr.getClassName() );
+        final String name = this.pkg.getName() + "." + StringUtils.ucFirst( ruleDescr.getClassName() );
         final LineMappings mapping = new LineMappings( name );
         mapping.setStartLine( ruleDescr.getConsequenceLine() );
         mapping.setOffset( ruleDescr.getConsequenceOffset() );
-        this.lineMappings.put( name,
-                               mapping );
+
+        context.getPkg().getPackageCompilationData().getLineMappings().put( name,
+                                                                           mapping );
+
     }
 
     public void addFunction(final FunctionDescr functionDescr,
                             final TypeResolver typeResolver) {
 
-        final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
+        final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
         this.pkg.addFunction( functionDescr.getName() );
 
         final String functionSrc = getFunctionBuilder().build( this.pkg,
                                                                functionDescr,
                                                                typeResolver,
-                                                               this.lineMappings,
+                                                               pkg.getPackageCompilationData().getLineMappings(),
                                                                this.results );
 
         addClassCompileTask( functionClassName,
@@ -440,15 +442,15 @@ public class JavaDialect
         final LineMappings mapping = new LineMappings( functionClassName );
         mapping.setStartLine( functionDescr.getLine() );
         mapping.setOffset( functionDescr.getOffset() );
-        this.lineMappings.put( functionClassName,
+        pkg.getPackageCompilationData().getLineMappings().put( functionClassName,
                                mapping );
     }
 
-    /** 
-     * This adds a compile "task" for when the compiler of 
+    /**
+     * This adds a compile "task" for when the compiler of
      * semantics (JCI) is called later on with compileAll()\
      * which actually does the compiling.
-     * The ErrorHandler is required to map the errors back to the 
+     * The ErrorHandler is required to map the errors back to the
      * element that caused it.
      */
     private void addClassCompileTask(final String className,
@@ -482,16 +484,16 @@ public class JavaDialect
             case JavaDialectConfiguration.ECLIPSE :
             default : {
                 this.compiler = JavaCompilerFactory.getInstance().createCompiler( "eclipse" );
-                JavaCompilerSettings settings = this.compiler.createDefaultSettings();    
-                
+                JavaCompilerSettings settings = this.compiler.createDefaultSettings();
+
                 String lngLevel = this.configuration.getJavaLanguageLevel();
                 settings.setTargetVersion( lngLevel );
-                
+
                 if ( lngLevel == "1.4" ) {
                     // 1.5 is the minimum for source langauge level, so we can use static imports.
                     lngLevel = "1.5";
                 }
-                
+
                 settings.setSourceVersion(  lngLevel );
                 break;
             }
@@ -512,13 +514,15 @@ public class JavaDialect
 
     /**
      * Takes a given name and makes sure that its legal and doesn't already exist. If the file exists it increases counter appender untill it is unique.
-     * 
+     *
+     * TODO: move out to shared utility class
+     *
      * @param packageName
      * @param name
      * @param ext
      * @return
      */
-    private String getUniqueLegalName(final String packageName,
+    public static String getUniqueLegalName(final String packageName,
                                       final String name,
                                       final String ext,
                                       final ResourceReader src) {
@@ -535,7 +539,8 @@ public class JavaDialect
             final String fileName = packageName.replaceAll( "\\.",
                                                             "/" ) + newName + "_" + counter + ext;
 
-            exists = src.isAvailable( fileName );
+            //MVEL:test null to Fix failing test on org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
+            exists = src != null && src.isAvailable( fileName );
         }
         // we have duplicate file names so append counter
         if ( counter >= 0 ) {
@@ -545,8 +550,7 @@ public class JavaDialect
         return newName;
     }
 
-    private String ucFirst(final String name) {
-        return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
+    public String getId() {
+        return ID;
     }
-
 }

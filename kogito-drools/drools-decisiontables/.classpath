@@ -15,6 +15,6 @@
   <classpathentry kind="src" path="/drools-compiler"/>
   <classpathentry kind="var" path="M2_REPO/jexcelapi/jxl/2.4.2/jxl-2.4.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.2.3.v_686_R32x/core-3.2.3.v_686_R32x.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2pre5/mvel14-1.2pre5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2pre5.4.r727/mvel14-1.2pre5.4.r727.jar"/>
   <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.4.0/xercesImpl-2.4.0.jar"/>
 </classpath>

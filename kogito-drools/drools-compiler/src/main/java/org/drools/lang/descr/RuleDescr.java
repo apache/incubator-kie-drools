@@ -2,13 +2,13 @@ package org.drools.lang.descr;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.compiler.Dialect;
+
 public class RuleDescr extends BaseDescr {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 400L;
     private String            name;
     private String            documentation;
@@ -38,10 +38,14 @@ public class RuleDescr extends BaseDescr {
 
     private String            className;
 
+	//MVEL: Compiler change
+    private Dialect           dialect;
+
     public RuleDescr(final String name) {
         this( name,
               "" );
     }
+
 
     public RuleDescr(final String ruleName,
                      final String documentation) {
@@ -51,7 +55,7 @@ public class RuleDescr extends BaseDescr {
 
     public String getName() {
         return this.name;
-    }       
+    }
 
     public String getSalience() {
         return salience;
@@ -124,5 +128,13 @@ public class RuleDescr extends BaseDescr {
 
     public int getConsequencePattern() {
         return this.consequencePattern;
+    }
+
+    public void setDialect(Dialect dialect) {
+        this.dialect = dialect;
+    }
+
+    public Dialect getDialect() {
+        return this.dialect;
     }
 }
