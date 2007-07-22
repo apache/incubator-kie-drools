@@ -181,11 +181,10 @@ public class DrlDumper extends ReflectiveVisitor
         for ( final Iterator ite = descr.getDescrs().iterator(); ite.hasNext(); ) {
             Object obj = ite.next();
             visit( obj );
-            localstr += this.template + ",";
+            localstr += this.template + DrlDumper.eol;
         }
 
-        this.template = localstr.substring( 0,
-                                            localstr.lastIndexOf( "," ) );
+        this.template = localstr;
         this.template += "\t\t)";
         this.template += DrlDumper.eol;
     }

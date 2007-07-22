@@ -1,6 +1,6 @@
 rule "ForallParserTest"
 when
-     forall( Person( age > 21, $likes : likes ), 
+     forall( Person( age > 21, $likes : likes )
              Cheese( type == $likes ) );
 then
 end

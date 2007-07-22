@@ -1,5 +1,6 @@
 package org.drools.lang.descr;
 
+import java.util.Iterator;
 import java.util.List;
 
 /*
@@ -19,7 +20,7 @@ import java.util.List;
  */
 
 
-public class PatternDescr extends BaseDescr {
+public class PatternDescr extends BaseDescr implements Cloneable {
     /**
      * 
      */
@@ -113,5 +114,21 @@ public class PatternDescr extends BaseDescr {
 
     public void setSource(PatternSourceDescr source) {
         this.source = source;
+    }
+    
+    public Object clone() {
+        PatternDescr clone = new PatternDescr( this.objectType, this.identifier );
+        clone.setLeftParentCharacter( this.leftParentCharacter );
+        clone.setRightParentCharacter( this.rightParentCharacter );
+        clone.setSource( this.source );
+        clone.setStartCharacter( this.getStartCharacter() );
+        clone.setEndCharacter( this.getEndCharacter() );
+        clone.setLocation( this.getLine(), this.getColumn() );
+        clone.setEndLocation( this.getEndLine(), this.getEndColumn() );
+        clone.setText( this.getText() );
+        for( Iterator it = this.getDescrs().iterator(); it.hasNext(); ) {
+            clone.addConstraint( (BaseDescr) it.next() );
+        }
+        return clone;
     }
 }

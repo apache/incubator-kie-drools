@@ -30,6 +30,8 @@ public class ForallDescr extends BaseDescr
 
     private static final long serialVersionUID = 400L;
 
+    private static final String BASE_IDENTIFIER = "$__forallBaseIdentifier";
+
     private List              patterns;
 
     public ForallDescr() {
@@ -56,7 +58,20 @@ public class ForallDescr extends BaseDescr
      * @return
      */
     public PatternDescr getBasePattern() {
-        return (this.patterns.size() > 0) ? (PatternDescr) this.patterns.get( 0 ) : null;
+        if( this.patterns.size() > 1 ) {
+            return (PatternDescr) this.patterns.get( 0 );
+        } else if( this.patterns.size() == 1 ) {
+            // in case there is only one pattern, we do a rewrite, so:
+            // forall( Cheese( type == "stilton" ) )
+            // becomes
+            // forall( BASE_IDENTIFIER : Cheese() Cheese( this == BASE_IDENTIFIER, type == "stilton" ) )
+            PatternDescr original = (PatternDescr) this.patterns.get( 0 );
+            PatternDescr base = (PatternDescr) original.clone();
+            base.getDescrs().clear();
+            base.setIdentifier( BASE_IDENTIFIER );
+            return base;
+        }
+        return null;
     }
 
     /**
@@ -64,14 +79,26 @@ public class ForallDescr extends BaseDescr
      * @return
      */
     public List getRemainingPatterns() {
-        return (this.patterns.size() > 1) ? this.patterns.subList( 1,
-                                                                 this.patterns.size() ) : Collections.EMPTY_LIST;
+        if( this.patterns.size() > 1 ) {
+            return this.patterns.subList( 1,
+                                          this.patterns.size() );
+        } else if( this.patterns.size() == 1 ) {
+            // in case there is only one pattern, we do a rewrite, so:
+            // forall( Cheese( type == "stilton" ) )
+            // becomes
+            // forall( BASE_IDENTIFIER : Cheese() Cheese( this == BASE_IDENTIFIER, type == "stilton" ) )
+            PatternDescr original = (PatternDescr) this.patterns.get( 0 );
+            PatternDescr remaining = (PatternDescr) original.clone();
+            VariableRestrictionDescr restr = new VariableRestrictionDescr( "==", BASE_IDENTIFIER );
+            FieldConstraintDescr constr = new FieldConstraintDescr("this");
+            constr.addRestriction( restr );
+            remaining.addConstraint( constr );
+            return Collections.singletonList( remaining );
+        }
+        return Collections.EMPTY_LIST;
     }
 
     public void addOrMerge(BaseDescr baseDescr) {
         this.patterns.add( baseDescr );        
     }
-
-    
-    
 }
