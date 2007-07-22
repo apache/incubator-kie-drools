@@ -583,7 +583,12 @@ Cheese( type == "stilton" &amp;&amp; ( price &lt; 10 || age == "mature" ) ) // v
             using == and != as you would expect, and the literal "null"
             keyword, like: Cheese(type != null). If a field is null the
             evaluator will not throw an expception and will only return true
-            if the value is a null check.</para>
+            if the value is a null check. Coercion is always attempted if the
+            field and the value are of different types; exceptions will be
+            thrown if bad coercions are attempted. i.e. if "ten" is provided
+            as a string in a number evaluator, where as "10" would coerce to a
+            numeric 10. Coercion is always in favour of the field type and not
+            the value type.</para>
           </section>
 
           <section>
@@ -632,20 +637,17 @@ Cheese( type == "stilton" &amp;&amp; ( price &lt; 10 || age == "mature" ) ) // v
               "Matches" is only applicable to string fields, "contains" and
               "not contains" is only applicable to Collection type fields.
               These operators can be used with any value and coercion to the
-              correct value for the evaluator will be attempted. If the field
-              is of type string and numeric value is specific it will coerce
-              the numeric into a string; coercion is always in favour of the
-              field and not the value.</para>
-
-              <para></para>
+              correct value for the evaluator and filed will be attempted, as
+              mention in hte "Values" secion.</para>
 
               <simplesect>
                 <title>Matches Operator</title>
 
-                <para>Any valid Java <indexterm>
+                <para>Matches a field against any valid Java <indexterm>
                     <primary>regular expression</primary>
-                  </indexterm>Regular Expression can be used to match String
-                fields.</para>
+                  </indexterm>Regular Expression. Typically that regexp is a
+                String, but variables that resolve to a valid regexp are also
+                allowed.</para>
 
                 <example>
                   <title>Regular Expression Constraint</title>
@@ -655,33 +657,79 @@ Cheese( type == "stilton" &amp;&amp; ( price &lt; 10 || age == "mature" ) ) // v
               </simplesect>
 
               <simplesect>
-                <title>Contains Operator</title>
+                <title>Not Matches Operator</title>
 
-                <para><literal>'contains' </literal>is a special operator that
-                can be used to check if a field's <indexterm>
-                    <primary>Collection</primary>
-                  </indexterm>Collection contains an object.</para>
+                <para>Any valid Java <indexterm>
+                    <primary>regular expression</primary>
+                  </indexterm>Regular Expression can be used to match String
+                fields. Returns true when the match is false. Typically that
+                regexp is a String, but variables that resolve to a valid
+                regexp are also allowed.</para>
 
                 <example>
-                  <title>Literal Constraints with Collections</title>
+                  <title>Regular Expression Constraint</title>
 
-                  <programlisting>CheeseCounter( cheeses contains "stilton" )
-CheeseCounter( cheeses excludes "chedder" )</programlisting>
+                  <programlisting>Cheese( type not matches "(Buffulo)?\\S*Mozerella" )</programlisting>
+                </example>
+              </simplesect>
+
+              <simplesect>
+                <title>Contains Operator</title>
+
+                <para><literal>'contains'</literal> is used to check if a
+                field's <indexterm>
+                    <primary>Collection</primary>
+                  </indexterm>Collection contains the specified value.</para>
+
+                <example>
+                  <title>Contains with Collections</title>
+
+                  <programlisting>CheeseCounter( cheeses contains "stilton" ) //contains with a String literal
+CheeseCounter( cheeses contains $var ) //contains with a variable</programlisting>
                 </example>
               </simplesect>
 
               <simplesect>
                 <title>not containts</title>
 
-                <para><literal>'not contains' </literal>is a special operator
-                that can be used to check if a field's <indexterm>
+                <para><literal>'not contains'</literal> is used to check if a
+                field's <indexterm>
                     <primary>Collection</primary>
                   </indexterm>Collection does not contains an object.</para>
 
                 <example>
                   <title>Literal Constraints with Collections</title>
 
-                  <programlisting>CheeseCounter( cheeses not contains "cheddar" )</programlisting>
+                  <programlisting>CheeseCounter( cheeses not contains "cheddar" ) //contains with a String literal
+CheeseCounter( cheeses not contains $var ) //contains with a variable</programlisting>
+                </example>
+              </simplesect>
+
+              <simplesect>
+                <title>memberof</title>
+
+                <para><literal>'memberof' is used to check if a field is a
+                member of a collection; that collection must be be a
+                variable.</literal></para>
+
+                <example>
+                  <title>Literal Constraints with Collections</title>
+
+                  <programlisting>CheeseCounter( cheese memberof $matureCheeses )</programlisting>
+                </example>
+              </simplesect>
+
+              <simplesect>
+                <title>not memberof</title>
+
+                <para><literal>'not memberof' is used to check if a field is
+                not a member of a collection; that collection must be be a
+                variable.</literal></para>
+
+                <example>
+                  <title>Literal Constraints with Collections</title>
+
+                  <programlisting>CheeseCounter( cheese not memberof $matureCheeses )</programlisting>
                 </example>
               </simplesect>
             </section>
@@ -689,9 +737,9 @@ CheeseCounter( cheeses excludes "chedder" )</programlisting>
             <section>
               <title>Literal Restrictions</title>
 
-              <para>Literal Restrictions using '==' operator, provide for very
-              fast execution as we can index using hashing to improve
-              performance.</para>
+              <para>Literal restrrictions are the simplest for of restrictions
+              and evaluate a field against a specified literal; numeric, date,
+              string and boolean.</para>
 
               <figure>
                 <title>literalRestriction</title>
@@ -709,6 +757,10 @@ CheeseCounter( cheeses excludes "chedder" )</programlisting>
                 </mediaobject>
               </figure>
 
+              <para>Literal Restrictions using the '==' operator, provide for
+              faster execution as we can index using hashing to improve
+              performance;</para>
+
               <simplesect>
                 <title>Numeric</title>
 
@@ -725,11 +777,11 @@ CheeseCounter( cheeses excludes "chedder" )</programlisting>
               <simplesect>
                 <title>Date</title>
 
-                <para>Currently only "dd-mmm-yyyy" date format is supported by
-                default. You can customise this by providing an alternative
-                date format mask as a System property ("drools.dateformat" is
-                the name of the property). If more control is required, use
-                the predicate constraint.</para>
+                <para>The date format "dd-mmm-yyyy" is supported by default.
+                You can customise this by providing an alternative date format
+                mask as a System property ("drools.dateformat" is the name of
+                the property). If more control is required, use the predicate
+                constraint.</para>
 
                 <example>
                   <title>Date Literal Restriction</title>
@@ -803,9 +855,10 @@ CheeseCounter( cheeses excludes "chedder" )</programlisting>
               a <indexterm>
                   <primary>declaration</primary>
                 </indexterm>Declaration. Valid operators are determined by the
-              type of the field being constrained. Bound Variable Restrictions
-              using '==' operator, provide for very fast execution as we can
-              index using hashing to improve performance.</para>
+              type of the field being constrained; coersion will be attempted
+              where possible. Bound Variable Restrictions using '==' operator,
+              provide for very fast execution as we can index using hashing to
+              improve performance.</para>
 
               <example>
                 <title>Bound Field using '==' operator</title>
@@ -816,11 +869,11 @@ Cheese( type == likes )</programlisting>
                 <para>'likes' is our variable, our Declaration, that is bound
                 to the favouriteCheese field for any matching Person instance
                 and is used to constrain the type of Cheese in the following
-                Column. Any valid java variable name can be used, including
+                Pattern. Any valid java variable name can be used, including
                 '$'; which you will often see used to help differentiate
                 declarations from fields. The exampe below shows a declaration
-                bound to the Columns Object Type instance itself and used with
-                a 'contains' operator, note the optional use of '$' this
+                bound to the Patterns Object Type instance itself and used
+                with a 'contains' operator, note the optional use of '$' this
                 time.</para>
               </example>
 
@@ -833,7 +886,7 @@ Cheesery( cheeses contains $stilton )</programlisting>
             </section>
 
             <section>
-              <title>Return Value Constraints</title>
+              <title>Return Value Restriction</title>
 
               <figure>
                 <title>returnValueRestriction</title>
@@ -855,25 +908,19 @@ Cheesery( cheeses contains $stilton )</programlisting>
 
               <para>A <indexterm>
                   <primary>Return Value</primary>
-                </indexterm>Return Value constraint can use any valid Java
-              expression as long as it returns an object, it cannot return
-              primitives - avoid using any Drools keywords as Declaration
-              identifiers. Functions used in a Return value Constraint must
-              return time constant results. Previously bound declarations can
-              be used in the expression. All bound primitive declarations are
-              boxed, there is currently no auto-unboxing. The returned value
-              must be boxed if its a primitive..</para>
+                </indexterm>Return Value restrriction can use any valid Java
+              primitive or object. Avoid using any Drools keywords as
+              Declaration identifiers. Functions used in a Return v</para>
 
-              <para>Like the Predicate example this will find all pairs of
-              male/femal people where the male is 2 years older than the
-              female. Notice here we didn't have to bind the boyAge, making it
-              a little simpler to read.</para>
+              <para>Value Restriction must return time constant results.
+              Previously bound declarations can be used in the expression.
+              </para>
 
               <example>
-                <title>Return Value operator</title>
+                <title>Return Value Restriction</title>
 
                 <programlisting>Person( girlAge : age, sex == "F" )
-Person( age == ( new Integer(girlAge.intValue() + 2) ), sex == 'M' )
+Person( age == ( girlAge + 2) ), sex == 'M' )
 </programlisting>
               </example>
             </section>
@@ -881,6 +928,14 @@ Person( age == ( new Integer(girlAge.intValue() + 2) ), sex == 'M' )
 
           <section>
             <title>Compound Value Restriction</title>
+
+            <para>The compound value restriction is used where there is more
+            than one possible value, currently only the 'in' and 'not in'
+            evaluators support this. The operator takes a parenthesis enclosed
+            comma seperated list of values, which can be a variable, literla,
+            return value or qualified identifier.The 'in' and 'not in'
+            evaluators are actually sugar and are rewriten as a multi
+            restriction list of != and == restrictions.</para>
 
             <figure>
               <title>compoundValueRestriction</title>
@@ -901,10 +956,23 @@ Person( age == ( new Integer(girlAge.intValue() + 2) ), sex == 'M' )
             </figure>
 
             <para></para>
+
+            <example>
+              <title>Compound Restriction using 'in'</title>
+
+              <programlisting>Person( $cheese : favouriteCheese )
+Cheese( type in ( "stilton", "cheddar", $cheese )
+</programlisting>
+            </example>
           </section>
 
           <section>
             <title>Multi Restriction</title>
+
+            <para>Multi restriction allows you to place more than restriction
+            on a field using the '&amp;&amp;' or '||' restriction connectives,
+            grouping via parenthesis is also allowed; which adds a recursive
+            nature to this restriction.</para>
 
             <figure>
               <title>multiRestriction</title>
@@ -939,6 +1007,14 @@ Person( age == ( new Integer(girlAge.intValue() + 2) ), sex == 'M' )
             </figure>
 
             <para></para>
+
+            <example>
+              <title>Multi Restriction</title>
+
+              <programlisting>Person( age &gt; 30 &amp;&amp; &lt; 40 ) // simple multi restriction using a single &amp;&amp;
+Person( age ( (&gt; 30 &amp;&amp; &lt; 40) || (&gt; 20 &amp;&amp; &lt; 20) ) ) // more complex multi restriction using groupings of multi restrictions
+Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" ) // mixing muti restrictions with constraint connectives</programlisting>
+            </example>
           </section>
         </section>
 
@@ -984,6 +1060,37 @@ Person( age == ( new Integer(girlAge.intValue() + 2) ), sex == 'M' )
             <programlisting>Person( girlAge : age, sex = "F" )
 Person( eval( girlAge == boyAge + 2 ), sex = 'M' )
 </programlisting>
+          </example>
+        </section>
+
+        <section>
+          <title>Nested Accessors</title>
+
+          <para>Drools does allow for nested accessors in in the field
+          constraints using the MVEL accessor graph notation. Field
+          constraints involving nested accessors are actually re-written as an
+          MVEL dialect inline-eval. Care should be taken when using nested
+          accessors as the Working Memory is not aware of any of the nested
+          values, and do not know when they change; they should be considered
+          immutable while any of their parent references are inserted into the
+          Working Memory. If you wish to modify a nested value you should
+          remove he parent objects first and re-assert afterwards. If you only
+          have a single parent at the root of the graph you, when in the MVEL
+          dialect, you can use the 'modify' keyword and its block setters to
+          write the nested accessor assingments while retracting and inserting
+          the the root parent object as required. Nested accessors can be used
+          either side of the operator symbol.</para>
+
+          <example>
+            <title>Nested Accessors</title>
+
+            <programlisting>$p : Person( ) 
+Pet( owner == $p, age &gt; $p.children[0].age ) // Find a pet who is older than their owners first born child</programlisting>
+
+            <para>is internally rewriten as an MVEL inline eval:</para>
+
+            <programlisting>$p : Person( ) 
+Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is older than their owners first born child</programlisting>
           </example>
         </section>
       </section>
