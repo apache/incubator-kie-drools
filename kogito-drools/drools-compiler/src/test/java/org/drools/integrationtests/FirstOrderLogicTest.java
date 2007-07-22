@@ -544,4 +544,65 @@ public class FirstOrderLogicTest extends TestCase {
         return ruleBase;
     }
 
+    public void testForallSinglePattern() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ForallSinglePattern.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        // no cheeses, so should fire
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+
+        // only stilton, so should not fire again
+        FactHandle stilton1 = workingMemory.insert( new Cheese( "stilton",
+                                                               10 ) );
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+
+        // only stilton, so should fire again
+        FactHandle stilton2 = workingMemory.insert( new Cheese( "stilton",
+                                                               11 ) );
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+
+        // there is a brie, so should not fire 
+        FactHandle brie = workingMemory.insert( new Cheese( "brie",
+                                                            10 ) );
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+        
+        // there is a brie, so should not fire 
+        workingMemory.retract( stilton1 );
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+        
+        // no brie anymore, so should fire 
+        workingMemory.retract( brie );
+        workingMemory.fireAllRules();
+        assertEquals( 2,
+                      list.size() );
+
+//        TODO: in the future, we need to fix the following test case
+//        // no cheese anymore, so should not fire again 
+//        workingMemory.retract( stilton2 );
+//        workingMemory.fireAllRules();
+//        assertEquals( 2,
+//                      list.size() );
+//        
+        
+    }
+
 }

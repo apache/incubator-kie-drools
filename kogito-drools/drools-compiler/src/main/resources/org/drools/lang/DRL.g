@@ -914,12 +914,12 @@ lhs_forall returns [ForallDescr d]
 		        $d.addDescr( $base.d );
 			$d.setLocation( offset($FORALL.line), $FORALL.pos );
 		}
-		( COMMA? pattern=lhs_pattern
-		{
+		( pattern=lhs_pattern
+		   {
 		        // adding additional patterns
 			$d.addDescr( $pattern.d );
-		}
-		)+
+		   }
+		)*
 		RIGHT_PAREN
 		{
 		        $d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
@@ -1203,7 +1203,7 @@ fact[String ident] returns [BaseDescr d]
  			pattern.setLocation( offset($LEFT_PAREN.line), $LEFT_PAREN.pos );
  			pattern.setLeftParentCharacter( ((CommonToken)$LEFT_PAREN).getStartIndex() );
  		} 
- 		( constraints[pattern]  )? 
+ 		constraints[pattern]?
  		RIGHT_PAREN
 		{
 			this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
