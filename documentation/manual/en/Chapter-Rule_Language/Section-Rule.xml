@@ -40,90 +40,34 @@
   The rule is terminated by the keyword "end". Rules cannot be nested of
   course.</para>
 
-  <programlisting>rule "&lt;name&gt;"
+  <example>
+    <title>Rule Syntax Overview Example</title>
+
+    <programlisting>rule "&lt;name&gt;"
     &lt;attribute&gt;*
 when
-    &lt;constraint&gt;*
+    &lt;conditional element&gt;*
 then
     &lt;action&gt;*
 end</programlisting>
+  </example>
 
-  <section>
-    <title id="RuleLanguage-LHS">Left Hand Side</title>
+  <example>
+    <title>A rule example</title>
 
-    <para>The Left Hand Side (LHS) is a common name for the conditional part
-    of the rule. It consists of zero or more Conditional Elements; whch are
-    covered in detail in <xref lang=""
-    linkend="RuleLanguage-ConditionalElements" os="" />. If the LHS is left
-    empty it is re-written as eval(true), which means the rule is always
-    true.</para>
-
-    <figure>
-      <title>Left Hand Side</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="lhs.svg" format="SVG" role="" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="lhs.png" format="PNG" role="" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <figure>
-      <title>pattern</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="pattern.svg" format="SVG" role="" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="pattern.png" format="PNG" role="" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-  </section>
-
-  <section>
-    <title>The Right Hand Side</title>
-
-    <para>The Right Hand Side (RHS) is a common name for the consequence or
-    action part of the rule; this part should contain a list of actions to be
-    executed.It is bad practice to use imperative or conditoinal code in the
-    RHS of a rule; as a rule should be atomic in nature - "when this, then do
-    this", not "when this, maybe do this". The RHS part of a rule should also
-    be kept small, thus keeping it declarative and readable. If you find you
-    need imperative and/or conditional code in the RHS, then maybe you should
-    be breaking that rule down into multiple rules. The main purpose of the
-    RHS is to insert, retractor modify working memory data. To assist with
-    there there are a few convenience methods you can use to modify working
-    memory; without having to first reference a working memory
-    instance.</para>
-
-    <para>"update(object, handle);" will tell the engine that an object has
-    changed (one that has been bound to something on the LHS) and rules may
-    need to be reconsidered.</para>
-
-    <para>"insert(new Something());" will place a new object of your creation
-    in working memory.</para>
-
-    <para>"insertLogical(new Something());" is similar to insert, but the
-    object will be automatically retracted when there are no more facts to
-    support the truth of the currently firing rule.</para>
-
-    <para>"retract(handle);" removes an object from working memory.</para>
-
-    <para>These convenience methods are basically macros that provide short
-    cuts to the KnowldgeHelper instance (refer to the KnowledgeHelper
-    interface for more advanced operations). The KnowledgeHelper interface is
-    made available to the RHS code block as a variable called "drools". If you
-    provide "Property Change Listeners" to your java beans that you are
-    inserting into the engine, you can avoid the need to call "update" when
-    the object changes.</para>
-  </section>
+    <programlisting>rule "Approve if not rejected"
+  salience -100 
+  agenda-group "approval"
+    when
+        not Rejection() 
+        p : Policy(approved == false, policyState:status)
+        exists Driver(age &gt; 25)
+        Process(status == policyState)
+    then
+        log("APPROVED: due to no objections."); 
+        p.setApproved(true);
+end</programlisting>
+  </example>
 
   <section>
     <title>Rule Attriutes</title>
@@ -259,7 +203,8 @@ end</programlisting>
 
       <para>type : long</para>
 
-      <para />
+      <para>The duration dictates that the rule will fire after a specified
+      duration, if it is still true.</para>
     </section>
 
     <example>
@@ -274,888 +219,1079 @@ end</programlisting>
   </section>
 
   <section>
-    <title>Pattern</title>
+    <title id="RuleLanguage-LHS">Left Hand Side (when)</title>
 
-    <para>As mentioned in <xref linkend="RuleLanguage-LHS" os="" /> the LHS is
-    made up of one or more Conditional Elements. The Pattern elment is the
-    most important Conditional Element, which is why we have given it a
-    dedicated section. As you already know a forward chaining rule engine is
-    often referred to as a Pattern Matching engine, because at the heart it
-    matches the specified Patterns against the available data. So lets take a
-    look at what a Pattern is.</para>
+    <para>The Left Hand Side (LHS) is a common name for the conditional part
+    of the rule. It consists of zero or more Conditional Elements. If the LHS
+    is left empty it is re-written as eval(true), which means the rule is
+    always true, and will be activated with a new Working Memory session is
+    created.</para>
 
     <figure>
-      <title>Pattern</title>
+      <title>Left Hand Side</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="pattern.svg" format="SVG" role="" />
+          <imagedata align="center" fileref="lhs.svg" format="SVG" role="" />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="pattern.png" format="PNG" role="" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>At the simplest, with no constraints, it simply matches against a
-    type, in the following case the type is "Cheese". This meanst the pattern
-    will match against all Cheese objects in the working memory.</para>
-
-    <example>
-      <title>Pattern</title>
-
-      <programlisting>Cheese( )</programlisting>
-    </example>
-
-    <para>To be able to refer to the object, from other patterns or in the
-    consequence, use a pattern binding variable '$c'. While the the variable
-    is prefixed with a $ symbol, it is optional, but can be useful in complex
-    rules so an easier differentiation can be made between variables and
-    fields.</para>
-
-    <example>
-      <title>Pattern</title>
-
-      <programlisting>$c : Cheese( )</programlisting>
-    </example>
-
-    <para>Inside of the pattern parenthesis is where all the action happens.
-    Drools 4.0 brings a large, and almost bewildering, range and combination
-    of constraints.</para>
-
-    <figure>
-      <title>Constraints</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="constraints.svg" format="SVG"
-                     role="" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="constraints.png" format="PNG"
-                     role="" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <figure>
-      <title>Constraint</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="constraint.svg" format="SVG"
-                     role="" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="constraint.png" format="PNG"
-                     role="" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <figure>
-      <title>Group Constraint</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="constraintGroup.svg" format="SVG"
-                     role="" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="constraintGroup.png" format="PNG"
-                     role="" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <figure>
-      <title>Field Constraint</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="fieldConstraint.svg" format="SVG"
-                     role="" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="fieldConstraint.png" format="PNG"
-                     role="" />
+          <imagedata align="center" fileref="lhs.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
 
     <example>
-      <title>Pattern</title>
+      <title>Rule Syntax Overview Example</title>
 
-      <programlisting>Cheese( type == "stilton", price &lt; 10 )</programlisting>
+      <programlisting>rule "no CEs"
+when
+then
+    &lt;action&gt;*
+end</programlisting>
+
+      <para>Is internally re-written as:</para>
+
+      <programlisting>rule "no CEs"
+when
+    eval( true )
+then
+    &lt;action&gt;*
+end</programlisting>
     </example>
 
-    <para>A Rule consists of Field Constraints on one or more Object Types.
-    Internally each matched Object Type instance is stored in an array. If we
-    match against three objects Person, Person and Pet we have a three element
-    array; in Drools we refer to this list of Facts as a Tuple - each element
-    in the array is a Column. Each Object Type instance is filtered through
-    zero or more Field Constraints - the term Column is used to refer to this
-    list of constraints on the Object type. The first example has no
-    constraints and will match any Cheese instance in the Working Memory,
-    regardless of its field values. The second case refers to two Literal
-    Field Constraints on against instances of a Cheese object - they are
-    seperated by a comma, which implicitly means "and".</para>
+    <section id="RuleLanguage-ConditionalElements">
+      <title>Conditional Elements</title>
 
-    <figure>
-      <title>Column</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="bound_column.svg" format="SVG"
-                     role="" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="bound_column.png" format="PNG"
-                     role="" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <example>
-      <title>Bound Column</title>
-
-      <programlisting>cheapStilton : Cheese( type == "stilton", price &lt; 10 )</programlisting>
-    </example>
-
-    <para>This is similar to the previous case, but in this case we are
-    binding a variable to that instance of Cheese that the rule engine will
-    match. This means you can use cheapStilton in another condition, or
-    perhaps in the consequence part of the rule. You can also eat it, but I
-    wouldn't.</para>
-
-    <section>
-      <title>Field Constraints</title>
-
-      <para>Field constraints place constraints on the Fact objects for the
-      rule engine to match/select out of working memory. They work
-      comparing/evaluating "field" values from the fact object
-      instances.</para>
-
-      <para>A "field" is not a field in the sense of a public or private
-      member of a class. A field is an accessible method. If your model
-      objects follow the java bean pattern, then fields are exposed using
-      "getXXX" or "isXXX" methods (these are methods that take no arguments,
-      and return something). You can access fields either by using the
-      bean-name convention (so "getType" can be accessed as "type").</para>
-
-      <para>For example, refering to our Cheese class, the following :
-      Cheese(type == ...) uses the getType() method on the a cheese instance.
-      You can also access non getter methods, like "toString()" on the Object
-      for instance (in which case, you do Cheese(toString == ..) - you use the
-      full name of the method with correct capitalisation, but not brackets).
-      Do please make sure that you are accessing methods that take no
-      parameters, and are in-fact "accessors" (as in, they don't change the
-      state of the object in a way that may effect the rules - remember that
-      the rule engine effectively caches the results of its matching inbetween
-      invocations to make it faster).</para>
-
-      <para>Note that if primitive types are used for a field, Drools will
-      autobox them to their corresponding object types (even if you are using
-      java 1.4) - however on java 1.4 there is currently no auto-unboxing when
-      inside code expressions or blocks. On the whole, it is probably best to
-      use the non primitive types in the model objects you are using in your
-      rules. If you use Java 5, then you get the best of both worlds (you can
-      let the compiler autobox for you - much neater) if you use Java 5,
-      Drools will honor that if you use the JDT semantic compiler (JANINO does
-      not yet support Java 5).</para>
+      <para>Conditional elements work on one or more Columns (which were
+      described above). The most common one is "and" which is implicit when
+      you have multiple Columns in the LHS of a rule that are not connected in
+      anyway. Note that an 'and' cannot have a leading declaration binding
+      like 'or' - this is obvious when you think about it. A declaration can
+      only reference a single Fact, when the 'and' is satisfied it matches
+      more than one fact - which fact would the declaration bind to?</para>
 
       <section>
-        <title>JavaBeans as facts</title>
+        <title>Pattern</title>
 
-        <para>A note on JavaBeans: The JavaBean convention is followed, but as
-        shown above, you can access non getter methods by using the method
-        name. The syntax is case sensitive. In the case of getter methods like
-        "getURI" which uses capitals, the property name is "URI" as there is
-        more then one capital letter after the "get" - this is exactly as per
-        the JavaBean standard (in fact, the Instrospector utility is
-        used).</para>
-      </section>
-
-      <section>
-        <title>Operators</title>
+        <para>The Pattern element is the most important Conditional Element.
+        The entity relationship diagram below provides an overview of the
+        various parts that make up the Pattern's constraints and how they work
+        together; each is then covered in more detail with rail road diagrams
+        and examples.</para>
 
         <figure>
-          <title>Operators</title>
+          <title>Pattern Entity Relationship Diagram</title>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="operator.svg" format="SVG" />
+              <imagedata align="center" fileref="patternER.svg" format="SVG"
+                         role="" />
             </imageobject>
 
             <imageobject>
-              <imagedata align="center" fileref="operator.png" format="PNG" />
+              <imagedata align="center" fileref="patternER.png" format="PNG"
+                         role="" />
             </imageobject>
           </mediaobject>
         </figure>
 
-        <para>There are a number of <indexterm>
-            <primary>operatorst</primary>
-          </indexterm>opreators that can be used with the various <indexterm>
-            <primary>Field Constraint</primary>
-          </indexterm>Field Constraints. Valid operators are dependent on the
-        field type. Generally they are self explanatory based on the type of
-        data: for instance, for date fields, "&lt;" means "before" and so on.
-        "Matches" is only applicable to string fields, "contains" and
-        "excludes" is only applicable to Collection type fields.</para>
-      </section>
-
-      <section>
-        <title>Literal Constraints</title>
-
-        <para>The most basic of Field Constraints is the <indexterm>
-            <primary>Literal Constraint</primary>
-          </indexterm>Literal Constraint which allows the user to constrain a
-        field to a given value.</para>
-
-        <para>A note on nulls: you can do checks against fields that are or
-        maybe null, using == and != as you would expect, and the literal
-        "null" keyword, like: Cheese(type != null). Literal Constraints,
-        specifically the '==' operator, provide for very fast execution as we
-        can use hashing to improve performance.</para>
+        <para>At the top of the ER diagram you can see that the pattern
+        consists of zero or more constriants and has an optional pattern
+        binding. The rail road diagram below shows the syntax for this.</para>
 
         <figure>
-          <title>Literal Constraints</title>
+          <title>Pattern</title>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="literal_constraints.svg"
-                         format="SVG" />
+              <imagedata align="center" fileref="pattern.svg" format="SVG"
+                         role="" />
             </imageobject>
 
             <imageobject>
-              <imagedata align="center" fileref="literal_constraints.png"
-                         format="PNG" />
+              <imagedata align="center" fileref="pattern.png" format="PNG"
+                         role="" />
             </imageobject>
           </mediaobject>
         </figure>
 
-        <simplesect>
-          <title>Numeric</title>
-
-          <para>All standard java numeric primitives are supported</para>
-
-          <para>Valid operators:</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>==</para>
-            </listitem>
-
-            <listitem>
-              <para>!=</para>
-            </listitem>
-
-            <listitem>
-              <para>&gt;</para>
-            </listitem>
-
-            <listitem>
-              <para>&lt;</para>
-            </listitem>
-
-            <listitem>
-              <para>&gt;=</para>
-            </listitem>
-
-            <listitem>
-              <para>&lt;=</para>
-            </listitem>
-          </itemizedlist>
-
-          <example>
-            <title>Numeric Literal Constraint</title>
-
-            <programlisting>Cheese( quantity == 5 )</programlisting>
-          </example>
-        </simplesect>
-
-        <simplesect>
-          <title>Date</title>
-
-          <para>Currently only "dd-mmm-yyyy" date format is supported by
-          default. You can customise this by providing an alternative date
-          format mask as a System property ("drools.dateformat" is the name of
-          the property). If more control is required, use the predicate
-          constraint.</para>
-
-          <para>Valid operators:</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>==</para>
-            </listitem>
-
-            <listitem>
-              <para>!=</para>
-            </listitem>
-
-            <listitem>
-              <para>&gt;</para>
-            </listitem>
-
-            <listitem>
-              <para>&lt;</para>
-            </listitem>
-
-            <listitem>
-              <para>&gt;=</para>
-            </listitem>
-
-            <listitem>
-              <para>&lt;=</para>
-            </listitem>
-          </itemizedlist>
-
-          <example>
-            <title>Date Literal Constraint</title>
-
-            <programlisting>Cheese( bestBefore &lt; "27-Oct-2007" )</programlisting>
-          </example>
-        </simplesect>
-
-        <simplesect>
-          <title>String</title>
-
-          <para>Any valid Java String is allowed.</para>
-
-          <para>Valid operators:</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>==</para>
-            </listitem>
-
-            <listitem>
-              <para>!=</para>
-            </listitem>
-          </itemizedlist>
-
-          <example>
-            <title>String Literal Constraint</title>
-
-            <programlisting>Cheese( type == "stilton" )</programlisting>
-          </example>
-        </simplesect>
-
-        <simplesect>
-          <title>Boolean</title>
-
-          <para>only true or false can be used. 0 and 1 are not recognised,
-          nor is <literal>Cheese ( smelly )</literal> is not allowed</para>
-
-          <para>Valid operators:</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>true</para>
-            </listitem>
-
-            <listitem>
-              <para>false</para>
-            </listitem>
-          </itemizedlist>
-
-          <example>
-            <title>Boolean Literal Constraint</title>
-
-            <programlisting>Cheese( smelly == true )</programlisting>
-          </example>
-        </simplesect>
-
-        <simplesect>
-          <title>Matches Operator</title>
-
-          <para>Any valid Java <indexterm>
-              <primary>regular expression</primary>
-            </indexterm>Regular Expression can be used to match String
-          fields.</para>
-
-          <example>
-            <title>Regular Expression Constraint</title>
-
-            <programlisting>Cheese( type matches "(Buffulo)?\\S*Mozerella" )</programlisting>
-          </example>
-        </simplesect>
-
-        <simplesect>
-          <title>Contains Operator</title>
-
-          <para><literal>'contains' </literal>is a special operator that can
-          be used to check if a field's <indexterm>
-              <primary>Collection</primary>
-            </indexterm>Collection contains an object.</para>
-
-          <example>
-            <title>Literal Constraints with Collections</title>
-
-            <programlisting>CheeseCounter( cheeses contains "stilton" )
-CheeseCounter( cheeses excludes "chedder" )</programlisting>
-          </example>
-        </simplesect>
-
-        <simplesect>
-          <title>Excludes Operator</title>
-
-          <para><literal>'excludes' </literal>is a special operator that can
-          be used to check if a field's <indexterm>
-              <primary>Collection</primary>
-            </indexterm>Collection does not contains an object.</para>
-
-          <example>
-            <title>Literal Constraints with Collections</title>
-
-            <programlisting>CheeseCounter( cheeses excludes "cheddar" )</programlisting>
-          </example>
-        </simplesect>
-      </section>
-
-      <section>
-        <title>Bound Variable Constraint</title>
-
-        <figure>
-          <title>Bound Variable Declaration</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center"
-                         fileref="boundvariable_constraints.svg" format="SVG" />
-            </imageobject>
-
-            <imageobject>
-              <imagedata align="center"
-                         fileref="boundvariable_constraints.png" format="PNG" />
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <para>Variables can be bound to Facts and their Fields and then used
-        in subsequent Field Constraints. A bound variable is called a
-        <indexterm>
-            <primary>declaration</primary>
-          </indexterm>Declaration. Declarations cannot be used with
-        <literal>'matches'</literal>, although it works with
-        <literal>'contains'</literal>. Valid operators are determined by the
-        type of the field being constrained. Bound Variables, specifically the
-        '==' and '=!' operators, provide for very fast execution as we can use
-        hashing to improve performance.</para>
+        <para>At the simplest, with no constraints, it simply matches against
+        a type, in the following case the type is "Cheese". This means the
+        pattern will match against all Cheese objects in the Working
+        Memory.</para>
 
         <example>
-          <title>Bound Field using '==' operator</title>
+          <title>Pattern</title>
 
-          <programlisting>Person( likes : favouriteCheese )
+          <programlisting>Cheese( )</programlisting>
+        </example>
+
+        <para>To be able to refer to the matched object use a pattern binding
+        variable such as '$c'. While this example variable is prefixed with a
+        $ symbol, it is optional, but can be useful in complex rules as it
+        helps to more easily differentiation between variables and
+        fields.</para>
+
+        <example>
+          <title>Pattern</title>
+
+          <programlisting>$c : Cheese( )</programlisting>
+        </example>
+
+        <para>Inside of the Pattern parenthesis is where all the action
+        happens. A constraint can be either a Field Constraint, Inline Eval
+        (called a predicate in 3.0) or a Constraint Group. Constraints can be
+        seperated by the following symboles ',', '&amp;&amp;' or '||'.</para>
+
+        <figure>
+          <title>Constraints</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="constraints.svg" format="SVG"
+                         role="" />
+            </imageobject>
+
+            <imageobject>
+              <imagedata align="center" fileref="constraints.png" format="PNG"
+                         role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>Constraint</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="constraint.svg" format="SVG"
+                         role="" />
+            </imageobject>
+
+            <imageobject>
+              <imagedata align="center" fileref="constraint.png" format="PNG"
+                         role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>Group Constraint</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="constraintGroup.svg"
+                         format="SVG" role="" />
+            </imageobject>
+
+            <imageobject>
+              <imagedata align="center" fileref="constraintGroup.png"
+                         format="PNG" role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>',' and '&amp;&amp;' when used without '||' are equivalent;. ','
+        is provided as a less verbose '&amp;&amp;' connective for more simple
+        field constraints.</para>
+
+        <example>
+          <title>Equivalent connectives</title>
+
+          <programlisting>Cheese( type == "stilton", price &lt; 10 ) // valid
+Cheese( type == "stilton" &amp;&amp; price &lt; 10 ) valid</programlisting>
+        </example>
+
+        <para>However only '&amp;&amp;' can be used with '||'.</para>
+
+        <example>
+          <title>Not Equivalent connectives</title>
+
+          <programlisting>Cheese( type == "stilton", price &lt; 10 || age == "mature" ) // invalid
+Cheese( type == "stilton" &amp;&amp; price &lt; 10 || age == "mature") // valid</programlisting>
+        </example>
+
+        <para>Constraints can be grouped using parenthesis; notice from the
+        railroad and the ER diagram that this provides a recursive nature to
+        the use of constraints in a Pattern.</para>
+
+        <example>
+          <title>Grouping with Parenthesis</title>
+
+          <programlisting>Cheese( type == "stilton", ( price &lt; 10 || age == "mature" ) ) // valid
+Cheese( type == "stilton" &amp;&amp; ( price &lt; 10 || age == "mature" ) ) // valid</programlisting>
+        </example>
+
+        <section>
+          <title>Field Constraints</title>
+
+          <para>A Field constraint specifies a restriction to be used on a
+          field name; the field name can have an optional variable
+          binding.</para>
+
+          <figure>
+            <title>fieldConstraint</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="fieldConstraint.svg"
+                           format="SVG" role="" />
+              </imageobject>
+
+              <imageobject>
+                <imagedata align="center" fileref="fieldConstraint.png"
+                           format="PNG" role="" />
+              </imageobject>
+            </mediaobject>
+          </figure>
+
+          <para>There are three types of restrictions; Single Value
+          Restriction, Compount Value Restriction and Multi
+          Restrictoin.</para>
+
+          <figure>
+            <title>restriction</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="restriction.svg"
+                           format="SVG" role="" />
+              </imageobject>
+
+              <imageobject>
+                <imagedata align="center" fileref="restriction.png"
+                           format="PNG" role="" />
+              </imageobject>
+            </mediaobject>
+          </figure>
+
+          <para>A field is an accessible method on the object. If your model
+          objects follow the java bean pattern, then fields are exposed using
+          "getXXX" or "isXXX" methods (these are methods that take no
+          arguments, and return something). You can access fields either by
+          using the bean-name convention (so "getType" can be accessed as
+          "type").</para>
+
+          <para>For example, refering to our Cheese class, the following :
+          Cheese(type == ...) uses the getType() method on the a cheese
+          instance. You can also access non getter methods, like "toString()"
+          on the Object for instance (in which case, you do Cheese(toString ==
+          ..) - you use the full name of the method with correct
+          capitalisation, but not brackets). Do please make sure that you are
+          accessing methods that take no parameters, and are in-fact
+          "accessors" (as in, they don't change the state of the object in a
+          way that may effect the rules - remember that the rule engine
+          effectively caches the results of its matching inbetween invocations
+          to make it faster).</para>
+
+          <section>
+            <title>JavaBeans as facts</title>
+
+            <para>A field is an accessible method on the object. If your model
+            objects follow the java bean pattern, then fields are exposed
+            using "getXXX" or "isXXX" methods (these are methods that take no
+            arguments, and return something). You can access fields either by
+            using the bean-name convention (so "getType" can be accessed as
+            "type") - we use the standard jdk Introspector class to do this
+            mapping.</para>
+
+            <para>For example, refering to our Cheese class, the following :
+            Cheese(type == ...) uses the getType() method on the a cheese
+            instance. If a field name cannot be found it will resort to
+            calling the name as a no argument method; "toString()" on the
+            Object for instance can be used with Cheese(toString == ..) - you
+            use the full name of the method with correct capitalisation, but
+            not brackets. Do please make sure that you are accessing methods
+            that take no parameters, and are in-fact "accessors" (as in, they
+            don't change the state of the object in a way that may effect the
+            rules - remember that the rule engine effectively caches the
+            results of its matching inbetween invocations to make it
+            faster).</para>
+          </section>
+
+          <section>
+            <title>Values</title>
+
+            <para>The field constraints can take a number of values; including
+            literal, qualifiedIdentifier (enum), variable and
+            returnValue.</para>
+
+            <figure>
+              <title>literal</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="literal.svg" format="SVG" />
+                </imageobject>
+
+                <imageobject>
+                  <imagedata align="center" fileref="literal.png" format="PNG" />
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <figure>
+              <title>qualifiedIdentifier</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="qualifiedIdentifier.svg"
+                             format="SVG" />
+                </imageobject>
+
+                <imageobject>
+                  <imagedata align="center" fileref="qualifiedIdentifier.png"
+                             format="PNG" />
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <figure>
+              <title>variable</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="identifier.svg"
+                             format="SVG" />
+                </imageobject>
+
+                <imageobject>
+                  <imagedata align="center" fileref="identifier.png"
+                             format="PNG" />
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <figure>
+              <title>returnValue</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="returnValue.svg"
+                             format="SVG" />
+                </imageobject>
+
+                <imageobject>
+                  <imagedata align="center" fileref="returnValue.png"
+                             format="PNG" />
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <para>You can do checks against fields that are or maybe null,
+            using == and != as you would expect, and the literal "null"
+            keyword, like: Cheese(type != null). If a field is null the
+            evaluator will not throw an expception and will only return true
+            if the value is a null check.</para>
+          </section>
+
+          <section>
+            <title>Single Value Restriction</title>
+
+            <figure>
+              <title>singleValueRestriction</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center"
+                             fileref="singleValueRestriction.svg" format="SVG"
+                             role="" />
+                </imageobject>
+
+                <imageobject>
+                  <imagedata align="center"
+                             fileref="singleValueRestriction.png" format="PNG"
+                             role="" />
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <section>
+              <title>Operators</title>
+
+              <figure>
+                <title>Operators</title>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata align="center" fileref="operator.svg"
+                               format="SVG" />
+                  </imageobject>
+
+                  <imageobject>
+                    <imagedata align="center" fileref="operator.png"
+                               format="PNG" />
+                  </imageobject>
+                </mediaobject>
+              </figure>
+
+              <para>Valid operators are dependent on the field type. Generally
+              they are self explanatory based on the type of data: for
+              instance, for date fields, "&lt;" means "before" and so on.
+              "Matches" is only applicable to string fields, "contains" and
+              "not contains" is only applicable to Collection type fields.
+              These operators can be used with any value and coercion to the
+              correct value for the evaluator will be attempted. If the field
+              is of type string and numeric value is specific it will coerce
+              the numeric into a string; coercion is always in favour of the
+              field and not the value.</para>
+
+              <para></para>
+
+              <simplesect>
+                <title>Matches Operator</title>
+
+                <para>Any valid Java <indexterm>
+                    <primary>regular expression</primary>
+                  </indexterm>Regular Expression can be used to match String
+                fields.</para>
+
+                <example>
+                  <title>Regular Expression Constraint</title>
+
+                  <programlisting>Cheese( type matches "(Buffulo)?\\S*Mozerella" )</programlisting>
+                </example>
+              </simplesect>
+
+              <simplesect>
+                <title>Contains Operator</title>
+
+                <para><literal>'contains' </literal>is a special operator that
+                can be used to check if a field's <indexterm>
+                    <primary>Collection</primary>
+                  </indexterm>Collection contains an object.</para>
+
+                <example>
+                  <title>Literal Constraints with Collections</title>
+
+                  <programlisting>CheeseCounter( cheeses contains "stilton" )
+CheeseCounter( cheeses excludes "chedder" )</programlisting>
+                </example>
+              </simplesect>
+
+              <simplesect>
+                <title>not containts</title>
+
+                <para><literal>'not contains' </literal>is a special operator
+                that can be used to check if a field's <indexterm>
+                    <primary>Collection</primary>
+                  </indexterm>Collection does not contains an object.</para>
+
+                <example>
+                  <title>Literal Constraints with Collections</title>
+
+                  <programlisting>CheeseCounter( cheeses not contains "cheddar" )</programlisting>
+                </example>
+              </simplesect>
+            </section>
+
+            <section>
+              <title>Literal Restrictions</title>
+
+              <para>Literal Restrictions using '==' operator, provide for very
+              fast execution as we can index using hashing to improve
+              performance.</para>
+
+              <figure>
+                <title>literalRestriction</title>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata align="center" fileref="literalRestriction.svg"
+                               format="SVG" />
+                  </imageobject>
+
+                  <imageobject>
+                    <imagedata align="center" fileref="literalRestriction.png"
+                               format="PNG" />
+                  </imageobject>
+                </mediaobject>
+              </figure>
+
+              <simplesect>
+                <title>Numeric</title>
+
+                <para>All standard java numeric primitives are
+                supported.</para>
+
+                <example>
+                  <title>Numeric Literal Restriction</title>
+
+                  <programlisting>Cheese( quantity == 5 )</programlisting>
+                </example>
+              </simplesect>
+
+              <simplesect>
+                <title>Date</title>
+
+                <para>Currently only "dd-mmm-yyyy" date format is supported by
+                default. You can customise this by providing an alternative
+                date format mask as a System property ("drools.dateformat" is
+                the name of the property). If more control is required, use
+                the predicate constraint.</para>
+
+                <example>
+                  <title>Date Literal Restriction</title>
+
+                  <programlisting>Cheese( bestBefore &lt; "27-Oct-2007" )</programlisting>
+                </example>
+              </simplesect>
+
+              <simplesect>
+                <title>String</title>
+
+                <para>Any valid Java String is allowed.</para>
+
+                <example>
+                  <title>String Literal Restriction</title>
+
+                  <programlisting>Cheese( type == "stilton" )</programlisting>
+                </example>
+              </simplesect>
+
+              <simplesect>
+                <title>Boolean</title>
+
+                <para>only true or false can be used. 0 and 1 are not
+                recognised, nor is <literal>Cheese ( smelly )</literal> is not
+                allowed</para>
+
+                <example>
+                  <title>Boolean Literal Restriction</title>
+
+                  <programlisting>Cheese( smelly == true )</programlisting>
+                </example>
+              </simplesect>
+
+              <simplesect>
+                <title>Qualified Identifier</title>
+
+                <para>Enums can be used as well, both jdk1.4 and jdk5 style
+                enums are supported - for the later you must be executing on a
+                jdk5 environment.</para>
+
+                <example>
+                  <title>Boolean Literal Restriction</title>
+
+                  <programlisting>Cheese( smelly == SomeClass.TRUE )</programlisting>
+                </example>
+              </simplesect>
+            </section>
+
+            <section>
+              <title>Bound Variable Restriction</title>
+
+              <figure>
+                <title>variableRestriction</title>
+
+                <mediaobject>
+                  <imageobject>
+                    <imagedata align="center"
+                               fileref="variableRestriction.svg" format="SVG" />
+                  </imageobject>
+
+                  <imageobject>
+                    <imagedata align="center"
+                               fileref="variableRestriction.png" format="PNG" />
+                  </imageobject>
+                </mediaobject>
+              </figure>
+
+              <para>Variables can be bound to Facts and their Fields and then
+              used in subsequent Field Constraints. A bound variable is called
+              a <indexterm>
+                  <primary>declaration</primary>
+                </indexterm>Declaration. Valid operators are determined by the
+              type of the field being constrained. Bound Variable Restrictions
+              using '==' operator, provide for very fast execution as we can
+              index using hashing to improve performance.</para>
+
+              <example>
+                <title>Bound Field using '==' operator</title>
+
+                <programlisting>Person( likes : favouriteCheese )
 Cheese( type == likes )</programlisting>
 
-          <para>'likes' is our variable, our Declaration, that is bound to the
-          favouriteCheese field for any matching Person instance and is used
-          to constrain the type of Cheese in the following Column. Any valid
-          java variable name can be used, including '$'; which you will often
-          see used to help differentiate declarations from fields. The exampe
-          below shows a declaration bound to the Columns Object Type instance
-          itself and used with a 'contains' operator, note the optional use of
-          '$' this time.</para>
-        </example>
+                <para>'likes' is our variable, our Declaration, that is bound
+                to the favouriteCheese field for any matching Person instance
+                and is used to constrain the type of Cheese in the following
+                Column. Any valid java variable name can be used, including
+                '$'; which you will often see used to help differentiate
+                declarations from fields. The exampe below shows a declaration
+                bound to the Columns Object Type instance itself and used with
+                a 'contains' operator, note the optional use of '$' this
+                time.</para>
+              </example>
 
-        <example>
-          <title>Bound Fact using 'contains' operator</title>
+              <example>
+                <title>Bound Fact using 'contains' operator</title>
 
-          <programlisting>$stilton : Cheese( type == "stilton" )
+                <programlisting>$stilton : Cheese( type == "stilton" )
 Cheesery( cheeses contains $stilton )</programlisting>
-        </example>
-      </section>
+              </example>
+            </section>
 
-      <section>
-        <title>Predicate Constraints</title>
+            <section>
+              <title>Return Value Constraints</title>
 
-        <figure>
-          <title>Predicate expression</title>
+              <figure>
+                <title>returnValueRestriction</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="predicate_constraints.svg"
-                         format="SVG" />
-            </imageobject>
+                <mediaobject>
+                  <imageobject>
+                    <imagedata align="center"
+                               fileref="returnValueRestriction.svg"
+                               format="SVG" />
+                  </imageobject>
 
-            <imageobject>
-              <imagedata align="center" fileref="predicate_constraints.png"
-                         format="PNG" />
-            </imageobject>
-          </mediaobject>
-        </figure>
+                  <imageobject>
+                    <imagedata align="center"
+                               fileref="returnValueRestriction.png"
+                               format="PNG" />
+                  </imageobject>
+                </mediaobject>
+              </figure>
 
-        <para>A <indexterm>
-            <primary>Predicate</primary>
-          </indexterm>Predicate constraint can use any valid Java expression
-        as long as it evaluated to a primitive boolean - avoid using any
-        Drools keywords as Declaration identifiers. Previously bound
-        declarations can be used in the expression. Functions used in a
-        Predicate Constraint must return time constant results. All bound
-        primitive declarations are boxed, there is currently no auto-unboxing
-        (if you use java 5, this is all automatic).</para>
+              <para>A <indexterm>
+                  <primary>Return Value</primary>
+                </indexterm>Return Value constraint can use any valid Java
+              expression as long as it returns an object, it cannot return
+              primitives - avoid using any Drools keywords as Declaration
+              identifiers. Functions used in a Return value Constraint must
+              return time constant results. Previously bound declarations can
+              be used in the expression. All bound primitive declarations are
+              boxed, there is currently no auto-unboxing. The returned value
+              must be boxed if its a primitive..</para>
 
-        <para>This example will find all pairs of male/femal people where the
-        male is 2 years older than the female.</para>
+              <para>Like the Predicate example this will find all pairs of
+              male/femal people where the male is 2 years older than the
+              female. Notice here we didn't have to bind the boyAge, making it
+              a little simpler to read.</para>
 
-        <example>
-          <title>Return Value operator</title>
+              <example>
+                <title>Return Value operator</title>
 
-          <programlisting>Person( girlAge : age, sex = "F" )
-Person( boyAge : age -&gt; ( girlAge.intValue() == boyAge.intValue() + 2 ), sex = 'M' )
-</programlisting>
-        </example>
-      </section>
-
-      <section>
-        <title>Return Value Constraints</title>
-
-        <figure>
-          <title>Return Value expression</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="returnvalue_constraints.svg"
-                         format="SVG" />
-            </imageobject>
-
-            <imageobject>
-              <imagedata align="center" fileref="returnvalue_constraints.png"
-                         format="PNG" />
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <para>A <indexterm>
-            <primary>Return Value</primary>
-          </indexterm>Return Value constraint can use any valid Java
-        expression as long as it returns an object, it cannot return
-        primitives - avoid using any Drools keywords as Declaration
-        identifiers. Functions used in a Return value Constraint must return
-        time constant results. Previously bound declarations can be used in
-        the expression. All bound primitive declarations are boxed, there is
-        currently no auto-unboxing. The returned value must be boxed if its a
-        primitive..</para>
-
-        <para>Like the Predicate example this will find all pairs of
-        male/femal people where the male is 2 years older than the female.
-        Notice here we didn't have to bind the boyAge, making it a little
-        simpler to read.</para>
-
-        <example>
-          <title>Return Value operator</title>
-
-          <programlisting>Person( girlAge : age, sex == "F" )
+                <programlisting>Person( girlAge : age, sex == "F" )
 Person( age == ( new Integer(girlAge.intValue() + 2) ), sex == 'M' )
 </programlisting>
+              </example>
+            </section>
+          </section>
+
+          <section>
+            <title>Compound Value Restriction</title>
+
+            <figure>
+              <title>compoundValueRestriction</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center"
+                             fileref="compoundValueRestriction.svg"
+                             format="SVG" role="" />
+                </imageobject>
+
+                <imageobject>
+                  <imagedata align="center"
+                             fileref="compoundValueRestriction.png"
+                             format="PNG" role="" />
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <para></para>
+          </section>
+
+          <section>
+            <title>Multi Restriction</title>
+
+            <figure>
+              <title>multiRestriction</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="multiRestriction.svg"
+                             format="SVG" role="" />
+                </imageobject>
+
+                <imageobject>
+                  <imagedata align="center" fileref="multiRestriction.png"
+                             format="PNG" role="" />
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <figure>
+              <title>restrictionGroup</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center" fileref="restrictionGroup.svg"
+                             format="SVG" role="" />
+                </imageobject>
+
+                <imageobject>
+                  <imagedata align="center" fileref="restrictionGroup.png"
+                             format="PNG" role="" />
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <para></para>
+          </section>
+        </section>
+
+        <section>
+          <title>Inline Eval Constraints</title>
+
+          <figure>
+            <title>Inline Eval Expression</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="inlineEvalConstraint.svg"
+                           format="SVG" />
+              </imageobject>
+
+              <imageobject>
+                <imagedata align="center" fileref="inlineEvalConstraint.png"
+                           format="PNG" />
+              </imageobject>
+            </mediaobject>
+          </figure>
+
+          <para>A <indexterm>
+              <primary>Predicate</primary>
+            </indexterm>inline-eval constraint can use any valid dialect
+          expression as long as it evaluated to a primitive boolean - avoid
+          using any Drools keywords as Declaration identifiers. Any previous
+          bound variable, from the current or previous pattern, can be used;
+          autovivification is also used to auto create field binding
+          variables. When an identifier is found that is not a current
+          variable the builder looks to see if the identifier is a field on
+          the current object type, if it is the field is auto created as a
+          variable of the same name; this is autovivification of field
+          varables inside of inline evals.</para>
+
+          <para>This example will find all pairs of male/femal people where
+          the male is 2 years older than the female; the girlAge variable is
+          auto created as part of the autovivification process.</para>
+
+          <example>
+            <title>Return Value operator</title>
+
+            <programlisting>Person( girlAge : age, sex = "F" )
+Person( eval( girlAge == boyAge + 2 ), sex = 'M' )
+</programlisting>
+          </example>
+        </section>
+      </section>
+
+      <section>
+        <title>'and'</title>
+
+        <figure>
+          <title>and</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="and.svg" format="SVG" role="" />
+            </imageobject>
+
+            <imageobject>
+              <imagedata align="center" fileref="and.png" format="PNG" role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>valid children : and, or, not, exists, column</para>
+
+        <example>
+          <title>Column</title>
+
+          <programlisting>Cheese( cheeseType : type ) &amp;&amp; Person( favouriteCheese == cheeseType )
+Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )</programlisting>
         </example>
       </section>
-    </section>
-  </section>
 
-  <section id="RuleLanguage-ConditionalElements">
-    <title>Conditional Elements</title>
+      <section>
+        <title>'or'</title>
 
-    <para>Conditional elements work on one or more Columns (which were
-    described above). The most common one is "and" which is implicit when you
-    have multiple Columns in the LHS of a rule that are not connected in
-    anyway. Note that an 'and' cannot have a leading declaration binding like
-    'or' - this is obvious when you think about it. A declaration can only
-    reference a single Fact, when the 'and' is satisfied it matches more than
-    one fact - which fact would the declaration bind to?</para>
+        <figure>
+          <title>or</title>
 
-    <section>
-      <title>'and'</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="or.svg" format="SVG" role="" />
+            </imageobject>
 
-      <figure>
-        <title>and</title>
+            <imageobject>
+              <imagedata align="center" fileref="or.png" format="PNG" role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="and.svg" format="SVG" role="" />
-          </imageobject>
+        <para>valid children : and, or, not, exists, column</para>
 
-          <imageobject>
-            <imagedata align="center" fileref="and.png" format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+        <example>
+          <title>or</title>
 
-      <para>valid children : and, or, not, exists, column</para>
-
-      <example>
-        <title>Column</title>
-
-        <programlisting>Cheese( cheeseType : type ) &amp;&amp; Person( favouriteCheese == cheeseType )
-Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )</programlisting>
-      </example>
-    </section>
-
-    <section>
-      <title>'or'</title>
-
-      <figure>
-        <title>or</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="or.svg" format="SVG" role="" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="or.png" format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>valid children : and, or, not, exists, column</para>
-
-      <example>
-        <title>or</title>
-
-        <programlisting>Person( sex == "f", age &gt; 60 ) || Person( sex == "m", age &gt; 65 )
+          <programlisting>Person( sex == "f", age &gt; 60 ) || Person( sex == "m", age &gt; 65 )
 Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 )
 </programlisting>
-      </example>
+        </example>
 
-      <figure>
-        <title>or</title>
+        <figure>
+          <title>or</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="or_with_binding.svg"
-                       format="SVG" />
-          </imageobject>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="or_with_binding.svg"
+                         format="SVG" />
+            </imageobject>
 
-          <imageobject>
-            <imagedata align="center" fileref="or_with_binding.png"
-                       format="PNG" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+            <imageobject>
+              <imagedata align="center" fileref="or_with_binding.png"
+                         format="PNG" />
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-      <example>
-        <title>or with binding</title>
+        <example>
+          <title>or with binding</title>
 
-        <programlisting>pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 ) )</programlisting>
-      </example>
+          <programlisting>pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 ) )</programlisting>
+        </example>
 
-      <para>The 'or' conditional element results in multipe rule generation,
-      called sub rules, for each possible logically outcome. the example above
-      would result in the internal generation of two rules. These two rules
-      work independently within the Working Memory, which means both can
-      match, activate and fire - there is no shortcutting.</para>
+        <para>The 'or' conditional element results in multipe rule generation,
+        called sub rules, for each possible logically outcome. the example
+        above would result in the internal generation of two rules. These two
+        rules work independently within the Working Memory, which means both
+        can match, activate and fire - there is no shortcutting.</para>
 
-      <para>The best way to think of the OR conditional element is as a
-      shortcut for generating 2 additional rules. When you think of it that
-      way, its clear that for a single rule there could be multiple
-      activations if both sides of the OR conditional element are true.</para>
-    </section>
+        <para>The best way to think of the OR conditional element is as a
+        shortcut for generating 2 additional rules. When you think of it that
+        way, its clear that for a single rule there could be multiple
+        activations if both sides of the OR conditional element are
+        true.</para>
+      </section>
 
-    <section>
-      <title>'eval'</title>
+      <section>
+        <title>'eval'</title>
 
-      <figure>
-        <title>eval</title>
+        <figure>
+          <title>eval</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="eval.svg" format="SVG" role="" />
-          </imageobject>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="eval.svg" format="SVG"
+                         role="" />
+            </imageobject>
 
-          <imageobject>
-            <imagedata align="center" fileref="eval.png" format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+            <imageobject>
+              <imagedata align="center" fileref="eval.png" format="PNG"
+                         role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-      <para>valid children : none</para>
+        <para>valid children : none</para>
 
-      <para>Eval is essentially a catch all which allows any semantic code
-      (that returns a primitive primitive boolean) to be executed. This can
-      refer to variables that were bound in the LHS of the rule, and functions
-      in the rule package. An eval should be the last conditional element in
-      the LHS of a rule. You can have multiple evals in a rule. Generally you
-      would combine them with some column constraints.</para>
+        <para>Eval is essentially a catch all which allows any semantic code
+        (that returns a primitive primitive boolean) to be executed. This can
+        refer to variables that were bound in the LHS of the rule, and
+        functions in the rule package. An eval should be the last conditional
+        element in the LHS of a rule. You can have multiple evals in a rule.
+        Generally you would combine them with some column constraints.</para>
 
-      <para>Evals cannot be indexed and thus are not as optimal as using Field
-      Constraints. However this makes them ideal for being used when functions
-      return values that change over time, which is not allowed within Field
-      Constraints. An Eval will be checked each time if all the other
-      conditions in the rules are met.</para>
+        <para>Evals cannot be indexed and thus are not as optimal as using
+        Field Constraints. However this makes them ideal for being used when
+        functions return values that change over time, which is not allowed
+        within Field Constraints. An Eval will be checked each time if all the
+        other conditions in the rules are met.</para>
 
-      <para>For folks who are familiar with Drools 2.x lineage, the old Drools
-      paramater and condition tags are equivalent to binding a variable to an
-      appropriate type, and then using it in an eval node.</para>
+        <para>For folks who are familiar with Drools 2.x lineage, the old
+        Drools paramater and condition tags are equivalent to binding a
+        variable to an appropriate type, and then using it in an eval
+        node.</para>
 
-      <example>
-        <title>eval</title>
+        <example>
+          <title>eval</title>
 
-        <programlisting>p1 : Parameter() 
+          <programlisting>p1 : Parameter() 
 p2 : Parameter()
 eval( p1.getList().containsKey(p2.getItem()) )
 eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a function called "isValid"</programlisting>
-      </example>
-    </section>
+        </example>
+      </section>
 
-    <section>
-      <title>'not'</title>
+      <section>
+        <title>'not'</title>
 
-      <figure>
-        <title>not</title>
+        <figure>
+          <title>not</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="not.svg" format="SVG" role="" />
-          </imageobject>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="not.svg" format="SVG" role="" />
+            </imageobject>
 
-          <imageobject>
-            <imagedata align="center" fileref="not.png" format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+            <imageobject>
+              <imagedata align="center" fileref="not.png" format="PNG" role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-      <para>valid children: Column</para>
+        <para>valid children: Column</para>
 
-      <para>'not' is first order logic's Existential Quantifier and checks for
-      the non existence of something in the Working Memory. Currently only
-      Columns may be nested in a 'not' but future versions of will allow 'and'
-      and 'or' to be nested.</para>
+        <para>'not' is first order logic's Existential Quantifier and checks
+        for the non existence of something in the Working Memory. Currently
+        only Columns may be nested in a 'not' but future versions of will
+        allow 'and' and 'or' to be nested.</para>
 
-      <example>
-        <title>No Busses</title>
+        <example>
+          <title>No Busses</title>
 
-        <programlisting>not Bus()</programlisting>
-      </example>
+          <programlisting>not Bus()</programlisting>
+        </example>
 
-      <example>
-        <title>No red Busses</title>
+        <example>
+          <title>No red Busses</title>
 
-        <programlisting>not Bus(color == "red")
+          <programlisting>not Bus(color == "red")
 not ( Bus(color == "red", number == 42) ) //brackets are optional</programlisting>
-      </example>
-    </section>
+        </example>
+      </section>
 
-    <section>
-      <title>'exists'</title>
+      <section>
+        <title>'exists'</title>
 
-      <figure>
-        <title>exists</title>
+        <figure>
+          <title>exists</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="exists.svg" format="SVG" />
-          </imageobject>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="exists.svg" format="SVG" />
+            </imageobject>
 
-          <imageobject>
-            <imagedata align="center" fileref="exists.png" format="PNG" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+            <imageobject>
+              <imagedata align="center" fileref="exists.png" format="PNG" />
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-      <para>valid children: Column</para>
+        <para>valid children: Column</para>
 
-      <para>'exists' is first order logic's Existential Quantifier and checks
-      for the existence of something in the Working Memory. Think of exist as
-      meaning "at least one..". It is different from just having the Column on
-      its own. If you had the column on its on, its kind of like saying "for
-      each one of...". if you use exist with a Column, then the rule will only
-      activate once regardless of how much data there is in working memory
-      that matches that condition.</para>
+        <para>'exists' is first order logic's Existential Quantifier and
+        checks for the existence of something in the Working Memory. Think of
+        exist as meaning "at least one..". It is different from just having
+        the Column on its own. If you had the column on its on, its kind of
+        like saying "for each one of...". if you use exist with a Column, then
+        the rule will only activate once regardless of how much data there is
+        in working memory that matches that condition.</para>
 
-      <para>Currently only Columns may be nested in a 'exists' but future
-      versions of will allow 'and' and 'or' to be nested.</para>
+        <para>Currently only Columns may be nested in a 'exists' but future
+        versions of will allow 'and' and 'or' to be nested.</para>
 
-      <example>
-        <title>Atleast one Bus</title>
+        <example>
+          <title>Atleast one Bus</title>
 
-        <programlisting>exists Bus()</programlisting>
-      </example>
+          <programlisting>exists Bus()</programlisting>
+        </example>
 
-      <example>
-        <title>Atleast one red Bus</title>
+        <example>
+          <title>Atleast one red Bus</title>
 
-        <programlisting>exists Bus(color == "red")</programlisting>
-      </example>
-    </section>
+          <programlisting>exists Bus(color == "red")</programlisting>
+        </example>
+      </section>
 
-    <section>
-      <title>'group'</title>
+      <section>
+        <title>'group'</title>
 
-      <figure>
-        <title>group</title>
+        <figure>
+          <title>group</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="group.svg" format="SVG" role="" />
-          </imageobject>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="group.svg" format="SVG"
+                         role="" />
+            </imageobject>
 
-          <imageobject>
-            <imagedata align="center" fileref="group.png" format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+            <imageobject>
+              <imagedata align="center" fileref="group.png" format="PNG"
+                         role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-      <para>Grouping is similar to using parentheses in algebra, it makes the
-      order of operations explicit.</para>
+        <para>Grouping is similar to using parentheses in algebra, it makes
+        the order of operations explicit.</para>
 
-      <example>
-        <title>Example of groups</title>
+        <example>
+          <title>Example of groups</title>
 
-        <programlisting>...
+          <programlisting>...
 ( 
   Message( status == Message.HELLO ) and Message(message != null) 
       or Message(status == null)  
 )
 ...</programlisting>
-      </example>
+        </example>
+      </section>
     </section>
-
-    <example>
-      <title>A rule example</title>
-
-      <programlisting>rule "Approve if not rejected"
-  salience -100 
-  agenda-group "approval"
-    when
-        not Rejection() 
-        p : Policy(approved == false, policyState:status)
-        exists Driver(age &gt; 25)
-        Process(status == policyState)
-    then
-        log("APPROVED: due to no objections."); 
-        p.setApproved(true);
-end</programlisting>
-    </example>
   </section>
 
   <section>
-    <title>A note on autoboxing and primitive types</title>
+    <title>The Right Hand Side (then)</title>
 
-    <para>Java 5 supports autoboxing and unboxing between primitives of
-    appropriate types. This makes for very convenient and easy to read code.
-    However, as drools runs in J2SE 1.4 as well, we can't rely on this. Thus
-    we have to autobox at times. Fields that are referred to are autoboxed in
-    the corresponding object type automatically (if they are already an
-    object, then there is no change). However, it is important to note that
-    they are not "unboxed" automatically. Thus if you bind to a field that is
-    an "int" in your object model, it will behave like an Object in the rule
-    (ie predicates, return value constraints and the RHS).</para>
+    <para>The Right Hand Side (RHS) is a common name for the consequence or
+    action part of the rule; this part should contain a list of actions to be
+    executed.It is bad practice to use imperative or conditoinal code in the
+    RHS of a rule; as a rule should be atomic in nature - "when this, then do
+    this", not "when this, maybe do this". The RHS part of a rule should also
+    be kept small, thus keeping it declarative and readable. If you find you
+    need imperative and/or conditional code in the RHS, then maybe you should
+    be breaking that rule down into multiple rules. The main purpose of the
+    RHS is to insert, retractor modify working memory data. To assist with
+    there there are a few convenience methods you can use to modify working
+    memory; without having to first reference a working memory
+    instance.</para>
 
-    <para>As a general rule, if possible, make your fields object types (at
-    least until java 5), or at least think of your fields as object types even
-    if they are not to start with). Another special note, is that for return
-    value constraints, the return value snippet of code must return an Object
-    (not a primitive). Now, I bet you can't wait for Java 5 to be the minimum
-    ! The fact that not quite *everything* in java is an object causes
-    headaches like this (keep those tablets handy).</para>
+    <para>"update(object, handle);" will tell the engine that an object has
+    changed (one that has been bound to something on the LHS) and rules may
+    need to be reconsidered.</para>
+
+    <para>"insert(new Something());" will place a new object of your creation
+    in working memory.</para>
+
+    <para>"insertLogical(new Something());" is similar to insert, but the
+    object will be automatically retracted when there are no more facts to
+    support the truth of the currently firing rule.</para>
+
+    <para>"retract(handle);" removes an object from working memory.</para>
+
+    <para>These convenience methods are basically macros that provide short
+    cuts to the KnowldgeHelper instance (refer to the KnowledgeHelper
+    interface for more advanced operations). The KnowledgeHelper interface is
+    made available to the RHS code block as a variable called "drools". If you
+    provide "Property Change Listeners" to your java beans that you are
+    inserting into the engine, you can avoid the need to call "update" when
+    the object changes.</para>
+  </section>
+
+  <section>
+    <title>A note on auto boxing/unboxing and primitive types</title>
+
+    <para>Drools attempts to preserve numbers in their primitive or object
+    wrappter form, so a variable bound to an int primtive when used in a code
+    block or expression will no longer need manual unboxing; unlike Drools 3.0
+    where all primitives was autoboxed, requiring manual unboxing. A variable
+    bound to an object wrapper will remain as an object; the existing jdk1.5
+    and jdk5 rules to handling auto boxing/unboxing apply in this case. When
+    evaluating field constraints the system attempts to coerce one of the
+    values into a comparable format; so a primitive is comparable to an object
+    wrapper.</para>
   </section>
 </section>
