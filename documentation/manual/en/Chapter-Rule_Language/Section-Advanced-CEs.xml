@@ -32,6 +32,20 @@
   <section>
     <title>From</title>
 
+    <figure>
+      <title>from</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="from.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="from.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
     <para>The <emphasis role="bold">from</emphasis> Conditional Element allows
     users to specify a source for patterns to reason over. This allows the
     engine to reason over data not in the Working Memory. This could be a
@@ -99,6 +113,20 @@ end
   <section>
     <title>Collect</title>
 
+    <figure>
+      <title>collect</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="collect.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="collect.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
     <para>The <emphasis role="bold">collect</emphasis> Conditional Element
     allows rules to reason over collection of objects collected from the given
     source or from the working memory. A simple example:</para>
@@ -159,6 +187,20 @@ end
 
   <section>
     <title>Accumulate</title>
+
+    <figure>
+      <title>accumulate</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="accumulate.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="accumulate.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
 
     <para>The <emphasis role="bold">accumulate</emphasis> Conditional Element
     is a more flexible and powerful form of <emphasis
@@ -468,9 +510,23 @@ public class AverageAccumulateFunction implements AccumulateFunction {
   <section>
     <title>Forall</title>
 
+    <figure>
+      <title>forall</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="forall.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="forall.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
     <para><emphasis role="bold">Forall</emphasis> is the Conditional Element
     that completes the First Order Logic support in Drools. The syntax is very
-    simple: </para>
+    simple:</para>
 
     <programlisting>forall( <replaceable>&lt;select pattern&gt;</replaceable> <replaceable>&lt;constraint patterns&gt;</replaceable> )</programlisting>
 
