@@ -348,7 +348,7 @@ public class MVELDialect
         if ( interceptors != null ) {
             parserContext.setInterceptors( interceptors );
         }
-
+        //FIXME: analysis can be null, throws an NPE
         List list[] = analysis.getBoundIdentifiers();
         DeclarationScopeResolver resolver = context.getDeclarationResolver();
         for ( Iterator it = list[0].iterator(); it.hasNext(); ) {
