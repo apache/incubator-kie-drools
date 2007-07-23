@@ -59,6 +59,7 @@ import org.mvel.integration.Interceptor;
 import org.mvel.integration.VariableResolverFactory;
 import org.mvel.integration.impl.ClassImportResolverFactory;
 import org.mvel.integration.impl.StaticMethodImportResolverFactory;
+import org.mvel.optimizers.OptimizerFactory;
 
 public class MVELDialect
     implements
@@ -118,6 +119,9 @@ public class MVELDialect
         this.typeResolver = builder.getTypeResolver();
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
         this.strictMode = this.configuration.isStrict();
+        
+        // we currently default to reflective optimisation
+        OptimizerFactory.setDefaultOptimizer("reflective");
 
         this.analyzer = new MVELExprAnalyzer();
 
