@@ -4,7 +4,7 @@
 
   <para>Drools 4.0 is a major update over the previous Drools 3.0.x series. A
   whole new set of features were developed which special focus on language
-  expressiveness, engine performance and tools availability. The followin is a
+  expressiveness, engine performance and tools availability. The following is a
   list of the most interesting changes.</para>
 
   <section>
@@ -109,7 +109,7 @@
       </listitem>
 
       <listitem>
-        <para>Dinamic salience for rules conflict resolution</para>
+        <para>Dynamic salience for rules conflict resolution</para>
       </listitem>
 
       <listitem>
@@ -161,7 +161,7 @@
       </listitem>
 
       <listitem>
-        <para>User friendly web interface</para>
+        <para>User friendly web interface with nice WEB 2.0 ajax features</para>
       </listitem>
 
       <listitem>
@@ -169,19 +169,23 @@
       </listitem>
 
       <listitem>
-        <para>Rule Authoring</para>
-      </listitem>
-
-      <listitem>
-        <para>Reporting features</para>
-      </listitem>
-
-      <listitem>
-        <para>Asset versioning</para>
+        <para>Rule Authoring easy to edit rules both with guided editor ( drop-down menus ) and text editor</para>
       </listitem>
 
       <listitem>
         <para>Package compilation and deployment</para>
+      </listitem>
+
+      <listitem>
+        <para>Easy deployment with Rule Agent</para>
+      </listitem>
+
+      <listitem>
+        <para>Easy to organize with categories and search assets</para>
+      </listitem>
+
+      <listitem>
+        <para>Versioning enabled, you can easily replace yours assets with previously saved</para>
       </listitem>
 
       <listitem>
@@ -191,7 +195,7 @@
   </section>
 
   <section>
-    <title>Miscelaneous Enhancements</title>
+    <title>Miscellaneous Enhancements</title>
 
     <itemizedlist>
       <listitem>
