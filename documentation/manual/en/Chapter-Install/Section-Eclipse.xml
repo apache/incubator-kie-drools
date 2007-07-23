@@ -92,8 +92,8 @@
 
     <para>When calling <literal>'mvn install'</literal> all the project
     dependencies were downloaded and added to the local Maven repository.
-    Eclipse cannot find those depenencies unless you tell it where that
-    repository is. To do this setup an M2_REPO claspath variable.</para>
+    Eclipse cannot find those dependencies unless you tell it where that
+    repository is. To do this setup an M2_REPO classpath variable.</para>
 
     <screenshot>
       <screeninfo>Open the Preferences dialogue window</screeninfo>
@@ -186,7 +186,7 @@
     the jar to the Eclipse plugin directory.</para>
 
     <screenshot>
-      <screeninfo>Open the direcotry with the build jar</screeninfo>
+      <screeninfo>Open the directory with the build jar</screeninfo>
 
       <mediaobject>
         <imageobject>
