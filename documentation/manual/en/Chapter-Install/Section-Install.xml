@@ -213,7 +213,7 @@
         </screenshot></para>
 
       <para>Step 4: This screen is where you enter in the remote site details.
-      You give it a name eg "JBoss Rules" and the url. <programlisting>URL: http://anonsvn.labs.jboss.com/labs/jbossrules/updates/drools-ide-update/</programlisting>
+      You give it a name eg "JBoss Rules" and the url. <programlisting>URL: http://downloads.jboss.com/drools/updatesite/</programlisting>
       <screenshot>
           <screeninfo>New remote site</screeninfo>
 
