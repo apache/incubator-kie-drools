@@ -2,7 +2,7 @@
 <section>
   <title>Knowledge Representation</title>
 
-  <section>
+  <!--section>
     <title>Production Rules</title>
 
     <para>A 
@@ -196,7 +196,7 @@ public void cheddarCheese(Cheese cheese) {
     in response to changes in Working Memory's data. Rules are also fully
     declarative in that they describe "what" not "how" like imperative
     languages such as Java.</para>
-  </section>
+  </section-->
 
   <section>
     <title>First Order Logic</title>
