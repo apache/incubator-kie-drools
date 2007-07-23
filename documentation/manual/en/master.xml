@@ -63,6 +63,13 @@
     <title>Reference Manual</title>
 
     <chapter>
+      <title>Drools 4.0 Release Notes</title>
+
+      <xi:include href="Chapter-Release_Notes/Section-What_is_new.xml" />
+
+    </chapter>
+
+    <chapter>
       <title>The Rule Engine</title>
 
       <xi:include href="Chapter-Rule_Engine/Section-What_is_a_Rule_Engine.xml" />
