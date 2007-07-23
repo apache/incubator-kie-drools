@@ -37,7 +37,7 @@
     reference is maintained, unless configured otherwise. The Working Memory
     consists of a number of sub components, inculding Working Memory Event
     Support, Truth Maintenance System, Agenda and Agenda Event Support. Object
-    assertion may result in the creation of one or more Activations. The
+    insertion may result in the creation of one or more Activations. The
     Agenda is responsible for scheduling the execution of these
     Activations.</para>
 
@@ -73,15 +73,17 @@
       </mediaobject>
     </figure>
 
-    <para>Three classes are used for authoring: DrlParser, XmlParser and
-    PackageBuilder. The two parser classes produce "descr" AST models from a
-    provided Reader instance. PackageBuilder provides convienience APIs so
-    that you can mostly forget about those classes. The two convienience
-    methods are "addPackageFromDrl" and "addPackageFromXml" - both take an
+    <para>Four classes are used for authoring: DrlParser, XmlParser,
+    ProcessBuilder and PackageBuilder. The two parser classes produce "descr"
+    (description) AST models from a provided Reader instance. ProcessBuilder
+    reads in an xstream serialisation representation of the Rule Flow.
+    PackageBuilder provides convienience APIs so that you can mostly forget
+    about those classes. The three convienience methods are
+    "addPackageFromDrl", "addPackageFromXml" and addRuleFlow - all take an
     instance of Reader as an argument. The example below shows how to build a
-    package that includes both XML and DRL rule files, which are in the
-    classpath. Note that all added package sources must be of the same package
-    namespace for the current PackageBuilder instance!</para>
+    package that includes both XML, DRL and rule files and a ruleflow file,
+    which are in the classpath. Note that all added package sources must be of
+    the same package namespace for the current PackageBuilder instance!</para>
 
     <example>
       <title>Building a Package from Multiple Sources</title>
@@ -90,7 +92,8 @@
       
 PackageBuilder builder = new PackageBuilder();
 builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "package1.drl" ) ) );
-builder.addPackageFromXml( new InputStreamReader( getClass().getResourceAsStream( "package2.drl" ) ) );
+builder.addPackageFromXml( new InputStreamReader( getClass().getResourceAsStream( "package2.xml" ) ) );
+builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
 Package pkg = builder.getPackage();
               
       </programlisting>
