@@ -89,11 +89,11 @@ public class MVELConsequenceBuilderTest extends TestCase {
         assertEquals( 5,
                       cheddar.getPrice() );
     }
-    
+
     public void testKnowledgeHelper() {
-        
+
     }
-    
+
     public void testImperativeCodeError() throws Exception {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
@@ -101,7 +101,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.dialect.default",
-                                "mvel" );        
+                                "mvel" );
         PackageBuilderConfiguration cfg1 = new PackageBuilderConfiguration( properties );
         MVELDialect mvelDialect = ( MVELDialect) cfg1.getDefaultDialect();
         final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
@@ -154,9 +154,9 @@ public class MVELConsequenceBuilderTest extends TestCase {
                                                      wm );
             fail( "should throw an exception, as 'if' is not allowed" );
         } catch ( Exception e) {
-            
+
         }
-        
+
         assertEquals( 10,
                       cheddar.getPrice() );
     }
@@ -164,9 +164,9 @@ public class MVELConsequenceBuilderTest extends TestCase {
     /**
      * Just like MVEL command line, we can allow expressions to span lines, with optional ";"
      * seperating expressions. If its needed a ";" can be thrown in, but if not, a new line is fine.
-     * 
+     *
      * However, when in the middle of unbalanced brackets, a new line means nothing.
-     * 
+     *
      * @throws Exception
      */
     public void testLineSpanOptionalSemis() throws Exception {
@@ -174,23 +174,23 @@ public class MVELConsequenceBuilderTest extends TestCase {
         String simpleEx = "foo\nbar\nbaz";
         MVELConsequenceBuilder cons = new MVELConsequenceBuilder();
         assertEquals( "foo;\nbar;\nbaz",
-                      cons.delimitExpressions( simpleEx ) );
+                      MVELConsequenceBuilder.delimitExpressions( simpleEx ) );
 
         String ex = "foo (\n bar \n)\nbar;\nyeah;\nman\nbaby";
         assertEquals( "foo (\n bar \n);\nbar;\nyeah;\nman;\nbaby",
-                      cons.delimitExpressions( ex ) );
+                      MVELConsequenceBuilder.delimitExpressions( ex ) );
 
         ex = "foo {\n bar \n}\nbar;   \nyeah;\nman\nbaby";
         assertEquals( "foo {\n bar \n};\nbar;   \nyeah;\nman;\nbaby",
-                      cons.delimitExpressions( ex ) );
+                      MVELConsequenceBuilder.delimitExpressions( ex ) );
 
         ex = "foo [\n bar \n]\nbar;  x\nyeah();\nman[42]\nbaby;ca chiga;\nend";
         assertEquals( "foo [\n bar \n];\nbar;  x;\nyeah();\nman[42];\nbaby;ca chiga;\nend",
-                      cons.delimitExpressions( ex ) );
+                      MVELConsequenceBuilder.delimitExpressions( ex ) );
 
         ex = "   \n\nfoo [\n bar \n]\n\n\nbar;  x\n  \nyeah();\nman[42]\nbaby;ca chiga;\nend";
         assertEquals( "   \n\nfoo [\n bar \n];\n\n\nbar;  x;\n  \nyeah();\nman[42];\nbaby;ca chiga;\nend",
-                      cons.delimitExpressions( ex ) );
+                      MVELConsequenceBuilder.delimitExpressions( ex ) );
 
     }
 }
