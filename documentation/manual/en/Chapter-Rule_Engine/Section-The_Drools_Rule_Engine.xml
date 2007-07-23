@@ -95,51 +95,31 @@ builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream
 builder.addPackageFromXml( new InputStreamReader( getClass().getResourceAsStream( "package2.xml" ) ) );
 builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
 Package pkg = builder.getPackage();
+      </programlisting>
+    </example>
+
+    <para>It is essential that you always check your PackageBuilder for errors
+    before attempting to use it. While the ruleBase does throw an
+    InvalidRulePackage when a broken Package is added, the detailed error
+    information is stripped and only a toString() equivalent is available. If
+    you interrogate the PackageBuilder itself much more information is
+    aviailable.</para>
+
+    <example>
+      <title>Checking the PackageBuilder for errors</title>
+
+      <programlisting>
+      
+PackageBuilder builder = new PackageBuilder();
+builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "package1.drl" ) ) );
+PackageBuilderErrors errors = builder.getErrors();
+
               
       </programlisting>
     </example>
 
-    <para>PackagBuilder is configurable using PackageBuilderConfiguration. It
-    has default values that can be overriden programmatically via setters or
-    on first use via property settings. Currently it allows alternative
-    compilers (Janino, Eclipse JDT) to be specified, different JDK source
-    levels ("1.4" and "1.5") and a parent class loader. The default compiler
-    is Eclipse JDT Core at source level "1.4" with the parent class loader set
-    to "Thread.currentThread().getContextClassLoader()".</para>
-
-    <para>The following show how to specify the JANINO compiler
-    programmatically:</para>
-
-    <example>
-      <title>Configuring the PackageBuilder to use JANINO</title>
-
-      <programlisting>
-      
-PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-conf.setCompiler( PackageBuilderConfiguration.JANINO );
-PackageBuilder builder = new PackageBuilder( conf );
-      
-      </programlisting>
-    </example>
-
-    <para>This could also be done with a property file setting
-    "drools.compiler=JANINO".</para>
-
-    <example>
-      <title>Configuring the PackageBuilder to build with JDk 1.5
-      compatability</title>
-
-      <programlisting>
-      
-PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-conf.setJavaLanguageLevel( "1.5" );
-PackageBuilder builder = new PackageBuilder( conf );
-        
-      </programlisting>
-    </example>
-
-    <para>This could also be done with a property file setting
-    "drools.compiler.languagelevel=1.5".</para>
+    <para>PackagBuilder is configurable using PackageBuilderConfiguration
+    class. </para>
 
     <figure>
       <title>PackageBuilderConfiguration</title>
@@ -152,6 +132,120 @@ PackageBuilder builder = new PackageBuilder( conf );
 
         <imageobject>
           <imagedata align="center" fileref="PackageBuilderConfiguration.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>It has default values that can be overriden programmatically via
+    setters or on first use via property settings. At the heart of the
+    settings is the ChainedProperties class which searches a number of
+    locations looking for drools.packagebuilder.conf files; as it finds them
+    it adds the properties to the master propperties list; this provides a
+    level precedence. In order of precendence those lolcations are: System
+    Properties, user defined file in System Properties, user home directory,
+    working directory, various META-INF locations. Further to this the
+    droosl-compiler jar has the default settings in its META-INF
+    directory.</para>
+
+    <para>Currently the PackageBulderConfiguration handles the registry of
+    Accumulate functions, registry of Dialects and the main
+    ClassLoader.</para>
+
+    <para>Drools has a pluggeable Dialect system, which allows other languages
+    to compile and execution expressions and blocks, the two currently
+    supported dialects are Java and MVEL. Each has its own
+    DialectConfiguration Implementation; the javadocs provide details for each
+    setter/getter and the property names used to configure them.</para>
+
+    <figure>
+      <title>JavaDialectConfiguration</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="JavaDialectConfiguration.svg"
+                     format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="JavaDialectConfiguration.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The JavaDialectConfiguration allows th compiler and language levels
+    to be supported. You can override by setting the
+    "drools.dialect.java.compiler" property in a packagebuilder.conf file that
+    the ChainedProperties instance will find, or you can do it at runtime as
+    shown below.</para>
+
+    <example>
+      <title>Configuring the JavaDialectConfiguration to use JANINO via a
+      setter</title>
+
+      <programlisting>PackageBuilderConfiguration cfg = new PackageBuilderConfiguration( );
+JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
+javaConf.setCompiler( JavaDialectConfiguration.JANINO );            </programlisting>
+    </example>
+
+    <para>if you do not have Eclipse JDT Core in your classpath you must
+    override the compiler setting before you instantiate this PackageBuilder,
+    you can either do that with a packagebuilder properties file the
+    ChainedProperties class will find, or you can do it programmatically as
+    shown below; note this time I use properties to inject the value for
+    startup.</para>
+
+    <example>
+      <title>Configuring the JavaDialectConfiguration to use JANINO</title>
+
+      <programlisting>Properties properties = new Properties();
+properties.setProperty( "drools.dialect.java.compiler",
+                        "JANINO" );
+PackageBuilderConfiguration cfg = new PackageBuilderConfiguration( properties );
+JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
+assertEquals( JavaDialectConfiguration.JANINO,
+              javaConf.getCompiler() ); // demonstrate that the compiler is correctly configured            </programlisting>
+    </example>
+
+    <para>Currently it allows alternative compilers (Janino, Eclipse JDT) to
+    be specified, different JDK source levels ("1.4" and "1.5") and a parent
+    class loader. The default compiler is Eclipse JDT Core at source level
+    "1.4" with the parent class loader set to
+    "Thread.currentThread().getContextClassLoader()".</para>
+
+    <para>The following show how to specify the JANINO compiler
+    programmatically:</para>
+
+    <example>
+      <title>Configuring the PackageBuilder to use JANINO via a
+      property</title>
+
+      <programlisting>
+      
+PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+conf.setCompiler( PackageBuilderConfiguration.JANINO );
+PackageBuilder builder = new PackageBuilder( conf );
+      
+      </programlisting>
+    </example>
+
+    <para>The MVELDialectConfiguration is much simpler and only allows strict
+    mode to be turned on and off, by default strict is true; this means all
+    method calls must be type safe either by inference or by explicit
+    typing.</para>
+
+    <figure>
+      <title>MvelDialectConfiguration</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="JavaDialectConfiguration.svg"
+                     format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="MVELDialectConfiguration.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -181,17 +275,9 @@ PackageBuilder builder = new PackageBuilder( conf );
     Typically, a rulebase would be generated and cached on first use; to save
     on the continually re-generation of the Rule Base; which is expensive. A
     RuleBase is instantiated using the RuleBaseFactory, by default this
-    returns a ReteOO RuleBase. Arguments can be used to specify ReteOO or
-    Leaps. packages are added, in turn, using the addPackage method. You may
-    specify packages of any namespace and multiple packages of the same
-    namespace may be added.</para>
-
-    <programlisting>
-    
-RuleBase ruleBase  = RuleBaseFactory.newRuleBase();
-ruleBase.addPackage( pkg  );
-    
-    </programlisting>
+    returns a ReteOO RuleBase. Packages are added, in turn, using the
+    addPackage method. You may specify packages of any namespace and multiple
+    packages of the same namespace may be added.</para>
 
     <figure>
       <title>RuleBaseFactory</title>
@@ -206,6 +292,13 @@ ruleBase.addPackage( pkg  );
         </imageobject>
       </mediaobject>
     </figure>
+
+    <example>
+      <title>Adding a Package to a new RuleBase</title>
+
+      <programlisting>RuleBase ruleBase  = RuleBaseFactory.newRuleBase();
+ruleBase.addPackage( pkg  );        </programlisting>
+    </example>
 
     <para>A Rule Base instance is threadsafe, in the sense that you can have
     the one instance shared across threads in your application, which may be a
