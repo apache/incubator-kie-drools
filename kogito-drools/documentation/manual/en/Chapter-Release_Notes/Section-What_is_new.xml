@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>What is new in Drools 4.0</title>
+
+  <para>Drools 4.0 is a major update over the previous Drools 3.0.x series. A
+  whole new set of features were developed which special focus on language
+  expressiveness, engine performance and tools availability. The followin is a
+  list of the most interesting changes.</para>
+
+  <section>
+    <title>Language Expressiveness Enhancements</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>New Conditional Elements: from, collect, accumulate and
+        forall</para>
+      </listitem>
+
+      <listitem>
+        <para>New Field Constraint operators: not matches, not contains, in,
+        not in, memberOf, not memberOf</para>
+      </listitem>
+
+      <listitem>
+        <para>New Implicit Self Reference field: this</para>
+      </listitem>
+
+      <listitem>
+        <para>Full support to Conditional Elements nesting, for First Order
+        Logic completeness.</para>
+      </listitem>
+
+      <listitem>
+        <para>Support to multi-restrictions and constraint connectives
+        &amp;&amp; and ||</para>
+      </listitem>
+
+      <listitem>
+        <para>Parser improvements to remove previous language limitations,
+        like character escaping and keyword conflicts</para>
+      </listitem>
+
+      <listitem>
+        <para>Support to pluggable dialects and built-in support to Java and
+        MVEL</para>
+      </listitem>
+
+      <listitem>
+        <para>Complete rewrite of DSL engine, allowing for full l10n</para>
+      </listitem>
+
+      <listitem>
+        <para>Fact attributes auto-vivification for return value restrictions
+        and inline-eval constraints</para>
+      </listitem>
+
+      <listitem>
+        <para>Support to nested accessors, property navigation and simplified
+        collection, arrays and maps syntax</para>
+      </listitem>
+
+      <listitem>
+        <para>Improved support to XML rules</para>
+      </listitem>
+
+      <listitem>
+        <para>Experimental Clips parser support</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Core Engine Enhancements</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Native support to primitive types, avoiding constant
+        autoboxing</para>
+      </listitem>
+
+      <listitem>
+        <para>Support to transparent optional Shadow Facts </para>
+      </listitem>
+
+      <listitem>
+        <para>Rete Network performance improvements for complex rules </para>
+      </listitem>
+
+      <listitem>
+        <para>Support to Rule-Flows</para>
+      </listitem>
+
+      <listitem>
+        <para>Support to Stateful and Stateless working memories (rule engine
+        sessions)</para>
+      </listitem>
+
+      <listitem>
+        <para>Support to Asynchronous Working Memory actions</para>
+      </listitem>
+
+      <listitem>
+        <para>Rules Engine Agent for hot deployment and BRMS
+        integration</para>
+      </listitem>
+
+      <listitem>
+        <para>Full support to MVEL scripting language</para>
+      </listitem>
+
+      <listitem>
+        <para>Dinamic salience for rules conflict resolution</para>
+      </listitem>
+
+      <listitem>
+        <para>Support to Parameterized Queries</para>
+      </listitem>
+
+      <listitem>
+        <para>Support to halt command</para>
+      </listitem>
+
+      <listitem>
+        <para>Support to sequential execution mode </para>
+      </listitem>
+
+      <listitem>
+        <para>Support to pluggable global variable resolver</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>IDE Enhancements</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Support to rule break-points on debugging</para>
+      </listitem>
+
+      <listitem>
+        <para>WYSIWYG support to rule-flows </para>
+      </listitem>
+
+      <listitem>
+        <para>New guided editor for rules authoring</para>
+      </listitem>
+
+      <listitem>
+        <para>Upgrade to support all new engine features</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Business Rules Management System - BRMS</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>New BRMS tool</para>
+      </listitem>
+
+      <listitem>
+        <para>User friendly web interface</para>
+      </listitem>
+
+      <listitem>
+        <para>Package configuration</para>
+      </listitem>
+
+      <listitem>
+        <para>Rule Authoring</para>
+      </listitem>
+
+      <listitem>
+        <para>Reporting features</para>
+      </listitem>
+
+      <listitem>
+        <para>Asset versioning</para>
+      </listitem>
+
+      <listitem>
+        <para>Package compilation and deployment</para>
+      </listitem>
+
+      <listitem>
+        <para>JCR compliant rule assets repository</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Miscelaneous Enhancements</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>Slimmed down dependencies and smaller memory footprint</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</section>
