@@ -45,7 +45,7 @@ public class DateFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID    = -9190991797780589450L;
+    private static final long       serialVersionUID    = 400L;
     private static final String     DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
     private static final String     DATE_FORMAT_MASK    = getDateFormatMask();
 

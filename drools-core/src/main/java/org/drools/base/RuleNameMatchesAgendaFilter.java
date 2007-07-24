@@ -26,19 +26,19 @@ import org.drools.spi.AgendaFilter;
  * Filters activations based on a specified regular expression.
  * 
  */
-public class RuleNameMatches
+public class RuleNameMatchesAgendaFilter
     implements
     AgendaFilter {
     private final Pattern pattern;
 
     private final boolean accept;
 
-    public RuleNameMatches(final String regexp) {
+    public RuleNameMatchesAgendaFilter(final String regexp) {
         this( regexp,
               true );
     }
 
-    public RuleNameMatches(final String regexp,
+    public RuleNameMatchesAgendaFilter(final String regexp,
                                  final boolean accept) {
         this.pattern = Pattern.compile( regexp );
         this.accept = accept;
