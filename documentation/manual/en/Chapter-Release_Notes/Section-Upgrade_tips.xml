@@ -189,10 +189,6 @@ end
     and as so, it is a safe tool to use for upgrade large sets of rule
     files.</para>
 
-	<para>
-		
-	</para>
-
 
     <para>The drools update tool can be found as a maven project in the
     following source repository
