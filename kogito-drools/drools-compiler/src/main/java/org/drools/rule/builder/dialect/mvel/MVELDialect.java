@@ -22,8 +22,10 @@ import org.drools.compiler.RuleError;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.NotDescr;
@@ -35,7 +37,9 @@ import org.drools.rule.Declaration;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
+import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.PatternBuilder;
@@ -47,6 +51,7 @@ import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialect;
+import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.util.StringUtils;
@@ -81,7 +86,10 @@ public class MVELDialect
     private final MVELConsequenceBuilder      consequence             = new MVELConsequenceBuilder();
     //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
     private final MVELFromBuilder             from                    = new MVELFromBuilder();
-
+    private final JavaFunctionBuilder         function                = new JavaFunctionBuilder();
+    private final CollectBuilder              collect                 = new CollectBuilder();
+    private final ForallBuilder               forall                  = new ForallBuilder();
+    
     private Map                               interceptors;
 
     private List                              results;
@@ -176,6 +184,15 @@ public class MVELDialect
 
         this.builders.put( EvalDescr.class,
                            getEvalBuilder() );
+        
+        this.builders.put( CollectDescr.class,
+                           collect );
+
+        this.builders.put( ForallDescr.class,
+                           forall );
+
+        this.builders.put( FunctionDescr.class,
+                           function );
 
     }
 
