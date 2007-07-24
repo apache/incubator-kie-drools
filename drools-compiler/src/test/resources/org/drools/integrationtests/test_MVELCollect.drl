@@ -1,0 +1,13 @@
+package org.drools;
+
+import java.util.ArrayList;
+
+global java.util.List results;
+
+rule "test mvel collect"
+    dialect "mvel"
+when
+    $list : ArrayList() from collect( Cheese() )
+then
+    results.add( $list );
+end

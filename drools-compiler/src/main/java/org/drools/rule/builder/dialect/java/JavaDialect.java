@@ -79,6 +79,8 @@ public class JavaDialect
     private final JavaRuleClassBuilder     rule                    = new JavaRuleClassBuilder();
     private final MVELFromBuilder          from                    = new MVELFromBuilder();
     private final JavaFunctionBuilder      function                = new JavaFunctionBuilder();
+    private final CollectBuilder           collect                 = new CollectBuilder();
+    private final ForallBuilder            forall                  = new ForallBuilder();
 
     //
     private KnowledgeHelperFixer     knowledgeHelperFixer;
@@ -133,10 +135,10 @@ public class JavaDialect
         this.builders = new HashMap();
 
         this.builders.put( CollectDescr.class,
-                           new CollectBuilder() );
+                           collect );
 
         this.builders.put( ForallDescr.class,
-                           new ForallBuilder() );
+                           forall );
 
         final GroupElementBuilder gebuilder = new GroupElementBuilder();
 

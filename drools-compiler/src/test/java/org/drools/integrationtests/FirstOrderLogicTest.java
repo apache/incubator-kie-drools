@@ -605,4 +605,41 @@ public class FirstOrderLogicTest extends TestCase {
         
     }
 
+    public void testMVELCollect() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_MVELCollect.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        wm.insert( new Cheese( "stilton",
+                               10 ) );
+        wm.insert( new Cheese( "stilton",
+                               7 ) );
+        wm.insert( new Cheese( "stilton",
+                               8 ) );
+        wm.insert( new Cheese( "brie",
+                               5 ) );
+        wm.insert( new Cheese( "provolone",
+                               150 ) );
+        wm.insert( new Cheese( "provolone",
+                               20 ) );
+        wm.insert( new Person( "Bob",
+                               "stilton" ) );
+        wm.insert( new Person( "Mark",
+                               "provolone" ) );
+
+        wm.fireAllRules();
+
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 6,
+                             ((List)results.get(0)).size() );
+    }
+
 }
