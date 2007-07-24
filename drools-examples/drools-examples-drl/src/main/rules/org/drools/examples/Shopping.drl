@@ -1,0 +1,39 @@
+package org.drools.examples
+ 
+rule "Purchase notification"
+    salience 10
+	when
+		$c : Customer()
+		$p : Purchase( customer == $c)	    
+	then
+	    System.out.println( "Customer " + $c.getName() + " just purchased " + $p.getProduct().getName() );
+end	 
+
+rule "Discount removed notification"
+	when
+	    $c : Customer()
+		not Discount( customer == $c )
+	then
+		$c.setDiscount( 0 );
+		System.out.println( "Customer " + $c.getName() + " now has a discount of " + $c.getDiscount() );
+end
+
+rule "Discount awarded notification"
+	when
+	    $c : Customer()
+		$d : Discount( customer == $c )
+	then
+		System.out.println( "Customer " + $c.getName() + " now has a discount of " + $d.getAmount() );
+end
+
+rule "Apply 10% discount if total purcahses is over 100"			
+	no-loop true	
+    when
+		$c : Customer()
+		$i : Double(doubleValue  > 100) from accumulate ( Purchase( customer == $c, $price : product.price ), 
+		                                                            sum( $price ) )
+    then
+  		$c.setDiscount( 10 );
+		insertLogical( new Discount($c, 10) );	
+		System.out.println( "Customer " + $c.getName() + " now has a shopping total of " + $i );
+end
