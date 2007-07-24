@@ -88,14 +88,11 @@
     <example>
       <title>Building a Package from Multiple Sources</title>
 
-      <programlisting>
-      
-PackageBuilder builder = new PackageBuilder();
+      <programlisting>PackageBuilder builder = new PackageBuilder();
 builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "package1.drl" ) ) );
 builder.addPackageFromXml( new InputStreamReader( getClass().getResourceAsStream( "package2.xml" ) ) );
 builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
-Package pkg = builder.getPackage();
-      </programlisting>
+Package pkg = builder.getPackage();      </programlisting>
     </example>
 
     <para>It is essential that you always check your PackageBuilder for errors
@@ -108,14 +105,9 @@ Package pkg = builder.getPackage();
     <example>
       <title>Checking the PackageBuilder for errors</title>
 
-      <programlisting>
-      
-PackageBuilder builder = new PackageBuilder();
+      <programlisting>PackageBuilder builder = new PackageBuilder();
 builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "package1.drl" ) ) );
-PackageBuilderErrors errors = builder.getErrors();
-
-              
-      </programlisting>
+PackageBuilderErrors errors = builder.getErrors();</programlisting>
     </example>
 
     <para>PackagBuilder is configurable using PackageBuilderConfiguration
@@ -221,13 +213,9 @@ assertEquals( JavaDialectConfiguration.JANINO,
       <title>Configuring the PackageBuilder to use JANINO via a
       property</title>
 
-      <programlisting>
-      
-PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+      <programlisting>PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
 conf.setCompiler( PackageBuilderConfiguration.JANINO );
-PackageBuilder builder = new PackageBuilder( conf );
-      
-      </programlisting>
+PackageBuilder builder = new PackageBuilder( conf );</programlisting>
     </example>
 
     <para>The MVELDialectConfiguration is much simpler and only allows strict
@@ -256,30 +244,6 @@ PackageBuilder builder = new PackageBuilder( conf );
     <title>RuleBase</title>
 
     <figure>
-      <title>RuleBase</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="RuleBase.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="RuleBase.png" format="PNG" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>A RuleBase contains one more more packages of rules, ready to be
-    used, i.e., they have been validated/compiled etc. A Rule Base is
-    serializable so it can be deployed to JNDI or other such services.
-    Typically, a rulebase would be generated and cached on first use; to save
-    on the continually re-generation of the Rule Base; which is expensive. A
-    RuleBase is instantiated using the RuleBaseFactory, by default this
-    returns a ReteOO RuleBase. Packages are added, in turn, using the
-    addPackage method. You may specify packages of any namespace and multiple
-    packages of the same namespace may be added.</para>
-
-    <figure>
       <title>RuleBaseFactory</title>
 
       <mediaobject>
@@ -293,6 +257,11 @@ PackageBuilder builder = new PackageBuilder( conf );
       </mediaobject>
     </figure>
 
+    <para> A RuleBase is instantiated using the RuleBaseFactory, by default
+    this returns a ReteOO RuleBase. Packages are added, in turn, using the
+    addPackage method. You may specify packages of any namespace and multiple
+    packages of the same namespace may be added.</para>
+
     <example>
       <title>Adding a Package to a new RuleBase</title>
 
@@ -300,60 +269,66 @@ PackageBuilder builder = new PackageBuilder( conf );
 ruleBase.addPackage( pkg  );        </programlisting>
     </example>
 
+    <figure>
+      <title>RuleBase</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="RuleBase.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="RuleBase.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>A RuleBase contains one or more more packages of rules, ready to be
+    used, i.e., they have been validated/compiled etc. A Rule Base is
+    serializable so it can be deployed to JNDI or other such services.
+    Typically, a rulebase would be generated and cached on first use; to save
+    on the continually re-generation of the Rule Base; which is
+    expensive.</para>
+
     <para>A Rule Base instance is threadsafe, in the sense that you can have
     the one instance shared across threads in your application, which may be a
     web application, for instance. The most common operation on a rulebase is
-    to create a new WorkingMemory.</para>
+    to create a new rule session; either stateful or stateless.</para>
 
-    <para>The Rule Base also holds weak references to any working memories
-    that it has spawned, so that if rules are changing (or being added/removed
-    etc. for long running working memories), they can be updated with the
-    latest rules (without necessarily having to restart the working memory).
-    You can specify not to maintain a weak reference, but only do so if you
-    know the Rule Base will not be updated.</para>
+    <para>The Rule Base also holds references to any stateful session that it
+    has spawned, so that if rules are changing (or being added/removed etc.
+    for long running sessions), they can be updated with the latest rules
+    (without necessarily having to restart the session). You can specify not
+    to maintain a reference, but only do so if you know the Rule Base will not
+    be updated. References are not stored for stateless sessions.</para>
 
-    <programlisting>
-    
-ruleBase.newWorkingMemory();  // maintains a weak reference.
-ruleBase.newWorkingMemory( false ); // do not maintain a weak reference
-      
-    </programlisting>
+    <programlisting>ruleBase.newStatefulSession();  // maintains a reference.
+ruleBase.newStatefulSession( false ); // do not maintain a reference    </programlisting>
 
     <para>Packages can be added and removed at any time - all changes will be
-    propagated to the existing Working Memories; don't forget to call
+    propagated to the existing stateful sessions; don't forget to call
     fireAllRules() for resulting Activations to fire.</para>
 
-    <programlisting>
-          
-ruleBase.addPackage( pkg );  // Add a package instance
+    <programlisting>ruleBase.addPackage( pkg );  // Add a package instance
 ruleBase.removePackage( "org.com.sample" );  // remove a package, and all its parts, by it's namespace
-ruleBase.removeRule( "org.com.sample", "my rule" ); // remove a specific rule from a namespace
-      
-    </programlisting>
+ruleBase.removeRule( "org.com.sample", "my rule" ); // remove a specific rule from a namespace         </programlisting>
 
     <para>While there is a method to remove an indivual rule, there is no
-    method to add an individual rule - to achieve this just add a new packge
+    method to add an individual rule - to achieve this just add a new package
     with a single rule in it.</para>
 
     <para>RuleBaseConfigurator can be used to specify additional behaviour of
     the RuleBase. RuleBaseConfiguration is set to immutable after it has been
-    added to a Rule Base.</para>
+    added to a Rule Base. Nearly all the engine optimisations can be turned on
+    and off from here, and also the execution behviour can be set. Users will
+    generally be concerned with insertion behaviour (identity or equality) and
+    cross product bheaviour(remove or keep identity equals cross
+    products).</para>
 
-    <programlisting>
-    
-RuleBaseConfiguration conf = new RuleBaseConfiguration();
-
-conf.setProperty( RuleBaseConfiguration.PROPERTY_ASSERT_BEHAVIOR,
-                  RuleBaseConfiguration..WM_BEHAVIOR_EQUALITY );
-
-RuleBase ruleBase = new ReteooRuleBase( conf );
-    
-    </programlisting>
-
-    <para>The two main properties to be aware of are PROPERT_ASSERT_BEHAVIOR
-    and PROPERTY_LOGICAL_OVERRIDE_BEHAVIOR, which are explain more in later
-    sections. All properties and their values are public static field
-    constants on RuleBaseConfiguration.</para>
+    <programlisting>RuleBaseConfiguration conf = new RuleBaseConfiguration();
+conf.setAssertBehaviour( AssertBehaviour.IDENTITY );
+conf.setRemoveIdentities( true );
+RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
 
     <figure>
       <title>RuleBaseConfiguration</title>
@@ -373,14 +348,14 @@ RuleBase ruleBase = new ReteooRuleBase( conf );
   </section>
 
   <section>
-    <title>WorkingMemory</title>
+    <title>WorkingMemory and Stateful/Stateless Sessions</title>
 
     <figure>
       <title>WorkingMemory</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="WorkingMemory.svg" format="SVG" />
+          <imagedata align="center" fileref="StatefulSession.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
@@ -389,26 +364,15 @@ RuleBase ruleBase = new ReteooRuleBase( conf );
       </mediaobject>
     </figure>
 
-    <para>The Working Memory is the main Class for using the Rule Engine at
-    runtime. It holds references to all data that has been "asserted" into it
+    <para>It holds references to all data that has been "inserted" into it
     (until retracted) and it is the place where the interaction with your
     application occurs. Working memories are stateful objects. They may be
-    shortlived or longlived. If you are interacting with an engine in a
-    stateless manner, that means you would use the RuleBase object to create a
-    newWorkingMemory for each session, and then discard the working memory
-    when finished (creating a working memory is a cheap operation). An
-    alternative pattern is a working memory that is kept around for a longer
-    time (such as a conversation) - and kept updated with new facts. When you
-    wish to dispose of WorkingMemory the best pactice is to use the dispose()
-    method, so that the reference to it is removed in the parent Rule Base.
-    However, this is a weak reference, so it should eventually be garbage
-    collected anyway. The term Working Memory Action is used to describe
-    assertions, retractions and modifications with the Working Memory.</para>
+    shortlived or longlived. </para>
 
     <section>
       <title>Facts</title>
 
-      <para>Facts are objects (beans) from your application that you assert
+      <para>Facts are objects (beans) from your application that you insert
       into the working memory. Facts are any Java objects which the rules can
       access. The rule engine does not "clone" facts at all, it is all
       references/pointers at the end of the day. Facts are your applications
@@ -419,33 +383,32 @@ RuleBase ruleBase = new ReteooRuleBase( conf );
     </section>
 
     <section>
-      <title>Assertion</title>
+      <title>Insertion</title>
 
-      <para>"Assertion" is the act of telling the working memory about the
-      facts. WorkingMemory.assertObject(yourObject) for example. When you
-      assert a fact, it is examined for matches against the rules etc. This
-      means ALL of the work is done during assertion; however, no rules are
-      executed until you call "fireAllRules()". You don't call
-      "fireAllRules()" until after you have finished asserting your facts.
-      This is a common misunderstanding by people who think the work happens
-      when you call "fireAllRules()".</para>
+      <para>"Insert" is the act of telling the WorkingMemory about the facts.
+      WorkingMemory.insert(yourObject) for example. When you insert a fact, it
+      is examined for matches against the rules etc. This means ALL of the
+      work is done during insertion; however, no rules are executed until you
+      call "fireAllRules()". You don't call "fireAllRules()" until after you
+      have finished inserting your facts. This is a common misunderstanding by
+      people who think the work happens when you call "fireAllRules()". Expert
+      systems typically use the term "assert" or "assertion" to refer to facts
+      made available to the system, however due to the assert become a keyword
+      in most languages we have moved to use the "Insert" keyword; so expect
+      to hear the two used interchangeably.</para>
 
       <!-- FIXME - I think we might want to add this sentence to the previous paragraph.
         However, when the rules are executed, they can assert new objects 
         thus causing new work to be needed. 
       -->
 
-      <para>When an Object is asserted it returns a FactHandle. This
-      FactHandle is the token used to represent your asserted Object inside
-      the WorkingMemory, it is also how you will interact with the Working
-      Memory when you wish to retract or modify an object.</para>
+      <para>When an Object is insert it returns a FactHandle. This FactHandle
+      is the token used to represent your insert Object inside the
+      WorkingMemory, it is also how you will interact with the Working Memory
+      when you wish to retract or modify an object.</para>
 
-      <programlisting>
-      
-Cheese stilton = new Cheese("stilton");
-FactHandle stiltonHandle = workingMemory.assertObject( stilton );
-      
-      </programlisting>
+      <programlisting>Cheese stilton = new Cheese("stilton");
+FactHandle stiltonHandle = session.insert( stilton );      </programlisting>
 
       <para>As mentioned in the Rule Base section a Working Memory may operate
       in two assertions modes equality and identity - identity is
@@ -454,7 +417,7 @@ FactHandle stiltonHandle = workingMemory.assertObject( stilton );
       <para>Identity means the Working Memory uses an IdentityHashMap to store
       all asserted Objects. New instance assertions always result in the
       return of a new FactHandle, if an instance is asserted twice then it
-      returns the previous fact handle – i.e. it ignores the second assertion
+      returns the previous fact handle – i.e. it ignores the second insertion
       for the same fact.</para>
 
       <para>Equality means the Working Memory uses a HashMap to store all
@@ -473,103 +436,56 @@ FactHandle stiltonHandle = workingMemory.assertObject( stilton );
       (see the 'not' and 'exist' keywords). Retraction is done using the
       FactHandle that was returned during the assert.</para>
 
-      <programlisting>
-      
-Cheese stilton = new Cheese("stilton");
-FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+      <programlisting>Cheese stilton = new Cheese("stilton");
+FactHandle stiltonHandle = session.insert( stilton );
 ....
-workingMemory.retractObject( stiltonHandle );
-      
-      </programlisting>
+session.retract( stiltonHandle );            </programlisting>
     </section>
 
     <section>
-      <title>Modification</title>
+      <title>Update</title>
 
       <para>The Rule Engine must be notified of modified Facts, so that it can
       be re-process. Modification internally is actually a retract and then an
-      assert; so it clears the WorkingMemory and then starts again. Use the
+      insert; so it clears the WorkingMemory and then starts again. Use the
       modifyObject method to notify the Working Memory of changed objects, for
       objects that are not able to notify the Working Memory themselves.
       Notice modifyObject always takes the modified object as a second
       parameter - this allows you to specify new instances for immutable
-      objects.</para>
+      objects. The update() method can only be used with objects that have
+      shadow proxies turned on. If you do not use shadow proxies then you must
+      call session.modifyRestract() before making your changes and
+      session.modifyInsert() after the changes.</para>
 
-      <programlisting>
-        
-Cheese stilton = new Cheese("stilton");
-FactHandle stiltonHandle = workingMemory.assertObject( stilton );
+      <programlisting>Cheese stilton = new Cheese("stilton");
+FactHandle stiltonHandle = workingMemory.insert( stilton );
 ....
 stilton.setPrice( 100 );
-workingMemory.modifyObject( stiltonHandle, stilton );
-        
-      </programlisting>
-    </section>
-
-    <section>
-      <title>Property Change Listener</title>
-
-      <para>If your fact objects are Java Beans, you can implement a property
-      change listener for them, and then tell the rule engine about it. This
-      means that the engine will automatically know when a fact has changed,
-      and behave accordingly (you don't need to tell it that it is modified).
-      There are proxy libraries that can help automate this (a future version
-      of drools will bundle some to make it easier). To use the Object in
-      dynamic mode specify true for the second assertObject parameter.</para>
-
-      <programlisting>
-              
-Cheese stilton = new Cheese("stilton");
-FactHandle stiltonHandle = workingMemory.assertObject( stilton, true );  //specifies that this is a dynamic fact
-      
-      </programlisting>
-
-      <para>To make a JavaBean dynamic add a PropertyChangeSupport field
-      memory along with two add/remove mothods and make sure that each setter
-      notifies the PropertyChangeSupport instance of the change.</para>
-
-      <programlisting>
-      
-private final PropertyChangeSupport changes = new PropertyChangeSupport( this );
-...
-public void addPropertyChangeListener(final PropertyChangeListener l) {
-    this.changes.addPropertyChangeListener( l );
-}
-
-public void removePropertyChangeListener(final PropertyChangeListener l) {
-    this.changes.removePropertyChangeListener( l );
-}
-...
-
-public void setState(final String newState) {
-    String oldState = this.state;
-    this.state = newState;
-    this.changes.firePropertyChange( "state",
-                                      oldState,
-                                      newState );
-}
-        
-      </programlisting>
+workingMemory.update( stiltonHandle, stilton );              </programlisting>
     </section>
 
     <section>
       <title>Globals</title>
 
       <para>Globals are named objects that can be passed in to the rule
-      engine; without needing to assert them. Most often these are used for
+      engine; without needing to insert them. Most often these are used for
       static information, or services that are used in the RHS of a rule, or
-      perhaps a means to return objects from the rule engine.</para>
+      perhaps a means to return objects from the rule engine. If you use a
+      global on the LHS of a rule, make sure it is immutable. A global must
+      first be declared in the drl before it can be set on the session.</para>
 
-      <programlisting>
-      
-new List list = new ArrayList;
-workingMemory.setGlobal("list", list);
-      
-      </programlisting>
+      <programlisting>global java.util.List list        </programlisting>
 
-      <para>The global definition must be defined in the Rule Base and of the
-      same type, otherwise a runtime exception will be thrown. If a rule
-      evaluates on a global before you set it you will get a
+      <para>With the Rule Base now aware of the global identifier and its type
+      any sessions are now able to call session.setGlobal; failure to declare
+      the global type and identifier first will result in an exception being
+      thrown. to set the global on the session use
+      session.setGlobal(identifier, value);</para>
+
+      <programlisting>new List list = new ArrayList;
+session.setGlobal("list", list);           </programlisting>
+
+      <para>f a rule evaluates on a global before you set it you will get a
       NullPointerException.</para>
     </section>
 
@@ -607,6 +523,44 @@ workingMemory.setGlobal("list", list);
     </section>
 
     <section>
+      <title>Property Change Listener</title>
+
+      <para>If your fact objects are Java Beans, you can implement a property
+      change listener for them, and then tell the rule engine about it. This
+      means that the engine will automatically know when a fact has changed,
+      and behave accordingly (you don't need to tell it that it is modified).
+      There are proxy libraries that can help automate this (a future version
+      of drools will bundle some to make it easier). To use the Object in
+      dynamic mode specify true for the second assertObject parameter.</para>
+
+      <programlisting>Cheese stilton = new Cheese("stilton");
+FactHandle stiltonHandle = workingMemory.insert( stilton, true );  //specifies that this is a dynamic fact            </programlisting>
+
+      <para>To make a JavaBean dynamic add a PropertyChangeSupport field
+      memory along with two add/remove mothods and make sure that each setter
+      notifies the PropertyChangeSupport instance of the change.</para>
+
+      <programlisting>private final PropertyChangeSupport changes = new PropertyChangeSupport( this );
+...
+public void addPropertyChangeListener(final PropertyChangeListener l) {
+    this.changes.addPropertyChangeListener( l );
+}
+
+public void removePropertyChangeListener(final PropertyChangeListener l) {
+    this.changes.removePropertyChangeListener( l );
+}
+...
+
+public void setState(final String newState) {
+    String oldState = this.state;
+    this.state = newState;
+    this.changes.firePropertyChange( "state",
+                                      oldState,
+                                      newState );
+}              </programlisting>
+    </section>
+
+    <section>
       <title>Initial Fact</title>
 
       <para>To support conditional elements like "not" (which will be covered
@@ -623,26 +577,89 @@ workingMemory.setGlobal("list", list);
       Fact to propagate, possibly activating rules (otherwise, nothing would
       happen as there area no other facts to start with).</para>
     </section>
+  </section>
 
-    <section>
-      <title>Stateless and Statefull Sessions</title>
+  <section>
+    <title>StatefulSession</title>
 
-      <para>Rule engines that are based around algorithms like RETE are
-      technically stateful rule engines. That is, they work best when the RETE
-      network is longer lived, being notified of changes, and accumulating
-      facts - that is where they shine.</para>
+    <figure>
+      <title>StatefulSession</title>
 
-      <para>However, many scenarious simply require a stateless mode where all
-      the facts (data) are supplied fresh to the rule engine and then the
-      rules are invoked. Drools is fine in these scenarious as well - in fact,
-      the RETE algorithm is still of benefit as often there will be scenarios
-      in a stateless session where rules actions cause other rules to fire, or
-      where there are large numbers of facts to match with rules.</para>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="WorkingMemory.svg" format="SVG" />
+        </imageobject>
 
-      <para>The JSR-94 API specifies statefull and stateless modes, but the
-      equivalent in the native API is to simply create a new working memory
-      instance, and then discard it when the session is finished.</para>
-    </section>
+        <imageobject>
+          <imagedata align="center" fileref="StatefulSession.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The StatefulSession extends the WorkingMemory class. It simply adds
+    async methods and a dispose() method.</para>
+
+    <example>
+      <title>Createing a StatefulSession</title>
+
+      <programlisting>StatefulSession session = ruleBase.newStatefulSession();</programlisting>
+    </example>
+  </section>
+
+  <section>
+    <title>Stateless Session</title>
+
+    <figure>
+      <title>StatelessSession</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="StatelessSession.svg"
+                     format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="StatelessSession.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The StatelessSession wraps the WorkingMemory, instead of extending
+    it, its main focus is on decision service type scenarios. </para>
+
+    <example>
+      <title>Createing a StatelessSession</title>
+
+      <programlisting>StatelessSession session = ruleBase.newStatelessSession();</programlisting>
+    </example>
+
+    <para>The api is reduced for the problem domain and is thus much simpler;
+    which in turn can make maintenance of those services easier. The RuleBase
+    never retains a reference to the StatelessSession, thus dispose() is not
+    needed, and they only have an execute() method that takes an object, an
+    array of objects or a collection of objects - there is no insert or
+    fireAllRules. The execute method iterates the objects inserting each and
+    calling fireAllRules() at the end; session finished. Should the session
+    need access to any results information they can use the executeWithResults
+    method, which returns a StatelessSessionResult. The reason for this is in
+    remoting situations you do not always want the return payload, so this way
+    its optional.</para>
+
+    <para>setAgendaFilter, setGlobal and setGlobalResolver share their state
+    across sessions; so each call to execute() will use the set AgendaFilter,
+    or see any previous set globals etc.</para>
+
+    <para>StatelessSessions do not currently support
+    propertyChangeLissteners.</para>
+
+    <para>Async versions of the Execute method are supported, remember to
+    override the ExecutorService implementation when in special managed thread
+    environments such as JEE.</para>
+
+    <para>StatelessSessions also support sequential mode, which is a special
+    optimised mode that uses less memory and executes faster; plesae see the
+    Sequential section for more details.</para>
   </section>
 
   <section>
@@ -715,8 +732,8 @@ workingMemory.setGlobal("list", list);
       instance, firing ruleA may cause ruleB to be removed from the
       agenda).</para>
 
-      <para>The conflict resolution strategies emplyed by Drools are: Salience
-      and LIFO (last in, first out).</para>
+      <para>The default conflict resolution strategies emplyed by Drools are:
+      Salience and LIFO (last in, first out).</para>
 
       <para>The most visible one is "salience" or priority, in which case a
       user can specify that a certain rule has a higher priority (by giving it
@@ -729,6 +746,10 @@ workingMemory.setGlobal("list", list);
       <para>As a general rule, it is a good idea not to count on the rules
       firing in any particular order, and try and author the rules without
       worrying about a "flow".</para>
+
+      <para>Custom conflict resolution strategies can be specified by setting
+      the Class in the RuleBaseConfiguration method setConflictResolver, or
+      using the property "drools.conflictResolver".</para>
     </section>
 
     <section>
@@ -759,7 +780,7 @@ workingMemory.setGlobal("list", list);
       <title>Agenda Filters</title>
 
       <figure>
-        <title>Two Phase Execution</title>
+        <title>AgendaFilters</title>
 
         <mediaobject>
           <imageobject>
@@ -789,17 +810,17 @@ workingMemory.setGlobal("list", list);
         <listitem>
           <para>RuleNameStartsWithAgendaFilter</para>
         </listitem>
+
+        <listitem>
+          <para>RuleNameMatchesAgendaFilter</para>
+        </listitem>
       </itemizedlist>
 
       <para>To use a filter specify it while calling FireAllRules. The
       following example will filter out all rules ending with the text
       "Test":</para>
 
-      <programlisting>
-      
-      workingMemory.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );
-      
-      </programlisting>
+      <programlisting>workingMemory.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );      </programlisting>
     </section>
   </section>
 
@@ -808,24 +829,24 @@ workingMemory.setGlobal("list", list);
         <primary>Logical Object</primary>
       </indexterm> Logical Objects</title>
 
-    <para>In a regular assertion, you need to explicitly retract a fact. With
+    <para>In a regular insert, you need to explicitly retract a fact. With
     logical assertions, the fact that was asserted will be automatically
     retracted when the conditions that asserted it in the first place are no
     longer true (it's actually more clever then that! If there are no possible
     conditions that could support the logical assertion, only then will it be
     retracted).</para>
 
-    <para>Normal assertions are said to be “STATED” (ie The Fact has been
+    <para>Normal insertinos are said to be “STATED” (ie The Fact has been
     stated - just like the intuitive concept). Using a HashMap and a counter
     we track how many times a particuar equality is STATED; this means we
-    count how many different instances are equal. When we logically assert an
+    count how many different instances are equal. When we logically insert an
     object we are said to justify it and it is justified by the firing rule.
-    For each logical assertion there can only be one equal object, each
-    subsequent equal logical assertion increases the justification counter for
+    For each logical insertion there can only be one equal object, each
+    subsequent equal logical insertion increases the justification counter for
     this logical assertion. As each justification is removed when we have no
     more justifications the logical object is automatically retracted.</para>
 
-    <para>If we logically assert an object when there is an equal STATED
+    <para>If we logically insert an object when there is an equal STATED
     object it will fail and return null. If we STATE an object that has an
     exist equal object that is JUSTIFIED we override the Fact - how this
     override works depends on the configuration setting
@@ -839,7 +860,7 @@ workingMemory.setGlobal("list", list);
     indicates the Object was propagated through the network.</para>
 
     <figure>
-      <title>Stated Assertion</title>
+      <title>Stated Insertion</title>
 
       <mediaobject>
         <imageobject>
@@ -855,7 +876,7 @@ workingMemory.setGlobal("list", list);
     </figure>
 
     <figure>
-      <title>Logical Assertion</title>
+      <title>Logical Insertion</title>
 
       <mediaobject>
         <imageobject>
@@ -890,12 +911,12 @@ workingMemory.setGlobal("list", list);
       imagine there is a fact class called "SuspiciousAccount".</para>
 
       <para>Then there can be a series of rules whose job is to look for
-      things that may raise suspicion, and if they fire, they simply assert a
+      things that may raise suspicion, and if they fire, they simply insert a
       new SuspiciousAccount() instance. All the other rules just have
       conditions like "not SuspiciousAccount()" or "SuspiciousAccount()"
       depending on their needs. Note that this has the advantage of allowing
       there to be many rules around raising suspicion, without touching the
-      other rules. When the facts causing the SuspiciousAccount() assertion
+      other rules. When the facts causing the SuspiciousAccount() insertion
       are removed, the rule engine reverts back to the normal "mode" of
       operation (and for instance, a rule with "not SuspiciousAccount()" may
       kick in which flushes through any interrupted transactions).</para>
@@ -932,8 +953,9 @@ workingMemory.setGlobal("list", list);
     application (and the rules) - as events are a cross cutting
     concern.</para>
 
-    <para>There are two types of event listeners - WorkingMemoryEventListener
-    and AgendEventListener.</para>
+    <para>There are three types of event listeners -
+    WorkingMemoryEventListener, AgendEventListener
+    RuleFlowEventListener.</para>
 
     <figure>
       <title>WorkingMemoryEventListener</title>
@@ -967,37 +989,160 @@ workingMemory.setGlobal("list", list);
       </mediaobject>
     </figure>
 
-    <para>Both EventListeners have default implementations that implement each
+    <figure>
+      <title>RuEventListener</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="RuleFlowEventListener.svg"
+                     format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="RuleFlowEventListener.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Both stateful and statless sessions implement the EventManager
+    interface, which allows event listeners to be added to the session.</para>
+
+    <figure>
+      <title>EventManager</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="EventManager.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="EventManager.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>All EventListeners have default implementations that implement each
     method, but do nothing, these are convienience classes that you can
     inherit from to save having to implement each method -
-    DefaultAgendaEventListener and DefaultWorkingMemoryEventListener. The
-    following showd how to extend DefaultAgendaEventListener and add it to the
-    Working Memory - the example prints statements for only when rules are
-    fired:</para>
+    DefaultAgendaEventListener, DefaultWorkingMemoryEventListener,
+    DefaultRuleFlowEventListener. The following shows how to extend
+    DefaultAgendaEventListener and add it to the session - the example prints
+    statements for only when rules are fired:</para>
 
-    <programlisting>
-    
-workingMemory.addEventListener( new DefaultAgendaEventListener() {                            
+    <programlisting>session.addEventListener( new DefaultAgendaEventListener() {                            
    public void afterActivationFired(AfterActivationFiredEvent event) {
        super.afterActivationFired( event );
        System.out.println( event );
    }
-});
-    
-    </programlisting>
+});       </programlisting>
 
-    <para>Drools also provides DebugWorkingMemoryEventListener and
-    DebugAgendaEventListener that implements each method with a debug print
-    statement:</para>
+    <para>Drools also provides DebugWorkingMemoryEventListener,
+    DebugAgendaEventListener and DebugRuleFlowEventListener that implements
+    each method with a debug print statement:</para>
 
-    <programlisting>
-      
-workingMemory.addEventListener( new DebugWorkingMemoryEventListener() );
-    
-    </programlisting>
+    <programlisting>session.addEventListener( new DebugWorkingMemoryEventListener() );        </programlisting>
 
     <para>The Eclipse based Rule IDE also provides an audit logger and
     graphical viewer, so that the rule engine can log events for later
     viewing, and auditing.</para>
+  </section>
+
+  <section>
+    <title>Sequential Mode</title>
+
+    <para>With Rete you have a stateful session where objects can be asserted
+    and modified over time, rules can also be added and removed. Now what
+    happens if we assume a stateless session, where after the initial data set
+    no more data can be asserted or modified (no rule re-evaluations) and
+    rules cannot be added or removed? This means we can start to make
+    assumptions to minimise what work the engine has to do.</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Order the Rules by salience and position in the ruleset (just
+        sets a sequence attribute on the rule terminal node). 4 </para>
+      </listitem>
+
+      <listitem>
+        <para>Create an array, one element for each possible rule activation;
+        element position indicates firing order. </para>
+      </listitem>
+
+      <listitem>
+        <para>Turn off all node memories, except the right-input Object
+        memory. </para>
+      </listitem>
+
+      <listitem>
+        <para>Disconnect the LeftInputAdapterNode propagation, and have the
+        Object plus the Node referenced in a Command object, which is added to
+        a list on the WorkingMemory for later execution. </para>
+      </listitem>
+
+      <listitem>
+        <para>Assert all objects, when all assertions are finished and thus
+        right-input node memories are populated check the Command list and
+        execute each in turn. </para>
+      </listitem>
+
+      <listitem>
+        <para>All resulting Activations should be placed in the array, based
+        upon the determined sequence number of the Rule. Record the first and
+        last populated elements, to reduce the iteration range.</para>
+      </listitem>
+
+      <listitem>
+        <para>Iterate the array of Activations, executing populated element in
+        turn.</para>
+      </listitem>
+
+      <listitem>
+        <para>If we have a maximum number of allowed rule executions, we can
+        exit our network evaluations early to fire all the rules in the
+        array.</para>
+      </listitem>
+    </orderedlist>
+
+    <para>The LeftInputAdapterNode no longer creates a Tuple, adding the
+    Object, and then propagate the Tuple – instead a Command Object is created
+    and added to a list in the Working Memory. This Command Object holds a
+    reference to the LeftInputAdapterNode and the propagated Object. This
+    stops any left-input propagations at insertion time, so that we know that
+    a right-input propagation will never need to attempt a join with the
+    left-inputs (removing the need for left-input memory). All nodes have
+    their memory turned off, including the left-input Tuple memory but
+    excluding the right-input Object memory – i.e. The only node that
+    remembers an insertion propagation is the right-input Object memory. Once
+    all the assertions are finished, and all right-input memories populated,
+    we can then iterate the list of LeftInputAdatperNode Command objects
+    calling each in turn; they will propagate down the network attempting to
+    join with the right-input objects; not being remembered in the left input,
+    as we know there will be no further object assertions and thus
+    propagations into the right-input memory. </para>
+
+    <para>There is no longer an Agenda, with a priority queue to schedule the
+    Tuples, instead there is simply an array for the number of rules. The
+    sequence number of the RuleTerminalNode indicates the element with the
+    array to place the Activation. Once all Command Objects have finished we
+    can iterate our array checking each element in turn and firing the
+    Activations if they exist. To improve performance in the array we remember
+    record the first and last populated cells. The network is constructed
+    where each RuleTerminalNode is given a sequence number, based on a
+    salience number and its order of being added to the network.</para>
+
+    <para>Typically the right-input node memories are HashMaps, for fast
+    Object retraction, as we know there will be no Object retractions, we can
+    use a list when the values of the Object are not indexed. For larger
+    numbers of Objects indexed HashMaps provide a performance increase; if we
+    know an Object type has a low number of instances then indexing is
+    probably not of an advantage and an Object list can be used.</para>
+
+    <para>Sequential mode can only be used with a StatefulSession and is off
+    by default. To turn on either set the RuleBaseConfiguration.setSequentail
+    to true or set the rulebase.conf property drools.sequential to true.
+    Sequential mode can fallback to a dynamic agenda with setSequentialAgenda
+    to either SequentialAgenda.SEQUENTIAL or SequentialAgenda.DYNAMIC setter
+    or the "drools.sequential.agenda" property</para>
   </section>
 </section>
