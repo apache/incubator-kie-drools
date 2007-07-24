@@ -111,7 +111,7 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
     </example>
 
     <para>PackagBuilder is configurable using PackageBuilderConfiguration
-    class. </para>
+    class.</para>
 
     <figure>
       <title>PackageBuilderConfiguration</title>
@@ -257,7 +257,7 @@ PackageBuilder builder = new PackageBuilder( conf );</programlisting>
       </mediaobject>
     </figure>
 
-    <para> A RuleBase is instantiated using the RuleBaseFactory, by default
+    <para>A RuleBase is instantiated using the RuleBaseFactory, by default
     this returns a ReteOO RuleBase. Packages are added, in turn, using the
     addPackage method. You may specify packages of any namespace and multiple
     packages of the same namespace may be added.</para>
@@ -367,7 +367,7 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
     <para>It holds references to all data that has been "inserted" into it
     (until retracted) and it is the place where the interaction with your
     application occurs. Working memories are stateful objects. They may be
-    shortlived or longlived. </para>
+    shortlived or longlived.</para>
 
     <section>
       <title>Facts</title>
@@ -482,7 +482,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
       thrown. to set the global on the session use
       session.setGlobal(identifier, value);</para>
 
-      <programlisting>new List list = new ArrayList;
+      <programlisting>List list = new ArrayList();
 session.setGlobal("list", list);           </programlisting>
 
       <para>f a rule evaluates on a global before you set it you will get a
@@ -516,10 +516,45 @@ session.setGlobal("list", list);           </programlisting>
       adding the burden of tracking changes to facts and when they should
       notify the rule engine.</para>
 
-      <para>As of Drools 3.0, Shadow Facts haven't been implemented, but it is
-      planned for the future. However, users can implement this facility
-      themselves if they really need it by building their own proxy
-      implementations.</para>
+      <para>Drools 4.0 has full support for Shadow Facts implemented as
+      transparent lazy proxies. Shadow facts are enable by default and are not
+      visible from external code, not even inside code blocks on rules.
+      </para>
+
+      <para>Although shadow facts are a great way of ensuring the engine
+      integrity, they add some overhead to the the reasoning process. As so,
+      Drools 4.0 supports fine grained control over them with the ability to
+      enable/disable them for each individual class. To disable shadow fact
+      for all classes set the following property in a configuration file of
+      system property:</para>
+
+      <programlisting>drools.shadowProxy = false</programlisting>
+
+      <para>Alternatively, it is possible to disable through an API
+      call:</para>
+
+      <programlisting>RuleBaseConfiguration conf = new RuleBaseConfiguration();
+conf.setShadowProxy( false );
+...
+RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
+</programlisting>
+
+      <para>To disable the shadow proxy for a list of classes only, use the
+      following property instead:</para>
+
+      <programlisting>drools.shadowproxy.exclude = org.domainy.* org.domainx.ClassZ</programlisting>
+
+      <para>As shown above, a space separated list is used to specify more
+      than one class, and '*' is used as a wild card.</para>
+
+      <remark>IMPORTANT: disabling shadow facts for a class inhibits the
+      ability of the engine keep track of changes to that class attributes. It
+      means, once asserted, a fact of that class MUST NOT change any of its
+      attributes or the engine may start to present unpredictable behavior. It
+      does not help to use update(). The only way to safely change an
+      attribute of a fact whose shadow fact is disabled is to call
+      modifyRetract() before changing the attribute, change the attribute and
+      call modifyAssert().</remark>
     </section>
 
     <section>
@@ -626,7 +661,7 @@ public void setState(final String newState) {
     </figure>
 
     <para>The StatelessSession wraps the WorkingMemory, instead of extending
-    it, its main focus is on decision service type scenarios. </para>
+    it, its main focus is on decision service type scenarios.</para>
 
     <example>
       <title>Createing a StatelessSession</title>
@@ -1061,29 +1096,29 @@ public void setState(final String newState) {
     <orderedlist>
       <listitem>
         <para>Order the Rules by salience and position in the ruleset (just
-        sets a sequence attribute on the rule terminal node). 4 </para>
+        sets a sequence attribute on the rule terminal node). 4</para>
       </listitem>
 
       <listitem>
         <para>Create an array, one element for each possible rule activation;
-        element position indicates firing order. </para>
+        element position indicates firing order.</para>
       </listitem>
 
       <listitem>
         <para>Turn off all node memories, except the right-input Object
-        memory. </para>
+        memory.</para>
       </listitem>
 
       <listitem>
         <para>Disconnect the LeftInputAdapterNode propagation, and have the
         Object plus the Node referenced in a Command object, which is added to
-        a list on the WorkingMemory for later execution. </para>
+        a list on the WorkingMemory for later execution.</para>
       </listitem>
 
       <listitem>
         <para>Assert all objects, when all assertions are finished and thus
         right-input node memories are populated check the Command list and
-        execute each in turn. </para>
+        execute each in turn.</para>
       </listitem>
 
       <listitem>
@@ -1119,7 +1154,7 @@ public void setState(final String newState) {
     calling each in turn; they will propagate down the network attempting to
     join with the right-input objects; not being remembered in the left input,
     as we know there will be no further object assertions and thus
-    propagations into the right-input memory. </para>
+    propagations into the right-input memory.</para>
 
     <para>There is no longer an Agenda, with a priority queue to schedule the
     Tuples, instead there is simply an array for the number of rules. The

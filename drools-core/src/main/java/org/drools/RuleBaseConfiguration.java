@@ -388,7 +388,7 @@ public class RuleBaseConfiguration
         return this.shadowProxy;
     }
 
-    private void setShadowProxyExcludes(String excludes) {
+    public void setShadowProxyExcludes(String excludes) {
         checkCanChange(); // throws an exception if a change isn't possible;
         if ( excludes == null || "".equals( excludes.trim() ) ) {
             return;
