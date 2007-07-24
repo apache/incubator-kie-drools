@@ -11,11 +11,11 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 
-public class ShoppingDiscount {
+public class ShoppingExample {
 
     public static final void main(String[] args) throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( ShoppingDiscount.class.getResourceAsStream( "Shopping.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( ShoppingExample.class.getResourceAsStream( "Shopping.drl" ) ) );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
