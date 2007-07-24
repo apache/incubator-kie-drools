@@ -57,6 +57,11 @@ mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly
   <section>
     <title>Building the Manual</title>
 
+	<para>
+		The building of the manual is now integrated into the maven build process, and is built by either using the profile (-Ddocumentation) switch or 
+		cding into the main directory. The manual can still be built from ant command line too by cding into the documentation/manual itself.
+	</para>
+
     <para>Drools uses <indexterm>
         <primary>docbook</primary>
       </indexterm>Docbook for this manual. Ant is used internally in maven to build documents and this build produces three different formats, 
