@@ -17,7 +17,7 @@ rule "Discount removed notification"
 	    $c : Customer()
 		not Discount( customer == $c )
 	then
-		$c.setDiscount( 0 );
+		$c.discount = 0 ;
 		System.out.println( "Customer " + $c.name + " now has a discount of " + $c.discount );
 end
 
