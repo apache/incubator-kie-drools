@@ -1,12 +1,15 @@
 package org.drools.examples
+
+dialect "mvel"
  
 rule "Purchase notification"
     salience 10
+
 	when
 		$c : Customer()
 		$p : Purchase( customer == $c)	    
 	then
-	    System.out.println( "Customer " + $c.getName() + " just purchased " + $p.getProduct().getName() );
+	    System.out.println( "Customer " + $c.name + " just purchased " + $p.product.name );
 end	 
 
 rule "Discount removed notification"
@@ -15,7 +18,7 @@ rule "Discount removed notification"
 		not Discount( customer == $c )
 	then
 		$c.setDiscount( 0 );
-		System.out.println( "Customer " + $c.getName() + " now has a discount of " + $c.getDiscount() );
+		System.out.println( "Customer " + $c.name + " now has a discount of " + $c.discount );
 end
 
 rule "Discount awarded notification"
@@ -23,11 +26,12 @@ rule "Discount awarded notification"
 	    $c : Customer()
 		$d : Discount( customer == $c )
 	then
-		System.out.println( "Customer " + $c.getName() + " now has a discount of " + $d.getAmount() );
+		System.out.println( "Customer " + $c.name + " now has a discount of " + $d.amount );
 end
 
 rule "Apply 10% discount if total purcahses is over 100"			
 	no-loop true	
+	dialect "java"
     when
 		$c : Customer()
 		$i : Double(doubleValue  > 100) from accumulate ( Purchase( customer == $c, $price : product.price ), 
