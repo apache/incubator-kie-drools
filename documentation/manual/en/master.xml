@@ -67,6 +67,8 @@
 
       <xi:include href="Chapter-Release_Notes/Section-What_is_new.xml" />
 
+      <xi:include href="Chapter-Release_Notes/Section-Upgrade_tips.xml" />
+
     </chapter>
 
     <chapter>

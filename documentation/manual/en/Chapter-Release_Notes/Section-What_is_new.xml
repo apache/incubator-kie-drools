@@ -4,8 +4,8 @@
 
   <para>Drools 4.0 is a major update over the previous Drools 3.0.x series. A
   whole new set of features were developed which special focus on language
-  expressiveness, engine performance and tools availability. The following is a
-  list of the most interesting changes.</para>
+  expressiveness, engine performance and tools availability. The following is
+  a list of the most interesting changes.</para>
 
   <section>
     <title>Language Expressiveness Enhancements</title>
@@ -26,12 +26,12 @@
       </listitem>
 
       <listitem>
-        <para>Full support to Conditional Elements nesting, for First Order
+        <para>Full support for Conditional Elements nesting, for First Order
         Logic completeness.</para>
       </listitem>
 
       <listitem>
-        <para>Support to multi-restrictions and constraint connectives
+        <para>Support for multi-restrictions and constraint connectives
         &amp;&amp; and ||</para>
       </listitem>
 
@@ -41,8 +41,8 @@
       </listitem>
 
       <listitem>
-        <para>Support to pluggable dialects and built-in support to Java and
-        MVEL</para>
+        <para>Support for pluggable dialects and full support for MVEL
+        scripting language</para>
       </listitem>
 
       <listitem>
@@ -55,16 +55,12 @@
       </listitem>
 
       <listitem>
-        <para>Support to nested accessors, property navigation and simplified
+        <para>Support for nested accessors, property navigation and simplified
         collection, arrays and maps syntax</para>
       </listitem>
 
       <listitem>
-        <para>Improved support to XML rules</para>
-      </listitem>
-
-      <listitem>
-        <para>Experimental Clips parser support</para>
+        <para>Improved support for XML rules</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -74,29 +70,29 @@
 
     <itemizedlist>
       <listitem>
-        <para>Native support to primitive types, avoiding constant
+        <para>Native support for primitive types, avoiding constant
         autoboxing</para>
       </listitem>
 
       <listitem>
-        <para>Support to transparent optional Shadow Facts </para>
+        <para>Support for transparent optional Shadow Facts</para>
       </listitem>
 
       <listitem>
-        <para>Rete Network performance improvements for complex rules </para>
+        <para>Rete Network performance improvements for complex rules</para>
       </listitem>
 
       <listitem>
-        <para>Support to Rule-Flows</para>
+        <para>Support for Rule-Flows</para>
       </listitem>
 
       <listitem>
-        <para>Support to Stateful and Stateless working memories (rule engine
+        <para>Support for Stateful and Stateless working memories (rule engine
         sessions)</para>
       </listitem>
 
       <listitem>
-        <para>Support to Asynchronous Working Memory actions</para>
+        <para>Support for Asynchronous Working Memory actions</para>
       </listitem>
 
       <listitem>
@@ -105,27 +101,23 @@
       </listitem>
 
       <listitem>
-        <para>Full support to MVEL scripting language</para>
-      </listitem>
-
-      <listitem>
         <para>Dynamic salience for rules conflict resolution</para>
       </listitem>
 
       <listitem>
-        <para>Support to Parameterized Queries</para>
+        <para>Support for Parameterized Queries</para>
       </listitem>
 
       <listitem>
-        <para>Support to halt command</para>
+        <para>Support for halt command</para>
       </listitem>
 
       <listitem>
-        <para>Support to sequential execution mode </para>
+        <para>Support for sequential execution mode</para>
       </listitem>
 
       <listitem>
-        <para>Support to pluggable global variable resolver</para>
+        <para>Support for pluggable global variable resolver</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -135,11 +127,11 @@
 
     <itemizedlist>
       <listitem>
-        <para>Support to rule break-points on debugging</para>
+        <para>Support for rule break-points on debugging</para>
       </listitem>
 
       <listitem>
-        <para>WYSIWYG support to rule-flows </para>
+        <para>WYSIWYG support for rule-flows</para>
       </listitem>
 
       <listitem>
@@ -161,7 +153,8 @@
       </listitem>
 
       <listitem>
-        <para>User friendly web interface with nice WEB 2.0 ajax features</para>
+        <para>User friendly web interface with nice WEB 2.0 ajax
+        features</para>
       </listitem>
 
       <listitem>
@@ -169,7 +162,8 @@
       </listitem>
 
       <listitem>
-        <para>Rule Authoring easy to edit rules both with guided editor ( drop-down menus ) and text editor</para>
+        <para>Rule Authoring easy to edit rules both with guided editor (
+        drop-down menus ) and text editor</para>
       </listitem>
 
       <listitem>
@@ -185,7 +179,8 @@
       </listitem>
 
       <listitem>
-        <para>Versioning enabled, you can easily replace yours assets with previously saved</para>
+        <para>Versioning enabled, you can easily replace yours assets with
+        previously saved</para>
       </listitem>
 
       <listitem>
