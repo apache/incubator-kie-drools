@@ -8,7 +8,7 @@
   discussed in the maiil list and blogs.</para>
 
   <para>This section of the manual is a work in progress and will document a
-  simple how-to on upgrading from Drools 3.0.x to Drools 4.0.x. </para>
+  simple how-to on upgrading from Drools 3.0.x to Drools 4.0.x.</para>
 
   <section>
     <title>API changes</title>
@@ -136,11 +136,11 @@
       <para>Drools 3.0.x did not had native support for primitive types and
       consequently, it auto-boxed all primitives in it's respective wrapper
       classes. That way, any use of a boxed variable binding required a manual
-      unbox. </para>
+      unbox.</para>
 
       <para>Drools 4.0.x has full support for primitive types and does not
       wrap values anymore. So, all previous unwrap method calls must be
-      removed from the DRL. </para>
+      removed from the DRL.</para>
 
       <example>
         <title>Drools 3.0.x manual unwrap</title>
@@ -171,10 +171,15 @@ end
   </section>
 
   <section>
+     
+
     <title>Drools Update Tool</title>
+
+     
 
     <para>The Drools Update tools is a simple program to help with the upgrade
     of DRL files from Drools 3.0.x to Drools 4.0.x.</para>
+
 
     <para>At this point, its main objective is to upgrade the memory action
     calls from 3.0.x to 4.0.x, but expect it to grow over the next few weeks
@@ -184,6 +189,45 @@ end
     and as so, it is a safe tool to use for upgrade large sets of rule
     files.</para>
 
-    <para></para>
+	<para>
+		
+	</para>
+
+
+    <para>The drools update tool can be found as a maven project in the
+    following source repository
+    http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/experimental/drools-update/
+    you just need to check it out, and execute the maven clean install action with the
+    project's pom.xml file. After resolve all the class path dependencies you
+    are able to run the toll with the following command:</para>
+
+    <programlisting>java -cp $CLASSPATH org.drools.tools.update.UpdateTool -f &lt;filemask&gt; [-d &lt;basedir&gt;] [-s &lt;sufix&gt;]</programlisting>
+
+	<para> 
+		The program parameters are very easy to understand as following.
+		
+	 <itemizedlist>
+	      <listitem>
+	        <para>-h,--help, Shows a very simple list the usage help</para>
+	      </listitem>
+
+	      <listitem>
+	        <para>-d your source base directory</para>
+	      </listitem>
+	
+	      <listitem>
+	        <para>-f pattern for the files to be updated. The format is the same as used by ANT:
+		       * = single file, directory
+               ** = any level of subdirectories
+               EXAMPLE:
+               src/main/resources/**/*.drl = matches all DRL files inside any subdirectory of /src/main/resources
+		 	</para>
+	      </listitem>
+	
+	      <listitem>
+	        <para> -s,--sufix    the sufix to be added to all updated files</para>
+	      </listitem>
+	 </itemizedlist>
+	</para>
   </section>
 </section>
