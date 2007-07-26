@@ -87,7 +87,7 @@ public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl
                     	String rule = "RuleFlow-" + getProcessInstance().getProcess().getId() + "-" +
                     		getNode().getId() + "-" + connection.getTo().getId();
                     	for (Iterator activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
-                    		Activation activation = (Activation) activations.next();
+                    		Activation activation = ((RuleFlowGroupNode) activations.next()).getActivation();
                     		if (rule.equals(activation.getRule().getName())) {
                                 getProcessInstance().getNodeInstance( connection.getTo() ).trigger( this );
                                 found = true;
