@@ -363,7 +363,7 @@ public class DefaultAgenda
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
         if ( this.scheduledActivations != null && !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst(); item != null; item = (ScheduledAgendaItem) this.scheduledActivations.removeFirst() ) {
-                item.remove();
+                item.cancel();                
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                               this.workingMemory );
             }

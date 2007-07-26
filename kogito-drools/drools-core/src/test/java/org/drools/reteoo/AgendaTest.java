@@ -62,11 +62,17 @@ public class AgendaTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule1 = new Rule( "test-rule1" );
+        final Rule rule2 = new Rule( "test-rule2" );
 
         final RuleTerminalNode node1 = new RuleTerminalNode( 3,
                                                              new MockTupleSource( 2 ),
                                                              rule1,
                                                              rule1.getLhs() );
+        
+        final RuleTerminalNode node2 = new RuleTerminalNode( 5,
+                                                             new MockTupleSource( 4 ),
+                                                             rule2,
+                                                             rule2.getLhs() );        
 
         final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
@@ -89,23 +95,50 @@ public class AgendaTest extends DroolsTestCase {
                 // do nothing
             }
         } );
+        
+        // Add consequence. Notice here the context here for the add to ageyunda
+        // is itself
+        rule2.setConsequence( new org.drools.spi.Consequence() {
+            /**
+             * 
+             */
+            private static final long serialVersionUID = -130061018648367024L;
+
+            public void evaluate(final KnowledgeHelper knowledgeHelper,
+                                 final WorkingMemory workingMemory) {
+                // do nothing
+            }
+        } );        
 
         assertEquals( 0,
                       agenda.getFocus().size() );
 
         rule1.setNoLoop( false );
+        rule2.setDuration( 5000 );
+        
         node1.assertTuple( tuple,
                            context1,
                            workingMemory );
+        
+        node2.assertTuple( tuple,
+                           context1,
+                           workingMemory );                
 
         // make sure we have an activation in the current focus
         assertEquals( 1,
                       agenda.getFocus().size() );
+        
+        assertEquals( 1,
+                      agenda.getScheduledActivations().length );
+        
 
         agenda.clearAgenda();
 
         assertEquals( 0,
                       agenda.getFocus().size() );
+        
+        assertEquals( 0,
+                      agenda.getScheduledActivations().length );        
     }
 
     public void testFilters() throws Exception {
