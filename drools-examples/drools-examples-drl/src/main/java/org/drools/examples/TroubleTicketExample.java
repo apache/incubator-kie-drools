@@ -51,7 +51,7 @@ public class TroubleTicketExample {
         final FactHandle ft3 = session.insert( t3 );
         final FactHandle ft4 = session.insert( t4 );
 
-        session.fireAllRules();
+        session.fireAllRules();        
 
         t3.setStatus( "Done" );
 

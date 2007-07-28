@@ -150,12 +150,12 @@
       <org.drools.ruleflow.core.impl.SplitImpl reference="19"/>
     </entry>
     <entry>
-      <long>6</long>
-      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="31"/>
-    </entry>
-    <entry>
       <long>11</long>
       <org.drools.ruleflow.core.impl.EndNodeImpl reference="41"/>
+    </entry>
+    <entry>
+      <long>6</long>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="31"/>
     </entry>
     <entry>
       <long>1</long>
@@ -166,12 +166,12 @@
       <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="11"/>
     </entry>
     <entry>
-      <long>7</long>
-      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="37"/>
-    </entry>
-    <entry>
       <long>10</long>
       <org.drools.ruleflow.core.impl.JoinImpl reference="28"/>
+    </entry>
+    <entry>
+      <long>7</long>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="37"/>
     </entry>
     <entry>
       <long>5</long>

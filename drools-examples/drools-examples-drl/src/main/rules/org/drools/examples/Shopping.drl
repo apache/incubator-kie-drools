@@ -1,6 +1,11 @@
 package org.drools.examples
 
 dialect "mvel"
+
+import org.drools.examples.ShoppingExample.Customer
+import org.drools.examples.ShoppingExample.Product
+import org.drools.examples.ShoppingExample.Purchase
+import org.drools.examples.ShoppingExample.Discount
  
 rule "Purchase notification"
     salience 10

@@ -6,7 +6,7 @@ import org.drools.examples.TroubleTicketExample.Ticket;
 rule "New Ticket"
 	salience 10
 	when
-		customer : Customer( )	
+		customer : Customer( )
 		ticket : Ticket( customer == customer, status == "New" )	
 	then
 		System.out.println( "New : " + ticket );		
