@@ -1,0 +1,92 @@
+package org.drools.examples
+
+dialect "mvel"
+
+import org.drools.examples.NumberGuessExample.RandomNumber
+import org.drools.examples.NumberGuessExample.Guess
+import org.drools.examples.NumberGuessExample.Game
+import org.drools.examples.NumberGuessExample.GameRules
+ 
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+ 
+rule "Get user Guess"
+	ruleflow-group "Guess"
+	no-loop
+	when    
+	    $r : RandomNumber()
+	    rules : GameRules( allowed : allowedGuesses )
+	    game : Game( guessCount < allowed )
+	    not ( Guess() )
+	then
+	    System.out.println( "You have " + ( rules.allowedGuesses - game.guessCount ) + " out of " + rules.allowedGuesses + " guesses left.\nPlease enter your guess from 0 to " + rules.maxRange );
+        br = new BufferedReader( new InputStreamReader( System.in ) );
+
+        game.guessCount = game.guessCount + 1;
+        update( game );
+        i = br.readLine();        
+	    insert( new Guess( i ) );
+end	 
+
+rule "Record the highest Guess"
+	ruleflow-group "To High"
+	no-loop
+	when    
+	    game : Game( biggestGuess : biggest )
+	    Guess( $value : value > biggestGuess )
+	then
+        with ( game ) { biggest = $value };
+        update ( game );
+end	 
+
+rule "Notify too high"
+	ruleflow-group "To High"
+	when    
+ 	    Guess()
+	then
+        System.out.println( "Your guess was too high" );
+end	 
+
+rule "Record the lowest Guess"
+	ruleflow-group "To Low"
+	no-loop	
+	when    
+	    Game( smallestGuess : smallest )
+	    Guess( $value : value < smallestGuess )
+	then
+        with ( game ) { smallest = $value };
+        update ( game );
+end	 
+
+rule "Notify too low"
+	ruleflow-group "To Low"
+	when    
+	    Guess()
+	then
+        System.out.println( "Your guess was too low" );
+end	
+
+rule "Guess correct ntofication"
+	ruleflow-group "Guess correct"
+	when
+	then
+        System.out.println( "You guessed correctly" );
+end	
+
+rule "Guess incorrect, retract Guess"
+	ruleflow-group "Guess incorrect"
+	when    
+	    guess : Guess()
+	then
+        retract( guess );
+end	
+
+
+rule "No more Guesses ntofication"
+	ruleflow-group "No more Guesses"
+	when
+        $r : RandomNumber()    
+	then	
+        System.out.println( "You have no more guesses\nThe correct guess was " + $r.value );
+end	
+
