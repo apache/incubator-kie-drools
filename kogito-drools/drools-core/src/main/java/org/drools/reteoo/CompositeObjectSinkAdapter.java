@@ -515,7 +515,9 @@ public class CompositeObjectSinkAdapter
                 case BOOL :
                     return this.bvalue;
                 case OBJECT :
-                    if ( this.ovalue instanceof Boolean ) {
+                    if ( this.ovalue == null ) {
+                        return false;
+                    } else if ( this.ovalue instanceof Boolean ) {
                         return ((Boolean) this.ovalue).booleanValue();
                     } else if ( this.ovalue instanceof String ) {
                         return Boolean.valueOf( (String) this.ovalue ).booleanValue();
@@ -536,7 +538,9 @@ public class CompositeObjectSinkAdapter
                 case BOOL :
                     return this.bvalue ? 1 : 0;
                 case OBJECT :
-                    if ( this.ovalue instanceof Number ) {
+                    if ( this.ovalue == null ) {
+                        return 0;
+                    } else if ( this.ovalue instanceof Number ) {
                         return ((Number) this.ovalue).longValue();
                     } else if ( this.ovalue instanceof String ) {
                         return Long.parseLong( (String) this.ovalue );
@@ -557,7 +561,9 @@ public class CompositeObjectSinkAdapter
                 case BOOL :
                     return this.bvalue ? 1 : 0;
                 case OBJECT :
-                    if ( this.ovalue instanceof Number ) {
+                    if ( this.ovalue == null ) {
+                        return 0;
+                    } else if ( this.ovalue instanceof Number ) {
                         return ((Number) this.ovalue).doubleValue();
                     } else if ( this.ovalue instanceof String ) {
                         return Double.parseDouble( (String) this.ovalue );
@@ -602,10 +608,10 @@ public class CompositeObjectSinkAdapter
                     return (this.index == other.index) && (this.dvalue == other.getDoubleValue());
                 case OBJECT :
                     final Object otherValue = other.getObjectValue();
-                    if ( (this.ovalue instanceof Number) && (otherValue instanceof Number) ) {
+                    if ( (this.ovalue != null) && (this.ovalue instanceof Number) && (otherValue instanceof Number) ) {
                         return (this.index == other.index) && (((Number) this.ovalue).doubleValue() == ((Number) otherValue).doubleValue());
                     }
-                    return (this.index == other.index) && (this.ovalue.equals( otherValue ));
+                    return (this.index == other.index) && ( this.ovalue == null ? otherValue == null : this.ovalue.equals( otherValue ));
             }
             return false;
         }

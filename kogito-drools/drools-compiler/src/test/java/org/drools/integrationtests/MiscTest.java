@@ -3389,4 +3389,27 @@ public class MiscTest extends TestCase {
                       ((List)results.get(1)).size() );
     }
 
+    public void testNullHashing() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHashing.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+        
+        workingMemory.insert( new Cheese( "stilton", 15 ) );
+        workingMemory.insert( new Cheese( "", 10 ) );
+        workingMemory.insert( new Cheese( null, 8 ) );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 3,
+                      results.size() );
+    }
+
 }
