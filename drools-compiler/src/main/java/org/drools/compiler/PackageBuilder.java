@@ -208,6 +208,9 @@ public class PackageBuilder {
         if ( this.processBuilder == null ) {
             this.processBuilder = new ProcessBuilder( this );
         }
+        if ( this.pkg == null) {
+        	this.pkg = new Package();
+        }
         try {
             this.processBuilder.addProcessFromFile( processSource );
         } catch ( Exception e ) {
@@ -443,12 +446,10 @@ public class PackageBuilder {
      * Compiled packages are serializable.
      */
     public Package getPackage() {
+        addRuleFlowsToPackage( this.processBuilder, pkg );
         if ( hasErrors() ) {
             this.pkg.setError( getErrors().toString() );
         }
-        addRuleFlowsToPackage( this.processBuilder,
-                               pkg );
-
         return this.pkg;
     }
     
@@ -468,6 +469,7 @@ public class PackageBuilder {
             for ( int i = 0; i < processes.length; i++ ) {
                 pkg.addRuleFlow( processes[i] );
             }
+            this.results.addAll(processBuilder.getErrors());
         }
     }
 

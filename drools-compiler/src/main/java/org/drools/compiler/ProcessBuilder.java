@@ -27,8 +27,11 @@ import org.drools.ruleflow.core.Connection;
 import org.drools.ruleflow.core.MilestoneNode;
 import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.ruleflow.core.RuleFlowProcessValidationError;
+import org.drools.ruleflow.core.RuleFlowProcessValidator;
 import org.drools.ruleflow.core.Split;
 import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
+import org.drools.ruleflow.core.impl.RuleFlowProcessValidatorImpl;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -41,28 +44,42 @@ import com.thoughtworks.xstream.XStream;
 public class ProcessBuilder {
 	
 	private PackageBuilder packageBuilder;
+    private final List processes = new ArrayList();
+	private final List errors = new ArrayList(); 
 	
 	public ProcessBuilder(PackageBuilder packageBuilder) {
 		this.packageBuilder = packageBuilder;
 	}
 
-    private final List processes = new ArrayList();
-
     public Process[] getProcesses() {
         return (Process[]) this.processes.toArray( new Process[this.processes.size()] );
     }
+    
+    public List getErrors() {
+    	return errors;
+    }
 
     public void addProcess(final Process process) {
-        this.processes.add( process );
-        // generate and add rule for process
-        String rules = generateRules( process );
-        if (rules != null && rules.length() != 0) {
-        	try {
-        		packageBuilder.addPackageFromDrl(new StringReader(rules));
-        	} catch (Throwable t) {
-        		// should never occur
-        	}
-        }
+    	if (process instanceof RuleFlowProcess) {
+    		RuleFlowProcessValidator validator = RuleFlowProcessValidatorImpl.getInstance();
+    		RuleFlowProcessValidationError[] errors = validator.validateProcess((RuleFlowProcess) process);
+    		if (errors.length != 0) {
+    			for (int i = 0; i < errors.length; i++) {
+    				this.errors.add(new ParserError(errors[i].toString(), -1, -1));
+    			}
+    		} else {
+	            this.processes.add( process );
+	            // generate and add rule for process
+	            String rules = generateRules( process );
+	            if (rules != null && rules.length() != 0) {
+	            	try {
+	            		packageBuilder.addPackageFromDrl(new StringReader(rules));
+	            	} catch (Throwable t) {
+	            		// should never occur
+	            	}
+	            }
+    		}
+    	}
     }
 
     public void addProcessFromFile(final Reader reader) throws Exception {
