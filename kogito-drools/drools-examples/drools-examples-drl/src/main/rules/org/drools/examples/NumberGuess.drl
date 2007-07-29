@@ -6,6 +6,8 @@ import org.drools.examples.NumberGuessExample.RandomNumber
 import org.drools.examples.NumberGuessExample.Guess
 import org.drools.examples.NumberGuessExample.Game
 import org.drools.examples.NumberGuessExample.GameRules
+
+import org.drools.examples
  
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -21,7 +23,6 @@ rule "Get user Guess"
 	then
 	    System.out.println( "You have " + ( rules.allowedGuesses - game.guessCount ) + " out of " + rules.allowedGuesses + " guesses left.\nPlease enter your guess from 0 to " + rules.maxRange );
         br = new BufferedReader( new InputStreamReader( System.in ) );
-
         with ( game ) { guessCount = game.guessCount + 1 }
         update ( game );
         i = br.readLine();        
