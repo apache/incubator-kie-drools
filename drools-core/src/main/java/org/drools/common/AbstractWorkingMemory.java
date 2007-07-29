@@ -144,6 +144,8 @@ public abstract class AbstractWorkingMemory
     protected boolean                      firing;
 
     protected boolean                      halt;
+    
+    private int 						   processCounter;
 
     // ------------------------------------------------------------
     // Constructors
@@ -1350,11 +1352,12 @@ public abstract class AbstractWorkingMemory
             final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstanceImpl();
             processInstance.setWorkingMemory( this );
             processInstance.setProcess( process );
+            processInstance.setId(++processCounter);
             processInstance.start();
-
-            getRuleFlowEventSupport().fireRuleFlowProcessStarted( processInstance,
-                                                                  this );
-
+            
+            getRuleFlowEventSupport().fireRuleFlowProcessStarted(
+            		processInstance, this );
+                
             return processInstance;
         } else {
             throw new IllegalArgumentException( "Unknown process type: " + process.getClass() );

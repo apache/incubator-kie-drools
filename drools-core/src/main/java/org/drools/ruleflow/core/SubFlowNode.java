@@ -17,41 +17,40 @@ package org.drools.ruleflow.core;
  */
 
 /**
- * Represents a milestone in a RuleFlow.
- * A milestone has an associated constraint.
- * Flow will only continue if this constraint has been satisfied.  
+ * Represents a sub-flow in a RuleFlow.
+ * The node will continue if the sub-flow has ended.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface MilestoneNode
+public interface SubFlowNode
     extends
     Node {
 
     /**
-     * Returns the incoming connection of the MilestoneNode.
+     * Returns the incoming connection of the SubFlowNode.
      * 
-     * @return the incoming connection of the MilestoneNode.
+     * @return the incoming connection of the SubFlowNode.
      */
     Connection getFrom();
 
     /**
-     * Returns the outgoing connection of the MilestoneNode.
+     * Returns the outgoing connection of the SubFlowNode.
      * 
-     * @return the outgoing connection of the MilestoneNode.
+     * @return the outgoing connection of the SubFlowNode.
      */
     Connection getTo();
 
     /**
-     * Returns the constraint of the MilestoneNode.
+     * Returns the process id of the SubFlowNode.
      * 
-     * @return the constraint of the MilestoneNode.
+     * @return the process id of the SubFlowNode.
      */
-    String getConstraint();
+    String getProcessId();
 
     /**
-     * Sets the ruleflow-group of the MilestoneNode.
+     * Sets the process id of the SubFlowNode.
      * 
-     * @param constraint	The constraint of the MilestoneNode
+     * @param processId	The process id of the SubFlowNode
      */
-    void setConstraint(String constraint);
+    void setProcessId(String processId);
 }
