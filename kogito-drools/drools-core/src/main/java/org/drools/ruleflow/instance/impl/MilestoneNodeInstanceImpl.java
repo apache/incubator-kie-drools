@@ -25,7 +25,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.RuleFlowGroup;
 
 /**
- * Runtime counterpart of a ruleset node.
+ * Runtime counterpart of a milestone node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */

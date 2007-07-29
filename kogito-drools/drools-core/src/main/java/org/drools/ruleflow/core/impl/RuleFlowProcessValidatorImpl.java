@@ -33,6 +33,7 @@ import org.drools.ruleflow.core.RuleFlowProcessValidator;
 import org.drools.ruleflow.core.RuleSetNode;
 import org.drools.ruleflow.core.Split;
 import org.drools.ruleflow.core.StartNode;
+import org.drools.ruleflow.core.SubFlowNode;
 import org.drools.ruleflow.core.Variable;
 
 /**
@@ -143,6 +144,18 @@ public class RuleFlowProcessValidatorImpl
                 }
                 if ( milestone.getConstraint() == null ) {
                     errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.MILESTONE_WITHOUT_CONSTRAINT ) );
+                }
+            } else if ( node instanceof SubFlowNode ) {
+                final SubFlowNode subFlow = (SubFlowNode) node;
+                if ( subFlow.getFrom() == null ) {
+                    errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.SUBFLOW_NODE_WITHOUT_INCOMING_CONNECTIONS ) );
+                }
+
+                if ( subFlow.getTo() == null ) {
+                    errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.SUBFLOW_NODE_WITHOUT_OUTGOING_CONNECTIONS ) );
+                }
+                if ( subFlow.getProcessId() == null ) {
+                   errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.SUBFLOW_WITHOUT_PROCESS_ID ) );
                 }
             }
         }

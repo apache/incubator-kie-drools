@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.Agenda;
-import org.drools.common.EventSupport;
 import org.drools.WorkingMemory;
+import org.drools.common.EventSupport;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
@@ -33,6 +33,11 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.RuleFlowCompletedEvent;
+import org.drools.event.RuleFlowEventListener;
+import org.drools.event.RuleFlowGroupActivatedEvent;
+import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.event.RuleFlowStartedEvent;
 import org.drools.ruleflow.common.instance.impl.ProcessInstanceImpl;
 import org.drools.ruleflow.core.EndNode;
 import org.drools.ruleflow.core.Join;
@@ -42,6 +47,7 @@ import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.RuleSetNode;
 import org.drools.ruleflow.core.Split;
 import org.drools.ruleflow.core.StartNode;
+import org.drools.ruleflow.core.SubFlowNode;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 
@@ -52,7 +58,7 @@ import org.drools.ruleflow.instance.RuleFlowProcessInstance;
  */
 public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     implements
-    RuleFlowProcessInstance, AgendaEventListener {
+    RuleFlowProcessInstance, AgendaEventListener, RuleFlowEventListener {
 
     private static final long serialVersionUID = -6760756665603399413L;
 
@@ -73,7 +79,7 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     }
 
     public Collection getNodeInstances() {
-        return Collections.unmodifiableCollection( this.nodeInstances );
+        return Collections.unmodifiableCollection( new ArrayList(this.nodeInstances) );
     }
 
     public RuleFlowNodeInstance getFirstNodeInstance(final long nodeId) {
@@ -98,7 +104,8 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     		throw new IllegalArgumentException("A working memory can only be set once.");
     	}
         this.workingMemory = workingMemory;
-        workingMemory.addEventListener(this);
+        workingMemory.addEventListener((AgendaEventListener) this);
+        workingMemory.addEventListener((RuleFlowEventListener) this);
     }
     
     public WorkingMemory getWorkingMemory() {
@@ -142,6 +149,11 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
             result.setNodeId( node.getId() );
             addNodeInstance( result );
             return result;
+        } else if ( node instanceof SubFlowNode ) {
+            final RuleFlowNodeInstance result = new SubFlowNodeInstanceImpl();
+            result.setNodeId( node.getId() );
+            addNodeInstance( result );
+            return result;
         }
         throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
     }
@@ -156,13 +168,14 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     
     public void setState(final int state) {
         super.setState(state);
-        // deactivate all node instances of this process instance
-        while (!nodeInstances.isEmpty()) {
-        	RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) nodeInstances.get(0);
-        	nodeInstance.cancel();
-        }
-        workingMemory.removeEventListener(this);
         if (state == ProcessInstanceImpl.STATE_COMPLETED) {
+            // deactivate all node instances of this process instance
+            while (!nodeInstances.isEmpty()) {
+            	RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) nodeInstances.get(0);
+            	nodeInstance.cancel();
+            }
+            workingMemory.removeEventListener((AgendaEventListener) this);
+            workingMemory.removeEventListener((RuleFlowEventListener) this);
         	((EventSupport) this.workingMemory).getRuleFlowEventSupport()
         		.fireRuleFlowProcessCompleted(this, this.workingMemory);
         }
@@ -219,5 +232,31 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
 
 	public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
 		// Do nothing
+	}
+
+	public void ruleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+		// Do nothing
+	}
+
+	public void ruleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+		// Do nothing
+	}
+
+	public void ruleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
+		// Do nothing
+	}
+
+	public void ruleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
+		// TODO group all subflow related code in subflow instance impl?
+		for (Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
+			RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
+			if (nodeInstance instanceof SubFlowNodeInstanceImpl) {
+				SubFlowNodeInstanceImpl subFlowInstance = (SubFlowNodeInstanceImpl) nodeInstance;
+				if (event.getRuleFlowProcessInstance().getId() == subFlowInstance.getProcessInstanceId()) {
+					subFlowInstance.triggerCompleted();
+				}
+			}
+			
+		}
 	}
 }
