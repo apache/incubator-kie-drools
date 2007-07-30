@@ -43,6 +43,7 @@ import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.Child;
 import org.drools.FactHandle;
+import org.drools.FirstClass;
 import org.drools.FromTestClass;
 import org.drools.Guess;
 import org.drools.IndexedNumber;
@@ -58,6 +59,7 @@ import org.drools.RandomNumber;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.SecondClass;
 import org.drools.Sensor;
 import org.drools.State;
 import org.drools.TestParam;
@@ -3410,6 +3412,52 @@ public class MiscTest extends TestCase {
 
         assertEquals( 3,
                       results.size() );
+    }
+
+    public void testDefaultBetaConstrains() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DefaultBetaConstraint.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+        final FirstClass first = new FirstClass("1", "2", "3", "4", "5");
+        final FactHandle handle = workingMemory.insert( first );
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( "NOT",
+                      results.get(0) );
+        
+        workingMemory.insert( new SecondClass() );
+        workingMemory.update( handle, first );
+        workingMemory.fireAllRules();
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( "NOT",
+                      results.get(1) );
+        
+        workingMemory.update( handle, first );
+        workingMemory.insert( new SecondClass("1", "2", "3", "4", null ) );
+        workingMemory.fireAllRules();
+        assertEquals( 3,
+                      results.size() );
+        assertEquals( "NOT",
+                      results.get(2) );
+        
+        workingMemory.insert( new SecondClass("1", "2", "3", "4", "5" ) );
+        workingMemory.update( handle, first );
+        workingMemory.fireAllRules();
+        assertEquals( 4,
+                      results.size() );
+        assertEquals( "EQUALS",
+                      results.get(3) );
+        
     }
 
 }

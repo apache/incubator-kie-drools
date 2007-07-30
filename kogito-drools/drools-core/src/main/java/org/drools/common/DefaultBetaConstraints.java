@@ -72,13 +72,13 @@ public class DefaultBetaConstraints
         // First create a LinkedList of constraints, with the indexed constraints first.
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             // Determine  if this constraint is indexable
-            if ( (!disableIndexing) && conf.isIndexLeftBetaMemory() && conf.isIndexRightBetaMemory() && isIndexable( constraints[i] ) ) {
+            if ( (!disableIndexing) && conf.isIndexLeftBetaMemory() && conf.isIndexRightBetaMemory() && isIndexable( constraints[i] ) && ( depth <= this.indexed ) ) {
                 if ( depth >= 1 && this.indexed == -1 ) {
                     // first index, so just add to the front
                     this.constraints.insertAfter( null,
                                                   new LinkedListEntry( constraints[i] ) );
                     this.indexed++;
-                } else if ( depth >= this.indexed + 1 ) { //this.indexed is zero based, so adjust
+                } else { 
                     // insert this index after  the previous index
                     this.constraints.insertAfter( findNode( this.indexed++ ),
                                                   new LinkedListEntry( constraints[i] ) );
