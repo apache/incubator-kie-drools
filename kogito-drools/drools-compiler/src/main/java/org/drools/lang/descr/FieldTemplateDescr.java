@@ -2,7 +2,7 @@ package org.drools.lang.descr;
 
 public class FieldTemplateDescr extends BaseDescr {
 
-    private static final long serialVersionUID = -5702332394753109979L;
+    private static final long serialVersionUID = 400L;
     private String            name;
     private String            classType;
 

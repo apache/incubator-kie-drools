@@ -20,7 +20,7 @@ public class AttributeDescr extends BaseDescr {
     /**
      * 
      */
-    private static final long serialVersionUID = -2746045674173812015L;
+    private static final long serialVersionUID = 400L;
     private String            name;
     private String            value;
     

@@ -8,7 +8,7 @@ public class FromDescr extends PatternSourceDescr
     ConditionalElementDescr
     {
 
-    private static final long serialVersionUID = -7321451713158332284L;
+    private static final long serialVersionUID = 400L;
     private DeclarativeInvokerDescr dataSource;
 
     public DeclarativeInvokerDescr getDataSource() {

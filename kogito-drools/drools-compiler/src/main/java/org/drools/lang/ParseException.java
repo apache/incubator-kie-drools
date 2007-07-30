@@ -20,7 +20,7 @@ import org.drools.RuntimeDroolsException;
 
 public class ParseException extends RuntimeDroolsException {
 
-    private static final long serialVersionUID = -7500818890340701977L;
+    private static final long serialVersionUID = 400L;
 
     private int               lineNumber;
 

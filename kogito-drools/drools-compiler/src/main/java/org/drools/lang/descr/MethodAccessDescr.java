@@ -10,7 +10,7 @@ package org.drools.lang.descr;
  */
 public class MethodAccessDescr extends DeclarativeInvokerDescr {
 
-    private static final long serialVersionUID = -1855405201484757499L;
+    private static final long serialVersionUID = 400L;
 
     private String            methodName;
     private String            arguments;

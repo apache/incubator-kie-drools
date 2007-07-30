@@ -31,7 +31,7 @@ import java.io.Serializable;
 public class Stage
     implements
     Serializable {
-    private static final long serialVersionUID      = -2143733895059840082L;
+    private static final long serialVersionUID      = 400L;
 
     final public static int   START                 = 0;
 

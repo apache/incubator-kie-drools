@@ -31,7 +31,7 @@ public class CollectDescr extends PatternSourceDescr
     PatternDestinationDescr
     {
 
-    private static final long  serialVersionUID = -78056848363435347L;
+    private static final long  serialVersionUID = 400L;
 
     private PatternDescr       inputPattern;
     private String             classMethodName;
