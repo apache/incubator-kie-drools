@@ -1,6 +1,8 @@
-package test.rule.when.end.package.mine;
+package test.dialect.rule.when.end.package.mine;
 
 global java.lang.String rule;
+
+import com.dialect.something.SomeClass
 
 function boolean test() {
     return true;

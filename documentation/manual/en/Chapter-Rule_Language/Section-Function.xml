@@ -44,10 +44,10 @@
   just like a normal method.</para>
 
   <para>An alternative to the use of a function, could be to use a static
-  method in a helper class: Foo.hello(). Drools 4.0 supports the use of static
-  imports, so all you would need to do is:</para>
+  method in a helper class: Foo.hello(). Drools 4.0 supports the use of
+  function imports, so all you would need to do is:</para>
 
-  <programlisting>import static my.package.Foo.hello</programlisting>
+  <programlisting>import function my.package.Foo.hello</programlisting>
 
   <para>In both cases above, to use the function, just call it by its name in
   the consequence or inside a semantic code block. Example:</para>

@@ -1,4 +1,4 @@
-// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-07-22 17:18:49
+// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-07-30 18:35:11
 
 	package org.drools.lang;
 	import java.util.List;
@@ -1022,10 +1022,10 @@ public class DRLParser extends Parser {
             int alt11=2;
             int LA11_0 = input.LA(1);
 
-            if ( ((LA11_0>=ATTRIBUTES && LA11_0<=ID)||LA11_0==GLOBAL||(LA11_0>=QUERY && LA11_0<=WHEN)||LA11_0==ENABLED||LA11_0==SALIENCE||LA11_0==DURATION||LA11_0==FROM||(LA11_0>=INIT && LA11_0<=RESULT)||(LA11_0>=CONTAINS && LA11_0<=IN)||LA11_0==THEN) ) {
+            if ( ((LA11_0>=ATTRIBUTES && LA11_0<=ID)||LA11_0==GLOBAL||(LA11_0>=QUERY && LA11_0<=WHEN)||LA11_0==ENABLED||LA11_0==SALIENCE||(LA11_0>=DURATION && LA11_0<=DIALECT)||LA11_0==FROM||(LA11_0>=INIT && LA11_0<=RESULT)||(LA11_0>=CONTAINS && LA11_0<=IN)||LA11_0==THEN) ) {
                 int LA11_1 = input.LA(2);
 
-                if ( ((LA11_1>=ATTRIBUTES && LA11_1<=GLOBAL)||(LA11_1>=QUERY && LA11_1<=WHEN)||LA11_1==ENABLED||LA11_1==SALIENCE||LA11_1==DURATION||LA11_1==FROM||(LA11_1>=INIT && LA11_1<=RESULT)||(LA11_1>=CONTAINS && LA11_1<=IN)||LA11_1==LEFT_SQUARE||LA11_1==THEN) ) {
+                if ( ((LA11_1>=ATTRIBUTES && LA11_1<=GLOBAL)||(LA11_1>=QUERY && LA11_1<=WHEN)||LA11_1==ENABLED||LA11_1==SALIENCE||(LA11_1>=DURATION && LA11_1<=DIALECT)||LA11_1==FROM||(LA11_1>=INIT && LA11_1<=RESULT)||(LA11_1>=CONTAINS && LA11_1<=IN)||LA11_1==LEFT_SQUARE||LA11_1==THEN) ) {
                     alt11=1;
                 }
             }
@@ -1062,7 +1062,7 @@ public class DRLParser extends Parser {
             int alt15=2;
             int LA15_0 = input.LA(1);
 
-            if ( ((LA15_0>=ATTRIBUTES && LA15_0<=ID)||LA15_0==GLOBAL||(LA15_0>=QUERY && LA15_0<=WHEN)||LA15_0==ENABLED||LA15_0==SALIENCE||LA15_0==DURATION||LA15_0==FROM||(LA15_0>=INIT && LA15_0<=RESULT)||(LA15_0>=CONTAINS && LA15_0<=IN)||LA15_0==THEN) ) {
+            if ( ((LA15_0>=ATTRIBUTES && LA15_0<=ID)||LA15_0==GLOBAL||(LA15_0>=QUERY && LA15_0<=WHEN)||LA15_0==ENABLED||LA15_0==SALIENCE||(LA15_0>=DURATION && LA15_0<=DIALECT)||LA15_0==FROM||(LA15_0>=INIT && LA15_0<=RESULT)||(LA15_0>=CONTAINS && LA15_0<=IN)||LA15_0==THEN) ) {
                 alt15=1;
             }
             switch (alt15) {
@@ -3374,6 +3374,7 @@ public class DRLParser extends Parser {
                     case ENABLED:
                     case SALIENCE:
                     case DURATION:
+                    case DIALECT:
                     case FROM:
                     case INIT:
                     case ACTION:
@@ -4733,7 +4734,7 @@ public class DRLParser extends Parser {
             int alt60=2;
             int LA60_0 = input.LA(1);
 
-            if ( ((LA60_0>=ATTRIBUTES && LA60_0<=ID)||(LA60_0>=GLOBAL && LA60_0<=LEFT_PAREN)||(LA60_0>=QUERY && LA60_0<=WHEN)||LA60_0==ENABLED||LA60_0==SALIENCE||LA60_0==DURATION||LA60_0==FROM||LA60_0==EVAL||(LA60_0>=INIT && LA60_0<=RESULT)||(LA60_0>=CONTAINS && LA60_0<=IN)||LA60_0==THEN) ) {
+            if ( ((LA60_0>=ATTRIBUTES && LA60_0<=ID)||(LA60_0>=GLOBAL && LA60_0<=LEFT_PAREN)||(LA60_0>=QUERY && LA60_0<=WHEN)||LA60_0==ENABLED||LA60_0==SALIENCE||(LA60_0>=DURATION && LA60_0<=DIALECT)||LA60_0==FROM||LA60_0==EVAL||(LA60_0>=INIT && LA60_0<=RESULT)||(LA60_0>=CONTAINS && LA60_0<=IN)||LA60_0==THEN) ) {
                 alt60=1;
             }
             switch (alt60) {
@@ -5053,6 +5054,7 @@ public class DRLParser extends Parser {
             case ENABLED:
             case SALIENCE:
             case DURATION:
+            case DIALECT:
             case FROM:
             case INIT:
             case ACTION:
@@ -5941,6 +5943,7 @@ public class DRLParser extends Parser {
             case ENABLED:
             case SALIENCE:
             case DURATION:
+            case DIALECT:
             case FROM:
             case INIT:
             case ACTION:
@@ -6900,16 +6903,16 @@ public class DRLParser extends Parser {
     };
 
     // $ANTLR start identifier
-    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:1: identifier : ( ID | PACKAGE | FUNCTION | GLOBAL | IMPORT | RULE | QUERY | TEMPLATE | ATTRIBUTES | ENABLED | SALIENCE | DURATION | FROM | INIT | ACTION | REVERSE | RESULT | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | WHEN | THEN | END | IN );
+    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1589:1: identifier : ( ID | PACKAGE | FUNCTION | GLOBAL | IMPORT | RULE | QUERY | TEMPLATE | ATTRIBUTES | ENABLED | SALIENCE | DURATION | DIALECT | FROM | INIT | ACTION | REVERSE | RESULT | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | WHEN | THEN | END | IN );
     public final identifier_return identifier() throws RecognitionException {
         identifier_return retval = new identifier_return();
         retval.start = input.LT(1);
 
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1590:10: ( ID | PACKAGE | FUNCTION | GLOBAL | IMPORT | RULE | QUERY | TEMPLATE | ATTRIBUTES | ENABLED | SALIENCE | DURATION | FROM | INIT | ACTION | REVERSE | RESULT | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | WHEN | THEN | END | IN )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1590:10: ( ID | PACKAGE | FUNCTION | GLOBAL | IMPORT | RULE | QUERY | TEMPLATE | ATTRIBUTES | ENABLED | SALIENCE | DURATION | DIALECT | FROM | INIT | ACTION | REVERSE | RESULT | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | WHEN | THEN | END | IN )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:
             {
-            if ( (input.LA(1)>=ATTRIBUTES && input.LA(1)<=ID)||input.LA(1)==GLOBAL||(input.LA(1)>=QUERY && input.LA(1)<=WHEN)||input.LA(1)==ENABLED||input.LA(1)==SALIENCE||input.LA(1)==DURATION||input.LA(1)==FROM||(input.LA(1)>=INIT && input.LA(1)<=RESULT)||(input.LA(1)>=CONTAINS && input.LA(1)<=IN)||input.LA(1)==THEN ) {
+            if ( (input.LA(1)>=ATTRIBUTES && input.LA(1)<=ID)||input.LA(1)==GLOBAL||(input.LA(1)>=QUERY && input.LA(1)<=WHEN)||input.LA(1)==ENABLED||input.LA(1)==SALIENCE||(input.LA(1)>=DURATION && input.LA(1)<=DIALECT)||input.LA(1)==FROM||(input.LA(1)>=INIT && input.LA(1)<=RESULT)||(input.LA(1)>=CONTAINS && input.LA(1)<=IN)||input.LA(1)==THEN ) {
                 input.consume();
                 errorRecovery=false;failed=false;
             }
@@ -7191,14 +7194,14 @@ public class DRLParser extends Parser {
         "\6\uffff}>";
     static final String[] DFA12_transitionS = {
             "\5\1\1\uffff\1\1\3\uffff\5\1\3\uffff\1\1\1\uffff\1\1\6\uffff"+
-            "\1\1\6\uffff\1\1\5\uffff\4\1\1\uffff\5\1\6\uffff\1\1",
-            "\7\2\1\uffff\2\4\5\2\3\uffff\1\2\1\uffff\1\2\6\uffff\1\2\6\uffff"+
+            "\2\1\5\uffff\1\1\5\uffff\4\1\1\uffff\5\1\6\uffff\1\1",
+            "\7\2\1\uffff\2\4\5\2\3\uffff\1\2\1\uffff\1\2\6\uffff\2\2\5\uffff"+
             "\1\2\5\uffff\4\2\1\uffff\5\2\4\uffff\1\3\1\uffff\1\2",
             "",
             "\1\5",
             "",
             "\5\2\1\uffff\1\2\1\uffff\2\4\5\2\3\uffff\1\2\1\uffff\1\2\6\uffff"+
-            "\1\2\6\uffff\1\2\5\uffff\4\2\1\uffff\5\2\4\uffff\1\3\1\uffff"+
+            "\2\2\5\uffff\1\2\5\uffff\4\2\1\uffff\5\2\4\uffff\1\3\1\uffff"+
             "\1\2"
     };
 
@@ -7249,14 +7252,14 @@ public class DRLParser extends Parser {
         "\6\uffff}>";
     static final String[] DFA13_transitionS = {
             "\5\1\1\uffff\1\1\3\uffff\5\1\3\uffff\1\1\1\uffff\1\1\6\uffff"+
-            "\1\1\6\uffff\1\1\5\uffff\4\1\1\uffff\5\1\6\uffff\1\1",
-            "\7\2\1\uffff\2\4\5\2\3\uffff\1\2\1\uffff\1\2\6\uffff\1\2\6\uffff"+
+            "\2\1\5\uffff\1\1\5\uffff\4\1\1\uffff\5\1\6\uffff\1\1",
+            "\7\2\1\uffff\2\4\5\2\3\uffff\1\2\1\uffff\1\2\6\uffff\2\2\5\uffff"+
             "\1\2\5\uffff\4\2\1\uffff\5\2\4\uffff\1\3\1\uffff\1\2",
             "",
             "\1\5",
             "",
             "\5\2\1\uffff\1\2\1\uffff\2\4\5\2\3\uffff\1\2\1\uffff\1\2\6\uffff"+
-            "\1\2\6\uffff\1\2\5\uffff\4\2\1\uffff\5\2\4\uffff\1\3\1\uffff"+
+            "\2\2\5\uffff\1\2\5\uffff\4\2\1\uffff\5\2\4\uffff\1\3\1\uffff"+
             "\1\2"
     };
 
@@ -7313,7 +7316,7 @@ public class DRLParser extends Parser {
             "\1\4\1\5\1\uffff\1\2\2\4\54\uffff\1\6\15\uffff\1\2",
             "",
             "\5\7\1\uffff\1\7\3\uffff\5\7\3\uffff\1\7\1\uffff\1\7\6\uffff"+
-            "\1\7\6\uffff\1\7\5\uffff\4\7\1\uffff\5\7\6\uffff\1\7",
+            "\2\7\5\uffff\1\7\5\uffff\4\7\1\uffff\5\7\6\uffff\1\7",
             "\1\10",
             "\1\4\1\5\1\uffff\1\2\56\uffff\1\6",
             "\1\4\2\uffff\1\2\56\uffff\1\6"
@@ -7414,7 +7417,7 @@ public class DRLParser extends Parser {
             "\1\uffff",
             "\4\15\1\100\2\15\1\101\1\15\1\10\103\15",
             "\5\102\1\15\1\102\1\103\1\15\1\10\5\102\3\15\1\102\1\15\1\102"+
-            "\6\15\1\102\6\15\1\102\5\15\4\102\1\15\5\102\6\15\1\102\24\15",
+            "\6\15\2\102\5\15\1\102\5\15\4\102\1\15\5\102\6\15\1\102\24\15",
             "\7\15\1\103\1\15\1\10\55\15\1\104\25\15",
             "\1\uffff",
             "\1\uffff",
@@ -7427,7 +7430,7 @@ public class DRLParser extends Parser {
             "\1\uffff",
             "\4\15\1\115\2\15\1\116\1\15\1\10\103\15",
             "\5\117\1\15\1\117\1\103\1\15\1\10\5\117\3\15\1\117\1\15\1\117"+
-            "\6\15\1\117\6\15\1\117\5\15\4\117\1\15\5\117\6\15\1\117\24\15",
+            "\6\15\2\117\5\15\1\117\5\15\4\117\1\15\5\117\6\15\1\117\24\15",
             "\7\15\1\103\1\15\1\10\55\15\1\120\25\15",
             "\1\uffff",
             "\1\uffff",
@@ -7440,17 +7443,17 @@ public class DRLParser extends Parser {
             "\1\uffff",
             "\4\15\1\131\2\15\1\132\1\15\1\10\103\15",
             "\5\133\1\15\1\133\1\103\1\15\1\10\5\133\3\15\1\133\1\15\1\133"+
-            "\6\15\1\133\6\15\1\133\5\15\4\133\1\15\5\133\6\15\1\133\24\15",
+            "\6\15\2\133\5\15\1\133\5\15\4\133\1\15\5\133\6\15\1\133\24\15",
             "\7\15\1\103\1\15\1\10\55\15\1\134\25\15",
             "\1\uffff",
             "\4\15\1\135\2\15\1\136\1\15\1\10\103\15",
             "\5\137\1\15\1\137\1\103\1\15\1\10\5\137\3\15\1\137\1\15\1\137"+
-            "\6\15\1\137\6\15\1\137\5\15\4\137\1\15\5\137\6\15\1\137\24\15",
+            "\6\15\2\137\5\15\1\137\5\15\4\137\1\15\5\137\6\15\1\137\24\15",
             "\7\15\1\103\1\15\1\10\55\15\1\140\25\15",
             "\1\uffff",
             "\4\15\1\141\2\15\1\142\1\15\1\10\103\15",
             "\5\143\1\15\1\143\1\103\1\15\1\10\5\143\3\15\1\143\1\15\1\143"+
-            "\6\15\1\143\6\15\1\143\5\15\4\143\1\15\5\143\6\15\1\143\24\15",
+            "\6\15\2\143\5\15\1\143\5\15\4\143\1\15\5\143\6\15\1\143\24\15",
             "\7\15\1\103\1\15\1\10\55\15\1\144\25\15",
             "\1\uffff",
             "\5\15\1\145\1\15\1\147\1\15\1\10\54\15\1\146\26\15",
@@ -7682,11 +7685,11 @@ public class DRLParser extends Parser {
                         int index56_43 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((LA56_43>=ATTRIBUTES && LA56_43<=ID)||LA56_43==GLOBAL||(LA56_43>=QUERY && LA56_43<=WHEN)||LA56_43==ENABLED||LA56_43==SALIENCE||LA56_43==DURATION||LA56_43==FROM||(LA56_43>=INIT && LA56_43<=RESULT)||(LA56_43>=CONTAINS && LA56_43<=IN)||LA56_43==THEN) ) {s = 79;}
+                        if ( ((LA56_43>=ATTRIBUTES && LA56_43<=ID)||LA56_43==GLOBAL||(LA56_43>=QUERY && LA56_43<=WHEN)||LA56_43==ENABLED||LA56_43==SALIENCE||(LA56_43>=DURATION && LA56_43<=DIALECT)||LA56_43==FROM||(LA56_43>=INIT && LA56_43<=RESULT)||(LA56_43>=CONTAINS && LA56_43<=IN)||LA56_43==THEN) ) {s = 79;}
 
                         else if ( (LA56_43==RIGHT_PAREN) && (synpred7())) {s = 8;}
 
-                        else if ( (LA56_43==DOT||LA56_43==COMMA||(LA56_43>=DATE_EFFECTIVE && LA56_43<=DATE_EXPIRES)||LA56_43==BOOL||(LA56_43>=INT && LA56_43<=AGENDA_GROUP)||(LA56_43>=DIALECT && LA56_43<=DOUBLE_AMPER)||(LA56_43>=EXISTS && LA56_43<=ACCUMULATE)||LA56_43==COLLECT||(LA56_43>=FLOAT && LA56_43<=RIGHT_SQUARE)||(LA56_43>=EOL && LA56_43<=80)) && (synpred7())) {s = 13;}
+                        else if ( (LA56_43==DOT||LA56_43==COMMA||(LA56_43>=DATE_EFFECTIVE && LA56_43<=DATE_EXPIRES)||LA56_43==BOOL||(LA56_43>=INT && LA56_43<=AGENDA_GROUP)||(LA56_43>=LOCK_ON_ACTIVE && LA56_43<=DOUBLE_AMPER)||(LA56_43>=EXISTS && LA56_43<=ACCUMULATE)||LA56_43==COLLECT||(LA56_43>=FLOAT && LA56_43<=RIGHT_SQUARE)||(LA56_43>=EOL && LA56_43<=80)) && (synpred7())) {s = 13;}
 
                         else if ( (LA56_43==LEFT_PAREN) && (synpred7())) {s = 67;}
 
@@ -7701,11 +7704,11 @@ public class DRLParser extends Parser {
                         int index56_33 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((LA56_33>=ATTRIBUTES && LA56_33<=ID)||LA56_33==GLOBAL||(LA56_33>=QUERY && LA56_33<=WHEN)||LA56_33==ENABLED||LA56_33==SALIENCE||LA56_33==DURATION||LA56_33==FROM||(LA56_33>=INIT && LA56_33<=RESULT)||(LA56_33>=CONTAINS && LA56_33<=IN)||LA56_33==THEN) ) {s = 66;}
+                        if ( ((LA56_33>=ATTRIBUTES && LA56_33<=ID)||LA56_33==GLOBAL||(LA56_33>=QUERY && LA56_33<=WHEN)||LA56_33==ENABLED||LA56_33==SALIENCE||(LA56_33>=DURATION && LA56_33<=DIALECT)||LA56_33==FROM||(LA56_33>=INIT && LA56_33<=RESULT)||(LA56_33>=CONTAINS && LA56_33<=IN)||LA56_33==THEN) ) {s = 66;}
 
                         else if ( (LA56_33==RIGHT_PAREN) && (synpred7())) {s = 8;}
 
-                        else if ( (LA56_33==DOT||LA56_33==COMMA||(LA56_33>=DATE_EFFECTIVE && LA56_33<=DATE_EXPIRES)||LA56_33==BOOL||(LA56_33>=INT && LA56_33<=AGENDA_GROUP)||(LA56_33>=DIALECT && LA56_33<=DOUBLE_AMPER)||(LA56_33>=EXISTS && LA56_33<=ACCUMULATE)||LA56_33==COLLECT||(LA56_33>=FLOAT && LA56_33<=RIGHT_SQUARE)||(LA56_33>=EOL && LA56_33<=80)) && (synpred7())) {s = 13;}
+                        else if ( (LA56_33==DOT||LA56_33==COMMA||(LA56_33>=DATE_EFFECTIVE && LA56_33<=DATE_EXPIRES)||LA56_33==BOOL||(LA56_33>=INT && LA56_33<=AGENDA_GROUP)||(LA56_33>=LOCK_ON_ACTIVE && LA56_33<=DOUBLE_AMPER)||(LA56_33>=EXISTS && LA56_33<=ACCUMULATE)||LA56_33==COLLECT||(LA56_33>=FLOAT && LA56_33<=RIGHT_SQUARE)||(LA56_33>=EOL && LA56_33<=80)) && (synpred7())) {s = 13;}
 
                         else if ( (LA56_33==LEFT_PAREN) && (synpred7())) {s = 67;}
 
@@ -7720,11 +7723,11 @@ public class DRLParser extends Parser {
                         int index56_57 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((LA56_57>=ATTRIBUTES && LA56_57<=ID)||LA56_57==GLOBAL||(LA56_57>=QUERY && LA56_57<=WHEN)||LA56_57==ENABLED||LA56_57==SALIENCE||LA56_57==DURATION||LA56_57==FROM||(LA56_57>=INIT && LA56_57<=RESULT)||(LA56_57>=CONTAINS && LA56_57<=IN)||LA56_57==THEN) ) {s = 95;}
+                        if ( ((LA56_57>=ATTRIBUTES && LA56_57<=ID)||LA56_57==GLOBAL||(LA56_57>=QUERY && LA56_57<=WHEN)||LA56_57==ENABLED||LA56_57==SALIENCE||(LA56_57>=DURATION && LA56_57<=DIALECT)||LA56_57==FROM||(LA56_57>=INIT && LA56_57<=RESULT)||(LA56_57>=CONTAINS && LA56_57<=IN)||LA56_57==THEN) ) {s = 95;}
 
                         else if ( (LA56_57==RIGHT_PAREN) && (synpred7())) {s = 8;}
 
-                        else if ( (LA56_57==DOT||LA56_57==COMMA||(LA56_57>=DATE_EFFECTIVE && LA56_57<=DATE_EXPIRES)||LA56_57==BOOL||(LA56_57>=INT && LA56_57<=AGENDA_GROUP)||(LA56_57>=DIALECT && LA56_57<=DOUBLE_AMPER)||(LA56_57>=EXISTS && LA56_57<=ACCUMULATE)||LA56_57==COLLECT||(LA56_57>=FLOAT && LA56_57<=RIGHT_SQUARE)||(LA56_57>=EOL && LA56_57<=80)) && (synpred7())) {s = 13;}
+                        else if ( (LA56_57==DOT||LA56_57==COMMA||(LA56_57>=DATE_EFFECTIVE && LA56_57<=DATE_EXPIRES)||LA56_57==BOOL||(LA56_57>=INT && LA56_57<=AGENDA_GROUP)||(LA56_57>=LOCK_ON_ACTIVE && LA56_57<=DOUBLE_AMPER)||(LA56_57>=EXISTS && LA56_57<=ACCUMULATE)||LA56_57==COLLECT||(LA56_57>=FLOAT && LA56_57<=RIGHT_SQUARE)||(LA56_57>=EOL && LA56_57<=80)) && (synpred7())) {s = 13;}
 
                         else if ( (LA56_57==LEFT_PAREN) && (synpred7())) {s = 67;}
 
@@ -7739,11 +7742,11 @@ public class DRLParser extends Parser {
                         int index56_61 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((LA56_61>=ATTRIBUTES && LA56_61<=ID)||LA56_61==GLOBAL||(LA56_61>=QUERY && LA56_61<=WHEN)||LA56_61==ENABLED||LA56_61==SALIENCE||LA56_61==DURATION||LA56_61==FROM||(LA56_61>=INIT && LA56_61<=RESULT)||(LA56_61>=CONTAINS && LA56_61<=IN)||LA56_61==THEN) ) {s = 99;}
+                        if ( ((LA56_61>=ATTRIBUTES && LA56_61<=ID)||LA56_61==GLOBAL||(LA56_61>=QUERY && LA56_61<=WHEN)||LA56_61==ENABLED||LA56_61==SALIENCE||(LA56_61>=DURATION && LA56_61<=DIALECT)||LA56_61==FROM||(LA56_61>=INIT && LA56_61<=RESULT)||(LA56_61>=CONTAINS && LA56_61<=IN)||LA56_61==THEN) ) {s = 99;}
 
                         else if ( (LA56_61==RIGHT_PAREN) && (synpred7())) {s = 8;}
 
-                        else if ( (LA56_61==DOT||LA56_61==COMMA||(LA56_61>=DATE_EFFECTIVE && LA56_61<=DATE_EXPIRES)||LA56_61==BOOL||(LA56_61>=INT && LA56_61<=AGENDA_GROUP)||(LA56_61>=DIALECT && LA56_61<=DOUBLE_AMPER)||(LA56_61>=EXISTS && LA56_61<=ACCUMULATE)||LA56_61==COLLECT||(LA56_61>=FLOAT && LA56_61<=RIGHT_SQUARE)||(LA56_61>=EOL && LA56_61<=80)) && (synpred7())) {s = 13;}
+                        else if ( (LA56_61==DOT||LA56_61==COMMA||(LA56_61>=DATE_EFFECTIVE && LA56_61<=DATE_EXPIRES)||LA56_61==BOOL||(LA56_61>=INT && LA56_61<=AGENDA_GROUP)||(LA56_61>=LOCK_ON_ACTIVE && LA56_61<=DOUBLE_AMPER)||(LA56_61>=EXISTS && LA56_61<=ACCUMULATE)||LA56_61==COLLECT||(LA56_61>=FLOAT && LA56_61<=RIGHT_SQUARE)||(LA56_61>=EOL && LA56_61<=80)) && (synpred7())) {s = 13;}
 
                         else if ( (LA56_61==LEFT_PAREN) && (synpred7())) {s = 67;}
 
@@ -8670,11 +8673,11 @@ public class DRLParser extends Parser {
                         int index56_53 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( ((LA56_53>=ATTRIBUTES && LA56_53<=ID)||LA56_53==GLOBAL||(LA56_53>=QUERY && LA56_53<=WHEN)||LA56_53==ENABLED||LA56_53==SALIENCE||LA56_53==DURATION||LA56_53==FROM||(LA56_53>=INIT && LA56_53<=RESULT)||(LA56_53>=CONTAINS && LA56_53<=IN)||LA56_53==THEN) ) {s = 91;}
+                        if ( ((LA56_53>=ATTRIBUTES && LA56_53<=ID)||LA56_53==GLOBAL||(LA56_53>=QUERY && LA56_53<=WHEN)||LA56_53==ENABLED||LA56_53==SALIENCE||(LA56_53>=DURATION && LA56_53<=DIALECT)||LA56_53==FROM||(LA56_53>=INIT && LA56_53<=RESULT)||(LA56_53>=CONTAINS && LA56_53<=IN)||LA56_53==THEN) ) {s = 91;}
 
                         else if ( (LA56_53==RIGHT_PAREN) && (synpred7())) {s = 8;}
 
-                        else if ( (LA56_53==DOT||LA56_53==COMMA||(LA56_53>=DATE_EFFECTIVE && LA56_53<=DATE_EXPIRES)||LA56_53==BOOL||(LA56_53>=INT && LA56_53<=AGENDA_GROUP)||(LA56_53>=DIALECT && LA56_53<=DOUBLE_AMPER)||(LA56_53>=EXISTS && LA56_53<=ACCUMULATE)||LA56_53==COLLECT||(LA56_53>=FLOAT && LA56_53<=RIGHT_SQUARE)||(LA56_53>=EOL && LA56_53<=80)) && (synpred7())) {s = 13;}
+                        else if ( (LA56_53==DOT||LA56_53==COMMA||(LA56_53>=DATE_EFFECTIVE && LA56_53<=DATE_EXPIRES)||LA56_53==BOOL||(LA56_53>=INT && LA56_53<=AGENDA_GROUP)||(LA56_53>=LOCK_ON_ACTIVE && LA56_53<=DOUBLE_AMPER)||(LA56_53>=EXISTS && LA56_53<=ACCUMULATE)||LA56_53==COLLECT||(LA56_53>=FLOAT && LA56_53<=RIGHT_SQUARE)||(LA56_53>=EOL && LA56_53<=80)) && (synpred7())) {s = 13;}
 
                         else if ( (LA56_53==LEFT_PAREN) && (synpred7())) {s = 67;}
 
@@ -8721,18 +8724,18 @@ public class DRLParser extends Parser {
             "\2\1\25\uffff\1\2\1\uffff\1\1",
             "",
             "\5\1\1\uffff\1\1\1\4\2\uffff\5\1\3\uffff\1\1\1\uffff\1\1\6\uffff"+
-            "\1\1\6\uffff\1\1\1\uffff\1\6\1\1\2\uffff\4\1\1\uffff\1\5\1\7"+
+            "\2\1\5\uffff\1\1\1\uffff\1\6\1\1\2\uffff\4\1\1\uffff\1\5\1\7"+
             "\1\10\1\11\1\3\6\uffff\1\1\16\uffff\6\6",
             "\1\1\1\uffff\1\12\2\1\25\uffff\1\1\1\uffff\1\1\2\uffff\1\1\10"+
             "\uffff\5\1\4\uffff\1\1\17\uffff\7\1",
             "\1\uffff",
-            "\5\6\1\1\1\6\1\14\2\1\5\6\1\uffff\1\6\1\uffff\4\6\5\uffff\1"+
-            "\6\3\uffff\1\1\1\uffff\1\1\1\6\1\uffff\1\1\3\uffff\4\6\1\uffff"+
+            "\5\6\1\1\1\6\1\14\2\1\5\6\1\uffff\1\6\1\uffff\4\6\5\uffff\2"+
+            "\6\2\uffff\1\1\1\uffff\1\1\1\6\1\uffff\1\1\3\uffff\4\6\1\uffff"+
             "\1\15\1\16\1\17\1\20\1\13\2\6\2\uffff\1\1\1\uffff\1\6\15\uffff"+
             "\7\1",
             "",
-            "\5\6\1\1\1\6\1\14\2\1\5\6\1\uffff\1\6\1\uffff\4\6\5\uffff\1"+
-            "\6\3\uffff\1\1\1\uffff\1\1\1\6\1\uffff\1\1\3\uffff\4\6\1\uffff"+
+            "\5\6\1\1\1\6\1\14\2\1\5\6\1\uffff\1\6\1\uffff\4\6\5\uffff\2"+
+            "\6\2\uffff\1\1\1\uffff\1\1\1\6\1\uffff\1\1\3\uffff\4\6\1\uffff"+
             "\1\15\1\16\1\17\1\20\1\13\2\6\2\uffff\1\1\1\uffff\1\6\15\uffff"+
             "\7\1",
             "\1\uffff",
@@ -8820,20 +8823,20 @@ public class DRLParser extends Parser {
             "\2\1\25\uffff\1\1\1\uffff\1\2",
             "",
             "\5\1\1\uffff\1\1\1\4\2\uffff\5\1\3\uffff\1\1\1\uffff\1\1\6\uffff"+
-            "\1\1\6\uffff\1\1\1\uffff\1\6\1\1\2\uffff\4\1\1\uffff\1\5\1\7"+
+            "\2\1\5\uffff\1\1\1\uffff\1\6\1\1\2\uffff\4\1\1\uffff\1\5\1\7"+
             "\1\10\1\11\1\3\6\uffff\1\1\16\uffff\6\6",
             "\1\1\1\uffff\1\12\2\1\25\uffff\1\1\1\uffff\1\1\2\uffff\1\1\10"+
             "\uffff\5\1\4\uffff\1\1\17\uffff\7\1",
             "\5\1\1\uffff\1\1\1\14\2\uffff\5\1\3\uffff\1\1\1\uffff\1\1\6"+
-            "\uffff\1\1\6\uffff\1\1\1\uffff\1\6\1\1\2\uffff\4\1\1\uffff\1"+
+            "\uffff\2\1\5\uffff\1\1\1\uffff\1\6\1\1\2\uffff\4\1\1\uffff\1"+
             "\15\1\16\1\17\1\20\1\13\6\uffff\1\1\16\uffff\6\6",
-            "\5\6\1\1\1\6\1\26\2\1\5\6\1\uffff\1\6\1\uffff\4\6\5\uffff\1"+
-            "\6\3\uffff\1\1\1\uffff\1\1\1\6\1\uffff\1\1\3\uffff\4\6\1\uffff"+
+            "\5\6\1\1\1\6\1\26\2\1\5\6\1\uffff\1\6\1\uffff\4\6\5\uffff\2"+
+            "\6\2\uffff\1\1\1\uffff\1\1\1\6\1\uffff\1\1\3\uffff\4\6\1\uffff"+
             "\1\22\1\23\1\24\1\25\1\21\2\6\2\uffff\1\1\1\uffff\1\6\15\uffff"+
             "\7\1",
             "",
-            "\5\6\1\1\1\6\1\26\2\1\5\6\1\uffff\1\6\1\uffff\4\6\5\uffff\1"+
-            "\6\3\uffff\1\1\1\uffff\1\1\1\6\1\uffff\1\1\3\uffff\4\6\1\uffff"+
+            "\5\6\1\1\1\6\1\26\2\1\5\6\1\uffff\1\6\1\uffff\4\6\5\uffff\2"+
+            "\6\2\uffff\1\1\1\uffff\1\1\1\6\1\uffff\1\1\3\uffff\4\6\1\uffff"+
             "\1\22\1\23\1\24\1\25\1\21\2\6\2\uffff\1\1\1\uffff\1\6\15\uffff"+
             "\7\1",
             "\1\uffff",
@@ -8898,7 +8901,7 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_rule_attribute_in_prolog122 = new BitSet(new long[]{0x00000003FD681002L});
     public static final BitSet FOLLOW_COMMA_in_prolog145 = new BitSet(new long[]{0x00000003FD680000L});
     public static final BitSet FOLLOW_rule_attribute_in_prolog150 = new BitSet(new long[]{0x00000003FD681002L});
-    public static final BitSet FOLLOW_PACKAGE_in_package_statement194 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_PACKAGE_in_package_statement194 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_dotted_name_in_package_statement198 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000080L});
     public static final BitSet FOLLOW_opt_semicolon_in_package_statement200 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_function_import_statement_in_statement214 = new BitSet(new long[]{0x0000000000000002L});
@@ -8916,21 +8919,21 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_import_name_in_function_import_statement371 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000080L});
     public static final BitSet FOLLOW_opt_semicolon_in_function_import_statement374 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_import_name400 = new BitSet(new long[]{0x0000000000000202L,0x0000000000000200L});
-    public static final BitSet FOLLOW_DOT_in_import_name412 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_DOT_in_import_name412 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_identifier_in_import_name416 = new BitSet(new long[]{0x0000000000000202L,0x0000000000000200L});
     public static final BitSet FOLLOW_73_in_import_name440 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GLOBAL_in_global474 = new BitSet(new long[]{0x103EF0408147C5F0L});
-    public static final BitSet FOLLOW_dotted_name_in_global485 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_GLOBAL_in_global474 = new BitSet(new long[]{0x103EF0418147C5F0L});
+    public static final BitSet FOLLOW_dotted_name_in_global485 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_identifier_in_global496 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000080L});
     public static final BitSet FOLLOW_opt_semicolon_in_global498 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FUNCTION_in_function523 = new BitSet(new long[]{0x103EF0408147C5F0L});
-    public static final BitSet FOLLOW_dotted_name_in_function527 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_FUNCTION_in_function523 = new BitSet(new long[]{0x103EF0418147C5F0L});
+    public static final BitSet FOLLOW_dotted_name_in_function527 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_identifier_in_function532 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_function541 = new BitSet(new long[]{0x103EF0408147E5F0L});
-    public static final BitSet FOLLOW_dotted_name_in_function550 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_function541 = new BitSet(new long[]{0x103EF0418147E5F0L});
+    public static final BitSet FOLLOW_dotted_name_in_function550 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_argument_in_function555 = new BitSet(new long[]{0x0000000000003000L});
-    public static final BitSet FOLLOW_COMMA_in_function569 = new BitSet(new long[]{0x103EF0408147C5F0L});
-    public static final BitSet FOLLOW_dotted_name_in_function573 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_COMMA_in_function569 = new BitSet(new long[]{0x103EF0418147C5F0L});
+    public static final BitSet FOLLOW_dotted_name_in_function573 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_argument_in_function578 = new BitSet(new long[]{0x0000000000003000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_function602 = new BitSet(new long[]{0x0100000000000000L});
     public static final BitSet FOLLOW_curly_chunk_in_function608 = new BitSet(new long[]{0x0000000000000002L});
@@ -8955,7 +8958,7 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_template_slot_in_template892 = new BitSet(new long[]{0x0000000000008100L});
     public static final BitSet FOLLOW_END_in_template907 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000080L});
     public static final BitSet FOLLOW_opt_semicolon_in_template909 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_qualified_id_in_template_slot955 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_qualified_id_in_template_slot955 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_identifier_in_template_slot971 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000080L});
     public static final BitSet FOLLOW_opt_semicolon_in_template_slot973 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_RULE_in_rule1004 = new BitSet(new long[]{0x0000000000100100L});
@@ -9033,7 +9036,7 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_pattern_source_in_lhs_unary2061 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000080L});
     public static final BitSet FOLLOW_opt_semicolon_in_lhs_unary2073 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_lhs_pattern_in_pattern_source2100 = new BitSet(new long[]{0x0000004000000002L});
-    public static final BitSet FOLLOW_FROM_in_pattern_source2112 = new BitSet(new long[]{0x103FF8408147C5F0L});
+    public static final BitSet FOLLOW_FROM_in_pattern_source2112 = new BitSet(new long[]{0x103FF8418147C5F0L});
     public static final BitSet FOLLOW_accumulate_statement_in_pattern_source2168 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_collect_statement_in_pattern_source2191 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_from_statement_in_pattern_source2215 = new BitSet(new long[]{0x0000000000000002L});
@@ -9078,7 +9081,7 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_ID_in_accumulate_statement2930 = new BitSet(new long[]{0x0000000000000800L});
     public static final BitSet FOLLOW_paren_chunk_in_accumulate_statement2934 = new BitSet(new long[]{0x0000000000002000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_accumulate_statement2951 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_expression_chain2980 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_DOT_in_expression_chain2980 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_identifier_in_expression_chain2984 = new BitSet(new long[]{0x0400000000000A02L});
     public static final BitSet FOLLOW_square_chunk_in_expression_chain3015 = new BitSet(new long[]{0x0000000000000202L});
     public static final BitSet FOLLOW_paren_chunk_in_expression_chain3048 = new BitSet(new long[]{0x0000000000000202L});
@@ -9096,28 +9099,28 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_fact_in_fact_binding3223 = new BitSet(new long[]{0x0000000C00002000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_fact_binding3241 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_qualified_id_in_fact3296 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_fact3306 = new BitSet(new long[]{0x103EF2408147EDF0L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_fact3306 = new BitSet(new long[]{0x103EF2418147EDF0L});
     public static final BitSet FOLLOW_constraints_in_fact3318 = new BitSet(new long[]{0x0000000000002000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_fact3325 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_EOF_in_fact3334 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_constraint_in_constraints3352 = new BitSet(new long[]{0x0000000000001002L});
-    public static final BitSet FOLLOW_COMMA_in_constraints3359 = new BitSet(new long[]{0x103EF2408147CDF0L});
+    public static final BitSet FOLLOW_COMMA_in_constraints3359 = new BitSet(new long[]{0x103EF2418147CDF0L});
     public static final BitSet FOLLOW_constraint_in_constraints3368 = new BitSet(new long[]{0x0000000000001002L});
     public static final BitSet FOLLOW_or_constr_in_constraint3401 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_and_constr_in_or_constr3424 = new BitSet(new long[]{0x0000000800000002L});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_or_constr3432 = new BitSet(new long[]{0x103EF2408147CDF0L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_or_constr3432 = new BitSet(new long[]{0x103EF2418147CDF0L});
     public static final BitSet FOLLOW_and_constr_in_or_constr3441 = new BitSet(new long[]{0x0000000800000002L});
     public static final BitSet FOLLOW_unary_constr_in_and_constr3473 = new BitSet(new long[]{0x0000002000000002L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_and_constr3481 = new BitSet(new long[]{0x103EF2408147CDF0L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_and_constr3481 = new BitSet(new long[]{0x103EF2418147CDF0L});
     public static final BitSet FOLLOW_unary_constr_in_and_constr3490 = new BitSet(new long[]{0x0000002000000002L});
     public static final BitSet FOLLOW_field_constraint_in_unary_constr3518 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_unary_constr3526 = new BitSet(new long[]{0x103EF2408147CDF0L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_unary_constr3526 = new BitSet(new long[]{0x103EF2418147CDF0L});
     public static final BitSet FOLLOW_or_constr_in_unary_constr3528 = new BitSet(new long[]{0x0000000000002000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_unary_constr3531 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_EVAL_in_unary_constr3537 = new BitSet(new long[]{0x0000000000000800L});
     public static final BitSet FOLLOW_predicate_in_unary_constr3539 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_field_constraint3569 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000100L});
-    public static final BitSet FOLLOW_72_in_field_constraint3571 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_72_in_field_constraint3571 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_accessor_path_in_field_constraint3592 = new BitSet(new long[]{0x003E010000000802L,0x000000000001FC00L});
     public static final BitSet FOLLOW_or_restr_connective_in_field_constraint3620 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_74_in_field_constraint3640 = new BitSet(new long[]{0x0000000000000800L});
@@ -9133,29 +9136,29 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_LEFT_PAREN_in_constraint_expression3835 = new BitSet(new long[]{0x003E010000000800L,0x000000000001F800L});
     public static final BitSet FOLLOW_or_restr_connective_in_constraint_expression3844 = new BitSet(new long[]{0x0000000000002000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_constraint_expression3850 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_75_in_simple_operator3881 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
-    public static final BitSet FOLLOW_76_in_simple_operator3889 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
-    public static final BitSet FOLLOW_77_in_simple_operator3897 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
-    public static final BitSet FOLLOW_78_in_simple_operator3905 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
-    public static final BitSet FOLLOW_79_in_simple_operator3913 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
-    public static final BitSet FOLLOW_80_in_simple_operator3921 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
-    public static final BitSet FOLLOW_CONTAINS_in_simple_operator3929 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
+    public static final BitSet FOLLOW_75_in_simple_operator3881 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
+    public static final BitSet FOLLOW_76_in_simple_operator3889 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
+    public static final BitSet FOLLOW_77_in_simple_operator3897 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
+    public static final BitSet FOLLOW_78_in_simple_operator3905 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
+    public static final BitSet FOLLOW_79_in_simple_operator3913 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
+    public static final BitSet FOLLOW_80_in_simple_operator3921 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
+    public static final BitSet FOLLOW_CONTAINS_in_simple_operator3929 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
     public static final BitSet FOLLOW_NOT_in_simple_operator3937 = new BitSet(new long[]{0x0002000000000000L});
-    public static final BitSet FOLLOW_CONTAINS_in_simple_operator3941 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
-    public static final BitSet FOLLOW_EXCLUDES_in_simple_operator3949 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
-    public static final BitSet FOLLOW_MATCHES_in_simple_operator3957 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
+    public static final BitSet FOLLOW_CONTAINS_in_simple_operator3941 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
+    public static final BitSet FOLLOW_EXCLUDES_in_simple_operator3949 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
+    public static final BitSet FOLLOW_MATCHES_in_simple_operator3957 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
     public static final BitSet FOLLOW_NOT_in_simple_operator3965 = new BitSet(new long[]{0x0008000000000000L});
-    public static final BitSet FOLLOW_MATCHES_in_simple_operator3969 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
-    public static final BitSet FOLLOW_MEMBEROF_in_simple_operator3977 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
+    public static final BitSet FOLLOW_MATCHES_in_simple_operator3969 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
+    public static final BitSet FOLLOW_MEMBEROF_in_simple_operator3977 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
     public static final BitSet FOLLOW_NOT_in_simple_operator3985 = new BitSet(new long[]{0x0010000000000000L});
-    public static final BitSet FOLLOW_MEMBEROF_in_simple_operator3989 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
+    public static final BitSet FOLLOW_MEMBEROF_in_simple_operator3989 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
     public static final BitSet FOLLOW_expression_value_in_simple_operator4003 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_IN_in_compound_operator4033 = new BitSet(new long[]{0x0000000000000800L});
     public static final BitSet FOLLOW_NOT_in_compound_operator4045 = new BitSet(new long[]{0x0020000000000000L});
     public static final BitSet FOLLOW_IN_in_compound_operator4047 = new BitSet(new long[]{0x0000000000000800L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_compound_operator4062 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_compound_operator4062 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
     public static final BitSet FOLLOW_expression_value_in_compound_operator4066 = new BitSet(new long[]{0x0000000000003000L});
-    public static final BitSet FOLLOW_COMMA_in_compound_operator4073 = new BitSet(new long[]{0x10FEF04083D7CDF0L});
+    public static final BitSet FOLLOW_COMMA_in_compound_operator4073 = new BitSet(new long[]{0x10FEF04183D7CDF0L});
     public static final BitSet FOLLOW_expression_value_in_compound_operator4077 = new BitSet(new long[]{0x0000000000003000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_compound_operator4086 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_accessor_path_in_expression_value4120 = new BitSet(new long[]{0x0000000000000002L});
@@ -9180,17 +9183,17 @@ public class DRLParser extends Parser {
     public static final BitSet FOLLOW_square_chunk_in_square_chunk4376 = new BitSet(new long[]{0xFFFFFFFFFFFFFFF0L,0x000000000001FFFFL});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_square_chunk4381 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_qualified_id4394 = new BitSet(new long[]{0x0400000000000202L});
-    public static final BitSet FOLLOW_DOT_in_qualified_id4398 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_DOT_in_qualified_id4398 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_identifier_in_qualified_id4400 = new BitSet(new long[]{0x0400000000000202L});
     public static final BitSet FOLLOW_LEFT_SQUARE_in_qualified_id4407 = new BitSet(new long[]{0x0800000000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_qualified_id4409 = new BitSet(new long[]{0x0400000000000002L});
     public static final BitSet FOLLOW_identifier_in_dotted_name4424 = new BitSet(new long[]{0x0400000000000202L});
-    public static final BitSet FOLLOW_DOT_in_dotted_name4428 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_DOT_in_dotted_name4428 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_identifier_in_dotted_name4430 = new BitSet(new long[]{0x0400000000000202L});
     public static final BitSet FOLLOW_LEFT_SQUARE_in_dotted_name4437 = new BitSet(new long[]{0x0800000000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_dotted_name4439 = new BitSet(new long[]{0x0400000000000002L});
     public static final BitSet FOLLOW_accessor_element_in_accessor_path4455 = new BitSet(new long[]{0x0000000000000202L});
-    public static final BitSet FOLLOW_DOT_in_accessor_path4459 = new BitSet(new long[]{0x103EF0408147C5F0L});
+    public static final BitSet FOLLOW_DOT_in_accessor_path4459 = new BitSet(new long[]{0x103EF0418147C5F0L});
     public static final BitSet FOLLOW_accessor_element_in_accessor_path4461 = new BitSet(new long[]{0x0000000000000202L});
     public static final BitSet FOLLOW_identifier_in_accessor_element4479 = new BitSet(new long[]{0x0400000000000002L});
     public static final BitSet FOLLOW_square_chunk_in_accessor_element4481 = new BitSet(new long[]{0x0400000000000002L});
