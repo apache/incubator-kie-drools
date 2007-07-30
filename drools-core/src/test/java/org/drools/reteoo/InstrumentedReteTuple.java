@@ -24,7 +24,7 @@ public class InstrumentedReteTuple extends ReteTuple {
     /**
      * 
      */
-    private static final long serialVersionUID = -5225370016555785111L;
+    private static final long serialVersionUID = 400L;
 
     public InstrumentedReteTuple(final ReteTuple left,
                                  final FactHandle handle) {

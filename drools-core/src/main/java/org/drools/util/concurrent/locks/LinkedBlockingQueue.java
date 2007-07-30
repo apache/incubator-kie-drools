@@ -43,7 +43,7 @@ import java.util.NoSuchElementException;
  */
 public class LinkedBlockingQueue extends AbstractQueue
         implements BlockingQueue, java.io.Serializable {
-    private static final long serialVersionUID = -6903933977591709194L;
+    private static final long serialVersionUID = 400L;
 
     /*
      * A variant of the "two lock queue" algorithm.  The putLock gates
@@ -744,6 +744,6 @@ public class LinkedBlockingQueue extends AbstractQueue
     }
 
     private static class SerializableLock implements java.io.Serializable {
-        private final static long serialVersionUID = -8856990691138858668L;
+        private final static long serialVersionUID = 400L;
     }
 }

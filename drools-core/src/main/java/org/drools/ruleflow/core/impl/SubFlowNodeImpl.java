@@ -31,7 +31,7 @@ public class SubFlowNodeImpl extends NodeImpl
     implements
     SubFlowNode {
 
-	private static final long serialVersionUID = -6120950606595743908L;
+	private static final long serialVersionUID = 400L;
 	
 	private String            processId;
 

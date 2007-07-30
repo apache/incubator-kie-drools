@@ -48,7 +48,7 @@ public class MockConstraint
 
     public ContextEntry getContextEntry() {
         return new ContextEntry() {
-            private static final long serialVersionUID = -6597931500771088767L;
+            private static final long serialVersionUID = 400L;
             private ContextEntry      next;
 
             public ContextEntry getNext() {

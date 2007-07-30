@@ -25,7 +25,7 @@ public class WorkingMemoryEvent extends EventObject {
     /**
      * 
      */
-    private static final long        serialVersionUID = -5621549882634049634L;
+    private static final long        serialVersionUID = 400L;
     private final PropagationContext propagationContext;
 
     public WorkingMemoryEvent(final WorkingMemory workingMemory,

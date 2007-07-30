@@ -221,7 +221,7 @@ public class VariableRestriction
 
     public static class LongVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = -5316792696755228175L;
+        private static final long serialVersionUID = 400L;
 
         public long               left;
         public long               right;
@@ -261,7 +261,7 @@ public class VariableRestriction
 
     public static class CharVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = -5316792696755228175L;
+        private static final long serialVersionUID = 400L;
 
         public char               left;
         public char               right;
@@ -341,7 +341,7 @@ public class VariableRestriction
 
     public static class BooleanVariableContextEntry extends VariableContextEntry {
 
-        private static final long serialVersionUID = -7664012658143075200L;
+        private static final long serialVersionUID = 400L;
         public boolean            left;
         public boolean            right;
 

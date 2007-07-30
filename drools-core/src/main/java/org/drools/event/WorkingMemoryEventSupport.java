@@ -35,7 +35,7 @@ public class WorkingMemoryEventSupport
     /**
      * 
      */
-    private static final long   serialVersionUID = -7572714148615479288L;
+    private static final long   serialVersionUID = 400L;
     private final List          listeners        = Collections.synchronizedList( new ArrayList() );
 
     public WorkingMemoryEventSupport() {

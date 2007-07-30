@@ -20,7 +20,7 @@ public class IntegrationException extends CheckedDroolsException {
     /**
      * 
      */
-    private static final long serialVersionUID = -595899480857696387L;
+    private static final long serialVersionUID = 400L;
 
     /**
      * @see java.lang.Exception#Exception()

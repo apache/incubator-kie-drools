@@ -29,7 +29,7 @@ public class ByteFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -2213953461197502182L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new ByteFactory();
 
     private ByteFactory() {
@@ -69,7 +69,7 @@ public class ByteFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = -2123381297852695049L;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteEqualEvaluator();
 
         private ByteEqualEvaluator() {
@@ -302,7 +302,7 @@ public class ByteFactory
         /**
          * 
          */
-        private static final long     serialVersionUID = -3319688501086570921L;
+        private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteGreaterEvaluator();
 
         private ByteGreaterEvaluator() {

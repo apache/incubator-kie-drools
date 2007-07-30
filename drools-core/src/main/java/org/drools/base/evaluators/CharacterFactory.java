@@ -29,7 +29,7 @@ public class CharacterFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -8006570416583057447L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new CharacterFactory();
 
     private CharacterFactory() {

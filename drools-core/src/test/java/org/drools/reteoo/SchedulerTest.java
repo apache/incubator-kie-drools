@@ -54,7 +54,7 @@ public class SchedulerTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -7225205391633485219L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) {
@@ -195,7 +195,7 @@ public class SchedulerTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -2288407417074884302L;
+            private static final long serialVersionUID = 400L;
 
             public long getDuration(Tuple tuple) {
                 return 100;
@@ -211,7 +211,7 @@ public class SchedulerTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -4822730789394039868L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) {

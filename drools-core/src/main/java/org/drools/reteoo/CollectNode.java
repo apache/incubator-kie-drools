@@ -41,7 +41,7 @@ public class CollectNode extends BetaNode
     TupleSink,
     ObjectSink {
 
-    private static final long                serialVersionUID = -8321568626178187047L;
+    private static final long                serialVersionUID = 400L;
 
     private final Collect                    collect;
     private final AlphaNodeFieldConstraint[] resultConstraints;

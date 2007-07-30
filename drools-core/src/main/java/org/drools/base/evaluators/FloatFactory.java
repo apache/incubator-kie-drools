@@ -29,7 +29,7 @@ public class FloatFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -4254964760901343619L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new FloatFactory();
 
     private FloatFactory() {

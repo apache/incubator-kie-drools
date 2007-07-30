@@ -71,7 +71,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -313,7 +313,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {

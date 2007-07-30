@@ -38,7 +38,7 @@ public class CompositeConflictResolver extends AbstractConflictResolver {
     /**
      * 
      */
-    private static final long        serialVersionUID = -6539946070667458957L;
+    private static final long        serialVersionUID = 400L;
     private final ConflictResolver[] components;
 
     public CompositeConflictResolver(final ConflictResolver[] components) {

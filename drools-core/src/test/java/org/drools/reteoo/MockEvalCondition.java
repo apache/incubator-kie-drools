@@ -27,7 +27,7 @@ public class MockEvalCondition extends EvalCondition {
     /**
      * 
      */
-    private static final long    serialVersionUID = -6857668014487224697L;
+    private static final long    serialVersionUID = 400L;
 
     private Boolean              isAllowed;
 

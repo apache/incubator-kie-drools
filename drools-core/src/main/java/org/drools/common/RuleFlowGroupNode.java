@@ -21,7 +21,7 @@ import org.drools.util.AbstractBaseLinkedListNode;
 
 public class RuleFlowGroupNode extends AbstractBaseLinkedListNode {
 
-    private static final long     serialVersionUID = -6507208076979260126L;
+    private static final long     serialVersionUID = 400L;
 
     private Activation            activation;
     private InternalRuleFlowGroup ruleFlowGroup;

@@ -65,7 +65,7 @@ public class CrossProductTest extends TestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -276571982531422972L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) throws Exception {

@@ -1,7 +1,6 @@
 package org.drools;
 
 import java.util.Iterator;
-import java.util.List;
 
 public interface StatelessSessionResult {        
     

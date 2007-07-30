@@ -31,7 +31,7 @@ public class BigDecimalFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -3272957023711251983L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new BigDecimalFactory();
 
     private BigDecimalFactory() {

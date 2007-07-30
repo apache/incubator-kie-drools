@@ -38,7 +38,7 @@ public class LifoConflictResolver extends AbstractConflictResolver {
     /**
      * 
      */
-    private static final long                 serialVersionUID = -2948840369812341044L;
+    private static final long                 serialVersionUID = 400L;
     /** Singleton instance. */
     private static final LifoConflictResolver INSTANCE         = new LifoConflictResolver();
 

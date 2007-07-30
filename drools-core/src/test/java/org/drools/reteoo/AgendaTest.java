@@ -88,7 +88,7 @@ public class AgendaTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -130061018648367024L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) {
@@ -102,7 +102,7 @@ public class AgendaTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -130061018648367024L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) {
@@ -159,7 +159,7 @@ public class AgendaTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -5958911613493145604L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) {
@@ -240,7 +240,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create the consequence
         final Consequence consequence = new Consequence() {
-            private static final long serialVersionUID = -5828597682602481200L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -467,7 +467,7 @@ public class AgendaTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -5853809196578694208L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -597,7 +597,7 @@ public class AgendaTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -783,7 +783,7 @@ public class AgendaTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -930,7 +930,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create rule1
         final Consequence consequence1 = new Consequence() {
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -955,7 +955,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create rule0
         final Consequence consequence0 = new Consequence() {
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory w) {
@@ -1027,7 +1027,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create rule1
         final Consequence consequence1 = new Consequence() {
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -1055,7 +1055,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create rule0
         final Consequence consequence0 = new Consequence() {
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory w) {
@@ -1126,7 +1126,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create rule0
         final Consequence consequence0 = new Consequence() {
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory w) {
@@ -1214,7 +1214,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create rule0
         final Consequence consequence0 = new Consequence() {
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory w) {
@@ -1322,7 +1322,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create rule0
         final Consequence consequence0 = new Consequence() {
-            private static final long serialVersionUID = -2596133893109870505L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory w) {
@@ -1423,7 +1423,7 @@ public class AgendaTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -5828597682602481200L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {

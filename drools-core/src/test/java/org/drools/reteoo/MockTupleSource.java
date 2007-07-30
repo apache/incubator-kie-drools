@@ -25,7 +25,7 @@ public class MockTupleSource extends TupleSource {
     /**
      * 
      */
-    private static final long serialVersionUID = -2831490656596388807L;
+    private static final long serialVersionUID = 400L;
 
     private int               attached;
 

@@ -23,7 +23,7 @@ public class Seating
     /**
      * 
      */
-    private static final long serialVersionUID = -21267542036195318L;
+    private static final long serialVersionUID = 400L;
 
     private int               id, pid;
 

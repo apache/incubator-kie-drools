@@ -29,7 +29,7 @@ public class ShortFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -1295210800055648796L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new ShortFactory();
 
     private ShortFactory() {

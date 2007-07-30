@@ -29,7 +29,7 @@ public class IntegerFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -6863552870087722275L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new IntegerFactory();
 
     private IntegerFactory() {

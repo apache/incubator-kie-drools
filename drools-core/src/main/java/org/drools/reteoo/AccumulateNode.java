@@ -43,7 +43,7 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
  */
 public class AccumulateNode extends BetaNode {
 
-    private static final long                serialVersionUID = -4081578178269297948L;
+    private static final long                serialVersionUID = 400L;
 
     private final boolean                    unwrapRightObject;
     private final Accumulate                 accumulate;
@@ -456,7 +456,7 @@ public class AccumulateNode extends BetaNode {
     }
 
     public static class AccumulateMemory {
-        private static final long serialVersionUID = -5487673715134696118L;
+        private static final long serialVersionUID = 400L;
         
         public Object workingMemoryContext;
         public BetaMemory betaMemory;

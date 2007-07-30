@@ -24,7 +24,7 @@ public class ObjectRetractedEvent extends WorkingMemoryEvent {
     /**
      * 
      */
-    private static final long serialVersionUID = -6306584011196320279L;
+    private static final long serialVersionUID = 400L;
 
     private final FactHandle  handle;
 

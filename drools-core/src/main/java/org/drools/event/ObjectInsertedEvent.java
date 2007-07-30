@@ -24,7 +24,7 @@ public class ObjectInsertedEvent extends WorkingMemoryEvent {
     /**
      * 
      */
-    private static final long serialVersionUID = -4034827684101547060L;
+    private static final long serialVersionUID = 400L;
 
     private final FactHandle  handle;
 

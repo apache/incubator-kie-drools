@@ -11,7 +11,7 @@ public class TupleIndexHashTable extends AbstractHashTable
     implements
     TupleMemory {
 
-    private static final long               serialVersionUID = -6214772340195061306L;
+    private static final long               serialVersionUID = 400L;
 
     public static final int                 PRIME            = 31;
 
