@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -79,7 +80,7 @@ public class RuleBuilderTest extends TestCase {
         ruleDescr.setClassName( ruleClassName );
         ruleDescr.addAttribute( new AttributeDescr("dialect", "java") );
 
-        final TypeResolver typeResolver = new ClassTypeResolver( new ArrayList(),
+        final TypeResolver typeResolver = new ClassTypeResolver( new HashSet(),
                                                                  this.getClass().getClassLoader() );
         // make an automatic import for the current package
         typeResolver.addImport( pkgDescr.getName() + ".*" );

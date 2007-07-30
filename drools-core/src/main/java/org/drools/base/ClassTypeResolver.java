@@ -30,7 +30,7 @@ import org.drools.RuntimeDroolsException;
 public class ClassTypeResolver
     implements
     TypeResolver {
-    private List             imports          = Collections.EMPTY_LIST;
+    private Set              imports          = Collections.EMPTY_SET;
 
     private ClassLoader      classLoader;
 
@@ -56,8 +56,8 @@ public class ClassTypeResolver
                               "C" );
     }
 
-    public ClassTypeResolver(final List imports,
-                             ClassLoader classLoader) {
+    public ClassTypeResolver(final Set imports,
+                             final ClassLoader classLoader) {
         this.imports = imports;
 
         if ( classLoader == null ) {
@@ -79,7 +79,7 @@ public class ClassTypeResolver
     /* (non-Javadoc)
      * @see org.drools.semantics.java.TypeResolver#getImports()
      */
-    public List getImports() {
+    public Set getImports() {
         return this.imports;
     }
 
@@ -92,12 +92,10 @@ public class ClassTypeResolver
      * @see org.drools.semantics.java.TypeResolver#addImport(java.lang.String)
      */
     public void addImport(final String importEntry) {
-        if ( this.imports == Collections.EMPTY_LIST ) {
-            this.imports = new ArrayList();
+        if ( this.imports == Collections.EMPTY_SET ) {
+            this.imports = new HashSet();
         }
-        if ( !this.imports.contains( importEntry ) ) {
-            this.imports.add( importEntry );
-        }
+        this.imports.add( importEntry );
     }
 
     public Class lookupFromCache(final String className) {

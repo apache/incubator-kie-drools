@@ -26,10 +26,12 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.facttemplates.FactTemplate;
@@ -67,11 +69,11 @@ public class Package
     /** Set of all rule-names in this <code>Package</code>. */
     private Map                    rules;
 
-    private List                   imports;
+    private Set                    imports;
 
     private List                   functions;
 
-    private List                   staticImports;
+    private Set                    staticImports;
 
     private Map                    globals;
 
@@ -119,8 +121,8 @@ public class Package
     public Package(final String name,
                    ClassLoader parentClassLoader) {
         this.name = name;
-        this.imports = new ArrayList( 1 );
-        this.staticImports = Collections.EMPTY_LIST;
+        this.imports = new HashSet( 2 );
+        this.staticImports = Collections.EMPTY_SET;
         this.rules = new LinkedHashMap();
         this.ruleFlows = Collections.EMPTY_MAP;
         this.globals = Collections.EMPTY_MAP;
@@ -169,8 +171,8 @@ public class Package
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         this.packageCompilationData = (PackageCompilationData) stream.readObject();
         this.name = (String) stream.readObject();
-        this.imports = (List) stream.readObject();
-        this.staticImports = (List) stream.readObject();
+        this.imports = (Set) stream.readObject();
+        this.staticImports = (Set) stream.readObject();
         this.globals = (Map) stream.readObject();
         this.ruleFlows = (Map) stream.readObject();
 
@@ -205,13 +207,13 @@ public class Package
         this.imports.remove( importEntry );
     }
 
-    public List getImports() {
+    public Set getImports() {
         return this.imports;
     }
 
     public void addStaticImport(final String functionImport) {
-        if ( this.staticImports == Collections.EMPTY_LIST ) {
-            this.staticImports = new ArrayList( 1 );
+        if ( this.staticImports == Collections.EMPTY_SET ) {
+            this.staticImports = new HashSet( 2 );
         }
         this.staticImports.add( functionImport );
     }
@@ -232,7 +234,7 @@ public class Package
         this.staticImports.remove( functionImport );
     }
 
-    public List getStaticImports() {
+    public Set getStaticImports() {
         return this.staticImports;
     }
 

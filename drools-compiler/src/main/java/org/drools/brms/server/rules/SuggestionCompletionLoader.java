@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -70,7 +71,7 @@ public class SuggestionCompletionLoader {
             }
         }
         this.loader = new MapBackedClassLoader( classLoader );
-        this.resolver = new ClassTypeResolver(new ArrayList(), this.loader);
+        this.resolver = new ClassTypeResolver(new HashSet(), this.loader);
     }
 
     /**

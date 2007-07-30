@@ -368,7 +368,7 @@ abstract public class AbstractRuleBase
     private void mergePackage(final Package pkg,
                               final Package newPkg) throws PackageIntegrationException {
         final Map globals = pkg.getGlobals();
-        final List imports = pkg.getImports();
+        final Set imports = pkg.getImports();
 
         // First update the binary files
         // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.
