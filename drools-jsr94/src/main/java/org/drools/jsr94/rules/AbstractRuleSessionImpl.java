@@ -16,21 +16,14 @@ package org.drools.jsr94.rules;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import javax.rules.InvalidRuleSessionException;
-import javax.rules.ObjectFilter;
 import javax.rules.RuleExecutionSetMetadata;
-import javax.rules.RuleRuntime;
 import javax.rules.RuleSession;
-import javax.rules.StatefulRuleSession;
-import javax.rules.StatelessRuleSession;
 import javax.rules.admin.RuleExecutionSet;
 
-import org.drools.WorkingMemory;
 import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
 import org.drools.jsr94.rules.admin.RuleExecutionSetRepository;
 
