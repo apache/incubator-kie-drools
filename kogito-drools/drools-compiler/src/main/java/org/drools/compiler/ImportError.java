@@ -30,5 +30,9 @@ public class ImportError extends DroolsError {
     public String getMessage() {
         return this.importName;
     }
+    
+    public String toString() {
+        return this.getMessage();
+    }
 
 }

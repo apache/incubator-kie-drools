@@ -1,9 +1,9 @@
 package org.drools.base;
 
-import java.util.List;
+import java.util.Set;
 
 public interface TypeResolver {
-    public List getImports();
+    public Set getImports();
 
     public void addImport(String importEntry);
 

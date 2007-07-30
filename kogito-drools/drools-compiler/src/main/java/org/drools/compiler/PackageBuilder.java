@@ -133,7 +133,7 @@ public class PackageBuilder {
             // make an automatic import for the current package
             this.typeResolver.addImport( this.pkg.getName() + ".*" );            
         } else {
-            this.typeResolver = new ClassTypeResolver( new ArrayList(),
+            this.typeResolver = new ClassTypeResolver( new HashSet(),
                                                        this.configuration.getClassLoader() );
         }
         this.configuration.getDialectRegistry().initAll( this );
