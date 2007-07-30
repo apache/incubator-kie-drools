@@ -6,7 +6,7 @@ import java.util.List;
 
 public class AccessorDescr extends DeclarativeInvokerDescr {
 
-    private static final long serialVersionUID = -8501718084759205602L;
+    private static final long serialVersionUID = 400L;
 
     private String            variableName;
     private LinkedList        invokers;

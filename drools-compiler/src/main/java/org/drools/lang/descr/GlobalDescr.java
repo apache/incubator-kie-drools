@@ -23,7 +23,7 @@ package org.drools.lang.descr;
  */
 public class GlobalDescr extends BaseDescr {
 
-    private static final long serialVersionUID = -7950086393744529044L;
+    private static final long serialVersionUID = 400L;
 
     private String            identifier;
     private String            type;
