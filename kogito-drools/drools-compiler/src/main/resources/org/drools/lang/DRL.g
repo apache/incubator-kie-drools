@@ -1598,7 +1598,8 @@ identifier
         |       ATTRIBUTES      
         |       ENABLED         
         |       SALIENCE 	
-        |       DURATION 	
+        |       DURATION 
+        |	DIALECT	
         |       FROM	        
         |       INIT	        
         |       ACTION	        
