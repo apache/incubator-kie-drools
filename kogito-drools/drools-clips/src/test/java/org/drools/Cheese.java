@@ -24,7 +24,7 @@ public class Cheese
     /**
      * 
      */
-    private static final long serialVersionUID = -1187540653710115339L;
+    private static final long serialVersionUID = 400L;
     private String            type;
     private int               price;
 
