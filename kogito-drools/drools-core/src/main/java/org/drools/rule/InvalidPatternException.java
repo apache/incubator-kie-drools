@@ -20,7 +20,7 @@ public class InvalidPatternException extends RuleConstructionException {
     /**
      * 
      */
-    private static final long serialVersionUID = -9130595795187136300L;
+    private static final long serialVersionUID = 400L;
 
     /**
      * @see java.lang.Exception#Exception()

@@ -8,7 +8,7 @@ public class BetaMemory
     implements
     Serializable {
 
-    private static final long serialVersionUID = -4648029105678562600L;
+    private static final long serialVersionUID = 400L;
 
     private TupleMemory       tupleMemory;
     private FactHandleMemory  factHandleMemory;

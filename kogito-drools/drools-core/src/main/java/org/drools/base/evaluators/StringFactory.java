@@ -36,7 +36,7 @@ public class StringFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -1761752249672590658L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new StringFactory();
 
     private StringFactory() {

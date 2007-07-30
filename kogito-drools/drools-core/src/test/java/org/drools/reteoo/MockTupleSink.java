@@ -35,7 +35,7 @@ public class MockTupleSink extends TupleSource
     /**
      * 
      */
-    private static final long serialVersionUID = -5292603482246485028L;
+    private static final long serialVersionUID = 400L;
     private final List        asserted         = new ArrayList();
     private final List        retracted        = new ArrayList();
 

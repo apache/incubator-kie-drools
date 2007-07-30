@@ -24,7 +24,7 @@ public class ObjectUpdatedEvent extends WorkingMemoryEvent {
     /**
      * 
      */
-    private static final long serialVersionUID = -1114244534479330055L;
+    private static final long serialVersionUID = 400L;
 
     private final FactHandle  handle;
 

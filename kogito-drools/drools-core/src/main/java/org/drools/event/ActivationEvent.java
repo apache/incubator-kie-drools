@@ -25,7 +25,7 @@ public class ActivationEvent extends EventObject {
     /**
      * 
      */
-    private static final long serialVersionUID = -5067428687027220296L;
+    private static final long serialVersionUID = 400L;
 
     public ActivationEvent(final Activation activation) {
         super( activation );

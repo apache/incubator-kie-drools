@@ -29,7 +29,7 @@ public class BooleanFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -1463529133869380215L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new BooleanFactory();
 
     private BooleanFactory() {

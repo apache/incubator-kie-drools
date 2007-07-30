@@ -34,7 +34,7 @@ public class PredicateConstraint
     /**
      * 
      */
-    private static final long          serialVersionUID   = -103424847725754568L;
+    private static final long          serialVersionUID   = 400L;
 
     private PredicateExpression        expression;
 

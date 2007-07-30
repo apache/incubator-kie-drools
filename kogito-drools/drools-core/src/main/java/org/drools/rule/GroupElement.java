@@ -339,7 +339,7 @@ public class GroupElement extends ConditionalElement {
         implements
         Type {
 
-        private static final long serialVersionUID = -669797012495460L;
+        private static final long serialVersionUID = 400L;
 
         /**
          * @inheritDoc
@@ -387,7 +387,7 @@ public class GroupElement extends ConditionalElement {
      */
     private static class AndType extends AbstractType {
 
-        private static final long serialVersionUID = -669797012452495460L;
+        private static final long serialVersionUID = 400L;
 
         AndType() {
         }
@@ -472,7 +472,7 @@ public class GroupElement extends ConditionalElement {
      */
     private static class NotType extends AbstractType {
 
-        private static final long serialVersionUID = -7873159668081968617L;
+        private static final long serialVersionUID = 400L;
 
         NotType() {
         }
@@ -521,7 +521,7 @@ public class GroupElement extends ConditionalElement {
      */
     private static class ExistsType extends AbstractType {
 
-        private static final long serialVersionUID = -1528071451996382861L;
+        private static final long serialVersionUID = 400L;
 
         ExistsType() {
         }

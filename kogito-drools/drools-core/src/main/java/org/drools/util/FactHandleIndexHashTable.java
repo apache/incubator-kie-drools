@@ -12,7 +12,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
     implements
     FactHandleMemory {
 
-    private static final long           serialVersionUID = -6033183838054653227L;
+    private static final long           serialVersionUID = 400L;
 
     public static final int             PRIME            = 31;
 
@@ -266,7 +266,7 @@ public class FactHandleIndexHashTable extends AbstractHashTable
         implements
         Entry {
 
-        private static final long serialVersionUID = -577270475161063671L;
+        private static final long serialVersionUID = 400L;
         private Entry             next;
         private FactEntryImpl         first;
         private final int         hashCode;

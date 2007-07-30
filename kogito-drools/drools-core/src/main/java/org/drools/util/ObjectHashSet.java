@@ -137,7 +137,7 @@ public class ObjectHashSet extends AbstractHashTable {
         implements
         Entry {
 
-        private static final long serialVersionUID = -2589987113898296555L;
+        private static final long serialVersionUID = 400L;
 
         private Object            value;
 

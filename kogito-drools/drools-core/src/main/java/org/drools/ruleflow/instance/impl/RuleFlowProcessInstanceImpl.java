@@ -60,7 +60,7 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     implements
     RuleFlowProcessInstance, AgendaEventListener, RuleFlowEventListener {
 
-    private static final long serialVersionUID = -6760756665603399413L;
+    private static final long serialVersionUID = 400L;
 
     private InternalWorkingMemory 	workingMemory;
     private final List      nodeInstances    = new ArrayList();

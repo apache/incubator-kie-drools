@@ -33,7 +33,7 @@ public class ArrayFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -5485618486269637287L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new ArrayFactory();
 
     private ArrayFactory() {

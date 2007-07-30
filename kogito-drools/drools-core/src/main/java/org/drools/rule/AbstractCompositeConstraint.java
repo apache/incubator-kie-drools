@@ -171,7 +171,7 @@ public abstract class AbstractCompositeConstraint
         implements
         ContextEntry {
 
-        private static final long    serialVersionUID = -612826751146514955L;
+        private static final long    serialVersionUID = 400L;
 
         public final ContextEntry[] contexts;
         public ContextEntry          next;

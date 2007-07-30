@@ -37,7 +37,7 @@ public class PrimitiveLongMap
                                                      /**
                                                       * 
                                                       */
-                                                     private static final long serialVersionUID = -3636017371487047326L;
+                                                     private static final long serialVersionUID = 400L;
                                                  };
 
     private final int           indexIntervals;
@@ -321,7 +321,7 @@ public class PrimitiveLongMap
         /**
          * 
          */
-        private static final long serialVersionUID = -3301899266460094468L;
+        private static final long serialVersionUID = 400L;
         private final int         pageSize;
         private final int         pageId;
         private final int         shifts;

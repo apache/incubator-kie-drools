@@ -88,7 +88,7 @@ public class InstanceNotEqualsConstraint
         implements
         ContextEntry {
 
-        private static final long serialVersionUID = -1229222687367782322L;
+        private static final long serialVersionUID = 400L;
         public Object             left;
         public Object             right;
 

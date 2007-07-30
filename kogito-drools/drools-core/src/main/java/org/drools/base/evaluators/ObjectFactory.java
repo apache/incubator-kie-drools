@@ -43,7 +43,7 @@ public class ObjectFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -8547142029512452551L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new ObjectFactory();
 
     private ObjectFactory() {

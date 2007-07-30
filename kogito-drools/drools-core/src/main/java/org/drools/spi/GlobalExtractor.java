@@ -33,7 +33,7 @@ public class GlobalExtractor
     implements
     Extractor {
 
-    private static final long serialVersionUID = -756967384190918798L;
+    private static final long serialVersionUID = 400L;
     private final String            key;
     private final ObjectType        objectType;
 

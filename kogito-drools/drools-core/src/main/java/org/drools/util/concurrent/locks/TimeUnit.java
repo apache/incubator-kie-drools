@@ -105,7 +105,7 @@ public abstract class TimeUnit implements java.io.Serializable {
         int excessNanos(long d, long m) { return 0; }
     };
     public static final TimeUnit HOURS = new TimeUnit(5, "HOURS") {
-        private final static long serialVersionUID = -6438436134732089810L;
+        private final static long serialVersionUID = 400L;
         public long toNanos(long d)   { return x(d, C5/C0, MAX/(C5/C0)); }
         public long toMicros(long d)  { return x(d, C5/C1, MAX/(C5/C1)); }
         public long toMillis(long d)  { return x(d, C5/C2, MAX/(C5/C2)); }

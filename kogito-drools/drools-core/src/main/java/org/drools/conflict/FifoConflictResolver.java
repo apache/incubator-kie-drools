@@ -38,7 +38,7 @@ public class FifoConflictResolver extends AbstractConflictResolver {
     /**
      * 
      */
-    private static final long                 serialVersionUID = -1164016501513168413L;
+    private static final long                 serialVersionUID = 400L;
     /** Singleton instance. */
     private static final FifoConflictResolver INSTANCE         = new FifoConflictResolver();
 

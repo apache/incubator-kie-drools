@@ -29,7 +29,7 @@ public class DoubleFactory
     implements
     EvaluatorFactory {
 
-    private static final long       serialVersionUID = -3853062740291829023L;
+    private static final long       serialVersionUID = 400L;
     private static EvaluatorFactory INSTANCE         = new DoubleFactory();
 
     private DoubleFactory() {

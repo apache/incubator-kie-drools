@@ -40,7 +40,7 @@ public class LoadOrderConflictResolver extends AbstractConflictResolver {
     /**
      * 
      */
-    private static final long                      serialVersionUID = -4829889337782810804L;
+    private static final long                      serialVersionUID = 400L;
     /** Singleton instance. */
     private static final LoadOrderConflictResolver INSTANCE         = new LoadOrderConflictResolver();
 

@@ -11,7 +11,7 @@ public class From extends ConditionalElement
     Serializable,
     PatternSource {
 
-    private static final long serialVersionUID = -2640290731776949513L;
+    private static final long serialVersionUID = 400L;
 
     private DataProvider      dataProvider;
 

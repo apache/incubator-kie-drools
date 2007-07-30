@@ -23,7 +23,7 @@ public class LastSeat
     /**
      * 
      */
-    private static final long serialVersionUID = -3331801742327121724L;
+    private static final long serialVersionUID = 400L;
     private int               seat;
 
     public LastSeat() {

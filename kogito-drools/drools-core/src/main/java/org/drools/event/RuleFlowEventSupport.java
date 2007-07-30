@@ -31,7 +31,7 @@ import org.drools.spi.RuleFlowGroup;
  */
 public class RuleFlowEventSupport implements Serializable {
 
-	private static final long serialVersionUID = -4300367587017885998L;
+	private static final long serialVersionUID = 400L;
 	private final List listeners = Collections.synchronizedList( new ArrayList() );
 
     public RuleFlowEventSupport() {

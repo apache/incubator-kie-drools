@@ -31,7 +31,7 @@ public class ConsequenceException extends RuntimeDroolsException {
     /**
      * 
      */
-    private static final long serialVersionUID = -4110574597794545184L;
+    private static final long serialVersionUID = 400L;
     private Rule              rule;
     private String            info;
 

@@ -34,7 +34,7 @@ public class RuleIntegrationException extends IntegrationException {
     /**
      * 
      */
-    private static final long serialVersionUID = -4907967959683936312L;
+    private static final long serialVersionUID = 400L;
     /** The rule. */
     private final Rule        rule;
 

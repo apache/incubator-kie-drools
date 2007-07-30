@@ -65,7 +65,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -5628842901492986740L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -167,7 +167,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -6861606249802351389L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -477,7 +477,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -3139752102258757978L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -576,7 +576,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -2467227987792388019L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
@@ -705,7 +705,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             /**
              * 
              */
-            private static final long serialVersionUID = -8086689039438217146L;
+            private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {

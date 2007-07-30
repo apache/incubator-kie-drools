@@ -22,7 +22,7 @@ public class MockFactHandle
     /**
      * 
      */
-    private static final long serialVersionUID = -8539029446957595947L;
+    private static final long serialVersionUID = 400L;
     private int               id;
 
     public MockFactHandle(final int id) {

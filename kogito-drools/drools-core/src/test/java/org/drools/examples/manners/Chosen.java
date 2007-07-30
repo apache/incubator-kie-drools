@@ -24,7 +24,7 @@ public class Chosen
     /**
      * 
      */
-    private static final long serialVersionUID = -169447202790860427L;
+    private static final long serialVersionUID = 400L;
 
     private int               id;
 
