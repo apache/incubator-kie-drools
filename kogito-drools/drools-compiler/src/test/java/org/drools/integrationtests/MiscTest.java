@@ -3443,21 +3443,88 @@ public class MiscTest extends TestCase {
                       results.get(1) );
         
         workingMemory.update( handle, first );
-        workingMemory.insert( new SecondClass("1", "2", "3", "4", null ) );
+        workingMemory.insert( new SecondClass(null, "2", "3", "4", "5" ) );
         workingMemory.fireAllRules();
         assertEquals( 3,
                       results.size() );
         assertEquals( "NOT",
                       results.get(2) );
         
-        workingMemory.insert( new SecondClass("1", "2", "3", "4", "5" ) );
         workingMemory.update( handle, first );
+        workingMemory.insert( new SecondClass("1", null, "3", "4", "5" ) );
         workingMemory.fireAllRules();
         assertEquals( 4,
                       results.size() );
-        assertEquals( "EQUALS",
+        assertEquals( "NOT",
                       results.get(3) );
         
+        workingMemory.update( handle, first );
+        workingMemory.insert( new SecondClass("1", "2", null, "4", "5" ) );
+        workingMemory.fireAllRules();
+        assertEquals( 5,
+                      results.size() );
+        assertEquals( "NOT",
+                      results.get(4) );
+        
+        workingMemory.update( handle, first );
+        workingMemory.insert( new SecondClass("1", "2", "3", null, "5" ) );
+        workingMemory.fireAllRules();
+        assertEquals( 6,
+                      results.size() );
+        assertEquals( "NOT",
+                      results.get(5) );
+        
+        workingMemory.update( handle, first );
+        workingMemory.insert( new SecondClass("1", "2", "3", "4", null ) );
+        workingMemory.fireAllRules();
+        assertEquals( 7,
+                      results.size() );
+        assertEquals( "NOT",
+                      results.get(6) );
+        
+        workingMemory.insert( new SecondClass("1", "2", "3", "4", "5" ) );
+        workingMemory.update( handle, first );
+        workingMemory.fireAllRules();
+        assertEquals( 8,
+                      results.size() );
+        assertEquals( "EQUALS",
+                      results.get(7) );
+        
+    }
+
+    public void testBooleanWrapper() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_BooleanWrapper.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+        
+        Primitives p1 = new Primitives();
+        workingMemory.insert( p1 );
+        workingMemory.fireAllRules();
+        assertEquals( 0,
+                      results.size() );
+
+        Primitives p2 = new Primitives();
+        p2.setBooleanWrapper( Boolean.FALSE );
+        workingMemory.insert( p2 );
+        workingMemory.fireAllRules();
+        assertEquals( 0,
+                      results.size() );
+
+        Primitives p3 = new Primitives();
+        p3.setBooleanWrapper( Boolean.TRUE );
+        workingMemory.insert( p3 );
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      results.size() );
+
     }
 
 }

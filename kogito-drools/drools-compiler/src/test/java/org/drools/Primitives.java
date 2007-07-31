@@ -32,6 +32,8 @@ public class Primitives {
     private Object[] arrayAttribute;
     private int[]    primitiveArrayAttribute;
     private String[] stringArray;
+    
+    private Boolean  booleanWrapper;
 
     public boolean isBooleanPrimitive() {
         return this.booleanPrimitive;
@@ -133,6 +135,14 @@ public class Primitives {
 
     public void setStringAttribute(String stringAttribute) {
         this.stringAttribute = stringAttribute;
+    }
+
+    public Boolean getBooleanWrapper() {
+        return booleanWrapper;
+    }
+
+    public void setBooleanWrapper(Boolean booleanWrapper) {
+        this.booleanWrapper = booleanWrapper;
     }
 
 }
