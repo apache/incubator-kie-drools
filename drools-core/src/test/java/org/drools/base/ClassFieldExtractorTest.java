@@ -18,6 +18,7 @@ package org.drools.base;
 
 import junit.framework.TestCase;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.util.asm.BeanInherit;
 import org.drools.util.asm.InterfaceChild;
 import org.drools.util.asm.TestAbstract;
@@ -105,6 +106,28 @@ public class ClassFieldExtractorTest extends TestCase {
         final TestBean bean = new TestBean();
         assertEquals( 424242,
                       ((Number) ext.getValue( null, bean )).longValue() );
+    }
+
+    public void testNonExistentField() throws Exception {
+        final Object[] objArray = new Object[1];
+
+        final TestBean obj = new TestBean();
+        obj.setBlah( false );
+        obj.setSomething( "no" );
+        obj.setObjArray( objArray );
+
+        try {
+            final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( TestBean.class,
+                                                                                   "xyz",
+                                                                                   getClass().getClassLoader() );
+            fail( "A RuntimeDroolsException should have been raised");
+        } catch ( RuntimeDroolsException e ) {
+            e.printStackTrace();
+            // everything is fine, since field does not exist
+        } catch ( Exception e ) {
+            fail( "A RuntimeDroolsException should have been raised");
+        }
+
     }
 
 }
