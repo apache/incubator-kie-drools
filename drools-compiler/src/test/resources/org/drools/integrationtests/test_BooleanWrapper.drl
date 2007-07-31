@@ -1,0 +1,11 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test boolean wrapper"
+	when
+		Primitives( booleanWrapper == true );
+	then
+		results.add( "fired" );
+end
+
