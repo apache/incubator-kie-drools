@@ -102,28 +102,33 @@ public class ClassFieldExtractorFactory {
                 }
                 final Class fieldType = (Class) inspector.getFieldTypes().get( fieldName );
                 final Method getterMethod = (Method) inspector.getGetterMethods().get( fieldName );
-                final String className = ClassFieldExtractorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + "$" + getterMethod.getName();
+                if( fieldType != null && getterMethod != null ) {
+                    final String className = ClassFieldExtractorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + "$" + getterMethod.getName();
 
-                // generating byte array to create target class
-                final byte[] bytes = dump( clazz,
-                                           className,
-                                           getterMethod,
-                                           fieldType,
-                                           clazz.isInterface() );
-                // use bytes to get a class 
+                    // generating byte array to create target class
+                    final byte[] bytes = dump( clazz,
+                                               className,
+                                               getterMethod,
+                                               fieldType,
+                                               clazz.isInterface() );
+                    // use bytes to get a class 
 
-                final Class newClass = byteArrayClassLoader.defineClass( className.replace( '/',
-                                                                                            '.' ),
-                                                                         bytes,
-                                                                         PROTECTION_DOMAIN );
-                // instantiating target class
-                final Integer index = (Integer) inspector.getFieldNames().get( fieldName );
-                final ValueType valueType = ValueType.determineValueType( fieldType );
-                final Object[] params = {index, fieldType, valueType};
-                return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
+                    final Class newClass = byteArrayClassLoader.defineClass( className.replace( '/',
+                                                                                                '.' ),
+                                                                             bytes,
+                                                                             PROTECTION_DOMAIN );
+                    // instantiating target class
+                    final Integer index = (Integer) inspector.getFieldNames().get( fieldName );
+                    final ValueType valueType = ValueType.determineValueType( fieldType );
+                    final Object[] params = {index, fieldType, valueType};
+                    return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
+                } else {
+                    throw new RuntimeDroolsException("Field/method '"+fieldName+"' not found for class '"+clazz.getName()+"'" );
+                }
             }
+        } catch ( final RuntimeDroolsException e ) {
+            throw e;
         } catch ( final Exception e ) {
-            //e.printStackTrace();
             throw new RuntimeDroolsException( e );
         }
     }
