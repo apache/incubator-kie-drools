@@ -15,104 +15,131 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-public class ChainedProperties implements Serializable {
+public class ChainedProperties
+    implements
+    Serializable {
     private final List props;
     private final List defaultProps;
-    
+
     public ChainedProperties(String confFileName) {
         this( null,
               confFileName );
     }
-    public ChainedProperties(ClassLoader classLoader, String confFileName) {
-        this(classLoader, confFileName, true);
+
+    public ChainedProperties(ClassLoader classLoader,
+                             String confFileName) {
+        this( classLoader,
+              confFileName,
+              true );
     }
-    
-    public ChainedProperties(ClassLoader classLoader, String confFileName, boolean populateDefaults) {
+
+    public ChainedProperties(ClassLoader classLoader,
+                             String confFileName,
+                             boolean populateDefaults) {
         if ( classLoader == null ) {
             classLoader = Thread.currentThread().getContextClassLoader();
             if ( classLoader == null ) {
                 classLoader = this.getClass().getClassLoader();
             }
-        }  
-        
+        }
+
         this.props = new ArrayList();
         this.defaultProps = new ArrayList();
-        
+
         // Properties added in precedence order
 
         // System defined properties always get precedence
         addProperties( System.getProperties() );
 
         // System property defined properties file
-        loadProperties( System.getProperty( "drools." + confFileName), this.props );
+        loadProperties( System.getProperty( "drools." + confFileName ),
+                        this.props );
 
         // User home properties file
-        loadProperties( System.getProperty( "user.home" ) + "/drools." + confFileName, this.props );
+        loadProperties( System.getProperty( "user.home" ) + "/drools." + confFileName,
+                        this.props );
 
         // Working directory properties file
-        loadProperties( "drools." + confFileName, this.props );
+        loadProperties( "drools." + confFileName,
+                        this.props );
 
         // check META-INF directories for all known ClassLoaders
         ClassLoader confClassLoader = classLoader;
         if ( confClassLoader != null ) {
-            loadProperties( confClassLoader.getResource( "META-INF/drools." + confFileName), this.props );
+            loadProperties( getResources( "META-INF/drools." + confFileName,
+                                          confClassLoader ),
+                            this.props );
         }
 
         confClassLoader = getClass().getClassLoader();
         if ( confClassLoader != null && confClassLoader != classLoader ) {
-            loadProperties( confClassLoader.getResource( "META-INF/drools." + confFileName ), this.props );
+            loadProperties( getResources( "META-INF/drools." + confFileName,
+                                          confClassLoader ),
+                            this.props );
         }
 
         confClassLoader = Thread.currentThread().getContextClassLoader();
         if ( confClassLoader != null && confClassLoader != classLoader ) {
-            loadProperties( confClassLoader.getResource( "META-INF/drools." + confFileName ), this.props );
+            loadProperties( getResources( "META-INF/drools." + confFileName,
+                                          confClassLoader ),
+                            this.props );
         }
 
         confClassLoader = ClassLoader.getSystemClassLoader();
         if ( confClassLoader != null && confClassLoader != classLoader ) {
-            loadProperties( confClassLoader.getResource( "META-INF/drools." + confFileName ), this.props );
+            loadProperties( getResources( "META-INF/drools." + confFileName,
+                                          confClassLoader ),
+                            this.props );
         }
-        
+
         if ( !populateDefaults ) {
-            return;            
+            return;
         }
 
-        // load default, only use the first one as there should only be one
+        // load defaults
         confClassLoader = classLoader;
-        URL defaultURL = null;
         if ( confClassLoader != null ) {
-            defaultURL = confClassLoader.getResource( "META-INF/drools.default." + confFileName );
+            loadProperties( getResources( "META-INF/drools.default." + confFileName,
+                                          confClassLoader ),
+                            this.defaultProps );
         }
 
-        if ( defaultURL == null ) {
-            confClassLoader = getClass().getClassLoader();
-            if ( confClassLoader != null && confClassLoader != classLoader ) {
-                defaultURL = confClassLoader.getResource( "META-INF/drools.default." + confFileName );
-            }
+        confClassLoader = getClass().getClassLoader();
+        if ( confClassLoader != null && confClassLoader != classLoader ) {
+            loadProperties( getResources( "META-INF/drools.default." + confFileName,
+                                          confClassLoader ),
+                            this.defaultProps );
         }
 
-        if ( defaultURL == null ) {
-            confClassLoader = Thread.currentThread().getContextClassLoader();
-            if ( confClassLoader != null && confClassLoader != classLoader ) {
-                defaultURL = confClassLoader.getResource( "META-INF/drools.default." + confFileName );
-            }
+        confClassLoader = Thread.currentThread().getContextClassLoader();
+        if ( confClassLoader != null && confClassLoader != classLoader ) {
+            loadProperties( getResources( "META-INF/drools.default." + confFileName,
+                                          confClassLoader ),
+                            this.defaultProps );
         }
 
-        if ( defaultURL == null ) {
-            confClassLoader = ClassLoader.getSystemClassLoader();
-            if ( confClassLoader != null && confClassLoader != classLoader ) {
-                defaultURL = confClassLoader.getResource( "META-INF/drools.default." + confFileName );
-            }
-        }
-
-        if ( defaultURL != null ) {
-            loadProperties( defaultURL, this.defaultProps );
+        confClassLoader = ClassLoader.getSystemClassLoader();
+        if ( confClassLoader != null && confClassLoader != classLoader ) {
+            loadProperties( getResources( "META-INF/drools.default." + confFileName,
+                                          confClassLoader ),
+                            this.defaultProps );
         }
     }
-    
+
+    private Enumeration getResources(String name,
+                                     ClassLoader classLoader) {
+        Enumeration enumeration = null;
+        try {
+            enumeration = classLoader.getResources( name );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
+        return enumeration;
+    }
+
     public void addProperties(Properties properties) {
         this.props.add( properties );
-    }  
+    }
 
     public String getProperty(String key,
                               String defaultValue) {
@@ -146,14 +173,14 @@ public class ChainedProperties implements Serializable {
                            startsWith,
                            includeSubProperties );
         }
-        
+
         for ( Iterator it = this.defaultProps.iterator(); it.hasNext(); ) {
             Properties props = (Properties) it.next();
             mapStartsWith( map,
                            props,
                            startsWith,
                            includeSubProperties );
-        }        
+        }
     }
 
     private void mapStartsWith(Map map,
@@ -163,7 +190,7 @@ public class ChainedProperties implements Serializable {
         Enumeration enumeration = properties.propertyNames();
         while ( enumeration.hasMoreElements() ) {
             String key = (String) enumeration.nextElement();
-            if ( key.startsWith( startsWith ) ) {                
+            if ( key.startsWith( startsWith ) ) {
                 if ( !includeSubProperties && key.substring( startsWith.length() + 1 ).indexOf( '.' ) > 0 ) {
                     // +1 to the length, as we do allow the direct property, just not ones below it
                     // This key has sub properties beyond the given startsWith, so skip
@@ -177,13 +204,28 @@ public class ChainedProperties implements Serializable {
             }
         }
     }
-        
-    private void loadProperties(String fileName, List chain) {
+
+    private void loadProperties(Enumeration enumeration,
+                                List chain) {
+        if ( enumeration == null ) {
+            return;
+        }
+
+        while ( enumeration.hasMoreElements() ) {
+            URL url = (URL) enumeration.nextElement();
+            loadProperties( url,
+                            chain );
+        }
+    }
+
+    private void loadProperties(String fileName,
+                                List chain) {
         if ( fileName != null ) {
             File file = new File( fileName );
             if ( file != null && file.exists() ) {
                 try {
-                    loadProperties( file.toURL(), chain );
+                    loadProperties( file.toURL(),
+                                    chain );
                 } catch ( MalformedURLException e ) {
                     throw new IllegalArgumentException( "file.toURL() failed for drools.packagebuilder.conf properties value '" + file + "'" );
                 }
@@ -193,15 +235,17 @@ public class ChainedProperties implements Serializable {
         }
     }
 
-    private void loadProperties(URL confURL, List chain) {
-        if ( confURL != null ) {
-            Properties properties = new Properties();
-            try {
-                properties.load( confURL.openStream() );
-                chain.add( properties );
-            } catch ( IOException e ) {
-                //throw new IllegalArgumentException( "Invalid URL to properties file '" + confURL.toExternalForm() + "'" );
-            }
+    private void loadProperties(URL confURL,
+                                List chain) {
+        if ( confURL == null ) {
+            return;
         }
-    }    
+        Properties properties = new Properties();
+        try {
+            properties.load( confURL.openStream() );
+            chain.add( properties );
+        } catch ( IOException e ) {
+            //throw new IllegalArgumentException( "Invalid URL to properties file '" + confURL.toExternalForm() + "'" );
+        }
+    }
 }
