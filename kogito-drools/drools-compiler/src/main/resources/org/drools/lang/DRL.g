@@ -65,6 +65,11 @@ grammar DRL;
 		return token.substring( 1, token.length() -1 );
 	}
 	
+	private String cleanupSpaces( String input ) {
+                return input.replaceAll( "\\s", "" );
+        }
+	
+	
 	public void reportError(RecognitionException ex) {
 	        // if we've already reported an error and have not matched a token
                 // yet successfully, don't report any errors.
@@ -1542,21 +1547,45 @@ square_chunk
 		LEFT_SQUARE ( ~(LEFT_SQUARE|RIGHT_SQUARE) | square_chunk )* RIGHT_SQUARE
 	;
 	
-qualified_id
-	: 	ID ( DOT identifier )* ( LEFT_SQUARE RIGHT_SQUARE )*
+qualified_id returns [ String text ]
+	@init {
+	        StringBuffer buf = new StringBuffer();
+	}
+	@after {
+	        $text = buf != null ? buf.toString() : "";
+	}
+	: 	ID {buf.append($ID.text);} ( DOT identifier {buf.append("."+$identifier.text);} )* ( LEFT_SQUARE RIGHT_SQUARE {buf.append("[]");})*
 	;
 	
-dotted_name
-	:	identifier ( DOT identifier )* ( LEFT_SQUARE RIGHT_SQUARE )*
+dotted_name returns [ String text ]
+	@init {
+	        StringBuffer buf = new StringBuffer();
+	}
+	@after {
+	        $text = buf != null ? buf.toString() : "";
+	}
+	:	i=identifier {buf.append($i.text);} ( DOT i=identifier {buf.append("."+$i.text);} )* ( LEFT_SQUARE RIGHT_SQUARE {buf.append("[]");})*
 	;
 	
-accessor_path 
-	:	accessor_element ( DOT accessor_element )* 
+accessor_path returns [ String text ]
+	@init {
+	        StringBuffer buf = new StringBuffer();
+	}
+	@after {
+	        $text = buf != null ? buf.toString() : "";
+	}
+	:	a=accessor_element {buf.append($a.text);} ( DOT a=accessor_element {buf.append("."+$a.text);} )* 
 	;
 	
-accessor_element
+accessor_element returns [ String text ]
+	@init {
+	        StringBuffer buf = new StringBuffer();
+	}
+	@after {
+	        $text = buf != null ? buf.toString() : "";
+	}
 	:
-		identifier square_chunk*
+		i=identifier {buf.append($i.text);} (s=square_chunk {buf.append($s.text);} )*
 	;	
 	
 rhs_chunk[RuleDescr rule]
