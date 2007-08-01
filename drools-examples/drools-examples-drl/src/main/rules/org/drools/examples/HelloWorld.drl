@@ -3,20 +3,22 @@ package org.drools.examples
 import org.drools.examples.HelloWorldExample.Message;
  
 rule "Hello World"
+    dialect "mvel"
 	when
 		m : Message( status == Message.HELLO, message : message )
 	then
-		System.out.println( message ); 
-		m.setMessage( "Goodbye cruel world" );
-		m.setStatus( Message.GOODBYE );
-		update( m );
+	System.out.println( message ); 
+	m.message = "Goodbyte cruel world";
+	m.status = 1;
+	update ( m );    	               
 end
 
 rule "GoodBye"
+    dialect "mvel"
 	no-loop true
 	when
 		m : Message( status == Message.GOODBYE, message : message )
 	then
 		System.out.println( message ); 
-		m.setMessage( message );
+		m.setMessage( message );				
 end
