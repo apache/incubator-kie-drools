@@ -3346,6 +3346,33 @@ public class RuleParserTest extends TestCase {
                       people.getObjectType() );
     }
 
+    public void testAccessorPaths() throws Exception {
+        final String text = "org   .   drools/*comment*/\t  .Message( text not matches $c#comment\n. property )\n";
+        final AndDescr descrs = new AndDescr();
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+        parser.setLineOffset( descrs.getLine() );
+        parser.normal_lhs_block( descrs );
+        assertFalse( parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        assertEquals( 1,
+                      descrs.getDescrs().size() );
+        PatternDescr pat = (PatternDescr) descrs.getDescrs().get( 0 );
+        assertEquals( "org.drools.Message", 
+                      pat.getObjectType() );
+        
+        FieldConstraintDescr fieldConstr = (FieldConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
+        QualifiedIdentifierRestrictionDescr restr = (QualifiedIdentifierRestrictionDescr) fieldConstr.getRestrictions().get( 0 );
+
+        assertEquals( "not matches",
+                      restr.getEvaluator() );
+        assertEquals( "$c.property",
+                      restr.getText() );
+    }
+
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;
