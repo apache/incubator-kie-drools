@@ -116,7 +116,6 @@ public class ReteooWorkingMemoryTest extends TestCase {
             if ( i++ > 5 ) {
                 fail( "should not iterate for than 3 times" );
             }
-        }        
-        
+        }               
     }
 }
