@@ -1,0 +1,11 @@
+
+rule simple_rule 
+  dialect "mvel"
+  when
+
+  then 
+	  System.out.println( "a1" );
+	  System.out.println( "a2" );
+	  System.out.println( "a3" );
+	  System.out.println( "a4" );
+end
