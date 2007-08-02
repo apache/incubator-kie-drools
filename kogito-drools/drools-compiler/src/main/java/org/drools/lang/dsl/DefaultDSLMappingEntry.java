@@ -103,7 +103,10 @@ public class DefaultDSLMappingEntry
      * @param key the key to set
      */
     public void setMappingKey(String key) {
-        this.key = key = key.trim();
+    	if (key != null) {
+    		key = key.trim();
+    	}
+        this.key = key;
 
         if ( key != null ) {
             int substr = 0;
