@@ -8,6 +8,7 @@ import org.drools.spi.KnowledgeHelper;
 import org.mvel.CompiledExpression;
 import org.mvel.MVEL;
 import org.mvel.MVELRuntime;
+import org.mvel.debug.DebugTools;
 
 public class MVELConsequence
     implements
@@ -42,9 +43,15 @@ public class MVELConsequence
 		//we are always debugging for now, but we should either debug or run
         MVEL.executeDebugger( compexpr, null, this.factory);
 
+        System.out.println("DECOMPILED "+DebugTools.decompile( compexpr ));
+        
         /*MVEL.executeExpression( this.expr,
                                 null,
                                 this.factory );*/
+    }
+
+    public Serializable getCompExpr() {
+        return expr;
     }
 
 }
