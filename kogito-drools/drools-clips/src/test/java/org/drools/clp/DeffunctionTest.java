@@ -10,7 +10,7 @@ import org.drools.clp.valuehandlers.LongValueHandler;
 import junit.framework.TestCase;
 
 public class DeffunctionTest extends TestCase {
-    public void test1() {
+    public void testSimpleDeffunction() {
         Deffunction function = new Deffunction("x");
          
         ValueHandler a = function.addParameter( "a" );        
@@ -23,7 +23,7 @@ public class DeffunctionTest extends TestCase {
                 
         function.addFunction( caller );
                 
-        ExecutionContext context = new ExecutionContext(null, null, 2);
+        ExecutionContext context = new ExecutionContextImpl(null, null, 2);
         ValueHandler q = new IndexedLocalVariableValue("q", 0);
         q.setValue( context, new LongValueHandler( 10 ) );
         

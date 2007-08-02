@@ -9,11 +9,11 @@ import org.drools.clp.valuehandlers.ObjectValueHandler;
 import junit.framework.TestCase;
 
 public class ModifyFunctionTest extends TestCase {
-    public void test1() {
+    public void testSimpleModifyFunction() {
         Function function = new ModifyFunction();
         
        Person p = new Person("mark");
-       ExecutionContext context = new ExecutionContext(null, null, 1);
+       ExecutionContext context = new ExecutionContextImpl(null, null, 1);
        //context.setLocalVariable( 0, p );
        
        IndexedLocalVariableValue var = new IndexedLocalVariableValue("p", 0);

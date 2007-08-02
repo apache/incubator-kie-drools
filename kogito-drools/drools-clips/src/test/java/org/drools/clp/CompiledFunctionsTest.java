@@ -27,7 +27,7 @@ public class CompiledFunctionsTest extends TestCase {
 
     public void testPrintout() throws Exception {        
         BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(printout d xx (eq 1 1) ?c (create$ (+ 1 1) x y) zzz)" ).execution_block();
-        ExecutionContext context = new ExecutionContext( null,
+        ExecutionContext context = new ExecutionContextImpl( null,
                                                          null,
                                                          1 );
 
@@ -46,7 +46,7 @@ public class CompiledFunctionsTest extends TestCase {
     
     public void testBindAndModify() throws Exception {
         BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x (+ 20 11) ) (modify ?p (age ?x) )" ).execution_block();
-        ExecutionContext context = new ExecutionContext( null,
+        ExecutionContext context = new ExecutionContextImpl( null,
                                                          null,
                                                          2 );
 
@@ -64,7 +64,7 @@ public class CompiledFunctionsTest extends TestCase {
 
     public void testSimpleCreate$() throws Exception {
         BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x (create$ 1 2 3) )" ).execution_block();
-        ExecutionContext context = new ExecutionContext( null,
+        ExecutionContext context = new ExecutionContextImpl( null,
                                                          null,
                                                          1 );
         engine.execute( context );
@@ -84,7 +84,7 @@ public class CompiledFunctionsTest extends TestCase {
 
     public void testNestedCreate$() throws Exception {
         BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x (create$ 1 2 (+ 1 2) ) ) (bind ?y (create$ (+ 1 0) ?x (create$ a b ?x (+ 1 1) ) 3) )" ).execution_block();
-        ExecutionContext context = new ExecutionContext( null,
+        ExecutionContext context = new ExecutionContextImpl( null,
                                                          null,
                                                          2 );
         engine.execute( context );
@@ -131,7 +131,7 @@ public class CompiledFunctionsTest extends TestCase {
 
     public void testIf() throws Exception {
         BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(if (< ?x ?y ) then (modify ?p (age 15) ) (printout d 15) else (modify ?p (age 5)) (printout d 5) )" ).execution_block();
-        ExecutionContext context = new ExecutionContext( null,
+        ExecutionContext context = new ExecutionContextImpl( null,
                                                          null,
                                                          2 );
 
@@ -169,7 +169,7 @@ public class CompiledFunctionsTest extends TestCase {
 
     public void testWhile() throws Exception {               
         BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(while (< ?x ?y) do (bind ?x (+ ?x 1)) (printout d ?x \" \") )" ).execution_block();
-        ExecutionContext context = new ExecutionContext( null,
+        ExecutionContext context = new ExecutionContextImpl( null,
                                                          null,
                                                          2 );
 
@@ -200,7 +200,7 @@ public class CompiledFunctionsTest extends TestCase {
 
     public void testForeach() throws Exception {
         BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?x 0) (foreach ?e (create$ 1 2 3) (bind ?x (+ ?x ?e) ) (printout d ?x \" \") )" ).execution_block();
-        ExecutionContext context = new ExecutionContext( null,
+        ExecutionContext context = new ExecutionContextImpl( null,
                                                          null,
                                                          2 );
         
@@ -216,7 +216,7 @@ public class CompiledFunctionsTest extends TestCase {
     
     public void testSwitch() throws Exception {
         BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?cheese ?var) (switch ?cheese (case stilton then (bind ?x ?cheese ) (break) ) (case cheddar then (bind ?x ?cheese ) (break) ) (default (bind ?x \"default\" ) ) )" ).execution_block();
-        ExecutionContext context = new ExecutionContext( null,
+        ExecutionContext context = new ExecutionContextImpl( null,
                                                          null,
                                                          3 );
 
@@ -251,7 +251,7 @@ public class CompiledFunctionsTest extends TestCase {
     
     public void testProgn() throws Exception {
         BlockExecutionEngine engine = (BlockExecutionEngine) parse( "(bind ?n 2) (while (progn (bind ?n (* ?n ?n)) (< ?n 1000)) do (printout d ?n) )" ).execution_block();
-        ExecutionContext context = new ExecutionContext( null,
+        ExecutionContext context = new ExecutionContextImpl( null,
                                                          null,
                                                          2 );
         
@@ -266,7 +266,7 @@ public class CompiledFunctionsTest extends TestCase {
     public void testDefTemplate() throws Exception {
         Deffunction engine = (Deffunction) parse( "(deffunction factorial (?n) (if (>= ?n 1) then (* ?n (factorial (- ?n 1))) else 1)) " ).deffunction();
         
-        ExecutionContext context = new ExecutionContext( null,
+        ExecutionContext context = new ExecutionContextImpl( null,
                                                          null,
                                                          1 );
 

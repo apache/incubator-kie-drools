@@ -45,7 +45,7 @@ public class BlockExecutionTest extends TestCase {
         list.add( build.getVariableValueHandler( "?x" ) );
         modifyCaller.addParameter( list );
         
-        ExecutionContext context = new ExecutionContext(null, null, 2);
+        ExecutionContext context = new ExecutionContextImpl(null, null, 2);
         Person p = new Person("mark");
         context.setLocalVariable( 1, new ObjectValueHandler( p ) );
         

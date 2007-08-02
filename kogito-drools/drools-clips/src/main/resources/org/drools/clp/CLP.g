@@ -10,7 +10,6 @@ grammar CLP;
 	import java.util.HashMap;	
 	import java.util.StringTokenizer;
 	import org.drools.lang.descr.*;
-	import org.drools.compiler.SwitchingCommonTokenStream;
 }
 
 @parser::members {
@@ -219,13 +218,14 @@ package_statement returns [String packageName]
 		}
 	;	
 */
-/*
-eval_script[ParserHandler parserHandler]
-	:	(		r=defrule { parserHandler.ruleDescrHandler( r ); }
-			|	e=execution_block { parserHandler.lispFormHandler( e ); }
+
+eval_script[Shell  shell]
+	:	(		r=defrule { shell.ruleDescrHandler( r ); }
+				//e=execution_block { parserHandler.lispFormHandler( e ); }
+				| fc=lisp_list[shell, new LispForm(shell) ] { shell.lispFormHandler(fc); }
 		)*
 	;
-*/	
+/*	
 
 execution_list returns[ExecutionEngine engine]
 	@init {
@@ -236,7 +236,7 @@ execution_list returns[ExecutionEngine engine]
 	:
 		(fc=lisp_list[context, new LispForm(context) ] { context.addFunction( (FunctionCaller) fc ); })
 	;	
-	
+*/	
 
 deffunction returns[Deffunction function]
 	@init {
@@ -300,10 +300,12 @@ defrule returns [RuleDescr rule]
 			rule.setStartCharacter( ((CommonToken)loc).getStartIndex() ); 
 		
 			// not sure how you define where a LHS starts in clips, so just putting it here for now
-  	        	lhs = new AndDescr(); 
-	  	        rule.setLhs( lhs ); 
-   		        lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-			lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );				
+        	lhs = new AndDescr(); 
+  	        rule.setLhs( lhs ); 
+	        lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+			lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );	
+			
+			rule.addAttribute( new AttributeDescr( "dialect", "clips") );												
 		}
 		documentation=STRING {
 	    	// do nothing here for now

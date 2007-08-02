@@ -49,7 +49,7 @@ public class CLPEval
     public boolean evaluate(Tuple tuple,
                             Declaration[] requiredDeclarations,
                             WorkingMemory workingMemory) throws Exception {
-        ExecutionContext context = new ExecutionContext( (InternalWorkingMemory) workingMemory,
+        ExecutionContext context = new ExecutionContextImpl( (InternalWorkingMemory) workingMemory,
                                                          (ReteTuple) tuple,
                                                          this.index - 1 );
         return this.function.getBooleanValue( context );

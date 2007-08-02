@@ -50,7 +50,7 @@ public class CLPPredicate
                             Declaration[] previousDeclarations,
                             Declaration[] localDeclarations,
                             WorkingMemory workingMemory) throws Exception {
-        ExecutionContext context = new ExecutionContext( (InternalWorkingMemory) workingMemory,
+        ExecutionContext context = new ExecutionContextImpl( (InternalWorkingMemory) workingMemory,
                                                          (ReteTuple) tuple,
                                                          object,
                                                          this.index - 1 );

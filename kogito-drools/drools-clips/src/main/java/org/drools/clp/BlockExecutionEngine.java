@@ -42,7 +42,7 @@ public class BlockExecutionEngine
     public void execute(InternalWorkingMemory workingMemory,
                         ReteTuple tuple,
                         Object object) {
-        execute( new ExecutionContext( workingMemory,
+        execute( new ExecutionContextImpl( workingMemory,
                                        tuple,
                                        object,
                                        this.index - 1 ) );
@@ -50,7 +50,7 @@ public class BlockExecutionEngine
 
     public void execute(InternalWorkingMemory workingMemory,
                         ReteTuple tuple) {
-        execute( new ExecutionContext( workingMemory,
+        execute( new ExecutionContextImpl( workingMemory,
                                        tuple,
                                        this.index - 1 ) );
     }
@@ -67,7 +67,7 @@ public class BlockExecutionEngine
 
     public void evaluate(KnowledgeHelper knowledgeHelper,
                          WorkingMemory workingMemory) throws Exception {
-        ExecutionContext context = new ExecutionContext( (InternalWorkingMemory) workingMemory,
+        ExecutionContext context = new ExecutionContextImpl( (InternalWorkingMemory) workingMemory,
                                                          (ReteTuple) knowledgeHelper.getTuple(),
                                                          this.index - 1 );
         execute( context );
