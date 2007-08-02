@@ -85,7 +85,7 @@ public class AddFunctionTest extends TestCase {
                                                     0 );
         ValueHandler val3 = new TempTokenVariable( "ld" );
 
-        ExecutionContext context = new ExecutionContext( workingMemory,
+        ExecutionContext context = new ExecutionContextImpl( workingMemory,
                                                          tuple,
                                                          new BigDecimal( 10 ),
                                                          1 );

@@ -8,5 +8,5 @@ public interface ParserHandler {
     
     public void ruleDescrHandler(RuleDescr ruleDescr);
     
-    public void lispFormHandler(ExecutionEngine engine);
+    public void lispFormHandler(ValueHandler valueHandler);  
 }

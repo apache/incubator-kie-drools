@@ -84,7 +84,7 @@ public class Deffunction
 
     private ExecutionContext initContext(ValueHandler[] args,
                                          ExecutionContext context) {
-        ExecutionContext newContext = new ExecutionContext( context.getWorkingMemory(),
+        ExecutionContext newContext = new ExecutionContextImpl( context.getWorkingMemory(),
                                                             context.getTuple(),
                                                             args.length );
         for ( int i = 0, length = args.length; i < length; i++ ) {

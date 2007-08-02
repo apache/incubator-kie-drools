@@ -1,7 +1,6 @@
 package org.drools.clp.functions;
 
 import org.drools.clp.BuildContext;
-import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
 import org.drools.clp.LispForm;
 import org.drools.clp.LispList;

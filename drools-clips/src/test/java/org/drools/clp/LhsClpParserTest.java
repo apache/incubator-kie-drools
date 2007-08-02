@@ -332,7 +332,11 @@ public class LhsClpParserTest extends TestCase {
         
         assertEquals("name", rule.getName() );
         
-        AttributeDescr salience = ( AttributeDescr ) attributes.get( 1 );
+        AttributeDescr dialect = ( AttributeDescr ) attributes.get( 1 );
+        assertEquals( "dialect", dialect.getName() );
+        assertEquals( "clips", dialect.getValue() );        
+        
+        AttributeDescr salience = ( AttributeDescr ) attributes.get( 2 );
         assertEquals( "salience", salience.getName() );
         assertEquals( "-100", salience.getValue() );
         

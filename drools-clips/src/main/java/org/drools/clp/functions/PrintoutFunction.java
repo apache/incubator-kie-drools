@@ -19,7 +19,11 @@ public class PrintoutFunction extends BaseFunction
 
     public ValueHandler execute(ValueHandler[] args,
                                 ExecutionContext context) {
-        PrintStream route = context.getPrintoutRouters( args[0].getStringValue( context ) );
+        PrintStream route = context.getPrintoutRouters( args[0].getStringValue( context ) );        
+        
+        if ( route == null ) {
+            throw new RuntimeException("printout route '" + args[0].getStringValue( context ) + "' does not exists" );
+        }        
         
         for ( int i = 1; i < args.length; i++ ) {
             ValueHandler value = args[i].getValue( context );
