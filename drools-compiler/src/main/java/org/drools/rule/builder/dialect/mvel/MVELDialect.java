@@ -186,15 +186,14 @@ public class MVELDialect
                            getEvalBuilder() );
         
         this.builders.put( CollectDescr.class,
-                           collect );
+                           this.collect );
 
         this.builders.put( ForallDescr.class,
-                           forall );
+                           this.forall );
 
         this.builders.put( FunctionDescr.class,
-                           function );
-
-    }
+                           this.function );
+   }
 
     public void init(Package pkg) {
         this.pkg = pkg;
@@ -204,6 +203,8 @@ public class MVELDialect
 
     public void init(RuleDescr ruleDescr) {
         //MVEL:test null to Fix failing test on org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
+        
+        // @todo: why is this here, MVEL doesn't compile anything? mdp
         String pkgName = this.pkg == null? "": this.pkg.getName();
         final String ruleClassName = JavaDialect.getUniqueLegalName( pkgName,
         															 ruleDescr.getName(),
