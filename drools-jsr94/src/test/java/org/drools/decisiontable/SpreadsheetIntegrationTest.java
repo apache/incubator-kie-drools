@@ -76,7 +76,6 @@ public class SpreadsheetIntegrationTest extends TestCase {
         session.executeRules();
         assertEquals( 1,
                       list.size() );
-
     }
 
 }
