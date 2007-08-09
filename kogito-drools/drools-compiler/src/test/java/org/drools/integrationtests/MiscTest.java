@@ -964,16 +964,9 @@ public class MiscTest extends TestCase {
                     list.get( 5 ) );
     }
     
-    public void testFrom2() throws Exception {
-//        final PackageBuilder builder = new PackageBuilder();
-//        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_fromX.drl" ) ) );
-//        final Package pkg = builder.getPackage();
-//
-//        BasicConfigurator.configure();
-//        Logger.getRootLogger().setLevel(Level.DEBUG);
-
+    public void testFromWithNewConstructor() throws Exception {
         DrlParser parser = new DrlParser();
-        PackageDescr descr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_fromX.drl" ) ) );
+        PackageDescr descr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithNewConstructor.drl" ) ) );
         PackageBuilder builder = new PackageBuilder();
         builder.addPackage(descr);
         Package pkg = builder.getPackage();
