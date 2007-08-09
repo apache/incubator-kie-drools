@@ -9,6 +9,8 @@ import java.util.Properties;
 import java.util.Random;
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.common.InternalRuleBase;
 import org.drools.rule.Package;
 
 import junit.framework.TestCase;
@@ -212,12 +214,38 @@ public class RuleAgentTest extends TestCase {
         
         RuleBase rb = ag.getRuleBase();
         assertNotNull(rb);
-        assertEquals(1, rb.getPackages().length);
+        assertEquals(1, rb.getPackages().length);        
+    }
+    
+    public void testCustomRuleBaseConfiguration() throws Exception {
+        final File dir = RuleBaseAssemblerTest.getTempDirectory();
         
+        Random rnd = new Random(System.currentTimeMillis());
+        
+        final Package p1 = new Package("p1");
+        final File p1f = new File(dir, rnd.nextLong() + ".pkg");
+        RuleBaseAssemblerTest.writePackage( p1, p1f );
+        
+        String path = p1f.getPath();
+        
+        Properties props = new Properties();
+        props.setProperty( "file", path );
+        
+        // Check a default value for the RuleBase's RuleBaseConfiguration        
+        RuleAgent agent = RuleAgent.newRuleAgent( props );
+        RuleBaseConfiguration conf = ((InternalRuleBase) agent.getRuleBase()).getConfiguration();
+        assertEquals( false, conf.isSequential() );
+        
+        // Pass in a RuleBaseConfiguration and make sure the RuleBase was created with it
+        conf = new RuleBaseConfiguration();
+        conf.setSequential( true );
+        agent = RuleAgent.newRuleAgent( props, conf );
+        conf = ((InternalRuleBase) agent.getRuleBase()).getConfiguration();
+        assertEquals( true, conf.isSequential() );        
     }
     
     public void testLoadSampleConfig() {
-        RuleAgent ag = new RuleAgent();
+        RuleAgent ag = new RuleAgent( new RuleBaseConfiguration()  );
         Properties props = ag.loadFromProperties( "/sample-agent-config.properties" );
         assertEquals("10", props.getProperty( RuleAgent.POLL_INTERVAL ));
         assertEquals("/home/packages", props.getProperty( RuleAgent.DIRECTORY ));
@@ -237,7 +265,7 @@ public class RuleAgentTest extends TestCase {
     }
     
     public void testEventListenerSetup() throws Exception {
-        RuleAgent ag = new RuleAgent();
+        RuleAgent ag = new RuleAgent( new RuleBaseConfiguration() );
         assertNotNull(ag.listener);
 
         final String[] name = new String[1];
@@ -272,9 +300,7 @@ public class RuleAgentTest extends TestCase {
 
         assertEquals(list, ag.listener);
         assertEquals("poo", name[0]);
-        ag.stopPolling();
-        
-        
+        ag.stopPolling();                
     }
     
     
@@ -353,6 +379,10 @@ public class RuleAgentTest extends TestCase {
         public int secondsToRefresh;
         public List provs;
         public boolean newInstance;
+        
+        public AnotherRuleAgentMock() {
+            super( new RuleBaseConfiguration() );
+        }        
 
         synchronized void configure(boolean newInstance, List provs, int secondsToRefresh) {
             this.newInstance = newInstance;
