@@ -16,6 +16,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
 import org.drools.rule.Package;
@@ -103,6 +104,11 @@ public class RuleAgent {
      * The rule base that is being managed.
      */
     private RuleBase           ruleBase;
+    
+    /**
+     * the configuration for the RuleBase
+     */
+    private RuleBaseConfiguration ruleBaseConf;
 
     /**
      * The timer that is used to monitor for changes and deal with them. 
@@ -136,21 +142,37 @@ public class RuleAgent {
      * for changes).
      */
     public static RuleAgent newRuleAgent(Properties config) {
-        RuleAgent agent = new RuleAgent();
-        agent.init( config );
-        return agent;
+        return newRuleAgent(config, null, null);
     }
+    
+    /**
+     * Properties configured to load up packages into a rulebase with the provided
+     * configuration (and monitor them for changes). 
+     */
+    public static RuleAgent newRuleAgent(Properties config, RuleBaseConfiguration ruleBaseConf) {
+        return newRuleAgent(config, null, ruleBaseConf);
+    }    
     
     /**
      * This allows an optional listener to be passed in.
      * The default one prints some stuff out to System.err only when really needed.
      */
     public static RuleAgent newRuleAgent(Properties config, AgentEventListener listener) {
-        RuleAgent agent = new RuleAgent();
-        agent.listener = listener;
+        return newRuleAgent(config, listener, null);
+    }
+    
+    /**
+     * This allows an optional listener to be passed in.
+     * The default one prints some stuff out to System.err only when really needed.
+     */
+    public static RuleAgent newRuleAgent(Properties config, AgentEventListener listener, RuleBaseConfiguration ruleBaseConf) {
+        RuleAgent agent = new RuleAgent(ruleBaseConf);
+        if ( listener != null ) {
+            agent.listener = listener;
+        }
         agent.init(config);
         return agent;
-    }
+    }    
 
 
 
@@ -185,27 +207,35 @@ public class RuleAgent {
     }
 
     /**
-     * Pass in the name and full path to a config file that is on the classpath.
+     * Pass in the name and full path to a config file that is on the classpath. 
      */
     public static RuleAgent newRuleAgent(String propsFileName) {
-        RuleAgent agent = new RuleAgent();
-        agent.init( agent.loadFromProperties( propsFileName ) );
-        return agent;
+        return newRuleAgent( loadFromProperties( propsFileName ) );
     }
     
     /**
-     * This takes in an optional listener.
-     * Listener must not be null in this case.
+     * Pass in the name and full path to a config file that is on the classpath. 
+     */    
+    public static RuleAgent newRuleAgent(String propsFileName, RuleBaseConfiguration ruleBaseConfiguration) {
+        return newRuleAgent( loadFromProperties( propsFileName ), ruleBaseConfiguration );
+    }    
+    
+    /**
+     * This takes in an optional listener. Listener must not be null in this case.
      */
     public static RuleAgent newRuleAgent(String propsFileName, AgentEventListener listener) {
-        RuleAgent ag = new RuleAgent();
-        ag.listener = listener;
-        ag.init( ag.loadFromProperties( propsFileName ) );
-        return ag;
+        return newRuleAgent( loadFromProperties( propsFileName ), listener );
     }
+    
+    /**
+     * This takes in an optional listener and RuleBaseConfiguration. Listener must not be null in this case.
+     */    
+    public static RuleAgent newRuleAgent(String propsFileName, AgentEventListener listener, RuleBaseConfiguration ruleBaseConfiguration) {
+        return newRuleAgent( loadFromProperties( propsFileName ), listener, ruleBaseConfiguration );
+    }    
 
-    Properties loadFromProperties(String propsFileName) {
-        InputStream in = this.getClass().getResourceAsStream( propsFileName );
+    static Properties loadFromProperties(String propsFileName) {
+        InputStream in = RuleAgent.class.getResourceAsStream( propsFileName );
         Properties props = new Properties();
         try {
             props.load( in );
@@ -274,7 +304,7 @@ public class RuleAgent {
             if (this.newInstance) {
                 listener.info( "Creating a new rulebase as per settings." );
                 //blow away old
-                this.ruleBase = RuleBaseFactory.newRuleBase();
+                this.ruleBase = RuleBaseFactory.newRuleBase( this.ruleBaseConf );
                 
                 //need to store ALL packages
                 for ( Iterator iter = changedPackages.iterator(); iter.hasNext(); ) {
@@ -293,7 +323,7 @@ public class RuleAgent {
 
     private synchronized Package[] checkForChanges(PackageProvider prov) {
         listener.debug( "SCANNING FOR CHANGE " + prov.toString() );
-        if (this.ruleBase == null) ruleBase = RuleBaseFactory.newRuleBase();
+        if (this.ruleBase == null) ruleBase = RuleBaseFactory.newRuleBase( this.ruleBaseConf );
         Package[] changes = prov.loadPackageChanges();
         return changes;
     }
@@ -324,7 +354,12 @@ public class RuleAgent {
         return this.ruleBase;
     }
 
-    RuleAgent() {
+    RuleAgent(RuleBaseConfiguration ruleBaseConf) {
+        if ( ruleBaseConf == null ) {
+            this.ruleBaseConf = new RuleBaseConfiguration();
+        } else {
+            this.ruleBaseConf = ruleBaseConf;
+        }
     }
 
     /**
