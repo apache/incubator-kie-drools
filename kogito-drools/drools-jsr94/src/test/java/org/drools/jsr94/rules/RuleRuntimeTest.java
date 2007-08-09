@@ -43,15 +43,25 @@ package org.drools.jsr94.rules;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.rules.RuleExecutionSetNotFoundException;
 import javax.rules.RuleRuntime;
+import javax.rules.RuleServiceProvider;
+import javax.rules.RuleServiceProviderManager;
 import javax.rules.StatefulRuleSession;
 import javax.rules.StatelessRuleSession;
 import javax.rules.admin.LocalRuleExecutionSetProvider;
 import javax.rules.admin.RuleAdministrator;
 import javax.rules.admin.RuleExecutionSet;
+
+import org.drools.RuleBaseConfiguration;
+import org.drools.decisiontable.Cheese;
+import org.drools.decisiontable.Person;
+import org.drools.decisiontable.SpreadsheetIntegrationTest;
 
 /**
  * Test the RuleRuntime implementation.
@@ -170,5 +180,30 @@ public class RuleRuntimeTest extends RuleEngineTestBase {
 
         this.ruleAdministrator.deregisterRuleExecutionSet( this.RULES_RESOURCE,
                                                            null );
+    }
+
+    public void testRuleBaseConfigurationConstant() throws Exception {
+        // JBRULES-1061
+        
+        Map properties = new HashMap();
+        properties.put( Constants.RES_SOURCE,
+                        Constants.RES_SOURCE_TYPE_DECISION_TABLE );
+
+        properties.put( Constants.RES_RULEBASE_CONFIG,
+                        new RuleBaseConfiguration() );
+
+        RuleServiceProviderManager.registerRuleServiceProvider( ExampleRuleEngineFacade.RULE_SERVICE_PROVIDER,
+                                                                RuleServiceProviderImpl.class );
+
+        RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider( ExampleRuleEngineFacade.RULE_SERVICE_PROVIDER );
+        RuleAdministrator ruleAdministrator = ruleServiceProvider.getRuleAdministrator();
+        LocalRuleExecutionSetProvider ruleSetProvider = ruleAdministrator.getLocalRuleExecutionSetProvider( null );
+
+        try {
+            RuleExecutionSet ruleExecutionSet = ruleSetProvider.createRuleExecutionSet( SpreadsheetIntegrationTest.class.getResourceAsStream( "IntegrationExampleTest.xls" ),
+                                                                                        properties );
+        } catch (Exception e) {
+            // fail should not throw an Excetpion
+        }
     }
 }
