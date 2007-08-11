@@ -85,7 +85,7 @@ public abstract class AbstractCompositeRestriction
         private ContextEntry  entry;
 
         public CompositeContextEntry(final Restriction[] restrictions) {
-            final ContextEntry[] contextEntries = new ContextEntry[restrictions.length];
+            contextEntries = new ContextEntry[restrictions.length];
             for ( int i = 0; i < restrictions.length; i++ ) {
                 contextEntries[i] = restrictions[i].getContextEntry();
             }
