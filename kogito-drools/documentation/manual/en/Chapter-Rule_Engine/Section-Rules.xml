@@ -84,7 +84,7 @@
       </listitem>
     </itemizedlist>
 
-    <para>'forall' and 'accumulate' will be added shortley. 
+    <para>'forall' and 'accumulate' will be added shortly. 
     The following Field Constraints are allowed:</para>
 
     <itemizedlist>
@@ -216,9 +216,9 @@ public void cheddarCheese(Cheese cheese) {
 
     <para>10 == 2 * 5</para>
 
-    <para>Expressions that evaluate against one or more variables, the facts, are
-    "open statements", in that we cannot determine whether the statement is
-    true until we have a variable instance to evaluate against:</para>
+    <para>Expressions that evaluate against one or more variables, the facts,
+    are "open statements", in that we cannot determine whether the statement
+    is true until we have a variable instance to evaluate against:</para>
 
     <para>Person.sex == "male"</para>
 
@@ -249,15 +249,15 @@ public void cheddarCheese(Cheese cheese) {
     <para>So in Java we can say that a simple proposition is of the form
     'variable' 'operator' 'value' - where we often refer to 'value' as being a
     literal value - a proposition can be thought as a field constraint.
-    Further to this propositions can be combined with conjuntive and
-    disjuntive connectives, which is the logic theorists way of saying
+    Further to this propositions can be combined with conjunctive and
+    disjunctive connectives, which is the logic theorists way of saying
     '&amp;&amp;' and '||'. The following shows two open propositional
     statements connected together with a single disjunctive connective.</para>
 
     <programlisting>
-      <![CDATA[
+      
       person.getEyeColor().equals("blue") || person.getEyeColor().equals("green") 
-      ]]>
+      
     </programlisting>
 
     <para>This can be expressed using a disjunctive Conditional Element
@@ -265,9 +265,9 @@ public void cheddarCheese(Cheese cheese) {
     represent the two possible logic outcomes.</para>
 
     <programlisting>
-      <![CDATA[
+      
       Person( eyeColour == "blue" ) || Person( eyeColor == "green" )
-      ]]>
+      
     </programlisting>
 
     <para>Disjunctive field constraints connectives could also be used -
@@ -275,21 +275,21 @@ public void cheddarCheese(Cheese cheese) {
     result in multiple rule generation.</para>
 
     <programlisting>
-      <![CDATA[
+      
       Person( eyeColour == "blue"||"green" )
-      ]]>
+      
     </programlisting>
 
-    <para>Propositional Logic is not Turing complete, limiting the problems 
-    you can define, because it cannot express criteria
-    for the structure of data. First Order Logic (FOL), or Predicate Logic,
-    extends Propositional Logic with two new quantifier concepts to allow
-    expressions defining structure - specifically universal and existential
-    quantifiers. Universal quantifiers allow you to check that something is
-    true for everything; normally supported by the 'forall' conditional
-    element, but not yet implemented in Drools 3.0. Existential quantifiers
-    check for the existence of something, in that it occurs at least once -
-    this is supported with 'not' and 'exists' conditional elements.</para>
+    <para>Propositional Logic is not Turing complete, limiting the problems
+    you can define, because it cannot express criteria for the structure of
+    data. First Order Logic (FOL), or Predicate Logic, extends Propositional
+    Logic with two new quantifier concepts to allow expressions defining
+    structure - specifically universal and existential quantifiers. Universal
+    quantifiers allow you to check that something is true for everything;
+    normally supported by the 'forall' conditional element, but not yet
+    implemented in Drools 3.0. Existential quantifiers check for the existence
+    of something, in that it occurs at least once - this is supported with
+    'not' and 'exists' conditional elements.</para>
 
     <para>Imagine we have two classes - Student and Module. Module represents
     each of the courses the Student attended for that semester, referenced by
@@ -300,23 +300,23 @@ public void cheddarCheese(Cheese cheese) {
     for the specified criteria.</para>
 
     <programlisting>
-    <![CDATA[
+    
     public class Student {
     private String name;
     private List modules;
 
     ...
     }
-    ]]>   
+       
     </programlisting>
 
     <programlisting>
-    <![CDATA[
+    
     public class Module {
     private String name;
     private String studentName;
     private int score;
-    ]]>
+    
     </programlisting>
 
     <para>Java is Turing complete in that you can write code, among other
@@ -324,30 +324,30 @@ public void cheddarCheese(Cheese cheese) {
     should return a List of students who have failed the semester.</para>
 
     <programlisting>
-    <![CDATA[
+    
     List failedStudents = new ArrayList();
     
     for ( Iterator studentIter = students.iterator(); studentIter.hasNext() {
         Student student = ( Student ) studentIter.next();
         for ( Iterator it = student.getModules.iterator(); it.hasNext(); ) {
             Module module = ( Module ) it.next();
-            if ( module.getScore() < 40  ) {
+            if ( module.getScore() &lt; 40  ) {
                 failedStudents.add( student ) ;
                 break;
             }
         }
     }
-    ]]>
+    
     </programlisting>
 
     <para>Early SQL implementations were not Turing complete as they did not
-    provide quantifiers to access the structure of data. Modern SQL
-    engines do allow nesting of SQL, which can be combined with keywords like
-    'exists' and 'in'. The following show SQL and a Rule to return a set of Students who
-    have failed the semester.</para>
+    provide quantifiers to access the structure of data. Modern SQL engines do
+    allow nesting of SQL, which can be combined with keywords like 'exists'
+    and 'in'. The following show SQL and a Rule to return a set of Students
+    who have failed the semester.</para>
 
     <programlisting>
-<![CDATA[
+
       select 
     * 
 from 
@@ -359,19 +359,19 @@ where exists (
         Modules m 
     where 
         m.student_name = s.name and 
-        m.score < 40 
+        m.score &lt; 40 
 )
-]]>
+
     </programlisting>
 
     <para></para>
 
     <programlisting>
-<![CDATA[
+
     rule "Failed_Students"
     when
-        exists( $student : Student() && Module( student == $student, score < 40 ) )
-]]>    
+        exists( $student : Student() &amp;&amp; Module( student == $student, score &lt; 40 ) )
+    
     </programlisting>
 
     <para></para>

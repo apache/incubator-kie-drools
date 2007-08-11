@@ -119,7 +119,7 @@ then
     matches against the <indexterm>
         <primary>WorkingMemory</primary>
       </indexterm> Working Memory. Facts are asserted into the Working Memory
-    where they may then be modiied or retracted. A system with a large number
+    where they may then be modified or retracted. A system with a large number
     of rules and facts may result in many rules being true for the same fact
     assertion, these rules are said to be in conflict. The Agenda manages the
     execution order of these conflicuting rules using a Conflict Resolution
@@ -196,7 +196,7 @@ then
     for conclusions that it can, known as 'sub goals', that will help satisfy
     some unknown part of the current goal - it continues this process until
     either the initial conclusion is proven or there are no more sub goals.
-    Prolog is an example of a Backward Chaining engine; Drools will adding
+    Prolog is an example of a Backward Chaining engine; Drools will be adding
     support for Backward Chaining in its next major release.</para>
 
     <figure>

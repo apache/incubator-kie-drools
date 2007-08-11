@@ -8,13 +8,13 @@
     <para>Drools is split into two main parts: Authoring and Runtime.</para>
 
     <para>The authoring process involves the creation of DRL or XML files for
-    rules which are fed into a parser - defined by an Antlr 3 grammer. The
-    parser checks for correctly formed grammer and produces an intermediate
+    rules which are fed into a parser - defined by an Antlr 3 grammar. The
+    parser checks for correctly formed grammar and produces an intermediate
     structure for the "descr"; where the "descr" indicates the AST that
     "describes" the rules. The AST is then passed to the Package Builder which
     produces Packages. Package Builder also undertakes any code generation and
     compilation that is necessary for the creation of the Pacakge. A Packge
-    object is self contained and deployeable, in that it's a serialized object
+    object is self contained and deployable, in that it's a serialized object
     consisting of one or more rules.</para>
 
     <figure>
@@ -110,7 +110,7 @@ builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream
 PackageBuilderErrors errors = builder.getErrors();</programlisting>
     </example>
 
-    <para>PackagBuilder is configurable using PackageBuilderConfiguration
+    <para>PackageBuilder is configurable using PackageBuilderConfiguration
     class.</para>
 
     <figure>
@@ -485,7 +485,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
       <programlisting>List list = new ArrayList();
 session.setGlobal("list", list);           </programlisting>
 
-      <para>f a rule evaluates on a global before you set it you will get a
+      <para>If a rule evaluates on a global before you set it you will get a
       NullPointerException.</para>
     </section>
 
@@ -518,8 +518,7 @@ session.setGlobal("list", list);           </programlisting>
 
       <para>Drools 4.0 has full support for Shadow Facts implemented as
       transparent lazy proxies. Shadow facts are enable by default and are not
-      visible from external code, not even inside code blocks on rules.
-      </para>
+      visible from external code, not even inside code blocks on rules.</para>
 
       <para>Although shadow facts are a great way of ensuring the engine
       integrity, they add some overhead to the the reasoning process. As so,
@@ -715,7 +714,7 @@ public void setState(final String newState) {
     </figure>
 
     <para>The Agenda is a RETE feature. During a Working Memory Action rules
-    may become fully matched and legible for execution; a single Working
+    may become fully matched and elegible for execution; a single Working
     Memory Action can result in multiple eligible rules. When a rule is fully
     matched an Activation is created, referencing the Rule and the matched
     facts, and placed onto the Agenda. The Agenda controls the execution order
@@ -959,7 +958,7 @@ public void setState(final String newState) {
       <para>If you have followed this far, you will note that truth
       maintenance, like logical assertions, allows rules to behave a little
       like a human would, and can certainly make the rules more
-      managable.</para>
+      manageable.</para>
     </section>
 
     <section>
@@ -989,7 +988,7 @@ public void setState(final String newState) {
     concern.</para>
 
     <para>There are three types of event listeners -
-    WorkingMemoryEventListener, AgendEventListener
+    WorkingMemoryEventListener, AgendaEventListener
     RuleFlowEventListener.</para>
 
     <figure>
