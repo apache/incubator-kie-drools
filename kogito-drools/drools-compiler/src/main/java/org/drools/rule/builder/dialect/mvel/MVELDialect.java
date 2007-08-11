@@ -342,7 +342,7 @@ public class MVELDialect
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
                                                     e,
-                                                    "Unable to determine the used declarations\n" + e.getMessage()) );
+                                                    "Unable to determine the used declarations.\n" + e.getMessage()) );
         }
         return result;
     }
