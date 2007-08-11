@@ -216,8 +216,8 @@ public class JavaDialect
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
-                                                    null,
-                                                    "Unable to determine the used declarations" ) );
+                                                    e,
+                                                    "Unable to determine the used declarations.\n" + e) );
         }
         return result;
     }
@@ -232,8 +232,8 @@ public class JavaDialect
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     descr,
-                                                    null,
-                                                    "Unable to determine the used declarations" ) );
+                                                    e,
+                                                    "Unable to determine the used declarations.\n" + e) );
         }
         return result;
     }
