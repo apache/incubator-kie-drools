@@ -48,7 +48,4 @@ public class OrCompositeRestriction extends AbstractCompositeRestriction {
         return false;
     }
 
-    public ContextEntry getContextEntry() {
-        return this.contextEntry;
-    }
 }

@@ -48,7 +48,4 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
         return true;
     }
 
-    public ContextEntry getContextEntry() {
-        return this.contextEntry;
-    }
 }
