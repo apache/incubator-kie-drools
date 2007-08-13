@@ -155,7 +155,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         builder.addPackage( packageDescr );
 
-        final Package pkg = builder.getPackage();
+        Package pkg = builder.getPackage();
         Rule rule = pkg.getRule( "rule-1" );
 
         assertLength( 0,
@@ -192,6 +192,8 @@ public class PackageBuilderTest extends DroolsTestCase {
                       pkg.getPackageCompilationData().list().length );
 
         builder.addPackage( packageDescr );
+        
+        pkg = builder.getPackage();
 
         rule = pkg.getRule( "rule-1" );
 

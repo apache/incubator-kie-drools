@@ -446,6 +446,10 @@ public class PackageBuilder {
      * Compiled packages are serializable.
      */
     public Package getPackage() {
+        if ( this.pkg != null && this.pkg.getPackageCompilationData() != null ) {
+            this.pkg.getPackageCompilationData().reload();
+        }
+        
         addRuleFlowsToPackage( this.processBuilder, pkg );
         if ( hasErrors() ) {
             this.pkg.setError( getErrors().toString() );

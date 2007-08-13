@@ -208,16 +208,10 @@ public class DynamicRulesTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
-        // org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
+        
         final RuleBase ruleBase = getRuleBase();
-        // org.drools.reteoo.RuleBaseImpl ruleBase = new
-        // org.drools.reteoo.RuleBaseImpl();
-        if ( ruleBase instanceof org.drools.reteoo.ReteooRuleBase ) {
-            reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
-            // } else if ( ruleBase instanceof org.drools.leaps.LeapsRuleBase )
-            // {
-            // leapsRuleBase = (org.drools.leaps.LeapsRuleBase) ruleBase;
-        }
+        reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
+        
         ruleBase.addPackage( pkg );
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -241,25 +235,6 @@ public class DynamicRulesTest extends TestCase {
             reteooRuleBase.removePackage( "org.drools.test" );
             assertEquals( 0,
                           reteooRuleBase.getPackages().length );
-            // } else if ( leapsRuleBase != null ) {
-            // assertEquals( 1,
-            // leapsRuleBase.getPackages().length );
-            // assertEquals( 4,
-            // leapsRuleBase.getPackages()[0].getRules().length );
-            //
-            // leapsRuleBase.removeRule( "org.drools.test",
-            // "Who likes Stilton" );
-            // assertEquals( 3,
-            // leapsRuleBase.getPackages()[0].getRules().length );
-            //
-            // leapsRuleBase.removeRule( "org.drools.test",
-            // "like cheese" );
-            // assertEquals( 2,
-            // leapsRuleBase.getPackages()[0].getRules().length );
-            //
-            // leapsRuleBase.removePackage( "org.drools.test" );
-            // assertEquals( 0,
-            // leapsRuleBase.getPackages().length );
         }
     }
 
@@ -284,10 +259,10 @@ public class DynamicRulesTest extends TestCase {
 
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
-
+        
         // Check a function can be removed from a package.
         // Once removed any efforts to use it should throw an Exception
-        pkg.removeFunction( "addFive" );
+        ruleBase.removeFunction( "org.drools.test", "addFive" );
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
