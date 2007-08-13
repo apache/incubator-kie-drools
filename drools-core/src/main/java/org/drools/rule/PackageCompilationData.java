@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
@@ -52,22 +53,23 @@ public class PackageCompilationData
     /**
      *
      */
-    private static final long            serialVersionUID = 400L;
+    private static final long             serialVersionUID = 400L;
 
     private static final ProtectionDomain PROTECTION_DOMAIN;
 
-    private Map                          invokerLookups;
+    private Map                           invokerLookups;
 
-    private Object                       AST;
+    private Object                        AST;
 
-    private Map                          store;
+    private Map                           store;
 
-    private Map                          lineMappings;
+    private Map                           lineMappings;
 
-    private transient PackageClassLoader classLoader;
+    private transient PackageClassLoader  classLoader;
 
-    private transient ClassLoader        parentClassLoader;
-
+    private transient ClassLoader         parentClassLoader;
+    
+    private boolean                       dirty;
 
     static {
         PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
@@ -90,11 +92,16 @@ public class PackageCompilationData
         this.invokerLookups = new HashMap();
         this.store = new HashMap();
         this.lineMappings = new HashMap();
+        this.dirty = false;
+    }
+    
+    public boolean isDirty() {
+        return this.dirty;
     }
 
     private void initClassLoader(ClassLoader parentClassLoader) {
-        if (parentClassLoader == null ) {
-            throw new RuntimeDroolsException("PackageCompilationData cannot have a null parentClassLoader" );
+        if ( parentClassLoader == null ) {
+            throw new RuntimeDroolsException( "PackageCompilationData cannot have a null parentClassLoader" );
         }
         this.parentClassLoader = parentClassLoader;
         this.classLoader = new PackageClassLoader( this.parentClassLoader );
@@ -126,7 +133,7 @@ public class PackageCompilationData
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
         if ( stream instanceof DroolsObjectInputStream ) {
-            DroolsObjectInputStream droolsStream = ( DroolsObjectInputStream ) stream;
+            DroolsObjectInputStream droolsStream = (DroolsObjectInputStream) stream;
             initClassLoader( droolsStream.getClassLoader() );
         } else {
             initClassLoader( Thread.currentThread().getContextClassLoader() );
@@ -149,10 +156,10 @@ public class PackageCompilationData
     }
 
     public byte[] read(final String resourceName) {
-        final byte[] bytes = null;
+        byte[] bytes = null;
 
         if ( this.store != null ) {
-            return (byte[]) this.store.get( resourceName );
+            bytes = ( byte[] ) this.store.get( resourceName );
         }
         return bytes;
     }
@@ -162,7 +169,8 @@ public class PackageCompilationData
         if ( this.store.put( resourceName,
                              clazzData ) != null ) {
             // we are updating an existing class so reload();
-            reload();
+            //reload();
+            this.dirty = true;
         } else {
             try {
                 wire( convertResourceToClassName( resourceName ) );
@@ -178,7 +186,8 @@ public class PackageCompilationData
         this.invokerLookups.remove( resourceName );
         if ( this.store.remove( convertClassToResourcePath( resourceName ) ) != null ) {
             // we need to make sure the class is removed from the classLoader
-            reload();
+            // reload();
+            this.dirty = true;
         }
     }
 
@@ -206,8 +215,10 @@ public class PackageCompilationData
 
         // Wire up invokers
         try {
-            for ( final Iterator it = this.invokerLookups.keySet().iterator(); it.hasNext(); ) {
-                wire( (String) it.next() );
+            for ( final Iterator it = this.invokerLookups.entrySet().iterator(); it.hasNext(); ) {
+                Entry entry = (Entry) it.next();
+                wire( (String) entry.getKey(),
+                      entry.getValue() );
             }
         } catch ( final ClassNotFoundException e ) {
             throw new RuntimeDroolsException( e );
@@ -217,6 +228,8 @@ public class PackageCompilationData
             throw new RuntimeDroolsException( e );
         } catch ( final InstantiationException e ) {
             throw new RuntimeDroolsException( e );
+        } finally {
+            this.dirty = false;
         }
     }
 
@@ -279,12 +292,12 @@ public class PackageCompilationData
     }
 
     public Map getLineMappings() {
-        if (this.lineMappings==null) {
+        if ( this.lineMappings == null ) {
             this.lineMappings = new HashMap();
         }
         return this.lineMappings;
     }
-    
+
     public LineMappings getLineMappings(final String className) {
         return (LineMappings) getLineMappings().get( className );
     }

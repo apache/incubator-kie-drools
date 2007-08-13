@@ -144,8 +144,8 @@ public abstract class AbstractWorkingMemory
     protected boolean                      firing;
 
     protected boolean                      halt;
-    
-    private int 						   processCounter;
+
+    private int                            processCounter;
 
     // ------------------------------------------------------------
     // Constructors
@@ -191,7 +191,6 @@ public abstract class AbstractWorkingMemory
         } else {
             this.discardOnLogicalOverride = false;
         }
-
     }
 
     // ------------------------------------------------------------
@@ -373,14 +372,14 @@ public abstract class AbstractWorkingMemory
     public void clearAgendaGroup(final String group) {
         this.agenda.clearAgendaGroup( group );
     }
-    
+
     public void clearActivationGroup(final String group) {
         this.agenda.clearActivationGroup( group );
     }
-    
+
     public void clearRuleFlowGroup(final String group) {
         this.agenda.clearRuleFlowGroup( group );
-    }    
+    }
 
     public RuleBase getRuleBase() {
         return this.ruleBase;
@@ -439,10 +438,10 @@ public abstract class AbstractWorkingMemory
             } finally {
                 this.firing = false;
                 // @todo (mproctor) disabling Otherwise management for now, not happy with the current implementation
-//                if ( noneFired ) {
-//                    doOtherwise( agendaFilter,
-//                                 fireLimit );
-//                }
+                //                if ( noneFired ) {
+                //                    doOtherwise( agendaFilter,
+                //                                 fireLimit );
+                //                }
 
             }
         }
@@ -757,7 +756,7 @@ public abstract class AbstractWorkingMemory
                                 // and then re-add the handle. Otherwise we may end up with a leak.
                                 this.assertMap.remove( handle );
                                 Object oldObject = handle.getObject();
-                                if( oldObject instanceof ShadowProxy ) {
+                                if ( oldObject instanceof ShadowProxy ) {
                                     ((ShadowProxy) oldObject).setShadowedObject( object );
                                 } else {
                                     handle.setObject( object );
@@ -767,7 +766,7 @@ public abstract class AbstractWorkingMemory
                                                     false );
                             } else {
                                 Object oldObject = handle.getObject();
-                                if( oldObject instanceof ShadowProxy ) {
+                                if ( oldObject instanceof ShadowProxy ) {
                                     ((ShadowProxy) oldObject).setShadowedObject( object );
                                 } else {
                                     handle.setObject( object );
@@ -836,6 +835,8 @@ public abstract class AbstractWorkingMemory
                         Object object,
                         Rule rule,
                         Activation activation) {
+        this.ruleBase.executeQueuedActions();
+
         if ( activation != null ) {
             // release resources so that they can be GC'ed
             activation.getPropagationContext().releaseResources();
@@ -906,16 +907,16 @@ public abstract class AbstractWorkingMemory
             // stop processing JavaBean PropertyChangeEvents
             // on the retracted Object
         } catch ( final IllegalArgumentException e ) {
-            throw new RuntimeDroolsException(  "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " does not take a simple PropertyChangeListener argument so Drools will be unable to stop processing JavaBean"
-                                + " PropertyChangeEvents on the retracted Object" );
+            throw new RuntimeDroolsException( "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " does not take a simple PropertyChangeListener argument so Drools will be unable to stop processing JavaBean"
+                                              + " PropertyChangeEvents on the retracted Object" );
         } catch ( final IllegalAccessException e ) {
-            throw new RuntimeDroolsException(  "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " is not public so Drools will be unable to stop processing JavaBean PropertyChangeEvents on the retracted Object" );
+            throw new RuntimeDroolsException( "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " is not public so Drools will be unable to stop processing JavaBean PropertyChangeEvents on the retracted Object" );
         } catch ( final InvocationTargetException e ) {
-            throw new RuntimeDroolsException(  "Warning: The removePropertyChangeL istener method on the class " + object.getClass() + " threw an InvocationTargetException so Drools will be unable to stop processing JavaBean"
-                                + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
+            throw new RuntimeDroolsException( "Warning: The removePropertyChangeL istener method on the class " + object.getClass() + " threw an InvocationTargetException so Drools will be unable to stop processing JavaBean"
+                                              + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
         } catch ( final SecurityException e ) {
-            throw new RuntimeDroolsException(  "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a removePropertyChangeListener method so Drools will be unable to stop processing JavaBean"
-                                + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
+            throw new RuntimeDroolsException( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a removePropertyChangeListener method so Drools will be unable to stop processing JavaBean"
+                                              + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
         }
     }
 
@@ -940,6 +941,8 @@ public abstract class AbstractWorkingMemory
                         final Activation activation) throws FactException {
         try {
             this.lock.lock();
+            this.ruleBase.executeQueuedActions();
+
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             if ( handle.getId() == -1 ) {
                 // can't retract an already retracted handle
@@ -1027,44 +1030,50 @@ public abstract class AbstractWorkingMemory
     public void modifyRetract(final FactHandle factHandle,
                               final Rule rule,
                               final Activation activation) {
-        this.lock.lock();
-        // only needed if we maintain tms, but either way we must get it before we do the retract
-        int status = -1;
-        if ( this.maintainTms ) {
-            status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
-        }
-        final InternalFactHandle handle = (InternalFactHandle) factHandle;
-        //final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+        try {
+            this.lock.lock();
+            this.ruleBase.executeQueuedActions();
 
-        if ( handle.getId() == -1 ) {
-            // the handle is invalid, most likely already  retracted, so return
-            return;
-        }
-
-        if ( activation != null ) {
-            // release resources so that they can be GC'ed
-            activation.getPropagationContext().releaseResources();
-        }
-        // Nowretract any trace  of the original fact
-        final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
-                                                                                  PropagationContext.MODIFICATION,
-                                                                                  rule,
-                                                                                  activation,
-                                                                                  this.agenda.getActiveActivations(),
-                                                                                  this.agenda.getDormantActivations() );
-        doRetract( handle,
-                   propagationContext );
-
-        if ( this.maintainTms ) {
-
-            // the hashCode and equality has changed, so we must update the EqualityKey
-            EqualityKey key = handle.getEqualityKey();
-            key.removeFactHandle( handle );
-
-            // If the equality key is now empty, then remove it
-            if ( key.isEmpty() ) {
-                this.tms.remove( key );
+            // only needed if we maintain tms, but either way we must get it before we do the retract
+            int status = -1;
+            if ( this.maintainTms ) {
+                status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
             }
+            final InternalFactHandle handle = (InternalFactHandle) factHandle;
+            //final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+
+            if ( handle.getId() == -1 ) {
+                // the handle is invalid, most likely already  retracted, so return
+                return;
+            }
+
+            if ( activation != null ) {
+                // release resources so that they can be GC'ed
+                activation.getPropagationContext().releaseResources();
+            }
+            // Nowretract any trace  of the original fact
+            final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
+                                                                                      PropagationContext.MODIFICATION,
+                                                                                      rule,
+                                                                                      activation,
+                                                                                      this.agenda.getActiveActivations(),
+                                                                                      this.agenda.getDormantActivations() );
+            doRetract( handle,
+                       propagationContext );
+
+            if ( this.maintainTms ) {
+
+                // the hashCode and equality has changed, so we must update the EqualityKey
+                EqualityKey key = handle.getEqualityKey();
+                key.removeFactHandle( handle );
+
+                // If the equality key is now empty, then remove it
+                if ( key.isEmpty() ) {
+                    this.tms.remove( key );
+                }
+            }
+        } finally {
+            this.lock.unlock();
         }
     }
 
@@ -1081,6 +1090,9 @@ public abstract class AbstractWorkingMemory
                              final Rule rule,
                              final Activation activation) {
         try {
+            this.lock.lock();
+            this.ruleBase.executeQueuedActions();
+            
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
 
@@ -1154,6 +1166,8 @@ public abstract class AbstractWorkingMemory
                        final Activation activation) throws FactException {
         try {
             this.lock.lock();
+            this.ruleBase.executeQueuedActions();
+            
             // only needed if we maintain tms, but either way we must get it before we do the retract
             int status = -1;
             if ( this.maintainTms ) {
@@ -1352,12 +1366,12 @@ public abstract class AbstractWorkingMemory
             final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstanceImpl();
             processInstance.setWorkingMemory( this );
             processInstance.setProcess( process );
-            processInstance.setId(++processCounter);
+            processInstance.setId( ++processCounter );
             processInstance.start();
-            
-            getRuleFlowEventSupport().fireRuleFlowProcessStarted(
-            		processInstance, this );
-                
+
+            getRuleFlowEventSupport().fireRuleFlowProcessStarted( processInstance,
+                                                                  this );
+
             return processInstance;
         } else {
             throw new IllegalArgumentException( "Unknown process type: " + process.getClass() );

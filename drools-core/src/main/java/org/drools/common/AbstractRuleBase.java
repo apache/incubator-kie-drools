@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -84,6 +85,8 @@ abstract public class AbstractRuleBase
     protected FactHandleFactory                     factHandleFactory;
 
     protected Map                                   globals;
+    
+    private ReloadPackageCompilationData reloadPackageCompilationData = null;
 
     /**
      * WeakHashMap to keep references of WorkingMemories but allow them to be
@@ -185,12 +188,12 @@ abstract public class AbstractRuleBase
             this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
             this.classLoader = new MapBackedClassLoader( Thread.currentThread().getContextClassLoader() );
         }
-            
+
         this.packageClassLoader.addClassLoader( this.classLoader );
-        
+
         for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
             this.packageClassLoader.addClassLoader( ((Package) it.next()).getPackageCompilationData().getClassLoader() );
-        }       
+        }
 
         // Return the rules stored as a byte[]
         final byte[] bytes = (byte[]) stream.readObject();
@@ -254,8 +257,8 @@ abstract public class AbstractRuleBase
 
     public Package[] getPackages() {
         return (Package[]) this.pkgs.values().toArray( new Package[this.pkgs.size()] );
-    }   
-    
+    }
+
     public Map getPackagesMap() {
         return this.pkgs;
     }
@@ -381,11 +384,17 @@ abstract public class AbstractRuleBase
         }
 
         // Merge imports
-        // @TODO we should check for duplicates
         imports.addAll( newPkg.getImports() );
 
         // Add invokers
         compilationData.putAllInvokers( newCompilationData.getInvokers() );
+        
+        if ( compilationData.isDirty() ) {
+            if ( this.reloadPackageCompilationData == null ) {
+                this.reloadPackageCompilationData = new ReloadPackageCompilationData();
+            }
+            this.reloadPackageCompilationData.addPackageCompilationData( compilationData );            
+        }
 
         // Add globals
         for ( final Iterator it = newPkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
@@ -407,13 +416,13 @@ abstract public class AbstractRuleBase
                 pkg.addRule( newRule );
             }
         }
-        
+
         //and now the rule flows
         if ( newPkg.getRuleFlows() != Collections.EMPTY_MAP ) {
             Map flows = newPkg.getRuleFlows();
             for ( Iterator iter = flows.values().iterator(); iter.hasNext(); ) {
                 Process flow = (Process) iter.next();
-                pkg.addRuleFlow(flow);
+                pkg.addRuleFlow( flow );
             }
         }
     }
@@ -469,7 +478,7 @@ abstract public class AbstractRuleBase
                 //and now the rule flows
                 Map flows = pkg.getRuleFlows();
                 for ( Iterator iter = flows.keySet().iterator(); iter.hasNext(); ) {
-                    removeProcess((String) iter.next());
+                    removeProcess( (String) iter.next() );
                 }
                 // removing the package itself from the list
                 this.pkgs.remove( pkg.getName() );
@@ -497,6 +506,8 @@ abstract public class AbstractRuleBase
             int lastAquiredLock = 0;
             // get a snapshot of current working memories for locking
             final InternalWorkingMemory[] wms = getWorkingMemories();
+            
+            PackageCompilationData compilationData = null;
 
             try {
                 // Iterate each workingMemory and lock it
@@ -506,7 +517,11 @@ abstract public class AbstractRuleBase
                 }
 
                 removeRule( rule );
-                pkg.removeRule( rule );
+                compilationData = pkg.removeRule( rule );
+                if ( this.reloadPackageCompilationData == null ) {
+                    this.reloadPackageCompilationData = new ReloadPackageCompilationData();
+                }
+                this.reloadPackageCompilationData.addPackageCompilationData( compilationData );
 
             } finally {
                 // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
@@ -516,23 +531,44 @@ abstract public class AbstractRuleBase
                 for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
                     wms[lastAquiredLock].getLock().unlock();
                 }
-            }
+            }                       
         }
     }
 
     protected abstract void removeRule(Rule rule);
+    
+    public void removeFunction(String packageName, String functionName) {
+        synchronized ( this.pkgs ) {
+            final Package pkg = (Package) this.pkgs.get( packageName );
+            PackageCompilationData compilationData = pkg.removeFunction( functionName );
+            
+            if ( this.reloadPackageCompilationData == null ) {
+                this.reloadPackageCompilationData = new ReloadPackageCompilationData();
+            }
+            this.reloadPackageCompilationData.addPackageCompilationData( compilationData );            
+        }
+    }
 
     public synchronized void addProcess(final Process process) {
-        this.processes.put( process.getId(),
-                            process );
+        synchronized ( this.pkgs ) {
+            this.processes.put( process.getId(),
+                                process );
+        }
+        
     }
 
     public synchronized void removeProcess(final String id) {
-        this.processes.remove( id );
+        synchronized ( this.pkgs ) {        
+            this.processes.remove( id );
+        }
     }
 
     public Process getProcess(final String id) {
-        return (Process) this.processes.get( id );
+        Process process = null;
+        synchronized ( this.pkgs ) {
+            process = ( Process ) this.processes.get( id );
+        }
+        return process;
     }
 
     protected synchronized void addStatefulSession(final StatefulSession statefulSession) {
@@ -573,7 +609,7 @@ abstract public class AbstractRuleBase
                                                                                       this.packageClassLoader );
 
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) streamWithLoader.readObject();
-        
+
         synchronized ( this.pkgs ) {
             workingMemory.setRuleBase( this );
             return (StatefulSession) workingMemory;
@@ -593,4 +629,41 @@ abstract public class AbstractRuleBase
     public MapBackedClassLoader getMapBackedClassLoader() {
         return this.classLoader;
     }
+    
+    public void executeQueuedActions() {
+       synchronized ( this.pkgs ) {
+           if ( this.reloadPackageCompilationData != null ) {
+               this.reloadPackageCompilationData.execute( this );
+           }
+        }
+    }    
+    
+    public static class ReloadPackageCompilationData implements RuleBaseAction {
+        private Set set;
+        
+        public void addPackageCompilationData(PackageCompilationData packageCompilationData) {
+            if ( set == null ) {
+                this.set = new HashSet();
+            }
+            
+            this.set.add( packageCompilationData );
+        }
+        
+        public void execute(InternalRuleBase ruleBase) {
+            for ( Iterator it = this.set.iterator(); it.hasNext(); ) {
+                PackageCompilationData packageCompilationData = ( PackageCompilationData ) it.next();
+                packageCompilationData.reload();
+            }
+        }
+    }
+
+    public static interface RuleBaseAction {
+        public void execute(InternalRuleBase ruleBase);
+    }
+
+    //    public static class RuleBaseAction {
+    //        public void execute(InternalRuleBase ruleBase) {
+    //            
+    //        }
+    //    }
 }

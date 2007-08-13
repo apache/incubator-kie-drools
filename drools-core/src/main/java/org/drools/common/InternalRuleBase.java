@@ -57,6 +57,8 @@ public interface InternalRuleBase
     public Map getPackagesMap();
 
     void disposeStatefulSession(StatefulSession statefulSession);
+    
+    void executeQueuedActions();
 
     /**
      * Assert a fact object.
