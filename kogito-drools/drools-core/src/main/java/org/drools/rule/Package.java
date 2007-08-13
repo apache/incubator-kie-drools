@@ -255,9 +255,10 @@ public class Package
         return this.globals;
     }
 
-    public void removeFunction(final String functionName) {
+    public PackageCompilationData removeFunction(final String functionName) {
         this.functions.remove( functionName );
         this.packageCompilationData.remove( this.name + "." + StringUtils.ucFirst( functionName ) );
+        return this.packageCompilationData;
     }
 
     public FactTemplate getFactTemplate(final String name) {
@@ -321,7 +322,7 @@ public class Package
         this.ruleFlows.remove( id );
     }
 
-    public void removeRule(final Rule rule) {
+    public PackageCompilationData removeRule(final Rule rule) {
         this.rules.remove( rule.getName() );
         final String consequenceName = rule.getConsequence().getClass().getName();
         this.packageCompilationData.remove( consequenceName );
@@ -331,6 +332,7 @@ public class Package
         // Now remove the rule class - the name is a subset of the consequence name
         this.packageCompilationData.remove( consequenceName.substring( 0,
                                                                        consequenceName.indexOf( "ConsequenceInvoker" ) ) );
+        return this.packageCompilationData;
     }
 
     private void removeClasses(final ConditionalElement ce) {

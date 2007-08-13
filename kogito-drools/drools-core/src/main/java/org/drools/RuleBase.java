@@ -39,7 +39,7 @@ public interface RuleBase
     Serializable {
 
     public static final int RETEOO = 1;
-    
+
     StatelessSession newStatelessSession();
 
     /**
@@ -93,7 +93,7 @@ public interface RuleBase
      * @return A serialised initialized <code>WorkingMemory</code>.
      */
     StatefulSession newStatefulSession(InputStream stream) throws IOException,
-                                                      ClassNotFoundException;
+                                                          ClassNotFoundException;
 
     /**
      * RuleBases handle the returning of a Serialized WorkingMemory
@@ -112,11 +112,11 @@ public interface RuleBase
      * @return A serialised initialized <code>WorkingMemory</code>.
      */
     StatefulSession newStatefulSession(InputStream stream,
-                                   boolean keepReference) throws IOException,
-                                                         ClassNotFoundException;
+                                       boolean keepReference) throws IOException,
+                                                             ClassNotFoundException;
 
     Package[] getPackages();
-    
+
     Package getPackage(String name);
 
     void addPackage(Package pkg) throws Exception;
@@ -125,6 +125,11 @@ public interface RuleBase
 
     void removeRule(String packageName,
                     String ruleName);
+
+    void removeFunction(String packageName,
+                        String functionName);
+
+    void removeProcess(String id);
 
     public StatefulSession[] getStatefulSessions();
 }
