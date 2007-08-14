@@ -8,15 +8,25 @@ import junit.framework.TestCase;
 import org.drools.brms.server.rules.SuggestionCompletionLoader;
 
 public class SuggestionCompletionTest extends TestCase {
-    
+
     public void testNestedImports() {
         String pkg = "package org.test\n import org.drools.brms.client.modeldriven.SuggestionCompletionTest.NestedClass";
-        
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();   
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg, new ArrayList(), new ArrayList() );
-        
+
         assertEquals( "String", engine.getFieldType( "SuggestionCompletionTest$NestedClass", "name" ) );
-    }    
+    }
+
+    public void testStringNonNumeric() {
+        String pkg = "package org.test\n import org.drools.brms.client.modeldriven.Alert";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg, new ArrayList(), new ArrayList() );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING, engine.getFieldType( "Alert", "message" ) );
+
+    }
 
     public void testCompletions() {
 
@@ -155,7 +165,7 @@ public class SuggestionCompletionTest extends TestCase {
                                         "wankle" );
         assertEquals( 2,
                       c.length );
-        
+
         assertEquals("Numeric", com.getFieldType( "Person", "age" ));
 
     }
@@ -223,6 +233,6 @@ public class SuggestionCompletionTest extends TestCase {
 
         public void setName(String name) {
             this.name = name;
-        }               
+        }
     }
 }
