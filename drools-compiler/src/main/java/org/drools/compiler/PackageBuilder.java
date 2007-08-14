@@ -279,7 +279,7 @@ public class PackageBuilder {
             // iterate and compile
             for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
                 addFunction( (FunctionDescr) it.next() );
-            }
+            }                            
 
             // iterate and compile
             for ( final Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {
@@ -288,6 +288,11 @@ public class PackageBuilder {
         }
 
         this.configuration.getDialectRegistry().compileAll();
+        
+        // some of the rules and functions may have been redefined
+        if ( this.pkg.getPackageCompilationData().isDirty() ) {
+            this.pkg.getPackageCompilationData().reload();
+        }
         this.results = this.configuration.getDialectRegistry().addResults( this.results );
     }
 
@@ -446,7 +451,7 @@ public class PackageBuilder {
      * Compiled packages are serializable.
      */
     public Package getPackage() {
-        if ( this.pkg != null && this.pkg.getPackageCompilationData() != null ) {
+        if ( this.pkg != null && this.pkg.getPackageCompilationData() != null && this.pkg.getPackageCompilationData().isDirty() ) {
             this.pkg.getPackageCompilationData().reload();
         }
         
