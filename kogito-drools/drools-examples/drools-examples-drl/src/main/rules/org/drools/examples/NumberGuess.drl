@@ -21,8 +21,7 @@ rule "Get user Guess"
 	then
 	    System.out.println( "You have " + ( rules.allowedGuesses - game.guessCount ) + " out of " + rules.allowedGuesses + " guesses left.\nPlease enter your guess from 0 to " + rules.maxRange );
         br = new BufferedReader( new InputStreamReader( System.in ) );
-        with ( game ) { guessCount = game.guessCount + 1 }
-        update ( game );
+        modify ( game ) { guessCount = game.guessCount + 1 }
         i = br.readLine();        
 	    insert( new Guess( i ) );
 end	 
@@ -34,8 +33,7 @@ rule "Record the highest Guess"
 	    game : Game( biggestGuess : biggest )
 	    Guess( $value : value > biggestGuess )
 	then
-        with ( game ) { biggest = $value };
-        update ( game );
+        modify ( game ) { biggest = $value };
 end	 
 
 rule "Notify too high"
@@ -53,8 +51,7 @@ rule "Record the lowest Guess"
 	    Game( smallestGuess : smallest )
 	    Guess( $value : value < smallestGuess )
 	then
-        with ( game ) { smallest = $value };
-        update ( game );
+        modify ( game ) { smallest = $value };
 end	 
 
 rule "Notify too low"
