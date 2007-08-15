@@ -64,10 +64,7 @@ public class MVELPredicateBuilder
             final DroolsMVELFactory factory = new DroolsMVELFactory( previousMap,
                                                                      localMap,
                                                                      context.getPkg().getGlobals() );
-            factory.setNextFactory( ((MVELDialect) context.getDialect()).getClassImportResolverFactory() );
-            
-            final ParserContext parserContext = new ParserContext(((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses(), null, null);
-            parserContext.setStrictTypeEnforcement( true );           
+            factory.setNextFactory( ((MVELDialect) context.getDialect()).getStaticMethodImportResolverFactory() );                
             
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       predicateDescr,
@@ -80,8 +77,8 @@ public class MVELPredicateBuilder
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     predicateDescr,
-                                                    null,
-                                                    "Unable to build expression for 'predicate' node '" + predicateDescr.getContent() + "'" ) );
+                                                    e,
+                                                    "Unable to build expression for 'inline-eval' node '" + predicateDescr.getContent() + "'\n" + e.getMessage() ) );
         }
     }
 

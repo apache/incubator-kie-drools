@@ -61,13 +61,8 @@ public class MVELReturnValueBuilder
         }             
         
         final DroolsMVELFactory factory = new DroolsMVELFactory(previousMap, localMap,  context.getPkg().getGlobals() );
-        factory.setNextFactory( ((MVELDialect)context.getDialect()).getClassImportResolverFactory() );
+        factory.setNextFactory( ((MVELDialect) context.getDialect()).getStaticMethodImportResolverFactory() );
 
-        final ParserContext parserContext = new ParserContext(((MVELDialect) context.getDialect()).getClassImportResolverFactory().getImportedClasses(), null, null);
-        parserContext.setStrictTypeEnforcement( true );
-        
-//        ExpressionCompiler compiler = new ExpressionCompiler( (String) returnValueRestrictionDescr.getContent() );
-//        final Serializable expr = compiler.compile( parserContext );
         
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   returnValueRestrictionDescr,

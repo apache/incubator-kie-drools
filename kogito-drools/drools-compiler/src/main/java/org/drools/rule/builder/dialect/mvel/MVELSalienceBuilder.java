@@ -27,8 +27,7 @@ public class MVELSalienceBuilder
                                                                      context.getPkg().getGlobals() );
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
             // This builder is re-usable in other dialects, so specify by name
-            final ClassImportResolverFactory classImportResolverFactory = dialect.getClassImportResolverFactory();
-            factory.setNextFactory( classImportResolverFactory );
+            factory.setNextFactory( dialect.getStaticMethodImportResolverFactory() );
 
             Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                          context.getRuleDescr(),

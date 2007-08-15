@@ -74,7 +74,7 @@ public class MVELEvalBuilder
             final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                      null,
                                                                      context.getPkg().getGlobals() );
-            factory.setNextFactory( ((MVELDialect) context.getDialect()).getClassImportResolverFactory() );
+            factory.setNextFactory( ((MVELDialect) context.getDialect()).getStaticMethodImportResolverFactory() );
 
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       evalDescr,
@@ -101,8 +101,8 @@ public class MVELEvalBuilder
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     evalDescr,
-                                                    null,
-                                                    "Unable to build expression for 'predicate' node '" + evalDescr.getContent() + "'" ) );
+                                                    e,
+                                                    "Unable to build expression for 'eval' node '" + evalDescr.getContent() + "'" ) );
             return null;
         }
     }

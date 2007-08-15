@@ -77,7 +77,7 @@ public class MVELAccumulateBuilder
         final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                  sourcePattern.getOuterDeclarations(),
                                                                  context.getPkg().getGlobals() );
-        factory.setNextFactory( dialect.getClassImportResolverFactory() );
+        factory.setNextFactory( dialect.getStaticMethodImportResolverFactory() );
 
         Accumulator accumulator = null;
         Declaration[] declarations = null;
@@ -94,8 +94,11 @@ public class MVELAccumulateBuilder
                 declarations[i] = context.getDeclarationResolver().getDeclaration( (String) analysis.getBoundIdentifiers()[0].get( i ) );
             }
 
-            final Serializable expression = MVEL.compileExpression( (String) accumDescr.getExpression(),
-                                                                    dialect.getClassImportResolverFactory().getImportedClasses() );
+            final Serializable expression = dialect.compile( (String) accumDescr.getExpression(),
+                                                             analysis,
+                                                             null,
+                                                             sourcePattern.getOuterDeclarations(),
+                                                             context );
 
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
 
@@ -104,20 +107,20 @@ public class MVELAccumulateBuilder
                                                                function );
         } else {
             // it is a custom accumulate
-            final MVELAnalysisResult initCodeAnalysis = ( MVELAnalysisResult ) dialect.analyzeBlock( context,
-                                                                                  accumDescr,
-                                                                                  accumDescr.getInitCode() );
+            final MVELAnalysisResult initCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
+                                                                                                   accumDescr,
+                                                                                                   accumDescr.getInitCode() );
 
-            final MVELAnalysisResult actionCodeAnalysis = ( MVELAnalysisResult ) dialect.analyzeBlock( context,
-                                                                                    accumDescr,
-                                                                                    null,
-                                                                                    accumDescr.getActionCode(),
-                                                                                    initCodeAnalysis.getMvelVariables() );
+            final MVELAnalysisResult actionCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
+                                                                                                     accumDescr,
+                                                                                                     null,
+                                                                                                     accumDescr.getActionCode(),
+                                                                                                     initCodeAnalysis.getMvelVariables() );
             actionCodeAnalysis.setMvelVariables( initCodeAnalysis.getMvelVariables() );
-            final MVELAnalysisResult resultCodeAnalysis = ( MVELAnalysisResult ) dialect.analyzeExpression( context,
-                                                                                         accumDescr,
-                                                                                         accumDescr.getResultCode(),
-                                                                                         initCodeAnalysis.getMvelVariables()  );
+            final MVELAnalysisResult resultCodeAnalysis = (MVELAnalysisResult) dialect.analyzeExpression( context,
+                                                                                                          accumDescr,
+                                                                                                          accumDescr.getResultCode(),
+                                                                                                          initCodeAnalysis.getMvelVariables() );
             resultCodeAnalysis.setMvelVariables( initCodeAnalysis.getMvelVariables() );
 
             final List requiredDeclarations = new ArrayList( initCodeAnalysis.getBoundIdentifiers()[0] );

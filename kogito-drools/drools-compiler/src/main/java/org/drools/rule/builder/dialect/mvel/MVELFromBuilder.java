@@ -67,8 +67,7 @@ public class MVELFromBuilder
             // This builder is re-usable in other dialects, so specify by name
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
-            final ClassImportResolverFactory classImportResolverFactory = dialect.getClassImportResolverFactory();
-            factory.setNextFactory( classImportResolverFactory );
+            factory.setNextFactory( dialect.getStaticMethodImportResolverFactory() );
 
             String text = (String) accessor.toString();
             Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,

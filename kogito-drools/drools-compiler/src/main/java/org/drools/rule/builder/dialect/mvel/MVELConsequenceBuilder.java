@@ -63,7 +63,7 @@ public class MVELConsequenceBuilder
             final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                      null,
                                                                      context.getPkg().getGlobals() );
-            factory.setNextFactory( dialect.getClassImportResolverFactory() );
+            factory.setNextFactory( dialect.getStaticMethodImportResolverFactory() );
 
             String text = processMacros( (String) context.getRuleDescr().getConsequence() );
 
