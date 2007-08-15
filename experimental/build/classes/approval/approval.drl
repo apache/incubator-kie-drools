@@ -1,0 +1,25 @@
+package org.acme.insurance;
+
+rule "approve"
+	agenda-group "risk assessment"
+	salience -1
+	when
+		not Rejection()
+		$policy : Policy( approved == false )
+	then
+		System.out.println("approve: " + $policy.getInsurancePrice() );	
+		$policy.setApproved(true);
+		update($policy);
+		drools.setFocus("insurancecalcule");
+end
+
+rule "rejection"
+	agenda-group "rejection"
+	auto-focus 
+	when
+		Rejection()
+	then
+		drools.halt();
+		System.out.println("rejection: ");
+end
+
