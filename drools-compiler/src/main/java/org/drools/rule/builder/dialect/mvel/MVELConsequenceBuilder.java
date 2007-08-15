@@ -65,10 +65,7 @@ public class MVELConsequenceBuilder
                                                                      context.getPkg().getGlobals() );
             factory.setNextFactory( dialect.getClassImportResolverFactory() );
 
-            MacroProcessor macroProcessor = new MacroProcessor();
-            macroProcessor.setMacros( macros );
-
-            String text = macroProcessor.parse( delimitExpressions( (String) context.getRuleDescr().getConsequence() ) );
+            String text = processMacros( (String) context.getRuleDescr().getConsequence() );
 
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
                                                                     context.getRuleDescr(),
@@ -90,6 +87,12 @@ public class MVELConsequenceBuilder
                                                     null,
                                                     "Unable to build expression for 'consequence' '" + context.getRuleDescr().getConsequence() + "'" ) );
         }
+    }
+
+    public String processMacros(String consequence) {
+        MacroProcessor macroProcessor = new MacroProcessor();
+        macroProcessor.setMacros( macros );
+        return macroProcessor.parse( delimitExpressions( consequence ) );
     }
 
     /**
