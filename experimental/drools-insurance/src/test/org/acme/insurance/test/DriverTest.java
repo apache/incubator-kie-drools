@@ -1,9 +1,6 @@
 package org.acme.insurance.test;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,11 +9,8 @@ import junit.framework.TestCase;
 
 import org.acme.insurance.base.Driver;
 import org.acme.insurance.base.Policy;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
 
 public class DriverTest extends TestCase {
     private StatefulSession session;
@@ -86,6 +80,7 @@ public class DriverTest extends TestCase {
         driverMale.setBirhDate( defaultBirthday );
         driverMale.setMaritalState( Driver.MARRIED );
         driverMale.setHasChildren( true );
+        driverMale.setLicenceYears(10);
 
         Policy policy = new Policy();
         policy.setApproved( false );
