@@ -65,6 +65,7 @@ import org.mvel.integration.VariableResolverFactory;
 import org.mvel.integration.impl.ClassImportResolverFactory;
 import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 import org.mvel.optimizers.OptimizerFactory;
+import org.mvel.util.ParseTools;
 
 public class MVELDialect
     implements
@@ -102,8 +103,11 @@ public class MVELDialect
     private TypeResolver                      typeResolver;
     private ClassFieldExtractorCache          classFieldExtractorCache;
     private MVELExprAnalyzer                  analyzer;
+    
+    private Map                               imports;
+    private Map                               packageImports;
     private StaticMethodImportResolverFactory staticImportFactory;
-    private ClassImportResolverFactory        importFactory;
+//    private ClassImportResolverFactory        importFactory;
 
     private boolean                           strictMode;
 
@@ -145,9 +149,11 @@ public class MVELDialect
         this.interceptors.put( "Modify",
                                new ModifyInterceptor() );
 
-        this.importFactory = new ClassImportResolverFactory();
+//        this.importFactory = new ClassImportResolverFactory();
+        this.imports = new HashMap();
+        this.packageImports = new HashMap();
         this.staticImportFactory = new StaticMethodImportResolverFactory();
-        this.importFactory.setNextFactory( this.staticImportFactory );
+//        this.importFactory.setNextFactory( this.staticImportFactory );
     }
 
     public void initBuilder() {
@@ -234,14 +240,24 @@ public class MVELDialect
 
     public void addImport(String importEntry) {
         if ( importEntry.endsWith( "*" ) ) {
-            return;
+            importEntry = importEntry.substring( 0, importEntry.indexOf( '*' )  );
+            this.packageImports.put( importEntry, importEntry );
+        } else {        
+            try {
+                Class cls = this.typeResolver.resolveType( importEntry );                
+                this.imports.put( ParseTools.getSimpleClassName( cls ), cls );
+            } catch ( ClassNotFoundException e ) {
+                this.results.add( new ImportError( importEntry ) );
+            }
         }
-        try {
-            Class cls = this.typeResolver.resolveType( importEntry );
-            this.importFactory.addClass( cls );
-        } catch ( ClassNotFoundException e ) {
-            this.results.add( new ImportError( importEntry ) );
-        }
+    }
+    
+    public Map getImports() {
+        return this.imports;
+    }
+    
+    public Map getPackgeImports() {
+        return this.packageImports;
     }
 
     public void addStaticImport(String staticImportEntry) {
@@ -262,6 +278,7 @@ public class MVELDialect
                 if ( methods[i].equals( "methodName" ) ) {
                     this.staticImportFactory.createVariable( methodName,
                                                              methods[i] );
+                    this.imports.put( methodName, methods[i] );
                     break;
                 }
             }
@@ -274,9 +291,9 @@ public class MVELDialect
         return this.staticImportFactory;
     }
 
-    public ClassImportResolverFactory getClassImportResolverFactory() {
-        return this.importFactory;
-    }
+//    public ClassImportResolverFactory getClassImportResolverFactory() {
+//        return this.importFactory;
+//    }
 
     public boolean isStrictMode() {
         return strictMode;
@@ -352,12 +369,26 @@ public class MVELDialect
                                 final Map interceptors,
                                 final Map outerDeclarations,
                                 final RuleBuildContext context) {
-        Map imports = getClassImportResolverFactory().getImportedClasses();
-        imports.putAll( getStaticMethodImportResolverFactory().getImportedMethods() );
+        final ParserContext parserContext = getParserContext(analysis, outerDeclarations, context );
 
+        ExpressionCompiler compiler = new ExpressionCompiler( text );
+
+        //MVEL Debugging support
+        compiler.setDebugSymbols( true );
+
+        Serializable expr = compiler.compile( parserContext );
+        return expr;
+    }
+    
+    public ParserContext getParserContext(final Dialect.AnalysisResult analysis, final Map outerDeclarations, final RuleBuildContext context) {
         final ParserContext parserContext = new ParserContext( imports,
                                                                null,
                                                                context.getPkg().getName()+"."+context.getRuleDescr().getClassName() );
+        
+        for ( Iterator it = this.packageImports.values().iterator(); it.hasNext(); ) {
+            String packageImport = ( String ) it.next();
+            parserContext.addPackageImport( packageImport );
+        }
 
         //this.configuration.get
 
@@ -380,7 +411,7 @@ public class MVELDialect
         for ( Iterator it = list[1].iterator(); it.hasNext(); ) {
             String identifier = (String) it.next();
             parserContext.addInput( identifier,
-            						(Class) globalTypes.get( identifier ) );
+                                    (Class) globalTypes.get( identifier ) );
         }
 
         Map mvelVars = ((MVELAnalysisResult) analysis).getMvelVariables();
@@ -402,14 +433,8 @@ public class MVELDialect
 
         parserContext.addInput( "drools",
                                 KnowledgeHelper.class );
-
-        ExpressionCompiler compiler = new ExpressionCompiler( text );
-
-        //MVEL Debugging support
-        compiler.setDebugSymbols( true );
-
-        Serializable expr = compiler.compile( parserContext );
-        return expr;
+        
+        return parserContext;
     }
 
     public RuleConditionBuilder getBuilder(final Class clazz) {

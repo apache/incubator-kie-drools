@@ -62,14 +62,19 @@ public class MVELExprAnalyzer {
                                                 final Map localTypes) throws RecognitionException {
         ExpressionCompiler compiler = new ExpressionCompiler( expr );
 
-        ParserContext parserContext = new ParserContext();
-        parserContext.setStrictTypeEnforcement( false );
         MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
         
-        Map imports = dialect.getClassImportResolverFactory().getImportedClasses();
-        imports.putAll( dialect.getStaticMethodImportResolverFactory().getImportedMethods() );
+        final ParserContext parserContext = new ParserContext( dialect.getImports(),
+                                                               null,
+                                                               context.getPkg().getName()+"."+context.getRuleDescr().getClassName() );
         
-        parserContext.setImports( imports );
+        for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
+            String packageImport = ( String ) it.next();
+            parserContext.addPackageImport( packageImport );
+        }        
+
+        parserContext.setStrictTypeEnforcement( false );
+
         parserContext.setInterceptors( dialect.getInterceptors() );
         
         compiler.compile( parserContext );
