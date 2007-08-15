@@ -1,0 +1,109 @@
+<object-stream>
+  <list>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>1</factId>
+      <objectToString>org.acme.insurance.base.Policy@739474</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver Single Young Male Driver factor [2]</activationId>
+      <rule>Driver Single Young Male Driver factor</rule>
+      <declarations>driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>New licenced Driver [2]</activationId>
+      <rule>New licenced Driver</rule>
+      <declarations>driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>2</factId>
+      <objectToString>org.acme.insurance.base.Driver@a82a10</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver wants an extra Car [3, 2]</activationId>
+      <rule>Driver wants an extra Car</rule>
+      <declarations>driverID=400(2); supple=org.acme.insurance.base.SupplementalInfo@94a8eb(3); driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver wants glass coverage [3, 2]</activationId>
+      <rule>Driver wants glass coverage</rule>
+      <declarations>driverID=400(2); supple=org.acme.insurance.base.SupplementalInfo@94a8eb(3); driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver wants non related expenses coverage [3, 2]</activationId>
+      <rule>Driver wants non related expenses coverage</rule>
+      <declarations>driverID=400(2); supple=org.acme.insurance.base.SupplementalInfo@94a8eb(3); driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>4</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ObjectLogEvent>
+      <factId>3</factId>
+      <objectToString>org.acme.insurance.base.SupplementalInfo@94a8eb</objectToString>
+      <type>1</type>
+    </org.drools.audit.event.ObjectLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver wants non related expenses coverage [3, 2]</activationId>
+      <rule>Driver wants non related expenses coverage</rule>
+      <declarations>driverID=400(2); supple=org.acme.insurance.base.SupplementalInfo@94a8eb(3); driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver wants non related expenses coverage [3, 2]</activationId>
+      <rule>Driver wants non related expenses coverage</rule>
+      <declarations>driverID=400(2); supple=org.acme.insurance.base.SupplementalInfo@94a8eb(3); driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver wants glass coverage [3, 2]</activationId>
+      <rule>Driver wants glass coverage</rule>
+      <declarations>driverID=400(2); supple=org.acme.insurance.base.SupplementalInfo@94a8eb(3); driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver wants glass coverage [3, 2]</activationId>
+      <rule>Driver wants glass coverage</rule>
+      <declarations>driverID=400(2); supple=org.acme.insurance.base.SupplementalInfo@94a8eb(3); driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver wants an extra Car [3, 2]</activationId>
+      <rule>Driver wants an extra Car</rule>
+      <declarations>driverID=400(2); supple=org.acme.insurance.base.SupplementalInfo@94a8eb(3); driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver wants an extra Car [3, 2]</activationId>
+      <rule>Driver wants an extra Car</rule>
+      <declarations>driverID=400(2); supple=org.acme.insurance.base.SupplementalInfo@94a8eb(3); driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver Single Young Male Driver factor [2]</activationId>
+      <rule>Driver Single Young Male Driver factor</rule>
+      <declarations>driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>Driver Single Young Male Driver factor [2]</activationId>
+      <rule>Driver Single Young Male Driver factor</rule>
+      <declarations>driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>New licenced Driver [2]</activationId>
+      <rule>New licenced Driver</rule>
+      <declarations>driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>6</type>
+    </org.drools.audit.event.ActivationLogEvent>
+    <org.drools.audit.event.ActivationLogEvent>
+      <activationId>New licenced Driver [2]</activationId>
+      <rule>New licenced Driver</rule>
+      <declarations>driver=org.acme.insurance.base.Driver@a82a10(2)</declarations>
+      <type>7</type>
+    </org.drools.audit.event.ActivationLogEvent>
+  </list>
+</object-stream>
