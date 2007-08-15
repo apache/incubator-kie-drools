@@ -1,0 +1,124 @@
+package org.acme.insurance
+
+import org.acme.insurance.base.Rejection;
+import org.acme.insurance.base.Policy;
+import org.acme.insurance.base.Driver;
+import org.acme.insurance.base.DriverAdditionalInfo;
+import org.acme.insurance.base.AccessoriesCoverage;
+import org.acme.insurance.base.SupplementalInfo;
+
+
+rule "Driver is underage"
+	agenda-group "risk assessment"
+	when
+		not Rejection()	 
+		driver : Driver ( age < 18)
+	then
+		driver.updateInsuranceFactor(0.0);
+		insert(new Rejection("Driver is Underage"));
+		System.out.println("Driver is Underage");
+end
+
+
+rule "New licenced Driver"
+	agenda-group "risk assessment"
+	when
+		driver : Driver ( licenceYears < 3 )
+	then
+		driver.updateInsuranceFactor(1.2);
+		System.out.println("New Licenced driver " + driver.getInsuranceFactor());		
+end
+
+rule "Driver Single Young Male Driver factor"
+	agenda-group "risk assessment"
+	when
+		driver : Driver( genre == Driver.MALE, age < 25, maritalState == Driver.SINGLE )
+	then 
+		driver.updateInsuranceFactor(1.6);
+		System.out.println("Driver Single Young Male Driver factor: " + driver.getInsuranceFactor());
+end
+
+rule "Driver Mature Married With Young Child factor"
+	agenda-group "risk assessment"
+	when
+		driver : Driver( genre == Driver.MALE, age > 40, maritalState == Driver.MARRIED, hasChildren == true )
+	then 
+		driver.updateInsuranceFactor(1.5);
+		System.out.println("Driver Mature Married With Young Child factor: " + driver.getInsuranceFactor());
+end
+
+rule "Priory Claimed Driver"
+	agenda-group "risk assessment"
+	when
+		$driver : Driver ( $prior : priorClaims > 2 )
+	then
+		$driver.updateInsuranceFactor((0.2 * $prior) + 1);
+		System.out.println("Priory Claimed Driver + 20% for each previous problem " + $driver.getInsuranceFactor());		
+end
+
+rule "Day Vehicle Place"
+	agenda-group "risk assessment"
+	when
+		driver : Driver ( driverID : id )
+		daddit : DriverAdditionalInfo ( driverId == driverID, dayVehiclePlace == DriverAdditionalInfo.STREET ) 
+	then
+		driver.updateInsuranceFactor( 1.15 );
+		System.out.println("Day Vehicle Place: " + driver.getInsuranceFactor());		
+end
+
+rule "Night Vehicle Place"
+	agenda-group "risk assessment"
+	when
+		driver : Driver ( driverID : id )
+		daddit : DriverAdditionalInfo ( driverId == driverID, nightVehiclePlace  == DriverAdditionalInfo.STREET ) 
+	then
+		driver.updateInsuranceFactor(1.44); // streets are very dangerous dangerous at night ;) 
+		System.out.println("Night Vehicle Place: " + driver.getInsuranceFactor());		
+end
+
+// Supplemental itens insurance 
+
+rule "Driver wants an extra Car"
+	agenda-group "risk assessment"
+	when
+		driver : Driver ( driverID : id )
+		supple : SupplementalInfo ( driverId == driverID, extraCar  == true) 
+
+	then
+		driver.updateInsuranceFactor( 1.05 );
+		System.out.println("Driver wants an extra Car: " + driver.getInsuranceFactor());		
+end
+
+rule "Driver wants extra assistence"
+	agenda-group "risk assessment"
+	when
+		driver : Driver ( driverID : id )
+		supple : SupplementalInfo ( driverId == driverID, extraAssistence   == true) 
+
+	then
+		driver.updateInsuranceFactor( 1.05 );
+		System.out.println("Driver wants extra assistence: " + driver.getInsuranceFactor());		
+end
+
+
+rule "Driver wants glass coverage"
+	agenda-group "risk assessment"
+	when
+		driver : Driver ( driverID : id )
+		supple : SupplementalInfo ( driverId == driverID, glassCoverage  == true) 
+
+	then
+		driver.updateInsuranceFactor( 1.05 );
+		System.out.println("Driver wants glass coverage: " + driver.getInsuranceFactor());		
+end
+
+rule "Driver wants non related expenses coverage"
+	agenda-group "risk assessment"
+	when
+		driver : Driver ( driverID : id )
+		supple : SupplementalInfo ( driverId == driverID, nonRelatedExpenses  == true) 
+
+	then
+		driver.updateInsuranceFactor( 1.05 );
+		System.out.println("Driver wants non related expenses coverage: " + driver.getInsuranceFactor());		
+end
