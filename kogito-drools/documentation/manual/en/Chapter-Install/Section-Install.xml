@@ -113,7 +113,7 @@
 
     <para>Another option is to use the JBoss IDE, which comes with all the
     plug in requirements pre packaged, as well as a choice of other tools
-    seperate to rules. You can choose just to install rules from the "bundle"
+    separate to rules. You can choose just to install rules from the "bundle"
     that JBoss IDE ships with.</para>
 
     <section>
@@ -247,10 +247,10 @@
           </mediaobject>
         </screenshot></para>
 
-      <para>Step 7: The licence agreement. Choose the option to accept the
-      licence agreement. Once this happens, the workbench will start
+      <para>Step 7: The license agreement. Choose the option to accept the
+      license agreement. Once this happens, the workbench will start
       downloading. Might be an opportune time to go have a coffee. <screenshot>
-          <screeninfo>Licence</screeninfo>
+          <screeninfo>License</screeninfo>
 
           <mediaobject>
             <imageobject>
