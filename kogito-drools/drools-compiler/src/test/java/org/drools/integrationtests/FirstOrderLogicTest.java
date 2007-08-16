@@ -707,4 +707,42 @@ public class FirstOrderLogicTest extends TestCase {
         assertEquals( 0,
                       list4.size() );
     }
+
+    public void testFromInsideNotAndExists() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ExistsWithFrom.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           7 );
+        final Cheese provolone = new Cheese( "provolone",
+                                             5 );
+        final Cheesery cheesery = new Cheesery();
+        
+        cheesery.addCheese( cheddar );
+        cheesery.addCheese( provolone );
+        
+        FactHandle handle = workingMemory.insert( cheesery );
+        workingMemory.fireAllRules();
+        assertEquals( 0,
+                      list.size() );
+
+        cheesery.addCheese( new Cheese( "stilton", 10 ) );
+        cheesery.removeCheese( cheddar );
+        workingMemory.update( handle, cheesery );
+        workingMemory.fireAllRules();
+        assertEquals( 2,
+                      list.size() );
+
+    }
+
+
 }
