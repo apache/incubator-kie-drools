@@ -56,8 +56,8 @@ public class PackageBuilderConfigurationTest extends TestCase {
         ChainedProperties chainedProperties = new ChainedProperties( null,
                                                                      "packagebuilder.conf",
                                                                      true );
-        System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
-                                                           null ) );
+        //System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
+        //                                                   null ) );
         assertNotNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
                                                       null ) );
 
@@ -66,8 +66,8 @@ public class PackageBuilderConfigurationTest extends TestCase {
         chainedProperties = new ChainedProperties( null,
                                                    "packagebuilder.conf",
                                                    false );
-        System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
-                                                           null ) );
+        //System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
+        //                                                   null ) );
         assertNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
                                                    null ) );
 
@@ -76,8 +76,8 @@ public class PackageBuilderConfigurationTest extends TestCase {
         chainedProperties = new ChainedProperties( null,
                                                    "packagebuilder.conf",
                                                    true );
-        System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
-                                                           null ) );
+        //System.out.println( chainedProperties.getProperty( "drools.dialect.java.compiler",
+        //                                                   null ) );
         assertNotNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
                                                       null ) );
     }
@@ -134,6 +134,28 @@ public class PackageBuilderConfigurationTest extends TestCase {
         final PackageBuilderConfiguration cfg2 = new PackageBuilderConfiguration( properties );
         assertEquals( cfg1.getDefaultDialect().getClass(),
                       cfg2.getDefaultDialect().getClass() );
+    }
+
+    public void testProgramaticProperties2() {
+        JavaDialectConfiguration javaConf =  new JavaDialectConfiguration();
+        javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
+        PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+        cfg.setDialectConfiguration( "java", javaConf );
+        JavaDialectConfiguration javaConf2 = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
+        assertSame( javaConf,
+                    javaConf2 );
+        assertEquals( JavaDialectConfiguration.ECLIPSE,
+                      javaConf2.getCompiler() );
+
+        javaConf =  new JavaDialectConfiguration();
+        javaConf.setCompiler( JavaDialectConfiguration.JANINO );
+        cfg = new PackageBuilderConfiguration();
+        cfg.setDialectConfiguration( "java", javaConf );
+        javaConf2 = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
+        assertSame( javaConf,
+                    javaConf2 );
+        assertEquals( JavaDialectConfiguration.JANINO,
+                      javaConf2.getCompiler() );
     }
 
     public void testMockDialect() {
