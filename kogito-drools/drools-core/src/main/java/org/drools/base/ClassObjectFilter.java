@@ -24,7 +24,7 @@ public class ClassObjectFilter implements ObjectFilter {
      * @return
      */    
     public boolean accept(Object object) {
-        return object.getClass().isAssignableFrom( this.clazz );
+        return this.clazz.isAssignableFrom( object.getClass() );
     }
     
 }

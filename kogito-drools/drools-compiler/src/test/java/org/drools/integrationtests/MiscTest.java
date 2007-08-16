@@ -3544,7 +3544,9 @@ public class MiscTest extends TestCase {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( MiscTest.class.getResourceAsStream( "test_CrossProductRemovingIdentityEquals.drl" ) ) );
 
-        RuleBase rb = RuleBaseFactory.newRuleBase();
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setShadowProxy( true );
+        RuleBase rb = RuleBaseFactory.newRuleBase( conf );
         rb.addPackage( builder.getPackage() );
         StatefulSession session = rb.newStatefulSession();
         
@@ -3557,13 +3559,13 @@ public class MiscTest extends TestCase {
                            list2 );        
 
         SpecialString first42 = new SpecialString( "42" );
-        SpecialString second43 = new SpecialString( "43" );
+        SpecialString second43 = new SpecialString( "42" );
         SpecialString world = new SpecialString( "World" );
         session.insert( world );
         session.insert( first42 );
         session.insert( second43 );
 
-        System.out.println( "Firing rules ..." );
+        //System.out.println( "Firing rules ..." );
 
         session.fireAllRules();
         
@@ -3598,11 +3600,11 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  results );
         
-        workingMemory.insert( new Person( "Bob", "Stilton" ) );
+        workingMemory.insert( new Cheese( "stilton", 10 ) );
 
         workingMemory.fireAllRules();
 
-        Iterator events = workingMemory.iterateObjects(new ClassObjectFilter(Cheese.class));
+        Iterator events = workingMemory.iterateObjects(new ClassObjectFilter(PersonInterface.class));
         
         assertTrue( events.hasNext() );
         assertEquals( 1,

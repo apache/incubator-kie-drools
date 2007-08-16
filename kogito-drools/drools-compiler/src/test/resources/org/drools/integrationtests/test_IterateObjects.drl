@@ -4,8 +4,8 @@ global java.util.List results;
 
 rule "test iterate objects"
 when
-    Person( $likes : likes )
+    Cheese( $type : type )
 then
-    results.add( new Cheese( $likes, 10 ) );
+    results.add( new Person( "Bob", $type ) );
     insert( results.get(0) );
 end
