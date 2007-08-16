@@ -62,7 +62,9 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SecondClass;
 import org.drools.Sensor;
+import org.drools.SpecialString;
 import org.drools.State;
+import org.drools.StatefulSession;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
@@ -3536,5 +3538,50 @@ public class MiscTest extends TestCase {
                       results.size() );
 
     }
+    
+    public void testCrossProductRemovingIdentityEquals() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( MiscTest.class.getResourceAsStream( "test_CrossProductRemovingIdentityEquals.drl" ) ) );
+
+        RuleBase rb = RuleBaseFactory.newRuleBase();
+        rb.addPackage( builder.getPackage() );
+        StatefulSession session = rb.newStatefulSession();
+        
+        List list1 = new ArrayList();
+        List list2 = new ArrayList();
+
+        session.setGlobal( "list1",
+                           list1 );
+        session.setGlobal( "list2",
+                           list2 );        
+
+        SpecialString first42 = new SpecialString( "42" );
+        SpecialString second43 = new SpecialString( "43" );
+        SpecialString world = new SpecialString( "World" );
+        session.insert( world );
+        session.insert( first42 );
+        session.insert( second43 );
+
+        System.out.println( "Firing rules ..." );
+
+        session.fireAllRules();
+        
+        assertEquals(6, list1.size());
+        assertEquals(6, list2.size());
+        
+        assertEquals( second43, list1.get( 0 ) );
+        assertEquals( first42, list1.get( 1 ) );
+        assertEquals( world, list1.get( 2 ) );
+        assertEquals( second43, list1.get( 3 ) );
+        assertEquals( first42, list1.get( 4 ) );
+        assertEquals( world, list1.get( 5 ) );    
+        
+        assertEquals( first42, list2.get( 0 ) );
+        assertEquals( second43, list2.get( 1 ) );
+        assertEquals( second43, list2.get( 2 ) );
+        assertEquals( world, list2.get( 3 ) );
+        assertEquals( world, list2.get( 4 ) );
+        assertEquals( first42, list2.get( 5 ) );          
+    }    
 
 }

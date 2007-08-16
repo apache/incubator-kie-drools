@@ -566,14 +566,14 @@ public class FirstOrderLogicTest extends TestCase {
 
         // only stilton, so should not fire again
         FactHandle stilton1 = workingMemory.insert( new Cheese( "stilton",
-                                                               10 ) );
+                                                                10 ) );
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
 
         // only stilton, so should fire again
         FactHandle stilton2 = workingMemory.insert( new Cheese( "stilton",
-                                                               11 ) );
+                                                                11 ) );
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
@@ -584,27 +584,27 @@ public class FirstOrderLogicTest extends TestCase {
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
-        
+
         // there is a brie, so should not fire 
         workingMemory.retract( stilton1 );
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
-        
+
         // no brie anymore, so should fire 
         workingMemory.retract( brie );
         workingMemory.fireAllRules();
         assertEquals( 2,
                       list.size() );
 
-//        TODO: in the future, we need to fix the following test case
-//        // no cheese anymore, so should not fire again 
-//        workingMemory.retract( stilton2 );
-//        workingMemory.fireAllRules();
-//        assertEquals( 2,
-//                      list.size() );
-//        
-        
+        //        TODO: in the future, we need to fix the following test case
+        //        // no cheese anymore, so should not fire again 
+        //        workingMemory.retract( stilton2 );
+        //        workingMemory.fireAllRules();
+        //        assertEquals( 2,
+        //                      list.size() );
+        //        
+
     }
 
     public void testMVELCollect() throws Exception {
@@ -641,9 +641,9 @@ public class FirstOrderLogicTest extends TestCase {
         Assert.assertEquals( 1,
                              results.size() );
         Assert.assertEquals( 6,
-                             ((List)results.get(0)).size() );
+                             ((List) results.get( 0 )).size() );
     }
-    
+
     public void testNestedCorelatedRulesWithForall() throws Exception {
 
         PackageBuilder builder = new PackageBuilder();
@@ -680,7 +680,7 @@ public class FirstOrderLogicTest extends TestCase {
         System.out.println( "Done." );
 
         System.out.println( "Firing rules ..." );
-        
+
         // check all lists are empty
         assertTrue( list1.isEmpty() );
         assertTrue( list2.isEmpty() );
@@ -690,20 +690,23 @@ public class FirstOrderLogicTest extends TestCase {
         session.fireAllRules();
 
         System.out.println( "Done." );
-        
+
         // check first list is populated correctly
-        assertEquals(2, list1.size() );
-        assertTrue( list1.contains( first42 ));
-        assertTrue( list1.contains( second42 ));
+        assertEquals( 2,
+                      list1.size() );
+        assertTrue( list1.contains( first42 ) );
+        assertTrue( list1.contains( second42 ) );
 
         // check second list is populated correctly        
-        assertEquals(1, list2.size() );
-        
-        // check third list is populated correctly        
-        assertEquals(1, list3.size() );
-        
-        // check fourth list is populated correctly        
-        assertEquals(0, list4.size() );        
-    }    
+        assertEquals( 1,
+                      list2.size() );
 
+        // check third list is populated correctly        
+        assertEquals( 1,
+                      list3.size() );
+
+        // check fourth list is populated correctly        
+        assertEquals( 0,
+                      list4.size() );
+    }
 }
