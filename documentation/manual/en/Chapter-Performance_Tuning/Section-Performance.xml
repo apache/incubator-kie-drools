@@ -11,7 +11,7 @@
   should not need to read this chapter in detail.</para>
 
   <para>Note that for someone who is using a rule engine of the first time,
-  the most noticable "cost" will be the startup of the rule engine (which is
+  the most noticeable "cost" will be the startup of the rule engine (which is
   actually compiling the rules) - this problem is easily solved - simply cache
   the RuleBase instances (or the rule packages) and only update rules as
   needed (there are many ways to achieve this in your application which will
@@ -151,9 +151,9 @@ Manners 64 with BetaNode indexes: 10078 millisec to run on average</programlisti
 </programlisting> Rewriting it as shown bellow will probably give you a better
       performance, as “name” is probably a more restrictive constraint than
       “department”: <programlisting>Employee (name == $aName, department == $aDepartment)
-</programlisting> (Unless you work in an organisation where there are more
+</programlisting> (Unless you work in an organization where there are more
       departments then employees, which could well be the case in a Government
-      organisation ;)</para>
+      organization ;)</para>
     </section>
 
     <para>Some other improvements are being developed for Drools in this area
@@ -296,7 +296,7 @@ Then
     situation, this may not be an option. So what can you do when the ruleset is large and
     rewriting the rules isn't an option?</para>
     <para>The only viable option is to scale the hardware and use a different JVM. This means
-    using 64bit JVM from SUN, IBM or BEA JRockit on a machine with atleast 8Gb RAM. Depending
+    using 64bit JVM from SUN, IBM or BEA JRockit on a machine with at least 8Gb RAM. Depending
     on the ruleset, the system may need more RAM.</para>
     
   </section>

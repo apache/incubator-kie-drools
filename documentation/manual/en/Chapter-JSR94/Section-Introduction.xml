@@ -9,7 +9,7 @@
   url="http://www.w3.org/TR/2006/WD-rif-ucr-20060323/">Rule Interchange Format
   (RIF)</ulink> and the OMG has started to work on a standard based on <ulink
   url="http://ruleml.org/">RuleML</ulink>, recently Haley Systems has also
-  proposed a rule alnguage standard called RML.</para>
+  proposed a rule language standard called RML.</para>
 
   <para>It should be remembered that the JSR94 standard represents the "least
   common denominator" in features across rule engines - this means there is

@@ -190,7 +190,7 @@
 
           <para>The InvalidRuleSessionException should be thrown when a method
           is invoked on a RuleSession and the internal state of the
-          RuleSession is invalid. This may have occured because a
+          RuleSession is invalid. This may have occurred because a
           StatefulRuleSession has been serialized and external resources can
           no longer be accessed. This exception is also used to signal that a
           RuleSession is in an invalid state (such as an attempt to use it

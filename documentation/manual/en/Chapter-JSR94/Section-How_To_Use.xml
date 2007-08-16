@@ -60,7 +60,7 @@ RuleExecutionSet ruleExecutionSet = ruleExecutionSetProvider.createRuleExecution
     </example>
 
     <para>"ruleExecutionSetProvider.createRuleExecutionSet( reader, null )" in
-    the above example takes a null parameter for the propties map; however it
+    the above example takes a null parameter for the properties map; however it
     can actually be used to provide configuration for the incoming source.
     When null is passed the default is used to load the input as a drl.
     Allowed keys for a map are "source" and "dsl". "source" takes "drl" or
@@ -157,7 +157,7 @@ results = session.executeRules( list );</programlisting>
       <title>Globals</title>
 
       <para>It is possible to support globals with JSR94, in a none portable
-      manner, by using the propperties map passed to the RuleSession factory
+      manner, by using the properties map passed to the RuleSession factory
       method. Globals must be defined in the drl or xml file first, otherwise
       an Exception will be thrown. the key represents the identifier declared
       in the drl or xml and the value is the instance you wish to be used in

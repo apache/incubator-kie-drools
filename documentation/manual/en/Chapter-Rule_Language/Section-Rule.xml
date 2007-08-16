@@ -19,7 +19,7 @@
   <para>A rule specifies that "when" a particular set of conditions occur,
   specified in the Left Hand Side (LHS), then do this, which is specified as a
   list of actions in the Right Hand Side (RHS). A common question from users
-  is "why use when instead of if". "when" was chosen over "if" becuase "if" is
+  is "why use when instead of if". "when" was chosen over "if" because "if" is
   normally part of a procedural execution flow, where at a specific point in
   time it checks the condition. Where as "when" indicates it's not tied to a
   specific evaluation sequence or point in time, at any time during the life
@@ -70,9 +70,9 @@ end</programlisting>
   </example>
 
   <section>
-    <title>Rule Attriutes</title>
+    <title>Rule Attributes</title>
 
-    <para>Rule attributes provide a declarative way to influence the behaviour
+    <para>Rule attributes provide a declarative way to influence the behavior
     of the rule, some are quite simple, while others are part of complex sub
     systems; such as ruleflow. To get the most from Drools you should make
     sure you have a proper understanding of each attribute.</para>
@@ -152,7 +152,7 @@ end</programlisting>
       <para>Rules that belong to the same named activation-group will only
       fire exclusively. In other words, the first rule in an activation-group
       to fire will cancel the other rules activations (stop them from firing).
-      The Activtion group attribute is any string, as long as the string is
+      The Activation group attribute is any string, as long as the string is
       identical for all the rules you need to be in the one group.</para>
 
       <para>NOTE: this used to be called Xor group, but technically its not
@@ -173,7 +173,7 @@ end</programlisting>
       expressions in the LHS or the RHS code block. Currently two dialects are
       available, Java and MVEL. While the dialect can be specified at the
       package level, this attribute allows the package definition to be
-      overriden.</para>
+      overridden.</para>
     </section>
 
     <section>
@@ -183,7 +183,7 @@ end</programlisting>
 
       <para>type : String, which contains a Date/Time definition</para>
 
-      <para>A rule can only activate if the current date and time is afer
+      <para>A rule can only activate if the current date and time is after
       date-effective attribute.</para>
     </section>
 
@@ -194,7 +194,7 @@ end</programlisting>
 
       <para>type : String, which contains a Date/Time definition</para>
 
-      <para>A rule cannot activate if the current date and time is afer
+      <para>A rule cannot activate if the current date and time is after
       date-expires attribute.</para>
     </section>
 
@@ -338,8 +338,8 @@ end</programlisting>
 
       <para>Inside of the Pattern parenthesis is where all the action happens.
       A constraint can be either a Field Constraint, Inline Eval (called a
-      predicate in 3.0) or a Constraint Group. Constraints can be seperated by
-      the following symboles ',', '&amp;&amp;' or '||'.</para>
+      predicate in 3.0) or a Constraint Group. Constraints can be separated by
+      the following symbols ',', '&amp;&amp;' or '||'.</para>
 
       <figure>
         <title>Constraints</title>
@@ -517,17 +517,17 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
           "type") - we use the standard jdk Introspector class to do this
           mapping.</para>
 
-          <para>For example, refering to our Cheese class, the following :
+          <para>For example, referring to our Cheese class, the following :
           Cheese(type == ...) uses the getType() method on the a cheese
           instance. If a field name cannot be found it will resort to calling
           the name as a no argument method; "toString()" on the Object for
           instance can be used with Cheese(toString == ..) - you use the full
-          name of the method with correct capitalisation, but not brackets. Do
+          name of the method with correct capitalization, but not brackets. Do
           please make sure that you are accessing methods that take no
           parameters, and are in-fact "accessors" (as in, they don't change
           the state of the object in a way that may effect the rules -
           remember that the rule engine effectively caches the results of its
-          matching inbetween invocations to make it faster).</para>
+          matching in between invocations to make it faster).</para>
         </section>
 
         <section>
@@ -602,12 +602,12 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
           <para>You can do checks against fields that are or maybe null, using
           == and != as you would expect, and the literal "null" keyword, like:
           Cheese(type != null). If a field is null the evaluator will not
-          throw an expception and will only return true if the value is a null
+          throw an exception and will only return true if the value is a null
           check. Coercion is always attempted if the field and the value are
           of different types; exceptions will be thrown if bad coercions are
           attempted. i.e. if "ten" is provided as a string in a number
           evaluator, where as "10" would coerce to a numeric 10. Coercion is
-          always in favour of the field type and not the value type.</para>
+          always in favor of the field type and not the value type.</para>
         </section>
 
         <section>
@@ -654,8 +654,8 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
             only applicable to string fields, "contains" and "not contains" is
             only applicable to Collection type fields. These operators can be
             used with any value and coercion to the correct value for the
-            evaluator and filed will be attempted, as mention in hte "Values"
-            secion.</para>
+            evaluator and filed will be attempted, as mention in the "Values"
+            section.</para>
 
             <simplesect>
               <title>Matches Operator</title>
@@ -714,7 +714,7 @@ CheeseCounter( cheeses contains $var ) // contains with a variable</programlisti
             </simplesect>
 
             <simplesect>
-              <title>not containts</title>
+              <title>not contains</title>
 
               <para><literal>'not contains'</literal> is used to check if a
               field's <indexterm>
@@ -810,7 +810,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
               <title>Date</title>
 
               <para>The date format "dd-mmm-yyyy" is supported by default. You
-              can customise this by providing an alternative date format mask
+              can customize this by providing an alternative date format mask
               as a System property ("drools.dateformat" is the name of the
               property). If more control is required, use the inline-eval
               constraint.</para>
@@ -838,7 +838,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
               <title>Boolean</title>
 
               <para>only true or false can be used. 0 and 1 are not
-              recognised, nor is <literal>Cheese ( smelly )</literal> is
+              recognized, nor is <literal>Cheese ( smelly )</literal> is
               allowed</para>
 
               <example>
@@ -887,7 +887,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
             <indexterm>
                 <primary>declaration</primary>
               </indexterm>Declaration. Valid operators are determined by the
-            type of the field being constrained; coersion will be attempted
+            type of the field being constrained; coercion will be attempted
             where possible. Bound Variable Restrictions using '==' operator,
             provide for very fast execution as we can index using hashing to
             improve performance.</para>
@@ -903,7 +903,7 @@ Cheese( type == likes )</programlisting>
               is used to constrain the type of Cheese in the following
               Pattern. Any valid java variable name can be used, including
               '$'; which you will often see used to help differentiate
-              declarations from fields. The exampe below shows a declaration
+              declarations from fields. The example below shows a declaration
               bound to the Patterns Object Type instance itself and used with
               a 'contains' operator, note the optional use of '$' this
               time.</para>
@@ -938,7 +938,7 @@ Cheesery( cheeses contains $stilton )</programlisting>
 
             <para>A <indexterm>
                 <primary>Return Value</primary>
-              </indexterm>Return Value restrriction can use any valid Java
+              </indexterm>Return Value restriction can use any valid Java
             primitive or object. Avoid using any Drools keywords as
             Declaration identifiers. Functions used in a Return Value
             Restriction must return time constant results. Previously bound
@@ -960,9 +960,9 @@ Person( age == ( girlAge + 2) ), sex == 'M' )
           <para>The compound value restriction is used where there is more
           than one possible value, currently only the 'in' and 'not in'
           evaluators support this. The operator takes a parenthesis enclosed
-          comma seperated list of values, which can be a variable, literal,
-          return value or qualified identifier.The 'in' and 'not in'
-          evaluators are actually sugar and are rewriten as a multi
+          comma separated list of values, which can be a variable, literal,
+          return value or qualified identifier. The 'in' and 'not in'
+          evaluators are actually sugar and are rewritten as a multi
           restriction list of != and == restrictions.</para>
 
           <figure>
@@ -1076,7 +1076,7 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" ) // mixing muti 
         is not a current variable the builder looks to see if the identifier
         is a field on the current object type, if it is, the field is auto
         created as a variable of the same name; this is autovivification of
-        field varables inside of inline evals.</para>
+        field variables inside of inline evals.</para>
 
         <para>This example will find all pairs of male/femal people where the
         male is 2 years older than the female; the boyAge variable is auto
@@ -1105,7 +1105,7 @@ Person( eval( girlAge == boyAge + 2 ), sex = 'M' )
         first and re-assert afterwards. If you only have a single parent at
         the root of the graph, when in the MVEL dialect, you can use the
         'modify' keyword and its block setters to write the nested accessor
-        assingments while retracting and inserting the the root parent object
+        assignments while retracting and inserting the the root parent object
         as required. Nested accessors can be used either side of the operator
         symbol.</para>
 
@@ -1131,7 +1131,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
       <para>The 'and' Conditional Element is used to group together other
       Conditional Elements. The root element of the LHS is an implicit
-      prefixAnd and doesn't need to be specified. Drools supports both prefix
+      prefix And and doesn't need to be specified. Drools supports both prefix
       and infix; although prefix is the preferred option as grouping is
       implicit which avoids confusion.</para>
 
@@ -1204,14 +1204,14 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
       <para>The 'or' Conditional Element is used to group together other
       Conditional Elements. Drools supports both prefix and infix; although
       prefix is the preferred option as grouping is implicit which avoids
-      confusion. The behaviour of the 'or' Conditional Element is different
+      confusion. The behavior of the 'or' Conditional Element is different
       than the '||' connective for constraints and restrictions in field
       constraints. The engine actually has no understanding of 'or'
       Conditional Elements, instead via a number of different logic
       transformations the rule is re-written as a number of subrules; the rule
       now has a single 'or' as the root node and a subrule per logical
       outcome. Each subrule can activate and fire like any normal rule, there
-      is no special behaviour or interactions between the subrules - this can
+      is no special behavior or interactions between the subrules - this can
       be most confusing to new rule authors.</para>
 
       <figure>
@@ -1314,7 +1314,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
       <para>Eval is essentially a catch all which allows any semantic code
       (that returns a primitive boolean) to be executed. This can refer to
       variables that were bound in the LHS of the rule, and functions in the
-      rule package. Over use of eval reduces the declarativess of your rules
+      rule package. Over use of eval reduces the declaratives of your rules
       and can result in a poor performing engine. While 'evals' can be used
       anywhere in the Pattern the best practice is to add it as the last
       conditional element in the LHS of a rule.</para>
@@ -1447,7 +1447,7 @@ end
 </programlisting>
 
       <para>In the above rule, we "select" all Bus object whose type is
-      "english". Then, for each fact that matchs this pattern we evaluate the
+      "english". Then, for each fact that matches this pattern we evaluate the
       following patterns and if they match, the forall CE will evaluate to
       true. </para>
 
@@ -2000,7 +2000,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
 
     <para>The Right Hand Side (RHS) is a common name for the consequence or
     action part of the rule; this part should contain a list of actions to be
-    executed.It is bad practice to use imperative or conditoinal code in the
+    executed. It is bad practice to use imperative or conditional code in the
     RHS of a rule; as a rule should be atomic in nature - "when this, then do
     this", not "when this, maybe do this". The RHS part of a rule should also
     be kept small, thus keeping it declarative and readable. If you find you
@@ -2037,7 +2037,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     <title>A note on auto boxing/unboxing and primitive types</title>
 
     <para>Drools attempts to preserve numbers in their primitive or object
-    wrappter form, so a variable bound to an int primtive when used in a code
+    wrapper form, so a variable bound to an int primitive when used in a code
     block or expression will no longer need manual unboxing; unlike Drools 3.0
     where all primitives was autoboxed, requiring manual unboxing. A variable
     bound to an object wrapper will remain as an object; the existing jdk1.5

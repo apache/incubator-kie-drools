@@ -45,19 +45,19 @@
     how to build and alter a database schema to hold validation rules. The
     book then shows how to generate VB code from those validation rules to
     validate data entry - while a very valid and useful topic for some, it
-    caused quite a suprise to this author, unaware at the time in the
+    caused quite a surprise to this author, unaware at the time in the
     subtleties of Rules Engines differences, who was hoping to find some
     hidden secrets to help improve the Drools engine. JBoss jBPM uses
     expressions and delegates in its Decision nodes; which control the
     transitions in a Workflow. At each node it evaluates has a rule set that
-    dicates the transition to undertake - this is also a Rule Engine. While a
+    dictates the transition to undertake - this is also a Rule Engine. While a
     Production Rule System is a kind of Rule Engine and also an Expert System,
     the validation and expression evaluation Rule Engines mention previously
     are not Expert Systems.</para>
 
     <para>A Production Rule System is turing complete with a focus on
     knowledge representation to express propositional and first order logic in
-    a concise, non ambigious and declarative manner. The brain of a Production
+    a concise, non ambiguous and declarative manner. The brain of a Production
     Rules System is an Inference Engine that is able to scale to a large
     number of rules and facts. The Inference Engine matches facts and data,
     against Production Rules, also called Productions or just Rules, to infer
@@ -103,7 +103,7 @@ then
     maintenance. The Drools <indexterm>
         <primary>Rete</primary>
       </indexterm> Rete implementation is called ReteOO, signifying that
-    Drools has an enhanced and optimised implementation of the Rete algorithm
+    Drools has an enhanced and optimized implementation of the Rete algorithm
     for Object Oriented systems. Other Rete based engines also have marketing
     terms for their proprietary enhancements to Rete, like RetePlus and Rete
     III. It is important to understand that names like Rete III are purely
@@ -123,7 +123,7 @@ then
     of rules and facts may result in many rules being true for the same fact
     assertion, these rules are said to be in conflict. The Agenda manages the
     execution order of these conflicuting rules using a Conflict Resolution
-    stategy.</para>
+    strategy.</para>
 
     <figure>
       <title>A Basic Rete network</title>
@@ -142,10 +142,10 @@ then
     <para>A Production Rule System's Inference Engine is stateful and able to
     enforce truthfulness - called Truth Maintence. A logical relationship can
     be declared by actions which means the action's state depends on the
-    inference remaining true; when it is no longer true the logical dependant
+    inference remaining true; when it is no longer true the logical dependent
     action is undone. The "Honest Politician" is an example of Truth
     Maintenance, which always ensures that hope can only exist for a
-    decomcracy while we have honest politicians.</para>
+    democracy while we have honest politicians.</para>
 
     <programlisting>
 when
