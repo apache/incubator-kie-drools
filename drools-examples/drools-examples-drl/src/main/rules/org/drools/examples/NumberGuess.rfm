@@ -3,9 +3,9 @@
     <entry>
       <long>4</long>
       <org.drools.ruleflow.core.impl.RuleSetNodeImpl id="3">
-        <ruleFlowGroup>To Low</ruleFlowGroup>
+        <ruleFlowGroup>Too Low</ruleFlowGroup>
         <id>4</id>
-        <name>To Low</name>
+        <name>Too Low</name>
         <incomingConnections id="4">
           <org.drools.ruleflow.core.impl.ConnectionImpl id="5">
             <type>1</type>
@@ -17,9 +17,9 @@
                     <type>1</type>
                     <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="6"/>
                     <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="9">
-                      <ruleFlowGroup>To High</ruleFlowGroup>
-                      <id>3</id>
-                      <name>To High</name>
+                      <ruleFlowGroup>Guess correct</ruleFlowGroup>
+                      <id>12</id>
+                      <name>Guess correct</name>
                       <incomingConnections id="10">
                         <org.drools.ruleflow.core.impl.ConnectionImpl reference="8"/>
                       </incomingConnections>
@@ -29,95 +29,25 @@
                           <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="9"/>
                           <to class="org.drools.ruleflow.core.impl.JoinImpl" id="13">
                             <type>2</type>
-                            <id>8</id>
-                            <name>incorrect guess</name>
+                            <id>11</id>
+                            <name>No more guesses Join</name>
                             <incomingConnections id="14">
                               <org.drools.ruleflow.core.impl.ConnectionImpl reference="12"/>
                               <org.drools.ruleflow.core.impl.ConnectionImpl id="15">
                                 <type>1</type>
-                                <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="3"/>
-                                <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="13"/>
-                              </org.drools.ruleflow.core.impl.ConnectionImpl>
-                            </incomingConnections>
-                            <outgoingConnections id="16">
-                              <org.drools.ruleflow.core.impl.ConnectionImpl id="17">
-                                <type>1</type>
-                                <from class="org.drools.ruleflow.core.impl.JoinImpl" reference="13"/>
-                                <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="18">
-                                  <ruleFlowGroup>Guess incorrect</ruleFlowGroup>
-                                  <id>7</id>
-                                  <name>Guess incorrect</name>
-                                  <incomingConnections id="19">
-                                    <org.drools.ruleflow.core.impl.ConnectionImpl reference="17"/>
-                                  </incomingConnections>
-                                  <outgoingConnections id="20">
-                                    <org.drools.ruleflow.core.impl.ConnectionImpl id="21">
+                                <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="16">
+                                  <ruleFlowGroup>No more Guesses</ruleFlowGroup>
+                                  <id>13</id>
+                                  <name>No more Guesses</name>
+                                  <incomingConnections id="17">
+                                    <org.drools.ruleflow.core.impl.ConnectionImpl id="18">
                                       <type>1</type>
-                                      <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="18"/>
-                                      <to class="org.drools.ruleflow.core.impl.SplitImpl" id="22">
+                                      <from class="org.drools.ruleflow.core.impl.SplitImpl" id="19">
                                         <type>2</type>
-                                        <constraints id="23">
+                                        <constraints id="20">
                                           <entry>
-                                            <org.drools.ruleflow.core.impl.ConnectionImpl id="24">
-                                              <type>1</type>
-                                              <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="22"/>
-                                              <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="25">
-                                                <ruleFlowGroup>No more Guesses</ruleFlowGroup>
-                                                <id>13</id>
-                                                <name>No more Guesses</name>
-                                                <incomingConnections id="26">
-                                                  <org.drools.ruleflow.core.impl.ConnectionImpl reference="24"/>
-                                                </incomingConnections>
-                                                <outgoingConnections id="27">
-                                                  <org.drools.ruleflow.core.impl.ConnectionImpl id="28">
-                                                    <type>1</type>
-                                                    <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="25"/>
-                                                    <to class="org.drools.ruleflow.core.impl.JoinImpl" id="29">
-                                                      <type>2</type>
-                                                      <id>11</id>
-                                                      <name>No more guesses Join</name>
-                                                      <incomingConnections id="30">
-                                                        <org.drools.ruleflow.core.impl.ConnectionImpl id="31">
-                                                          <type>1</type>
-                                                          <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="32">
-                                                            <ruleFlowGroup>Guess correct</ruleFlowGroup>
-                                                            <id>12</id>
-                                                            <name>Guess correct</name>
-                                                            <incomingConnections id="33">
-                                                              <org.drools.ruleflow.core.impl.ConnectionImpl id="34">
-                                                                <type>1</type>
-                                                                <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="6"/>
-                                                                <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="32"/>
-                                                              </org.drools.ruleflow.core.impl.ConnectionImpl>
-                                                            </incomingConnections>
-                                                            <outgoingConnections id="35">
-                                                              <org.drools.ruleflow.core.impl.ConnectionImpl reference="31"/>
-                                                            </outgoingConnections>
-                                                          </from>
-                                                          <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="29"/>
-                                                        </org.drools.ruleflow.core.impl.ConnectionImpl>
-                                                        <org.drools.ruleflow.core.impl.ConnectionImpl reference="28"/>
-                                                      </incomingConnections>
-                                                      <outgoingConnections id="36">
-                                                        <org.drools.ruleflow.core.impl.ConnectionImpl id="37">
-                                                          <type>1</type>
-                                                          <from class="org.drools.ruleflow.core.impl.JoinImpl" reference="29"/>
-                                                          <to class="org.drools.ruleflow.core.impl.EndNodeImpl" id="38">
-                                                            <id>5</id>
-                                                            <name>End</name>
-                                                            <incomingConnections id="39">
-                                                              <org.drools.ruleflow.core.impl.ConnectionImpl reference="37"/>
-                                                            </incomingConnections>
-                                                            <outgoingConnections id="40"/>
-                                                          </to>
-                                                        </org.drools.ruleflow.core.impl.ConnectionImpl>
-                                                      </outgoingConnections>
-                                                    </to>
-                                                  </org.drools.ruleflow.core.impl.ConnectionImpl>
-                                                </outgoingConnections>
-                                              </to>
-                                            </org.drools.ruleflow.core.impl.ConnectionImpl>
-                                            <org.drools.ruleflow.core.impl.ConstraintImpl id="41">
+                                            <org.drools.ruleflow.core.impl.ConnectionImpl reference="18"/>
+                                            <org.drools.ruleflow.core.impl.ConstraintImpl id="21">
                                               <name>No More Guesses</name>
                                               <constraint>GameRules( allowed : allowedGuesses  )&#x0D;
 Game(  guessCount &gt;= allowed )</constraint>
@@ -125,43 +55,43 @@ Game(  guessCount &gt;= allowed )</constraint>
                                             </org.drools.ruleflow.core.impl.ConstraintImpl>
                                           </entry>
                                           <entry>
-                                            <org.drools.ruleflow.core.impl.ConnectionImpl id="42">
+                                            <org.drools.ruleflow.core.impl.ConnectionImpl id="22">
                                               <type>1</type>
-                                              <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="22"/>
-                                              <to class="org.drools.ruleflow.core.impl.JoinImpl" id="43">
+                                              <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="19"/>
+                                              <to class="org.drools.ruleflow.core.impl.JoinImpl" id="23">
                                                 <type>2</type>
                                                 <id>10</id>
                                                 <name>More guesses Join</name>
-                                                <incomingConnections id="44">
-                                                  <org.drools.ruleflow.core.impl.ConnectionImpl id="45">
+                                                <incomingConnections id="24">
+                                                  <org.drools.ruleflow.core.impl.ConnectionImpl id="25">
                                                     <type>1</type>
-                                                    <from class="org.drools.ruleflow.core.impl.StartNodeImpl" id="46">
+                                                    <from class="org.drools.ruleflow.core.impl.StartNodeImpl" id="26">
                                                       <id>1</id>
                                                       <name>Start</name>
-                                                      <incomingConnections id="47"/>
-                                                      <outgoingConnections id="48">
-                                                        <org.drools.ruleflow.core.impl.ConnectionImpl reference="45"/>
+                                                      <incomingConnections id="27"/>
+                                                      <outgoingConnections id="28">
+                                                        <org.drools.ruleflow.core.impl.ConnectionImpl reference="25"/>
                                                       </outgoingConnections>
                                                     </from>
-                                                    <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="43"/>
+                                                    <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="23"/>
                                                   </org.drools.ruleflow.core.impl.ConnectionImpl>
-                                                  <org.drools.ruleflow.core.impl.ConnectionImpl reference="42"/>
+                                                  <org.drools.ruleflow.core.impl.ConnectionImpl reference="22"/>
                                                 </incomingConnections>
-                                                <outgoingConnections id="49">
-                                                  <org.drools.ruleflow.core.impl.ConnectionImpl id="50">
+                                                <outgoingConnections id="29">
+                                                  <org.drools.ruleflow.core.impl.ConnectionImpl id="30">
                                                     <type>1</type>
-                                                    <from class="org.drools.ruleflow.core.impl.JoinImpl" reference="43"/>
-                                                    <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="51">
+                                                    <from class="org.drools.ruleflow.core.impl.JoinImpl" reference="23"/>
+                                                    <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="31">
                                                       <ruleFlowGroup>Guess</ruleFlowGroup>
                                                       <id>2</id>
                                                       <name>Guess</name>
-                                                      <incomingConnections id="52">
-                                                        <org.drools.ruleflow.core.impl.ConnectionImpl reference="50"/>
+                                                      <incomingConnections id="32">
+                                                        <org.drools.ruleflow.core.impl.ConnectionImpl reference="30"/>
                                                       </incomingConnections>
-                                                      <outgoingConnections id="53">
-                                                        <org.drools.ruleflow.core.impl.ConnectionImpl id="54">
+                                                      <outgoingConnections id="33">
+                                                        <org.drools.ruleflow.core.impl.ConnectionImpl id="34">
                                                           <type>1</type>
-                                                          <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="51"/>
+                                                          <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="31"/>
                                                           <to class="org.drools.ruleflow.core.impl.SplitImpl" reference="6"/>
                                                         </org.drools.ruleflow.core.impl.ConnectionImpl>
                                                       </outgoingConnections>
@@ -170,7 +100,7 @@ Game(  guessCount &gt;= allowed )</constraint>
                                                 </outgoingConnections>
                                               </to>
                                             </org.drools.ruleflow.core.impl.ConnectionImpl>
-                                            <org.drools.ruleflow.core.impl.ConstraintImpl id="55">
+                                            <org.drools.ruleflow.core.impl.ConstraintImpl id="35">
                                               <name>More guesses</name>
                                               <constraint>GameRules( allowed : allowedGuesses  )&#x0D;
 Game(  guessCount &lt; allowed )</constraint>
@@ -180,16 +110,86 @@ Game(  guessCount &lt; allowed )</constraint>
                                         </constraints>
                                         <id>9</id>
                                         <name>More Guesses?</name>
-                                        <incomingConnections id="56">
-                                          <org.drools.ruleflow.core.impl.ConnectionImpl reference="21"/>
+                                        <incomingConnections id="36">
+                                          <org.drools.ruleflow.core.impl.ConnectionImpl id="37">
+                                            <type>1</type>
+                                            <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="38">
+                                              <ruleFlowGroup>Guess incorrect</ruleFlowGroup>
+                                              <id>7</id>
+                                              <name>Guess incorrect</name>
+                                              <incomingConnections id="39">
+                                                <org.drools.ruleflow.core.impl.ConnectionImpl id="40">
+                                                  <type>1</type>
+                                                  <from class="org.drools.ruleflow.core.impl.JoinImpl" id="41">
+                                                    <type>2</type>
+                                                    <id>8</id>
+                                                    <name>incorrect guess</name>
+                                                    <incomingConnections id="42">
+                                                      <org.drools.ruleflow.core.impl.ConnectionImpl id="43">
+                                                        <type>1</type>
+                                                        <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="44">
+                                                          <ruleFlowGroup>Too High</ruleFlowGroup>
+                                                          <id>3</id>
+                                                          <name>Too High</name>
+                                                          <incomingConnections id="45">
+                                                            <org.drools.ruleflow.core.impl.ConnectionImpl id="46">
+                                                              <type>1</type>
+                                                              <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="6"/>
+                                                              <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="44"/>
+                                                            </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                                          </incomingConnections>
+                                                          <outgoingConnections id="47">
+                                                            <org.drools.ruleflow.core.impl.ConnectionImpl reference="43"/>
+                                                          </outgoingConnections>
+                                                        </from>
+                                                        <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="41"/>
+                                                      </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                                      <org.drools.ruleflow.core.impl.ConnectionImpl id="48">
+                                                        <type>1</type>
+                                                        <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="3"/>
+                                                        <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="41"/>
+                                                      </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                                    </incomingConnections>
+                                                    <outgoingConnections id="49">
+                                                      <org.drools.ruleflow.core.impl.ConnectionImpl reference="40"/>
+                                                    </outgoingConnections>
+                                                  </from>
+                                                  <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="38"/>
+                                                </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                              </incomingConnections>
+                                              <outgoingConnections id="50">
+                                                <org.drools.ruleflow.core.impl.ConnectionImpl reference="37"/>
+                                              </outgoingConnections>
+                                            </from>
+                                            <to class="org.drools.ruleflow.core.impl.SplitImpl" reference="19"/>
+                                          </org.drools.ruleflow.core.impl.ConnectionImpl>
                                         </incomingConnections>
-                                        <outgoingConnections id="57">
-                                          <org.drools.ruleflow.core.impl.ConnectionImpl reference="42"/>
-                                          <org.drools.ruleflow.core.impl.ConnectionImpl reference="24"/>
+                                        <outgoingConnections id="51">
+                                          <org.drools.ruleflow.core.impl.ConnectionImpl reference="22"/>
+                                          <org.drools.ruleflow.core.impl.ConnectionImpl reference="18"/>
                                         </outgoingConnections>
-                                      </to>
+                                      </from>
+                                      <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="16"/>
                                     </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                  </incomingConnections>
+                                  <outgoingConnections id="52">
+                                    <org.drools.ruleflow.core.impl.ConnectionImpl reference="15"/>
                                   </outgoingConnections>
+                                </from>
+                                <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="13"/>
+                              </org.drools.ruleflow.core.impl.ConnectionImpl>
+                            </incomingConnections>
+                            <outgoingConnections id="53">
+                              <org.drools.ruleflow.core.impl.ConnectionImpl id="54">
+                                <type>1</type>
+                                <from class="org.drools.ruleflow.core.impl.JoinImpl" reference="13"/>
+                                <to class="org.drools.ruleflow.core.impl.EndNodeImpl" id="55">
+                                  <id>5</id>
+                                  <name>End</name>
+                                  <incomingConnections id="56">
+                                    <org.drools.ruleflow.core.impl.ConnectionImpl reference="54"/>
+                                  </incomingConnections>
+                                  <outgoingConnections id="57"/>
                                 </to>
                               </org.drools.ruleflow.core.impl.ConnectionImpl>
                             </outgoingConnections>
@@ -199,18 +199,18 @@ Game(  guessCount &lt; allowed )</constraint>
                     </to>
                   </org.drools.ruleflow.core.impl.ConnectionImpl>
                   <org.drools.ruleflow.core.impl.ConstraintImpl id="58">
-                    <name>Guess to high</name>
+                    <name>Guess correct</name>
                     <constraint>RandomNumber( randomValue : value )&#x0D;
-Guess( value &gt; randomValue )</constraint>
+Guess( value == randomValue )</constraint>
                     <priority>1</priority>
                   </org.drools.ruleflow.core.impl.ConstraintImpl>
                 </entry>
                 <entry>
-                  <org.drools.ruleflow.core.impl.ConnectionImpl reference="34"/>
+                  <org.drools.ruleflow.core.impl.ConnectionImpl reference="46"/>
                   <org.drools.ruleflow.core.impl.ConstraintImpl id="59">
-                    <name>Guess correct</name>
+                    <name>Guess to high</name>
                     <constraint>RandomNumber( randomValue : value )&#x0D;
-Guess( value == randomValue )</constraint>
+Guess( value &gt; randomValue )</constraint>
                     <priority>1</priority>
                   </org.drools.ruleflow.core.impl.ConstraintImpl>
                 </entry>
@@ -227,53 +227,53 @@ Guess( value &lt; randomValue )</constraint>
               <id>6</id>
               <name>Guess  correct?</name>
               <incomingConnections id="61">
-                <org.drools.ruleflow.core.impl.ConnectionImpl reference="54"/>
+                <org.drools.ruleflow.core.impl.ConnectionImpl reference="34"/>
               </incomingConnections>
               <outgoingConnections id="62">
-                <org.drools.ruleflow.core.impl.ConnectionImpl reference="8"/>
+                <org.drools.ruleflow.core.impl.ConnectionImpl reference="46"/>
                 <org.drools.ruleflow.core.impl.ConnectionImpl reference="5"/>
-                <org.drools.ruleflow.core.impl.ConnectionImpl reference="34"/>
+                <org.drools.ruleflow.core.impl.ConnectionImpl reference="8"/>
               </outgoingConnections>
             </from>
             <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="3"/>
           </org.drools.ruleflow.core.impl.ConnectionImpl>
         </incomingConnections>
         <outgoingConnections id="63">
-          <org.drools.ruleflow.core.impl.ConnectionImpl reference="15"/>
+          <org.drools.ruleflow.core.impl.ConnectionImpl reference="48"/>
         </outgoingConnections>
       </org.drools.ruleflow.core.impl.RuleSetNodeImpl>
     </entry>
     <entry>
       <long>8</long>
-      <org.drools.ruleflow.core.impl.JoinImpl reference="13"/>
+      <org.drools.ruleflow.core.impl.JoinImpl reference="41"/>
     </entry>
     <entry>
       <long>11</long>
-      <org.drools.ruleflow.core.impl.JoinImpl reference="29"/>
+      <org.drools.ruleflow.core.impl.JoinImpl reference="13"/>
     </entry>
     <entry>
       <long>3</long>
-      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="9"/>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="44"/>
     </entry>
     <entry>
       <long>7</long>
-      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="18"/>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="38"/>
     </entry>
     <entry>
       <long>12</long>
-      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="32"/>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="9"/>
     </entry>
     <entry>
       <long>2</long>
-      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="51"/>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="31"/>
     </entry>
     <entry>
       <long>13</long>
-      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="25"/>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="16"/>
     </entry>
     <entry>
       <long>9</long>
-      <org.drools.ruleflow.core.impl.SplitImpl reference="22"/>
+      <org.drools.ruleflow.core.impl.SplitImpl reference="19"/>
     </entry>
     <entry>
       <long>6</long>
@@ -281,15 +281,15 @@ Guess( value &lt; randomValue )</constraint>
     </entry>
     <entry>
       <long>1</long>
-      <org.drools.ruleflow.core.impl.StartNodeImpl reference="46"/>
+      <org.drools.ruleflow.core.impl.StartNodeImpl reference="26"/>
     </entry>
     <entry>
       <long>10</long>
-      <org.drools.ruleflow.core.impl.JoinImpl reference="43"/>
+      <org.drools.ruleflow.core.impl.JoinImpl reference="23"/>
     </entry>
     <entry>
       <long>5</long>
-      <org.drools.ruleflow.core.impl.EndNodeImpl reference="38"/>
+      <org.drools.ruleflow.core.impl.EndNodeImpl reference="55"/>
     </entry>
   </nodes>
   <variables id="64"/>
