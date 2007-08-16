@@ -18,7 +18,9 @@ import org.drools.PersonInterface;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.SpecialString;
 import org.drools.State;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -641,5 +643,67 @@ public class FirstOrderLogicTest extends TestCase {
         Assert.assertEquals( 6,
                              ((List)results.get(0)).size() );
     }
+    
+    public void testNestedCorelatedRulesWithForall() throws Exception {
+
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( FirstOrderLogicTest.class.getResourceAsStream( "test_NestedCorrelatedRulesWithForall.drl" ) ) );
+
+        RuleBase rb = RuleBaseFactory.newRuleBase();
+        rb.addPackage( builder.getPackage() );
+        StatefulSession session = rb.newStatefulSession();
+
+        List list1 = new ArrayList();
+        List list2 = new ArrayList();
+        List list3 = new ArrayList();
+        List list4 = new ArrayList();
+
+        session.setGlobal( "list1",
+                           list1 );
+        session.setGlobal( "list2",
+                           list2 );
+        session.setGlobal( "list3",
+                           list3 );
+        session.setGlobal( "list4",
+                           list4 );
+
+        SpecialString first42 = new SpecialString( "42" );
+        SpecialString second42 = new SpecialString( "42" );
+        SpecialString world = new SpecialString( "World" );
+
+        System.out.println( "Inserting ..." );
+
+        session.insert( world );
+        session.insert( first42 );
+        session.insert( second42 );
+
+        System.out.println( "Done." );
+
+        System.out.println( "Firing rules ..." );
+        
+        // check all lists are empty
+        assertTrue( list1.isEmpty() );
+        assertTrue( list2.isEmpty() );
+        assertTrue( list3.isEmpty() );
+        assertTrue( list4.isEmpty() );
+
+        session.fireAllRules();
+
+        System.out.println( "Done." );
+        
+        // check first list is populated correctly
+        assertEquals(2, list1.size() );
+        assertTrue( list1.contains( first42 ));
+        assertTrue( list1.contains( second42 ));
+
+        // check second list is populated correctly        
+        assertEquals(1, list2.size() );
+        
+        // check third list is populated correctly        
+        assertEquals(1, list3.size() );
+        
+        // check fourth list is populated correctly        
+        assertEquals(0, list4.size() );        
+    }    
 
 }

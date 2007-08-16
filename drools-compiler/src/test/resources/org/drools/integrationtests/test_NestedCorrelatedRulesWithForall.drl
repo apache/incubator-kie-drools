@@ -1,0 +1,45 @@
+package org.test
+
+import org.drools.SpecialString
+import java.util.List
+
+global List list1;
+global List list2;
+global List list3;
+global List list4;
+
+rule "Strange rule1"
+when
+    x : SpecialString() and
+    forall( y : SpecialString(this != x)
+                SpecialString(this == y, text == "World") )
+then
+    list1.add( x );
+end 
+
+rule "Strange rule2"
+when
+    exists(x : SpecialString() and
+                forall( y : SpecialString(this != x)
+                            SpecialString(this == y, text == "World") ) )
+then
+    list2.add( "true" );
+end 
+
+rule "Strange rule3"
+when
+    not( exists(x : SpecialString() and
+                forall( y : SpecialString(this != x)
+                            SpecialString(this == y, text == "Universe") ) ) )
+then
+    list3.add( "true" );
+end 
+
+rule "Strange rule4"
+when
+    not( exists(x : SpecialString() and
+                forall( y : SpecialString(this != x)
+                            SpecialString(this == y ) ) ) )
+then
+    list4.add( "true" );
+end 
