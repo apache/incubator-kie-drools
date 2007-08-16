@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -657,13 +658,7 @@ abstract public class AbstractRuleBase
         }
     }
 
-    public static interface RuleBaseAction {
+    public static interface RuleBaseAction extends Serializable  {
         public void execute(InternalRuleBase ruleBase);
     }
-
-    //    public static class RuleBaseAction {
-    //        public void execute(InternalRuleBase ruleBase) {
-    //            
-    //        }
-    //    }
 }

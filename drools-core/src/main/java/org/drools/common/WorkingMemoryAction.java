@@ -3,6 +3,8 @@
  */
 package org.drools.common;
 
-public interface WorkingMemoryAction {
+import java.io.Serializable;
+
+public interface WorkingMemoryAction extends Serializable {
     public void execute(InternalWorkingMemory workingMemory);
 }
