@@ -16,6 +16,8 @@
 
 package org.drools.reteoo.builder;
 
+import java.util.Collections;
+
 import org.drools.common.BetaConstraints;
 import org.drools.reteoo.FromNode;
 import org.drools.reteoo.TupleSource;

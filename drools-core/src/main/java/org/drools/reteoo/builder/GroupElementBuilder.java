@@ -32,7 +32,6 @@ import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.TupleSource;
-import org.drools.rule.Pattern;
 import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
 
@@ -209,8 +208,8 @@ public class GroupElementBuilder
                            utils,
                            child );
 
-            // if child is not a pattern adapt it into a subnetwork
-            if ( !(child instanceof Pattern) ) {
+            // if it is a subnetwork
+            if ( context.getObjectSource() == null && context.getTupleSource() != null ) {
 
                 // attach right input adapter node to convert tuple source into an object source
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
@@ -284,8 +283,8 @@ public class GroupElementBuilder
                            utils,
                            child );
 
-            // if child is not a pattern adapt it into a subnetwork
-            if ( !(child instanceof Pattern) ) {
+            // if it is a subnetwork
+            if ( context.getObjectSource() == null && context.getTupleSource() != null ) {
 
                 // attach right input adapter node to convert tuple source into an object source
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
