@@ -4,7 +4,7 @@
 <section>
   <title>Architecture</title>
 
-  <para>This section covers the innards of the BRMS - it is not neccesary to
+  <para>This section covers the innards of the BRMS - it is not necessary to
   use this if you are integrating or an end user of the BRMS application.
   However, JBoss Rules is open source, so build instructions form part of the
   manual.</para>
@@ -28,7 +28,7 @@
   parts that are highly configurable (eg database).</para>
 
   <para>The BRMS is deployed as a war, which provides user interfaces over the
-  web, and provides binary packages via URLs (or files). It utilised the
+  web, and provides binary packages via URLs (or files). It utilized the
   JSR-170 standard for data storage (JCR). JBoss Seam is used as the component
   framework, and GWT is used as the widget toolkit for constructing the ajax
   based web user interface.</para>
@@ -61,11 +61,11 @@
 
       <para>Initially, you should go into the root of the jboss-rules checked
       out source tree, and run mvn install to install all the components for
-      the inter project depedencies. If the build is broken (no ! say it isn't
+      the inter project dependencies. If the build is broken (no ! say it isn't
       so !) you can use the flag -Dmaven.test.skip=true to prevent failing
       unit tests from preventing the build.</para>
 
-      <para>When you wan't to build the BRMS - you can go into the
+      <para>When you want to build the BRMS - you can go into the
       drools-jbrms directory, and run "mvn package" - this will run the tests,
       and then build a deployable war. The only thing this won't do is rebuild
       the GWT front end (see the next section for details on that). Once you
@@ -78,7 +78,7 @@
 
       <para>The GUI widgets for the web front end are developed with GWT
       (google web toolkit). If you need to make changes to or build the GUI,
-      you will need to download GWT seperately. Once GWT is downloaded, you
+      you will need to download GWT separately. Once GWT is downloaded, you
       can modify the build.properties file in the drools-jbrms directory to
       point to where you installed GWT. Once you have this, you can use the
       ant tasks to build the GWT components, as well as launch GWT in
@@ -126,14 +126,14 @@
   <section>
     <title>Re-usable components</title>
 
-    <para>The BRMS uses a service interface to seperate the GUI from the "back
+    <para>The BRMS uses a service interface to separate the GUI from the "back
     end" functionality - in this case the back end both includes the asset
     repository (drools-repository and JCR) as well as the compiler specifics
     to deal with rules. </para>
 
     <para>The main interface is RepositoryService, which is implemented in
     ServiceImplementation. The GWT ajax front end talks to this interface (via
-    the async callback mechanism that GWT uses). The seam configuration file
+    the asynchrony callback mechanism that GWT uses). The seam configuration file
     is components.xml (consult Seam documentation, and the components.xml file
     for details).</para>
 
@@ -142,16 +142,16 @@
 
     <para>The GWT user interface may be re-used - as it is GWT there is only
     one html page: JBRMS.html. For those familiar with GWT, each of the
-    "features" can be used seperate (eg in a portal) - look at the
+    "features" can be used separate (eg in a portal) - look at the
     JBRMSFeature class and the classes that implement it (they can in theory
     be stand alone).</para>
 
     <para>Normally the BRMS is intended to be deployed as its own war, however
     you could in theory combine it with your own application (with some care)
-    - but it is easier to keep it as a seperate war, and will make it easier
+    - but it is easier to keep it as a separate war, and will make it easier
     to upgrade to newer releases as they come out.</para>
     
-    <para>The JBRMS.html file can be customised - for example to change logos or embed
+    <para>The JBRMS.html file can be customized - for example to change logos or embed
     the BRMS in another page. Take a look at the JBRMS.html file for details (its 
     very simple).    
     </para>
@@ -167,7 +167,7 @@
     </para>
 
     <para>When "snapshots" are created, copies are made of the entire package
-    into a seperate location in the JCR database. </para>
+    into a separate location in the JCR database. </para>
 
     <para>For those familiar with jcr and jackrabbit, you can look at the
     *.cnd files in the source for the node type definitions. In a nutshell, a
@@ -178,7 +178,7 @@
   <section>
     <title>Contributing</title>
 
-    <para>Consult the wiki and project homepages if you are interested in
+    <para>Consult the wiki and project home-pages if you are interested in
     contributing. A useful way to contribute is via logging issues or feature
     requests in JIRA. However, if you are creating an issue in JIRA for the
     BRMS, it is important that you choose "drools-brms" as the component in
