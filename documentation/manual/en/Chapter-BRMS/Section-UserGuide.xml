@@ -132,7 +132,7 @@
         </listitem>
 
         <listitem>
-          <para>You will also have to choose one category. Cateogies provide a
+          <para>You will also have to choose one category. Categories provide a
           way of viewing rules that is separate to packages (and you can make
           rules appear in multiple packages) - think of it like
           tagging.</para>
@@ -143,7 +143,7 @@
         </listitem>
 
         <listitem>
-          <para>This will open a rule modeller, which is a guided editor. You
+          <para>This will open a rule modeler, which is a guided editor. You
           can add and edit conditions and actions based on the model that is
           in use in the current package. Also, any DSL sentence templates
           setup for the package will be available.</para>
@@ -234,7 +234,7 @@
         </mediaobject>
       </figure>
 
-      <para>Categories allow rules (assets) to be labelled (or tagged) with
+      <para>Categories allow rules (assets) to be labeled (or tagged) with
       any number of categories that you define. This means that you can then
       view a list of rules that match a specific category. Rules can belong to
       any number of categories. In the above diagram, you can see this can in
@@ -246,7 +246,7 @@
       <para>Generally categories are created with meaningful name that match
       the area of the business the rule applies to (if the rule applies to
       multiple areas, multiple categories can be attached). Categories can
-      also be used to "tag" rules as part of their lifecycle, for example to
+      also be used to "tag" rules as part of their life-cycle, for example to
       mark as "Draft" or "For Review".</para>
 
       <figure>
@@ -295,7 +295,7 @@
 
       <para>The above view shows the administration screen for setting up
       categories (there) are no categories in the system by default. As the
-      categories can be hierachical you chose the "parent" category that you
+      categories can be hierarchical you chose the "parent" category that you
       want to create a sub-category for. From here categories can also be
       removed (but only if they are not in use by any current versions of
       assets).</para>
@@ -604,7 +604,7 @@
           </mediaobject>
         </figure>
 
-        <para>A dsl rule is a single rule. Refering to the picture above, you
+        <para>A dsl rule is a single rule. Referring to the picture above, you
         can a text editor. You can use the icons to the right to provide lists
         of conditions and actions to choose from (or else press Control +
         Space at the same time to pop up a list).</para>
@@ -753,7 +753,7 @@
       by someone with some experience with rules/models. Generally speaking,
       very few people will need to configure packages, and once they are
       setup, they can be copied over and over if needed. Package configuration
-      is most definately a technical task that requires the appropriate
+      is most definitely a technical task that requires the appropriate
       expertise.</para>
 
       <para>All assets live in "packages" in the BRMS - a package is like a
@@ -804,7 +804,7 @@
           </listitem>
 
           <listitem>
-            <para>DSL: Domain Specific Lanaguages can also be stored as an
+            <para>DSL: Domain Specific Languages can also be stored as an
             asset. If they exist (generally there is only one), then they will
             be used in the appropriate editor GUIs.</para>
           </listitem>
@@ -934,7 +934,7 @@
       </figure>
 
       <para>The above shows deployment snapshots view. On the left there is a
-      list of packages. Clilcking on a specific package will show you a list
+      list of packages. Clicking on a specific package will show you a list
       of snapshots for that package (if any). From there you can copy, remove
       or view an asset snapshot. Each snapshot is available for download or
       access via a URL for deployment.</para>
@@ -944,11 +944,11 @@
       <title>Navigating and finding rules</title>
 
       <para>The two main ways of viewing the repository are by using
-      user-driven Categorisation (tagging) as outlined above, and the package
+      user-driven Categorization (tagging) as outlined above, and the package
       explorer view.</para>
 
       <para>The category view provides a way to navigate your rules in a way
-      that makes sense to your organisation.</para>
+      that makes sense to your organization.</para>
 
       <figure>
         <title>Category view</title>
@@ -994,7 +994,7 @@
     required to use the BRMS. In fact any software system in some sense
     requires that people be "technical" even if it has a nice looking GUI.
     Having said that, in the right hands the BRMS can be setup to provide a
-    sutiable environment for non technical users.</para>
+    suitable environment for non technical users.</para>
 
     <para>The most appropriate rule formats for this use are using the Guided
     editor, Decision tables and DSL rules. You can use some DSL expressions
@@ -1119,7 +1119,7 @@ name=MyConfig</programlisting>
           <para>localCacheDir</para>
 
           <para>This is used in conjunction with the url above, so that if the
-          BRMS is down (the url is not accessable) then if the runtime has to
+          BRMS is down (the url is not accessible) then if the runtime has to
           start up, it can start up with the last known "good" versions of the
           packages.</para>
         </listitem>

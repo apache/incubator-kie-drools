@@ -23,7 +23,7 @@
     from http://labs.jboss.com/jbossrules/downloads), you will find the
     drools-jbrms.war file in the zip file. Copy the WAR file into the
     deployment directory of you app server, and then start your app server. If
-    you need to customise some settings, you can first "explode" (unzip) the
+    you need to customize some settings, you can first "explode" (unzip) the
     war file, and change any configuration settings, and then either zip it
     up, or deploy it "exploded".</para>
 
@@ -39,7 +39,7 @@
       <title>Supported and recommended platforms</title>
 
       <para>The BRMS is capable of running in any application server that
-      sypports Java SE5 (JEE 5 is not required) - this includes servlet
+      supports Java SE5 (JEE 5 is not required) - this includes servlet
       containers like tomcat.</para>
 
       <para>It is actively tested on JBoss platforms, and these are
@@ -107,11 +107,11 @@
       <para>To change the location, unzip the WAR file, and locate the
       components.xml file in the WEB-INF directory. This is a JBoss Seam
       configuration file (Seam is the framework used) which allows various
-      parts of the system to be customised. When you have located the
+      parts of the system to be customized. When you have located the
       components.xml file, you should see something like the following:</para>
       <programlisting>&lt;component name="repositoryConfiguration"&gt;
  &lt;!--
-  *** This is for configuring the "home" directory for the repo storage. the directory must exist. ***
+  *** This is for configuring the "home" directory for the repository storage. the directory must exist. ***
      &lt;property name="homeDirectory"&gt;/home/michael/RulesRepository_001&lt;/property&gt;
    --&gt;  
 
@@ -169,7 +169,7 @@
     <section>
       <title>Searching and indexing, Version storage</title>
 
-      <para>Jackrabbit has a seperate storage area for version storage (as
+      <para>Jackrabbit has a separate storage area for version storage (as
       over time, the number of old versions will increase, yet it should not
       slow down the performance of the main data store). The version storage
       also has its own persistence manage configuration in the repository.xml,
@@ -190,7 +190,7 @@
     <title>Security</title>
 
     <para>Security is configured by using the components.xml file in the war
-    file. To customise this, you will need to unzip the war file, and locate
+    file. To customize this, you will need to unzip the war file, and locate
     the components.xml file which is in the WEB-INF directory.</para>
 
     <para>The JAAS standard is used as the underlying authentication and
@@ -277,7 +277,7 @@
 
       <para>LDAP isn't the final word, you can use JDBC against a database of
       user name, or you can write your own login module to use any sort of
-      wierd and wonderful authentication and authorisation systems that you
+      weird and wonderful authentication and authorization systems that you
       may have to deal with (that would be an extreme case, but its possible).
       Refer to JBoss AS documentation (or documentation for your existing
       application server).</para>
@@ -308,10 +308,10 @@
     </section>
 
     <section>
-      <title>Asset list customisation</title>
+      <title>Asset list customization</title>
 
       <para>In a few places in the BRMS there is an asset list: this list can
-      be customised by looking for the AssetListTable.properties file. You can
+      be customized by looking for the AssetListTable.properties file. You can
       then set the header names and the "getter" methods that are used to
       populate the columns. eg you could add in getCreator, or
       getExternalSource as extra fields if you were using them.</para>
@@ -342,7 +342,7 @@
   &lt;iframe id='__gwt_historyFrame' style='width:0;height:0;border:0'&gt;&lt;/iframe&gt;
 &lt;/body&gt;
 &lt;/html&gt;</programlisting><para> The above is the contents of the JBRMS.html
-      file - it is faily empty (as most of the work is done by the GWT - the
+      file - it is fairly empty (as most of the work is done by the GWT - the
       GUI is built dynamically in the browser). The parts you can customise
       are the style sheet - you can either edit the JBRMS.css (or better yet,
       take a copy, and change the style to be what you need), the "shortcut
@@ -352,7 +352,7 @@
       loaded and attached to the page. This html page is loaded only once by
       the browser when the user accesses the BRMS web GUI.</para>
 
-      <para>The best way to customise is to take a copy of the JBRMS.html -
+      <para>The best way to customize is to take a copy of the JBRMS.html -
       and then edit. You can also change the URL by editing the web.xml via
       the normal means. </para>
     </section>
