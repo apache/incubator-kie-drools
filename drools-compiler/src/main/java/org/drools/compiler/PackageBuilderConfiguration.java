@@ -16,8 +16,6 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,21 +45,19 @@ import org.drools.util.ChainedProperties;
  */
 public class PackageBuilderConfiguration {
 
+    private static final String ACCUMULATE_FUNCTION_PREFIX = "drools.accumulate.function.";
 
-    private static final String  ACCUMULATE_FUNCTION_PREFIX = "drools.accumulate.function.";
+    private Map                 dialects;
 
-    private Map                  dialects;
-    
-    private DialectRegistry      dialectRegistry;
+    private DialectRegistry     dialectRegistry;
 
-    private String               defaultDialect;
+    private String              defaultDialect;
 
-    private ClassLoader          classLoader;
+    private ClassLoader         classLoader;
 
+    private ChainedProperties   chainedProperties;
 
-    private ChainedProperties    chainedProperties;
-
-    private Map                  accumulateFunctions;
+    private Map                 accumulateFunctions;
 
     /**
      * Programmatic properties file, added with lease precedence
@@ -103,19 +99,19 @@ public class PackageBuilderConfiguration {
 
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
-        }              
+        }
 
         this.dialects = new HashMap();
         this.chainedProperties.mapStartsWith( this.dialects,
                                               "drools.dialect",
                                               false );
         setDefaultDialect( (String) this.dialects.remove( "drools.dialect.default" ) );
-        
-        this.dialectRegistry = buildDialectRegistry( );
+
+        this.dialectRegistry = buildDialectRegistry();
 
         buildAccumulateFunctionsMap();
     }
-    
+
     public ChainedProperties getChainedProperties() {
         return this.chainedProperties;
     }
@@ -130,17 +126,18 @@ public class PackageBuilderConfiguration {
             String dialectClass = (String) entry.getValue();
             try {
                 Class cls = classLoader.loadClass( dialectClass );
-                DialectConfiguration dialectConf = ( DialectConfiguration ) cls.newInstance();
+                DialectConfiguration dialectConf = (DialectConfiguration) cls.newInstance();
                 dialectConf.init( this );
                 registry.addDialectConfiguration( dialectName,
-                                     dialectConf );
+                                                  dialectConf );
             } catch ( Exception e ) {
-                throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + "'", e );
+                throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + "'",
+                                                  e );
             }
         }
         return registry;
     }
-    
+
     public DialectRegistry getDialectRegistry() {
         return this.dialectRegistry;
     }
@@ -152,14 +149,15 @@ public class PackageBuilderConfiguration {
     public void setDefaultDialect(String defaultDialect) {
         this.defaultDialect = defaultDialect;
     }
-    
+
     public DialectConfiguration getDialectConfiguration(String name) {
-        return ( DialectConfiguration ) this.dialectRegistry.getDialectConfiguration( name );
+        return (DialectConfiguration) this.dialectRegistry.getDialectConfiguration( name );
     }
-    
-    public void setDialectConfiguration(String name, DialectConfiguration configuration) {
-        this.dialects.put( name, 
-                           configuration );
+
+    public void setDialectConfiguration(String name,
+                                        DialectConfiguration configuration) {
+        this.dialectRegistry.addDialectConfiguration( name,
+                                                      configuration );
     }
 
     public ClassLoader getClassLoader() {
@@ -183,10 +181,10 @@ public class PackageBuilderConfiguration {
             Map.Entry entry = (Map.Entry) it.next();
             String identifier = ((String) entry.getKey()).trim().substring( ACCUMULATE_FUNCTION_PREFIX.length() );
             this.accumulateFunctions.put( identifier,
-                                           entry.getValue() );
+                                          entry.getValue() );
         }
     }
-    
+
     public Map getAccumulateFunctionsMap() {
         return Collections.unmodifiableMap( this.accumulateFunctions );
     }
@@ -194,13 +192,13 @@ public class PackageBuilderConfiguration {
     public void addAccumulateFunction(String identifier,
                                       String className) {
         this.accumulateFunctions.put( identifier,
-                                       className );
+                                      className );
     }
 
     public void addAccumulateFunction(String identifier,
                                       Class clazz) {
         this.accumulateFunctions.put( identifier,
-                                       clazz.getName() );
+                                      clazz.getName() );
     }
 
     public AccumulateFunction getAccumulateFunction(String identifier) {
