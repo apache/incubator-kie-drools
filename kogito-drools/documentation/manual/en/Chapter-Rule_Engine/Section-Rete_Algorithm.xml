@@ -10,9 +10,9 @@
   into 2 parts: rule compilation and runtime execution.</para>
 
   <para>The compilation algorithm describes how the Rules in the Production
-  Memory to generate an efficient descrimination network. In non-technical
-  terms, a descrimination network is used to filter data. The idea is to
-  filter data as it propogates through the network. At the top of the network
+  Memory to generate an efficient discrimination network. In non-technical
+  terms, a discrimination network is used to filter data. The idea is to
+  filter data as it propagates through the network. At the top of the network
   the nodes would have many matches and as we go down the network, there would be 
   fewer matches. At the very bottom of the network are the terminal nodes. In Dr.
   Forgy's 1982 paper, he described 4 basic nodes: root, 1-input, 2-input and
@@ -40,7 +40,7 @@
   cycles. To make things efficient, the engine should only pass the object to
   the nodes that match the object type. The easiest way to do this is to
   create an ObjectTypeNode and have all 1-input and 2-input nodes descend from
-  it. This way, if an application asserts a new account, it won't propogate to
+  it. This way, if an application asserts a new account, it won't propagate to
   the nodes for the Order object. In Drools when an object is asserted it
   retrieves a list of valid ObjectTypesNodes via a lookup in a HashMap from
   the object's Class; if this list doesn't exist it scans all the ObjectTypde
@@ -87,12 +87,12 @@
     </mediaobject>
   </figure>
 
-  <para>Drools extends Rete by optimising the propagation from ObjectTypdeNode
+  <para>Drools extends Rete by optimizing the propagation from ObjectTypdeNode
   to AlphaNode using hashing. Each time an AlphaNode is added to an
   ObjectTypdeNode it adds the literal value as a key to the HashMap with the
   AlphaNode as the value. When a new instance enters the ObjectTypde node,
   rather than propagating to each AlphaNode, it can instead retrieve the
-  correct AlphaNode from the HashMap - avoiding unecessary literal
+  correct AlphaNode from the HashMap - avoiding unnecessary literal
   checks.</para>
 
   <para>There are two two-input nodes; JoinNode and NotNode - both are
@@ -104,8 +104,8 @@
   checks. BetaNodes also have memory. The left input is called the Beta Memory
   and remembers all incoming tuples. The right input is called the Alpha
   Memory and remembers all incoming objects. Drools extends Rete by
-  performaning indexing on the BetaNodes. For instance, if we know that a
-  BetaNode is peforming a check on a String field, as each object enters we
+  performing indexing on the BetaNodes. For instance, if we know that a
+  BetaNode is performing a check on a String field, as each object enters we
   can do a hash lookup on that String value. This means when facts enter from
   the opposite side, instead of iterating over all the facts to find valid
   joins, we do a lookup returning potentially valid candidates. At any

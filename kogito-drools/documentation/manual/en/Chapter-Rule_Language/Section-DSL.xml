@@ -6,17 +6,17 @@
       <primary>Domain Specific Languages</primary>
     </indexterm>(or DSLs) are a way of extending the rule language to your
   problem domain. They are wired in to the rule language for you, and can make
-  use of all the underlying rule langauge and engine features.</para>
+  use of all the underlying rule language and engine features.</para>
 
   <section>
     <title>When to use a DSL</title>
 
-    <para>DSLs can serve as a layer of seperation between rule authoring (and
+    <para>DSLs can serve as a layer of separation between rule authoring (and
     rule authors) and the domain objects that the engine operates on. DSLs can
     also act as "templates" of conditions or actions that are used over and
     over in your rules, perhaps only with parameters changing each time. If
     your rules need to be read and validated by less technical folk, (such as
-    Business Analysts) the DSLs are definately for you. If the conditions or
+    Business Analysts) the DSLs are definitely for you. If the conditions or
     consequences of your rules follow similar patterns which you can express
     in a template. You wish to hide away your implementation details, and
     focus on the business rule. You want to provide a controlled means of
@@ -48,7 +48,7 @@
       <programlisting>[when]This is {something}=Something(something=={something})</programlisting>
     </example>
 
-    <para>Refering to the above example, the [when] refers to the scope of the
+    <para>Referring to the above example, the [when] refers to the scope of the
     expression: ie does it belong on the LHS or the RHS of a rule. The part
     after the [scope] is the expression that you use in the rule (typically a
     natural language expression, but it doesn't have to be). The part on the
@@ -71,7 +71,7 @@
     DSL expressions to generate a target expression. The best way around this
     is to make sure that the {tokens} are enclosed with characters or words.
     This means that the parser will scan along the sentence, and pluck out the
-    value BETWEEN the characters (in the example below they are doublequotes).
+    value BETWEEN the characters (in the example below they are double-quotes).
     Note that the characters that surround the token are not included in when
     interpolating, just the contents between them (rather then all the way to
     the end of the line, as would otherwise be the case).</para>
@@ -134,14 +134,14 @@ There is a Person with name of "bob" and Person is at least 30 years old and liv
     unit test as you go (like a good agile citizen!). Once you feel
     comfortable, you can look at extracting a domain language to express what
     you are doing in the rules. Note that once you have started using the
-    "expander" keyword, you will get errors if the parser does not recognise
+    "expander" keyword, you will get errors if the parser does not recognize
     expressions you have in there - you need to move everything to the DSL. As
     a way around this, you can prefix each line with "&gt;" and it will tell
     the parser to take that line literally, and not try and expand it (this is
     handy also if you are debugging why something isn't working).</para>
 
     <para>As you work through building up your DSL, you will find that the DSL
-    configuration stabilises pretty quickly, and that as you add new rules and
+    configuration stabilizes pretty quickly, and that as you add new rules and
     edit rules you are reusing the same DSL expressions over and over. The aim
     is to make things as fluent as possible.</para>
 
@@ -180,8 +180,8 @@ There is a person called Mike who is sad
     <para>A common requirement when writing rule conditions is to be able to
     add many constraints to fact declarations. A fact may have many (dozens)
     of fields, all of which could be used or not used at various times. To
-    come up with every combination as seperate DSL statements would in many
-    cases not be feasable.</para>
+    come up with every combination as separate DSL statements would in many
+    cases not be feasible.</para>
 
     <para>The DSL facility allows you to achieve this however, with a simple
     convention. If your DSL expression starts with a "-", then it will be
@@ -259,12 +259,12 @@ There is a person called Mike who is sad
     fashioned way.</para>
 
     <para>Rules engines require a object or data model to operate on - in many
-    cases you may know this up front. In othercases the model will be
+    cases you may know this up front. In other cases the model will be
     discovered with the rules. In any case, rules generally work better with
     simpler flatter object models. In some cases, this may mean having a rule
     object model which is a subset of the main applications model (perhaps
     mapped from it). Object models can often have complex relationships and
-    hierachies in them - for rules you will want to simplify and flatten the
+    hierarchies in them - for rules you will want to simplify and flatten the
     model where possible, and let the rule engine infer relationships (as it
     provides future flexibility). As stated previously, DSLs can have an
     advantage of providing some insulation between the object model and the
@@ -273,7 +273,7 @@ There is a person called Mike who is sad
     <para>Coming up with a DSL is a collaborative approach for both technical
     and domain experts. Historically there was a role called "knowledge
     engineer" which is someone skilled in both the rule technology, and in
-    capturing rules. Overa short period of time, your DSL should stabilise,
+    capturing rules. Over a short period of time, your DSL should stabilize,
     which means that changes to rules are done entirely using the DSL. A
     suggested approach if you are starting from scratch is the following
     workflow: <itemizedlist>
@@ -298,7 +298,7 @@ There is a person called Mike who is sad
         <listitem>
           <para>Use the above DSL, and try to write the rules just like that
           appear in the "if then" statements from the first and second steps.
-          Iterate this process until patterns appear and things stabilise. At
+          Iterate this process until patterns appear and things stabilize. At
           this stage, you are not so worried about the rule language
           underneath, just the DSL.</para>
         </listitem>
@@ -317,7 +317,7 @@ There is a person called Mike who is sad
         </listitem>
       </itemizedlist></para>
 
-    <para>A challanging concept to express in DSLs is bound variables. A tip
+    <para>A challenging concept to express in DSLs is bound variables. A tip
     for this is to have a DSL expressions that just bind a given variable name
     to an Object Type (with no conditions - you can add conditions to that
     bound object type in subsequent statements). You can then use that name

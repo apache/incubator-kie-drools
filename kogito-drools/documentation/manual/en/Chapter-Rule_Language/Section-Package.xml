@@ -84,7 +84,7 @@
     </figure>
 
     <para>The expander statement (optional) is used to specify domain specific
-    language (DSL) configurations (which are normally stored in a seperate
+    language (DSL) configurations (which are normally stored in a separate
     file). This provides clues to the parser as how to understand what you are
     raving on about in your rules. It is important to note that in Drools 4.0
     (that is different from Drools 3.x) the expander declaration is mandatory
@@ -119,7 +119,7 @@
     never be reasoned over, and only use them in rules LHS if the global has a
     constant immutable value. The engine is not notified and does not track
     globals value changes. Incorrect use of globals in constraints may yield
-    suprising results - surprising in a bad way, like when a doctor says
+    surprising results - surprising in a bad way, like when a doctor says
     "thats interesting" to a chest XRay of yours.</para>
 
     <para>If multiple packages declare globals with the same identifier they
@@ -176,7 +176,7 @@ wm.setGlobal( "myGlobalList", list );
     the data to the working memory.</para>
 
     <para>It is strongly discouraged to set (or change) a global value from
-    inside your rules. We recomend to you always set the value from your
+    inside your rules. We recommend to you always set the value from your
     application using the working memory interface.</para>
   </section>
 </section>

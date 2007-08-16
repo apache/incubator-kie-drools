@@ -13,7 +13,7 @@
     structure for the "descr"; where the "descr" indicates the AST that
     "describes" the rules. The AST is then passed to the Package Builder which
     produces Packages. Package Builder also undertakes any code generation and
-    compilation that is necessary for the creation of the Pacakge. A Packge
+    compilation that is necessary for the creation of the Package. A Package
     object is self contained and deployable, in that it's a serialized object
     consisting of one or more rules.</para>
 
@@ -35,7 +35,7 @@
     Packages. Packages can be added and removed from the RuleBase at any time.
     A RuleBase can instantiate one or more WorkingMemories at any time; a weak
     reference is maintained, unless configured otherwise. The Working Memory
-    consists of a number of sub components, inculding Working Memory Event
+    consists of a number of sub components, including Working Memory Event
     Support, Truth Maintenance System, Agenda and Agenda Event Support. Object
     insertion may result in the creation of one or more Activations. The
     Agenda is responsible for scheduling the execution of these
@@ -78,7 +78,7 @@
     (description) AST models from a provided Reader instance. ProcessBuilder
     reads in an xstream serialisation representation of the Rule Flow.
     PackageBuilder provides convienience APIs so that you can mostly forget
-    about those classes. The three convienience methods are
+    about those classes. The three convenience methods are
     "addPackageFromDrl", "addPackageFromXml" and addRuleFlow - all take an
     instance of Reader as an argument. The example below shows how to build a
     package that includes both XML, DRL and rule files and a ruleflow file,
@@ -100,7 +100,7 @@ Package pkg = builder.getPackage();      </programlisting>
     InvalidRulePackage when a broken Package is added, the detailed error
     information is stripped and only a toString() equivalent is available. If
     you interrogate the PackageBuilder itself much more information is
-    aviailable.</para>
+    available.</para>
 
     <example>
       <title>Checking the PackageBuilder for errors</title>
@@ -129,12 +129,12 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
       </mediaobject>
     </figure>
 
-    <para>It has default values that can be overriden programmatically via
+    <para>It has default values that can be overridden programmatically via
     setters or on first use via property settings. At the heart of the
     settings is the ChainedProperties class which searches a number of
     locations looking for drools.packagebuilder.conf files; as it finds them
     it adds the properties to the master propperties list; this provides a
-    level precedence. In order of precendence those lolcations are: System
+    level precedence. In order of precedence those locations are: System
     Properties, user defined file in System Properties, user home directory,
     working directory, various META-INF locations. Further to this the
     droosl-compiler jar has the default settings in its META-INF
@@ -166,7 +166,7 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
       </mediaobject>
     </figure>
 
-    <para>The JavaDialectConfiguration allows th compiler and language levels
+    <para>The JavaDialectConfiguration allows the compiler and language levels
     to be supported. You can override by setting the
     "drools.dialect.java.compiler" property in a packagebuilder.conf file that
     the ChainedProperties instance will find, or you can do it at runtime as
@@ -290,7 +290,7 @@ ruleBase.addPackage( pkg  );        </programlisting>
     on the continually re-generation of the Rule Base; which is
     expensive.</para>
 
-    <para>A Rule Base instance is threadsafe, in the sense that you can have
+    <para>A Rule Base instance is thread safe, in the sense that you can have
     the one instance shared across threads in your application, which may be a
     web application, for instance. The most common operation on a rulebase is
     to create a new rule session; either stateful or stateless.</para>
@@ -317,12 +317,12 @@ ruleBase.removeRule( "org.com.sample", "my rule" ); // remove a specific rule fr
     method to add an individual rule - to achieve this just add a new package
     with a single rule in it.</para>
 
-    <para>RuleBaseConfigurator can be used to specify additional behaviour of
+    <para>RuleBaseConfigurator can be used to specify additional behavior of
     the RuleBase. RuleBaseConfiguration is set to immutable after it has been
-    added to a Rule Base. Nearly all the engine optimisations can be turned on
-    and off from here, and also the execution behviour can be set. Users will
-    generally be concerned with insertion behaviour (identity or equality) and
-    cross product bheaviour(remove or keep identity equals cross
+    added to a Rule Base. Nearly all the engine optimizations can be turned on
+    and off from here, and also the execution behavior can be set. Users will
+    generally be concerned with insertion behavior (identity or equality) and
+    cross product behavior(remove or keep identity equals cross
     products).</para>
 
     <programlisting>RuleBaseConfiguration conf = new RuleBaseConfiguration();
@@ -498,11 +498,11 @@ session.setGlobal("list", list);           </programlisting>
       System Shell).</para>
 
       <para>The origins of shadow facts traces back to the concept of truth
-      maintenance. The basic idea is that an expert system should gaurantee
+      maintenance. The basic idea is that an expert system should guarantee
       the derived conclusions are accurate. A running system may alter a fact
       during evaluation. When this occurs, the rule engine must know a
       modification occurred and handle the change appropriately. There's
-      generally two ways to gaurantee truthfullness. The first is to lock all
+      generally two ways to guarantee truthfulness. The first is to lock all
       the facts during the inference process. The second is to make a cache
       copy of an object and force all modifications to go through the rule
       engine. This way, the changes are processed in an orderly fashion.
@@ -692,7 +692,7 @@ public void setState(final String newState) {
     environments such as JEE.</para>
 
     <para>StatelessSessions also support sequential mode, which is a special
-    optimised mode that uses less memory and executes faster; plesae see the
+    optimised mode that uses less memory and executes faster; please see the
     Sequential section for more details.</para>
   </section>
 
@@ -714,7 +714,7 @@ public void setState(final String newState) {
     </figure>
 
     <para>The Agenda is a RETE feature. During a Working Memory Action rules
-    may become fully matched and elegible for execution; a single Working
+    may become fully matched and eligible for execution; a single Working
     Memory Action can result in multiple eligible rules. When a rule is fully
     matched an Activation is created, referencing the Rule and the matched
     facts, and placed onto the Agenda. The Agenda controls the execution order
@@ -758,9 +758,9 @@ public void setState(final String newState) {
     are taking place, no rules are being fired.</para>
 
     <section>
-      <title>Conflict Resultion</title>
+      <title>Conflict Resolution</title>
 
-      <para>Conflict resolution is required when there are mutliple rules on
+      <para>Conflict resolution is required when there are multiple rules on
       the agenda. As firing a rule may have side effects on working memory,
       the rule engine needs to know in what order the rules should fire (for
       instance, firing ruleA may cause ruleB to be removed from the
@@ -830,7 +830,7 @@ public void setState(final String newState) {
       <para>Filters are optional implementations of a the filter interface
       which are used to allow/or deny an activation from firing (what you
       filter on, is entirely up to the implementation). Drools provides the
-      following convienience default implementations</para>
+      following convenience default implementations</para>
 
       <itemizedlist>
         <listitem>
@@ -870,9 +870,9 @@ public void setState(final String newState) {
     conditions that could support the logical assertion, only then will it be
     retracted).</para>
 
-    <para>Normal insertinos are said to be “STATED” (ie The Fact has been
+    <para>Normal insertions are said to be “STATED” (ie The Fact has been
     stated - just like the intuitive concept). Using a HashMap and a counter
-    we track how many times a particuar equality is STATED; this means we
+    we track how many times a particular equality is STATED; this means we
     count how many different instances are equal. When we logically insert an
     object we are said to justify it and it is justified by the firing rule.
     For each logical insertion there can only be one equal object, each
@@ -886,7 +886,7 @@ public void setState(final String newState) {
     override works depends on the configuration setting
     "WM_BEHAVIOR_PRESERVE". When the property is set to discard we use the
     existing handle and replace the existing instance with the new Object -
-    this is the default behaviour - otherwise we overrde it to STATED but we
+    this is the default behavior - otherwise we override it to STATED but we
     create an new FactHandle.</para>
 
     <para>This can be confusing on a first read, so hopefully the flow charts
@@ -967,7 +967,7 @@ public void setState(final String newState) {
       <para>It is important to note that for Truth Maintenance (and logical
       assertions) to work at all, your Fact objects (which may be Javabeans)
       override equals and hashCode methods (from java.lang.Object) correctly.
-      As the truth maintnance system needs to know when 2 different physical
+      As the truth maintenance system needs to know when 2 different physical
       objects are equal in value, BOTH equals and hashCode must be overridden
       correctly, as per the Java standard.</para>
 
@@ -983,7 +983,7 @@ public void setState(final String newState) {
 
     <para>The event package provides means to be notified of rule engine
     events, including rules firing, objects being asserted, etc. This allows
-    you to seperate out logging/auditing activities from the main part of your
+    you to separate out logging/auditing activities from the main part of your
     application (and the rules) - as events are a cross cutting
     concern.</para>
 
@@ -1090,7 +1090,7 @@ public void setState(final String newState) {
     happens if we assume a stateless session, where after the initial data set
     no more data can be asserted or modified (no rule re-evaluations) and
     rules cannot be added or removed? This means we can start to make
-    assumptions to minimise what work the engine has to do.</para>
+    assumptions to minimize what work the engine has to do.</para>
 
     <orderedlist>
       <listitem>

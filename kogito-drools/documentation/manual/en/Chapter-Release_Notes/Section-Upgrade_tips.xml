@@ -3,9 +3,9 @@
   <title>Upgrade tips from Drools 3.0.x to Drools 4.0.x</title>
 
   <para>As mentioned before Drools 4.0 is a major update over the previous
-  Drools 3.0.x series. Unfortunatelly, in order to achieve the goals set for
+  Drools 3.0.x series. Unfortunately, in order to achieve the goals set for
   this release, some backward compatibility issues were introduced, as
-  discussed in the maiil list and blogs.</para>
+  discussed in the mail list and blogs.</para>
 
   <para>This section of the manual is a work in progress and will document a
   simple how-to on upgrading from Drools 3.0.x to Drools 4.0.x.</para>
@@ -95,7 +95,7 @@
 
       <para>The Working Memory actions in rule consequences were also changed
       in a similar way to the change made in the API. The following table
-      sumarizes the change:</para>
+      summarizes the change:</para>
 
       <table>
         <title>Working Memory Actions equivalent DRL commands</title>

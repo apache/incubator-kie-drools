@@ -54,7 +54,7 @@
 
           <itemizedlist>
             <listitem>
-              <para>line labelling for simple scenes by constraint
+              <para>line labeling for simple scenes by constraint
               propagation</para>
             </listitem>
           </itemizedlist>
@@ -95,9 +95,9 @@
       </itemizedlist>
 
       <para>Manners has become the de facto rule engine benchmark; however
-      it's behaviour is now well known and many engines optimise for this thus
+      it's behavior is now well known and many engines optimize for this thus
       negating its usefulness as a benchmark which is why Waltz is becoming
-      more favourable. These 5 benchmarks are also published at the University
+      more favorable. These 5 benchmarks are also published at the University
       of Texas <ulink
       url="http://www.cs.utexas.edu/ftp/pub/ops5-benchmark-suite/">http://www.cs.utexas.edu/ftp/pub/ops5-benchmark-suite/</ulink>.</para>
     </section>
@@ -146,7 +146,7 @@
       he “Assign Seating” rule description. The 'l' and the 'r' refer to the
       left and right, 's' is sean and 'n' is the guest name. In my actual
       implementation I used longer notation, 'leftGuestName', but this is not
-      practicle in a printed article. I found the notation of left and right
+      practice in a printed article. I found the notation of left and right
       preferable to the original OPS5 '1' and '2</para>
 
       <literallayout>(guest (name n1) (sex m) (hobby  h1)  )
@@ -181,13 +181,13 @@
       <para>As the introduction states, manners is a depth-first or LIFO
       example. Depth-first refers to the Conflict Resolution strategy used to
       solve the problem. OPS5 had two strategies, LEX and MEA, LEX is a chain
-      of several stratagies including Salience, Recency, Complexity:</para>
+      of several strategies including Salience, Recency, Complexity:</para>
 
       <blockquote>
         <attribution>Clips Reference Manual</attribution>
 
         <para>Every fact and instance is marked internally with a “time tag”
-        toindicate its relative recency with respect to every other fact and
+        to indicate its relative recency with respect to every other fact and
         instance in the system. The pattern entities associated with each rule
         activation are sorted in descending order for determining placement.
         An activation with a more recent pattern entities is placed before
@@ -222,7 +222,7 @@
       documented the same as the Clips ones. When Miss Manners was first
       implemented in Drools 3.0 using the Depth strategy it was not producing
       the correct result, which meant it ran forever. This paper discusses the
-      behaviour of Miss Manners with two Rule engines, Clips and Jess, and how
+      behavior of Miss Manners with two Rule engines, Clips and Jess, and how
       they make it work and how it was made to work in Drools.</para>
     </section>
 
@@ -238,7 +238,7 @@
       would fire. The execution order in this rule has little importance, but
       has a big impact in the rule "Assign Seat". The Activation fires and
       asserts the first Seating arrangement, a Path and then sets the
-      Context's state to create Activatiosn for "Assign Seat".</para>
+      Context's state to create Activation for "Assign Seat".</para>
 
       <programlisting>rule assignFirstSeat() {
   when {
@@ -318,7 +318,7 @@
       correctly fire the Activation with the last asserted Seating. With Depth
       strategy the execution is arbitrary yet Manners does correctly execute
       for Jess and Clips using the Depth strategy. Clips support, via the
-      public fourms, have said that Manners was</para>
+      public forums, have said that Manners was</para>
 
       <blockquote>
         <attribution>Clips Support Forum</attribution>
@@ -334,7 +334,7 @@
 
       <para>Early Drools 3.0 implementations, implementing Depth, would not
       work as all the Activations had the same priority and the reliance on
-      arbitrary execution meant that Seatings with lower pids where firing. A
+      arbitrary execution meant that Seating with lower pids where firing. A
       LEX style recency strategy was implemented and the benchmark worked
       correctly. This leaves the question how does Jess and Clips work, even
       if it is by coincidence. While I haven’t looked at Jess or Clips code
@@ -421,11 +421,11 @@
       <para>With OPS5 LEX the recency strategy says that if all compared facts
       have the same time tag then the activation with more facts wins; which
       would make sure that "Make Path" always fires before "Path Done". Clips
-      succesfully completes manners, no matter what the defined order of the
+      successfully completes manners, no matter what the defined order of the
       rules are in the rule file. If a system is not relying on recency and
       the rule definition order does not impact execution then the Rete build
       process must attach joins in such a way that propagation ensures that
-      most complex rules activate last - a kind of inbuilt compexity strategy,
+      most complex rules activate last - a kind of inbuilt complexity strategy,
       however this is not documented; thus with LIFO the first created
       Activation will fire last. When manners is executed in CLIPS with
       breadth strategy, it may result in an infinite loop if path_done is
@@ -514,20 +514,20 @@
       </listitem>
     </itemizedlist>
 
-    <para>All the above are external optimisations, so easily detected and the
-    results made void. However its also possible to optimise internally; this
-    can be sean from the Leaps algorithm; which Drools has an expiremental
+    <para>All the above are external optimizations, so easily detected and the
+    results made void. However its also possible to optimize internally; this
+    can be sean from the Leaps algorithm; which Drools has an experimental
     implementation of. Manners is brute force stress test of the cross product
     speed of various joins. Leaps avoid full cross product testing by only
     attempting the leading join, so where as Rete would create hundreds of
     Activations leaps only creates one - this gives orders of magnitudes speed
     increases. Modern Rete based Rule Engines are starting to analyse networks
-    and apply this type of optimisation, whether its a leaps style lazy
-    evaluation or a pre-compilation optimisation to avoid erroneous joins.
-    Drools ReteOO does not currently make these types of optimisations
-    although pre-compilation optimisations will be researched in the next
-    release. These optimisations have made the Miss Manners benchmark
-    redundant and the results form a system that optimises in this manner
+    and apply this type of optimization, whether its a leaps style lazy
+    evaluation or a pre-compilation optimization to avoid erroneous joins.
+    Drools ReteOO does not currently make these types of optimizations
+    although pre-compilation optimizations will be researched in the next
+    release. These optimizations have made the Miss Manners benchmark
+    redundant and the results form a system that optimizes in this manner
     should be considered void. This view is also put forward by James Own who
     publishes the 2000-2005 Benchmarks, <ulink
     url="http://www.kbsc.com/Performance2000-2005.xls">http://www.kbsc.com/Performance2000-2005.xls</ulink>:</para>
