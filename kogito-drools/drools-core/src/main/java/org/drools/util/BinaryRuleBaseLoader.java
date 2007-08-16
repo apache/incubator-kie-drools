@@ -78,7 +78,7 @@ public class BinaryRuleBaseLoader {
         }
         
         try {
-            ObjectInputStream oin = new DroolsObjectInputStream( in );
+            ObjectInputStream oin = new DroolsObjectInputStream( in, classLoader);
             Object opkg = oin.readObject();
             if ( !(opkg instanceof Package) ) {
                 throw new IllegalArgumentException( "Can only add instances of org.drools.rule.Package to a rulebase instance." );
