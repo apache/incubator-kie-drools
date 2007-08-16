@@ -1156,200 +1156,200 @@ public class ShadowProxyFactory {
             mv.visitVarInsn( Opcodes.ASTORE,
                              2 );
 
-            // for each field:
-            int count = 0;
-            for ( final Iterator it = fieldTypes.entrySet().iterator(); it.hasNext(); ) {
-                final Map.Entry entry = (Map.Entry) it.next();
-                final String fieldName = (String) entry.getKey();
-                final Method method = (Method) entry.getValue();
-                final Class fieldType = method.getReturnType();
-                final String fieldFlag = fieldName + ShadowProxyFactory.FIELD_SET_FLAG;
-                count++;
-                final Label goNext = new Label();
-
-                // if ( ! _fieldIsSet ) {
-                final Label l5 = new Label();
-                mv.visitLabel( l5 );
-                mv.visitVarInsn( Opcodes.ALOAD,
-                                 0 );
-                mv.visitFieldInsn( Opcodes.GETFIELD,
-                                   className,
-                                   fieldFlag,
-                                   Type.BOOLEAN_TYPE.getDescriptor() );
-                final Label l6 = new Label();
-                mv.visitJumpInsn( Opcodes.IFNE,
-                                  l6 );
-
-                //     __field = this.delegate.method();
-                final Label l7 = new Label();
-                mv.visitLabel( l7 );
-                mv.visitVarInsn( Opcodes.ALOAD,
-                                 0 );
-                mv.visitVarInsn( Opcodes.ALOAD,
-                                 0 );
-                mv.visitFieldInsn( Opcodes.GETFIELD,
-                                   className,
-                                   ShadowProxyFactory.DELEGATE_FIELD_NAME,
-                                   Type.getDescriptor( clazz ) );
-                if ( clazz.isInterface() ) {
-                    mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                        Type.getInternalName( clazz ),
-                                        method.getName(),
-                                        Type.getMethodDescriptor( method ) );
-                } else {
-                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                        Type.getInternalName( clazz ),
-                                        method.getName(),
-                                        Type.getMethodDescriptor( method ) );
-                }
-                mv.visitFieldInsn( Opcodes.PUTFIELD,
-                                   className,
-                                   fieldName,
-                                   Type.getDescriptor( fieldType ) );
-
-                //     __fieldIsSet = true;
-                final Label l8 = new Label();
-                mv.visitLabel( l8 );
-                mv.visitVarInsn( Opcodes.ALOAD,
-                                 0 );
-                mv.visitInsn( Opcodes.ICONST_1 );
-                mv.visitFieldInsn( Opcodes.PUTFIELD,
-                                   className,
-                                   fieldFlag,
-                                   Type.BOOLEAN_TYPE.getDescriptor() );
-
-                // }
-                mv.visitLabel( l6 );
-                if ( fieldType.isPrimitive() ) {
-                    // for primitive types
-                    // if ( this.field != other.field ) 
-                    mv.visitVarInsn( Opcodes.ALOAD,
-                                     0 );
-                    mv.visitFieldInsn( Opcodes.GETFIELD,
-                                       className,
-                                       fieldName,
-                                       Type.getDescriptor( fieldType ) );
-                    mv.visitVarInsn( Opcodes.ALOAD,
-                                     2 );
-                    if ( clazz.isInterface() ) {
-                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                            Type.getInternalName( clazz ),
-                                            method.getName(),
-                                            Type.getMethodDescriptor( method ) );
-                    } else {
-                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                            Type.getInternalName( clazz ),
-                                            method.getName(),
-                                            Type.getMethodDescriptor( method ) );
-                    }
-
-                    if ( fieldType.equals( Long.TYPE ) ) {
-                        mv.visitInsn( Opcodes.LCMP );
-                        mv.visitJumpInsn( Opcodes.IFEQ,
-                                          goNext );
-                    } else if ( fieldType.equals( Double.TYPE ) ) {
-                        mv.visitInsn( Opcodes.DCMPL );
-                        mv.visitJumpInsn( Opcodes.IFEQ,
-                                          goNext );
-                    } else if ( fieldType.equals( Float.TYPE ) ) {
-                        mv.visitInsn( Opcodes.FCMPL );
-                        mv.visitJumpInsn( Opcodes.IFEQ,
-                                          goNext );
-                    } else {
-                        mv.visitJumpInsn( Opcodes.IF_ICMPEQ,
-                                          goNext );
-                    }
-                    //     return false;
-                    mv.visitInsn( Opcodes.ICONST_0 );
-                    mv.visitInsn( Opcodes.IRETURN );
-                } else {
-                    // for non primitive types
-                    // if( ( ( this.field == null ) && ( other.field != null ) ) ||
-                    //     ( ( this.field != null ) && ( ! this.field.equals( other.field ) ) ) )
-                    mv.visitVarInsn( Opcodes.ALOAD,
-                                     0 );
-                    mv.visitFieldInsn( Opcodes.GETFIELD,
-                                       className,
-                                       fieldName,
-                                       Type.getDescriptor( fieldType ) );
-                    final Label secondIfPart = new Label();
-                    mv.visitJumpInsn( Opcodes.IFNONNULL,
-                                      secondIfPart );
-                    mv.visitVarInsn( Opcodes.ALOAD,
-                                     2 );
-                    if ( clazz.isInterface() ) {
-                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                            Type.getInternalName( clazz ),
-                                            method.getName(),
-                                            Type.getMethodDescriptor( method ) );
-                    } else {
-                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                            Type.getInternalName( clazz ),
-                                            method.getName(),
-                                            Type.getMethodDescriptor( method ) );
-                    }
-                    final Label returnFalse = new Label();
-                    mv.visitJumpInsn( Opcodes.IFNONNULL,
-                                      returnFalse );
-                    mv.visitLabel( secondIfPart );
-                    mv.visitVarInsn( Opcodes.ALOAD,
-                                     0 );
-                    mv.visitFieldInsn( Opcodes.GETFIELD,
-                                       className,
-                                       fieldName,
-                                       Type.getDescriptor( fieldType ) );
-                    mv.visitJumpInsn( Opcodes.IFNULL,
-                                      goNext );
-                    mv.visitVarInsn( Opcodes.ALOAD,
-                                     0 );
-                    mv.visitFieldInsn( Opcodes.GETFIELD,
-                                       className,
-                                       fieldName,
-                                       Type.getDescriptor( fieldType ) );
-                    mv.visitVarInsn( Opcodes.ALOAD,
-                                     2 );
-                    if ( clazz.isInterface() ) {
-                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                            Type.getInternalName( clazz ),
-                                            method.getName(),
-                                            Type.getMethodDescriptor( method ) );
-                    } else {
-                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                            Type.getInternalName( clazz ),
-                                            method.getName(),
-                                            Type.getMethodDescriptor( method ) );
-                    }
-                    if ( fieldType.isInterface() ) {
-                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
-                                            Type.getInternalName( fieldType ),
-                                            "equals",
-                                            Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
-                                                                      new Type[]{Type.getType( Object.class )} ) );
-                    } else {
-                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                            Type.getInternalName( fieldType ),
-                                            "equals",
-                                            Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
-                                                                      new Type[]{Type.getType( Object.class )} ) );
-                    }
-                    mv.visitJumpInsn( Opcodes.IFNE,
-                                      goNext );
-                    //       return false;
-                    mv.visitLabel( returnFalse );
-                    mv.visitInsn( Opcodes.ICONST_0 );
-                    mv.visitInsn( Opcodes.IRETURN );
-                }
-                mv.visitLabel( goNext );
-            }
-            // if all fields were ok
-            if ( count > 0 ) {
-                // return true;
-                mv.visitInsn( Opcodes.ICONST_1 );
-                // if no fields exists
-            } else {
-                // return false;
+//            // for each field:
+//            int count = 0;
+//            for ( final Iterator it = fieldTypes.entrySet().iterator(); it.hasNext(); ) {
+//                final Map.Entry entry = (Map.Entry) it.next();
+//                final String fieldName = (String) entry.getKey();
+//                final Method method = (Method) entry.getValue();
+//                final Class fieldType = method.getReturnType();
+//                final String fieldFlag = fieldName + ShadowProxyFactory.FIELD_SET_FLAG;
+//                count++;
+//                final Label goNext = new Label();
+//
+//                // if ( ! _fieldIsSet ) {
+//                final Label l5 = new Label();
+//                mv.visitLabel( l5 );
+//                mv.visitVarInsn( Opcodes.ALOAD,
+//                                 0 );
+//                mv.visitFieldInsn( Opcodes.GETFIELD,
+//                                   className,
+//                                   fieldFlag,
+//                                   Type.BOOLEAN_TYPE.getDescriptor() );
+//                final Label l6 = new Label();
+//                mv.visitJumpInsn( Opcodes.IFNE,
+//                                  l6 );
+//
+//                //     __field = this.delegate.method();
+//                final Label l7 = new Label();
+//                mv.visitLabel( l7 );
+//                mv.visitVarInsn( Opcodes.ALOAD,
+//                                 0 );
+//                mv.visitVarInsn( Opcodes.ALOAD,
+//                                 0 );
+//                mv.visitFieldInsn( Opcodes.GETFIELD,
+//                                   className,
+//                                   ShadowProxyFactory.DELEGATE_FIELD_NAME,
+//                                   Type.getDescriptor( clazz ) );
+//                if ( clazz.isInterface() ) {
+//                    mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+//                                        Type.getInternalName( clazz ),
+//                                        method.getName(),
+//                                        Type.getMethodDescriptor( method ) );
+//                } else {
+//                    mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+//                                        Type.getInternalName( clazz ),
+//                                        method.getName(),
+//                                        Type.getMethodDescriptor( method ) );
+//                }
+//                mv.visitFieldInsn( Opcodes.PUTFIELD,
+//                                   className,
+//                                   fieldName,
+//                                   Type.getDescriptor( fieldType ) );
+//
+//                //     __fieldIsSet = true;
+//                final Label l8 = new Label();
+//                mv.visitLabel( l8 );
+//                mv.visitVarInsn( Opcodes.ALOAD,
+//                                 0 );
+//                mv.visitInsn( Opcodes.ICONST_1 );
+//                mv.visitFieldInsn( Opcodes.PUTFIELD,
+//                                   className,
+//                                   fieldFlag,
+//                                   Type.BOOLEAN_TYPE.getDescriptor() );
+//
+//                // }
+//                mv.visitLabel( l6 );
+//                if ( fieldType.isPrimitive() ) {
+//                    // for primitive types
+//                    // if ( this.field != other.field ) 
+//                    mv.visitVarInsn( Opcodes.ALOAD,
+//                                     0 );
+//                    mv.visitFieldInsn( Opcodes.GETFIELD,
+//                                       className,
+//                                       fieldName,
+//                                       Type.getDescriptor( fieldType ) );
+//                    mv.visitVarInsn( Opcodes.ALOAD,
+//                                     2 );
+//                    if ( clazz.isInterface() ) {
+//                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+//                                            Type.getInternalName( clazz ),
+//                                            method.getName(),
+//                                            Type.getMethodDescriptor( method ) );
+//                    } else {
+//                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+//                                            Type.getInternalName( clazz ),
+//                                            method.getName(),
+//                                            Type.getMethodDescriptor( method ) );
+//                    }
+//
+//                    if ( fieldType.equals( Long.TYPE ) ) {
+//                        mv.visitInsn( Opcodes.LCMP );
+//                        mv.visitJumpInsn( Opcodes.IFEQ,
+//                                          goNext );
+//                    } else if ( fieldType.equals( Double.TYPE ) ) {
+//                        mv.visitInsn( Opcodes.DCMPL );
+//                        mv.visitJumpInsn( Opcodes.IFEQ,
+//                                          goNext );
+//                    } else if ( fieldType.equals( Float.TYPE ) ) {
+//                        mv.visitInsn( Opcodes.FCMPL );
+//                        mv.visitJumpInsn( Opcodes.IFEQ,
+//                                          goNext );
+//                    } else {
+//                        mv.visitJumpInsn( Opcodes.IF_ICMPEQ,
+//                                          goNext );
+//                    }
+//                    //     return false;
+//                    mv.visitInsn( Opcodes.ICONST_0 );
+//                    mv.visitInsn( Opcodes.IRETURN );
+//                } else {
+//                    // for non primitive types
+//                    // if( ( ( this.field == null ) && ( other.field != null ) ) ||
+//                    //     ( ( this.field != null ) && ( ! this.field.equals( other.field ) ) ) )
+//                    mv.visitVarInsn( Opcodes.ALOAD,
+//                                     0 );
+//                    mv.visitFieldInsn( Opcodes.GETFIELD,
+//                                       className,
+//                                       fieldName,
+//                                       Type.getDescriptor( fieldType ) );
+//                    final Label secondIfPart = new Label();
+//                    mv.visitJumpInsn( Opcodes.IFNONNULL,
+//                                      secondIfPart );
+//                    mv.visitVarInsn( Opcodes.ALOAD,
+//                                     2 );
+//                    if ( clazz.isInterface() ) {
+//                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+//                                            Type.getInternalName( clazz ),
+//                                            method.getName(),
+//                                            Type.getMethodDescriptor( method ) );
+//                    } else {
+//                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+//                                            Type.getInternalName( clazz ),
+//                                            method.getName(),
+//                                            Type.getMethodDescriptor( method ) );
+//                    }
+//                    final Label returnFalse = new Label();
+//                    mv.visitJumpInsn( Opcodes.IFNONNULL,
+//                                      returnFalse );
+//                    mv.visitLabel( secondIfPart );
+//                    mv.visitVarInsn( Opcodes.ALOAD,
+//                                     0 );
+//                    mv.visitFieldInsn( Opcodes.GETFIELD,
+//                                       className,
+//                                       fieldName,
+//                                       Type.getDescriptor( fieldType ) );
+//                    mv.visitJumpInsn( Opcodes.IFNULL,
+//                                      goNext );
+//                    mv.visitVarInsn( Opcodes.ALOAD,
+//                                     0 );
+//                    mv.visitFieldInsn( Opcodes.GETFIELD,
+//                                       className,
+//                                       fieldName,
+//                                       Type.getDescriptor( fieldType ) );
+//                    mv.visitVarInsn( Opcodes.ALOAD,
+//                                     2 );
+//                    if ( clazz.isInterface() ) {
+//                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+//                                            Type.getInternalName( clazz ),
+//                                            method.getName(),
+//                                            Type.getMethodDescriptor( method ) );
+//                    } else {
+//                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+//                                            Type.getInternalName( clazz ),
+//                                            method.getName(),
+//                                            Type.getMethodDescriptor( method ) );
+//                    }
+//                    if ( fieldType.isInterface() ) {
+//                        mv.visitMethodInsn( Opcodes.INVOKEINTERFACE,
+//                                            Type.getInternalName( fieldType ),
+//                                            "equals",
+//                                            Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+//                                                                      new Type[]{Type.getType( Object.class )} ) );
+//                    } else {
+//                        mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+//                                            Type.getInternalName( fieldType ),
+//                                            "equals",
+//                                            Type.getMethodDescriptor( Type.BOOLEAN_TYPE,
+//                                                                      new Type[]{Type.getType( Object.class )} ) );
+//                    }
+//                    mv.visitJumpInsn( Opcodes.IFNE,
+//                                      goNext );
+//                    //       return false;
+//                    mv.visitLabel( returnFalse );
+//                    mv.visitInsn( Opcodes.ICONST_0 );
+//                    mv.visitInsn( Opcodes.IRETURN );
+//                }
+//                mv.visitLabel( goNext );
+//            }
+//            // if all fields were ok
+//            if ( count > 0 ) {
+//                // return true;
+//                mv.visitInsn( Opcodes.ICONST_1 );
+//                // if no fields exists
+//            } else {
+//                // return false;
                 mv.visitInsn( Opcodes.ICONST_0 );
-            }
+//            }
             mv.visitInsn( Opcodes.IRETURN );
             final Label lastLabel = new Label();
             mv.visitLabel( lastLabel );
