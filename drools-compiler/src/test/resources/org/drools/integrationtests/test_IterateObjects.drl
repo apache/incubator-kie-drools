@@ -1,0 +1,11 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test iterate objects"
+when
+    Person( $likes : likes )
+then
+    results.add( new Cheese( $likes, 10 ) );
+    insert( results.get(0) );
+end

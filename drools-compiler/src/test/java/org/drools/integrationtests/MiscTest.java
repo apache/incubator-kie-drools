@@ -18,7 +18,6 @@ package org.drools.integrationtests;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -30,6 +29,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -68,6 +68,7 @@ import org.drools.StatefulSession;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
+import org.drools.base.ClassObjectFilter;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
@@ -3583,5 +3584,30 @@ public class MiscTest extends TestCase {
         assertEquals( world, list2.get( 4 ) );
         assertEquals( first42, list2.get( 5 ) );          
     }    
+
+    public void testIterateObjects() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_IterateObjects.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+        
+        workingMemory.insert( new Person( "Bob", "Stilton" ) );
+
+        workingMemory.fireAllRules();
+
+        Iterator events = workingMemory.iterateObjects(new ClassObjectFilter(Cheese.class));
+        
+        assertTrue( events.hasNext() );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( results.get( 0 ), events.next() );
+    }
 
 }

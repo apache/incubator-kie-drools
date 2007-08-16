@@ -4,20 +4,17 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.StatelessSession;
-import org.drools.StatelessSessionResult;
-import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.concurrent.Future;
 import org.drools.rule.Package;
-
-import junit.framework.TestCase;
 
 public class StatefulSessionTest extends TestCase {
     final List list = new ArrayList();
