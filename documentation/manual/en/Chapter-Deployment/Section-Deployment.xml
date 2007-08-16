@@ -17,8 +17,8 @@
   RuleAgent even without the BRMS, in which case you will need to use ant (or
   similar) to created serialized "Package" objects of your rules.</para>
 
-  <para>As every organisation is subtly different, and different deployment
-  patterns will be needed. Many organisations have (or should have)
+  <para>As every organization is subtly different, and different deployment
+  patterns will be needed. Many organizations have (or should have)
   configuration management processes for changes to production systems. It is
   best to think of rules as "data" rather then software in that regard.
   However, as rules can contain a considerable amount of powerful logic,
@@ -51,7 +51,7 @@ rb.newStatefulSession....
 //now assert your facts into the session and away you go !
 </programlisting>
 
-    <para>The MyRules.properties is a configyration file which (in the above
+    <para>The MyRules.properties is a configuration file which (in the above
     case) should be on the root of your classpath:</para>
 
     <programlisting>##
@@ -109,7 +109,7 @@ name=MyConfig</programlisting>
     rulebase inside your application (from drl source), and then cache that
     rulebase. That rulebase can be shared across threads, spawning new working
     memories to process transactions (working memories are then discarded).
-    This is essentually the stateless mode. To update the rulebase, a new
+    This is essentially the stateless mode. To update the rulebase, a new
     rulebase is loaded, and then swapped out with the cached rulebase (any
     existing threads that happen to be using the old rulebase will continue to
     use it until they are finished, in which case it will eventually be
@@ -225,7 +225,7 @@ name=MyConfig</programlisting>
       <title>Some deployment scenarios</title>
 
       <para>This section contains some suggested deployment scenarios, of
-      course you can use a variety of techologies as alternatives to the ones
+      course you can use a variety of technologies as alternatives to the ones
       in the diagram.</para>
 
       <section>

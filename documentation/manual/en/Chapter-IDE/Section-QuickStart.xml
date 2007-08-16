@@ -8,7 +8,7 @@
   allows you to author and manage rules from within Eclipse, as well as
   integrate rules with your application. This is an optional tool, and not all
   components are required to be used, you can use what components are relevant
-  to you. Other flavours of the workbench will follow, which will be aimed at
+  to you. Other flavors of the workbench will follow, which will be aimed at
   less technical rule management (such as allowing business analysts to review
   and manage rules) - all this is based on the Eclipse platform (hence the
   term "Workbench").</para>
@@ -51,7 +51,7 @@
       </listitem>
 
       <listitem>
-        <para>Wizards to accellerate and ...</para>
+        <para>Wizards to accelerate and ...</para>
 
         <itemizedlist>
           <listitem>
@@ -69,7 +69,7 @@
       </listitem>
 
       <listitem>
-        <para>A domain specific lanaguage editor</para>
+        <para>A domain specific language editor</para>
 
         <itemizedlist>
           <listitem>
@@ -167,7 +167,7 @@
     resource. These are just hints, you can change your mind later !. In terms
     of location, typically you would create a top level /rules directory to
     store your rules if you are creating a rule project, and store it in a
-    sutably named subdirectory. The package name is mandatory, and is similar
+    suitably named subdirectory. The package name is mandatory, and is similar
     to a package name in java (ie. its a namespace that groups like rules
     together).</para>
 
@@ -446,7 +446,7 @@
     are common terms used over an over, with different parameters.</para>
 
     <para>To aid with this, the rule workbench provides an editor for domain
-    specific lanaguages (they are stored in a plain text format, so you can
+    specific languages (they are stored in a plain text format, so you can
     use any editor of your choice - it uses a slightly enhanced version of the
     "Properties" file format, simply). The editor will be invoked on any files
     with a .dsl extension (there is also a wizard to create a sample
@@ -500,8 +500,8 @@
       rule, the values that are market by the curly braces {value} are
       extracted from the rule source. These values are then interpolated with
       the "Rule mapping" expression, based on the names between the curly
-      braces. So in the example above, the natural language expression mapps
-      to 2 contraints on a fact of type Person (ie the person object has the
+      braces. So in the example above, the natural language expression maps
+      to 2 constraints on a fact of type Person (ie the person object has the
       age field as less than {age}, and the location value is the string of
       {value}, where {age} and {value} are pulled out of the original rule
       source. The Rule mapping may be a java expression (such as if the scope
@@ -510,7 +510,7 @@
       compiler will not try to translate it according to the language
       definition. Also note that domain specific languages are optional. When
       the rule is compiled, the .dsl file will also need to be
-      avilable.</para>
+      available.</para>
     </section>
   </section>
 
@@ -519,7 +519,7 @@
 
     <para>The Rete Tree View shows you the current Rete Network for your drl
     file. Just click on the tab "Rete Tree" below on the DRL Editor.
-    Afterwards you can generate the current Rete Network visualisation. You
+    Afterwards you can generate the current Rete Network visualization. You
     can push and pull the nodes to arrange your optimal network overview. If
     you got hundreds of nodes, select some of them with a frame. Then you can
     pull groups of them. You can zoom in and out, in case not all nodes are
@@ -544,7 +544,7 @@
     Builder is set in the project´s properties.</para>
 
     <para>If you are using Drools in an other type of project, where you are
-    not having a Drools Rule Project with the appropiate Drools Builder, you
+    not having a Drools Rule Project with the appropriate Drools Builder, you
     can create a little workaround:</para>
 
     <para>Set up a little Drools Rule Project next to it, putting needed
@@ -584,7 +584,7 @@
 
       <para>You can debug rules during the execution of your Drools application.
       You can add breakpoints in the consequences of your rules, and whenever
-      such a breakpoint is encounted during the execution of the rules, the execution
+      such a breakpoint is uncounted during the execution of the rules, the execution
       is halted.  You can then inspect the variables known at that point and use any
       of the default debugging actions to decide what should happen next (step over,
       continue, etc.).  You can also use the debug views to inspect the content of the
@@ -637,7 +637,7 @@
           about these properties, please check the eclipse jdt documentation.</para>
         </listitem>
         <listitem>
-          <para>Click the "Debug" button on the botton to start debugging your application.
+          <para>Click the "Debug" button on the bottom to start debugging your application.
           </para>
         </listitem>
      </itemizedlist>
@@ -660,7 +660,7 @@
      breakpoint is encountered.  This can be a Drools rule breakpoint, or any other standard
      Java breakpoint.  Whenever a Drools rule breakpoint is encountered, the corresponding drl
      file is opened and the active line is highlighted.  The Variables view also contains all rule
-     parameters and their value.You can then use the default Java debug actions
+     parameters and their value. You can then use the default Java debug actions
      to decide what to do next (resume, terminate, step over, etc.).  The debug views can also
      be used to determine the contents of the working memory and agenda at that time as well
      (you don't have to select a working memory now, the current executing working memory

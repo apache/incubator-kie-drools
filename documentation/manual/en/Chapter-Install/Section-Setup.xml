@@ -56,14 +56,14 @@
     </indexterm>path. The examples given illustrative and are for a win32
   system:</para>
 
-  <literallayout>Path=D:\java\j2sdk1.5.0_8\bin;D:\java\apache-ant-1.7\bin;D:\java\maven2.0.7\bin</literallayout>
+  <literallayout>Path=D:\java\j2sdk1.5.0_8\bin;D:\java\apache-ant-1.7\bin;D:\java\maven-2.0.7\bin</literallayout>
 
   <para>Following environment variables will also need to be set. The examples
   given illustrative and are for a win32 system::</para>
 
   <literallayout>JAVA_HOME=D:\java\j2sdk1.5.0_8
 ANT_HOME=D:\java\apache-ant-1.6.5
-MAVEN_HOME=D:\java\maven2.0.7
+MAVEN_HOME=D:\java\maven-2.0.7
 
 </literallayout>
 	<para>

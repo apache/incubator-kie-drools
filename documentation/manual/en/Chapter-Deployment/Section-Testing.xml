@@ -6,17 +6,17 @@
 
   <para>In recent years, practices such as Test Driven Development have become
   increasingly mainstream, as the value and quality that these techniques
-  bring to software development has been realised. In a sense, rules are code
-  (although at a highlevel), and a lot of the same principles apply.</para>
+  bring to software development has been realized. In a sense, rules are code
+  (although at a high level), and a lot of the same principles apply.</para>
 
-  <para>You can provide tests as a means to specify rule behaviour before
+  <para>You can provide tests as a means to specify rule behavior before
   rules are even written. Further to this, tests are even more important in
   environments where rules change frequently. Tests can provide a baseline of
   confidence that the rule changes are consistent with what is specified in
   the tests. Of course, the rules may change in such a way as the tests are
   now wrong (or perhaps new tests need to be written to cover the new rule
-  behaviour). As in TDD practices, tests should be run often, and in a rule
-  driven environment, this means that they should be run everytime the rules
+  behavior). As in TDD practices, tests should be run often, and in a rule
+  driven environment, this means that they should be run every time the rules
   change (even though the software may be static).</para>
 
   <section>
@@ -38,27 +38,27 @@
   <section>
     <title>FIT for Rules - a rule testing framework</title>
 
-    <para>As a seperate add-on, there is a testing framework available that is
+    <para>As a separate add-on, there is a testing framework available that is
     built on FIT (Framework for Integrated Testing). This allows rule test
     suites (functional) to be capture in Word documents, or Excel spreadsheets
-    (in fact any tool that can save as HTML). It utilises a tabular layout to
+    (in fact any tool that can save as HTML). It utilizes a tabular layout to
     capture input data, and make assertions over the rules of a rulesets
     execution for the given facts. As the tests are stored in documents, the
-    scenarious and requirements can be (optionally) kept in the same
-    documents, providing a single point of truth for rule behaviour.</para>
+    scenarios and requirements can be (optionally) kept in the same
+    documents, providing a single point of truth for rule behavior.</para>
 
     <para>Also, as the test documents are not code, they can be updated
     frequently, and kept with the rules, used to validate rule changes etc. As
     the input format is fairly simple to people familiar with the domain of
     the rules, it also facilitates "scenario testing" where different
-    scenarious can be tried out with the rules - all external to the
+    scenarios can be tried out with the rules - all external to the
     application that the rules are used in. These scenarios can then be kept
     as tests to increase confidence that a rule change is consistent with the
     users understanding.</para>
 
     <para>This testing framework is built on FIT and JSR-94, and is kept as a
-    seperate project to JBoss Rules. Due to it being built on FIT, it requires
-    a different licence (but is still open source). You can download and read
+    separate project to JBoss Rules. Due to it being built on FIT, it requires
+    a different license (but is still open source). You can download and read
     more about this tool from this web page: <ulink
         url="http://fit-for-rules.sourceforge.net/">
         <citetitle>Fit for rules</citetitle>
