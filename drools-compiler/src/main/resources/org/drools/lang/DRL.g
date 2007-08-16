@@ -212,19 +212,20 @@ prolog
 	:	( pkgstmt=package_statement { packageName = $pkgstmt.packageName; } )?
 		{ 
 			this.packageDescr = factory.createPackage( packageName ); 
-		}
-		(ATTRIBUTES ':')?
-		(	a=rule_attribute
- 	  		{
- 	  	        	this.packageDescr.addAttribute( a );
-	                }
- 	  	(       ','? a=rule_attribute
- 	  		{
- 	  	        	this.packageDescr.addAttribute( a );
-	                }
- 	  	)* )?	
+		}	
 	;
 	
+
+statement
+	:	a=rule_attribute { this.packageDescr.addAttribute( a ); }
+	|	function_import_statement 
+	|	import_statement 
+	|	global 
+	|	function 
+	|       t=template { this.packageDescr.addFactTemplate( $t.template ); }
+	|	r=rule { this.packageDescr.addRule( $r.rule ); }			
+	|	q=query	{ this.packageDescr.addRule( $q.query ); }
+	;
 package_statement returns [String packageName]
 	@init{
 		$packageName = null;
@@ -234,15 +235,6 @@ package_statement returns [String packageName]
 		{
 			$packageName = $n.text;
 		}
-	;
-statement
-	:	function_import_statement 
-	|	import_statement 
-	|	global 
-	|	function 
-	|       t=template { this.packageDescr.addFactTemplate( $t.template ); }
-	|	r=rule { this.packageDescr.addRule( $r.rule ); }			
-	|	q=query	{ this.packageDescr.addRule( $q.query ); }
 	;
 
 	
