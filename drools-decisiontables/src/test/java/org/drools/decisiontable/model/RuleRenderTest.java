@@ -64,14 +64,16 @@ public class RuleRenderTest extends TestCase {
         
         rule.setActivationGroup( "foo" );
         rule.setNoLoop( "true" );
+        rule.setRuleFlowGroup( "ruleflowgroup" );
         
         DRLOutput out = new DRLOutput();
         rule.renderDRL( out );
         
         String result = out.toString();
+        
+        assertTrue(result.indexOf( "ruleflow-group \"ruleflowgroup\"" ) > -1 );
         assertTrue(result.indexOf( "no-loop true" ) > -1);
         assertTrue(result.indexOf( "activation-group \"foo\"" ) > -1);
-        
         
     }    
 

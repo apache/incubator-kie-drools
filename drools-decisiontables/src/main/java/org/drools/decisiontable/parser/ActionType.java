@@ -56,6 +56,8 @@ public class ActionType {
     //  AGENDA-GROUP is used to set the agenda-group parameter of a rule tag
     public static final int AGENDAGROUP     = 8;
 
+    public static final int RULEFLOWGROUP   = 9;
+
     int                     type;
 
     private SourceBuilder   sourceBuilder   = null;
@@ -90,6 +92,7 @@ public class ActionType {
                                         final String value,
                                         final int column,
                                         final int row) {
+
         if ( value.toUpperCase().startsWith( "U" ) || value.toUpperCase().equals( "NO-LOOP" ) ) // if the title cell
         // value starts with
         // "U" then put a
@@ -99,6 +102,10 @@ public class ActionType {
         {
             actionTypeMap.put( new Integer( column ),
                                new ActionType( ActionType.NOLOOP ) );
+        } else if ( value.toUpperCase().equals( "RULEFLOW-GROUP" ) || value.toUpperCase().startsWith( "R" ) ) {
+            actionTypeMap.put( new Integer( column ),
+                               new ActionType( ActionType.RULEFLOWGROUP ) );
+
         } else if ( value.toUpperCase().equals( "AGENDA-GROUP" ) ) // if the title cell
         // value equals "AGENDA-GROUP"
         // then put a

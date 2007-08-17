@@ -49,6 +49,8 @@ public class Rule extends DRLElement
     private String           _activationGroup; // RIK: New variable to the Rule class (Set the
     // activation-group parameter of the rule tag)
 
+    private String           _ruleFlowGroup;
+
     private String           _agendaGroup;    // SJW: New variable to the Rule class (Set the
     // agenda-group parameter of the rule tag
 
@@ -109,6 +111,10 @@ public class Rule extends DRLElement
         }
         if ( this._duration != null ) {
             out.writeLine( "\tduration " + this._duration );
+        }
+
+        if ( this._ruleFlowGroup != null ) {
+            out.writeLine( "\truleflow-group \"" + this._ruleFlowGroup + "\"" );
         }
 
         out.writeLine( "\twhen" );
@@ -230,6 +236,14 @@ public class Rule extends DRLElement
     public void setActivationGroup(final String value) // Set the duration of the rule
     {
         this._activationGroup = value;
+    }
+
+    public void setRuleFlowGroup(final String value) {
+        this._ruleFlowGroup = value;
+    }
+
+    public String getRuleFlowGroup() {
+        return this._ruleFlowGroup;
     }
 
     public String getActivationGroup() {

@@ -61,36 +61,36 @@ import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 public class DefaultRuleSheetListener
     implements
     RuleSheetListener {
-    
+
     //keywords
-    public static final String      FUNCTIONS_TAG          = "Functions";
-    public static final String      IMPORT_TAG             = "Import";
-    public static final String      SEQUENTIAL_FLAG        = "Sequential";
-    public static final String      VARIABLES_TAG          = "Variables";
-    public static final String      RULE_TABLE_TAG         = "RuleTable";
-    public static final String      RULESET_TAG            = "RuleSet";
-    private static final int        ACTION_ROW             = 1;
-    private static final int		OBJECT_TYPE_ROW		   = 2;
-    private static final int        CODE_ROW               = 3;
-    private static final int        LABEL_ROW              = 4;
+    public static final String            FUNCTIONS_TAG          = "Functions";
+    public static final String            IMPORT_TAG             = "Import";
+    public static final String            SEQUENTIAL_FLAG        = "Sequential";
+    public static final String            VARIABLES_TAG          = "Variables";
+    public static final String            RULE_TABLE_TAG         = "RuleTable";
+    public static final String            RULESET_TAG            = "RuleSet";
+    private static final int              ACTION_ROW             = 1;
+    private static final int              OBJECT_TYPE_ROW        = 2;
+    private static final int              CODE_ROW               = 3;
+    private static final int              LABEL_ROW              = 4;
 
     //state machine variables for this parser
-    private boolean                 _isInRuleTable         = false;
-    private int                     _ruleRow;
-    private int                     _ruleStartColumn;
-    private int                     _ruleStartRow;
-    private Rule                    _currentRule;
-    private String                  _currentRulePrefix;
-    private boolean                 _currentSequentialFlag = false;                        // indicates that we are in sequential mode
+    private boolean                       _isInRuleTable         = false;
+    private int                           _ruleRow;
+    private int                           _ruleStartColumn;
+    private int                           _ruleStartRow;
+    private Rule                          _currentRule;
+    private String                        _currentRulePrefix;
+    private boolean                       _currentSequentialFlag = false;                        // indicates that we are in sequential mode
 
     //accumulated output
-    private Map                     _actions;
-    private final HashMap           _cellComments                = new HashMap();
-    private final List              _ruleList                    = new LinkedList();
-    
+    private Map                           _actions;
+    private final HashMap                 _cellComments          = new HashMap();
+    private final List                    _ruleList              = new LinkedList();
+
     //need to keep an ordered list of this to make conditions appear in the right order
-    private List                    sourceBuilders               = new ArrayList();
-    
+    private List                          sourceBuilders         = new ArrayList();
+
     private final PropertiesSheetListener _propertiesListner     = new PropertiesSheetListener();
 
     private final org.drools.rule.Package defaultPackage;
@@ -98,11 +98,11 @@ public class DefaultRuleSheetListener
     public DefaultRuleSheetListener() {
         this( null );
     }
-    
-    public DefaultRuleSheetListener( final org.drools.rule.Package pkg ) {
+
+    public DefaultRuleSheetListener(final org.drools.rule.Package pkg) {
         this.defaultPackage = pkg;
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.decisiontable.parser.RuleSheetListener#getProperties()
      */
@@ -120,7 +120,7 @@ public class DefaultRuleSheetListener
         final Package ruleset = buildRuleSet();
         return ruleset;
     }
-    
+
     /**
      * Add a new rule to the current list of rules
      * @param rule
@@ -132,7 +132,7 @@ public class DefaultRuleSheetListener
     private Package buildRuleSet() {
         final String defaultPackageName = this.defaultPackage != null ? this.defaultPackage.getName() : "rule_table";
         final String rulesetName = getProperties().getProperty( DefaultRuleSheetListener.RULESET_TAG,
-                                                          defaultPackageName );
+                                                                defaultPackageName );
         final Package ruleset = new Package( rulesetName );
         for ( final Iterator it = this._ruleList.iterator(); it.hasNext(); ) {
             ruleset.addRule( (Rule) it.next() );
@@ -180,8 +180,7 @@ public class DefaultRuleSheetListener
      */
     public void newRow(final int rowNumber,
                        final int columns) {
-        if (_currentRule != null)
-            flushRule();
+        if ( _currentRule != null ) flushRule();
         // nothing to see here... these aren't the droids your looking for..
         // move along...
     }
@@ -190,15 +189,15 @@ public class DefaultRuleSheetListener
      * This makes sure that the rules have all their components added.
      * As when there are merged/spanned cells, they may be left out.
      */
-    private void flushRule() {        
+    private void flushRule() {
         for ( Iterator iter = sourceBuilders.iterator(); iter.hasNext(); ) {
             SourceBuilder src = (SourceBuilder) iter.next();
-            if (src.hasValues()) {
-                if (src instanceof LhsBuilder) {
+            if ( src.hasValues() ) {
+                if ( src instanceof LhsBuilder ) {
                     Condition con = new Condition();
                     con.setSnippet( src.getResult() );
                     _currentRule.addCondition( con );
-                } else if (src instanceof RhsBuilder ) {
+                } else if ( src instanceof RhsBuilder ) {
                     Consequence con = new Consequence();
                     con.setSnippet( src.getResult() );
                     _currentRule.addConsequence( con );
@@ -206,7 +205,7 @@ public class DefaultRuleSheetListener
                 src.clearValues();
             }
         }
-        
+
     }
 
     /*
@@ -216,19 +215,19 @@ public class DefaultRuleSheetListener
      */
     public void newCell(final int row,
                         final int column,
-                        final String value, 
+                        final String value,
                         int mergedColStart) {
         if ( isCellValueEmpty( value ) ) {
             return;
         }
-        if (_isInRuleTable && row == this._ruleStartRow) {
-        	return;
+        if ( _isInRuleTable && row == this._ruleStartRow ) {
+            return;
         }
         if ( this._isInRuleTable ) {
             processRuleCell( row,
                              column,
-                             value, 
-                             mergedColStart);
+                             value,
+                             mergedColStart );
         } else {
             processNonRuleCell( row,
                                 column,
@@ -242,7 +241,9 @@ public class DefaultRuleSheetListener
     private void initRuleTable(final int row,
                                final int column,
                                final String value) {
-        preInitRuleTable(row, column, value);
+        preInitRuleTable( row,
+                          column,
+                          value );
         this._isInRuleTable = true;
         this._actions = new HashMap();
         this.sourceBuilders = new ArrayList();
@@ -258,7 +259,9 @@ public class DefaultRuleSheetListener
         this._currentRule = createNewRuleForRow( this._ruleRow );
 
         this._ruleList.add( this._currentRule );
-        postInitRuleTable(row, column, value);
+        postInitRuleTable( row,
+                           column,
+                           value );
 
     }
 
@@ -293,7 +296,7 @@ public class DefaultRuleSheetListener
         if ( this._isInRuleTable ) {
             this._currentSequentialFlag = false;
             this._isInRuleTable = false;
-            
+
         }
     }
 
@@ -306,8 +309,9 @@ public class DefaultRuleSheetListener
                            value );
         } else {
             this._propertiesListner.newCell( row,
-                                        column,
-                                        value, SheetListener.NON_MERGED);
+                                             column,
+                                             value,
+                                             SheetListener.NON_MERGED );
         }
     }
 
@@ -341,11 +345,11 @@ public class DefaultRuleSheetListener
                                              row );
                 break;
             case OBJECT_TYPE_ROW :
-            	objectTypeRow( row, 
+                objectTypeRow( row,
                                column,
                                value,
-                               mergedColStart);
-            	break;
+                               mergedColStart );
+                break;
             case CODE_ROW :
                 codeRow( row,
                          column,
@@ -355,11 +359,11 @@ public class DefaultRuleSheetListener
                 labelRow( row,
                           column,
                           value );
-                break;                
+                break;
             default :
                 nextDataCell( row,
-                          column,
-                          value );
+                              column,
+                              value );
                 break;
         }
     }
@@ -373,57 +377,57 @@ public class DefaultRuleSheetListener
      * A future refactor may be to move away from an "event" based listener.
      */
     private void objectTypeRow(final int row,
-                         final int column,
-                         final String value,
-                         final int mergedColStart) {
-        if (value.indexOf( "$param" ) > -1 || value.indexOf( "$1" ) > -1) {
-            throw new DecisionTableParseException("It looks like you have snippets in the row that is " +
-                                    "meant for column declarations." +
-                                    " Please insert an additional row before the snippets." +
-                                    " Row number: " + (row + 1));
+                               final int column,
+                               final String value,
+                               final int mergedColStart) {
+        if ( value.indexOf( "$param" ) > -1 || value.indexOf( "$1" ) > -1 ) {
+            throw new DecisionTableParseException( "It looks like you have snippets in the row that is " + "meant for column declarations." + " Please insert an additional row before the snippets." + " Row number: " + (row + 1) );
         }
-        ActionType action = getActionForColumn( row, column );
-        if (mergedColStart == SheetListener.NON_MERGED) {
-            if (action.type == ActionType.CONDITION) {
-                SourceBuilder src = new LhsBuilder(value);
-                action.setSourceBuilder(src);
-                this.sourceBuilders.add(src);
-                
-            } else if (action.type == ActionType.ACTION) {
-                SourceBuilder src = new RhsBuilder(value);
-                action.setSourceBuilder(src);
-                this.sourceBuilders.add(src);
+        ActionType action = getActionForColumn( row,
+                                                column );
+        if ( mergedColStart == SheetListener.NON_MERGED ) {
+            if ( action.type == ActionType.CONDITION ) {
+                SourceBuilder src = new LhsBuilder( value );
+                action.setSourceBuilder( src );
+                this.sourceBuilders.add( src );
+
+            } else if ( action.type == ActionType.ACTION ) {
+                SourceBuilder src = new RhsBuilder( value );
+                action.setSourceBuilder( src );
+                this.sourceBuilders.add( src );
             }
         } else {
-            if (column == mergedColStart) {
-                if (action.type == ActionType.CONDITION) {                    
-                    action.setSourceBuilder(new LhsBuilder(value));
+            if ( column == mergedColStart ) {
+                if ( action.type == ActionType.CONDITION ) {
+                    action.setSourceBuilder( new LhsBuilder( value ) );
                     this.sourceBuilders.add( action.getSourceBuilder() );
-                } else if (action.type == ActionType.ACTION) {                    
-                    action.setSourceBuilder(new RhsBuilder(value));
+                } else if ( action.type == ActionType.ACTION ) {
+                    action.setSourceBuilder( new RhsBuilder( value ) );
                     this.sourceBuilders.add( action.getSourceBuilder() );
                 }
             } else {
-                ActionType startOfMergeAction = getActionForColumn( row, mergedColStart );
+                ActionType startOfMergeAction = getActionForColumn( row,
+                                                                    mergedColStart );
                 action.setSourceBuilder( startOfMergeAction.getSourceBuilder() );
             }
-            
+
         }
     }
-    
+
     private void codeRow(final int row,
                          final int column,
                          final String value) {
-        final ActionType actionType = getActionForColumn( row, column );
-        if (actionType.getSourceBuilder() == null) {
-            if (actionType.type == ActionType.CONDITION) {
-                actionType.setSourceBuilder( new LhsBuilder(null) );
+        final ActionType actionType = getActionForColumn( row,
+                                                          column );
+        if ( actionType.getSourceBuilder() == null ) {
+            if ( actionType.type == ActionType.CONDITION ) {
+                actionType.setSourceBuilder( new LhsBuilder( null ) );
                 this.sourceBuilders.add( actionType.getSourceBuilder() );
-            } else if (actionType.type == ActionType.ACTION) {
-                actionType.setSourceBuilder( new RhsBuilder(null) );
+            } else if ( actionType.type == ActionType.ACTION ) {
+                actionType.setSourceBuilder( new RhsBuilder( null ) );
                 this.sourceBuilders.add( actionType.getSourceBuilder() );
-            } else if (actionType.type == ActionType.PRIORITY) {
-                actionType.setSourceBuilder( new LhsBuilder(null) );
+            } else if ( actionType.type == ActionType.PRIORITY ) {
+                actionType.setSourceBuilder( new LhsBuilder( null ) );
                 this.sourceBuilders.add( actionType.getSourceBuilder() );
             }
         }
@@ -431,21 +435,22 @@ public class DefaultRuleSheetListener
             throw new DecisionTableParseException( "Code description - row:" + (row + 1) + " cell number:" + (column + 1) + " - does not contain any code specification. It should !" );
         }
 
-        actionType.addTemplate(column, value);
+        actionType.addTemplate( column,
+                                value );
     }
 
     private void labelRow(final int row,
                           final int column,
                           final String value) {
         final ActionType actionType = getActionForColumn( row,
-                                                    column );
+                                                          column );
 
         if ( !value.trim().equals( "" ) && (actionType.type == ActionType.ACTION || actionType.type == ActionType.CONDITION) ) {
             this._cellComments.put( new Integer( column ),
-                               value );
+                                    value );
         } else {
             this._cellComments.put( new Integer( column ),
-                               "From column: " + Rule.convertColNumToColName( column ) );
+                                    "From column: " + Rule.convertColNumToColName( column ) );
         }
     }
 
@@ -530,7 +535,10 @@ public class DefaultRuleSheetListener
         // from the cell
         {
             this._currentRule.setNoLoop( value );
-        } else if ( actionType.type == ActionType.DURATION ) // if the actionType
+        } else if ( actionType.type == ActionType.RULEFLOWGROUP ) {
+            this._currentRule.setRuleFlowGroup( value );
+        } 
+        else if ( actionType.type == ActionType.DURATION ) // if the actionType
         // type is DURATION
         // then creates a
         // new duration tag
@@ -548,7 +556,6 @@ public class DefaultRuleSheetListener
 
     private Rule createNewRuleForRow(final int row) {
 
-        
         Integer salience = null;
         if ( this._currentSequentialFlag ) {
             salience = new Integer( Rule.calcSalience( row ) );
@@ -556,14 +563,13 @@ public class DefaultRuleSheetListener
         final int spreadsheetRow = row + 1;
         final String name = this._currentRulePrefix + "_" + spreadsheetRow;
         final Rule rule = new Rule( name,
-                              salience,
-                              spreadsheetRow );
+                                    salience,
+                                    spreadsheetRow );
         rule.setComment( "From row number: " + (spreadsheetRow) );
 
         return rule;
-        
-    }
 
+    }
 
     // 08 - 16 - 2005 RIK: This function creates a new DURATION 
     private void createDuration(final int column,
@@ -575,7 +581,6 @@ public class DefaultRuleSheetListener
         dur.setComment( cellComment( column ) );
         this._currentRule.setDuration( dur );
     }
-
 
     private boolean isCellValueEmpty(final String value) {
         return value == null || "".equals( value.trim() );
