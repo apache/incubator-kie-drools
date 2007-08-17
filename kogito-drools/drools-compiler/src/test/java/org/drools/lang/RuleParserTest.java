@@ -2171,9 +2171,8 @@ public class RuleParserTest extends TestCase {
     public void testPackageGarbage() throws Exception {
 
         parseResource( "package_garbage.drl" ).compilation_unit();
-        assertTrue(this.parser.hasErrors());
+        assertTrue( this.parser.hasErrors() );
     }
-
 
     public void testPackageAttributes() throws Exception {
         parseResource( "package_attributes.drl" ).compilation_unit();
@@ -2195,8 +2194,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       pkg.getRules().size() );
 
-        assertEquals(2, pkg.getImports().size() );
-
+        assertEquals( 2,
+                      pkg.getImports().size() );
 
         RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         assertEquals( "bar",
@@ -3374,6 +3373,41 @@ public class RuleParserTest extends TestCase {
                       restr.getEvaluator() );
         assertEquals( "$c.property",
                       restr.getText() );
+    }
+
+    public void testOrCE() throws Exception {
+        final DRLParser parser = parseResource( "or_ce.drl" );
+        parser.compilation_unit();
+
+        assertFalse( parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        final PackageDescr pack = parser.getPackageDescr();
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 2,
+                      rule.getLhs().getDescrs().size() );
+
+        final PatternDescr person = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Person",
+                      person.getObjectType() );
+        assertEquals( "$p",
+                      person.getIdentifier() );
+
+        final OrDescr or = (OrDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals( 2,
+                      or.getDescrs().size() );
+
+        final PatternDescr cheese1 = (PatternDescr) or.getDescrs().get( 0 );
+        assertEquals( "Cheese",
+                      cheese1.getObjectType() );
+        assertEquals( "$c",
+                      cheese1.getIdentifier() );
+        final PatternDescr cheese2 = (PatternDescr) or.getDescrs().get( 1 );
+        assertEquals( "Cheese",
+                      cheese2.getObjectType() );
+        assertNull( cheese2.getIdentifier() );
     }
 
     private DRLParser parse(final String text) throws Exception {
