@@ -1,0 +1,4 @@
+'Person.age' : [1, 2, 3, 4]
+'Person.rating' : ["High", "Low"]
+/* and this shows how to get data from some external source */
+'Person.something' : (new org.drools.brms.modeldriven.SampleDataSource()).getData()
