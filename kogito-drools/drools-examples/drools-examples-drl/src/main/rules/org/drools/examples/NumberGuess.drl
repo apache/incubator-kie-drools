@@ -27,7 +27,7 @@ rule "Get user Guess"
 end	 
 
 rule "Record the highest Guess"
-	ruleflow-group "To High"
+	ruleflow-group "Too High"
 	no-loop
 	when    
 	    game : Game( biggestGuess : biggest )
@@ -36,16 +36,8 @@ rule "Record the highest Guess"
         modify ( game ) { biggest = $value };
 end	 
 
-rule "Notify too high"
-	ruleflow-group "To High"
-	when    
- 	    Guess()
-	then
-        System.out.println( "Your guess was too high" );
-end	 
-
 rule "Record the lowest Guess"
-	ruleflow-group "To Low"
+	ruleflow-group "Too Low"
 	no-loop	
 	when    
 	    Game( smallestGuess : smallest )
@@ -53,21 +45,6 @@ rule "Record the lowest Guess"
 	then
         modify ( game ) { smallest = $value };
 end	 
-
-rule "Notify too low"
-	ruleflow-group "To Low"
-	when    
-	    Guess()
-	then
-        System.out.println( "Your guess was too low" );
-end	
-
-rule "Guess correct ntofication"
-	ruleflow-group "Guess correct"
-	when
-	then
-        System.out.println( "You guessed correctly" );
-end	
 
 rule "Guess incorrect, retract Guess"
 	ruleflow-group "Guess incorrect"
@@ -78,7 +55,7 @@ rule "Guess incorrect, retract Guess"
 end	
 
 
-rule "No more Guesses ntofication"
+rule "No more Guesses notification"
 	ruleflow-group "No more Guesses"
 	when
         $r : RandomNumber()    
