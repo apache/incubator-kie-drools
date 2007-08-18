@@ -1053,6 +1053,8 @@ accumulate_statement returns [AccumulateDescr d]
 				if( $id.text != null ) {
 				        $d.setExternalFunction( true );
 					$d.setFunctionIdentifier( $id.text );
+				}
+				if( $text.text != null ) {
 				        $d.setExpression( $text.text.substring(1, $text.text.length()-1) );
 	       				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_EXPRESSION_CONTENT, $d.getExpression());
 				}
@@ -1203,10 +1205,12 @@ fact[String ident] returns [BaseDescr d]
  		constraints[pattern]?
  		RIGHT_PAREN
 		{
-			this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-			pattern.setEndLocation( offset($RIGHT_PAREN.line), $RIGHT_PAREN.pos );	
-			pattern.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
-		        pattern.setRightParentCharacter( ((CommonToken)$RIGHT_PAREN).getStartIndex() );
+		        if( ")".equals( $RIGHT_PAREN.text ) ) {
+				this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+				pattern.setEndLocation( offset($RIGHT_PAREN.line), $RIGHT_PAREN.pos );	
+				pattern.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
+		        	pattern.setRightParentCharacter( ((CommonToken)$RIGHT_PAREN).getStartIndex() );
+		        }
  		}
  		EOF? // this is needed for partial parsing
  	;
@@ -1222,6 +1226,8 @@ constraints[PatternDescr pattern]
 constraint[PatternDescr pattern]
 	@init {
 		ConditionalElementDescr top = null;
+		location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_START);
+		location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, input.LT(1).getText() );
 	}
 	:
 		{
@@ -1287,7 +1293,8 @@ field_constraint[ConditionalElementDescr base]
 		RestrictionConnectiveDescr top = null;
 	}
 	:
-		( ID ':' 
+	        (
+		ID ':' 
 		    { 
 			fbd = new FieldBindingDescr();
 			fbd.setIdentifier( $ID.text );
@@ -1296,7 +1303,7 @@ field_constraint[ConditionalElementDescr base]
 			$base.addDescr( fbd );
 
 		    }
-		)? 
+		 
 		f=accessor_path	
 		{
 		    // use $f.start to get token matched in identifier
@@ -1334,7 +1341,41 @@ field_constraint[ConditionalElementDescr base]
 		|
 			'->' predicate[$base] 
 		)?
+		) 
+		|
+		(
+		f=accessor_path	
+		{
+		    // use $f.start to get token matched in identifier
+		    // or use $f.text to get text.
+		    if( $f.text != null ) {
+			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+			location.setProperty(Location.LOCATION_PROPERTY_PROPERTY_NAME, $f.text);
+		    
+			fc = new FieldConstraintDescr($f.text);
+			fc.setLocation( offset($f.start.getLine()), $f.start.getCharPositionInLine() );
+			fc.setStartCharacter( ((CommonToken)$f.start).getStartIndex() );
+			top = fc.getRestriction();
+			
+			$base.addDescr( fc );
+		    }
+		}
+		( options {backtrack=true;}
+		: or_restr_connective[top]
+		)
+		)
 	;
+	catch[ NoViableAltException nvae ] {
+	    if( input.LT(1) != null ) {
+	                // in case of incomplete parsing, build as much as possible of the AST
+	                // so that IDE requirements can be met
+			fc = new FieldConstraintDescr( input.LT(1).getText() );
+			fc.setLocation( offset(input.LT(1).getLine()), input.LT(1).getCharPositionInLine() );
+			fc.setStartCharacter( ((CommonToken)input.LT(1)).getStartIndex() );
+			$base.addDescr( fc );
+	    }
+	    throw nvae;
+	}
 	
 
 or_restr_connective[ RestrictionConnectiveDescr base ]
