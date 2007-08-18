@@ -17,41 +17,41 @@ package org.drools.ruleflow.core;
  */
 
 /**
- * Represents a milestone in a RuleFlow.
- * A milestone has an associated constraint.
- * Flow will only continue if this constraint has been satisfied.  
+ * Represents an actino in a RuleFlow.
+ * An action represents the task that should be performed
+ * when executing this node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface MilestoneNode
+public interface ActionNode
     extends
     Node {
 
     /**
-     * Returns the incoming connection of the MilestoneNode.
+     * Returns the incoming connection of the ActionNode.
      * 
-     * @return the incoming connection of the MilestoneNode.
+     * @return the incoming connection of the ActionNode.
      */
     Connection getFrom();
 
     /**
-     * Returns the outgoing connection of the MilestoneNode.
+     * Returns the outgoing connection of the ActionNode.
      * 
-     * @return the outgoing connection of the MilestoneNode.
+     * @return the outgoing connection of the ActionNode.
      */
     Connection getTo();
 
     /**
-     * Returns the constraint of the MilestoneNode.
+     * Returns the action of the ActionNode.
      * 
-     * @return the constraint of the MilestoneNode.
+     * @return the action of the ActionNode.
      */
-    String getConstraint();
+    Object getAction();
 
     /**
-     * Sets the constraint of the MilestoneNode.
+     * Sets the action of the ActionNode.
      * 
-     * @param constraint	The constraint of the MilestoneNode
+     * @param constraint	The action of the ActionNode
      */
-    void setConstraint(String constraint);
+    void setAction(Object action);
 }

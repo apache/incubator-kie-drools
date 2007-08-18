@@ -39,6 +39,7 @@ import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.RuleFlowStartedEvent;
 import org.drools.ruleflow.common.instance.impl.ProcessInstanceImpl;
+import org.drools.ruleflow.core.ActionNode;
 import org.drools.ruleflow.core.EndNode;
 import org.drools.ruleflow.core.Join;
 import org.drools.ruleflow.core.MilestoneNode;
@@ -151,6 +152,11 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
             return result;
         } else if ( node instanceof SubFlowNode ) {
             final RuleFlowNodeInstance result = new SubFlowNodeInstanceImpl();
+            result.setNodeId( node.getId() );
+            addNodeInstance( result );
+            return result;
+        } else if ( node instanceof ActionNode ) {
+            final RuleFlowNodeInstance result = new ActionNodeInstanceImpl();
             result.setNodeId( node.getId() );
             addNodeInstance( result );
             return result;
