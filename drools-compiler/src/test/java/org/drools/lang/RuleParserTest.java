@@ -3410,6 +3410,18 @@ public class RuleParserTest extends TestCase {
         assertNull( cheese2.getIdentifier() );
     }
 
+    public void testRuleParseLhs2() throws Exception {
+        final String text = "Message( Message.HELLO )\n";
+        final AndDescr descrs = new AndDescr();
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+        parser.setLineOffset( descrs.getLine() );
+        parser.normal_lhs_block( descrs );
+        assertTrue( parser.hasErrors() );
+    }
+
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;
