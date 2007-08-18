@@ -4,9 +4,11 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
@@ -24,6 +26,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
@@ -48,6 +51,8 @@ public class Shell
 
     private Map              printoutRouters;
     
+    private Set              imports;
+    
     private int              index;
 
     public Shell() {
@@ -55,6 +60,8 @@ public class Shell
         this.session = this.ruleBase.newStatefulSession();
         //this.session.setGlobalResolver( this );
         this.variables = new ValueHandler[50];
+        
+        this.imports = new HashSet();
 
         this.registry = new FunctionRegistry( BuiltinFunctions.getInstance() );
     }
@@ -103,10 +110,25 @@ public class Shell
         String module = getModuleName( ruleDescr.getAttributes() );
 
         PackageDescr pkg = new PackageDescr( module );
+        
+        for ( Iterator it = this.imports.iterator(); it.hasNext(); ) {
+            pkg.addImport( (ImportDescr) it.next() );
+        }
+        
         pkg.addRule( ruleDescr );
 
         PackageBuilder builder = new PackageBuilder();
         builder.addPackage( pkg );
+        
+        try {
+            this.ruleBase.addPackage( builder.getPackage() );
+        } catch ( Exception e ) {
+            
+        }
+    }
+    
+    public void importDescrHandler(ImportDescr importDescr) {        
+        this.imports.add( importDescr );
     }
 
     public String getModuleName(List list) {
