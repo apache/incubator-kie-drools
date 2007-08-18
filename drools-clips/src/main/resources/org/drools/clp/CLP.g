@@ -220,11 +220,16 @@ package_statement returns [String packageName]
 */
 
 eval_script[Shell  shell]
-	:	(		r=defrule { shell.ruleDescrHandler( r ); }
+	:	(		  i=importDescr{ shell.importDescrHandler( i ); }
+				| r=defrule { shell.ruleDescrHandler( r ); }
 				//e=execution_block { parserHandler.lispFormHandler( e ); }
 				| fc=lisp_list[shell, new LispForm(shell) ] { shell.lispFormHandler(fc); }
 		)*
 	;
+	
+importDescr returns[ImportDescr importDescr]
+	: LEFT_PAREN 'import' importName=NAME { importDescr = new ImportDescr( importName.getText() ); }RIGHT_PAREN
+	;	
 /*	
 
 execution_list returns[ExecutionEngine engine]

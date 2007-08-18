@@ -43,6 +43,7 @@ public class ClipsDialect implements Dialect {
 
     private final static String               EXPRESSION_DIALECT_NAME = "MVEL";    
     
+    private final PatternBuilder              pattern                 = new PatternBuilder();    
     private final ClpConsequenceBuilder      consequence             = new ClpConsequenceBuilder();    
     
     private Package                           pkg;
@@ -197,8 +198,7 @@ public class ClipsDialect implements Dialect {
     }
 
     public PatternBuilder getPatternBuilder() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.pattern;
     }
 
     public PredicateBuilder getPredicateBuilder() {

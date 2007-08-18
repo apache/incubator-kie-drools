@@ -69,7 +69,7 @@ public class BlockExecutionEngine
                          WorkingMemory workingMemory) throws Exception {
         ExecutionContext context = new ExecutionContextImpl( (InternalWorkingMemory) workingMemory,
                                                          (ReteTuple) knowledgeHelper.getTuple(),
-                                                         this.index - 1 );
+                                                         this.index );
         execute( context );
     }
 
