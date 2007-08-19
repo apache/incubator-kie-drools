@@ -501,7 +501,7 @@ field_constriant[ConditionalElementDescr base]
 			top = fc.getRestriction();		
 		}	  
 		
-		or_restr_connective[top, base] 
+		or_restr_connective[top, base, fc] 
 		RIGHT_PAREN		
 	;
 /*	
@@ -519,7 +519,7 @@ connected_constraint[RestrictionConnectiveDescr rc, ConditionalElementDescr base
 */
 
 
-or_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase ]
+or_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase ]
 	options { 
 		backtrack=true;
 	}
@@ -527,14 +527,14 @@ or_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr 
 		RestrictionConnectiveDescr or = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
 	}
 	:
-		and_restr_connective[or, ceBase] 
+		and_restr_connective[or, ceBase, fcBase] 
 		( 
 			options {backtrack=true;}
 			: PIPE
 			{
 				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 			}
-			and_restr_connective[or, ceBase] 
+			and_restr_connective[or, ceBase, fcBase] 
 		)*
 	;
 	finally {
@@ -545,13 +545,13 @@ or_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr 
 	        }
 	}
 
-and_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase ]
+and_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase ]
 	@init {
 		RestrictionConnectiveDescr and = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
 	}
 	:
-		restriction[and, ceBase] 
-		( AMPERSAND restriction[and, ceBase] )*
+		restriction[and, ceBase, fcBase] 
+		( AMPERSAND restriction[and, ceBase, fcBase] )*
 		/*
 		(	options {backtrack=true;}
 		:	t=AMPERSAND 
@@ -570,14 +570,14 @@ and_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr
 	        }
 	}
 	
-restriction[RestrictionConnectiveDescr rc, ConditionalElementDescr base]
+restriction[RestrictionConnectiveDescr rc, ConditionalElementDescr base, FieldConstraintDescr fcBase ]
 	@init {
 			String op = "==";
 	}
 	:	(TILDE{op = "!=";})?	 	  	 
 		(	predicate_constraint[op, base]	  	  	
 	  	|	return_value_restriction[op, rc]
-	  	|	variable_restriction[op, rc, base]
+	  	|	variable_restriction[op, rc, base, fcBase]
 	  	| 	lc=literal_restriction {
      	    			rc.addRestriction( new LiteralRestrictionDescr(op, lc) );
 		      		op = "==";
@@ -612,14 +612,15 @@ return_value_restriction[String op, RestrictionConnectiveDescr rc]
 	;
 		
 //will add a declaration field binding, if this is the first time the name  is used		
-variable_restriction[String op, RestrictionConnectiveDescr rc, ConditionalElementDescr ceBase]
+variable_restriction[String op, RestrictionConnectiveDescr rc, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase ]
 	:	VAR {
 	        if ( declarations.contains( $VAR.text ) ) {
 				rc.addRestriction( new VariableRestrictionDescr(op, $VAR.text) );
 		 	} else {
 		 		FieldBindingDescr fbd = new FieldBindingDescr();
-		 		fbd.setIdentifier( $VAR.text );		 		
-		 		ceBase.addDescr( fbd );
+		 		fbd.setIdentifier( $VAR.text );		
+		 		fbd.setFieldName( fcBase.getFieldName() ); 		
+		 		ceBase.insertBeforeLast( FieldConstraintDescr.class, fbd );
 		 	}
 		}
 	;	
