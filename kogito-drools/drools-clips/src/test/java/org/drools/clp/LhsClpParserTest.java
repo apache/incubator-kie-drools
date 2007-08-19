@@ -55,6 +55,18 @@ public class LhsClpParserTest extends TestCase {
     }
     
     public void testPatternsRule() throws Exception {
+        // the first pattern bellowshould generate a descriptor tree like that:
+        //
+        //                     FC[person name]
+        //                     |
+        //                     OR
+        //          +----------|------------+
+        //         AND         LR          RVR
+        //        /   \
+        //       LR   VR
+        
+        // MARK: is it valid to add a predicate restriction as part of a field constraint? I mean, shouldn't
+        // the predicate be out of the (name ...) scope? 
         RuleDescr rule = parse( "(defrule xxx ?b <- (person (name \"yyy\"&?bf|~\"zzz\"|~=(+ 2 3)&:(< 1 2)) ) ?c <- (hobby (type ?bf2&~iii) (rating fivestar) ) => )" ).defrule();
 
         assertEquals( "xxx",
@@ -76,45 +88,42 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( 2,
                       colList.size() );
         FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) colList.get( 0 );
-        List restrictionList = fieldConstraintDescr.getRestrictions();
-
         assertEquals( "name",
                       fieldConstraintDescr.getFieldName() );
         // @todo the 7th one has no constraint, as its a predicate, have to figure out how to handle this
-        assertEquals( 8,
+        assertEquals( RestrictionConnectiveDescr.OR, 
+                      fieldConstraintDescr.getRestriction().getConnective() );
+        
+        List restrictionList = fieldConstraintDescr.getRestrictions();
+
+        assertEquals( 3,
                       restrictionList.size() );
 
-        LiteralRestrictionDescr litDescr = (LiteralRestrictionDescr) restrictionList.get( 0 );
+        RestrictionConnectiveDescr andRestr = (RestrictionConnectiveDescr) restrictionList.get( 0 );
+        assertEquals( RestrictionConnectiveDescr.AND,
+                      andRestr.getConnective() );
+        assertEquals( 2, 
+                      andRestr.getRestrictions().size() );
+        
+        LiteralRestrictionDescr litDescr = (LiteralRestrictionDescr) andRestr.getRestrictions().get( 0 );
         assertEquals( "==",
                       litDescr.getEvaluator() );
         assertEquals( "yyy",
                       litDescr.getText() );
 
-        RestrictionConnectiveDescr connDescr = (RestrictionConnectiveDescr) restrictionList.get( 1 );
-        assertEquals( RestrictionConnectiveDescr.AND,
-                      connDescr.getConnective() );
-
-        VariableRestrictionDescr varDescr = (VariableRestrictionDescr) restrictionList.get( 2 );
+        VariableRestrictionDescr varDescr = (VariableRestrictionDescr) restrictionList.get( 1 );
         assertEquals( "==",
                       varDescr.getEvaluator() );
         assertEquals( "?bf",
                       varDescr.getIdentifier() );
 
-        connDescr = (RestrictionConnectiveDescr) restrictionList.get( 3 );
-        assertEquals( RestrictionConnectiveDescr.OR,
-                      connDescr.getConnective() );
-
-        litDescr = (LiteralRestrictionDescr) restrictionList.get( 4 );
+        litDescr = (LiteralRestrictionDescr) restrictionList.get( 1 );
         assertEquals( "!=",
                       litDescr.getEvaluator() );
         assertEquals( "zzz",
                       litDescr.getText() );
 
-        connDescr = (RestrictionConnectiveDescr) restrictionList.get( 5 );
-        assertEquals( RestrictionConnectiveDescr.OR,
-                      connDescr.getConnective() );
-
-        ReturnValueRestrictionDescr retDescr = (ReturnValueRestrictionDescr) restrictionList.get( 6 );
+        ReturnValueRestrictionDescr retDescr = (ReturnValueRestrictionDescr) restrictionList.get( 2 );
         assertEquals( "!=",
                       retDescr.getEvaluator() );
         CLPReturnValue clprv = ( CLPReturnValue ) retDescr.getContent();
@@ -123,6 +132,8 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( new LongValueHandler( 2 ), fc.getParameters()[0] );
         assertEquals( new LongValueHandler( 3 ), fc.getParameters()[1] );       
 
+        // ----------------
+        // TIRELLI NOTE's: not sure what to do with the predicate bellow
         PredicateDescr predicateDescr = (PredicateDescr) colList.get( 1 );        
         CLPPredicate clpp = ( CLPPredicate ) predicateDescr.getContent();
         fc = clpp.getFunctions()[0];
@@ -130,6 +141,7 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( new LongValueHandler( 1 ), fc.getParameters()[0] );
         assertEquals( new LongValueHandler( 2 ), fc.getParameters()[1] );        
 
+        // -----------------
         // Parse the second column
         col = (PatternDescr) lhsList.get( 1 );
         assertEquals( "?c",
@@ -146,17 +158,16 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( "type",
                       fieldConstraintDescr.getFieldName() );
 
+        assertEquals( RestrictionConnectiveDescr.AND,
+                      fieldConstraintDescr.getRestriction().getConnective() );
+
         varDescr = (VariableRestrictionDescr) restrictionList.get( 0 );
         assertEquals( "==",
                       varDescr.getEvaluator() );
         assertEquals( "?bf2",
                       varDescr.getIdentifier() );
 
-        connDescr = (RestrictionConnectiveDescr) restrictionList.get( 1 );
-        assertEquals( RestrictionConnectiveDescr.AND,
-                      connDescr.getConnective() );
-
-        litDescr = (LiteralRestrictionDescr) restrictionList.get( 2 );
+        litDescr = (LiteralRestrictionDescr) restrictionList.get( 1 );
         assertEquals( "!=",
                       litDescr.getEvaluator() );
         assertEquals( "iii",
