@@ -47,6 +47,9 @@ public interface RuleFlowProcessValidationError {
     String SUBFLOW_NODE_WITHOUT_INCOMING_CONNECTIONS    = "SubFlow node has no incoming connection.";
     String SUBFLOW_NODE_WITHOUT_OUTGOING_CONNECTIONS    = "SubFlow node has no outgoing connection.";
     String SUBFLOW_WITHOUT_PROCESS_ID                   = "A SubFlow node has no process id.";
+    String ACTION_NODE_WITHOUT_INCOMING_CONNECTIONS     = "Action node has no incoming connection.";
+    String ACTION_NODE_WITHOUT_OUTGOING_CONNECTIONS     = "Action node has no outgoing connection.";
+    String ACTION_NODE_WITHOUT_ACTION                   = "An Action node has no action.";
 
     String getType();
 }
