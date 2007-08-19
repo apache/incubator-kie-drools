@@ -14,7 +14,7 @@ public class ShellTest extends TestCase {
         
         shell.evalString( "(import org.drools.Person)" );
         
-        shell.evalString( "(defrule xxx (Person (name tim & bob) )=> (printout t xx \" \" (eq 1 1) ) )" );
+        shell.evalString( "(defrule xxx (Person (name ?name&bob) (age 30) )=> (printout t xx \" \" (eq 1 1) ) )" );
         
         Package pkg = shell.getWorkingMemory().getRuleBase().getPackage( "MAIN" );
         Rule rule = pkg.getRule( "xxx" );
@@ -29,7 +29,7 @@ public class ShellTest extends TestCase {
         assertTrue( pkg.getImports().contains( "org.drools.Person" ) );
         
         WorkingMemory wm = shell.getWorkingMemory();
-        wm.insert( new Person("bob") );
+        wm.insert( new Person("bob", "cheddar", 30) );
         wm.fireAllRules();
         
     }
