@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.ruleflow.core.ActionNode;
 import org.drools.ruleflow.core.Connection;
 import org.drools.ruleflow.core.EndNode;
 import org.drools.ruleflow.core.Join;
@@ -156,6 +157,18 @@ public class RuleFlowProcessValidatorImpl
                 }
                 if ( subFlow.getProcessId() == null ) {
                    errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.SUBFLOW_WITHOUT_PROCESS_ID ) );
+                }
+            } else if ( node instanceof ActionNode ) {
+                final ActionNode actionNode = (ActionNode) node;
+                if ( actionNode.getFrom() == null ) {
+                    errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.ACTION_NODE_WITHOUT_INCOMING_CONNECTIONS ) );
+                }
+
+                if ( actionNode.getTo() == null ) {
+                    errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.ACTION_NODE_WITHOUT_OUTGOING_CONNECTIONS ) );
+                }
+                if ( actionNode.getAction() == null ) {
+                   errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.ACTION_NODE_WITHOUT_ACTION ) );
                 }
             }
         }

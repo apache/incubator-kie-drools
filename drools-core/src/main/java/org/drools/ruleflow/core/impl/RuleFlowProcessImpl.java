@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.ruleflow.common.core.impl.ProcessImpl;
-import org.drools.ruleflow.core.EndNode;
 import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.StartNode;
@@ -76,15 +75,15 @@ public class RuleFlowProcessImpl extends ProcessImpl
         return (Node) this.nodes.get( idLong );
     }
 
-    private EndNode getEnd() {
-        for ( final Iterator it = this.nodes.values().iterator(); it.hasNext(); ) {
-            final Node node = (Node) it.next();
-            if ( node instanceof EndNode ) {
-                return (EndNode) node;
-            }
-        }
-        return null;
-    }
+//    private EndNode getEnd() {
+//        for ( final Iterator it = this.nodes.values().iterator(); it.hasNext(); ) {
+//            final Node node = (Node) it.next();
+//            if ( node instanceof EndNode ) {
+//                return (EndNode) node;
+//            }
+//        }
+//        return null;
+//    }
 
     public void removeNode(final Node node) {
         if ( node == null ) {
@@ -128,9 +127,9 @@ public class RuleFlowProcessImpl extends ProcessImpl
         if ( (node instanceof StartNode) && (getStart() != null) ) {
             throw new IllegalArgumentException( "A ruleflow process cannot have more than one start node!" );
         }
-        if ( (node instanceof EndNode) && (getEnd() != null) ) {
-            throw new IllegalArgumentException( "A ruleflow process cannot have more than one end node!" );
-        }
+//        if ( (node instanceof EndNode) && (getEnd() != null) ) {
+//            throw new IllegalArgumentException( "A ruleflow process cannot have more than one end node!" );
+//        }
     }
 
 	public List getImports() {
