@@ -133,7 +133,7 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( new LongValueHandler( 3 ), fc.getParameters()[1] );       
 
         // ----------------
-        // TIRELLI NOTE's: not sure what to do with the predicate bellow
+        // this is how it would be compatible to our core engine
         PredicateDescr predicateDescr = (PredicateDescr) colList.get( 1 );        
         CLPPredicate clpp = ( CLPPredicate ) predicateDescr.getContent();
         fc = clpp.getFunctions()[0];
