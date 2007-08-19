@@ -106,6 +106,12 @@ public class ProcessBuilder {
     	String result = "";
     	if (process instanceof RuleFlowProcessImpl) {
     		RuleFlowProcessImpl ruleFlow = (RuleFlowProcessImpl) process;
+    		List imports = ruleFlow.getImports();
+    		if (imports != null) {
+    			for (Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
+    				result += "import " + iterator.next() + ";\n";
+    			}
+    		}
     		Node[] nodes = ruleFlow.getNodes();
     		for (int i = 0; i < nodes.length; i++) {
     			 if (nodes[i] instanceof Split) {
