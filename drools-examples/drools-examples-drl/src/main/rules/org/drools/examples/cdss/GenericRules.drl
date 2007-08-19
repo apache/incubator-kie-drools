@@ -1,0 +1,26 @@
+package com.sample
+
+import org.drools.examples.cdss.Terminology;
+import org.drools.examples.cdss.data.Diagnose;
+import org.drools.examples.cdss.data.Patient;
+import org.drools.examples.cdss.data.Recommendation;
+import org.drools.examples.cdss.service.RecommendationService;
+
+global RecommendationService recommendationService
+
+rule "Start Clinical Pathway X if diagnosed"
+	when
+		d: Diagnose( type == Terminology.DIAGNOSE_X_TYPE_UNKNOWN )
+	then
+		retract(d);
+		drools.getWorkingMemory().startProcess(
+			"org.drools.examples.cdss.ClinicalPathwayX");
+end
+
+rule "Always do examination4 when patient older than 60"
+	when
+		Patient( age > 80 )
+	then
+		recommendationService.createRecommendation(
+			new Recommendation("Examination4"));
+end

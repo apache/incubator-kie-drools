@@ -1,0 +1,314 @@
+<org.drools.ruleflow.core.impl.RuleFlowProcessImpl id="1">
+  <nodes id="2">
+    <entry>
+      <long>15</long>
+      <org.drools.ruleflow.core.impl.JoinImpl id="3">
+        <type>2</type>
+        <id>15</id>
+        <name></name>
+        <incomingConnections id="4">
+          <org.drools.ruleflow.core.impl.ConnectionImpl id="5">
+            <type>1</type>
+            <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="6">
+              <ruleFlowGroup>AdditionalExaminations</ruleFlowGroup>
+              <id>17</id>
+              <name>Additional Examinations</name>
+              <incomingConnections id="7">
+                <org.drools.ruleflow.core.impl.ConnectionImpl id="8">
+                  <type>1</type>
+                  <from class="org.drools.ruleflow.core.impl.SplitImpl" id="9">
+                    <type>2</type>
+                    <constraints id="10">
+                      <entry>
+                        <org.drools.ruleflow.core.impl.ConnectionImpl reference="8"/>
+                        <org.drools.ruleflow.core.impl.ConstraintImpl id="11">
+                          <name>Diagnose inconclusive</name>
+                          <constraint>Diagnose( type == Terminology.DIAGNOSE_X_TYPE_UNKNOWN )</constraint>
+                          <priority>1</priority>
+                        </org.drools.ruleflow.core.impl.ConstraintImpl>
+                      </entry>
+                      <entry>
+                        <org.drools.ruleflow.core.impl.ConnectionImpl id="12">
+                          <type>1</type>
+                          <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="9"/>
+                          <to class="org.drools.ruleflow.core.impl.ActionNodeImpl" id="13">
+                            <action class="org.drools.ruleflow.core.impl.DroolsConsequenceAction" id="14">
+                              <consequence>System.out.println(&quot;Notifying GP of patient of the diagnose.&quot;);</consequence>
+                            </action>
+                            <id>28</id>
+                            <name>Notify GP</name>
+                            <incomingConnections id="15">
+                              <org.drools.ruleflow.core.impl.ConnectionImpl reference="12"/>
+                            </incomingConnections>
+                            <outgoingConnections id="16">
+                              <org.drools.ruleflow.core.impl.ConnectionImpl id="17">
+                                <type>1</type>
+                                <from class="org.drools.ruleflow.core.impl.ActionNodeImpl" reference="13"/>
+                                <to class="org.drools.ruleflow.core.impl.SplitImpl" id="18">
+                                  <type>2</type>
+                                  <constraints id="19">
+                                    <entry>
+                                      <org.drools.ruleflow.core.impl.ConnectionImpl id="20">
+                                        <type>1</type>
+                                        <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="18"/>
+                                        <to class="org.drools.ruleflow.core.impl.SubFlowNodeImpl" id="21">
+                                          <processId>org.drools.examples.cdss.TreatmentX</processId>
+                                          <id>25</id>
+                                          <name>Treatment X</name>
+                                          <incomingConnections id="22">
+                                            <org.drools.ruleflow.core.impl.ConnectionImpl reference="20"/>
+                                          </incomingConnections>
+                                          <outgoingConnections id="23">
+                                            <org.drools.ruleflow.core.impl.ConnectionImpl id="24">
+                                              <type>1</type>
+                                              <from class="org.drools.ruleflow.core.impl.SubFlowNodeImpl" reference="21"/>
+                                              <to class="org.drools.ruleflow.core.impl.JoinImpl" id="25">
+                                                <type>2</type>
+                                                <id>23</id>
+                                                <name></name>
+                                                <incomingConnections id="26">
+                                                  <org.drools.ruleflow.core.impl.ConnectionImpl id="27">
+                                                    <type>1</type>
+                                                    <from class="org.drools.ruleflow.core.impl.SubFlowNodeImpl" id="28">
+                                                      <processId>org.drools.examples.cdss.TreatmentY</processId>
+                                                      <id>26</id>
+                                                      <name>Treatment Y</name>
+                                                      <incomingConnections id="29">
+                                                        <org.drools.ruleflow.core.impl.ConnectionImpl id="30">
+                                                          <type>1</type>
+                                                          <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="18"/>
+                                                          <to class="org.drools.ruleflow.core.impl.SubFlowNodeImpl" reference="28"/>
+                                                        </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                                      </incomingConnections>
+                                                      <outgoingConnections id="31">
+                                                        <org.drools.ruleflow.core.impl.ConnectionImpl reference="27"/>
+                                                      </outgoingConnections>
+                                                    </from>
+                                                    <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="25"/>
+                                                  </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                                  <org.drools.ruleflow.core.impl.ConnectionImpl reference="24"/>
+                                                </incomingConnections>
+                                                <outgoingConnections id="32">
+                                                  <org.drools.ruleflow.core.impl.ConnectionImpl id="33">
+                                                    <type>1</type>
+                                                    <from class="org.drools.ruleflow.core.impl.JoinImpl" reference="25"/>
+                                                    <to class="org.drools.ruleflow.core.impl.ActionNodeImpl" id="34">
+                                                      <action class="org.drools.ruleflow.core.impl.DroolsConsequenceAction" id="35">
+                                                        <consequence>System.out.println(&quot;Scheduling follow-up of patient.&quot;);</consequence>
+                                                      </action>
+                                                      <id>29</id>
+                                                      <name>Schedule Follow-up</name>
+                                                      <incomingConnections id="36">
+                                                        <org.drools.ruleflow.core.impl.ConnectionImpl reference="33"/>
+                                                      </incomingConnections>
+                                                      <outgoingConnections id="37">
+                                                        <org.drools.ruleflow.core.impl.ConnectionImpl id="38">
+                                                          <type>1</type>
+                                                          <from class="org.drools.ruleflow.core.impl.ActionNodeImpl" reference="34"/>
+                                                          <to class="org.drools.ruleflow.core.impl.EndNodeImpl" id="39">
+                                                            <id>8</id>
+                                                            <name>End</name>
+                                                            <incomingConnections id="40">
+                                                              <org.drools.ruleflow.core.impl.ConnectionImpl reference="38"/>
+                                                            </incomingConnections>
+                                                            <outgoingConnections id="41"/>
+                                                          </to>
+                                                        </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                                      </outgoingConnections>
+                                                    </to>
+                                                  </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                                </outgoingConnections>
+                                              </to>
+                                            </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                          </outgoingConnections>
+                                        </to>
+                                      </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                      <org.drools.ruleflow.core.impl.ConstraintImpl id="42">
+                                        <name>Diagnosed type 1</name>
+                                        <constraint>Diagnose( type == Terminology.DIAGNOSE_X_TYPE1 )</constraint>
+                                        <priority>1</priority>
+                                      </org.drools.ruleflow.core.impl.ConstraintImpl>
+                                    </entry>
+                                    <entry>
+                                      <org.drools.ruleflow.core.impl.ConnectionImpl reference="30"/>
+                                      <org.drools.ruleflow.core.impl.ConstraintImpl id="43">
+                                        <name>Diagnosed type 2</name>
+                                        <constraint>Diagnose( type == Terminology.DIAGNOSE_X_TYPE2 )</constraint>
+                                        <priority>2</priority>
+                                      </org.drools.ruleflow.core.impl.ConstraintImpl>
+                                    </entry>
+                                    <entry>
+                                      <org.drools.ruleflow.core.impl.ConnectionImpl id="44">
+                                        <type>1</type>
+                                        <from class="org.drools.ruleflow.core.impl.SplitImpl" reference="18"/>
+                                        <to class="org.drools.ruleflow.core.impl.EndNodeImpl" id="45">
+                                          <id>27</id>
+                                          <name>End</name>
+                                          <incomingConnections id="46">
+                                            <org.drools.ruleflow.core.impl.ConnectionImpl reference="44"/>
+                                          </incomingConnections>
+                                          <outgoingConnections id="47"/>
+                                        </to>
+                                      </org.drools.ruleflow.core.impl.ConnectionImpl>
+                                      <org.drools.ruleflow.core.impl.ConstraintImpl id="48">
+                                        <name>Else</name>
+                                        <constraint>eval(true)</constraint>
+                                        <priority>3</priority>
+                                      </org.drools.ruleflow.core.impl.ConstraintImpl>
+                                    </entry>
+                                  </constraints>
+                                  <id>19</id>
+                                  <name>Select Treatment</name>
+                                  <incomingConnections id="49">
+                                    <org.drools.ruleflow.core.impl.ConnectionImpl reference="17"/>
+                                  </incomingConnections>
+                                  <outgoingConnections id="50">
+                                    <org.drools.ruleflow.core.impl.ConnectionImpl reference="20"/>
+                                    <org.drools.ruleflow.core.impl.ConnectionImpl reference="30"/>
+                                    <org.drools.ruleflow.core.impl.ConnectionImpl reference="44"/>
+                                  </outgoingConnections>
+                                </to>
+                              </org.drools.ruleflow.core.impl.ConnectionImpl>
+                            </outgoingConnections>
+                          </to>
+                        </org.drools.ruleflow.core.impl.ConnectionImpl>
+                        <org.drools.ruleflow.core.impl.ConstraintImpl id="51">
+                          <name>Diagnose complete</name>
+                          <constraint>eval(true)</constraint>
+                          <priority>2</priority>
+                        </org.drools.ruleflow.core.impl.ConstraintImpl>
+                      </entry>
+                    </constraints>
+                    <id>16</id>
+                    <name>Diagnose complete?</name>
+                    <incomingConnections id="52">
+                      <org.drools.ruleflow.core.impl.ConnectionImpl id="53">
+                        <type>1</type>
+                        <from class="org.drools.ruleflow.core.impl.MilestoneNodeImpl" id="54">
+                          <constraint>Diagnose(  )</constraint>
+                          <id>12</id>
+                          <name>Wait for Diagnose</name>
+                          <incomingConnections id="55">
+                            <org.drools.ruleflow.core.impl.ConnectionImpl id="56">
+                              <type>1</type>
+                              <from class="org.drools.ruleflow.core.impl.JoinImpl" reference="3"/>
+                              <to class="org.drools.ruleflow.core.impl.MilestoneNodeImpl" reference="54"/>
+                            </org.drools.ruleflow.core.impl.ConnectionImpl>
+                          </incomingConnections>
+                          <outgoingConnections id="57">
+                            <org.drools.ruleflow.core.impl.ConnectionImpl reference="53"/>
+                          </outgoingConnections>
+                        </from>
+                        <to class="org.drools.ruleflow.core.impl.SplitImpl" reference="9"/>
+                      </org.drools.ruleflow.core.impl.ConnectionImpl>
+                    </incomingConnections>
+                    <outgoingConnections id="58">
+                      <org.drools.ruleflow.core.impl.ConnectionImpl reference="8"/>
+                      <org.drools.ruleflow.core.impl.ConnectionImpl reference="12"/>
+                    </outgoingConnections>
+                  </from>
+                  <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="6"/>
+                </org.drools.ruleflow.core.impl.ConnectionImpl>
+              </incomingConnections>
+              <outgoingConnections id="59">
+                <org.drools.ruleflow.core.impl.ConnectionImpl reference="5"/>
+              </outgoingConnections>
+            </from>
+            <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="3"/>
+          </org.drools.ruleflow.core.impl.ConnectionImpl>
+          <org.drools.ruleflow.core.impl.ConnectionImpl id="60">
+            <type>1</type>
+            <from class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="61">
+              <ruleFlowGroup>Examinations</ruleFlowGroup>
+              <id>11</id>
+              <name>Examinations</name>
+              <incomingConnections id="62">
+                <org.drools.ruleflow.core.impl.ConnectionImpl id="63">
+                  <type>1</type>
+                  <from class="org.drools.ruleflow.core.impl.StartNodeImpl" id="64">
+                    <id>7</id>
+                    <name>Start</name>
+                    <incomingConnections id="65"/>
+                    <outgoingConnections id="66">
+                      <org.drools.ruleflow.core.impl.ConnectionImpl reference="63"/>
+                    </outgoingConnections>
+                  </from>
+                  <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" reference="61"/>
+                </org.drools.ruleflow.core.impl.ConnectionImpl>
+              </incomingConnections>
+              <outgoingConnections id="67">
+                <org.drools.ruleflow.core.impl.ConnectionImpl reference="60"/>
+              </outgoingConnections>
+            </from>
+            <to class="org.drools.ruleflow.core.impl.JoinImpl" reference="3"/>
+          </org.drools.ruleflow.core.impl.ConnectionImpl>
+        </incomingConnections>
+        <outgoingConnections id="68">
+          <org.drools.ruleflow.core.impl.ConnectionImpl reference="56"/>
+        </outgoingConnections>
+      </org.drools.ruleflow.core.impl.JoinImpl>
+    </entry>
+    <entry>
+      <long>19</long>
+      <org.drools.ruleflow.core.impl.SplitImpl reference="18"/>
+    </entry>
+    <entry>
+      <long>8</long>
+      <org.drools.ruleflow.core.impl.EndNodeImpl reference="39"/>
+    </entry>
+    <entry>
+      <long>26</long>
+      <org.drools.ruleflow.core.impl.SubFlowNodeImpl reference="28"/>
+    </entry>
+    <entry>
+      <long>23</long>
+      <org.drools.ruleflow.core.impl.JoinImpl reference="25"/>
+    </entry>
+    <entry>
+      <long>11</long>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="61"/>
+    </entry>
+    <entry>
+      <long>16</long>
+      <org.drools.ruleflow.core.impl.SplitImpl reference="9"/>
+    </entry>
+    <entry>
+      <long>7</long>
+      <org.drools.ruleflow.core.impl.StartNodeImpl reference="64"/>
+    </entry>
+    <entry>
+      <long>12</long>
+      <org.drools.ruleflow.core.impl.MilestoneNodeImpl reference="54"/>
+    </entry>
+    <entry>
+      <long>27</long>
+      <org.drools.ruleflow.core.impl.EndNodeImpl reference="45"/>
+    </entry>
+    <entry>
+      <long>17</long>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="6"/>
+    </entry>
+    <entry>
+      <long>28</long>
+      <org.drools.ruleflow.core.impl.ActionNodeImpl reference="13"/>
+    </entry>
+    <entry>
+      <long>29</long>
+      <org.drools.ruleflow.core.impl.ActionNodeImpl reference="34"/>
+    </entry>
+    <entry>
+      <long>25</long>
+      <org.drools.ruleflow.core.impl.SubFlowNodeImpl reference="21"/>
+    </entry>
+  </nodes>
+  <variables id="69"/>
+  <lastNodeId>31</lastNodeId>
+  <imports id="70">
+    <string>org.drools.examples.cdss.data.Diagnose</string>
+    <string>org.drools.examples.cdss.Terminology</string>
+  </imports>
+  <id>org.drools.examples.cdss.ClinicalPathwayX</id>
+  <name>ClinicalPathwayX</name>
+  <version>1.0</version>
+  <type>RuleFlow</type>
+</org.drools.ruleflow.core.impl.RuleFlowProcessImpl>
