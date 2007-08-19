@@ -14,7 +14,7 @@ public class ShellTest extends TestCase {
         
         shell.evalString( "(import org.drools.Person)" );
         
-        shell.evalString( "(defrule xxx (Person (name bob) )=> (printout t xx \" \" (eq 1 1) ) )" );
+        shell.evalString( "(defrule xxx (Person (name tim & bob) )=> (printout t xx \" \" (eq 1 1) ) )" );
         
         Package pkg = shell.getWorkingMemory().getRuleBase().getPackage( "MAIN" );
         Rule rule = pkg.getRule( "xxx" );

@@ -8,8 +8,11 @@ grammar CLP;
 	import java.util.ArrayList;
 	import java.util.Iterator;
 	import java.util.HashMap;	
+	import java.util.Set;	
+	import java.util.HashSet;			
 	import java.util.StringTokenizer;
 	import org.drools.lang.descr.*;
+	import org.drools.lang.Location;	
 }
 
 @parser::members {
@@ -20,6 +23,8 @@ grammar CLP;
 	private DescrFactory factory = new DescrFactory();
 	private boolean parserDebug = false;
 	private FunctionRegistry functionRegistry;	
+	private Set declarations = new HashSet();
+	private Location location = new Location( Location.LOCATION_UNKNOWN );	
 	
 	public void setFunctionRegistry(FunctionRegistry functionRegistry) {
 		this.functionRegistry = functionRegistry;
@@ -245,7 +250,7 @@ execution_list returns[ExecutionEngine engine]
 
 deffunction returns[Deffunction function]
 	@init {
-			BuildContext context;  	
+			BuildContext context = null;  	
 	}
 	:	loc=LEFT_PAREN	 
 	  	DEFFUNCTION 
@@ -443,13 +448,16 @@ eval_ce[ConditionalElementDescr in_ce]
 normal_pattern[ConditionalElementDescr in_ce]
     @init {
         PatternDescr pattern = null;
+        ConditionalElementDescr top = null;
     }
 	:	LEFT_PAREN 
 		name=NAME {
 			pattern = new PatternDescr(name.getText());
 			in_ce.addDescr( pattern );
+			top = pattern.getConstraint();
+			
 		}
-		field_constriant[pattern]* 	  
+		field_constriant[top]* 	  
 		RIGHT_PAREN
 	;		
 	
@@ -459,6 +467,7 @@ bound_pattern[ConditionalElementDescr in_ce]
     @init {
         PatternDescr pattern = null;
         String identifier = null;
+        ConditionalElementDescr top = null;        
     }
 	:	var=VAR {
 			identifier = var.getText();
@@ -467,17 +476,19 @@ bound_pattern[ConditionalElementDescr in_ce]
 		{
 			pattern = new PatternDescr(name.getText());
 			pattern.setIdentifier( identifier );
-			in_ce.addDescr( pattern );	    
+			in_ce.addDescr( pattern );
+			top = pattern.getConstraint();				    
 		}
-		field_constriant[pattern]* 
+		field_constriant[top]* 
 		RIGHT_PAREN	
 	;			
 	
-field_constriant[PatternDescr pattern] 
+field_constriant[ConditionalElementDescr base] 
 	@init {
      	List list = new ArrayList();
 		FieldBindingDescr fbd = null;
 		FieldConstraintDescr fc = null;
+		RestrictionConnectiveDescr top = null;		
 		String op = "==";
 	}    
 	:	
@@ -486,41 +497,95 @@ field_constriant[PatternDescr pattern]
 			fc = new FieldConstraintDescr(f.getText());
 			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
 			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
-			pattern.addConstraint( fc );			
+			base.addDescr( fc );	
+			top = fc.getRestriction();		
 		}	  
 		
-		connected_constraint[fc, pattern] 
+		or_restr_connective[top, base] 
 		RIGHT_PAREN		
 	;
-	
-connected_constraint[FieldConstraintDescr fc, PatternDescr pattern]
+/*	
+connected_constraint[RestrictionConnectiveDescr rc, ConditionalElementDescr base]
 	:
-	restriction[fc, pattern]
+	restriction[rc, base]
 	( 
-	    AMPERSAND { fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND)); }
-	    connected_constraint[fc, pattern]
+	    AMPERSAND { rc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND)); }
+	    connected_constraint[rc, base]
 	| 
-	    PIPE {fc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR)); }
-	    connected_constraint[fc, pattern]
+	    PIPE {rc.addRestriction(new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR)); }
+	    connected_constraint[rc, base]
 	)?
 	;	
+*/
+
+
+or_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase ]
+	options { 
+		backtrack=true;
+	}
+	@init {
+		RestrictionConnectiveDescr or = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
+	}
+	:
+		and_restr_connective[or, ceBase] 
+		( 
+			options {backtrack=true;}
+			: PIPE
+			{
+				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+			}
+			and_restr_connective[or, ceBase] 
+		)*
+	;
+	finally {
+	        if( or.getRestrictions().size() == 1 ) {
+	                $rcBase.addOrMerge( (RestrictionDescr) or.getRestrictions().get( 0 ) );
+	        } else if ( or.getRestrictions().size() > 1 ) {
+	        	$rcBase.addRestriction( or );
+	        }
+	}
+
+and_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase ]
+	@init {
+		RestrictionConnectiveDescr and = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
+	}
+	:
+		restriction[and, ceBase] 
+		( AMPERSAND restriction[and, ceBase] )*
+		/*
+		(	options {backtrack=true;}
+		:	t=AMPERSAND 
+			{
+				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+			}
+			restriction[and, ceBase] 
+		)*
+		*/
+	;
+	finally {
+	        if( and.getRestrictions().size() == 1) {
+	                $rcBase.addOrMerge( (RestrictionDescr) and.getRestrictions().get( 0 ) );
+	        } else if ( and.getRestrictions().size() > 1 ) {
+	        	$rcBase.addRestriction( and );
+	        }
+	}
 	
-restriction[FieldConstraintDescr fc, PatternDescr pattern]
+restriction[RestrictionConnectiveDescr rc, ConditionalElementDescr base]
 	@init {
 			String op = "==";
 	}
 	:	(TILDE{op = "!=";})?	 	  	 
-		(	predicate_constraint[op, pattern]	  	  	
-	  	|	return_value_restriction[op, fc]
-	  	|	variable_restriction[op, fc]
+		(	predicate_constraint[op, base]	  	  	
+	  	|	return_value_restriction[op, rc]
+	  	|	variable_restriction[op, rc, base]
 	  	| 	lc=literal_restriction {
-     	    			fc.addRestriction( new LiteralRestrictionDescr(op, lc) );
+     	    			rc.addRestriction( new LiteralRestrictionDescr(op, lc) );
 		      		op = "==";
 		        } 	  	  	  
 		)		
 	;		
 
-predicate_constraint[String op, PatternDescr pattern]	
+predicate_constraint[String op, ConditionalElementDescr base]	
     @init {
    		ExecutionEngine engine = new CLPPredicate();
 		BuildContext context = new ExecutionBuildContext( engine, functionRegistry );    
@@ -528,13 +593,13 @@ predicate_constraint[String op, PatternDescr pattern]
 	:	COLON
 		fc=lisp_list[context, new LispForm(context)] {	
 		    engine.addFunction( (FunctionCaller) fc );
-			pattern.addConstraint( new PredicateDescr( engine ) );
+			base.addDescr( new PredicateDescr( engine ) );
 		}	
 		
 	;
 
 
-return_value_restriction[String op, FieldConstraintDescr fc]
+return_value_restriction[String op, RestrictionConnectiveDescr rc]
 	@init {
 		ExecutionEngine engine = new CLPReturnValue();
 		BuildContext context = new ExecutionBuildContext( engine, functionRegistry );
@@ -542,13 +607,20 @@ return_value_restriction[String op, FieldConstraintDescr fc]
 	:	EQUALS 
 		func=lisp_list[context, new LispForm(context)] {					
    		    engine.addFunction( (FunctionCaller) func );
-			fc.addRestriction( new ReturnValueRestrictionDescr (op, engine ) );
+			rc.addRestriction( new ReturnValueRestrictionDescr (op, engine ) );
 		}		
 	;
 		
-variable_restriction[String op, FieldConstraintDescr fc]
-	:	var=VAR {
-			fc.addRestriction( new VariableRestrictionDescr(op, var.getText()) );
+//will add a declaration field binding, if this is the first time the name  is used		
+variable_restriction[String op, RestrictionConnectiveDescr rc, ConditionalElementDescr ceBase]
+	:	VAR {
+	        if ( declarations.contains( $VAR.text ) ) {
+				rc.addRestriction( new VariableRestrictionDescr(op, $VAR.text) );
+		 	} else {
+		 		FieldBindingDescr fbd = new FieldBindingDescr();
+		 		fbd.setIdentifier( $VAR.text );		 		
+		 		ceBase.addDescr( fbd );
+		 	}
 		}
 	;	
 
