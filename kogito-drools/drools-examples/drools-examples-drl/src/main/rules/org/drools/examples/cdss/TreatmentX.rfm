@@ -1,0 +1,56 @@
+<org.drools.ruleflow.core.impl.RuleFlowProcessImpl id="1">
+  <nodes id="2">
+    <entry>
+      <long>2</long>
+      <org.drools.ruleflow.core.impl.EndNodeImpl id="3">
+        <id>2</id>
+        <name>End</name>
+        <incomingConnections id="4">
+          <org.drools.ruleflow.core.impl.ConnectionImpl id="5">
+            <type>1</type>
+            <from class="org.drools.ruleflow.core.impl.ActionNodeImpl" id="6">
+              <action class="org.drools.ruleflow.core.impl.DroolsConsequenceAction" id="7">
+                <consequence>System.out.println(&quot;Executing TreatmentX&quot;);</consequence>
+              </action>
+              <id>4</id>
+              <name>Dummy TreatmentX</name>
+              <incomingConnections id="8">
+                <org.drools.ruleflow.core.impl.ConnectionImpl id="9">
+                  <type>1</type>
+                  <from class="org.drools.ruleflow.core.impl.StartNodeImpl" id="10">
+                    <id>1</id>
+                    <name>Start</name>
+                    <incomingConnections id="11"/>
+                    <outgoingConnections id="12">
+                      <org.drools.ruleflow.core.impl.ConnectionImpl reference="9"/>
+                    </outgoingConnections>
+                  </from>
+                  <to class="org.drools.ruleflow.core.impl.ActionNodeImpl" reference="6"/>
+                </org.drools.ruleflow.core.impl.ConnectionImpl>
+              </incomingConnections>
+              <outgoingConnections id="13">
+                <org.drools.ruleflow.core.impl.ConnectionImpl reference="5"/>
+              </outgoingConnections>
+            </from>
+            <to class="org.drools.ruleflow.core.impl.EndNodeImpl" reference="3"/>
+          </org.drools.ruleflow.core.impl.ConnectionImpl>
+        </incomingConnections>
+        <outgoingConnections id="14"/>
+      </org.drools.ruleflow.core.impl.EndNodeImpl>
+    </entry>
+    <entry>
+      <long>4</long>
+      <org.drools.ruleflow.core.impl.ActionNodeImpl reference="6"/>
+    </entry>
+    <entry>
+      <long>1</long>
+      <org.drools.ruleflow.core.impl.StartNodeImpl reference="10"/>
+    </entry>
+  </nodes>
+  <variables id="15"/>
+  <lastNodeId>4</lastNodeId>
+  <id>org.drools.examples.cdss.TreatmentX</id>
+  <name>TreatmentX</name>
+  <version>1.0</version>
+  <type>RuleFlow</type>
+</org.drools.ruleflow.core.impl.RuleFlowProcessImpl>
