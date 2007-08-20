@@ -43,9 +43,6 @@ public class DataEnumLoaderTest extends TestCase {
 
 
 
-		loader = new DataEnumLoader("");
-		assertEquals(1, loader.getErrors().size());
-		assertTrue(loader.hasErrors());
 
 		loader = new DataEnumLoader("goober poo error");
 		assertEquals(0, loader.getData().size());
@@ -53,6 +50,17 @@ public class DataEnumLoaderTest extends TestCase {
 		assertTrue(loader.hasErrors());
 
 	}
+
+    public void testNoOp() {
+        DataEnumLoader loader = new DataEnumLoader(" ");
+        assertFalse(loader.hasErrors());
+        assertEquals(0, loader.getData().size());
+
+        loader = new DataEnumLoader("");
+        assertFalse(loader.hasErrors());
+        assertEquals(0, loader.getData().size());
+
+    }
 
 
 	private StringBuffer readLines() throws IOException {
