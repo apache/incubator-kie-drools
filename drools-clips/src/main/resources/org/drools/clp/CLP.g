@@ -23,7 +23,6 @@ grammar CLP;
 	private DescrFactory factory = new DescrFactory();
 	private boolean parserDebug = false;
 	private FunctionRegistry functionRegistry;	
-	private Set declarations = new HashSet();
 	private Location location = new Location( Location.LOCATION_UNKNOWN );	
 	
 	public void setFunctionRegistry(FunctionRegistry functionRegistry) {
@@ -283,7 +282,8 @@ defrule returns [RuleDescr rule]
 	        rule = null; 
 	        AndDescr lhs = null;
 	        PatternDescr colum = null;
-	        AttributeDescr module = null;	        
+	        AttributeDescr module = null;	      
+            Set declarations = null;  
 	      }
 	:	loc=LEFT_PAREN 
 		
@@ -315,14 +315,16 @@ defrule returns [RuleDescr rule]
 	        lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
 			lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );	
 			
-			rule.addAttribute( new AttributeDescr( "dialect", "clips") );												
+			rule.addAttribute( new AttributeDescr( "dialect", "clips") );	
+			
+			declarations = new HashSet();  											
 		}
 		documentation=STRING {
 	    	// do nothing here for now
 		}
 		ruleAttribute[rule]
 		
-		ce[lhs]*
+		ce[lhs, declarations]*
 		
 		'=>'
 		
@@ -354,14 +356,14 @@ salience returns [AttributeDescr d ]
 	;
 		
 
-ce[ConditionalElementDescr in_ce]
-	:	(   and_ce[in_ce]	
-		  | or_ce[in_ce]
-		  | not_ce[in_ce]
-		  | exists_ce[in_ce]		  
- 		  | eval_ce[in_ce] 		  
-		  | normal_pattern[in_ce]
-		  | bound_pattern[in_ce]
+ce[ConditionalElementDescr in_ce, Set declarations]
+	:	(   and_ce[in_ce, declarations]	
+		  | or_ce[in_ce, declarations]
+		  | not_ce[in_ce, declarations]
+		  | exists_ce[in_ce, declarations]		  
+ 		  | eval_ce[in_ce, declarations] 		  
+		  | normal_pattern[in_ce, declarations]
+		  | bound_pattern[in_ce, declarations]
 		)
 	;
 
@@ -375,7 +377,7 @@ execution_block returns[ExecutionEngine engine]
 		(fc=lisp_list[context, new LispForm(context) ] { context.addFunction( (FunctionCaller) fc ); })*
 	;	
 	
-and_ce[ConditionalElementDescr in_ce]
+and_ce[ConditionalElementDescr in_ce, Set declarations]
     @init {
         AndDescr andDescr= null;        
     }
@@ -384,11 +386,11 @@ and_ce[ConditionalElementDescr in_ce]
 	    	andDescr = new AndDescr();
 			in_ce.addDescr( andDescr );
 		}
-		ce[andDescr]+		 
+		ce[andDescr, declarations]+		 
 		RIGHT_PAREN					
 	;	
 	
-or_ce[ConditionalElementDescr in_ce]
+or_ce[ConditionalElementDescr in_ce, Set declarations]
     @init {
         OrDescr orDescr= null;         
     }
@@ -397,11 +399,11 @@ or_ce[ConditionalElementDescr in_ce]
 	    	orDescr = new OrDescr();
 			in_ce.addDescr( orDescr );
 		}
-		ce[orDescr]+		 
+		ce[orDescr, declarations]+		 
 		RIGHT_PAREN					
 	;	
 	
-not_ce[ConditionalElementDescr in_ce]
+not_ce[ConditionalElementDescr in_ce, Set declarations]
     @init {
         NotDescr notDescr= null;         
     }
@@ -410,11 +412,11 @@ not_ce[ConditionalElementDescr in_ce]
 			notDescr = new NotDescr();
 		    in_ce.addDescr( notDescr );
 		}
-		ce[notDescr]		 
+		ce[notDescr, declarations]		 
 		RIGHT_PAREN					
 	;		
 	
-exists_ce[ConditionalElementDescr in_ce]
+exists_ce[ConditionalElementDescr in_ce, Set declarations]
     @init {
         ExistsDescr existsDescr= null;        
     }
@@ -423,11 +425,11 @@ exists_ce[ConditionalElementDescr in_ce]
 		    existsDescr = new ExistsDescr();
 		    in_ce.addDescr( existsDescr );
 		}
-		ce[existsDescr]		 
+		ce[existsDescr, declarations]		 
 		RIGHT_PAREN					
 	;		
 
-eval_ce[ConditionalElementDescr in_ce]
+eval_ce[ConditionalElementDescr in_ce, Set declarations]
     @init {
         EvalDescr evalDescr= null;    
    		ExecutionEngine engine = new CLPEval();     
@@ -445,7 +447,7 @@ eval_ce[ConditionalElementDescr in_ce]
 		RIGHT_PAREN					
 	;		
 
-normal_pattern[ConditionalElementDescr in_ce]
+normal_pattern[ConditionalElementDescr in_ce, Set declarations]
     @init {
         PatternDescr pattern = null;
         ConditionalElementDescr top = null;
@@ -457,13 +459,13 @@ normal_pattern[ConditionalElementDescr in_ce]
 			top = pattern.getConstraint();
 			
 		}
-		field_constriant[top]* 	  
+		field_constriant[top, declarations]* 	  
 		RIGHT_PAREN
 	;		
 	
 
 
-bound_pattern[ConditionalElementDescr in_ce]
+bound_pattern[ConditionalElementDescr in_ce, Set declarations]
     @init {
         PatternDescr pattern = null;
         String identifier = null;
@@ -479,11 +481,11 @@ bound_pattern[ConditionalElementDescr in_ce]
 			in_ce.addDescr( pattern );
 			top = pattern.getConstraint();				    
 		}
-		field_constriant[top]* 
+		field_constriant[top, declarations]* 
 		RIGHT_PAREN	
 	;			
 	
-field_constriant[ConditionalElementDescr base] 
+field_constriant[ConditionalElementDescr base, Set declarations] 
 	@init {
      	List list = new ArrayList();
 		FieldBindingDescr fbd = null;
@@ -501,7 +503,7 @@ field_constriant[ConditionalElementDescr base]
 			top = fc.getRestriction();		
 		}	  
 		
-		or_restr_connective[top, base, fc] 
+		or_restr_connective[top, base, fc, declarations] 
 		RIGHT_PAREN		
 	;
 /*	
@@ -519,7 +521,7 @@ connected_constraint[RestrictionConnectiveDescr rc, ConditionalElementDescr base
 */
 
 
-or_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase ]
+or_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase, Set declarations ]
 	options { 
 		backtrack=true;
 	}
@@ -527,14 +529,14 @@ or_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr 
 		RestrictionConnectiveDescr or = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
 	}
 	:
-		and_restr_connective[or, ceBase, fcBase] 
+		and_restr_connective[or, ceBase, fcBase, declarations] 
 		( 
 			options {backtrack=true;}
 			: PIPE
 			{
 				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 			}
-			and_restr_connective[or, ceBase, fcBase] 
+			and_restr_connective[or, ceBase, fcBase, declarations] 
 		)*
 	;
 	finally {
@@ -545,13 +547,13 @@ or_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr 
 	        }
 	}
 
-and_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase ]
+and_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase, Set declarations ]
 	@init {
 		RestrictionConnectiveDescr and = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
 	}
 	:
-		restriction[and, ceBase, fcBase] 
-		( AMPERSAND restriction[and, ceBase, fcBase] )*
+		restriction[and, ceBase, fcBase, declarations] 
+		( AMPERSAND restriction[and, ceBase, fcBase, declarations] )*
 		/*
 		(	options {backtrack=true;}
 		:	t=AMPERSAND 
@@ -570,14 +572,14 @@ and_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr
 	        }
 	}
 	
-restriction[RestrictionConnectiveDescr rc, ConditionalElementDescr base, FieldConstraintDescr fcBase ]
+restriction[RestrictionConnectiveDescr rc, ConditionalElementDescr base, FieldConstraintDescr fcBase, Set declarations ]
 	@init {
 			String op = "==";
 	}
 	:	(TILDE{op = "!=";})?	 	  	 
 		(	predicate_constraint[op, base]	  	  	
 	  	|	return_value_restriction[op, rc]
-	  	|	variable_restriction[op, rc, base, fcBase]
+	  	|	variable_restriction[op, rc, base, fcBase, declarations]
 	  	| 	lc=literal_restriction {
      	    			rc.addRestriction( new LiteralRestrictionDescr(op, lc) );
 		      		op = "==";
@@ -612,7 +614,7 @@ return_value_restriction[String op, RestrictionConnectiveDescr rc]
 	;
 		
 //will add a declaration field binding, if this is the first time the name  is used		
-variable_restriction[String op, RestrictionConnectiveDescr rc, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase ]
+variable_restriction[String op, RestrictionConnectiveDescr rc, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase, Set declarations ]
 	:	VAR {
 	        if ( declarations.contains( $VAR.text ) ) {
 				rc.addRestriction( new VariableRestrictionDescr(op, $VAR.text) );
@@ -621,6 +623,7 @@ variable_restriction[String op, RestrictionConnectiveDescr rc, ConditionalElemen
 		 		fbd.setIdentifier( $VAR.text );		
 		 		fbd.setFieldName( fcBase.getFieldName() ); 		
 		 		ceBase.insertBeforeLast( FieldConstraintDescr.class, fbd );
+		 		declarations.add( $VAR.text );
 		 	}
 		}
 	;	

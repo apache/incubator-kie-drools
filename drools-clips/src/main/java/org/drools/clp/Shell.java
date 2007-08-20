@@ -123,7 +123,7 @@ public class Shell
         try {
             this.ruleBase.addPackage( builder.getPackage() );
         } catch ( Exception e ) {
-            
+            e.printStackTrace();
         }
     }
     
