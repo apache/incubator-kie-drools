@@ -39,6 +39,7 @@
 
     <author>
       <firstname>Fernando</firstname>
+
       <surname>Meyer</surname>
     </author>
   </bookinfo>
@@ -68,7 +69,6 @@
       <xi:include href="Chapter-Release_Notes/Section-What_is_new.xml" />
 
       <xi:include href="Chapter-Release_Notes/Section-Upgrade_tips.xml" />
-
     </chapter>
 
     <chapter>
@@ -106,7 +106,7 @@
 
       <xi:include href="Chapter-Install/Section-Eclipse.xml" />
     </chapter>
-    
+
     <chapter>
       <title>Decision Tables</title>
 
@@ -117,7 +117,7 @@
       <title>The Rule Workbench (IDE)</title>
 
       <xi:include href="Chapter-IDE/Section-QuickStart.xml" />
-    </chapter>    
+    </chapter>
 
     <chapter>
       <title>The Rule Language</title>
@@ -137,8 +137,8 @@
       <xi:include href="Chapter-Rule_Language/Section-DSL.xml" />
 
       <xi:include href="Chapter-Rule_Language/Section-RuleFlow.xml" />
-      
-      <xi:include href="Chapter-Rule_Language/Section-XML.xml" />      
+
+      <xi:include href="Chapter-Rule_Language/Section-XML.xml" />
 
       <!--xi:include href="Chapter-Rule_Language/Section-Column.xml" />
 
@@ -146,7 +146,7 @@
 
       <xi:include href="Chapter-Rule_Language/Section-Conditional_Elements.xml" /-->
     </chapter>
-    
+
     <chapter>
       <title>Deployment and Testing</title>
 
@@ -155,48 +155,41 @@
       <xi:include href="Chapter-Deployment/Section-Testing.xml" />
     </chapter>
 
-    <chapter>    
+      <chapter>
+        <title>The Java Rule Engine API</title>
 
-    <chapter>
-      <title>The BRMS (Business Rule Management System)</title>
+        <xi:include href="Chapter-JSR94/Section-Introduction.xml" />
 
-      <xi:include href="Chapter-BRMS/Section-Introduction.xml" />
+        <!-- Removed till it can be completed -->
 
-      <xi:include href="Chapter-BRMS/Section-AdminGuide.xml" />
+        <!-- include href="Chapter-JSR94/Section-Specification.xml" /-->
 
-      <xi:include href="Chapter-BRMS/Section-Architecture.xml" />
+        <xi:include href="Chapter-JSR94/Section-How_To_Use.xml" />
 
-      <xi:include href="Chapter-BRMS/Section-UserGuide.xml" />
+        <xi:include href="Chapter-JSR94/Section-References.xml" />
+      </chapter>
 
-      <xi:include href="Chapter-BRMS/Section-ExamplesAndTutorials.xml" />
-    </chapter>
+      <chapter>
+        <title>The BRMS (Business Rule Management System)</title>
 
-    <chapter>
-      <title>The Java Rule Engine API</title>
+        <xi:include href="Chapter-BRMS/Section-Introduction.xml" />
 
-      <xi:include href="Chapter-JSR94/Section-Introduction.xml" />
+        <xi:include href="Chapter-BRMS/Section-AdminGuide.xml" />
 
-      <!-- Removed till it can be completed -->
+        <xi:include href="Chapter-BRMS/Section-Architecture.xml" />
 
-      <!-- include href="Chapter-JSR94/Section-Specification.xml" /-->
+        <xi:include href="Chapter-BRMS/Section-UserGuide.xml" />
 
-      <xi:include href="Chapter-JSR94/Section-How_To_Use.xml" />
+        <xi:include href="Chapter-BRMS/Section-ExamplesAndTutorials.xml" />
+      </chapter>
 
-      <xi:include href="Chapter-JSR94/Section-References.xml" />
-    </chapter>
-
-    <!--chapter>
-      <title>Performance tuning</title>
-
-      <xi:include href="Chapter-Performance_Tuning/Section-Performance.xml" />
-    </chapter-->
-
+	<chapter>
       <title>Examples</title>
 
       <xi:include href="Chapter-Examples/Section-Examples.xml" />
     </chapter>
 
-    <!--chapter>
+    <!--<chapter>
       <title>Papers</title>
 
       <xi:include href="Chapter-Papers/Section-Manners.xml" />
