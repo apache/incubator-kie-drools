@@ -30,6 +30,21 @@ public class OrDescr extends BaseDescr
 
     public OrDescr() {
     }
+    
+    public void insertBeforeLast(final Class clazz ,final BaseDescr baseDescr ) {        
+        if(clazz.isInstance( baseDescr )) {
+            for ( int i = this.descrs.size()-1; i >= 0; i-- ) {
+                if ( this.descrs.get( i ) instanceof FieldConstraintDescr ) {
+                    insertDescr( i-1, baseDescr );
+                    return;
+                }                
+            }
+        }        
+    }
+    
+    public void insertDescr(int index, final BaseDescr baseDescr) {
+        this.descrs.add( index, baseDescr );
+    }    
 
     public void addDescr(final BaseDescr baseDescr) {
         this.descrs.add( baseDescr );

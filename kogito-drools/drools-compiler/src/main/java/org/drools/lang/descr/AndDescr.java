@@ -34,9 +34,22 @@ public class AndDescr extends BaseDescr
     public void addDescr(final BaseDescr baseDescr) {
         this.descrs.add( baseDescr );
     }
-    
-    public void insertDescr(int index, final BaseDescr baseDescr) {
-        this.descrs.add( index, baseDescr );
+
+    public void insertDescr(int index,
+                            final BaseDescr baseDescr) {
+        this.descrs.add( index,
+                         baseDescr );
+    }
+
+    public void insertBeforeLast(final Class clazz,
+                                 final BaseDescr baseDescr) {
+        for ( int i = this.descrs.size() - 1; i >= 0; i-- ) {
+            if ( clazz.isInstance( this.descrs.get( i ) ) ) {
+                insertDescr( i,
+                             baseDescr );
+                return;
+            }
+        }
     }
 
     public List getDescrs() {
@@ -44,10 +57,10 @@ public class AndDescr extends BaseDescr
     }
 
     public void addOrMerge(final BaseDescr baseDescr) {
-        if( baseDescr instanceof AndDescr ) {
-            this.descrs.addAll( ((AndDescr)baseDescr).getDescrs() );
+        if ( baseDescr instanceof AndDescr ) {
+            this.descrs.addAll( ((AndDescr) baseDescr).getDescrs() );
         } else {
-            this.descrs.add( baseDescr );
+            addDescr( baseDescr );
         }
     }
 }

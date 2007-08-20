@@ -39,6 +39,10 @@ public class ExistsDescr extends BaseDescr
     public void addDescr(final BaseDescr baseDescr) {
         this.descrs.add( baseDescr );
     }
+    
+    public void insertBeforeLast(final Class clazz ,final BaseDescr baseDescr ) { 
+        throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
+    }    
 
     public List getDescrs() {
         return this.descrs;
