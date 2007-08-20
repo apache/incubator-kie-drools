@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.FieldExtractor;
+import org.drools.util.ClassUtils;
 
 /**
  * This provides access to fields, and what their numerical index/object type is.
@@ -100,6 +101,10 @@ public class ClassFieldExtractor
 
     public Class getExtractToClass() {
         return this.extractor.getExtractToClass();
+    }
+
+    public String getExtractToClassName() {
+        return ClassUtils.canonicalName( this.extractor.getExtractToClass() );
     }
 
     public String toString() {

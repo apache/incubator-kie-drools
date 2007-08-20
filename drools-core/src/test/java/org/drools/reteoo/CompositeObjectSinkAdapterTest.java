@@ -305,6 +305,11 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
             return null;
         }
 
+        public String getExtractToClassName() {
+            //  Auto-generated method stub
+            return null;
+        }
+
         public float getFloatValue(InternalWorkingMemory workingMemory,
                                    final Object object) {
             //  Auto-generated method stub

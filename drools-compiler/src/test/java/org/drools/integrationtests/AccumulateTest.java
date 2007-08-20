@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
+import org.drools.OuterClass;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -826,4 +827,26 @@ public class AccumulateTest extends TestCase {
                              results2.get( 4 ) );
     }
 
+    public void testAccumulateInnerClass() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateInnerClass.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        wm.insert( new OuterClass.InnerClass( 10 ) );
+        wm.insert( new OuterClass.InnerClass( 5 ) );
+
+        wm.fireAllRules();
+
+        Assert.assertEquals( new Integer( 15 ),
+                             results.get( 0 ) );
+    }
+    
+    
 }

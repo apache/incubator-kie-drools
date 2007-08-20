@@ -23,6 +23,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.util.ClassUtils;
 
 /**
  * This is a global variable extractor used to get a global variable value
@@ -53,6 +54,10 @@ public class GlobalExtractor
 
     public Class getExtractToClass() {
         return this.objectType.getValueType().getClassType();
+    }
+
+    public String getExtractToClassName() {
+        return ClassUtils.canonicalName( this.objectType.getValueType().getClassType() );
     }
 
     public ValueType getValueType() {

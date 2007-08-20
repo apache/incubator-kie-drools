@@ -848,6 +848,10 @@ public class EvaluatorFactoryTest extends TestCase {
             return null;
         }
 
+        public String getExtractToClassName() {
+            return null;
+        }
+
         public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Number) object).floatValue() : (float) 0.0;
         }

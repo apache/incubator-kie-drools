@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Extractor;
+import org.drools.util.ClassUtils;
 
 public class ArrayExtractor implements Extractor {
     private final Extractor arrayExtractor;    
@@ -19,6 +20,10 @@ public class ArrayExtractor implements Extractor {
     
     public Class getExtractToClass() {
         return type;        
+    }
+    
+    public String getExtractToClassName() {
+        return ClassUtils.canonicalName( type );        
     }
     
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, Object object) {

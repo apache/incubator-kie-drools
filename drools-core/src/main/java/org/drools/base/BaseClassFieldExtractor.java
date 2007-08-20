@@ -18,6 +18,7 @@ package org.drools.base;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldExtractor;
+import org.drools.util.ClassUtils;
 import org.drools.util.asm.ClassFieldInspector;
 
 /**
@@ -72,6 +73,10 @@ abstract public class BaseClassFieldExtractor
 
     public Class getExtractToClass() {
         return this.fieldType;
+    }
+
+    public String getExtractToClassName() {
+        return ClassUtils.canonicalName( this.fieldType );
     }
 
     public ValueType getValueType() {

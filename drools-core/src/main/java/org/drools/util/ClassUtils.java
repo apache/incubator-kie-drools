@@ -58,5 +58,22 @@ public final class ClassUtils {
         final String relFileName = absFileName.substring( rootLength + 1 );
         return relFileName;
     }
+    
+    public static String canonicalName( Class clazz ) {
+        StringBuffer name = new StringBuffer();
+        
+        if( clazz.isArray() ) {
+            name.append( canonicalName( clazz.getComponentType() ) );
+            name.append( "[]" );
+        } else if( clazz.getDeclaringClass() == null ) {
+            name.append( clazz.getName() );
+        } else {
+            name.append( canonicalName( clazz.getDeclaringClass() ) );
+            name.append( "." );
+            name.append( clazz.getName().substring( clazz.getDeclaringClass().getName().length() + 1 ) );
+        }
+        
+        return name.toString();
+    }
 
 }
