@@ -25,29 +25,32 @@ public class DataEnumLoaderTest extends TestCase {
 
 		DataEnumLoader loader = new DataEnumLoader(readLines().toString());
 
+        assertFalse(loader.hasErrors());
 
 		Map enumeration = (Map) loader.getData();
 		assertEquals(loader.getErrors().toString(), 0, loader.getErrors().size());
 		assertEquals(3, enumeration.size());
 
-		List list = (List) enumeration.get("Person.age");
-		assertEquals(4, list.size());
-		assertEquals("1", list.get(0));
-		assertEquals("2", list.get(1));
+		String[] list = (String[]) enumeration.get("Person.age");
+		assertEquals(4, list.length);
+		assertEquals("1", list[0]);
+		assertEquals("2", list[1]);
 
-		list = (List) enumeration.get("Person.rating");
-		assertEquals(2, list.size());
-		assertEquals("High", list.get(0));
-		assertEquals("Low", list.get(1));
+		list = (String[]) enumeration.get("Person.rating");
+		assertEquals(2, list.length);
+		assertEquals("High", list[0]);
+		assertEquals("Low", list[1]);
+
 
 
 		loader = new DataEnumLoader("");
 		assertEquals(1, loader.getErrors().size());
+		assertTrue(loader.hasErrors());
 
 		loader = new DataEnumLoader("goober poo error");
 		assertEquals(0, loader.getData().size());
 		assertFalse(loader.getErrors().size() == 0);
-
+		assertTrue(loader.hasErrors());
 
 	}
 

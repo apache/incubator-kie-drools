@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,7 @@ import org.drools.brms.client.modeldriven.brl.DSLSentence;
 
 /**
  * A builder to incrementally populate a SuggestionCompletionEngine
- * 
+ *
  * @author etirelli
  */
 public class SuggestionCompletionEngineBuilder {
@@ -57,7 +57,7 @@ public class SuggestionCompletionEngineBuilder {
 
     /**
      * Adds a fact type to the engine
-     * 
+     *
      * @param factType
      */
     public void addFactType(final String factType) {
@@ -66,7 +66,7 @@ public class SuggestionCompletionEngineBuilder {
 
     /**
      * Adds the list of fields for a given type
-     * 
+     *
      * @param type
      * @param fields
      */
@@ -85,7 +85,7 @@ public class SuggestionCompletionEngineBuilder {
 
     /**
      * Adds a type declaration for a field
-     * 
+     *
      * @param field
      * @param type
      */
@@ -97,7 +97,7 @@ public class SuggestionCompletionEngineBuilder {
 
     /**
      * Adds a global and its corresponding type to the engine
-     * 
+     *
      * @param global
      * @param type
      */
@@ -126,9 +126,9 @@ public class SuggestionCompletionEngineBuilder {
     }
 
     /**
-     * Returns a SuggestionCompletionEngine instance populated with 
+     * Returns a SuggestionCompletionEngine instance populated with
      * all the data since last call to newCompletionEngine() method
-     * 
+     *
      * @return
      */
     public SuggestionCompletionEngine getInstance() {
@@ -140,5 +140,6 @@ public class SuggestionCompletionEngineBuilder {
         this.instance.conditionDSLSentences = (DSLSentence[]) this.conditionDSLSentences.toArray( new DSLSentence[this.conditionDSLSentences.size()] );
         return this.instance;
     }
+
 
 }

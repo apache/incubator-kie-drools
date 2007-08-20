@@ -11,7 +11,7 @@ import org.drools.brms.client.modeldriven.brl.PortableObject;
 /**
  * An suggestion completion processor. This should be usable in both GWT/Web and the IDE.
  * The data for this can be loaded into this from simple string lists.
- *  
+ *
  * @author Michael Neale
  */
 public class SuggestionCompletionEngine
@@ -40,14 +40,14 @@ public class SuggestionCompletionEngine
     /** The top level conditional elements (first order logic) */
     private static final String[] CONDITIONAL_ELEMENTS   = new String[]{"not", "exists", "or"};
 
-    /** 
+    /**
      * A list of fact types (never fully qualified).
      */
     public String[]               factTypes;
 
     /**
      * A map of types to the fields. key is type, value is (String[] of fields)
-     * 
+     *
      * @gwt.typeArgs <java.lang.String, java.lang.String[]>
      */
     public Map                    fieldsForType;
@@ -57,7 +57,7 @@ public class SuggestionCompletionEngine
      * as well as other things like rendering strings, dates etc.
      * This is in the format of: { 'Type.field' => 'typename' }.
      * Should not be the exact type, perhaps just a high level interface, eg "Comparable".
-     * 
+     *
      * @gwt.typeArgs <java.lang.String, java.lang.String>
      */
     public Map                    fieldTypes;
@@ -67,6 +67,13 @@ public class SuggestionCompletionEngine
      * @gwt.typeArgs <java.lang.String, java.lang.String>
      */
     public Map                    globalTypes            = new HashMap();
+
+    /**
+     * Contains a map of { TypeName.field : String[] } - where a list is
+     * valid values to display in a drop down for a given Type.field combination.
+     * @gwt.typeArgs <java.lang.String, java.lang.String[]>
+     */
+    public Map 					  dataEnumLists			 = new HashMap();
 
     /** Operators (from the grammar):
      *      op=(    '=='
@@ -90,23 +97,23 @@ public class SuggestionCompletionEngine
 
     //    /**
     //     * For bulk loading up the data (from a previous rule save)
-    //     * 
-    //     * @param factToFields A map of "FactType" (key - String) to String[] (value) 
+    //     *
+    //     * @param factToFields A map of "FactType" (key - String) to String[] (value)
     //     * @param factFieldToOperator A map of "FactType.field" (key - String) to String[] operators
-    //     * @param factFieldToConnectiveOperator A map of "FactType.field" (key -String) to String[] operators 
+    //     * @param factFieldToConnectiveOperator A map of "FactType.field" (key -String) to String[] operators
     //     *                                  that are valid CONNECTIVE operators.
-    //     *                                  
+    //     *
     //     * @param globals A map of global variable name to its fields (String[]).
     //     * @param boundFacts A map of bound facts to types.
     //     * @param conditionDSLs a list of DSLSentence suggestions for the LHS
-    //     * @param actionDSLs a list of DSLSentence suggestions for the RHS                          
-    //     *                                       
+    //     * @param actionDSLs a list of DSLSentence suggestions for the RHS
+    //     *
     //     */
-    //    public void load( 
-    //                      Map factToFields, 
-    //                      Map factFieldToOperator, 
+    //    public void load(
+    //                      Map factToFields,
+    //                      Map factFieldToOperator,
     //                      Map factFieldToConnectiveOperator,
-    //                      Map globals,                      
+    //                      Map globals,
     //                      List conditionDSLs,
     //                      List actionDSLs
     //                    ) {

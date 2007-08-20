@@ -2,6 +2,7 @@ package org.drools.brms.client.modeldriven;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -26,6 +27,27 @@ public class SuggestionCompletionTest extends TestCase {
 
         assertEquals( SuggestionCompletionEngine.TYPE_STRING, engine.getFieldType( "Alert", "message" ) );
 
+    }
+
+    public void testDataEnums() {
+        String pkg = "package org.test\n import org.drools.brms.client.modeldriven.SuggestionCompletionTest.NestedClass";
+
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+
+        List enums = new ArrayList();
+
+        enums.add( "'Person.age' : [42, 43] \n 'Person.sex' : ['M', 'F']");
+        enums.add( "'Driver.sex' : ['M', 'F']" );
+
+
+        SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg, new ArrayList(), new ArrayList() , enums);
+        assertEquals( "String", engine.getFieldType( "SuggestionCompletionTest$NestedClass", "name" ) );
+
+        assertEquals(3, engine.dataEnumLists.size());
+        String[] items = (String[]) engine.dataEnumLists.get( "Person.age" );
+        assertEquals(2, items.length);
+        assertEquals("42", items[0]);
+        assertEquals("43", items[1]);
     }
 
     public void testCompletions() {
