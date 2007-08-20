@@ -26,6 +26,9 @@ public class DataEnumLoader {
 	}
 
 	private Map loadEnum(String mvelSource) {
+        if (mvelSource == null || (mvelSource.trim().equals( "" ))) {
+            return Collections.EMPTY_MAP;
+        }
 		final Object mvelData;
 		try {
 
