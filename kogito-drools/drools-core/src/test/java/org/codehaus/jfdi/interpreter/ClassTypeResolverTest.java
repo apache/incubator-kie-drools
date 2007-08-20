@@ -3,12 +3,13 @@
  */
 package org.codehaus.jfdi.interpreter;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
+import org.drools.FirstClass;
+import org.drools.SecondClass;
 import org.drools.base.ClassTypeResolver;
 
 /**
@@ -85,6 +86,33 @@ public class ClassTypeResolverTest extends TestCase {
     }
 
     public void testResolveObjectFromImport() throws Exception {
+        final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.FirstClass" );
+        resolver.addImport( "org.drools.FirstClass.AlternativeKey" );
+        resolver.addImport( "org.drools.SecondClass" );
+        resolver.addImport( "org.drools.SecondClass.AlternativeKey" );        
+        
+        assertEquals( String.class,
+                      resolver.resolveType( "String" ) );
+        assertEquals( String.class,
+                      resolver.resolveType( "java.lang.String" ) );
+        assertEquals( Cheese.class,
+                      resolver.resolveType( "Cheese" ) );
+        assertEquals( Cheese.class,
+                      resolver.resolveType( "org.drools.Cheese" ) );
+        assertEquals( FirstClass.class,
+                      resolver.resolveType( "org.drools.FirstClass" ) );
+        assertEquals( FirstClass.AlternativeKey.class,
+                      resolver.resolveType( "org.drools.FirstClass.AlternativeKey" ) );
+
+        assertEquals( SecondClass.class,
+                      resolver.resolveType( "org.drools.SecondClass" ) );
+        assertEquals( SecondClass.AlternativeKey.class,
+                      resolver.resolveType( "org.drools.SecondClass.AlternativeKey" ) );
+    }
+
+    public void testResolveObjectFromImportMultipleClassesDifferentPackages() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.Cheese" );
         assertEquals( String.class,
