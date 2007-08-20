@@ -45,6 +45,10 @@ public class ForallDescr extends BaseDescr
         // cast to make sure we are adding a pattern descriptor
         this.patterns.add( baseDescr );
     }
+    
+    public void insertBeforeLast(final Class clazz ,final BaseDescr baseDescr ) { 
+        throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
+    }    
 
     /* (non-Javadoc)
      * @see org.drools.lang.descr.ConditionalElementDescr#getDescrs()

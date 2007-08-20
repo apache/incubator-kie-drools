@@ -71,6 +71,10 @@ public class EvalDescr extends BaseDescr
     public void addDescr(final BaseDescr baseDescr) {
         throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());        
     }
+    
+    public void insertBeforeLast(final Class clazz ,final BaseDescr baseDescr ) { 
+        throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
+    }    
 
     public void addOrMerge(BaseDescr baseDescr) {
         throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());        
