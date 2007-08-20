@@ -52,6 +52,8 @@ public interface Extractor
 
     public Class getExtractToClass();
 
+    public String getExtractToClassName();
+
     public Method getNativeReadMethod();
 
     public int getHashCode(InternalWorkingMemory workingMemory, Object object);

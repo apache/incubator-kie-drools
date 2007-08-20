@@ -42,7 +42,7 @@ public static class @{className} {
                            @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
                            @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}
                            ) throws Exception {
-        @foreach{innerDeclarations as declr} @{declr.extractor.extractToClass.getName()} @{declr.identifier} = (@{declr.extractor.extractToClass.getName()}) innerDeclarations[@{i0}].@{declr.extractor.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, object );
+        @foreach{innerDeclarations as declr} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.extractor.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, object );
         @end{}
         @{actionCode}
     }
@@ -53,7 +53,7 @@ public static class @{className} {
                            @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
                            @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}
                            ) throws Exception {
-        @foreach{innerDeclarations as declr} @{declr.extractor.extractToClass.getName()} @{declr.identifier} = (@{declr.extractor.extractToClass.getName()}) innerDeclarations[@{i0}].@{declr.extractor.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, object );
+        @foreach{innerDeclarations as declr} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.extractor.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, object );
         @end{}
         @{reverseCode}
     }

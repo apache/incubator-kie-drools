@@ -4,6 +4,7 @@
 package org.drools.rule.builder.dialect.java;
 
 import org.drools.rule.Declaration;
+import org.drools.util.ClassUtils;
 
 /**
  * @author fburlet
@@ -14,11 +15,6 @@ public class DeclarationTypeFixer {
 
     public String fix(final Declaration declaration) {
         final Class classType = declaration.getExtractor().getExtractToClass();
-        if ( classType.isArray() ) {
-            return classType.getComponentType().getName().concat( "[]" );
-        };
-        // Does this replacement usefull in the declaration type ??
-        return classType.getName().replace( '$',
-                                            '.' );
+        return ClassUtils.canonicalName( classType );
     }
 }

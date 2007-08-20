@@ -6,6 +6,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.FieldExtractor;
+import org.drools.util.ClassUtils;
 
 public class FactTemplateFieldExtractor
     implements
@@ -35,6 +36,10 @@ public class FactTemplateFieldExtractor
 
     public Class getExtractToClass() {
         return Fact.class;//this.factTemplate.getFieldTemplate( fieldIndex ).getValueType().getClass();
+    }
+
+    public String getExtractToClassName() {
+        return ClassUtils.canonicalName( Fact.class );//this.factTemplate.getFieldTemplate( fieldIndex ).getValueType().getClass();
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {

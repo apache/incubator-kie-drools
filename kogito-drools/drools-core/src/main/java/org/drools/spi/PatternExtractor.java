@@ -8,6 +8,7 @@ import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.facttemplates.Fact;
+import org.drools.util.ClassUtils;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -56,6 +57,17 @@ public class PatternExtractor
         } else {
             return Fact.class;
         }
+    }
+
+    public String getExtractToClassName() {
+        Class clazz = null;
+        // @todo : this is a bit nasty, but does the trick
+        if ( this.objectType instanceof ClassObjectType ) {
+            clazz = ((ClassObjectType) this.objectType).getClassType();
+        } else {
+            clazz = Fact.class;
+        }
+        return ClassUtils.canonicalName( clazz );
     }
 
     public ValueType getValueType() {
