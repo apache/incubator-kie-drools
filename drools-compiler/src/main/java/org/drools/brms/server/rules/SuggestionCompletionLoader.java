@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.jar.JarInputStream;
 
 import org.drools.base.ClassTypeResolver;
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.server.util.DataEnumLoader;
 import org.drools.brms.server.util.SuggestionCompletionEngineBuilder;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -28,40 +30,45 @@ import org.drools.rule.MapBackedClassLoader;
 import org.drools.util.asm.ClassFieldInspector;
 
 /**
- * This utility class loads suggestion completion stuff for the package configuration, 
- * introspecting from models, templates etc. 
- * 
- * This also includes DSL stuff, basically, everything you need to get started with a package.
- * It also validates the package configuration, and can provide errors.
- * 
- * This does NOT validate assets in the package, other then to load up DSLs, models etc
- * as needed.
- * 
+ * This utility class loads suggestion completion stuff for the package
+ * configuration, introspecting from models, templates etc.
+ *
+ * This also includes DSL stuff, basically, everything you need to get started
+ * with a package. It also validates the package configuration, and can provide
+ * errors.
+ *
+ * This does NOT validate assets in the package, other then to load up DSLs,
+ * models etc as needed.
+ *
  * FYI: the tests for this are in the BRMS module, in context of a full BRMS.
- * 
+ *
  * @author Michael Neale
  *
  */
 public class SuggestionCompletionLoader {
 
     private final SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
+
     private final DrlParser                         parser  = new DrlParser();
+
     private final MapBackedClassLoader              loader;
+
     protected List                                  errors  = new ArrayList();
+
     // iterating over the import list
-    final ClassTypeResolver resolver;
+    final ClassTypeResolver                         resolver;
 
     /**
-     * This uses the current classes classloader as a base,
-     * and jars can be added.
+     * This uses the current classes classloader as a base, and jars can be
+     * added.
      */
     public SuggestionCompletionLoader() {
-        this(null);
+        this( null );
     }
 
     /**
-     * This allows a pre existing classloader to be used (and preferred)
-     * for resolving types.
+     * This allows a pre existing classloader to be used (and preferred) for
+     * resolving types.
      */
     public SuggestionCompletionLoader(ClassLoader classLoader) {
         if ( classLoader == null ) {
@@ -71,21 +78,50 @@ public class SuggestionCompletionLoader {
             }
         }
         this.loader = new MapBackedClassLoader( classLoader );
-        this.resolver = new ClassTypeResolver(new HashSet(), this.loader);
+        this.resolver = new ClassTypeResolver( new HashSet(),
+                                               this.loader );
     }
 
     /**
-     * This will validate, and generate a new engine, ready to go.
-     * If there are errors, you can get them by doing getErrors();
-     * @param header The package configuration file content.
-     * @param jars a list of jars to look inside (pass in empty array if not needed)
-     * this is a list of {@link JarInputStream}
-     * @param dsls any dsl files. This is a list of {@link DSLMappingFile}.
+     * This will validate, and generate a new engine, ready to go. If there are
+     * errors, you can get them by doing getErrors();
+     *
+     * @param header
+     *            The package configuration file content.
+     * @param jars
+     *            a list of jars to look inside (pass in empty array if not
+     *            needed) this is a list of {@link JarInputStream}
+     * @param dsls
+     *            any dsl files. This is a list of {@link DSLMappingFile}.
      * @return A SuggestionCompletionEngine ready to be used in anger.
      */
     public SuggestionCompletionEngine getSuggestionEngine(final String header,
                                                           final List jars,
                                                           final List dsls) {
+        return this.getSuggestionEngine( header, jars, dsls, Collections.EMPTY_LIST );
+    }
+
+
+    /**
+     * This will validate, and generate a new engine, ready to go. If there are
+     * errors, you can get them by doing getErrors();
+     *
+     * @param header
+     *            The package configuration file content.
+     * @param jars
+     *            a list of jars to look inside (pass in empty array if not
+     *            needed) this is a list of {@link JarInputStream}
+     * @param dsls
+     *            any dsl files. This is a list of {@link DSLMappingFile}.
+     * @param dataEnums
+     *            this is a list of String's which hold data enum definitions.
+     *             (normally will be just one, but for completeness can load multiple).
+     * @return A SuggestionCompletionEngine ready to be used in anger.
+     */
+    public SuggestionCompletionEngine getSuggestionEngine(final String header,
+                                                          final List jars,
+                                                          final List dsls,
+                                                          final List dataEnums) {
         this.builder.newCompletionEngine();
 
         if ( !header.trim().equals( "" ) ) {
@@ -96,7 +132,27 @@ public class SuggestionCompletionLoader {
         // populating DSL sentences
         this.populateDSLSentences( dsls );
 
-        return this.builder.getInstance();
+
+
+        SuggestionCompletionEngine sce = this.builder.getInstance();
+
+        populateDateEnums( dataEnums, sce );
+
+
+        return sce;
+    }
+
+    private void populateDateEnums(List dataEnums, SuggestionCompletionEngine sce) {
+        for ( Iterator iter = dataEnums.iterator(); iter.hasNext(); ) {
+            String enumFile = (String) iter.next();
+            DataEnumLoader enumLoader = new DataEnumLoader(enumFile);
+            if (enumLoader.hasErrors()) {
+                this.errors.addAll( enumLoader.getErrors() );
+            } else {
+                sce.dataEnumLists.putAll( enumLoader.getData() );
+            }
+        }
+
     }
 
     private void processPackageHeader(final String header,
@@ -130,30 +186,34 @@ public class SuggestionCompletionLoader {
      * @param errors
      */
     private void populateDSLSentences(final List dsls) {
-        //        AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
-        //        while ( it.hasNext() ) {
-        //            AssetItem item = (AssetItem) it.next();
-        //            String dslData = item.getContent();
-        //            DSLMappingFile file = new DSLMappingFile();
-        //            try {
-        //                if ( file.parseAndLoad( new StringReader( dslData ) ) ) {
-        //                    DSLMapping mapping = file.getMapping();
-        //                    for ( Iterator entries = mapping.getEntries().iterator(); entries.hasNext(); ) {
-        //                        DSLMappingEntry entry = (DSLMappingEntry) entries.next();
-        //                        if (entry.getSection() == DSLMappingEntry.CONDITION) {
-        //                            builder.addDSLConditionSentence( entry.getMappingKey() );
-        //                        } else if (entry.getSection() == DSLMappingEntry.CONSEQUENCE) {
-        //                            builder.addDSLActionSentence( entry.getMappingKey() );
-        //                        }
-        //                        
-        //                    }
-        //                } else {
-        //                    errors.add( file.getErrors().toString() );
-        //                }
-        //            } catch ( IOException e ) {
-        //                errors.add( "Error while loading DSL language configuration : " + item.getBinaryContentAttachmentFileName() + " error message: " + e.getMessage() );
-        //            }
-        //        }
+        // AssetItemIterator it = pkg.listAssetsByFormat( new
+        // String[]{AssetFormats.DSL} );
+        // while ( it.hasNext() ) {
+        // AssetItem item = (AssetItem) it.next();
+        // String dslData = item.getContent();
+        // DSLMappingFile file = new DSLMappingFile();
+        // try {
+        // if ( file.parseAndLoad( new StringReader( dslData ) ) ) {
+        // DSLMapping mapping = file.getMapping();
+        // for ( Iterator entries = mapping.getEntries().iterator();
+        // entries.hasNext(); ) {
+        // DSLMappingEntry entry = (DSLMappingEntry) entries.next();
+        // if (entry.getSection() == DSLMappingEntry.CONDITION) {
+        // builder.addDSLConditionSentence( entry.getMappingKey() );
+        // } else if (entry.getSection() == DSLMappingEntry.CONSEQUENCE) {
+        // builder.addDSLActionSentence( entry.getMappingKey() );
+        // }
+        //
+        // }
+        // } else {
+        // errors.add( file.getErrors().toString() );
+        // }
+        // } catch ( IOException e ) {
+        // errors.add( "Error while loading DSL language configuration : " +
+        // item.getBinaryContentAttachmentFileName() + " error message: " +
+        // e.getMessage() );
+        // }
+        // }
 
         for ( final Iterator it = dsls.iterator(); it.hasNext(); ) {
             final DSLMappingFile file = (DSLMappingFile) it.next();
@@ -210,8 +270,9 @@ public class SuggestionCompletionLoader {
             final String className = imp.getTarget();
             resolver.addImport( className );
 
-            final Class clazz = loadClass(className, jars);
-            
+            final Class clazz = loadClass( className,
+                                           jars );
+
             if ( clazz != null ) {
                 try {
                     final String shortTypeName = getShortNameOfClass( clazz.getName() );
@@ -231,7 +292,7 @@ public class SuggestionCompletionLoader {
 
     /**
      * Iterates over fact templates and add them to the model definition
-     * 
+     *
      * @param pkgDescr
      */
     private void populateFactTemplateTypes(final PackageDescr pkgDescr,
@@ -262,7 +323,7 @@ public class SuggestionCompletionLoader {
             }
         }
     }
-    
+
     private Class loadClass(String className,
                             List jars) {
         Class clazz = null;
@@ -272,12 +333,12 @@ public class SuggestionCompletionLoader {
             try {
                 addJars( jars );
                 clazz = resolver.resolveType( className );
-            } catch ( Exception e) {
+            } catch ( Exception e ) {
                 this.errors.add( "Class not found: " + className );
             }
         }
         return clazz;
-    }    
+    }
 
     private void loadClassFields(final Class clazz,
                                  final String shortTypeName) throws IOException {
@@ -312,7 +373,7 @@ public class SuggestionCompletionLoader {
         for ( int i = 0; i < fields.length; i++ ) {
             final String field = fields[i];
             if ( field.equals( "class" ) || field.equals( "hashCode" ) || field.equals( "toString" ) ) {
-                //ignore
+                // ignore
             } else {
                 result.add( field );
             }

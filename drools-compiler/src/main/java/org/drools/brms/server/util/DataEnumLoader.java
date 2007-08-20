@@ -28,7 +28,6 @@ public class DataEnumLoader {
 	private Map loadEnum(String mvelSource) {
 		final Object mvelData;
 		try {
-			MVEL mvel = new MVEL();
 
 			mvelData = MVEL.eval("[ " + mvelSource + " ]", new HashMap());
 		} catch (RuntimeException e) {
@@ -42,6 +41,7 @@ public class DataEnumLoader {
 			return Collections.EMPTY_MAP;
 		}
 		Map map = (Map) mvelData;
+        Map newMap = new HashMap();
 		for (Iterator iter = map.keySet().iterator(); iter.hasNext();) {
 			String key = (String) iter.next();
 			Object list = map.get(key);
@@ -54,18 +54,18 @@ public class DataEnumLoader {
 				return Collections.EMPTY_MAP;
 			}
 			List items = (List) list;
-			List newItems = new ArrayList();
+			String[] newItems = new String[items.size()];
 			for (int i = 0; i < items.size(); i++) {
 				Object listItem = items.get(i);
 				if (!(listItem instanceof String)) {
-					newItems.add(listItem.toString());
+					newItems[i] = listItem.toString();
 				} else {
-					newItems.add(listItem);
+					newItems[i] = (String) listItem;
 				}
 			}
-			map.put(key, newItems);
+			newMap.put(key, newItems);
 		}
-		return map;
+		return newMap;
 	}
 
 	private void addError(String string) {
@@ -78,6 +78,10 @@ public class DataEnumLoader {
 	public List getErrors() {
 		return this.errors;
 	}
+
+    public boolean hasErrors() {
+        return this.errors.size() > 0;
+    }
 
 	/**
 	 * Return the map of Fact.field to List (of Strings).
