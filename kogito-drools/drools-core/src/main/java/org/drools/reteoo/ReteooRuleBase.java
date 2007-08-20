@@ -32,12 +32,14 @@ import org.drools.StatelessSession;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.DefaultExecutorService;
 import org.drools.concurrent.ExecutorService;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
+import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashSet;
@@ -186,7 +188,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     public void assertObject(final FactHandle handle,
                              final Object object,
                              final PropagationContext context,
-                             final ReteooWorkingMemory workingMemory) throws FactException {
+                             final InternalWorkingMemory workingMemory) throws FactException {
         getRete().assertObject( (DefaultFactHandle) handle,
                                 context,
                                 workingMemory );
@@ -234,7 +236,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
             final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
 
-            session.queueWorkingMemoryAction( session.new WorkingMemoryReteAssertAction( handle,
+            session.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
                                                                                          false,
                                                                                          true,
                                                                                          null,
@@ -266,7 +268,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         this.reteooBuilder.removeRule( rule );
     }
 
-    private static class InitialFactHandleDummyObject
+    public static class InitialFactHandleDummyObject
         implements
         Serializable {
         private static final long serialVersionUID = 400L;

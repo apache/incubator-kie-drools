@@ -128,7 +128,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                node );
     }
 
-    public class WorkingMemoryReteAssertAction
+    public static class WorkingMemoryReteAssertAction
         implements
         WorkingMemoryAction {
         private InternalFactHandle factHandle;
@@ -156,14 +156,15 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
 
         public void execute(InternalWorkingMemory workingMemory) {
 
-            final PropagationContext context = new PropagationContextImpl( ReteooWorkingMemory.this.propagationIdCounter++,
+            final PropagationContext context = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                            PropagationContext.ASSERTION,
                                                                            this.ruleOrigin,
                                                                            this.activationOrigin );
-            ReteooWorkingMemory.this.ruleBase.assertObject( this.factHandle,
+            ReteooRuleBase ruleBase = ( ReteooRuleBase ) workingMemory.getRuleBase();
+            ruleBase.assertObject( this.factHandle,
                                                             this.factHandle.getObject(),
                                                             context,
-                                                            ReteooWorkingMemory.this );
+                                                            workingMemory );
         }
     }
 }

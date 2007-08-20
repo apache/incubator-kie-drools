@@ -76,7 +76,7 @@ public interface InternalRuleBase
     public void assertObject(FactHandle handle,
                              Object object,
                              PropagationContext context,
-                             ReteooWorkingMemory workingMemory) throws FactException;
+                             InternalWorkingMemory workingMemory) throws FactException;
 
     /**
      * Retract a fact object.

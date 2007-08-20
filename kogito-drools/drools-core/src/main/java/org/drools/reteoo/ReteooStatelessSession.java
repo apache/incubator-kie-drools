@@ -25,6 +25,8 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.reteoo.ReteooRuleBase.InitialFactHandleDummyObject;
+import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.GlobalResolver;
 
@@ -35,7 +37,7 @@ public class ReteooStatelessSession
 
     private InternalRuleBase            ruleBase;
     private AgendaFilter                agendaFilter;
-    private GlobalResolver              globalResolver                   = new MapGlobalResolver();
+    private GlobalResolver              globalResolver            = new MapGlobalResolver();
 
     /** The eventSupport */
     protected WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
@@ -58,6 +60,13 @@ public class ReteooStatelessSession
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setRuleFlowEventSupport( ruleFlowEventSupport );
 
+            final InitialFactHandle handle = new InitialFactHandle( wm.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
+
+            wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
+                                                                            false,
+                                                                            true,
+                                                                            null,
+                                                                            null ) );
             return wm;
         }
     }
@@ -105,7 +114,7 @@ public class ReteooStatelessSession
     public void setGlobal(String identifier,
                           Object value) {
         this.globalResolver.setGlobal( identifier,
-                          value );
+                                       value );
     }
 
     public void setGlobalResolver(GlobalResolver globalResolver) {
