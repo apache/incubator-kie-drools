@@ -115,7 +115,7 @@ public class DoubleBetaConstraints
         } else {
             return false;
         }
-    }
+    }   
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
@@ -160,6 +160,17 @@ public class DoubleBetaConstraints
     public boolean isIndexed() {
         return this.indexed0;
     }
+    
+    public int getIndexCount() {
+        int count = 0;
+        if ( this.indexed0 ) {
+            count++;
+        }
+        if ( this.indexed1 ) {
+            count++;
+        }    
+        return count;    
+    }    
 
     public boolean isEmpty() {
         return false;

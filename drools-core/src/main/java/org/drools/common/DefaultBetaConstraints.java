@@ -30,9 +30,11 @@ import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
+import org.drools.util.Entry;
 import org.drools.util.FactHashTable;
 import org.drools.util.FactHandleIndexHashTable;
 import org.drools.util.FactList;
+import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
@@ -194,8 +196,8 @@ public class DefaultBetaConstraints
     }
     
     public int getIndexCount() {
-        return this.indexed;
-    }
+        return this.indexed+1;
+    }   
 
     public boolean isEmpty() {
         return false;
