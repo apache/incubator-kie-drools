@@ -53,4 +53,8 @@ public class FirstClass {
         this.item5 = item5;
     }
 
+    public static class AlternativeKey {
+        
+    }
+
 }
