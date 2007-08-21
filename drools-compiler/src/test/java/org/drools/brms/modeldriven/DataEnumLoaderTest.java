@@ -21,7 +21,7 @@ public class DataEnumLoaderTest extends TestCase {
 		List l = (List) result;
 		assertEquals(3, l.size());
 
-		result = MVEL.eval("['Person.age' : [2, 3], 'Person.name' : ['qqq', 'ccc']]", new HashMap());
+		result = MVEL.eval("['Person.age' : [2, 3], 'Person.name' : ['qqq', \n'ccc']]", new HashMap());
 
 		DataEnumLoader loader = new DataEnumLoader(readLines().toString());
 
