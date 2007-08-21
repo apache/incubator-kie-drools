@@ -221,7 +221,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
             throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
         ReteooStatefulSession session = null;
-        
+
         synchronized ( this.pkgs ) {
             ExecutorService executor = this.config.getExecutorService();
             session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
@@ -237,10 +237,10 @@ public class ReteooRuleBase extends AbstractRuleBase {
             final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
 
             session.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
-                                                                                         false,
-                                                                                         true,
-                                                                                         null,
-                                                                                         null ) );
+                                                                                 false,
+                                                                                 true,
+                                                                                 null,
+                                                                                 null ) );
         }
         return session;
     }

@@ -434,7 +434,9 @@ public abstract class AbstractHashTable
         }
     }
 
-    public static interface Index {
+    public static interface Index {        
+        public FieldIndex getFieldIndex(int index);
+        
         public int hashCodeOf(ReteTuple tuple);
 
         public int hashCodeOf(Object object);
@@ -466,9 +468,16 @@ public abstract class AbstractHashTable
             this.extractor = indexes[0].extractor;
             this.declaration = indexes[0].declaration;
             this.evaluator = indexes[0].evaluator;
-
         }
 
+        public FieldIndex getFieldIndex(int index) {
+            if ( index > 0 ) {
+                throw new IllegalArgumentException("Index position " + index + " does not exist" );
+            }
+            return new FieldIndex(extractor, declaration, evaluator);
+        }
+        
+        
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
             hashCode = TupleIndexHashTable.PRIME * hashCode + this.extractor.getHashCode( null, object );
@@ -534,7 +543,17 @@ public abstract class AbstractHashTable
 
             this.index0 = indexes[0];
             this.index1 = indexes[1];
-
+        }
+        
+        public FieldIndex getFieldIndex(int index) {
+            switch ( index ) {
+                case 0:
+                    return index0;
+                case 1:
+                    return index1;
+                default:
+                    throw new IllegalArgumentException("Index position " + index + " does not exist" );
+            }
         }
 
         public int hashCodeOf(final Object object) {
@@ -622,8 +641,20 @@ public abstract class AbstractHashTable
             this.index0 = indexes[0];
             this.index1 = indexes[1];
             this.index2 = indexes[2];
-
         }
+        
+        public FieldIndex getFieldIndex(int index) {
+            switch ( index ) {
+                case 0:
+                    return index0;
+                case 1:
+                    return index1;
+                case 2:
+                    return index2;                    
+                default:
+                    throw new IllegalArgumentException("Index position " + index + " does not exist" );
+            }
+        }        
 
         public int hashCodeOf(final Object object) {
             int hashCode = this.startResult;
