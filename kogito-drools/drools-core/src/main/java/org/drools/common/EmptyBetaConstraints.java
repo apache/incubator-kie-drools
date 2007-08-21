@@ -77,6 +77,10 @@ public class EmptyBetaConstraints
     public boolean isIndexed() {
         return false;
     }
+    
+    public int getIndexCount() {
+        return 0;
+    }
 
     public boolean isEmpty() {
         return true;

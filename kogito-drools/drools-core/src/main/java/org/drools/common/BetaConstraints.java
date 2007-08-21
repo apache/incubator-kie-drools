@@ -24,6 +24,8 @@ public interface BetaConstraints
     public LinkedList getConstraints();
 
     public boolean isIndexed();
+    
+    public int getIndexCount();
 
     public boolean isEmpty();
 

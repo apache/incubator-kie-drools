@@ -52,6 +52,13 @@ public class SingleBetaConstraints
     private boolean                       indexed;
 
     private RuleBaseConfiguration         conf;
+    
+    public SingleBetaConstraints(final BetaNodeFieldConstraint[] constraint,
+                                 final RuleBaseConfiguration conf) {
+        this( constraint[0],
+              conf,
+              false );
+    }    
 
     public SingleBetaConstraints(final BetaNodeFieldConstraint constraint,
                                  final RuleBaseConfiguration conf) {
@@ -121,6 +128,10 @@ public class SingleBetaConstraints
 
     public boolean isIndexed() {
         return this.indexed;
+    }
+    
+    public int getIndexCount() {
+        return ( this.indexed ? 1 : 0 );
     }
 
     public boolean isEmpty() {
