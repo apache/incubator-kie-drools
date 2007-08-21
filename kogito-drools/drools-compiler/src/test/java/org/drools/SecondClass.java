@@ -53,4 +53,9 @@ public class SecondClass {
         this.item5 = item5;
     }
 
+    public static class AlternativeKey {
+        
+    }
+
+    
 }

@@ -1,0 +1,18 @@
+package org.drools.integrationtests;
+
+#list any import classes here.
+import org.drools.FirstClass;
+import org.drools.FirstClass.AlternativeKey;
+
+
+#declare any global variables here
+
+rule "First Class"
+	
+	when
+		FirstClass()
+		FirstClass.AlternativeKey()
+	then 
+		System.out.println("First class!");
+		
+end

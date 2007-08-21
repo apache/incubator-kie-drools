@@ -322,7 +322,7 @@ public class MiscTest extends TestCase {
                       list.size() );
 
         workingMemory.insert( new Cheese( "brie",
-                                                33 ) );
+                                          33 ) );
 
         workingMemory.fireAllRules();
         assertEquals( 1,
@@ -451,7 +451,7 @@ public class MiscTest extends TestCase {
 
         final State state = new State( "initial" );
         workingMemory.insert( state,
-                                    true );
+                              true );
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -521,39 +521,46 @@ public class MiscTest extends TestCase {
         assertEquals( 9,
                       cell.getValue() );
     }
-    
+
     public void testNesting() throws Exception {
         Person p = new Person();
         p.setName( "Michael" );
-        
+
         Address add1 = new Address();
         add1.setStreet( "High" );
-        
+
         Address add2 = new Address();
         add2.setStreet( "Low" );
-        
+
         List l = new ArrayList();
-        l.add( add1 ); l.add( add2 );
-        
+        l.add( add1 );
+        l.add( add2 );
+
         p.setAddresses( l );
-        
+
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "nested_fields.drl" ) ) );
 
-        assertFalse(builder.getErrors().toString(), builder.hasErrors());
-        
+        assertFalse( builder.getErrors().toString(),
+                     builder.hasErrors() );
+
         DrlParser parser = new DrlParser();
         PackageDescr desc = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nested_fields.drl" ) ) );
         List packageAttrs = desc.getAttributes();
-        assertEquals(1, desc.getRules().size());
-        assertEquals(1, packageAttrs.size());
-        
+        assertEquals( 1,
+                      desc.getRules().size() );
+        assertEquals( 1,
+                      packageAttrs.size() );
+
         RuleDescr rule = (RuleDescr) desc.getRules().get( 0 );
         List ruleAttrs = rule.getAttributes();
-        assertEquals(1, ruleAttrs.size());
-        
-        assertEquals("mvel", ((AttributeDescr)ruleAttrs.get(0)).getValue());
-        assertEquals("dialect", ((AttributeDescr)ruleAttrs.get(0)).getName());
+        assertEquals( 1,
+                      ruleAttrs.size() );
+
+        assertEquals( "mvel",
+                      ((AttributeDescr) ruleAttrs.get( 0 )).getValue() );
+        assertEquals( "dialect",
+                      ((AttributeDescr) ruleAttrs.get( 0 )).getName() );
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
@@ -561,7 +568,7 @@ public class MiscTest extends TestCase {
 
         memory.insert( p );
         memory.fireAllRules();
-        
+
     }
 
     public void testOr() throws Exception {
@@ -596,7 +603,7 @@ public class MiscTest extends TestCase {
                       list.size() );
 
         workingMemory.insert( new Cheese( "stilton",
-                                                5 ) );
+                                          5 ) );
         workingMemory.fireAllRules();
 
         // now have one more
@@ -647,11 +654,11 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void testJaninoEval() throws Exception {        
+    public void testJaninoEval() throws Exception {
         final PackageBuilderConfiguration config = new PackageBuilderConfiguration();
-        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) config.getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) config.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
-        
+
         final PackageBuilder builder = new PackageBuilder( config );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -870,8 +877,8 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "cheesery",
                                  cheesery );
         workingMemory.insert( cheesery );
-        
-        Person p = new Person("stilton");
+
+        Person p = new Person( "stilton" );
         workingMemory.insert( p );
 
         workingMemory.fireAllRules();
@@ -966,14 +973,14 @@ public class MiscTest extends TestCase {
         assertSame( globalObject,
                     list.get( 5 ) );
     }
-    
+
     public void testFromWithNewConstructor() throws Exception {
         DrlParser parser = new DrlParser();
         PackageDescr descr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithNewConstructor.drl" ) ) );
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackage(descr);
+        builder.addPackage( descr );
         Package pkg = builder.getPackage();
-        pkg.checkValidity();      
+        pkg.checkValidity();
     }
 
     public void testWithInvalidRule() throws Exception {
@@ -1414,7 +1421,7 @@ public class MiscTest extends TestCase {
                                            12 );
         workingMemory.insert( stilton );
         final Cheese brie = new Cheese( "brie",
-                                           10 );
+                                        10 );
         workingMemory.insert( brie );
 
         final Cheesery cheesery = new Cheesery();
@@ -1530,10 +1537,11 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg );
 
         Map map = new HashMap();
-        map.put( "x", ruleBase );
+        map.put( "x",
+                 ruleBase );
         final byte[] ast = serializeOut( map );
         map = (Map) serializeIn( ast );
-        ruleBase = ( RuleBase ) map.get( "x" );
+        ruleBase = (RuleBase) map.get( "x" );
         final Rule[] rules = ruleBase.getPackages()[0].getRules();
         assertEquals( 4,
                       rules.length );
@@ -1721,8 +1729,10 @@ public class MiscTest extends TestCase {
         workingMemory.fireAllRules();
 
         final QueryResults results = workingMemory.getQueryResults( "assertedobjquery" );
-        assertEquals( 1, results.size() );
-        assertEquals( new InsertedObject( "value1"), results.get( 0 ).get( 0 ) );        
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( new InsertedObject( "value1" ),
+                      results.get( 0 ).get( 0 ) );
     }
 
     public void testQueryWithParams() throws Exception {
@@ -1735,22 +1745,33 @@ public class MiscTest extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.fireAllRules();
 
-        QueryResults results = workingMemory.getQueryResults( "assertedobjquery", new String[] { "value1" } );
-        assertEquals( 1, results.size() );
-        assertEquals( new InsertedObject( "value1"), results.get( 0 ).get( 0 ) );
-        
-        results = workingMemory.getQueryResults( "assertedobjquery", new String[] { "value3" } );
-        assertEquals( 0, results.size() );       
-        
-        results = workingMemory.getQueryResults( "assertedobjquery2", new String[] { null, "value2" } );
-        assertEquals( 1, results.size() );
-        assertEquals( new InsertedObject( "value2"), results.get( 0 ).get( 0 ) );
-        
-        results = workingMemory.getQueryResults( "assertedobjquery2", new String[] { "value3", "value2" } );
-        assertEquals( 1, results.size() );
-        assertEquals( new InsertedObject( "value2"), results.get( 0 ).get( 0 ) );        
-    }    
-    
+        QueryResults results = workingMemory.getQueryResults( "assertedobjquery",
+                                                              new String[]{"value1"} );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( new InsertedObject( "value1" ),
+                      results.get( 0 ).get( 0 ) );
+
+        results = workingMemory.getQueryResults( "assertedobjquery",
+                                                 new String[]{"value3"} );
+        assertEquals( 0,
+                      results.size() );
+
+        results = workingMemory.getQueryResults( "assertedobjquery2",
+                                                 new String[]{null, "value2"} );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( new InsertedObject( "value2" ),
+                      results.get( 0 ).get( 0 ) );
+
+        results = workingMemory.getQueryResults( "assertedobjquery2",
+                                                 new String[]{"value3", "value2"} );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( new InsertedObject( "value2" ),
+                      results.get( 0 ).get( 0 ) );
+    }
+
     public void testTwoQuerries() throws Exception {
         // @see JBRULES-410 More than one Query definition causes an incorrect
         // Rete network to be built.
@@ -1929,7 +1950,7 @@ public class MiscTest extends TestCase {
         // europe=[ 1, 2 ], america=[ 3 ]
         p3.setStatus( "america" );
         workingMemory.update( c3FactHandle,
-                                    p3 );
+                              p3 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 1,
@@ -1938,7 +1959,7 @@ public class MiscTest extends TestCase {
         // europe=[ 1 ], america=[ 2, 3 ]
         p2.setStatus( "america" );
         workingMemory.update( c2FactHandle,
-                                    p2 );
+                              p2 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 1,
@@ -1947,7 +1968,7 @@ public class MiscTest extends TestCase {
         // europe=[ ], america=[ 1, 2, 3 ]
         p1.setStatus( "america" );
         workingMemory.update( c1FactHandle,
-                                    p1 );
+                              p1 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 2,
@@ -1956,7 +1977,7 @@ public class MiscTest extends TestCase {
         // europe=[ 2 ], america=[ 1, 3 ]
         p2.setStatus( "europe" );
         workingMemory.update( c2FactHandle,
-                                    p2 );
+                              p2 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 1,
@@ -1965,7 +1986,7 @@ public class MiscTest extends TestCase {
         // europe=[ 1, 2 ], america=[ 3 ]
         p1.setStatus( "europe" );
         workingMemory.update( c1FactHandle,
-                                    p1 );
+                              p1 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 1,
@@ -1974,12 +1995,12 @@ public class MiscTest extends TestCase {
         // europe=[ 1, 2, 3 ], america=[ ]
         p3.setStatus( "europe" );
         workingMemory.update( c3FactHandle,
-                                    p3 );
+                              p3 );
         workingMemory.fireAllRules();
         queryResults = workingMemory.getQueryResults( "2 persons with the same status" );
         assertEquals( 2,
                       queryResults.size() );
-    }    
+    }
 
     public void testFunctionWithPrimitives() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -2121,7 +2142,7 @@ public class MiscTest extends TestCase {
                       list.size() );
 
         workingMemory.insert( new Cheese( bob.getLikes(),
-                                                10 ) );
+                                          10 ) );
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -2158,13 +2179,13 @@ public class MiscTest extends TestCase {
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         wm.insert( new Cheese( "a",
-                                     10 ) );
+                               10 ) );
         wm.insert( new Cheese( "b",
-                                     10 ) );
+                               10 ) );
         wm.insert( new Cheese( "c",
-                                     10 ) );
+                               10 ) );
         wm.insert( new Cheese( "d",
-                                     10 ) );
+                               10 ) );
         final Cheese e = new Cheese( "e",
                                      10 );
         wm.insert( e );
@@ -2276,7 +2297,7 @@ public class MiscTest extends TestCase {
                       ((Integer) result.get( "test3" + stilton.getType() )).intValue() );
 
         workingMemory.insert( new Person( "bob",
-                                                brie.getType() ) );
+                                          brie.getType() ) );
         workingMemory.fireAllRules();
 
         assertEquals( 6,
@@ -2379,7 +2400,7 @@ public class MiscTest extends TestCase {
 
         guess.setValue( new Integer( 15 ) );
         workingMemory.update( handle,
-                                    guess );
+                              guess );
 
         workingMemory.fireAllRules();
 
@@ -2391,7 +2412,7 @@ public class MiscTest extends TestCase {
 
         guess.setValue( new Integer( 10 ) );
         workingMemory.update( handle,
-                                    guess );
+                              guess );
 
         workingMemory.fireAllRules();
 
@@ -2426,7 +2447,7 @@ public class MiscTest extends TestCase {
 
         cheese.setType( "stilton" );
         workingMemory.update( handle,
-                                    cheese );
+                              cheese );
         workingMemory.fireAllRules();
         assertEquals( 2,
                       results.size() );
@@ -2508,7 +2529,7 @@ public class MiscTest extends TestCase {
                     oae.getFactHandle() );
 
         wm.update( stiltonHandle,
-                         stilton );
+                   stilton );
         final ObjectUpdatedEvent ome = (ObjectUpdatedEvent) wmList.get( 1 );
         assertSame( stiltonHandle,
                     ome.getFactHandle() );
@@ -2640,9 +2661,9 @@ public class MiscTest extends TestCase {
                                  list );
 
         workingMemory.insert( new Cheese( "stilton",
-                                                10 ) );
+                                          10 ) );
         workingMemory.insert( new Cheese( "brie",
-                                                15 ) );
+                                          15 ) );
 
         workingMemory.fireAllRules();
 
@@ -2675,7 +2696,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
 
         workingMemory.insert( new Cheese( "stilton",
-                                                10 ) );
+                                          10 ) );
         workingMemory.fireAllRules();
 
         assertEquals( 2,
@@ -2795,10 +2816,14 @@ public class MiscTest extends TestCase {
 
         assertEquals( 4,
                       results.size() );
-        assertEquals( chili1, results.get( 0 ) );
-        assertEquals( oldChili1, results.get( 1 ) );
-        assertEquals( youngChili1, results.get( 2 ) );
-        assertEquals( veryold, results.get( 3 ) );
+        assertEquals( chili1,
+                      results.get( 0 ) );
+        assertEquals( oldChili1,
+                      results.get( 1 ) );
+        assertEquals( youngChili1,
+                      results.get( 2 ) );
+        assertEquals( veryold,
+                      results.get( 3 ) );
 
     }
 
@@ -2818,15 +2843,15 @@ public class MiscTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            12 );
         final Cheese stilton2 = new Cheese( "stilton2",
-                                           12 );
+                                            12 );
         final Cheese brie = new Cheese( "brie",
                                         10 );
         final Cheese brie2 = new Cheese( "brie2",
-                                        10 );
+                                         10 );
         final Cheese muzzarella = new Cheese( "muzzarella",
-                                        10 );
+                                              10 );
         final Cheese muzzarella2 = new Cheese( "muzzarella2",
-                                        10 );
+                                               10 );
         workingMemory.insert( stilton );
         workingMemory.insert( stilton2 );
         workingMemory.insert( brie );
@@ -2858,7 +2883,8 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        final Person bob = new Person("bob", "stilton");
+        final Person bob = new Person( "bob",
+                                       "stilton" );
         final Cheese stilton = new Cheese( "stilton",
                                            12 );
         workingMemory.insert( bob );
@@ -2872,15 +2898,15 @@ public class MiscTest extends TestCase {
         assertEquals( bob,
                       list.get( 0 ) );
     }
-    
+
     public void testAutomaticBindingsErrors() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoBindingsErrors.drl" ) ) );
         final Package pkg = builder.getPackage();
-        
+
         assertNotNull( pkg.getErrorSummary() );
     }
-    
+
     public void testQualifiedFieldReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QualifiedFieldReference.drl" ) ) );
@@ -2894,7 +2920,8 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        final Person bob = new Person("bob", "stilton");
+        final Person bob = new Person( "bob",
+                                       "stilton" );
         final Cheese stilton = new Cheese( "stilton",
                                            12 );
         workingMemory.insert( bob );
@@ -2908,7 +2935,7 @@ public class MiscTest extends TestCase {
         assertEquals( bob,
                       list.get( 0 ) );
     }
-    
+
     public void testEvalRewrite() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewrite.drl" ) ) );
@@ -2923,23 +2950,31 @@ public class MiscTest extends TestCase {
                                  list );
 
         final Order order1 = new Order( 10 );
-        final OrderItem item11 = new OrderItem( order1, 1 );
-        final OrderItem item12 = new OrderItem( order1, 2 );
+        final OrderItem item11 = new OrderItem( order1,
+                                                1 );
+        final OrderItem item12 = new OrderItem( order1,
+                                                2 );
         order1.addItem( item11 );
         order1.addItem( item12 );
         final Order order2 = new Order( 11 );
-        final OrderItem item21 = new OrderItem( order2, 1 );
-        final OrderItem item22 = new OrderItem( order2, 2 );
+        final OrderItem item21 = new OrderItem( order2,
+                                                1 );
+        final OrderItem item22 = new OrderItem( order2,
+                                                2 );
         order2.addItem( item21 );
         order2.addItem( item22 );
         final Order order3 = new Order( 12 );
-        final OrderItem item31 = new OrderItem( order3, 1 );
-        final OrderItem item32 = new OrderItem( order3, 2 );
+        final OrderItem item31 = new OrderItem( order3,
+                                                1 );
+        final OrderItem item32 = new OrderItem( order3,
+                                                2 );
         order3.addItem( item31 );
         order3.addItem( item32 );
         final Order order4 = new Order( 13 );
-        final OrderItem item41 = new OrderItem( order4, 1 );
-        final OrderItem item42 = new OrderItem( order4, 2 );
+        final OrderItem item41 = new OrderItem( order4,
+                                                1 );
+        final OrderItem item42 = new OrderItem( order4,
+                                                2 );
         order4.addItem( item41 );
         order4.addItem( item42 );
         workingMemory.insert( order1 );
@@ -2964,10 +2999,9 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( item22 ) );
         assertTrue( list.contains( order3 ) );
         assertTrue( list.contains( order4 ) );
-        
+
     }
-    
-    
+
     public void testMapAccess() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccess.drl" ) ) );
@@ -2982,18 +3016,21 @@ public class MiscTest extends TestCase {
                                  list );
 
         Map map = new HashMap();
-        map.put( "name", "Edson" );
-        map.put( "surname", "Tirelli" );
-        map.put( "age", "28" );
-        
+        map.put( "name",
+                 "Edson" );
+        map.put( "surname",
+                 "Tirelli" );
+        map.put( "age",
+                 "28" );
+
         workingMemory.insert( map );
-        
+
         workingMemory.fireAllRules();
 
         assertEquals( 1,
                       list.size() );
         assertTrue( list.contains( map ) );
-       
+
     }
 
     public void testHalt() throws Exception {
@@ -3014,8 +3051,9 @@ public class MiscTest extends TestCase {
 
         assertEquals( 10,
                       results.size() );
-        for( int i = 0; i < 10; i++ ) {
-            assertEquals( new Integer( i ), results.get( i ) );
+        for ( int i = 0; i < 10; i++ ) {
+            assertEquals( new Integer( i ),
+                          results.get( i ) );
         }
     }
 
@@ -3037,32 +3075,34 @@ public class MiscTest extends TestCase {
 
         assertEquals( 20,
                       results.size() );
-        for( int i = 0; i < 20; i++ ) {
-            assertEquals( new Integer( i ), results.get( i ) );
+        for ( int i = 0; i < 20; i++ ) {
+            assertEquals( new Integer( i ),
+                          results.get( i ) );
         }
         results.clear();
-        
+
         workingMemory.insert( new Integer( 0 ) );
         workingMemory.fireAllRules( 10 );
 
         assertEquals( 10,
                       results.size() );
-        for( int i = 0; i < 10; i++ ) {
-            assertEquals( new Integer( i ), results.get( i ) );
+        for ( int i = 0; i < 10; i++ ) {
+            assertEquals( new Integer( i ),
+                          results.get( i ) );
         }
         results.clear();
-        
+
         workingMemory.insert( new Integer( 0 ) );
         workingMemory.fireAllRules( -1 );
 
         assertEquals( 20,
                       results.size() );
-        for( int i = 0; i < 20; i++ ) {
-            assertEquals( new Integer( i ), results.get( i ) );
+        for ( int i = 0; i < 20; i++ ) {
+            assertEquals( new Integer( i ),
+                          results.get( i ) );
         }
         results.clear();
-        
-        
+
     }
 
     public void testGlobals2() throws Exception {
@@ -3091,19 +3131,23 @@ public class MiscTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( "memberOf", results.get( 0 ));
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( "memberOf",
+                      results.get( 0 ) );
 
         final Cheese brie = new Cheese( "brie",
-                                           5 );
+                                        5 );
         workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( "not memberOf", results.get( 1 ));
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( "not memberOf",
+                      results.get( 1 ) );
     }
-    
+
     public void testEqualitySupport() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -3111,8 +3155,8 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY  );
-        final RuleBase ruleBase = getRuleBase(conf);
+        conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
+        final RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -3120,14 +3164,17 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  results );
 
-        PersonWithEquals person = new PersonWithEquals("bob", 30);
-        
+        PersonWithEquals person = new PersonWithEquals( "bob",
+                                                        30 );
+
         workingMemory.insert( person );
 
         workingMemory.fireAllRules();
 
-        assertEquals( 1, results.size() );
-        assertEquals( "mark", results.get( 0 ));
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( "mark",
+                      results.get( 0 ) );
 
     }
 
@@ -3151,16 +3198,20 @@ public class MiscTest extends TestCase {
         Primitives p2 = new Primitives();
         p2.setCharPrimitive( 'b' );
         p2.setStringAttribute( "a" );
-        
+
         workingMemory.insert( p1 );
         workingMemory.insert( p2 );
 
         workingMemory.fireAllRules();
 
-        assertEquals( 3, results.size() );
-        assertEquals( "1", results.get( 0 ));
-        assertEquals( "2", results.get( 1 ));
-        assertEquals( "3", results.get( 2 ));
+        assertEquals( 3,
+                      results.size() );
+        assertEquals( "1",
+                      results.get( 0 ) );
+        assertEquals( "2",
+                      results.get( 1 ) );
+        assertEquals( "3",
+                      results.get( 2 ) );
 
     }
 
@@ -3172,7 +3223,7 @@ public class MiscTest extends TestCase {
 
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setShareAlphaNodes( false );
-        final RuleBase ruleBase = getRuleBase(conf);
+        final RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -3180,17 +3231,21 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  results );
 
-        Person p1 = new Person( "bob", 5 );
+        Person p1 = new Person( "bob",
+                                5 );
         workingMemory.insert( p1 );
 
         workingMemory.fireAllRules();
 
-        assertEquals( 2, results.size() );
-        assertEquals( "1", results.get( 0 ));
-        assertEquals( "2", results.get( 1 ));
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( "1",
+                      results.get( 0 ) );
+        assertEquals( "2",
+                      results.get( 1 ) );
 
     }
-    
+
     public void testFunctionCallingFunction() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_functionCallingFunction.drl" ) ) );
@@ -3237,12 +3292,12 @@ public class MiscTest extends TestCase {
             final PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes1.drl" ) ) );
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes2.drl" ) ) );
-            fail( "Can't merge packages with different names ");
+            fail( "Can't merge packages with different names " );
         } catch ( PackageMergeException e ) {
             // success
         } catch ( RuntimeException e ) {
             e.printStackTrace();
-            fail( "unexpected exception: "+ e.getMessage() );
+            fail( "unexpected exception: " + e.getMessage() );
         }
     }
 
@@ -3253,13 +3308,15 @@ public class MiscTest extends TestCase {
             builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes1.drl" ) ) );
             final Package pkg1 = builder1.getPackage();
 
-            assertEquals( 1, pkg1.getRules().length );
-            
+            assertEquals( 1,
+                          pkg1.getRules().length );
+
             final PackageBuilder builder2 = new PackageBuilder();
             builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes2.drl" ) ) );
             final Package pkg2 = builder2.getPackage();
-            
-            assertEquals( 1, pkg2.getRules().length );
+
+            assertEquals( 1,
+                          pkg2.getRules().length );
 
             final RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg1 );
@@ -3270,22 +3327,24 @@ public class MiscTest extends TestCase {
             workingMemory.setGlobal( "results",
                                      results );
 
-            workingMemory.insert( new Cheese( "stilton", 10 ) );
-            workingMemory.insert( new Cheese( "brie", 5 ) );
+            workingMemory.insert( new Cheese( "stilton",
+                                              10 ) );
+            workingMemory.insert( new Cheese( "brie",
+                                              5 ) );
 
             workingMemory.fireAllRules();
 
             assertEquals( results.toString(),
                           2,
                           results.size() );
-            assertTrue( results.contains( "p1.r1" ));
-            assertTrue( results.contains( "p2.r1" ));
+            assertTrue( results.contains( "p1.r1" ) );
+            assertTrue( results.contains( "p2.r1" ) );
 
         } catch ( PackageMergeException e ) {
-            fail( "Should not raise exception when merging different packages into the same rulebase: "+e.getMessage());
+            fail( "Should not raise exception when merging different packages into the same rulebase: " + e.getMessage() );
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail( "unexpected exception: "+ e.getMessage() );
+            fail( "unexpected exception: " + e.getMessage() );
         }
     }
 
@@ -3296,8 +3355,9 @@ public class MiscTest extends TestCase {
             builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes1.drl" ) ) );
             builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuleNameClashes3.drl" ) ) );
             final Package pkg1 = builder1.getPackage();
-            
-            assertEquals( 1, pkg1.getRules().length );
+
+            assertEquals( 1,
+                          pkg1.getRules().length );
 
             final RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg1 );
@@ -3307,8 +3367,10 @@ public class MiscTest extends TestCase {
             workingMemory.setGlobal( "results",
                                      results );
 
-            workingMemory.insert( new Cheese( "stilton", 10 ) );
-            workingMemory.insert( new Cheese( "brie", 5 ) );
+            workingMemory.insert( new Cheese( "stilton",
+                                              10 ) );
+            workingMemory.insert( new Cheese( "brie",
+                                              5 ) );
 
             workingMemory.fireAllRules();
 
@@ -3316,20 +3378,21 @@ public class MiscTest extends TestCase {
                           0,
                           results.size() );
 
-            workingMemory.insert( new Cheese( "muzzarella", 7 ) );
+            workingMemory.insert( new Cheese( "muzzarella",
+                                              7 ) );
 
             workingMemory.fireAllRules();
 
             assertEquals( results.toString(),
                           1,
                           results.size() );
-            assertTrue( results.contains( "p1.r3" ));
+            assertTrue( results.contains( "p1.r3" ) );
 
         } catch ( PackageMergeException e ) {
-            fail( "Should not raise exception when merging different packages into the same rulebase: "+e.getMessage());
+            fail( "Should not raise exception when merging different packages into the same rulebase: " + e.getMessage() );
         } catch ( Exception e ) {
             e.printStackTrace();
-            fail( "unexpected exception: "+ e.getMessage() );
+            fail( "unexpected exception: " + e.getMessage() );
         }
     }
 
@@ -3342,10 +3405,11 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-        workingMemory.insert( new Cheese( "stilton", 1 ) );
+        workingMemory.insert( new Cheese( "stilton",
+                                          1 ) );
 
-        workingMemory.fireAllRules(3000000);
-        
+        workingMemory.fireAllRules( 3000000 );
+
         // just for profiling
         //Thread.currentThread().wait();
     }
@@ -3363,16 +3427,17 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  results );
 
-        workingMemory.insert( new Cheese( "stilton", 15 ) );
+        workingMemory.insert( new Cheese( "stilton",
+                                          15 ) );
 
         workingMemory.fireAllRules();
 
         assertEquals( 2,
                       results.size() );
         assertEquals( "stilton",
-                      results.get(0) );
-        assertEquals( new Integer(15),
-                      results.get(1) );
+                      results.get( 0 ) );
+        assertEquals( new Integer( 15 ),
+                      results.get( 1 ) );
     }
 
     public void testMultipleFroms() throws Exception {
@@ -3387,21 +3452,24 @@ public class MiscTest extends TestCase {
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
                                  results );
-        
-        final Cheesery cheesery = new Cheesery();
-        cheesery.addCheese( new Cheese( "stilton", 15 ) );
-        cheesery.addCheese( new Cheese( "brie", 10 ) );
 
-        workingMemory.setGlobal( "cheesery", cheesery );
+        final Cheesery cheesery = new Cheesery();
+        cheesery.addCheese( new Cheese( "stilton",
+                                        15 ) );
+        cheesery.addCheese( new Cheese( "brie",
+                                        10 ) );
+
+        workingMemory.setGlobal( "cheesery",
+                                 cheesery );
 
         workingMemory.fireAllRules();
 
         assertEquals( 2,
                       results.size() );
         assertEquals( 2,
-                      ((List)results.get(0)).size() );
+                      ((List) results.get( 0 )).size() );
         assertEquals( 2,
-                      ((List)results.get(1)).size() );
+                      ((List) results.get( 1 )).size() );
     }
 
     public void testNullHashing() throws Exception {
@@ -3416,10 +3484,13 @@ public class MiscTest extends TestCase {
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
                                  results );
-        
-        workingMemory.insert( new Cheese( "stilton", 15 ) );
-        workingMemory.insert( new Cheese( "", 10 ) );
-        workingMemory.insert( new Cheese( null, 8 ) );
+
+        workingMemory.insert( new Cheese( "stilton",
+                                          15 ) );
+        workingMemory.insert( new Cheese( "",
+                                          10 ) );
+        workingMemory.insert( new Cheese( null,
+                                          8 ) );
 
         workingMemory.fireAllRules();
 
@@ -3439,70 +3510,105 @@ public class MiscTest extends TestCase {
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
                                  results );
-        final FirstClass first = new FirstClass("1", "2", "3", "4", "5");
+        final FirstClass first = new FirstClass( "1",
+                                                 "2",
+                                                 "3",
+                                                 "4",
+                                                 "5" );
         final FactHandle handle = workingMemory.insert( first );
         workingMemory.fireAllRules();
         assertEquals( 1,
                       results.size() );
         assertEquals( "NOT",
-                      results.get(0) );
-        
+                      results.get( 0 ) );
+
         workingMemory.insert( new SecondClass() );
-        workingMemory.update( handle, first );
+        workingMemory.update( handle,
+                              first );
         workingMemory.fireAllRules();
         assertEquals( 2,
                       results.size() );
         assertEquals( "NOT",
-                      results.get(1) );
-        
-        workingMemory.update( handle, first );
-        workingMemory.insert( new SecondClass(null, "2", "3", "4", "5" ) );
+                      results.get( 1 ) );
+
+        workingMemory.update( handle,
+                              first );
+        workingMemory.insert( new SecondClass( null,
+                                               "2",
+                                               "3",
+                                               "4",
+                                               "5" ) );
         workingMemory.fireAllRules();
         assertEquals( 3,
                       results.size() );
         assertEquals( "NOT",
-                      results.get(2) );
-        
-        workingMemory.update( handle, first );
-        workingMemory.insert( new SecondClass("1", null, "3", "4", "5" ) );
+                      results.get( 2 ) );
+
+        workingMemory.update( handle,
+                              first );
+        workingMemory.insert( new SecondClass( "1",
+                                               null,
+                                               "3",
+                                               "4",
+                                               "5" ) );
         workingMemory.fireAllRules();
         assertEquals( 4,
                       results.size() );
         assertEquals( "NOT",
-                      results.get(3) );
-        
-        workingMemory.update( handle, first );
-        workingMemory.insert( new SecondClass("1", "2", null, "4", "5" ) );
+                      results.get( 3 ) );
+
+        workingMemory.update( handle,
+                              first );
+        workingMemory.insert( new SecondClass( "1",
+                                               "2",
+                                               null,
+                                               "4",
+                                               "5" ) );
         workingMemory.fireAllRules();
         assertEquals( 5,
                       results.size() );
         assertEquals( "NOT",
-                      results.get(4) );
-        
-        workingMemory.update( handle, first );
-        workingMemory.insert( new SecondClass("1", "2", "3", null, "5" ) );
+                      results.get( 4 ) );
+
+        workingMemory.update( handle,
+                              first );
+        workingMemory.insert( new SecondClass( "1",
+                                               "2",
+                                               "3",
+                                               null,
+                                               "5" ) );
         workingMemory.fireAllRules();
         assertEquals( 6,
                       results.size() );
         assertEquals( "NOT",
-                      results.get(5) );
-        
-        workingMemory.update( handle, first );
-        workingMemory.insert( new SecondClass("1", "2", "3", "4", null ) );
+                      results.get( 5 ) );
+
+        workingMemory.update( handle,
+                              first );
+        workingMemory.insert( new SecondClass( "1",
+                                               "2",
+                                               "3",
+                                               "4",
+                                               null ) );
         workingMemory.fireAllRules();
         assertEquals( 7,
                       results.size() );
         assertEquals( "NOT",
-                      results.get(6) );
-        
-        workingMemory.insert( new SecondClass("1", "2", "3", "4", "5" ) );
-        workingMemory.update( handle, first );
+                      results.get( 6 ) );
+
+        workingMemory.insert( new SecondClass( "1",
+                                               "2",
+                                               "3",
+                                               "4",
+                                               "5" ) );
+        workingMemory.update( handle,
+                              first );
         workingMemory.fireAllRules();
         assertEquals( 8,
                       results.size() );
         assertEquals( "EQUALS",
-                      results.get(7) );
-        
+                      results.get( 7 ) );
+
     }
 
     public void testBooleanWrapper() throws Exception {
@@ -3517,7 +3623,7 @@ public class MiscTest extends TestCase {
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
                                  results );
-        
+
         Primitives p1 = new Primitives();
         workingMemory.insert( p1 );
         workingMemory.fireAllRules();
@@ -3539,7 +3645,7 @@ public class MiscTest extends TestCase {
                       results.size() );
 
     }
-    
+
     public void testCrossProductRemovingIdentityEquals() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( MiscTest.class.getResourceAsStream( "test_CrossProductRemovingIdentityEquals.drl" ) ) );
@@ -3549,14 +3655,14 @@ public class MiscTest extends TestCase {
         RuleBase rb = RuleBaseFactory.newRuleBase( conf );
         rb.addPackage( builder.getPackage() );
         StatefulSession session = rb.newStatefulSession();
-        
+
         List list1 = new ArrayList();
         List list2 = new ArrayList();
 
         session.setGlobal( "list1",
                            list1 );
         session.setGlobal( "list2",
-                           list2 );        
+                           list2 );
 
         SpecialString first42 = new SpecialString( "42" );
         SpecialString second43 = new SpecialString( "42" );
@@ -3568,24 +3674,38 @@ public class MiscTest extends TestCase {
         //System.out.println( "Firing rules ..." );
 
         session.fireAllRules();
-        
-        assertEquals(6, list1.size());
-        assertEquals(6, list2.size());
-        
-        assertEquals( second43, list1.get( 0 ) );
-        assertEquals( first42, list1.get( 1 ) );
-        assertEquals( world, list1.get( 2 ) );
-        assertEquals( second43, list1.get( 3 ) );
-        assertEquals( first42, list1.get( 4 ) );
-        assertEquals( world, list1.get( 5 ) );    
-        
-        assertEquals( first42, list2.get( 0 ) );
-        assertEquals( second43, list2.get( 1 ) );
-        assertEquals( second43, list2.get( 2 ) );
-        assertEquals( world, list2.get( 3 ) );
-        assertEquals( world, list2.get( 4 ) );
-        assertEquals( first42, list2.get( 5 ) );          
-    }    
+
+        assertEquals( 6,
+                      list1.size() );
+        assertEquals( 6,
+                      list2.size() );
+
+        assertEquals( second43,
+                      list1.get( 0 ) );
+        assertEquals( first42,
+                      list1.get( 1 ) );
+        assertEquals( world,
+                      list1.get( 2 ) );
+        assertEquals( second43,
+                      list1.get( 3 ) );
+        assertEquals( first42,
+                      list1.get( 4 ) );
+        assertEquals( world,
+                      list1.get( 5 ) );
+
+        assertEquals( first42,
+                      list2.get( 0 ) );
+        assertEquals( second43,
+                      list2.get( 1 ) );
+        assertEquals( second43,
+                      list2.get( 2 ) );
+        assertEquals( world,
+                      list2.get( 3 ) );
+        assertEquals( world,
+                      list2.get( 4 ) );
+        assertEquals( first42,
+                      list2.get( 5 ) );
+    }
 
     public void testIterateObjects() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -3599,17 +3719,42 @@ public class MiscTest extends TestCase {
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
                                  results );
-        
-        workingMemory.insert( new Cheese( "stilton", 10 ) );
+
+        workingMemory.insert( new Cheese( "stilton",
+                                          10 ) );
 
         workingMemory.fireAllRules();
 
-        Iterator events = workingMemory.iterateObjects(new ClassObjectFilter(PersonInterface.class));
-        
+        Iterator events = workingMemory.iterateObjects( new ClassObjectFilter( PersonInterface.class ) );
+
         assertTrue( events.hasNext() );
         assertEquals( 1,
                       results.size() );
-        assertEquals( results.get( 0 ), events.next() );
+        assertEquals( results.get( 0 ),
+                      events.next() );
+    }
+
+    public void testImportColision() throws Exception {
+        
+        final PackageBuilder builder = new PackageBuilder();
+        final PackageBuilder builder2 = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "nested1.drl" ) ) );
+        builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "nested2.drl" ) ) );
+        final Package pkg = builder.getPackage();
+        final Package pkg2 = builder2.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase.addPackage( pkg2 );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        workingMemory.insert( new FirstClass() );
+        workingMemory.insert( new SecondClass() );
+        workingMemory.insert( new FirstClass.AlternativeKey() );
+        workingMemory.insert( new SecondClass.AlternativeKey() );
+
+        workingMemory.fireAllRules();
     }
 
 }
