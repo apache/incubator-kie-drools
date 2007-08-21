@@ -81,6 +81,10 @@ public class TupleIndexHashTable extends AbstractHashTable
     public boolean isIndexed() {
         return true;
     }
+    
+    public Index getIndex() {
+        return this.index;
+    }
 
     public Entry getBucket(final Object object) {
         final int hashCode = this.index.hashCodeOf( object );

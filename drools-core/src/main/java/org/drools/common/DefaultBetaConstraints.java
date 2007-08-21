@@ -72,7 +72,7 @@ public class DefaultBetaConstraints
         // First create a LinkedList of constraints, with the indexed constraints first.
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             // Determine  if this constraint is indexable
-            if ( (!disableIndexing) && conf.isIndexLeftBetaMemory() && conf.isIndexRightBetaMemory() && isIndexable( constraints[i] ) && ( depth <= this.indexed ) ) {
+            if ( (!disableIndexing) && conf.isIndexLeftBetaMemory() && conf.isIndexRightBetaMemory() && isIndexable( constraints[i] ) && ( this.indexed < depth-1 ) ) {
                 if ( depth >= 1 && this.indexed == -1 ) {
                     // first index, so just add to the front
                     this.constraints.insertAfter( null,
@@ -189,7 +189,12 @@ public class DefaultBetaConstraints
     }
 
     public boolean isIndexed() {
-        return this.indexed > 0;
+        // false if -1
+        return this.indexed >= 0;
+    }
+    
+    public int getIndexCount() {
+        return this.indexed;
     }
 
     public boolean isEmpty() {
@@ -198,11 +203,11 @@ public class DefaultBetaConstraints
 
     public BetaMemory createBetaMemory(RuleBaseConfiguration config) {
         BetaMemory memory;
-        if ( this.indexed > 0 ) {
+        if ( this.indexed >= 0 ) {
             LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst();
             final List list = new ArrayList();
 
-            for ( int pos = 0; pos < this.indexed; pos++ ) {
+            for ( int pos = 0; pos <= this.indexed; pos++ ) {
                 final Constraint constraint = (Constraint) entry.getObject();
                 final VariableConstraint variableConstraint = (VariableConstraint) constraint;
                 final FieldIndex index = new FieldIndex( variableConstraint.getFieldExtractor(),
