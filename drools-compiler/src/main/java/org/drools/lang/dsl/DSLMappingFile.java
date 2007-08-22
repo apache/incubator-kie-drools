@@ -109,7 +109,12 @@ public class DSLMappingFile {
                     section = DSLMappingEntry.CONSEQUENCE;
                 }
 
-                final DSLMappingEntry.MetaData metadata = new DefaultDSLEntryMetaData( metadataStr );
+                DSLMappingEntry.MetaData metadata;
+                if( metadataStr == null || metadataStr.length() == 0 ) {
+                    metadata = DSLMappingEntry.EMPTY_METADATA;
+                } else {
+                    metadata = new DefaultDSLEntryMetaData( metadataStr );
+                }
 
                 final DSLMappingEntry entry = new DefaultDSLMappingEntry( section,
                                                                     metadata,

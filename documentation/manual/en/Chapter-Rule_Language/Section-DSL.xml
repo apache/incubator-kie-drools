@@ -25,10 +25,10 @@
     <para>DSLs have no impact on the rules at runtime, they are just a
     parse/compile time feature.</para>
 
-    <para>Note that Drools 3 DSLs are quite different from Drools 2 XML based
+    <para>Note that Drools 4 DSLs are quite different from Drools 2 XML based
     DSLs. It is still possible to do Drools 2 style XML languages - if you
-    require this, then take a look at the Drools 3 XML rule language, and
-    consider using XSLT to map from your XML language to the Drools 3 XML
+    require this, then take a look at the Drools 4 XML rule language, and
+    consider using XSLT to map from your XML language to the Drools 4 XML
     language.</para>
   </section>
 
@@ -45,17 +45,17 @@
           <primary>DSL</primary>
         </indexterm> mapping</title>
 
-      <programlisting>[when]This is {something}=Something(something=={something})</programlisting>
+      <programlisting>[when][]This is {something}=Something(something=={something})</programlisting>
     </example>
 
-    <para>Referring to the above example, the [when] refers to the scope of the
-    expression: ie does it belong on the LHS or the RHS of a rule. The part
-    after the [scope] is the expression that you use in the rule (typically a
-    natural language expression, but it doesn't have to be). The part on the
-    right of the "=" is the mapping into the rule language (of course the form
-    of this depends on if you are talking about the RHS or the LHS - if its
-    the LHS, then its the normal LHS syntax, if its the RHS then its fragments
-    of java code for instance).</para>
+    <para>Referring to the above example, the [when] refers to the scope of
+    the expression: ie does it belong on the LHS or the RHS of a rule. The
+    part after the [scope] is the expression that you use in the rule
+    (typically a natural language expression, but it doesn't have to be). The
+    part on the right of the "=" is the mapping into the rule language (of
+    course the form of this depends on if you are talking about the RHS or the
+    LHS - if its the LHS, then its the normal LHS syntax, if its the RHS then
+    its fragments of java code for instance).</para>
 
     <para>The parser will take the expression you specify, and extract the
     values that match where the {something} (named Tokens) appear in the
@@ -71,10 +71,11 @@
     DSL expressions to generate a target expression. The best way around this
     is to make sure that the {tokens} are enclosed with characters or words.
     This means that the parser will scan along the sentence, and pluck out the
-    value BETWEEN the characters (in the example below they are double-quotes).
-    Note that the characters that surround the token are not included in when
-    interpolating, just the contents between them (rather then all the way to
-    the end of the line, as would otherwise be the case).</para>
+    value BETWEEN the characters (in the example below they are
+    double-quotes). Note that the characters that surround the token are not
+    included in when interpolating, just the contents between them (rather
+    then all the way to the end of the line, as would otherwise be the
+    case).</para>
 
     <para>As a rule of thumb, use quotes for textual data that a rule editor
     may want to enter. You can also wrap words around the {tokens} to make
@@ -203,7 +204,7 @@ There is a person called Mike who is sad
     <para><emphasis role="bold">IMPORTANT:</emphasis> There must be an space
     between the "-" (dash) and the constraint mappings.</para>
 
-    <para> You can then write rules with conditions like the following:
+    <para>You can then write rules with conditions like the following:
     <programlisting>There is a Cheese with
         - age is less than 42
         - type is 'stilton'</programlisting> The parser will pick up the "-"
