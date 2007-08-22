@@ -37,4 +37,8 @@ public class VariableRestrictionDescr extends RestrictionDescr {
     public String getIdentifier() {
         return this.declarationIdentifier;
     }
+    
+    public String toString() {
+        return "[VariableRestriction: " + evaluator + " " + declarationIdentifier + " ]";
+    }
 }

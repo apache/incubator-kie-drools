@@ -3836,4 +3836,27 @@ public class MiscTest extends TestCase {
         workingMemory.fireAllRules();
     }
 
+    public void testAutovivificationOfVariableRestrictions() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoVivificationVR.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        workingMemory.insert( new Cheese( "stilton",
+                                          10,
+                                          8 ) );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+    }
+
 }

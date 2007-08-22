@@ -78,7 +78,7 @@ import org.drools.spi.Restriction;
 public class PatternBuilder
     implements
     RuleConditionBuilder {
-    
+
     public PatternBuilder() {
     }
 
@@ -247,7 +247,7 @@ public class PatternBuilder
         if ( fieldName.indexOf( '.' ) > -1 ) {
             // we have a composite field name
             String[] identifiers = fieldName.split( "\\." );
-            if ( identifiers.length == 2 && pattern.getDeclaration() != null && identifiers[0].equals( pattern.getDeclaration().getIdentifier() ) ) {
+            if ( identifiers.length == 2 && ((pattern.getDeclaration() != null && identifiers[0].equals( pattern.getDeclaration().getIdentifier() )) || ("this".equals( identifiers[0] ))) ) {
                 // we have a self reference, so, it is fine to do direct access
                 fieldName = identifiers[1];
             } else {
@@ -266,10 +266,24 @@ public class PatternBuilder
                                                             fieldConstraintDescr,
                                                             pattern.getObjectType(),
                                                             fieldName,
-                                                            true );
+                                                            false );
         if ( extractor == null ) {
-            // @todo log error
-            return;
+            if( fieldConstraintDescr.getFieldName().startsWith( "this." ) ) {
+                // it may still be MVEL special syntax, like map key syntax, so try eval
+                rewriteToEval( context,
+                               pattern,
+                               fieldConstraintDescr,
+                               container );
+
+                // after building the predicate, we are done, so return
+                return;
+            } else {
+                context.getErrors().add( new RuleError( context.getRule(),
+                                                        fieldConstraintDescr,
+                                                        null,
+                                                        "Unable to create Field Extractor for '" + fieldName + "' of '"+pattern.getObjectType().toString()+"' in rule '"+context.getRule().getName()+"'" ) );
+                return;
+            }
         }
 
         Restriction restriction = createRestriction( context,
@@ -279,7 +293,7 @@ public class PatternBuilder
                                                      extractor );
 
         if ( restriction == null ) {
-            // @todo log error
+            // error was already logged during restriction creation failure
             return;
         }
 
@@ -315,10 +329,10 @@ public class PatternBuilder
         // it is a complex expression, so we need to turn it into an MVEL predicate
         Dialect dialect = context.getDialect();
         // switch to MVEL dialect
-        MVELDialect mvelDialect = ( MVELDialect ) context.getDialect( "mvel" );
+        MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
         boolean strictMode = mvelDialect.isStrictMode();
         mvelDialect.setStrictMode( false );
-        
+
         context.setDialect( mvelDialect );
 
         PredicateDescr predicateDescr = new PredicateDescr();
@@ -354,11 +368,18 @@ public class PatternBuilder
                                                                 extractor );
 
             } else {
-                restrictions[index++] = buildRestriction( context,
+                restrictions[index] = buildRestriction( context,
                                                           pattern,
                                                           extractor,
                                                           fieldConstraintDescr,
                                                           restrictionDescr );
+                if( restrictions[index] == null ) {
+                    context.getErrors().add( new RuleError( context.getRule(),
+                                                            fieldConstraintDescr,
+                                                            null,
+                                                            "Unable to create restriction '" + restrictionDescr.toString() + "' for field '"+ fieldConstraintDescr.getFieldName() +"' in the rule '" + context.getRule().getName() + "'" ) );
+                }
+                index++;
             }
         }
 
@@ -566,19 +587,23 @@ public class PatternBuilder
             return null;
         }
 
-        final Declaration declaration = context.getDeclarationResolver().getDeclaration( variableRestrictionDescr.getIdentifier() );
-
-        //        if ( declaration == null ) {
-        //            build( context, th)
-        //            // lazily create teh declaration
-        //        }        
+        Declaration declaration = context.getDeclarationResolver().getDeclaration( variableRestrictionDescr.getIdentifier() );
 
         if ( declaration == null ) {
-            context.getErrors().add( new RuleError( context.getRule(),
-                                                    variableRestrictionDescr,
-                                                    null,
-                                                    "Unable to return Declaration for identifier '" + variableRestrictionDescr.getIdentifier() + "'" ) );
-            return null;
+            // trying to create implicit declaration
+            final Pattern thisPattern = (Pattern) context.getBuildStack().peek();
+            final Declaration implicit = this.createDeclarationObject( context,
+                                                                       variableRestrictionDescr.getIdentifier(),
+                                                                       thisPattern );
+            if ( implicit != null ) {
+                declaration = implicit;
+            } else {
+                context.getErrors().add( new RuleError( context.getRule(),
+                                                        variableRestrictionDescr,
+                                                        null,
+                                                        "Unable to return Declaration for identifier '" + variableRestrictionDescr.getIdentifier() + "'" ) );
+                return null;
+            }
         }
 
         final Evaluator evaluator = getEvaluator( context,
@@ -635,32 +660,42 @@ public class PatternBuilder
 
         // if only 2 parts, it may be a composed direct property access
         if ( parts.length == 2 ) {
-            final Declaration decl = context.getDeclarationResolver().getDeclaration( parts[0] );
-            // if a declaration exists, then it is a variable direct property access, not an enum
-            if ( decl != null ) {
-                if ( decl.isPatternDeclaration() ) {
-                    final Declaration implicit = this.createDeclarationObject( context,
-                                                                               parts[1],
-                                                                               decl.getPattern() );
+            Declaration implicit = null;
+            if ( "this".equals( parts[0] ) ) {
+                implicit = this.createDeclarationObject( context,
+                                                         parts[1],
+                                                         (Pattern) context.getBuildStack().peek() );
+            } else {
+                final Declaration decl = context.getDeclarationResolver().getDeclaration( parts[0] );
+                // if a declaration exists, then it may be a variable direct property access, not an enum
+                if ( decl != null ) {
+                    if ( decl.isPatternDeclaration() ) {
+                        implicit = this.createDeclarationObject( context,
+                                                                 parts[1],
+                                                                 decl.getPattern() );
 
-                    final Evaluator evaluator = getEvaluator( context,
-                                                              qiRestrictionDescr,
-                                                              extractor.getValueType(),
-                                                              qiRestrictionDescr.getEvaluator() );
-                    if ( evaluator == null ) {
+                    } else {
+                        context.getErrors().add( new RuleError( context.getRule(),
+                                                                qiRestrictionDescr,
+                                                                "",
+                                                                "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
                         return null;
                     }
-
-                    return new VariableRestriction( extractor,
-                                                    implicit,
-                                                    evaluator );
-                } else {
-                    context.getErrors().add( new RuleError( context.getRule(),
-                                                            qiRestrictionDescr,
-                                                            "",
-                                                            "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
+                }
+            }
+            
+            if( implicit != null ) {
+                final Evaluator evaluator = getEvaluator( context,
+                                                          qiRestrictionDescr,
+                                                          extractor.getValueType(),
+                                                          qiRestrictionDescr.getEvaluator() );
+                if ( evaluator == null ) {
                     return null;
                 }
+
+                return new VariableRestriction( extractor,
+                                                implicit,
+                                                evaluator );
             }
         }
 
@@ -673,10 +708,7 @@ public class PatternBuilder
             field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ),
                                                 extractor.getValueType() );
         } catch ( final ClassNotFoundException e ) {
-            context.getErrors().add( new RuleError( context.getRule(),
-                                                    qiRestrictionDescr,
-                                                    e,
-                                                    e.getMessage() ) );
+            // nothing to do, as it is not a class name with static field
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
                                                     qiRestrictionDescr,
@@ -803,5 +835,5 @@ public class PatternBuilder
 
         return evaluator;
     }
-    
+
 }

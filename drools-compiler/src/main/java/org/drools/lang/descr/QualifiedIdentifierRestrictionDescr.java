@@ -49,6 +49,6 @@ public class QualifiedIdentifierRestrictionDescr extends RestrictionDescr {
     }
 
     public String toString() {
-        return this.evaluator + " " + this.text;
+        return "[QualifiedIndentifierRestr: " + this.evaluator + " " + this.text + " ]";
     }
 }

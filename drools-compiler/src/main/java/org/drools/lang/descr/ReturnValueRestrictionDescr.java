@@ -66,6 +66,6 @@ public class ReturnValueRestrictionDescr extends RestrictionDescr {
     }
 
     public String toString() {
-        return "[ReturnValue: evaluator=" + this.evaluator + "; text=" + this.content + "]";
+        return "[ReturnValue: " + this.evaluator + " " + this.content + "]";
     }
 }

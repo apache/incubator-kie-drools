@@ -1,0 +1,10 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "autovivification"
+when
+     Cheese( price > oldPrice, price > this.oldPrice )
+then
+     results.add( "OK" );
+end

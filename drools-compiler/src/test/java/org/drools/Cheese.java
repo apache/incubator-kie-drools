@@ -30,6 +30,7 @@ public class Cheese
     private static final long serialVersionUID = 400L;
     private String            type;
     private int               price;
+    private int               oldPrice;
 
     public Cheese() {
 
@@ -40,6 +41,15 @@ public class Cheese
         super();
         this.type = type;
         this.price = price;
+    }
+
+    public Cheese(final String type,
+                  final int price,
+                  final int oldPrice ) {
+        super();
+        this.type = type;
+        this.price = price;
+        this.oldPrice = oldPrice;
     }
 
     public int getPrice() {
@@ -80,6 +90,14 @@ public class Cheese
             if ( other.type != null ) return false;
         } else if ( !type.equals( other.type ) ) return false;
         return true;
+    }
+
+    public int getOldPrice() {
+        return oldPrice;
+    }
+
+    public void setOldPrice(int oldPrice) {
+        this.oldPrice = oldPrice;
     }
     
     
