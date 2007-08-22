@@ -654,7 +654,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void testJaninoEval() throws Exception {
+    public void testJaninoEval() throws Exception {        
         final PackageBuilderConfiguration config = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf = (JavaDialectConfiguration) config.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
@@ -2344,7 +2344,7 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  results );
 
-        final Order order = new Order( 10 );
+        final Order order = new Order( 10, "Bob" );
         final OrderItem item1 = new OrderItem( order,
                                                1 );
         final OrderItem item2 = new OrderItem( order,
@@ -2949,28 +2949,28 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        final Order order1 = new Order( 10 );
+        final Order order1 = new Order( 10, "Bob" );
         final OrderItem item11 = new OrderItem( order1,
                                                 1 );
         final OrderItem item12 = new OrderItem( order1,
                                                 2 );
         order1.addItem( item11 );
         order1.addItem( item12 );
-        final Order order2 = new Order( 11 );
+        final Order order2 = new Order( 11, "Bob" );
         final OrderItem item21 = new OrderItem( order2,
                                                 1 );
         final OrderItem item22 = new OrderItem( order2,
                                                 2 );
         order2.addItem( item21 );
         order2.addItem( item22 );
-        final Order order3 = new Order( 12 );
+        final Order order3 = new Order( 12, "Bob" );
         final OrderItem item31 = new OrderItem( order3,
                                                 1 );
         final OrderItem item32 = new OrderItem( order3,
                                                 2 );
         order3.addItem( item31 );
         order3.addItem( item32 );
-        final Order order4 = new Order( 13 );
+        final Order order4 = new Order( 13, "Bob" );
         final OrderItem item41 = new OrderItem( order4,
                                                 1 );
         final OrderItem item42 = new OrderItem( order4,
@@ -3734,6 +3734,85 @@ public class MiscTest extends TestCase {
                       events.next() );
     }
 
+    // The following test is waiting for MVEL bugfixes reported in:
+    //
+    // http://jira.codehaus.org/browse/MVEL-29
+    // http://jira.codehaus.org/browse/MVEL-30
+    public void FIXME_testEvalRewriteWithSpecialOperators() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewriteWithSpecialOperators.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        final Order order1 = new Order( 10, "Bob" );
+        final OrderItem item11 = new OrderItem( order1, 1 );
+        final OrderItem item12 = new OrderItem( order1, 2 );
+        order1.addItem( item11 );
+        order1.addItem( item12 );
+        final Order order2 = new Order( 11, "Bob" );
+        final OrderItem item21 = new OrderItem( order2, 1 );
+        final OrderItem item22 = new OrderItem( order2, 2 );
+        order2.addItem( item21 );
+        order2.addItem( item22 );
+        final Order order3 = new Order( 12, "Bob" );
+        final OrderItem item31 = new OrderItem( order3, 1 );
+        final OrderItem item32 = new OrderItem( order3, 2 );
+        final OrderItem item33 = new OrderItem( order3, 3 );
+        order3.addItem( item31 );
+        order3.addItem( item32 );
+        order3.addItem( item33 );
+        final Order order4 = new Order( 13, "Bob" );
+        final OrderItem item41 = new OrderItem( order4, 1 );
+        final OrderItem item42 = new OrderItem( order4, 2 );
+        order4.addItem( item41 );
+        order4.addItem( item42 );
+        final Order order5 = new Order( 14, "Mark" );
+        final OrderItem item51 = new OrderItem( order5, 1 );
+        final OrderItem item52 = new OrderItem( order5, 2 );
+        order5.addItem( item51 );
+        order5.addItem( item52 );
+        workingMemory.insert( order1 );
+        workingMemory.insert( item11 );
+        workingMemory.insert( item12 );
+        workingMemory.insert( order2 );
+        workingMemory.insert( item21 );
+        workingMemory.insert( item22 );
+        workingMemory.insert( order3 );
+        workingMemory.insert( item31 );
+        workingMemory.insert( item32 );
+        workingMemory.insert( item33 );
+        workingMemory.insert( order4 );
+        workingMemory.insert( item41 );
+        workingMemory.insert( item42 );
+        workingMemory.insert( order5 );
+        workingMemory.insert( item51 );
+        workingMemory.insert( item52 );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 9,
+                      list.size() );
+        int index=0;
+        assertEquals( item11, list.get( index++ ) );
+        assertEquals( item12, list.get( index++ ) );
+        assertEquals( item21, list.get( index++ ) );
+        assertEquals( item22, list.get( index++ ) );
+        assertEquals( item31, list.get( index++ ) );
+        assertEquals( item33, list.get( index++ ) );
+        assertEquals( item41, list.get( index++ ) );
+        assertEquals( order5, list.get( index++ ) );
+        assertEquals( order5, list.get( index++ ) );
+        
+        
+    }
+    
     public void testImportColision() throws Exception {
         
         final PackageBuilder builder = new PackageBuilder();

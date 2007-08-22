@@ -68,6 +68,10 @@ public class Operator
     public String toString() {
         return "Operator = '" + this.operator + "'";
     }
+    
+    public String getOperatorString() {
+        return this.operator;
+    }
 
     public int hashCode() {
         return this.operator.hashCode();
