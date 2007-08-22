@@ -24,13 +24,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="eval.svg" format="SVG" role=""
-                      />
+          <imagedata align="center" fileref="eval.svg" format="SVG" role="" />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="eval.png" format="PNG" role=""
-                      />
+          <imagedata align="center" fileref="eval.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -46,18 +44,17 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="notl.svg" format="SVG" role=""
-                      />
+          <imagedata align="center" fileref="notl.svg" format="SVG" role="" />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="not.png" format="PNG" role=""
-                      />
+          <imagedata align="center" fileref="not.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para></para>
+    <para>Note that brackets are only optional for single patterns (ie the
+    conditional element is a single pattern like "Bus()".</para>
   </section>
 
   <section>
@@ -68,13 +65,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="existsl.svg" format="SVG" role=""
-                      />
+          <imagedata align="center" fileref="existsl.svg" format="SVG" role="" />
         </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="exists.png" format="PNG" role=""
-                      />
+          <imagedata align="center" fileref="exists.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
