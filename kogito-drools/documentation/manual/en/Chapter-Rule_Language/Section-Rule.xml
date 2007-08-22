@@ -456,7 +456,7 @@ Cheese( type == "stilton" &amp;&amp; ( price &lt; 20 || age == "mature" ) ) </pr
       <para>Also, it is important to note that besides having the same
       semantics, the connectives '&amp;&amp;' and ',' are resolved with
       different priorities and ',' cannot be embedded in a composite
-      constraint expression. </para>
+      constraint expression.</para>
 
       <example>
         <title>Not Equivalent connectives</title>
@@ -1130,10 +1130,10 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
       <title>'and'</title>
 
       <para>The 'and' Conditional Element is used to group together other
-      Conditional Elements. The root element of the LHS is an implicit
-      prefix And and doesn't need to be specified. Drools supports both prefix
-      and infix; although prefix is the preferred option as grouping is
-      implicit which avoids confusion.</para>
+      Conditional Elements. The root element of the LHS is an implicit prefix
+      And and doesn't need to be specified. Drools supports both prefix and
+      infix; although prefix is the preferred option as grouping is implicit
+      which avoids confusion.</para>
 
       <figure>
         <title>prefixAnd</title>
@@ -1356,8 +1356,12 @@ eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a functio
       </figure>
 
       <para>'not' is first order logic's Non-Existential Quantifier and checks
-      for the non existence of something in the Working Memory. Brackets are
-      optional. Think of 'not' as meaning "there must be none of...".</para>
+      for the non existence of something in the Working Memory. Think of 'not'
+      as meaning "there must be none of...".</para>
+
+      <para>A not statement must be followed by parentheses around the pattern
+      that it applies to. In the simples case of a single pattern (like below)
+      you can omit the parentheses.</para>
 
       <example>
         <title>No Busses</title>
@@ -1368,9 +1372,10 @@ eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a functio
       <example>
         <title>No red Busses</title>
 
-        <programlisting>not Bus(color == "red")
-not ( Bus(color == "red", number == 42) ) //brackets are optional
-not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' infix used here as ony two patterns</programlisting>
+        <programlisting>not Bus(color == "red") //brackets are optional for this simple pattern
+not ( Bus(color == "red", number == 42) ) //brackets are optional for this simple case
+not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' infix used here as ony two patterns 
+                                                      (but brackets are required).</programlisting>
       </example>
     </section>
 
@@ -1449,7 +1454,7 @@ end
       <para>In the above rule, we "select" all Bus object whose type is
       "english". Then, for each fact that matches this pattern we evaluate the
       following patterns and if they match, the forall CE will evaluate to
-      true. </para>
+      true.</para>
 
       <para>To state that all facts of a given type in the working memory must
       match a set of constraints, forall can be written with a single pattern
