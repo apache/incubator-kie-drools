@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,20 +47,20 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * The Rete-OO network.
- * 
+ *
  * The Rete class is the root <code>Object</code>. All objects are asserted into
  * the Rete node where it propagates to all matching ObjectTypeNodes.
- * 
+ *
  * The first time an  instance of a Class type is asserted it does a full
- * iteration of all ObjectTyppeNodes looking for matches, any matches are 
+ * iteration of all ObjectTyppeNodes looking for matches, any matches are
  * then cached in a HashMap which is used for future assertions.
- * 
- * While Rete  extends ObjectSource nad implements ObjectSink it nulls the 
+ *
+ * While Rete  extends ObjectSource nad implements ObjectSink it nulls the
  * methods attach(), remove() and  updateNewNode() as this is the root node
  * they are no applicable
- * 
+ *
  * @see ObjectTypeNode
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
@@ -74,7 +74,7 @@ public class Rete extends ObjectSource
     // ------------------------------------------------------------
 
     /**
-     * 
+     *
      */
     private static final long          serialVersionUID = 400L;
     /** The <code>Map</code> of <code>ObjectTypeNodes</code>. */
@@ -106,11 +106,11 @@ public class Rete extends ObjectSource
      * This is the entry point into the network for all asserted Facts. Iterates a cache
      * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
      * exist it first iteraes and builds the cache.
-     * 
+     *
      * @param handle
      *            The FactHandle of the fact to assert
      * @param context
-     *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action   
+     *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action
      * @param workingMemory
      *            The working memory session.
      */
@@ -174,7 +174,7 @@ public class Rete extends ObjectSource
     /**
      * Retract a fact object from this <code>RuleBase</code> and the specified
      * <code>WorkingMemory</code>.
-     * 
+     *
      * @param handle
      *            The handle of the fact to retract.
      * @param workingMemory
@@ -211,7 +211,7 @@ public class Rete extends ObjectSource
     /**
      * Adds the <code>TupleSink</code> so that it may receive
      * <code>Tuples</code> propagated from this <code>TupleSource</code>.
-     * 
+     *
      * @param tupleSink
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
@@ -299,7 +299,7 @@ public class Rete extends ObjectSource
     public static class ObjectTypeConf
         implements
         Serializable {
-        // Objenesis instance without cache (false) 
+        // Objenesis instance without cache (false)
         private static final Objenesis         OBJENESIS = new ObjenesisStd( false );
 
         private final Class                    cls;
@@ -330,8 +330,9 @@ public class Rete extends ObjectSource
                 return;
             }
 
-            Package pkg = clazz.getPackage();
-            String pkgName = (pkg != null) ? pkg.getName() : "";
+
+            //String pkgName = (pkg != null) ? pkg.getName() : "";
+            String pkgName = getPackageName(clazz, clazz.getPackage());
             if ( "org.drools.reteoo".equals( pkgName ) || "org.drools.base".equals( pkgName ) ) {
                 // We don't shadow internal classes
                 this.shadowEnabled = false;
@@ -362,7 +363,25 @@ public class Rete extends ObjectSource
             }
         }
 
-        private Class loadOrGenerateProxy(Class clazz,
+        /**
+         * This will return the package name - if the package is null, it will
+         * work it out from the class name (this is in cases where funky classloading is used).
+         */
+        public static String getPackageName(Class clazz, Package pkg) {
+        	String pkgName = "";
+        	if (pkg == null) {
+        	    int index = clazz.getName().lastIndexOf('.');
+        	    if (index != -1)
+        	        pkgName = clazz.getName().substring(0, index);
+        	}
+        	else {
+         	    pkgName = pkg.getName();
+        	}
+        	return pkgName;
+
+		}
+
+		private Class loadOrGenerateProxy(Class clazz,
                                           Rete rete) {
             Class shadowClass = null;
             final String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( clazz );
@@ -389,7 +408,7 @@ public class Rete extends ObjectSource
         private Class findAFeasibleSuperclassOrInterface(ObjectTypeNode[] nodes,
                                                          Class clazz) {
 
-            // check direct superclass  
+            // check direct superclass
             Class ret = clazz.getSuperclass();
             boolean isOk = ret != null && ret != Object.class; // we don't want to shadow java.lang.Object
             if ( isOk ) {
@@ -429,7 +448,7 @@ public class Rete extends ObjectSource
         }
 
         /**
-         * 
+         *
          */
         private void setInstantiator() {
             this.instantiator = OBJENESIS.getInstantiatorOf( this.shadowClass );
