@@ -16,6 +16,7 @@
 
 package org.drools;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,15 +28,18 @@ public class Order {
 
     private int number;
     
+    private String customer;
+    
     private Map items;
 
     public Order() {
-        this( 0 );
+        this( 0, "Bob" );
     }
 
-    public Order(final int number) {
+    public Order(final int number, String customer) {
         this.number = number;
         this.items = new HashMap();
+        this.customer = customer;
     }
 
     /**
@@ -54,6 +58,14 @@ public class Order {
     
     public Map getItems() {
         return this.items;
+    }
+    
+    public Collection getItemsValues() {
+        return this.items.values();
+    }
+    
+    public Collection getItemsKeys() {
+        return this.items.keySet();
     }
     
     public void addItem( OrderItem item ) {
@@ -88,6 +100,14 @@ public class Order {
             return false;
         }
         return true;
+    }
+
+    public String getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(String customer) {
+        this.customer = customer;
     }
 
 }

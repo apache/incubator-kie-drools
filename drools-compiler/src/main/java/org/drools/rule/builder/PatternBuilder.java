@@ -30,7 +30,7 @@ import org.drools.compiler.RuleError;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
-import org.drools.lang.DrlDumper;
+import org.drools.lang.MVELDumper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FieldBindingDescr;
@@ -78,7 +78,7 @@ import org.drools.spi.Restriction;
 public class PatternBuilder
     implements
     RuleConditionBuilder {
-
+    
     public PatternBuilder() {
     }
 
@@ -322,9 +322,8 @@ public class PatternBuilder
         context.setDialect( mvelDialect );
 
         PredicateDescr predicateDescr = new PredicateDescr();
-        DrlDumper dumper = new DrlDumper();
-        dumper.visitFieldConstraintDescr( fieldConstraintDescr );
-        predicateDescr.setContent( dumper.getTemplate() );
+        MVELDumper dumper = new MVELDumper();
+        predicateDescr.setContent( dumper.dump( fieldConstraintDescr ) );
 
         build( context,
                pattern,
@@ -804,5 +803,5 @@ public class PatternBuilder
 
         return evaluator;
     }
-
+    
 }
