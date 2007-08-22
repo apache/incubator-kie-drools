@@ -55,6 +55,51 @@ public class DSLMappingFileTest extends TestCase {
 
             assertEquals( 1,
                           this.file.getMapping().getEntries().size() );
+
+            DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
+
+            assertEquals( DSLMappingEntry.CONDITION,
+                          entry.getSection() );
+            assertEquals( DSLMappingEntry.EMPTY_METADATA,
+                          entry.getMetaData() );
+            assertEquals( "ATTRIBUTE \"{attr}\" IS IN [{list}]",
+                          entry.getMappingKey() );
+            assertEquals( "Attribute( {attr} in ({list}) )",
+                          entry.getMappingValue() );
+
+        } catch ( final IOException e ) {
+            e.printStackTrace();
+            fail( "Should not raise exception " );
+        }
+    }
+
+    public void testParseFileWithEscaptedBrackets() {
+        String file = "[when][]ATTRIBUTE \"{attr}\" IS IN \\[{list}\\]=Attribute( {attr} in ({list}) )";
+        try {
+            final Reader reader = new StringReader( file );
+            this.file = new DSLMappingFile();
+
+            final boolean parsingResult = this.file.parseAndLoad( reader );
+            reader.close();
+
+            assertTrue( this.file.getErrors().toString(),
+                        parsingResult );
+            assertTrue( this.file.getErrors().isEmpty() );
+
+            assertEquals( 1,
+                          this.file.getMapping().getEntries().size() );
+
+            DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
+
+            assertEquals( DSLMappingEntry.CONDITION,
+                          entry.getSection() );
+            assertEquals( DSLMappingEntry.EMPTY_METADATA,
+                          entry.getMetaData() );
+            assertEquals( "ATTRIBUTE \"{attr}\" IS IN \\[{list}\\]",
+                          entry.getMappingKey() );
+            assertEquals( "Attribute( {attr} in ({list}) )",
+                          entry.getMappingValue() );
+
         } catch ( final IOException e ) {
             e.printStackTrace();
             fail( "Should not raise exception " );

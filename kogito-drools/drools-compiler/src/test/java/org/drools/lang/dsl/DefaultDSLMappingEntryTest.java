@@ -194,4 +194,18 @@ public class DefaultDSLMappingEntryTest extends TestCase {
                       result );
     }
     
+    public void testExpandWithBrackets() {
+        final String inputKey = "attr {attr_name} is in \\[ {values} \\]";
+        final String inputValue = "{attr_name} in ( {values} )";
+
+        this.entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                            null,
+                                            inputKey,
+                                            inputValue );
+
+        String result = this.entry.getKeyPattern().matcher( "attr name is in [ 'Edson', 'Bob' ]" ).replaceAll( this.entry.getValuePattern() );
+        assertEquals( result,
+                      "name in ( 'Edson', 'Bob' )",
+                      result );
+    }
 }
