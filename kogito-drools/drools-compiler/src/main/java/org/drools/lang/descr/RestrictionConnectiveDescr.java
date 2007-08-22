@@ -2,6 +2,7 @@ package org.drools.lang.descr;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,5 +51,19 @@ public class RestrictionConnectiveDescr extends RestrictionDescr {
     
     public List getRestrictions() {
         return this.restrictions;
+    }
+    
+    public String toString() {
+        final String connectiveStr = this.connective == OR ? " || " : " && ";
+        final StringBuffer buf = new StringBuffer();
+        buf.append( "( " );
+        for( Iterator it = this.restrictions.iterator(); it.hasNext(); ) {
+            buf.append( it.next().toString() );
+            if( it.hasNext() ) {
+                buf.append( connectiveStr );
+            }
+        }
+        buf.append( "  )" );
+        return buf.toString();
     }
 }

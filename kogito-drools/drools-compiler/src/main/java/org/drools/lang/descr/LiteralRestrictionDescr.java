@@ -44,6 +44,7 @@ public class LiteralRestrictionDescr extends RestrictionDescr {
     }
 
     public String toString() {
-        return this.evaluator + " " + this.text;
+        return "[LiteralRestriction: " + this.evaluator + " " + this.text + "]";
+
     }
 }
