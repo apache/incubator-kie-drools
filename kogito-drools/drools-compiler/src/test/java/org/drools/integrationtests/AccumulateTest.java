@@ -17,6 +17,7 @@ import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
@@ -848,5 +849,54 @@ public class AccumulateTest extends TestCase {
                              results.get( 0 ) );
     }
     
+    public void testAccumulateReturningNull() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReturningNull.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        try { 
+            wm.insert( new Cheese( "stilton", 10 ) );
+            
+            fail( "Should have raised an exception because accumulate is returning null");
+        } catch( RuntimeDroolsException rde ) {
+            // success, working fine
+        } catch( Exception e ) {
+            e.printStackTrace();
+            fail( "Should have raised a DroolsRuntimeException instead of "+e);
+        }
+
+    }
+    
+    public void testAccumulateReturningNullMVEL() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReturningNullMVEL.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        try { 
+            wm.insert( new Cheese( "stilton", 10 ) );
+            
+            fail( "Should have raised an exception because accumulate is returning null");
+        } catch( RuntimeDroolsException rde ) {
+            // success, working fine
+        } catch( Exception e ) {
+            e.printStackTrace();
+            fail( "Should have raised a DroolsRuntimeException instead of "+e);
+        }
+
+    }
     
 }

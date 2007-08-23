@@ -17,6 +17,7 @@ package org.drools.rule.builder.dialect.mvel;
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -60,30 +61,37 @@ public class MVELExprAnalyzer {
                                                 final String expr,
                                                 final Set[] availableIdentifiers,
                                                 final Map localTypes) throws RecognitionException {
-        ExpressionCompiler compiler = new ExpressionCompiler( expr );
+        MVELAnalysisResult result = null;
+        if ( expr.trim().length() > 0 ) {
+            ExpressionCompiler compiler = new ExpressionCompiler( expr );
 
-        MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-        
-        final ParserContext parserContext = new ParserContext( dialect.getImports(),
-                                                               null,
-                                                               context.getPkg().getName()+"."+context.getRuleDescr().getClassName() );
-        
-        for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
-            String packageImport = ( String ) it.next();
-            parserContext.addPackageImport( packageImport );
-        }        
+            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
-        parserContext.setStrictTypeEnforcement( false );
+            final ParserContext parserContext = new ParserContext( dialect.getImports(),
+                                                                   null,
+                                                                   context.getPkg().getName() + "." + context.getRuleDescr().getClassName() );
 
-        parserContext.setInterceptors( dialect.getInterceptors() );
-        
-        compiler.compile( parserContext );
-        
-        MVELAnalysisResult result = analyze( compiler.getParserContextState().getInputs().keySet(),
-                                             availableIdentifiers );
-        
-        result.setMvelVariables( compiler.getParserContextState().getVariables() );
+            for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
+                String packageImport = (String) it.next();
+                parserContext.addPackageImport( packageImport );
+            }
 
+            parserContext.setStrictTypeEnforcement( false );
+
+            parserContext.setInterceptors( dialect.getInterceptors() );
+
+            compiler.compile( parserContext );
+
+            result = analyze( compiler.getParserContextState().getInputs().keySet(),
+                              availableIdentifiers );
+
+            result.setMvelVariables( compiler.getParserContextState().getVariables() );
+        } else {
+            result = analyze( Collections.EMPTY_SET,
+                              availableIdentifiers );
+            result.setMvelVariables( new HashMap() );
+
+        }
         return result;
     }
 
