@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.util.Arrays;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.RuntimeDroolsException;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -159,6 +160,10 @@ public class AccumulateNode extends BetaNode {
                                                          accContext,
                                                          leftTuple,
                                                          workingMemory );
+        
+        if( result == null ) {
+            throw new RuntimeDroolsException("Accumulate must not return a null value.");
+        }
 
         // First alpha node filters
         boolean isAllowed = true;
@@ -371,6 +376,10 @@ public class AccumulateNode extends BetaNode {
                                                          accresult.context,
                                                          leftTuple,
                                                          workingMemory );
+
+        if( result == null ) {
+            throw new RuntimeDroolsException("Accumulate must not return a null value.");
+        }
 
         // First alpha node filters
         boolean isAllowed = true;

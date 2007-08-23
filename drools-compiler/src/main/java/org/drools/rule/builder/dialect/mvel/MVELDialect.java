@@ -372,7 +372,7 @@ public class MVELDialect
                                 final RuleBuildContext context) {
         final ParserContext parserContext = getParserContext(analysis, outerDeclarations, context );
 
-        ExpressionCompiler compiler = new ExpressionCompiler( text );
+        ExpressionCompiler compiler = new ExpressionCompiler( text.trim() );
 
         if (MVELDebugHandler.isDebugMode()) {
             compiler.setDebugSymbols( true );
