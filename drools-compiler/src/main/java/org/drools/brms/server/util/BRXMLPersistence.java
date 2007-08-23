@@ -29,7 +29,6 @@ public class BRXMLPersistence implements BRLPersistence {
 
     private XStream                     xt;
     private static final BRLPersistence INSTANCE = new BRXMLPersistence();
-    public static String FILEEXTENSION = ".brl";
 
     private BRXMLPersistence() {
         this.xt = new XStream( new DomDriver() );
