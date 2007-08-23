@@ -30,5 +30,9 @@ public class GlobalError extends DroolsError {
     public String getMessage() {
         return this.global;
     }
+    
+    public String toString() {
+    	return "GlobalError: " + this.global;
+    }
 
 }
