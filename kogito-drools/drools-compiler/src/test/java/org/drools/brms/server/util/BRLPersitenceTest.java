@@ -57,7 +57,7 @@ public class BRLPersitenceTest extends TestCase {
         final RuleModel m = getComplexModel();
 
         final String xml = p.marshal( m );
-        //System.out.println( xml );
+        System.out.println( xml );
 
         assertTrue( xml.indexOf( "org.drools" ) == -1 );
 
