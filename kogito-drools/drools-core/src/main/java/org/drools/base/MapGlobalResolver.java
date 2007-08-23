@@ -2,6 +2,7 @@ package org.drools.base;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.spi.GlobalResolver;
 
@@ -28,6 +29,10 @@ public class MapGlobalResolver
     public void setGlobal(String identifier, Object value) {
         this.map.put( identifier,
                       value );
+    }
+    
+    public Entry[] getGlobals() {
+    	return (Entry[]) this.map.entrySet().toArray(new Entry[this.map.size()]);
     }
 
 }
