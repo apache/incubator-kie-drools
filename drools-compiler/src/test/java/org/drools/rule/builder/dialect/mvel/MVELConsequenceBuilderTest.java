@@ -1,6 +1,7 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -35,6 +36,8 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
+import org.mvel.ExpressionCompiler;
+import org.mvel.ParserContext;
 
 public class MVELConsequenceBuilderTest extends TestCase {
 
@@ -243,5 +246,36 @@ public class MVELConsequenceBuilderTest extends TestCase {
         assertEquals(4, count);
 
     }
-    
+
+    public void testX() {
+        String expr = "System.out.println( \"a1\" );\n" + 
+                      "System.out.println( \"a2\" );\n" + 
+                      "System.out.println( \"a3\" );\n" + 
+                      "System.out.println( \"a4\" );\n";
+   
+        ExpressionCompiler compiler = new ExpressionCompiler(expr);
+   
+        ParserContext context = new ParserContext();
+        context.addImport("System", System.class);
+        context.setStrictTypeEnforcement(true);
+        //context.setDebugSymbols( true );
+        context.setSourceFile( "mysource" );
+   
+        compiler.setDebugSymbols( true );
+        
+        Serializable compiledExpression = compiler.compile(context);           
+   
+        String s = org.mvel.debug.DebugTools.decompile( compiledExpression );
+   
+        System.out.println("s "+s);
+        
+        int fromIndex=0;
+        int count = 0;
+        while ((fromIndex = s.indexOf( "DEBUG_SYMBOL", fromIndex+1 )) > -1) {
+            count++;
+        }
+        assertEquals(4, count);      
+   
+      }
 }
+
