@@ -23,9 +23,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.Agenda;
 import org.drools.FactException;
@@ -48,6 +50,7 @@ import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.LIANodePropagation;
+import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.common.core.Process;
 import org.drools.ruleflow.common.instance.ProcessInstance;
@@ -1385,6 +1388,34 @@ public abstract class AbstractWorkingMemory
             result.add( iterator.next() );
         }
         return result;
+    }
+    
+    public Entry[] getActivationParameters(long activationId) {
+    	Activation[] activations = getAgenda().getActivations();
+    	for (int i = 0; i < activations.length; i++) {
+    		if (activations[i].getActivationNumber() == activationId) {
+    			Map params = getActivationParameters(activations[i]);
+    			return (Entry[]) params.entrySet().toArray(new Entry[params.size()]);
+    		}
+    	}
+    	return new Entry[0];
+    }
+    
+    /**
+     * Helper method 
+     */
+    public Map getActivationParameters(Activation activation) {
+    	Map result = new HashMap();
+    	Declaration[] declarations = activation.getRule().getDeclarations();
+    	for (int i = 0; i < declarations.length; i++) {
+    		FactHandle handle = activation.getTuple().get(declarations[i]);
+    		if (handle instanceof InternalFactHandle) {
+    			result.put(declarations[i].getIdentifier(),
+					declarations[i].getValue(this,
+						((InternalFactHandle) handle).getObject()));
+    		}
+    	}
+    	return result;
     }
 
 }
