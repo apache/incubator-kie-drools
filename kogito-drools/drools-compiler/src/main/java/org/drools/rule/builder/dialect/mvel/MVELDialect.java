@@ -14,6 +14,7 @@ import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
+import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ImportError;
@@ -373,8 +374,9 @@ public class MVELDialect
 
         ExpressionCompiler compiler = new ExpressionCompiler( text );
 
-        //MVEL Debugging support
-        compiler.setDebugSymbols( true );
+        if (MVELDebugHandler.isDebugMode()) {
+            compiler.setDebugSymbols( true );
+        }
 
         Serializable expr = compiler.compile( parserContext );
         return expr;

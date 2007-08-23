@@ -79,6 +79,8 @@ public class MVELConsequenceBuilder
                                                        null,
                                                        context );
 
+            String s = org.mvel.debug.DebugTools.decompile(expr);
+
             context.getRule().setConsequence( new MVELConsequence( expr,
                                                                    factory ) );
         } catch ( final Exception e ) {

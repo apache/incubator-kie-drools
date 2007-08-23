@@ -4,8 +4,23 @@ import org.mvel.MVELRuntime;
 import org.mvel.debug.Debugger;
 import org.mvel.debug.Frame;
 
+/**
+ * Debug Handler for MVEL dialect.
+ * 
+ * Takes care of registering breakpoints and calling required methods
+ * to trigger eclipse debugger to keep breakpoints in sync etc. 
+ * 
+ * @author Ahti Kitsik
+ *
+ */
 public final class MVELDebugHandler {
 
+    private static int onBreakReturn = Debugger.CONTINUE;
+    
+    public final static String DEBUG_LAUNCH_KEY="mvel.debugger";
+    
+    private static Boolean debugMode = null;
+    
 	static {
 		MVELRuntime.setThreadDebugger(new MVELDebugger());
 	}
@@ -23,18 +38,26 @@ public final class MVELDebugHandler {
 	 *
 	 * @param frame
 	 */
-	private final static void onBreak(Frame frame) {
+	private final static int onBreak(Frame frame) {
+        // We always fall back to Debugger.CONTINUE after each onBreak to avoid eternal step-over flag
+        //int oldReturn = onBreakReturn;
+        //onBreakReturn = Debugger.CONTINUE;
+        //return oldReturn;
+        return onBreakReturn;
 	}
 
     protected final static void registerBreakpoint(String sourceName, int lineNumber) {
+        //System.out.println("Registering breakpoint for "+sourceName+":"+lineNumber);
         MVELRuntime.registerBreakpoint( sourceName, lineNumber );
     }
     
     protected final static void clearAllBreakpoints() {
+        //System.out.println("Clearing all breakpoints");
         MVELRuntime.clearAllBreakpoints();
     }
     
     protected final static void removeBreakpoint(String sourceName, int lineNumber) {
+        //System.out.println("Removing breakpoint from "+sourceName+":"+lineNumber);
         MVELRuntime.removeBreakpoint( sourceName, lineNumber );
     }
     
@@ -44,18 +67,28 @@ public final class MVELDebugHandler {
         }
         
 		public int onBreak(Frame frame) {
-			MVELDebugHandler.onBreak(frame);
+			return MVELDebugHandler.onBreak(frame);
 			// This call is supposed to be catched by the remote debugger
-			return 0;
 		}
 
 	}
 
+    protected final static void setOnBreakReturn(int value) {
+        onBreakReturn = value;
+    }
+    
     /**
-     * Do nothing. ensures that class is loaded prior debug handler
+     * Do nothing for now. ensures that class is loaded prior debug handler
      */
     public static void prepare() {
     	//do nothing
+    }
+
+    public static boolean isDebugMode() {
+        if (debugMode==null) {
+            debugMode = Boolean.valueOf(System.getProperty("mvel.debugger"));
+        }
+        return debugMode.booleanValue();
     }
         
 }
