@@ -37,7 +37,7 @@ public class DefaultExpanderTest extends TestCase {
 
     public void testRegexp() throws Exception {
         this.expander.addDSLMapping( this.file.getMapping() );
-        final Reader rules = new InputStreamReader( this.getClass().getResourceAsStream( "test_expansion.drl" ) );
+        final Reader rules = new InputStreamReader( this.getClass().getResourceAsStream( "test_expansion.dslr" ) );
         final String result = this.expander.expand( rules );
     }
 

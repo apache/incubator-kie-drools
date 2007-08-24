@@ -17,7 +17,7 @@ public class RuleBaseLoaderTest extends TestCase {
     }
 
     public void testLoadRuleBaseWithDSL() throws Exception {
-        final InputStream in = DslTest.class.getResourceAsStream( "rule_with_expander_dsl.drl" );
+        final InputStream in = DslTest.class.getResourceAsStream( "rule_with_expander_dsl.dslr" );
         final InputStream inDSL = DslTest.class.getResourceAsStream( "test_expander.dsl" );
         final RuleBase rb = RuleBaseLoader.getInstance().loadFromReader( new InputStreamReader( in ),
                                                                          new InputStreamReader( inDSL ) );
