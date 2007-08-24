@@ -189,6 +189,9 @@
   <section>
     <title>Security</title>
 
+    <para>Please note that giving someone access to the BRMS indicates a level of trust.
+    Being able to editing and build rules is providing a great deal of power to a user. Thus you should not open up the BRMS to your entire organisation - but instead to a select few. Use https (http with TLS/SSL) whereever possible (even internally in a companies network this is a good idea). Use this power wisely - this not a "run of the mill" application that provides read/write access to a database, but something much more power. Just imagine you are spider man - with great power comes great responsibility (of course even more so for super man).</para>
+
     <para>Security is configured by using the components.xml file in the war
     file. To customize this, you will need to unzip the war file, and locate
     the components.xml file which is in the WEB-INF directory.</para>
@@ -316,6 +319,16 @@
       populate the columns. eg you could add in getCreator, or
       getExternalSource as extra fields if you were using them.</para>
     </section>
+
+    <section>
+      <title>Customised selectors for package building</title>
+      <para>When building packages (from the "Packages" feature) you have the option to specify the name of a "selector". This selector will filter the list of rules that are built into the package. What you enter in the selector text box, is the name of a selector as configured on the server.</para>
+
+      <para>
+	To configure a selector, you will need to "explode" the war file for the BRMS, and locate the selectors.properties file (note you can also put your own selectors.properties file in the system classpath if you like). 
+	In this file, you will find details on how you can configure a custom selector. The options are to use a drl file, or the name of a class that you have written (and which is available on the classpath). Classes must implement the AssetSelector interface. DRL files can also be used (there is an example one in the selectors.properties file). Each selector you configure has a unique name in this properties file - and this is the name that you can use when building packages. 
+      </para>
+     </section>
 
     <section>
       <title>Adding your own logos or styles to the BRMS web GUI</title>
