@@ -16,6 +16,7 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.mvel.MVELConsequence;
+import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
@@ -209,42 +210,54 @@ public class MVELConsequenceBuilderTest extends TestCase {
     
     public void testMVELDebugSymbols() throws DroolsParserException {
         
-        final DrlParser parser = new DrlParser();
-        final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "mvel_rule.drl" ) ) );
-
-        // just checking there is no parsing errors
-        Assert.assertFalse( parser.getErrors().toString(),
-                            parser.hasErrors() );
-
-        final Package pkg = new Package( "org.drools" );
-
-        final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
-
-        final RuleBuilder builder = new RuleBuilder( );                
+        MVELDebugHandler.setDebugMode( true );
         
-        final PackageBuilder pkgBuilder = new PackageBuilder(pkg);
-        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        Dialect dialect = pkgBuilder.getPackageBuilderConfiguration().getDialectRegistry().getDialectConfiguration( "mvel" ).getDialect();
-        
-        RuleBuildContext context = new RuleBuildContext(conf, pkg, ruleDescr, conf.getDialectRegistry(), dialect);
-        
-        builder.build( context );
+        try {
+            final DrlParser parser = new DrlParser();
+            final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "mvel_rule.drl" ) ) );
 
-        Assert.assertTrue( context.getErrors().toString(),
-                           context.getErrors().isEmpty() );
+            // just checking there is no parsing errors
+            Assert.assertFalse( parser.getErrors().toString(),
+                                parser.hasErrors() );
 
-        final Rule rule = context.getRule();
+            final Package pkg = new Package( "org.drools" );
 
-        MVELConsequence mvelCons = (MVELConsequence) rule.getConsequence();
-        String s = org.mvel.debug.DebugTools.decompile(mvelCons.getCompExpr());
-        
-        int fromIndex=0;
-        int count = 0;
-        while ((fromIndex = s.indexOf( "DEBUG_SYMBOL", fromIndex+1 )) > -1) {
-            count++;
+            final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
+
+            final RuleBuilder builder = new RuleBuilder();
+
+            final PackageBuilder pkgBuilder = new PackageBuilder( pkg );
+            final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+            Dialect dialect = pkgBuilder.getPackageBuilderConfiguration().getDialectRegistry().getDialectConfiguration( "mvel" ).getDialect();
+
+            RuleBuildContext context = new RuleBuildContext( conf,
+                                                             pkg,
+                                                             ruleDescr,
+                                                             conf.getDialectRegistry(),
+                                                             dialect );
+
+            builder.build( context );
+
+            Assert.assertTrue( context.getErrors().toString(),
+                               context.getErrors().isEmpty() );
+
+            final Rule rule = context.getRule();
+
+            MVELConsequence mvelCons = (MVELConsequence) rule.getConsequence();
+            String s = org.mvel.debug.DebugTools.decompile( mvelCons.getCompExpr() );
+
+            int fromIndex = 0;
+            int count = 0;
+            while ( (fromIndex = s.indexOf( "DEBUG_SYMBOL",
+                                            fromIndex + 1 )) > -1 ) {
+                count++;
+            }
+            assertEquals( 4,
+                          count );
+        } finally {
+            MVELDebugHandler.setDebugMode( false );
         }
-        assertEquals(4, count);
-
+        
     }
 
     public void testX() {
