@@ -3753,22 +3753,36 @@ public class MiscTest extends TestCase {
         assertEquals("not integer", list.get( 0 ) );        
     }
     
-//    public void testDynamicallyAddInitialFactRule() throws Exception {
-//        final PackageBuilder builder = new PackageBuilder();
-//        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NotInStatelessSession.drl" )) );
-//        final Package pkg = builder.getPackage();
-//        
-//        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-//        conf.setSequential( true );
-//        final RuleBase ruleBase = getRuleBase(conf);
-//        ruleBase.addPackage( pkg );
-//        
-//        StatelessSession session = ruleBase.newStatelessSession();
-//        List list = new ArrayList();
-//        session.setGlobal( "list", list );
-//        session.execute( "not integer" );
-//        assertEquals("not integer", list.get( 0 ) );        
-//    }    
+    public void testDynamicallyAddInitialFactRule() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        String rule = "package org.drools.test\n global java.util.List list\n rule xxx\n when\n i:Integer()\nthen\n list.add(i);\nend";
+        builder.addPackageFromDrl( new StringReader( rule ) );
+        Package pkg = builder.getPackage();
+        
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        
+        StatefulSession session = ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        session.setGlobal( "list", list );
+        
+        session.insert( new Integer( 5) );
+        session.fireAllRules();
+        
+        assertEquals( new Integer(5), list.get( 0 ) );
+        
+        builder = new PackageBuilder();
+        rule = "package org.drools.test\n global java.util.List list\n rule xxx\n when\nthen\n list.add(\"x\");\nend";
+        builder.addPackageFromDrl( new StringReader( rule ) );
+        pkg = builder.getPackage();
+        
+        // Make sure that this rule is fired as the Package is updated, it also tests that InitialFactImpl is still in the network
+        // even though the first rule didn't use it.
+        ruleBase.addPackage( pkg );
+        
+        assertEquals( "x", list.get( 1 ) );
+        
+    }    
 
     // FIXME
     public void FIXMEtestEvalRewriteWithSpecialOperators() throws Exception {
