@@ -77,8 +77,6 @@ public class PackageBuilder {
 
     private Dialect                     dialect;
 
-//    private DialectRegistry             dialects;
-
     private ProcessBuilder              processBuilder;
 
     /**

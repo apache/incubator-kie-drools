@@ -65,6 +65,8 @@ import org.drools.Sensor;
 import org.drools.SpecialString;
 import org.drools.State;
 import org.drools.StatefulSession;
+import org.drools.StatelessSession;
+import org.drools.StatelessSessionResult;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
@@ -3733,6 +3735,40 @@ public class MiscTest extends TestCase {
         assertEquals( results.get( 0 ),
                       events.next() );
     }
+    
+    public void testNotInStatelessSession() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NotInStatelessSession.drl" )) );
+        final Package pkg = builder.getPackage();
+        
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setSequential( true );
+        final RuleBase ruleBase = getRuleBase(conf);
+        ruleBase.addPackage( pkg );
+        
+        StatelessSession session = ruleBase.newStatelessSession();
+        List list = new ArrayList();
+        session.setGlobal( "list", list );
+        session.execute( "not integer" );
+        assertEquals("not integer", list.get( 0 ) );        
+    }
+    
+//    public void testDynamicallyAddInitialFactRule() throws Exception {
+//        final PackageBuilder builder = new PackageBuilder();
+//        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NotInStatelessSession.drl" )) );
+//        final Package pkg = builder.getPackage();
+//        
+//        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+//        conf.setSequential( true );
+//        final RuleBase ruleBase = getRuleBase(conf);
+//        ruleBase.addPackage( pkg );
+//        
+//        StatelessSession session = ruleBase.newStatelessSession();
+//        List list = new ArrayList();
+//        session.setGlobal( "list", list );
+//        session.execute( "not integer" );
+//        assertEquals("not integer", list.get( 0 ) );        
+//    }    
 
     // FIXME
     public void FIXMEtestEvalRewriteWithSpecialOperators() throws Exception {
