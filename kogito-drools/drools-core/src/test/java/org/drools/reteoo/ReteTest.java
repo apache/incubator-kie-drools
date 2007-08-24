@@ -220,7 +220,7 @@ public class ReteTest extends DroolsTestCase {
                       rete.getObjectTypeNodes().size() );
     }
 
-    public void testHierrchy() {
+    public void testHierarchy() {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
