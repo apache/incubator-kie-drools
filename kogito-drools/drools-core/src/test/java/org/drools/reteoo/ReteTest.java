@@ -1,4 +1,4 @@
- package org.drools.reteoo;
+package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
@@ -18,6 +18,7 @@
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,13 +27,17 @@ import java.util.Properties;
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
+import org.drools.FactHandle;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.Rete.ClassObjectTypeConf;
 import org.drools.reteoo.Rete.ObjectTypeConf;
+import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
 
@@ -132,13 +137,13 @@ public class ReteTest extends DroolsTestCase {
                            workingMemory );
 
         final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( rete );
-        ObjectTypeConf conf = ( ObjectTypeConf ) map.get( ArrayList.class );
+        ClassObjectTypeConf conf = (ClassObjectTypeConf) map.get( ArrayList.class );
         assertLength( 3,
-                      conf.getObjectTypeNodes( new ArrayList() ) );
+                      conf.getObjectTypeNodes() );
 
-        conf = ( ObjectTypeConf ) map.get( LinkedList.class );
-        assertLength( 2,
-                      conf.getObjectTypeNodes( new LinkedList() ) );
+        conf = (ClassObjectTypeConf) map.get( LinkedList.class );
+        assertLength( 3,
+                      conf.getObjectTypeNodes() );
 
     }
 
@@ -169,7 +174,10 @@ public class ReteTest extends DroolsTestCase {
                                                             string );
 
         rete.assertObject( h1,
-                           null,
+                           new PropagationContextImpl( 0,
+                                                       PropagationContext.ASSERTION,
+                                                       null,
+                                                       null ),
                            workingMemory );
 
         assertLength( 0,
@@ -193,7 +201,97 @@ public class ReteTest extends DroolsTestCase {
 
         final Object[] results = (Object[]) asserted.get( 0 );
         assertSame( list,
-                    unwrapShadow( ((DefaultFactHandle) results[0]).getObject()) );
+                    unwrapShadow( ((DefaultFactHandle) results[0]).getObject() ) );
+    }
+
+    public void testAssertObjectWithNoMatchingObjectTypeNode() {
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+
+        final Rete rete = ruleBase.getRete();
+        assertEquals( 0,
+                      rete.getObjectTypeNodes().size() );
+
+        List list = new ArrayList();
+
+        workingMemory.insert( list );
+
+        assertEquals( 2,
+                      rete.getObjectTypeNodes().size() );
+    }
+
+    public void testHierrchy() {
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+
+        final Rete rete = ruleBase.getRete();
+        final IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+
+        // Attach a List ObjectTypeNode
+        final ObjectTypeNode listOtn = new ObjectTypeNode( idGenerator.getNextId(),
+                                                           new ClassObjectType( List.class ),
+                                                           rete,
+                                                           3 );
+        listOtn.attach();
+
+        // Will automatically create an ArrayList ObjectTypeNode
+        FactHandle handle = workingMemory.insert( new ArrayList() );
+
+        // Check we have three ObjectTypeNodes, List, ArrayList and InitialFactImpl
+        assertEquals( 3,
+                      rete.getObjectTypeNodes().size() );
+
+        // double check that the Listreference is the same as the one we created, i.e. engine should try and recreate it
+        assertSame( listOtn,
+                    rete.getObjectTypeNodes().get( new ClassObjectType( List.class ) ) );
+
+        // ArrayConf should match two ObjectTypenodes for List and ArrayList
+        ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( rete );
+        ObjectTypeConf arrayConf = (ObjectTypeConf) memory.get( ArrayList.class );
+        final ObjectTypeNode arrayOtn = arrayConf.getConcreteObjectTypeNode();
+        assertEquals( 2,
+                      arrayConf.getObjectTypeNodes().length );
+        
+        // Check it contains List and ArrayList
+        List nodes = Arrays.asList( arrayConf.getObjectTypeNodes() );
+        assertEquals(2, nodes.size() );
+        assertTrue( nodes.contains( arrayOtn ) );
+        assertTrue( nodes.contains( listOtn ) );
+        
+        // Nodes are there, retract the fact so we can check both nodes are populated
+        workingMemory.retract( handle );
+
+        // Add MockSinks so we can track assertions
+        final MockObjectSink listSink = new MockObjectSink();
+        listOtn.addObjectSink( listSink );
+
+        final MockObjectSink arraySink = new MockObjectSink();
+        listOtn.addObjectSink( arraySink );
+
+        workingMemory.insert( new ArrayList() );
+        assertEquals( 1,
+                      listSink.getAsserted().size() );
+        assertEquals( 1,
+                      arraySink.getAsserted().size() );
+
+        // Add a Collection ObjectTypeNode, so that we can check that the data from ArrayList is sent to it
+        final ObjectTypeNode collectionOtn = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                 new ClassObjectType( Collection.class ),
+                                                                 rete,
+                                                                 3 );
+        final MockObjectSink collectionSink = new MockObjectSink();
+        collectionOtn.addObjectSink( collectionSink );
+        collectionOtn.attach( new InternalWorkingMemory[]{workingMemory} );
+
+        assertEquals( 1,
+                      collectionSink.getAsserted().size() );       
+        
+        // check that ArrayListConf was updated with the new ObjectTypeNode
+        nodes = Arrays.asList( arrayConf.getObjectTypeNodes() );
+        assertEquals(3, nodes.size() );
+        assertTrue( nodes.contains( arrayOtn ) );
+        assertTrue( nodes.contains( listOtn ) );
+        assertTrue( nodes.contains( collectionOtn ) );
     }
 
     /**
@@ -221,10 +319,13 @@ public class ReteTest extends DroolsTestCase {
                                                             string );
 
         rete.assertObject( h1,
-                           null,
+                           new PropagationContextImpl( 0,
+                                                       PropagationContext.ASSERTION,
+                                                       null,
+                                                       null ),
                            workingMemory );
         assertLength( 0,
-                      sink1.getAsserted() );        
+                      sink1.getAsserted() );
         assertLength( 0,
                       sink1.getRetracted() );
 
@@ -256,7 +357,7 @@ public class ReteTest extends DroolsTestCase {
         assertSame( list,
                     unwrapShadow( ((DefaultFactHandle) results[0]).getObject() ) );
     }
-    
+
     public void testIsShadowed() {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
@@ -274,7 +375,8 @@ public class ReteTest extends DroolsTestCase {
 
         // There are no String ObjectTypeNodes, make sure its not propagated
 
-        final Cheese cheese = new Cheese("brie", 15);
+        final Cheese cheese = new Cheese( "brie",
+                                          15 );
         final DefaultFactHandle h1 = new DefaultFactHandle( 1,
                                                             cheese );
 
@@ -285,18 +387,19 @@ public class ReteTest extends DroolsTestCase {
                                                        null ),
                            workingMemory );
 
-        assertTrue( h1.isShadowFact() );   
-        
+        assertTrue( h1.isShadowFact() );
+
         final Object[] results = (Object[]) sink1.getAsserted().get( 0 );
-        assertTrue( ((DefaultFactHandle) results[0]).getObject()  instanceof ShadowProxy );        
+        assertTrue( ((DefaultFactHandle) results[0]).getObject() instanceof ShadowProxy );
     }
-    
+
     public void testNotShadowed() {
-        
+
         Properties properties = new Properties();
-        properties.setProperty( "drools.shadowProxyExcludes", "org.drools.Cheese" );
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(properties);
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf);
+        properties.setProperty( "drools.shadowProxyExcludes",
+                                "org.drools.Cheese" );
+        RuleBaseConfiguration conf = new RuleBaseConfiguration( properties );
+        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            ruleBase );
 
@@ -312,7 +415,8 @@ public class ReteTest extends DroolsTestCase {
 
         // There are no String ObjectTypeNodes, make sure its not propagated
 
-        final Cheese cheese = new Cheese("brie", 15);
+        final Cheese cheese = new Cheese( "brie",
+                                          15 );
         final DefaultFactHandle h1 = new DefaultFactHandle( 1,
                                                             cheese );
 
@@ -323,10 +427,10 @@ public class ReteTest extends DroolsTestCase {
                                                        null ),
                            workingMemory );
 
-        assertFalse( h1.isShadowFact() );   
+        assertFalse( h1.isShadowFact() );
         final Object[] results = (Object[]) sink1.getAsserted().get( 0 );
-        assertFalse( ((DefaultFactHandle) results[0]).getObject()  instanceof ShadowProxy );         
-    }    
+        assertFalse( ((DefaultFactHandle) results[0]).getObject() instanceof ShadowProxy );
+    }
 
     private Object unwrapShadow(Object object) {
         if ( object instanceof ShadowProxy ) {

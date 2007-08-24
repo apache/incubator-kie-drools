@@ -121,6 +121,10 @@ public class ReteooBuilder
                         terminals.toArray( new BaseNode[terminals.size()] ) );
     }
     
+    public IdGenerator getIdGenerator() {
+        return this.idGenerator;
+    }
+    
     public void order() {
         if ( ordered ) {
             // we should only do this on first call, its expected the RuleBase should not change afterwards.

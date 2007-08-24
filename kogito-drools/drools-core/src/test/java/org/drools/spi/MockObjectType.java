@@ -1,5 +1,6 @@
 package org.drools.spi;
 
+import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 
 /*
@@ -62,20 +63,6 @@ public class MockObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
-     * Determine if the passed <code>Class</code> matches to the object type
-     * defined by this <code>objectType</code> instance.
-     * 
-     * @param clazz
-     *            The <code>Class</code> to test.
-     * 
-     * @return <code>true</code> if the <code>Class</code> matches this
-     *         object type, else <code>false</code>.
-     */
-    public boolean matchesClass(final Class clazz) {
-        return this.matches;
-    }
-
-    /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.
      * 
@@ -88,6 +75,14 @@ public class MockObjectType
     public boolean matches(final Object object) {
         return this.matches;
     }
+    
+    public boolean isAssignableFrom(Object object) {
+        return this.matches;
+    }
+    
+    public boolean isAssignableFrom(ObjectType objectType) {
+        return this.matches;
+    } 
 
     public ValueType getValueType() {
         return ValueType.OBJECT_TYPE;

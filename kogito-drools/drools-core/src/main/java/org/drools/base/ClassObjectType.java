@@ -99,7 +99,19 @@ public class ClassObjectType
     public boolean matches(final Object object) {
         return getClassType().isInstance( object );
     }
+    
+    public boolean isAssignableFrom(Object object) {
+        return this.objectTypeClass.isAssignableFrom( (Class) object );
+    }
 
+    public boolean isAssignableFrom(ObjectType objectType) {
+        if ( !( objectType instanceof ClassObjectType ) ) {
+            return false;
+        } else {
+            return this.objectTypeClass.isAssignableFrom( ((ClassObjectType) objectType).getClassType() );
+        }
+    }    
+    
     public ValueType getValueType() {
         return this.valueType;
     }

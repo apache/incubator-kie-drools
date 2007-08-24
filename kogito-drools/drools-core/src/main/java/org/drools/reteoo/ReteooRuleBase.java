@@ -171,6 +171,10 @@ public class ReteooRuleBase extends AbstractRuleBase {
     public Rete getRete() {
         return this.rete;
     }
+    
+    public ReteooBuilder getReteooBuilder() {
+        return this.reteooBuilder;
+    }
 
     /**
      * Assert a fact object.

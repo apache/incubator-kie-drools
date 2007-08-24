@@ -16,6 +16,7 @@ package org.drools.facttemplates;
  * limitations under the License.
  */
 
+import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.spi.ObjectType;
 
@@ -73,20 +74,6 @@ public class FactTemplateObjectType
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     /**
-     * Determine if the passed <code>Class</code> matches to the object type
-     * defined by this <code>objectType</code> instance.
-     * 
-     * @param clazz
-     *            The <code>Class</code> to test.
-     * 
-     * @return <code>true</code> if the <code>Class</code> matches this
-     *         object type, else <code>false</code>.
-     */
-    public boolean matchesClass(final Class clazz) {
-        return FactImpl.class.isAssignableFrom( clazz );
-    }
-
-    /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.
      * 
@@ -103,6 +90,18 @@ public class FactTemplateObjectType
             return false;
         }
     }
+    
+    public boolean isAssignableFrom(Object object) {
+        return this.factTemplate.equals( object );
+    }    
+    
+    public boolean isAssignableFrom(ObjectType objectType) {
+        if ( ! ( objectType instanceof FactTemplateObjectType ) ) {
+            return false;
+        } else {
+            return this.factTemplate.equals(  ((FactTemplateObjectType) objectType).getFactTemplate() );
+        }
+    }     
 
     public ValueType getValueType() {
         return ValueType.FACTTEMPLATE_TYPE;

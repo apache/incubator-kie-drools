@@ -33,6 +33,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactHashTable;
@@ -41,17 +42,20 @@ import org.drools.util.ObjectHashMap;
 public class ObjectTypeNodeTest extends DroolsTestCase {
 
     public void testAttach() throws Exception {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+
         final Rete source = new Rete( (InternalRuleBase)ruleBase);        
 
         final ObjectType objectType = new ClassObjectType( String.class );
 
-        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+        int id = idGenerator.getNextId();
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( id,
                                                                   objectType,
                                                                   source,
                                                                   3 );
 
-        assertEquals( 1,
+        assertEquals( id,
                       objectTypeNode.getId() );
 
         final Field field = Rete.class.getDeclaredField( "objectTypeNodes" );
@@ -76,13 +80,14 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           ruleBase );
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+
+        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) ruleBase.newStatefulSession();
 
         final Rete source = ruleBase.getRete();
 
-        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
                                                                   source,
                                                                   3 );
@@ -158,12 +163,12 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testMemory() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();  
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();   
         
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) ruleBase );
+        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) ruleBase.newStatefulSession();
 
-        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
                                                                   new Rete( (InternalRuleBase) ruleBase),
                                                                   3 );
@@ -174,10 +179,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testMatches() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase(); 
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator(); 
         final Rete source = new Rete((InternalRuleBase) ruleBase);
 
-        ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+        ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                             new ClassObjectType( String.class ),
                                                             source,
                                                             3 );
@@ -186,7 +192,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertFalse( objectTypeNode.matches( new Integer( 5 ) ) );
         assertTrue( objectTypeNode.matches( "string" ) );
 
-        objectTypeNode = new ObjectTypeNode( 1,
+        objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                              new ClassObjectType( Object.class ),
                                              source,
                                              3 );
@@ -198,18 +204,18 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     }
 
     public void testRetractObject() throws Exception {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();         
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();      
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) ruleBase );
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory)ruleBase.newStatefulSession();
 
         final Rete source = new Rete((InternalRuleBase) ruleBase);
 
-        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
                                                                   source,
                                                                   3 );
@@ -362,14 +368,14 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           ruleBase );
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) ruleBase.newStatefulSession();
 
         final Rete source = ruleBase.getRete();
 
         final Class shadowClass = ShadowProxyFactory.getProxy( Person.class );
-        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( Person.class ),
                                                                   source,
                                                                   3 );
