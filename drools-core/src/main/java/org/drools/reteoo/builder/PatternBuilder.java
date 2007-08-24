@@ -22,9 +22,14 @@ import java.util.List;
 
 import org.drools.base.ClassObjectType;
 import org.drools.common.InstanceNotEqualsConstraint;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.Rete;
+import org.drools.reteoo.ReteooBuilder;
+import org.drools.reteoo.ReteooRuleBase;
+import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
@@ -32,6 +37,7 @@ import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
+import org.drools.spi.ObjectType;
 
 /**
  * A builder for patterns
@@ -138,6 +144,21 @@ public class PatternBuilder
                 betaConstraints.add( constraint );
             }
         }
+    }
+    
+    public static ObjectTypeNode attachObjectTypeNode(Rete rete, ObjectType objectType) {
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) rete.getRuleBase();
+        ReteooBuilder builder = ruleBase.getReteooBuilder();
+                
+        ObjectTypeNode otn = new ObjectTypeNode( builder.getIdGenerator().getNextId(),
+                            objectType,
+                            rete,
+                            ruleBase.getConfiguration().getAlphaNodeHashingThreshold() );
+                
+        InternalWorkingMemory[] wms = ruleBase.getWorkingMemories();
+        otn.attach( wms );      
+        
+        return otn;
     }
 
     public void attachAlphaNodes(final BuildContext context,

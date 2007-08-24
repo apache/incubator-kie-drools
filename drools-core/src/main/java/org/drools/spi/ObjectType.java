@@ -18,6 +18,7 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
+import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 
 /**
@@ -31,18 +32,6 @@ public interface ObjectType
     extends
     Serializable {
     /**
-     * Determine if the passed <code>Class</code> matches to the object type
-     * defined by this <code>objectType</code> instance.
-     * 
-     * @param clazz
-     *            The <code>Class</code> to test.
-     * 
-     * @return <code>true</code> if the <code>Class</code> matches this
-     *         object type, else <code>false</code>.
-     */
-    boolean matchesClass(Class clazz);
-
-    /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.
      * 
@@ -53,6 +42,10 @@ public interface ObjectType
      *         object type, else <code>false</code>.
      */
     boolean matches(Object object);
+    
+    boolean isAssignableFrom(Object object);
+    
+    boolean isAssignableFrom(ObjectType objectType);    
 
     ValueType getValueType();
 }

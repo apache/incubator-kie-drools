@@ -27,6 +27,7 @@ import java.util.Map;
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
+import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
 import org.drools.base.ShadowProxyFactory;
 import org.drools.common.BaseNode;
@@ -37,10 +38,16 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactImpl;
+import org.drools.facttemplates.FactTemplate;
+import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.objenesis.Objenesis;
 import org.drools.objenesis.ObjenesisStd;
 import org.drools.objenesis.instantiator.ObjectInstantiator;
+import org.drools.reteoo.builder.PatternBuilder;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.drools.util.FactEntry;
+import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
@@ -119,31 +126,32 @@ public class Rete extends ObjectSource
                              final InternalWorkingMemory workingMemory) {
         final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
 
-        final Object object = handle.getObject();
+        Object object = handle.getObject();
 
         ObjectTypeConf ojectTypeConf;
         if ( object instanceof FactImpl ) {
             String key = ((Fact) object).getFactTemplate().getName();
             ojectTypeConf = (ObjectTypeConf) memory.get( key );
             if ( ojectTypeConf == null ) {
-                ojectTypeConf = new ObjectTypeConf( null,
-                                                    this.ruleBase );
+                ojectTypeConf = new FactTemplateTypeConf( ((Fact) object).getFactTemplate(),
+                                                                 this.ruleBase );
                 memory.put( key,
                             ojectTypeConf,
                             false );
             }
+            object = key;
         } else {
             Class cls = null;
             if ( object instanceof ShadowProxy ) {
-                cls = ((ShadowProxy)object).getShadowedObject().getClass();
+                cls = ((ShadowProxy) object).getShadowedObject().getClass();
             } else {
                 cls = object.getClass();
             }
 
             ojectTypeConf = (ObjectTypeConf) memory.get( cls );
             if ( ojectTypeConf == null ) {
-                ojectTypeConf = new ObjectTypeConf( cls,
-                                                    this.ruleBase );
+                ojectTypeConf = new ClassObjectTypeConf( cls,
+                                                         this.ruleBase );
                 memory.put( cls,
                             ojectTypeConf,
                             false );
@@ -162,7 +170,7 @@ public class Rete extends ObjectSource
             }
         }
 
-        ObjectTypeNode[] cachedNodes = ojectTypeConf.getObjectTypeNodes( object );
+        ObjectTypeNode[] cachedNodes = ojectTypeConf.getObjectTypeNodes();
 
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
             cachedNodes[i].assertObject( handle,
@@ -189,12 +197,12 @@ public class Rete extends ObjectSource
 
         ObjectTypeConf objectTypeConf;
         if ( object instanceof ShadowProxy ) {
-            objectTypeConf = (ObjectTypeConf) memory.get( ((ShadowProxy)object).getShadowedObject().getClass() );
+            objectTypeConf = (ObjectTypeConf) memory.get( ((ShadowProxy) object).getShadowedObject().getClass() );
         } else {
             objectTypeConf = (ObjectTypeConf) memory.get( object.getClass() );
         }
 
-        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes( object );
+        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes( );
 
         if ( cachedNodes == null ) {
             // it is  possible that there are no ObjectTypeNodes for an  object being retracted
@@ -224,7 +232,8 @@ public class Rete extends ObjectSource
     }
 
     protected void removeObjectSink(final ObjectSink objectSink) {
-        this.objectTypeNodes.remove( objectSink );
+        final ObjectTypeNode node = (ObjectTypeNode) objectSink;        
+        this.objectTypeNodes.remove( node.getObjectType() );
     }
 
     public void attach() {
@@ -280,24 +289,109 @@ public class Rete extends ObjectSource
         // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.
         final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
         Iterator it = memory.iterator();
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            ((ObjectTypeConf) entry.getValue()).resetCache();
-        }
-
         final ObjectTypeNode node = (ObjectTypeNode) sink;
-        it = workingMemory.getFactHandleMap().iterator();
+        
+        ObjectType newObjectType = node.getObjectType();
+
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            final InternalFactHandle handle = (InternalFactHandle) entry.getValue();
-            if ( node.matches( handle.getObject() ) ) {
-                node.assertObject( handle,
-                                   context,
-                                   workingMemory );
+            ObjectTypeConf objectTypeConf = (ObjectTypeConf) entry.getValue();
+            if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {                
+                objectTypeConf.resetCache();
+                ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
+                FactHashTable table = (FactHashTable) workingMemory.getNodeMemory( sourceNode );
+                Iterator factIter = table.iterator();
+                for ( FactEntry factEntry = (FactEntry) factIter.next(); factEntry != null; factEntry = (FactEntry) factIter.next() ) {
+                    sink.assertObject( factEntry.getFactHandle(),
+                                       context,
+                                       workingMemory );
+                }
             }
         }
+
+        //        ObjectType
+        //        this.c
+
+        //        final ObjectTypeNode node = (ObjectTypeNode) sink;
+        //        it = workingMemory.getFactHandleMap().iterator();
+        //        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+        //            final InternalFactHandle handle = (InternalFactHandle) entry.getValue();
+        //            if ( node.matches( handle.getObject() ) ) {
+        //                node.assertObject( handle,
+        //                                   context,
+        //                                   workingMemory );
+        //            }
+        //        }
     }
 
-    public static class ObjectTypeConf
+    public static interface ObjectTypeConf {
+        public ObjectTypeNode[] getObjectTypeNodes();
+
+        public boolean isShadowEnabled();
+
+        public Object getShadow(final Object fact) throws RuntimeDroolsException;
+
+        public ObjectTypeNode getConcreteObjectTypeNode();
+
+        public void resetCache();
+
+        public boolean isAssignableFrom(Object object);
+    }
+
+    public static class FactTemplateTypeConf
         implements
+        ObjectTypeConf,
+        Serializable {
+        private InternalRuleBase               ruleBase;
+        private FactTemplate                   factTemplate;
+        private ObjectTypeNode                 concreteObjectTypeNode;
+        private ObjectTypeNode[]               cache;
+        
+        public FactTemplateTypeConf(FactTemplate  factTemplate,
+                                    InternalRuleBase ruleBase) {
+            this.ruleBase = ruleBase;
+            this.factTemplate = factTemplate;
+            ObjectType objectType = new FactTemplateObjectType(factTemplate);
+            this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes().get( objectType );
+            if ( this.concreteObjectTypeNode == null ) {
+                // there must exist an ObjectTypeNode for this concrete class                
+                this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( ruleBase.getRete(),
+                                                                                   objectType );
+            }           
+            this.cache = new ObjectTypeNode[] { this.concreteObjectTypeNode };
+        }
+
+        public ObjectTypeNode getConcreteObjectTypeNode() {
+            return this.concreteObjectTypeNode;
+        }
+
+        public ObjectTypeNode[] getObjectTypeNodes() {
+            if ( this.cache == null ) {
+                this.cache = new ObjectTypeNode[] { this.concreteObjectTypeNode };
+            }
+            return this.cache;
+        }
+
+        public Object getShadow(Object fact) throws RuntimeDroolsException {
+            return null;
+        }
+
+        public boolean isShadowEnabled() {
+            return false;
+        }        
+
+        public boolean isAssignableFrom(Object object) {
+            return this.factTemplate.equals( object );
+        }
+
+        public void resetCache() {
+            this.cache = null;
+        }
+
+    }
+
+    public static class ClassObjectTypeConf
+        implements
+        ObjectTypeConf,
         Serializable {
         // Objenesis instance without cache (false)
         private static final Objenesis         OBJENESIS = new ObjenesisStd( false );
@@ -310,14 +404,30 @@ public class Rete extends ObjectSource
         protected Class                        shadowClass;
         protected transient ObjectInstantiator instantiator;
 
-        //private final InternalRuleBase ruleBase;
+        private ObjectTypeNode                 concreteObjectTypeNode;
 
-        public ObjectTypeConf(Class clazz,
-                              InternalRuleBase ruleBase) {
+        public ClassObjectTypeConf(Class clazz,
+                                   InternalRuleBase ruleBase) {
             this.cls = clazz;
             this.ruleBase = ruleBase;
 
+            ObjectType objectType =  new ClassObjectType( clazz );
+            this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes().get( objectType );
+            if ( this.concreteObjectTypeNode == null ) {
+                // there must exist an ObjectTypeNode for this concrete class
+                this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( ruleBase.getRete(),
+                                                                                   objectType );
+            }
+
             defineShadowProxyData( clazz );
+        }
+
+        public boolean isAssignableFrom(Object object) {
+            return this.cls.isAssignableFrom( (Class) object );
+        }       
+
+        public ObjectTypeNode getConcreteObjectTypeNode() {
+            return this.concreteObjectTypeNode;
         }
 
         private void defineShadowProxyData(Class clazz) {
@@ -330,9 +440,9 @@ public class Rete extends ObjectSource
                 return;
             }
 
-
             //String pkgName = (pkg != null) ? pkg.getName() : "";
-            String pkgName = getPackageName(clazz, clazz.getPackage());
+            String pkgName = getPackageName( clazz,
+                                             clazz.getPackage() );
             if ( "org.drools.reteoo".equals( pkgName ) || "org.drools.base".equals( pkgName ) ) {
                 // We don't shadow internal classes
                 this.shadowEnabled = false;
@@ -367,21 +477,21 @@ public class Rete extends ObjectSource
          * This will return the package name - if the package is null, it will
          * work it out from the class name (this is in cases where funky classloading is used).
          */
-        public static String getPackageName(Class clazz, Package pkg) {
-        	String pkgName = "";
-        	if (pkg == null) {
-        	    int index = clazz.getName().lastIndexOf('.');
-        	    if (index != -1)
-        	        pkgName = clazz.getName().substring(0, index);
-        	}
-        	else {
-         	    pkgName = pkg.getName();
-        	}
-        	return pkgName;
+        public static String getPackageName(Class clazz,
+                                             Package pkg) {
+            String pkgName = "";
+            if ( pkg == null ) {
+                int index = clazz.getName().lastIndexOf( '.' );
+                if ( index != -1 ) pkgName = clazz.getName().substring( 0,
+                                                                        index );
+            } else {
+                pkgName = pkg.getName();
+            }
+            return pkgName;
 
-		}
+        }
 
-		private Class loadOrGenerateProxy(Class clazz,
+        private Class loadOrGenerateProxy(Class clazz,
                                           Rete rete) {
             Class shadowClass = null;
             final String shadowProxyName = ShadowProxyFactory.getProxyClassNameForClass( clazz );
@@ -413,7 +523,7 @@ public class Rete extends ObjectSource
             boolean isOk = ret != null && ret != Object.class; // we don't want to shadow java.lang.Object
             if ( isOk ) {
                 for ( int i = 0; isOk && ret != null && i < nodes.length; i++ ) {
-                    isOk = nodes[i].matchesClass( ret );
+                    isOk = nodes[i].isAssignableFrom( ret );
                 }
             }
 
@@ -424,15 +534,13 @@ public class Rete extends ObjectSource
                 isOk = interfaces.length > 0;
                 for ( int i = 0; notFound && i < interfaces.length; i++ ) {
                     ret = interfaces[i];
-                    isOk = interfaces[i] != Serializable.class &&
-                           interfaces[i] != Cloneable.class &&
-                           interfaces[i] != Comparable.class;
+                    isOk = interfaces[i] != Serializable.class && interfaces[i] != Cloneable.class && interfaces[i] != Comparable.class;
                     for ( int j = 0; isOk && j < nodes.length; j++ ) {
-                        isOk = nodes[j].matchesClass( ret );
+                        isOk = nodes[j].isAssignableFrom( ret );
                     }
                     notFound = !isOk;
                 }
-                if( notFound ) {
+                if ( notFound ) {
                     ret = null;
                 }
             }
@@ -490,9 +598,9 @@ public class Rete extends ObjectSource
             defineShadowProxyData( cls );
         }
 
-        public ObjectTypeNode[] getObjectTypeNodes(final Object object) {
+        public ObjectTypeNode[] getObjectTypeNodes() {
             if ( this.objectTypeNodes == null ) {
-                buildCache( object );
+                this.objectTypeNodes = getMatchingObjectTypes( this.cls );
             }
             return this.objectTypeNodes;
         }
@@ -503,26 +611,12 @@ public class Rete extends ObjectSource
             final Iterator it = ruleBase.getRete().getObjectTypeNodes().newIterator();
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 final ObjectTypeNode node = (ObjectTypeNode) entry.getValue();
-                if ( node.matchesClass( clazz ) ) {
+                if ( node.isAssignableFrom( clazz ) ) {
                     cache.add( node );
                 }
             }
 
             return (ObjectTypeNode[]) cache.toArray( new ObjectTypeNode[cache.size()] );
-        }
-
-        private void buildCache(final Object object) throws FactException {
-            final List cache = new ArrayList();
-
-            final Iterator it = ruleBase.getRete().getObjectTypeNodes().newIterator();
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                final ObjectTypeNode node = (ObjectTypeNode) entry.getValue();
-                if ( node.matches( object ) ) {
-                    cache.add( node );
-                }
-            }
-
-            this.objectTypeNodes = (ObjectTypeNode[]) cache.toArray( new ObjectTypeNode[cache.size()] );
         }
     }
 

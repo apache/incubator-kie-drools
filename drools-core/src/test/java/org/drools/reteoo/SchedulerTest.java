@@ -25,7 +25,9 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.rule.Rule;
 import org.drools.spi.Duration;
 import org.drools.spi.KnowledgeHelper;
@@ -38,13 +40,13 @@ import org.drools.spi.Tuple;
 
 public class SchedulerTest extends DroolsTestCase {
     public void testScheduledActivation() throws Exception {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+        InternalWorkingMemory workingMemory = ( InternalWorkingMemory ) ruleBase.newStatefulSession();
 
         final Rule rule = new Rule( "test-rule" );
-        final RuleTerminalNode node = new RuleTerminalNode( 1,
-                                                            new MockTupleSource( 2 ),
+        final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
+                                                            new MockTupleSource( idGenerator.getNextId() ),
                                                             rule,
                                                             rule.getLhs() );
         final List data = new ArrayList();
@@ -100,14 +102,15 @@ public class SchedulerTest extends DroolsTestCase {
     }
 
     public void testDoLoopScheduledActivation() throws Exception {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
         final Agenda agenda = workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
-        final RuleTerminalNode node = new RuleTerminalNode( 1,
-                                                            new MockTupleSource( 2 ),
+        final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
+                                                            new MockTupleSource( idGenerator.getNextId() ),
                                                             rule,
                                                             rule.getLhs() );
         final List data = new ArrayList();
@@ -177,7 +180,8 @@ public class SchedulerTest extends DroolsTestCase {
     }
 
     public void testNoLoopScheduledActivation() throws Exception {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
         final Agenda agenda = workingMemory.getAgenda();
@@ -185,8 +189,8 @@ public class SchedulerTest extends DroolsTestCase {
         final Rule rule = new Rule( "test-rule" );
         final List data = new ArrayList();
 
-        final RuleTerminalNode node = new RuleTerminalNode( 1,
-                                                            new MockTupleSource( 2 ),
+        final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
+                                                            new MockTupleSource( idGenerator.getNextId() ),
                                                             rule,
                                                             rule.getLhs() );
 

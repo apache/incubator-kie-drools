@@ -38,6 +38,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.conflict.DepthConflictResolver;
+import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
@@ -1206,9 +1207,9 @@ public class AgendaTest extends DroolsTestCase {
      * Test auto-deactivation of RuleFlowGroup. 
      */
     public void testRuleFlowGroup4() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
+        final InternalWorkingMemory workingMemory = ( InternalWorkingMemory ) ruleBase.newStatefulSession();                ;
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
@@ -1226,8 +1227,8 @@ public class AgendaTest extends DroolsTestCase {
         rule0.setRuleFlowGroup( "rule-flow-group-0" );
         rule0.setConsequence( consequence0 );
 
-        final RuleTerminalNode node0 = new RuleTerminalNode( 1,
-                                                             new MockTupleSource( 2 ),
+        final RuleTerminalNode node0 = new RuleTerminalNode( idGenerator.getNextId(),
+                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                              rule0,
                                                              rule0.getLhs() );
 
