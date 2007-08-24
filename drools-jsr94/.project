@@ -2,9 +2,9 @@
   <name>drools-jsr94</name>
   <comment>A rule production system</comment>
   <projects>
-    <project>drools-decisiontables</project>
-    <project>drools-compiler</project>
     <project>drools-core</project>
+    <project>drools-compiler</project>
+    <project>drools-decisiontables</project>
   </projects>
   <buildSpec>
     <buildCommand>
