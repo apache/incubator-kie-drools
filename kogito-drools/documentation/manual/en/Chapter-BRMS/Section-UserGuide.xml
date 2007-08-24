@@ -502,6 +502,24 @@
         "priority". This would probably be the most common option to
         use.</para>
 
+	<section><title>User driven drop down lists</title>
+
+      <figure>
+        <title>Data enumeration showing as a drop down list</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="EnumDropDown.png" format="PNG"
+                       scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+	<para>
+	  Note that is it possible to limit field values to items in a pre configured list. This list is configured as part of the package (using a data enumeration to provide values for the drop down list). These values can be a fixed list, or (for example) loaded from a database. This is useful for codes, and other fields where there are set values. It is also possible to have what is displayed on screen, in a drop down, be different to the value (or code) used in a rule. See the section on data enumerations for how these are configured.
+	</para>
+
+	</section>
+	
         <para>Augmenting with DSL sentences: If the package the rule is part
         of has a dsl configuration, when when you add conditions or actions,
         then it will provide a list of "DSL Sentences" which you can choose
@@ -694,6 +712,29 @@
         </figure>
       </section>
 
+      <section>
+        <title>Data enumerations (drop down list configurations)</title>
+
+        <para>Data enumerations are an optional asset type that technical folk can configure to provide drop down lists for the guided editor. These are stored and edited just like any other asset, and apply to the package that they belong to.</para>
+
+	<para>
+	  The contents of an enum config are a mapping of Fact.field to a list of values to be used in a drop down. That list can either be literal, or use a utility class (which you put on the classpath) to load a list of strings. The strings are either a value to be shown on a drop down, or a mapping from the code value (what ends up used in the rule) and a display value (see the example below, using the '=').
+	</para>
+
+	
+
+        <figure>
+          <title>Data enumeration</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="EnumConfig.png" format="PNG"
+                         scalefit="1" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
       <para>Tip: As you may have many similar rules, you can create rule
       templates, which are simply rules which are kept in an inactive package
       - you can then categories templates accordingly, and copy them as needed
@@ -795,7 +836,7 @@
 
           <listitem>
             <para>Technical assets: this is a list of items that would be
-            considered technical (eg DRL rules, and rule flows).</para>
+            considered technical (eg DRL rules, data enumerations and rule flows).</para>
           </listitem>
 
           <listitem>
@@ -861,6 +902,8 @@
       have the option to create a snapshot for deployment. You can also view
       the "drl" that this package results in. WARNING: in cases of large
       numbers of rules, all these operations can take some time.</para>
+
+      <para>It is optional at this stage to enter the name of a "selector" - see the admin section for details on how to configure custom selectors for your system (if you need them - selecters allow you to filter down what you build into a package - if you don't know what they are for, you probably don't need to use them).</para>
 
       <section>
         <title>Importing drl packages</title>
