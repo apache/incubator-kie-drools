@@ -32,7 +32,7 @@ public class DslTest extends TestCase {
 
     public void testWithExpanderDSL() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl.drl" ) );
+        final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl.dslr" ) );
         final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_expander.dsl" ) );
         builder.addPackageFromDrl( source,
                                    dsl );
@@ -72,7 +72,7 @@ public class DslTest extends TestCase {
 
     public void testWithExpanderMore() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl_more.drl" ) );
+        final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_dsl_more.dslr" ) );
         final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_expander.dsl" ) );
         builder.addPackageFromDrl( source,
                                    dsl );

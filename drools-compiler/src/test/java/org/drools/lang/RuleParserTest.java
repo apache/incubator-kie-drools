@@ -245,7 +245,7 @@ public class RuleParserTest extends TestCase {
 
     public void FIX_ME_testLatinChars() throws Exception {
         final DrlParser parser = new DrlParser();
-        final Reader drl = new InputStreamReader( this.getClass().getResourceAsStream( "latin-sample.drl" ) );
+        final Reader drl = new InputStreamReader( this.getClass().getResourceAsStream( "latin-sample.dslr" ) );
         final Reader dsl = new InputStreamReader( this.getClass().getResourceAsStream( "latin.dsl" ) );
 
         final PackageDescr pkg = parser.parse( drl,
@@ -1270,7 +1270,7 @@ public class RuleParserTest extends TestCase {
 
     public void testExpanderErrorsAfterExpansion() throws Exception {
 
-        final String name = "expander_post_errors.drl";
+        final String name = "expander_post_errors.dslr";
         final Expander expander = new DefaultExpander();
         final String expanded = expander.expand( this.getReader( name ) );
 
@@ -1289,7 +1289,7 @@ public class RuleParserTest extends TestCase {
 
     public void testExpanderLineSpread() throws Exception {
         final DrlParser parser = new DrlParser();
-        final PackageDescr pkg = parser.parse( this.getReader( "expander_spread_lines.drl" ),
+        final PackageDescr pkg = parser.parse( this.getReader( "expander_spread_lines.dslr" ),
                                                this.getReader( "complex.dsl" ) );
 
         assertFalse( parser.getErrors().toString(),
@@ -1308,7 +1308,7 @@ public class RuleParserTest extends TestCase {
 
     public void testExpanderMultipleConstraints() throws Exception {
         final DrlParser parser = new DrlParser();
-        final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints.drl" ),
+        final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints.dslr" ),
                                                this.getReader( "multiple_constraints.dsl" ) );
 
         assertFalse( parser.getErrors().toString(),
@@ -1340,7 +1340,7 @@ public class RuleParserTest extends TestCase {
     public void testExpanderMultipleConstraintsFlush() throws Exception {
         final DrlParser parser = new DrlParser();
         //this is similar to the other test, but it requires a flush to add the constraints
-        final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints_flush.drl" ),
+        final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints_flush.dslr" ),
                                                this.getReader( "multiple_constraints.dsl" ) );
 
         assertFalse( parser.getErrors().toString(),
@@ -1385,7 +1385,7 @@ public class RuleParserTest extends TestCase {
     //            }
     //        };
     //
-    //        final DRLParser parser = parseResource( "expander_line_errors.drl" );
+    //        final DRLParser parser = parseResource( "expander_line_errors.dslr" );
     //        parser.setExpanderResolver( res );
     //        parser.compilation_unit();
     //        assertTrue( parser.hasErrors() );
