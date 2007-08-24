@@ -16,16 +16,22 @@ import org.mvel.MVEL;
 public class DataEnumLoaderTest extends TestCase {
 
 	public void testEnumGeneration() throws Exception {
+
+
+
 		Object result = MVEL.eval("[2, 3, 4, ]", new HashMap());
 		assertTrue(result instanceof List);
 		List l = (List) result;
 		assertEquals(3, l.size());
 
-		result = MVEL.eval("['Person.age' : [2, 3], 'Person.name' : ['qqq', \n'ccc']]", new HashMap());
+		result = MVEL.eval("['Person.age' : [2, 3]\n 'Person.name' : ['qqq', \n'ccc']]", new HashMap());
+
+
+
 
 		DataEnumLoader loader = new DataEnumLoader(readLines().toString());
 
-        assertFalse(loader.hasErrors());
+        assertFalse(loader.getErrors().toString(), loader.hasErrors());
 
 		Map enumeration = (Map) loader.getData();
 		assertEquals(loader.getErrors().toString(), 0, loader.getErrors().size());
@@ -51,6 +57,8 @@ public class DataEnumLoaderTest extends TestCase {
 
 	}
 
+
+
     public void testNoOp() {
         DataEnumLoader loader = new DataEnumLoader(" ");
         assertFalse(loader.hasErrors());
@@ -62,6 +70,11 @@ public class DataEnumLoaderTest extends TestCase {
 
     }
 
+
+    public void testNewLines() {
+        String s = "yeah yeah, \nyeah \nyeah";
+        assertEquals("yeah yeah,\nyeah,\nyeah", DataEnumLoader.addCommasForNewLines( s ));
+    }
 
 	private StringBuffer readLines() throws IOException {
 		BufferedReader r = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("Some.enumeration")));

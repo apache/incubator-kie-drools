@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.mvel.MVEL;
 
@@ -26,13 +27,15 @@ public class DataEnumLoader {
 	}
 
 	private Map loadEnum(String mvelSource) {
+
         if (mvelSource == null || (mvelSource.trim().equals( "" ))) {
             return Collections.EMPTY_MAP;
         }
+        mvelSource = addCommasForNewLines(mvelSource);
 		final Object mvelData;
 		try {
-
-			mvelData = MVEL.eval("[ " + mvelSource + " ]", new HashMap());
+		    mvelSource = "[ " + mvelSource + " ]";
+			mvelData = MVEL.eval(mvelSource, new HashMap());
 		} catch (RuntimeException e) {
 			addError("Unable to load enumeration data.");
 			addError(e.getMessage());
@@ -71,7 +74,27 @@ public class DataEnumLoader {
 		return newMap;
 	}
 
-	private void addError(String string) {
+	public static String addCommasForNewLines(String mvelSource) {
+        StringTokenizer st = new StringTokenizer(mvelSource, "\r\n");
+        StringBuffer buf = new StringBuffer();
+        while(st.hasMoreTokens()) {
+            String line = st.nextToken().trim();
+            if (st.hasMoreTokens() && line.endsWith( "," )) {
+                buf.append( line );
+            } else {
+                buf.append( line );
+                if (st.hasMoreTokens()) {
+                    buf.append( "," );
+                }
+            }
+            if (st.hasMoreTokens()) {
+                buf.append( "\n" );
+            }
+        }
+        return buf.toString();
+    }
+
+    private void addError(String string) {
 		this.errors.add(string);
 	}
 
