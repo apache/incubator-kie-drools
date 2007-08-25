@@ -22,19 +22,22 @@
   <dependencies>  
     <!-- following are required for parser (lang). May be refactored out of core module. -->
     <dependency>
-      <groupId>xstream</groupId>
+      <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
+      <optional>true</optional>
     </dependency>
-    
+
     <dependency>
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
     </dependency>
-    
-	 <dependency>
-			<groupId>org.mvel</groupId>
-			<artifactId>mvel14</artifactId>    
-    </dependency>      
+
+    <dependency>
+      <groupId>org.mvel</groupId>
+      <artifactId>mvel14</artifactId>
+    </dependency>     
     
   </dependencies>
   
