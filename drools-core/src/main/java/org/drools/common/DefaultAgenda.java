@@ -35,6 +35,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceException;
+import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.util.LinkedListNode;
@@ -96,6 +97,8 @@ public class DefaultAgenda
     public int                          activeActivations;
 
     public int                          dormantActivations;
+    
+    private ConsequenceExceptionHandler consequenceExceptionHandler;
 
     // ------------------------------------------------------------
     // Constructors
@@ -131,6 +134,8 @@ public class DefaultAgenda
                                this.main );
 
         this.focusStack.add( this.main );
+        
+        this.consequenceExceptionHandler = ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().getConsequenceExceptionHandler();
 
     }
 
@@ -545,9 +550,7 @@ public class DefaultAgenda
             activation.getRule().getConsequence().evaluate( this.knowledgeHelper,
                                                             this.workingMemory );
         } catch ( final Exception e ) {
-            e.printStackTrace();
-            throw new ConsequenceException( e,
-                                            activation.getRule() );
+            this.consequenceExceptionHandler.handleException( activation, this.workingMemory, e );
         }
 
         if ( activation.getRuleFlowGroupNode() != null ) {

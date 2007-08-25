@@ -28,6 +28,7 @@ import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
 import org.drools.concurrent.ExecutorService;
 import org.drools.spi.ConflictResolver;
+import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.util.ChainedProperties;
 
 /**
@@ -62,38 +63,40 @@ import org.drools.util.ChainedProperties;
  * drools.logicalOverride = <discard|preserve>
  * drools.executorService = <qualified class name>
  * drools.conflictResolver = <qualified class name>
+ * drools.conflictExceptionHandler = <qualified class name>
  * 
  */
 public class RuleBaseConfiguration
     implements
     Serializable {
-    private static final long   serialVersionUID = 400L;
+    private static final long           serialVersionUID = 400L;
 
-    private ChainedProperties   chainedProperties;
+    private ChainedProperties           chainedProperties;
 
-    private boolean             immutable;
+    private boolean                     immutable;
 
-    private boolean             sequential;
-    private SequentialAgenda    sequentialAgenda;
+    private boolean                     sequential;
+    private SequentialAgenda            sequentialAgenda;
 
-    private boolean             maintainTms;
-    private boolean             removeIdentities;
-    private boolean             shareAlphaNodes;
-    private boolean             shareBetaNodes;
-    private boolean             alphaMemory;
-    private int                 alphaNodeHashingThreshold;
-    private int                 compositeKeyDepth;
-    private boolean             indexLeftBetaMemory;
-    private boolean             indexRightBetaMemory;
-    private AssertBehaviour     assertBehaviour;
-    private LogicalOverride     logicalOverride;
-    private ExecutorService     executorService;
+    private boolean                     maintainTms;
+    private boolean                     removeIdentities;
+    private boolean                     shareAlphaNodes;
+    private boolean                     shareBetaNodes;
+    private boolean                     alphaMemory;
+    private int                         alphaNodeHashingThreshold;
+    private int                         compositeKeyDepth;
+    private boolean                     indexLeftBetaMemory;
+    private boolean                     indexRightBetaMemory;
+    private AssertBehaviour             assertBehaviour;
+    private LogicalOverride             logicalOverride;
+    private ExecutorService             executorService;
+    private ConsequenceExceptionHandler consequenceExceptionHandler;
 
-    private ConflictResolver    conflictResolver;
+    private ConflictResolver            conflictResolver;
 
-    private boolean             shadowProxy;
-    private Map                 shadowProxyExcludes;
-    private static final String STAR             = "*";
+    private boolean                     shadowProxy;
+    private Map                         shadowProxyExcludes;
+    private static final String         STAR             = "*";
 
     public RuleBaseConfiguration(Properties properties) {
         init( properties );
@@ -151,6 +154,9 @@ public class RuleBaseConfiguration
 
         setExecutorService( RuleBaseConfiguration.determineExecutorService( this.chainedProperties.getProperty( "drools.executorService",
                                                                                                                 "org.drools.concurrent.DefaultExecutorService" ) ) );
+
+        setConsequenceExceptionHandler( RuleBaseConfiguration.determineConsequenceExceptionHandler( this.chainedProperties.getProperty( "drools.consequenceExceptionHandler",
+                                                                                                                                        "org.drools.base.DefaultConsequenceExceptionHandler" ) ) );
 
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
                                                                                                                   "org.drools.conflict.DepthConflictResolver" ) ) );
@@ -310,6 +316,15 @@ public class RuleBaseConfiguration
         this.executorService = executorService;
     }
 
+    public ConsequenceExceptionHandler getConsequenceExceptionHandler() {
+        return consequenceExceptionHandler;
+    }
+
+    public void setConsequenceExceptionHandler(ConsequenceExceptionHandler consequenceExceptionHandler) {
+        checkCanChange(); // throws an exception if a change isn't possible;        
+        this.consequenceExceptionHandler = consequenceExceptionHandler;
+    }
+
     public AgendaGroupFactory getAgendaGroupFactory() {
         if ( isSequential() ) {
             if ( this.sequentialAgenda == SequentialAgenda.SEQUENTIAL ) {
@@ -330,7 +345,7 @@ public class RuleBaseConfiguration
         checkCanChange(); // throws an exception if a change isn't possible;
         this.sequentialAgenda = sequentialAgenda;
     }
-    
+
     private boolean determineShadowProxy(String userValue) {
         if ( userValue != null ) {
             return Boolean.valueOf( userValue ).booleanValue();
@@ -341,7 +356,7 @@ public class RuleBaseConfiguration
                 return true;
             }
         }
-    }    
+    }
 
     private static ConflictResolver determineConflictResolver(String className) {
         Class clazz = null;
@@ -449,6 +464,17 @@ public class RuleBaseConfiguration
     }
 
     private static ExecutorService determineExecutorService(String className) {
+        return (ExecutorService) instantiateClass( "ExecutorService",
+                                                   className );
+    }
+
+    private static ConsequenceExceptionHandler determineConsequenceExceptionHandler(String className) {
+        return (ConsequenceExceptionHandler) instantiateClass( "ConsequenceExceptionHandler",
+                                                               className );
+    }
+
+    private static Object instantiateClass(String type,
+                                           String className) {
         Class clazz = null;
         try {
             clazz = Thread.currentThread().getContextClassLoader().loadClass( className );
@@ -464,12 +490,12 @@ public class RuleBaseConfiguration
 
         if ( clazz != null ) {
             try {
-                return (ExecutorService) clazz.newInstance();
+                return clazz.newInstance();
             } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Unable to instantiate ExecutorService '" + className + "'" );
+                throw new IllegalArgumentException( "Unable to instantiate " + type + " '" + className + "'" );
             }
         } else {
-            throw new IllegalArgumentException( "ExecutorService '" + className + "' not found" );
+            throw new IllegalArgumentException( type + " '" + className + "' not found" );
         }
     }
 
