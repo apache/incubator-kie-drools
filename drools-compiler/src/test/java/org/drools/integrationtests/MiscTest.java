@@ -103,6 +103,8 @@ import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.spi.Activation;
+import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.xml.XmlDumper;
 
 /** Run all the tests with the ReteOO engine implementation */
@@ -1157,6 +1159,44 @@ public class MiscTest extends TestCase {
             assertEquals( "this should throw an exception",
                           e.getCause().getMessage() );
         }
+    }
+    
+    public void testCustomConsequenceException() throws Exception {        
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        CustomConsequenceExceptionHandler handler = new CustomConsequenceExceptionHandler();
+        conf.setConsequenceExceptionHandler( handler );
+        
+        final RuleBase ruleBase = getRuleBase(conf);
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final Cheese brie = new Cheese( "brie",
+                                        12 );
+        workingMemory.insert( brie );
+
+        workingMemory.fireAllRules();
+        
+        assertTrue( handler.isCalled() );
+    }
+    
+    public static class CustomConsequenceExceptionHandler implements ConsequenceExceptionHandler {
+        
+        private boolean called;
+
+        public void handleException(Activation activation,
+                                    WorkingMemory workingMemory,
+                                    Exception exception) {
+            this.called = true;            
+        }
+        
+        public boolean isCalled() {
+            return this.called;
+        }
+        
     }
 
     public void testFunctionException() throws Exception {
