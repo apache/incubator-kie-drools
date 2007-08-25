@@ -65,6 +65,7 @@ public class SplitImpl extends NodeImpl
 
         // dirty hack because keys were entered wrong
         // probably caused by xstreams
+        // TODO xstream 1.3.0 should fix this by default; in 1.2.2 it's fixable: http://jira.codehaus.org/browse/XSTR-363
         final HashMap newMap = new HashMap();
         for ( final Iterator it = this.constraints.entrySet().iterator(); it.hasNext(); ) {
             final Entry entry = (Entry) it.next();
