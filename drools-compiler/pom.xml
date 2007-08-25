@@ -36,11 +36,16 @@
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>core</artifactId>
-    </dependency>       
+    </dependency>
     <dependency>
       <groupId>janino</groupId>
       <artifactId>janino</artifactId>
-    </dependency>    
+    </dependency>
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
