@@ -15,7 +15,6 @@ rule "Explode Cart"
 		$item : CartItem() from $cart.getItems()
 	then
 		insert( $item );
-		drools.ruleBase.removeRule("org.drools.examples", "Explode Cart");
 end
 
 // Free Fish Food sample when we buy a Gold Fish if we haven't already  bought 
