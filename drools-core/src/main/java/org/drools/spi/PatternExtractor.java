@@ -1,6 +1,8 @@
 package org.drools.spi;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Iterator;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;

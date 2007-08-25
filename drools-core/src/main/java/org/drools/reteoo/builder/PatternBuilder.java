@@ -29,7 +29,6 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.rule.Declaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;

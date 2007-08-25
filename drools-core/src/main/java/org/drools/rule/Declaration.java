@@ -41,7 +41,12 @@ package org.drools.rule;
  */
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Iterator;
 
+import org.drools.RuntimeDroolsException;
+import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Extractor;
@@ -85,8 +90,10 @@ public class Declaration
 
     private final Extractor   extractor;
 
-    private Pattern            pattern;
-    
+    private Pattern           pattern;
+
+    private final boolean     internalFact;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -104,9 +111,33 @@ public class Declaration
     public Declaration(final String identifier,
                        final Extractor extractor,
                        final Pattern pattern) {
+        this( identifier,
+              extractor,
+              pattern,
+              false );
+    }
+
+    /**
+     * Construct.
+     * 
+     * @param identifier
+     *            The name of the variable.
+     * @param objectType
+     *            The type of this variable declaration.
+     * @param order
+     *            The index within a rule.
+     * @param internalFact
+     *            True if this is an internal fact created by the engine, like a collection result
+     *            of a collect CE
+     */
+    public Declaration(final String identifier,
+                       final Extractor extractor,
+                       final Pattern pattern,
+                       final boolean internalFact) {
         this.identifier = identifier;
         this.extractor = extractor;
         this.pattern = pattern;
+        this.internalFact = internalFact;
     }
 
     // ------------------------------------------------------------
@@ -143,13 +174,13 @@ public class Declaration
     public void setPattern(final Pattern pattern) {
         this.pattern = pattern;
     }
-    
+
     /**
      * Returns true if this declaration is a pattern declaration
      * @return
      */
     public boolean isPatternDeclaration() {
-        return this.pattern.getDeclaration() == this;
+        return this.pattern != null && this.pattern.getDeclaration() == this;
     }
 
     /**
@@ -161,48 +192,102 @@ public class Declaration
         return this.extractor;
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getValue( workingMemory, object );
+    public Object getValue(InternalWorkingMemory workingMemory,
+                           final Object object) {
+        return this.extractor.getValue( workingMemory,
+                                        object );
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getCharValue( workingMemory, object );
+    public Object getNonShadowedValue(InternalWorkingMemory workingMemory,
+                                      final Object object) {
+        Object result = this.extractor.getValue( workingMemory,
+                                                 object );
+        if ( this.isInternalFact() && result instanceof Collection ) {
+            try {
+                Collection newCol = (Collection) result.getClass().newInstance();
+                for ( Iterator it = ((Collection) result).iterator(); it.hasNext(); ) {
+                    Object element = it.next();
+                    newCol.add( (element instanceof ShadowProxy) ? ((ShadowProxy) element).getShadowedObject() : element );
+                }
+                return newCol;
+            } catch ( InstantiationException e ) {
+                // nothing we can do, so just return the resulting object
+            } catch ( IllegalAccessException e ) {
+                // TODO Auto-generated catch block
+            }
+        }
+        return result;
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getIntValue( workingMemory, object );
+    public char getCharValue(InternalWorkingMemory workingMemory,
+                             final Object object) {
+        return this.extractor.getCharValue( workingMemory,
+                                            object );
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getByteValue( workingMemory, object );
+    public int getIntValue(InternalWorkingMemory workingMemory,
+                           final Object object) {
+        return this.extractor.getIntValue( workingMemory,
+                                           object );
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getShortValue( workingMemory, object );
+    public byte getByteValue(InternalWorkingMemory workingMemory,
+                             final Object object) {
+        return this.extractor.getByteValue( workingMemory,
+                                            object );
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getLongValue( workingMemory, object );
+    public short getShortValue(InternalWorkingMemory workingMemory,
+                               final Object object) {
+        return this.extractor.getShortValue( workingMemory,
+                                             object );
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getFloatValue( workingMemory, object );
+    public long getLongValue(InternalWorkingMemory workingMemory,
+                             final Object object) {
+        return this.extractor.getLongValue( workingMemory,
+                                            object );
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getDoubleValue( workingMemory, object );
+    public float getFloatValue(InternalWorkingMemory workingMemory,
+                               final Object object) {
+        return this.extractor.getFloatValue( workingMemory,
+                                             object );
     }
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getBooleanValue( workingMemory, object );
+    public double getDoubleValue(InternalWorkingMemory workingMemory,
+                                 final Object object) {
+        return this.extractor.getDoubleValue( workingMemory,
+                                              object );
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getHashCode( workingMemory, object );
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory,
+                                   final Object object) {
+        return this.extractor.getBooleanValue( workingMemory,
+                                               object );
     }
-    
+
+    public int getHashCode(InternalWorkingMemory workingMemory,
+                           final Object object) {
+        return this.extractor.getHashCode( workingMemory,
+                                           object );
+    }
+
     public boolean isGlobal() {
         return this.extractor.isGlobal();
+    }
+
+    public Method getNativeReadMethod() {
+        if ( this.isPatternDeclaration() && this.isInternalFact() ) {
+            try {
+                return this.getClass().getDeclaredMethod( "getNonShadowedValue",
+                                                          new Class[]{InternalWorkingMemory.class, Object.class} );
+            } catch ( final Exception e ) {
+                throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
+                                                  e );
+            }
+        } 
+        return this.extractor.getNativeReadMethod();
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -232,6 +317,10 @@ public class Declaration
         final Declaration other = (Declaration) object;
 
         return this.pattern.getOffset() == other.pattern.getOffset() && this.identifier.equals( other.identifier ) && this.extractor.equals( other.extractor );
+    }
+
+    protected boolean isInternalFact() {
+        return internalFact;
     }
 
 }

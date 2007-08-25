@@ -75,6 +75,10 @@ public class PatternDescr extends BaseDescr implements Cloneable {
     public ConditionalElementDescr getConstraint() {
         return this.constraint;
     }
+    
+    public boolean isInternalFact() {
+        return this.getSource() != null && this.getSource() instanceof CollectDescr;
+    }
 
     public String toString() {
         return "[Pattern: id=" + this.identifier + "; objectType=" + this.objectType + "]";

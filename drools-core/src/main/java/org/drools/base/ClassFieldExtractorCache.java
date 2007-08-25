@@ -20,9 +20,9 @@ public class ClassFieldExtractorCache {
         return instance;
     }
 
-    public static ClassFieldExtractor getExtractor(final Class clazz,
-                                                   final String fieldName,
-                                                   ClassLoader classLoader) {
+    public synchronized static ClassFieldExtractor getExtractor(final Class clazz,
+                                                                final String fieldName,
+                                                                ClassLoader classLoader) {
         if ( cache == null ) {
             cache = new HashMap();
         }
