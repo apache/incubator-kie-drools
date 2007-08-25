@@ -205,8 +205,8 @@ public class URLScannerTest extends TestCase {
 
 
         assertEquals( 2, rb.getPackages().length );
-        assertEquals( "goo.ber", rb.getPackages()[0].getName() );
-        assertEquals( "wee.waa", rb.getPackages()[1].getName() );
+        assertTrue("goo.ber".equals(rb.getPackages()[0].getName()) || "goo.ber".equals(rb.getPackages()[1].getName()));
+        assertTrue("wee.waa".equals(rb.getPackages()[0].getName()) || "wee.waa".equals(rb.getPackages()[1].getName()));
 
         //assertEquals( 2, dir.list().length );
 

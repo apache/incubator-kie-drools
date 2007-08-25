@@ -57,21 +57,21 @@ public class FileScannerTest extends TestCase {
         
         
         assertEquals(2, rb.getPackages().length);
-        assertEquals("p1", rb.getPackages()[0].getName());
-        assertEquals("p2", rb.getPackages()[1].getName());
-        
+        assertTrue("p1".equals(rb.getPackages()[0].getName()) || "p1".equals(rb.getPackages()[1].getName()));
+        assertTrue("p2".equals(rb.getPackages()[0].getName()) || "p2".equals(rb.getPackages()[1].getName()));
+
         PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
         assertEquals(2, rb.getPackages().length);
-        assertEquals("p1", rb.getPackages()[0].getName());
-        assertEquals("p2", rb.getPackages()[1].getName());
+        assertTrue("p1".equals(rb.getPackages()[0].getName()) || "p1".equals(rb.getPackages()[1].getName()));
+        assertTrue("p2".equals(rb.getPackages()[0].getName()) || "p2".equals(rb.getPackages()[1].getName()));
 
         RuleBaseAssemblerTest.writePackage( p2, p2f );
         PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), new MockListener() );
 
 
         assertEquals(2, rb.getPackages().length);
-        assertEquals("p1", rb.getPackages()[0].getName());
-        assertEquals("p2", rb.getPackages()[1].getName());
+        assertTrue("p1".equals(rb.getPackages()[0].getName()) || "p1".equals(rb.getPackages()[1].getName()));
+        assertTrue("p2".equals(rb.getPackages()[0].getName()) || "p2".equals(rb.getPackages()[1].getName()));
         
     }
     
