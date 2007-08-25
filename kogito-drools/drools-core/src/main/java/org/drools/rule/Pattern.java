@@ -47,7 +47,7 @@ public class Pattern
     private int               offset;
 
     public Pattern(final int index,
-                  final ObjectType objectType) {
+                   final ObjectType objectType) {
         this( index,
               index,
               objectType,
@@ -55,8 +55,8 @@ public class Pattern
     }
 
     public Pattern(final int index,
-                  final ObjectType objectType,
-                  final String identifier) {
+                   final ObjectType objectType,
+                   final String identifier) {
         this( index,
               index,
               objectType,
@@ -64,16 +64,29 @@ public class Pattern
     }
 
     public Pattern(final int index,
-                  final int offset,
-                  final ObjectType objectType,
-                  final String identifier) {
+                   final int offset,
+                   final ObjectType objectType,
+                   final String identifier) {
+        this( index,
+              offset,
+              objectType,
+              identifier,
+              false );
+    }
+
+    public Pattern(final int index,
+                   final int offset,
+                   final ObjectType objectType,
+                   final String identifier,
+                   final boolean isInternalFact) {
         this.index = index;
         this.offset = offset;
         this.objectType = objectType;
         if ( identifier != null && (!identifier.equals( "" )) ) {
             this.declaration = new Declaration( identifier,
                                                 new PatternExtractor( objectType ),
-                                                this );
+                                                this,
+                                                isInternalFact );
             this.declarations = new HashMap( 2 ); // default to avoid immediate resize
             this.declarations.put( this.declaration.getIdentifier(),
                                    this.declaration );
@@ -85,8 +98,8 @@ public class Pattern
     public Object clone() {
         final String identifier = (this.declaration != null) ? this.declaration.getIdentifier() : null;
         final Pattern clone = new Pattern( this.index,
-                                   this.objectType,
-                                   identifier );
+                                           this.objectType,
+                                           identifier );
 
         for ( final Iterator it = this.constraints.iterator(); it.hasNext(); ) {
             final Object constr = it.next();
@@ -230,7 +243,7 @@ public class Pattern
         if ( this.offset != other.offset ) {
             return false;
         }
-        return ( this.source == null ) ? other.source == null : this.source.equals( other.source ); 
+        return (this.source == null) ? other.source == null : this.source.equals( other.source );
     }
 
 }

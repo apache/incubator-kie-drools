@@ -145,7 +145,8 @@ public class PatternBuilder
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
                                    objectType,
-                                   patternDescr.getIdentifier() );
+                                   patternDescr.getIdentifier(),
+                                   patternDescr.isInternalFact());
         } else {
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default

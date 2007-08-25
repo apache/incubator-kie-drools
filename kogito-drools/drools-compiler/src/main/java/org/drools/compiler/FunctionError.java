@@ -16,6 +16,7 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
+import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.FunctionDescr;
 
 public class FunctionError extends DroolsError {
@@ -42,6 +43,18 @@ public class FunctionError extends DroolsError {
 
     public String getMessage() {
         return this.message;
+    }
+    
+    public String toString() {
+        StringBuffer detail = new StringBuffer();
+        if( object instanceof CompilationProblem[] ) {
+            CompilationProblem[] cp = (CompilationProblem[]) object;
+            for( int i = 0; i < cp.length ; i ++ ) {
+               detail.append( cp[i].toString() );
+               detail.append( "\n" );
+            }
+        }
+        return "[ "+functionDescr.getName()+" : "+this.getMessage() + "\n"+detail.toString()+" ]";
     }
 
 }

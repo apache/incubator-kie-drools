@@ -66,7 +66,6 @@ import org.drools.SpecialString;
 import org.drools.State;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
-import org.drools.StatelessSessionResult;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
@@ -3944,6 +3943,32 @@ public class MiscTest extends TestCase {
 
         assertEquals( 1,
                       results.size() );
+    }
+
+    public void testShadowProxyOnCollections() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyOnCollections.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        final Cheesery cheesery = new Cheesery();
+        workingMemory.insert( cheesery );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( 1, 
+                      cheesery.getCheeses().size() );
+        assertEquals( results.get( 0 ), 
+                      cheesery.getCheeses().get( 0 ) );
     }
 
 }
