@@ -256,7 +256,9 @@ public class Package
     }
 
     public PackageCompilationData removeFunction(final String functionName) {
-        this.functions.remove( functionName );
+        if ( !this.functions.remove( functionName )) {
+            return null;
+        }
         this.packageCompilationData.remove( this.name + "." + StringUtils.ucFirst( functionName ) );
         return this.packageCompilationData;
     }
