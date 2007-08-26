@@ -1,7 +1,8 @@
 package org.drools.examples
 
-import org.drools.examples.PetStore.ShoppingCart
-import org.drools.examples.PetStore.CartItem
+import org.drools.examples.PetStore.Order
+import org.drools.examples.PetStore.Purchase
+import org.drools.examples.PetStore.Product
 import java.util.ArrayList
 
 global javax.swing.JFrame frame 
@@ -14,11 +15,11 @@ rule "Explode Cart"
     salience 10
 	dialect "java"
 	when
-	    $cart : ShoppingCart()
-		$item : CartItem() from $cart.getItems()
+	    $order : Order()
+		$item : Purchase() from $order.items
 	then
 		insert( $item );
-		drools.getWorkingMemory().getRuleBase().removeRule("org.drools.examples", "Explode Cart" );
+//		drools.getWorkingMemory().getRuleBase().removeRule("org.drools.examples", "Explode Cart" );
 		
 end
 
@@ -27,15 +28,18 @@ end
 rule "Free Fish Food Sample"
 	dialect "java"
 	when
-	    $cart : ShoppingCart()
-		not CartItem(name == "Fish Food")
- 	    not CartItem(name == "Fish Food Sample")
- 	    exists CartItem(name == "Gold Fish" )
+	    $order : Order()
+		not ( $p : Product( name == "Fish Food") && Purchase( product == $p ) )
+		not ( $p : Product( name == "Fish Food Sample") && Purchase( product == $p ) )		
+		exists ( $p : Product( name == "Gold Fish") && Purchase( product == $p ) )				
 	then
 		System.out.println( "Adding free Fish Food Sample to cart" );
-		$cart.addItem( new CartItem( "Fish Food Sample", 0.00 ) );	
+		Product product = new Product( "Fish Food Sample", 0.00 );
+		Purchase purchase = new Purchase($order, product);
+		insert( purchase );
+		$order.addItem( purchase );	
 end
-
+/*
 // Suggest a tank if we have bought more than 5 gold fish and dont already have one
 rule "Suggest Tank"
 	when
@@ -61,13 +65,14 @@ rule "Apply 10% Discount"
 //	    with( $cart ) { discount = 0.10 };
 		$cart.setDiscount( 0.10 );
 end
-
+*/
 rule "Gross Total"
     salience -10
     dialect "java"
 	when
-		Double( total : doubleValue ) from accumulate( CartItem( cost : cost)
-   			        			   					   sum( cost) )
+	    $order : Order()
+		Number( total : doubleValue ) from accumulate( Purchase( price : product.price ) from $order.items,
+   			        			   					   sum( price) )
 	then	
 	     textArea.append( "gross total=" + total + "\n" );
 end
