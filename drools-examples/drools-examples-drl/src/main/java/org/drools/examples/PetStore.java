@@ -41,27 +41,27 @@ public class PetStore {
 
     public static void main(String[] args) {
         try {
-//            RuleSetLoader ruleSetLoader = new RuleSetLoader();
-//            ruleSetLoader.addFromUrl( PetStore.class.getResource( args[0] ) );
-//
-//            RuleBaseLoader ruleBaseLoader = new RuleBaseLoader();
-//            ruleBaseLoader.addFromRuleSetLoader( ruleSetLoader );
-//            RuleBase ruleBase = ruleBaseLoader.buildRuleBase();
-            
-            PackageBuilder builder = new PackageBuilder( );
-            builder.addPackageFromDrl(  new InputStreamReader( PetStore.class.getResourceAsStream( "PetStore.drl" ) ) );
+            //            RuleSetLoader ruleSetLoader = new RuleSetLoader();
+            //            ruleSetLoader.addFromUrl( PetStore.class.getResource( args[0] ) );
+            //
+            //            RuleBaseLoader ruleBaseLoader = new RuleBaseLoader();
+            //            ruleBaseLoader.addFromRuleSetLoader( ruleSetLoader );
+            //            RuleBase ruleBase = ruleBaseLoader.buildRuleBase();
+
+            PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( PetStore.class.getResourceAsStream( "PetStore.drl" ) ) );
             RuleBase ruleBase = RuleBaseFactory.newRuleBase();
             ruleBase.addPackage( builder.getPackage() );
-            
+
             //RuleB
 
             Vector stock = new Vector();
-            stock.add( new CartItem( "Gold Fish",
-                                     5 ) );
-            stock.add( new CartItem( "Fish Tank",
-                                     25 ) );
-            stock.add( new CartItem( "Fish Food",
-                                     2 ) );
+            stock.add( new Product( "Gold Fish",
+                                    5 ) );
+            stock.add( new Product( "Fish Tank",
+                                    25 ) );
+            stock.add( new Product( "Fish Food",
+                                    2 ) );
 
             //The callback is responsible for populating working memory and
             // fireing all rules
@@ -72,127 +72,6 @@ public class PetStore {
             e.printStackTrace();
         }
     }
-    
-    public static class ShoppingCart
-    {
-        private List          items;
-
-        private double        discount;
-
-        private Map           states;
-
-        private static String newline = System.getProperty( "line.separator" );
-
-        public ShoppingCart()
-        {
-            states = new HashMap( );
-            this.items = new ArrayList( );
-            this.discount = 0;
-        }
-
-        public boolean getState(String state)
-        {
-            if ( states.containsKey( state ) )
-            {
-                return ( ( Boolean ) states.get( state ) ).booleanValue( );
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void setState(String state, boolean value)
-        {
-            states.put( state, new Boolean( value ) );
-        }
-
-        public void setDiscount(double discount)
-        {
-            this.discount = discount;
-        }
-
-        public double getDiscount()
-        {
-            return this.discount;
-        }
-
-        public void addItem(CartItem item)
-        {
-            this.items.add( item );
-        }
-
-        public List getItems()
-        {
-            return this.items;
-        }
-
-        public List getItems(String name)
-        {
-            ArrayList matching = new ArrayList( );
-
-            Iterator itemIter = getItems( ).iterator( );
-            CartItem eachItem = null;
-
-            while ( itemIter.hasNext( ) )
-            {
-                eachItem = ( CartItem ) itemIter.next( );
-
-                if ( eachItem.getName( ).equals( name ) )
-                {
-                    matching.add( eachItem );
-                }
-            }
-
-            return matching;
-        }
-
-        public double getGrossCost()
-        {
-            Iterator itemIter = getItems( ).iterator( );
-            CartItem eachItem = null;
-
-            double cost = 0.00;
-
-            while ( itemIter.hasNext( ) )
-            {
-                eachItem = ( CartItem ) itemIter.next( );
-
-                cost += eachItem.getCost( );
-            }
-
-            return cost;
-        }
-
-        public double getDiscountedCost()
-        {
-            double cost = getGrossCost( );
-            double discount = getDiscount( );
-
-            double discountedCost = cost * ( 1 - discount );
-
-            return discountedCost;
-        }
-
-        public String toString()
-        {
-            StringBuffer buf = new StringBuffer( );
-
-            buf.append( "ShoppingCart:" + newline );
-
-            Iterator itemIter = getItems( ).iterator( );
-
-            while ( itemIter.hasNext( ) )
-            {
-                buf.append( "\t" + itemIter.next( ) + newline );
-            }
-
-            buf.append( "gross total=" + getGrossCost( ) + newline );
-            buf.append( "discounted total=" + getDiscountedCost( ) + newline );
-
-            return buf.toString( );
-        }
-    }    
 
     /**
      * This swing UI is used to create a simple shopping cart to allow a user to add
@@ -319,7 +198,7 @@ public class PetStore {
                                                       ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED );
             bottomHalf.add( outputPane,
                             BorderLayout.CENTER );
-            
+
             this.callback.setOutput( this.output );
         }
 
@@ -346,7 +225,7 @@ public class PetStore {
         private class ListSelectionHandler extends MouseAdapter {
             public void mouseReleased(MouseEvent e) {
                 JList jlist = (JList) e.getSource();
-                tableModel.addItem( (CartItem) jlist.getSelectedValue() );
+                tableModel.addItem( (Product) jlist.getSelectedValue() );
             }
         }
 
@@ -369,10 +248,10 @@ public class PetStore {
             public void mouseReleased(MouseEvent e) {
                 JButton button = (JButton) e.getComponent();
                 try {
-//                    output.append( callback.checkout( (JFrame) button.getTopLevelAncestor(),
-//                                                      tableModel.getItems() ) );
+                    //                    output.append( callback.checkout( (JFrame) button.getTopLevelAncestor(),
+                    //                                                      tableModel.getItems() ) );
                     callback.checkout( (JFrame) button.getTopLevelAncestor(),
-                                        tableModel.getItems() );                    
+                                       tableModel.getItems() );
                 } catch ( org.drools.FactException fe ) {
                     fe.printStackTrace();
                 }
@@ -401,7 +280,7 @@ public class PetStore {
             }
 
             public void setValue(Object object) {
-                CartItem item = (CartItem) object;
+                Product item = (Product) object;
                 setText( item.getName() );
             }
         }
@@ -415,8 +294,8 @@ public class PetStore {
             }
 
             public void setValue(Object object) {
-                CartItem item = (CartItem) object;
-                setText( Double.toString( item.getCost() ) );
+                Product item = (Product) object;
+                setText( Double.toString( item.getPrice() ) );
             }
         }
     }
@@ -455,10 +334,10 @@ public class PetStore {
         }
 
         public Class getColumnClass(int c) {
-            return CartItem.class;
+            return Product.class;
         }
 
-        public void addItem(CartItem item) {
+        public void addItem(Product item) {
             items.add( item );
             fireTableRowsInserted( items.size(),
                                    items.size() );
@@ -493,13 +372,13 @@ public class PetStore {
      *  
      */
     public static class CheckoutCallback {
-        RuleBase ruleBase;
+        RuleBase  ruleBase;
         JTextArea output;
-        
+
         public CheckoutCallback(RuleBase ruleBase) {
             this.ruleBase = ruleBase;
         }
-        
+
         public void setOutput(JTextArea output) {
             this.output = output;
         }
@@ -514,48 +393,140 @@ public class PetStore {
          */
         public String checkout(JFrame frame,
                                List items) throws FactException {
-            ShoppingCart cart = new ShoppingCart();
+            Order order = new Order();
 
             //Iterate through list and add to cart
             for ( int i = 0; i < items.size(); i++ ) {
-                cart.addItem( (CartItem) items.get( i ) );
+                order.addItem( new Purchase( order, (Product) items.get( i ) ) );
             }
 
             //add the JFrame to the ApplicationData to allow for user interaction
             WorkingMemory workingMemory = ruleBase.newStatefulSession();
             workingMemory.setGlobal( "frame",
-                                      frame );
-            workingMemory.setGlobal( "textArea", this.output);
-            workingMemory.insert( cart );
+                                     frame );
+            workingMemory.setGlobal( "textArea",
+                                     this.output );
+            workingMemory.insert( order );
             workingMemory.fireAllRules();
 
             //returns the state of the cart
-            return cart.toString();
+            return order.toString();
         }
     }
 
-    public static class CartItem {
+    public static class Order {
+        private List          items;
+
+        private double        discount;
+
+        private static String newline = System.getProperty( "line.separator" );
+
+        public Order() {
+            this.items = new ArrayList();
+            this.discount = 0;
+        }
+        
+        public void setDiscount(double discount) {
+            this.discount = discount;
+        }
+
+        public double getDiscount() {
+            return this.discount;
+        }
+
+        public void addItem(Purchase item) {
+            this.items.add( item );
+        }
+
+        public List getItems() {
+            return this.items;
+        }
+
+        /*
+        public double getGrossCost() {
+            Iterator itemIter = getItems().iterator();
+            Product eachItem = null;
+
+            double cost = 0.00;
+
+            while ( itemIter.hasNext() ) {
+                eachItem = (Product) itemIter.next();
+
+                cost += eachItem.getPrice();
+            }
+
+            return cost;
+        }
+
+        public double getDiscountedCost() {
+            double cost = getGrossCost();
+            double discount = getDiscount();
+
+            double discountedCost = cost * (1 - discount);
+
+            return discountedCost;
+        }
+*/
+        public String toString() {
+            StringBuffer buf = new StringBuffer();
+
+            buf.append( "ShoppingCart:" + newline );
+
+            Iterator itemIter = getItems().iterator();
+
+            while ( itemIter.hasNext() ) {
+                buf.append( "\t" + itemIter.next() + newline );
+            }
+
+//            buf.append( "gross total=" + getGrossCost() + newline );
+//            buf.append( "discounted total=" + getDiscountedCost() + newline );
+
+            return buf.toString();
+        }
+    }
+    
+    public static class Purchase {
+        private Order order;
+        private Product product;
+        public Purchase(Order order,
+                        Product product) {
+            super();
+            this.order = order;
+            this.product = product;
+        }
+        
+        public Order getOrder() {
+            return order;
+        }
+        public Product getProduct() {
+            return product;
+        }                
+    }    
+
+    public static class Product {
         private String name;
 
-        private double cost;
+        private double price;
 
-        public CartItem(String name,
-                        double cost) {
+        public Product(String name,
+                       double cost) {
             this.name = name;
-            this.cost = cost;
+            this.price = cost;
         }
 
         public String getName() {
             return this.name;
         }
 
-        public double getCost() {
-            return this.cost;
+        public double getPrice() {
+            return this.price;
         }
 
         public String toString() {
-            return name + " " + this.cost;
+            return name + " " + this.price;
         }
-
     }
+
+
+
 }

@@ -6,7 +6,10 @@
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="DROOLS/JBoss Rules"/>	
+	<classpathentry combineaccessrules="false" kind="src" path="/mvel"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/drools-compiler"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/drools-core"/>
+	<classpathentry kind="con" path="DROOLS/JBoss Rules"/>
 	<classpathentry kind="lib" path="lib/foxtrot-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/jgoodies-forms-1.0.4.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
