@@ -5,21 +5,27 @@ import org.drools.examples.PetStore.CartItem
 import java.util.ArrayList
 
 global javax.swing.JFrame frame 
+global javax.swing.JTextArea textArea
 
 dialect "mvel"
 
 // insert each item in the shopping cart into the Working Memory 
 rule "Explode Cart"
+    salience 10
+	dialect "java"
 	when
 	    $cart : ShoppingCart()
 		$item : CartItem() from $cart.getItems()
 	then
 		insert( $item );
+		drools.getWorkingMemory().getRuleBase().removeRule("org.drools.examples", "Explode Cart" );
+		
 end
 
 // Free Fish Food sample when we buy a Gold Fish if we haven't already  bought 
 // Fish Food and dont already have a Fish Food Sample
 rule "Free Fish Food Sample"
+	dialect "java"
 	when
 	    $cart : ShoppingCart()
 		not CartItem(name == "Fish Food")
@@ -27,8 +33,7 @@ rule "Free Fish Food Sample"
  	    exists CartItem(name == "Gold Fish" )
 	then
 		System.out.println( "Adding free Fish Food Sample to cart" );
-		$cart.addItem( new CartItem( "Fish Food Sample", 0.00 ) );
-		update( $cart );		
+		$cart.addItem( new CartItem( "Fish Food Sample", 0.00 ) );	
 end
 
 // Suggest a tank if we have bought more than 5 gold fish and dont already have one
@@ -40,16 +45,30 @@ rule "Suggest Tank"
 end	
 
 rule "Apply 5% Discount"
+	dialect "java"
 	when
 		$cart : ShoppingCart( grossCost >= 10 && < 20, discount < 0.05 )
 	then
-	    modify( $cart ) { discount = 0.05 };
+//	    with( $cart ) { discount = 0.05 };
+		$cart.setDiscount( 0.05 );
 end
 
 rule "Apply 10% Discount"
+	dialect "java"
 	when
-		ShoppingCart( grossCost >= 20, discount < 0.10 )
+		$cart : ShoppingCart( grossCost >= 20, discount < 0.10 )
 	then
-	    modify( $cart ) { discount = 0.10 };
+//	    with( $cart ) { discount = 0.10 };
+		$cart.setDiscount( 0.10 );
+end
+
+rule "Gross Total"
+    salience -10
+    dialect "java"
+	when
+		Double( total : doubleValue ) from accumulate( CartItem( cost : cost)
+   			        			   					   sum( cost) )
+	then	
+	     textArea.append( "gross total=" + total + "\n" );
 end
 	
