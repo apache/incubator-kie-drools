@@ -60,10 +60,7 @@ public class MVELConsequenceBuilder
 
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect();
-            final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
-                                                                     null,
-                                                                     context.getPkg().getGlobals() );
-            factory.setNextFactory( dialect.getStaticMethodImportResolverFactory() );
+
 
             String text = processMacros( (String) context.getRuleDescr().getConsequence() );
 
@@ -77,9 +74,14 @@ public class MVELConsequenceBuilder
                                                        analysis,
                                                        dialect.getInterceptors(),
                                                        null,
-                                                       context );
-
-            String s = org.mvel.debug.DebugTools.decompile(expr);
+                                                       context );            
+            
+            final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
+                                                                     null,
+                                                                     context.getPkg().getGlobals(),
+                                                                     analysis.getBoundIdentifiers() );
+            
+            factory.setNextFactory( dialect.getStaticMethodImportResolverFactory() );            
 
             context.getRule().setConsequence( new MVELConsequence( expr,
                                                                    factory ) );
