@@ -899,4 +899,71 @@ public class AccumulateTest extends TestCase {
 
     }
     
+    public void testAccumulateSum() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateSum.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+                                                         8 ), new Cheese( "stilton",
+                                                                          10 ), new Cheese( "stilton",
+                                                                                            9 ), new Cheese( "brie",
+                                                                                                             11 ), new Cheese( "brie",
+                                                                                                                              4 ), new Cheese( "provolone",
+                                                                                                                                               8 )};
+        final Person bob = new Person( "Bob",
+                                       "stilton" );
+
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        for ( int i = 0; i < cheese.length; i++ ) {
+            cheeseHandles[i] = wm.insert( cheese[i] );
+        }
+        final FactHandle bobHandle = wm.insert( bob );
+
+        // ---------------- 1st scenario
+        wm.fireAllRules();
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 27,
+                             ((Number) results.get( results.size() - 1 )).intValue() );
+
+        // ---------------- 2nd scenario
+        final int index = 1;
+        cheese[index].setPrice( 3 );
+        wm.update( cheeseHandles[index],
+                   cheese[index] );
+        wm.fireAllRules();
+
+        Assert.assertEquals( 2,
+                             results.size() );
+        Assert.assertEquals( 20,
+                             ((Number) results.get( results.size() - 1 )).intValue() );
+
+        // ---------------- 3rd scenario
+        bob.setLikes( "brie" );
+        wm.update( bobHandle,
+                   bob );
+        wm.fireAllRules();
+
+        Assert.assertEquals( 3,
+                             results.size() );
+        Assert.assertEquals( 15,
+                             ((Number) results.get( results.size() - 1 )).intValue() );
+
+        // ---------------- 4th scenario
+        wm.retract( cheeseHandles[3] );
+        wm.fireAllRules();
+
+        // should not have fired as per constraint
+        Assert.assertEquals( 3,
+                             results.size() );
+
+    }
+
 }
