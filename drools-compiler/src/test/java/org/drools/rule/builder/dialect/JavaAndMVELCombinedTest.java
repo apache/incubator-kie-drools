@@ -17,33 +17,46 @@ public class JavaAndMVELCombinedTest extends TestCase {
     private final static String FN2 = "mvelonly.drl";
     private final static String FN3 = "javaonly.drl";
 
-    public void testJavaMVELCombination() throws Exception {
-        long time1 = timing( new Runnable() {
-            public void run() {
-                readDRL( FN1 );
-            }
-        } );
-        long time2 = timing( new Runnable() {
-            public void run() {
-                readDRL( FN2 );
-            }
-        } );
-        long time3 = timing( new Runnable() {
-            public void run() {
-                readDRL( FN3 );
-            }
-        } );
-        
-        System.out.println("mveljava: "+time1/1000.);
-        System.out.println("    mvel: "+time2/1000.);
-        System.out.println("    java: "+time3/1000.);
-        
+    public void testMixed() {
+        timing( FN1, "mveljava: ");
     }
+    
+    public void testMVEL() {
+        timing( FN2, "    mvel: ");
+    }
+    
+    public void testJAVA() {
+        timing( FN3, "    java: ");
+    }
+    
+//    public void testJavaMVELCombination() throws Exception {
+//        long time1 = timing( new Runnable() {
+//            public void run() {
+//                readDRL( FN1 );
+//            }
+//        } );
+//        long time2 = timing( new Runnable() {
+//            public void run() {
+//                readDRL( FN2 );
+//            }
+//        } );
+//        long time3 = timing( new Runnable() {
+//            public void run() {
+//                readDRL( FN3 );
+//            }
+//        } );
+//        
+//        System.out.println("mveljava: "+time1/1000.);
+//        System.out.println("    mvel: "+time2/1000.);
+//        System.out.println("    java: "+time3/1000.);
+//        
+//    }
 
-    private long timing(Runnable runnable) {
+    private void timing( String name, String msg ) {
         long start = System.currentTimeMillis();
-        runnable.run();
-        return System.currentTimeMillis()-start;
+        readDRL( name );
+        long time = System.currentTimeMillis()-start;
+        System.out.println(msg+time/1000.);
     }
 
     private void readDRL(String fn) {
