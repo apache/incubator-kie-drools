@@ -2,6 +2,8 @@ package org.drools.base.mvel;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
@@ -36,10 +38,29 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     public DroolsMVELFactory(final Map previousDeclarations,
                              final Map localDeclarations,
                              final Map globals) {
+        this( previousDeclarations,
+              localDeclarations,
+              globals,
+              null );        
+    }
+    
+    public DroolsMVELFactory(final Map previousDeclarations,
+                             final Map localDeclarations,
+                             final Map globals,
+                             final List[] externals) {
         this.previousDeclarations = previousDeclarations;
         this.localDeclarations = localDeclarations;
         this.globals = globals;
-    }
+        
+        if ( externals != null && MVELDebugHandler.isDebugMode() ) {
+            for( int i = 0; i < externals.length; i++ ) {
+                for ( Iterator it = externals[i].iterator(); it.hasNext(); ) {
+                    String identifier = ( String ) it.next();
+                    isResolveable( identifier );
+                }
+            }
+        }
+    }    
     
     public Map getVariableResolvers() {
         return this.variableResolvers;
