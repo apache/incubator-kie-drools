@@ -437,6 +437,9 @@ abstract public class AbstractRuleBase
     public synchronized void removePackage(final String packageName) {
         synchronized ( this.pkgs ) {
             final Package pkg = (Package) this.pkgs.get( packageName );
+            if ( pkg ==  null) {
+                throw new IllegalArgumentException("Package name '" + packageName + "' does not exist for this Rule Base.");
+            }
 
             // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
             // in the working memory array 
@@ -500,7 +503,14 @@ abstract public class AbstractRuleBase
                            final String ruleName) {
         synchronized ( this.pkgs ) {
             final Package pkg = (Package) this.pkgs.get( packageName );
-            final Rule rule = pkg.getRule( ruleName );
+            if ( pkg ==  null) {
+                throw new IllegalArgumentException("Package name '" + packageName + "' does not exist for this Rule Base.");
+            }
+            
+            final Rule rule = pkg.getRule( ruleName );            
+            if ( rule ==  null) {
+                throw new IllegalArgumentException("Rule name '"+ ruleName + "' does not exist in the Package '" + packageName + "'.");
+            }
 
             // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
             // in the working memory array 
@@ -541,7 +551,14 @@ abstract public class AbstractRuleBase
     public void removeFunction(String packageName, String functionName) {
         synchronized ( this.pkgs ) {
             final Package pkg = (Package) this.pkgs.get( packageName );
+            if ( pkg ==  null) {
+                throw new IllegalArgumentException("Package name '" + packageName + "' does not exist for this Rule Base.");
+            }
+            
             PackageCompilationData compilationData = pkg.removeFunction( functionName );
+            if ( compilationData == null ) {
+                throw new IllegalArgumentException("function name '" + packageName + "' does not exist in the Package '" + packageName + "'.");
+            }
             
             if ( this.reloadPackageCompilationData == null ) {
                 this.reloadPackageCompilationData = new ReloadPackageCompilationData();
