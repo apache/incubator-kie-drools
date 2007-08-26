@@ -319,6 +319,8 @@ public class PetStore {
                                                       ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED );
             bottomHalf.add( outputPane,
                             BorderLayout.CENTER );
+            
+            this.callback.setOutput( this.output );
         }
 
         /**
@@ -367,8 +369,10 @@ public class PetStore {
             public void mouseReleased(MouseEvent e) {
                 JButton button = (JButton) e.getComponent();
                 try {
-                    output.append( callback.checkout( (JFrame) button.getTopLevelAncestor(),
-                                                      tableModel.getItems() ) );
+//                    output.append( callback.checkout( (JFrame) button.getTopLevelAncestor(),
+//                                                      tableModel.getItems() ) );
+                    callback.checkout( (JFrame) button.getTopLevelAncestor(),
+                                        tableModel.getItems() );                    
                 } catch ( org.drools.FactException fe ) {
                     fe.printStackTrace();
                 }
@@ -490,9 +494,14 @@ public class PetStore {
      */
     public static class CheckoutCallback {
         RuleBase ruleBase;
-
+        JTextArea output;
+        
         public CheckoutCallback(RuleBase ruleBase) {
             this.ruleBase = ruleBase;
+        }
+        
+        public void setOutput(JTextArea output) {
+            this.output = output;
         }
 
         /**
@@ -515,7 +524,8 @@ public class PetStore {
             //add the JFrame to the ApplicationData to allow for user interaction
             WorkingMemory workingMemory = ruleBase.newStatefulSession();
             workingMemory.setGlobal( "frame",
-                                              frame );
+                                      frame );
+            workingMemory.setGlobal( "textArea", this.output);
             workingMemory.insert( cart );
             workingMemory.fireAllRules();
 
