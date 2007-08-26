@@ -225,7 +225,10 @@ public class PatternBuilder
                 container.addConstraint( or );
             }
         } else {
-            throw new UnsupportedOperationException( "This is a bug: unable to build constraint descriptor: " + constraint );
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    (BaseDescr) constraint,
+                                                    null,
+                                                    "This is a bug: unable to build constraint descriptor: '" + constraint + "' in rule '" + context.getRule().getName() + "'" ) );
         }
     }
 
@@ -312,8 +315,10 @@ public class PatternBuilder
             constraint = new ReturnValueConstraint( extractor,
                                                     (ReturnValueRestriction) restriction );
         } else {
-            throw new UnsupportedOperationException( "Unknown restriction type: " + restriction.getClass() );
-
+            context.getErrors().add( new RuleError( context.getRule(),
+                                                    fieldConstraintDescr,
+                                                    null,
+                                                    "This is a bug: Unkown restriction type '" + restriction.getClass() + "' for pattern '"+pattern.getObjectType().toString()+"' in rule '"+context.getRule().getName()+"'" ) );
         }
 
         if ( container == null ) {
@@ -391,14 +396,21 @@ public class PatternBuilder
             } else if ( top.getConnective() == RestrictionConnectiveDescr.OR ) {
                 composite = new OrCompositeRestriction( restrictions );
             } else {
-                throw new UnsupportedOperationException( "Impossible to create a composite restriction for connective: " + top.getConnective() );
+                context.getErrors().add( new RuleError( context.getRule(),
+                                                        fieldConstraintDescr,
+                                                        null,
+                                                        "This is a bug: Impossible to create a composite restriction for connective: " + top.getConnective()+ "' for field '"+ fieldConstraintDescr.getFieldName() +"' in the rule '" + context.getRule().getName() + "'" ) );
             }
 
             return composite;
         } else if ( restrictions.length == 1 ) {
             return restrictions[0];
         }
-        throw new UnsupportedOperationException( "Trying to create a restriction for an empty restriction list" );
+        context.getErrors().add( new RuleError( context.getRule(),
+                                                fieldConstraintDescr,
+                                                null,
+                                                "This is a bug: trying to create a restriction for an empty restriction list for field '"+ fieldConstraintDescr.getFieldName() +"' in the rule '" + context.getRule().getName() + "'" ) );
+        return null;
     }
 
     private void build(final RuleBuildContext context,
