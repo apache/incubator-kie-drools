@@ -6,6 +6,7 @@ import org.drools.Person;
 global java.util.List results;
 
 rule "Test sum" salience 80
+    dialect "mvel"
     when
         $person : Person( $likes : likes )
     	$sum    : Number( doubleValue >= 10 ) 

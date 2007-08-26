@@ -86,7 +86,7 @@ public class MVELAccumulatorFunctionExecutor
                             null,
                             handle.getObject(),
                             workingMemory,
-                            (Map) context );
+                            null );
         final Object value = MVEL.executeExpression( this.expression,
                                                      this.dummy,
                                                      factory );
@@ -106,7 +106,7 @@ public class MVELAccumulatorFunctionExecutor
                                null,
                                handle.getObject(),
                                workingMemory,
-                               (Map) context );
+                               null );
         final Object value = MVEL.executeExpression( this.expression,
                                                      this.dummy,
                                                      factory );
