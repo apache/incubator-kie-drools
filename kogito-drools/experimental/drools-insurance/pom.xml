@@ -242,6 +242,13 @@
 	      <artifactId>servlet-api</artifactId>
 		  <version>2.3</version>
 	    </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.jdt</groupId>
+        <artifactId>core</artifactId>
+        <version>3.2.3.v_686_R32x</version>
+      </dependency>
+	
 	
         <!-- Testing -->
         <dependency>
@@ -264,6 +271,7 @@
             <artifactId>commons-logging</artifactId>
             <version>1.0.4</version>
         </dependency>
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
