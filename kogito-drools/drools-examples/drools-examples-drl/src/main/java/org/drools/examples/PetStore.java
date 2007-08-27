@@ -397,7 +397,8 @@ public class PetStore {
 
             //Iterate through list and add to cart
             for ( int i = 0; i < items.size(); i++ ) {
-                order.addItem( new Purchase( order, (Product) items.get( i ) ) );
+                order.addItem( new Purchase( order,
+                                             (Product) items.get( i ) ) );
             }
 
             //add the JFrame to the ApplicationData to allow for user interaction
@@ -406,6 +407,18 @@ public class PetStore {
                                      frame );
             workingMemory.setGlobal( "textArea",
                                      this.output );
+
+            workingMemory.insert( new Product( "Gold Fish",
+                                               5 ) );
+            workingMemory.insert( new Product( "Fish Tank",
+                                               25 ) );
+            workingMemory.insert( new Product( "Fish Food",
+                                               2 ) );
+            
+            workingMemory.insert( new Product( "Fish Food Sample",
+                                               0 ) );            
+           
+
             workingMemory.insert( order );
             workingMemory.fireAllRules();
 
@@ -417,21 +430,13 @@ public class PetStore {
     public static class Order {
         private List          items;
 
-        private double        discount;
+        private double        grossTotal      = -1;
+        private double        discountedTotal = -1;
 
-        private static String newline = System.getProperty( "line.separator" );
+        private static String newline         = System.getProperty( "line.separator" );
 
         public Order() {
             this.items = new ArrayList();
-            this.discount = 0;
-        }
-        
-        public void setDiscount(double discount) {
-            this.discount = discount;
-        }
-
-        public double getDiscount() {
-            return this.discount;
         }
 
         public void addItem(Purchase item) {
@@ -442,31 +447,22 @@ public class PetStore {
             return this.items;
         }
 
-        /*
-        public double getGrossCost() {
-            Iterator itemIter = getItems().iterator();
-            Product eachItem = null;
-
-            double cost = 0.00;
-
-            while ( itemIter.hasNext() ) {
-                eachItem = (Product) itemIter.next();
-
-                cost += eachItem.getPrice();
-            }
-
-            return cost;
+        public void setGrossTotal(double grossCost) {
+            this.grossTotal = grossCost;
         }
 
-        public double getDiscountedCost() {
-            double cost = getGrossCost();
-            double discount = getDiscount();
-
-            double discountedCost = cost * (1 - discount);
-
-            return discountedCost;
+        public double getGrossTotal() {
+            return this.grossTotal;
         }
-*/
+
+        public void setDiscountedTotal(double discountedCost) {
+            this.discountedTotal = discountedCost;
+        }
+
+        public double getDiscountedTotal() {
+            return this.discountedTotal;
+        }
+
         public String toString() {
             StringBuffer buf = new StringBuffer();
 
@@ -478,30 +474,56 @@ public class PetStore {
                 buf.append( "\t" + itemIter.next() + newline );
             }
 
-//            buf.append( "gross total=" + getGrossCost() + newline );
-//            buf.append( "discounted total=" + getDiscountedCost() + newline );
+            //            buf.append( "gross total=" + getGrossCost() + newline );
+            //            buf.append( "discounted total=" + getDiscountedCost() + newline );
 
             return buf.toString();
         }
     }
-    
+
     public static class Purchase {
-        private Order order;
+        private Order   order;
         private Product product;
+
         public Purchase(Order order,
                         Product product) {
             super();
             this.order = order;
             this.product = product;
         }
-        
+
         public Order getOrder() {
             return order;
         }
+
         public Product getProduct() {
             return product;
-        }                
-    }    
+        }
+
+        public int hashCode() {
+            final int PRIME = 31;
+            int result = 1;
+            result = PRIME * result + ((order == null) ? 0 : order.hashCode());
+            result = PRIME * result + ((product == null) ? 0 : product.hashCode());
+            return result;
+        }
+
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            final Purchase other = (Purchase) obj;
+            if ( order == null ) {
+                if ( other.order != null ) return false;
+            } else if ( !order.equals( other.order ) ) return false;
+            if ( product == null ) {
+                if ( other.product != null ) return false;
+            } else if ( !product.equals( other.product ) ) return false;
+            return true;
+        }
+        
+        
+    }
 
     public static class Product {
         private String name;
@@ -525,8 +547,30 @@ public class PetStore {
         public String toString() {
             return name + " " + this.price;
         }
+
+        public int hashCode() {
+            final int PRIME = 31;
+            int result = 1;
+            result = PRIME * result + ((name == null) ? 0 : name.hashCode());
+            long temp;
+            temp = Double.doubleToLongBits( price );
+            result = PRIME * result + (int) (temp ^ (temp >>> 32));
+            return result;
+        }
+
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            final Product other = (Product) obj;
+            if ( name == null ) {
+                if ( other.name != null ) return false;
+            } else if ( !name.equals( other.name ) ) return false;
+            if ( Double.doubleToLongBits( price ) != Double.doubleToLongBits( other.price ) ) return false;
+            return true;
+        }
+        
+        
     }
-
-
 
 }
