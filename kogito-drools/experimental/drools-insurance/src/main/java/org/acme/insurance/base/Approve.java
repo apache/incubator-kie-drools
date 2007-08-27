@@ -6,7 +6,7 @@ package org.acme.insurance.base;
  *
  */
 public class Approve {
-	
+
 	private String reason;
 
 	public Approve(String reason) {

@@ -1,21 +1,21 @@
 package org.acme.insurance.base;
 
 /**
- * This represents a policy that a driver is applying for. 
- * 
+ * This represents a policy that a driver is applying for.
+ *
  * Obviously in the real world, there are actuaries to mess things up, but lets just pretend there is
  * some simple base price and discount that we can calculate with relatively simple rules !
- * 
+ *
  */
 public class Policy {
-    
+
     private int driverId;
-    
+
 	private boolean approved = false;
 	private int discountPercent = 0;
 	private double basePrice;
     private double insurancePrice;
-    
+
 	public double getInsurancePrice() {
         return insurancePrice;
     }

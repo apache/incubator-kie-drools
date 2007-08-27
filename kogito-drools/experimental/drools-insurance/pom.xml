@@ -7,26 +7,10 @@
     <groupId>org.acme.insurance</groupId>
     <artifactId>insurance</artifactId>
     <packaging>war</packaging>
-    <name>Tabudrool</name>
-    <version>0.1.0-SNAPSHOT</version>
+    <name>DroolsInsurance</name>
+    <version>4.0.1.SNAPSHOT</version>
     <description>
     </description>
-
-    <issueManagement/>
-    <ciManagement/>
-    <inceptionYear>2006</inceptionYear>
-    <mailingLists/>
-
-    <contributors/>
-
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <scm/>
 
     <build>
 	
@@ -242,17 +226,6 @@
             <!--</plugin>-->
         </plugins>
     </reporting>
-
-    <profiles>
-        <profile>
-            <id>fast</id>
-            <properties>
-                <maven.test.skip>true</maven.test.skip>
-            </properties>
-        </profile>
-    </profiles>
-
-    <modules/>
 
     <repositories>
         <repository>

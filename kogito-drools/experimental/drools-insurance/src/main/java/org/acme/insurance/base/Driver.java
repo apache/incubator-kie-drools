@@ -7,13 +7,13 @@ import java.util.Date;
  * This represents obviously a driver who is applying for an insurance Policy.
  */
 public class Driver {
-    
+
     public static final int MALE = 0;
     public static final int FEMALE = 1;
-    
+
     public static final int SINGLE = 0;
     public static final int MARRIED = 1;
-    
+
     private int     id;
 
     private String  name;
@@ -24,17 +24,21 @@ public class Driver {
     private Integer maritalState;
     private boolean hasChildren;
     private Integer genre;
-    
+
     private Double  insuranceFactor = 1.0;
-    
+
     public Double getInsuranceFactor(){
         return insuranceFactor;
     }
-    
+
+    public void setInsuranceFactor(Double factor) {
+    	updateInsuranceFactor(factor);
+    }
+
     public void updateInsuranceFactor(Double factor) {
         this.insuranceFactor *= factor;
     }
-    
+
     public int getGenre() {
         return genre;
     }
