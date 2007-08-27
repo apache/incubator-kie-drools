@@ -72,14 +72,14 @@ def eval_table(row) :
     #for condition in headers :
         col_index = condition[0]
         if not row.has_key(col_index) :
-            return True
+            return False
         cell_value = row[col_index]
         predicate = str(condition[1]) + str(cell_value)
-        return eval(predicate)
+        return not eval(predicate)
 
     size = len(filter(check_condition,headers))       
 
-    if size == len(headers) :
+    if size == 0 :
         #for action in table['action_headers'] :
         def apply_actions(action) :    
             col_label = action[0]
