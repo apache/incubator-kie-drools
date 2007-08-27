@@ -1,0 +1,56 @@
+#created on: 7.6.2007
+package org.drools.analytics.rangeChecks.patterns;
+
+#list any import classes here.
+import org.drools.analytics.components.*;
+import org.drools.analytics.accumulateFunction.ValidatePattern;
+import org.drools.analytics.accumulateFunction.ValidatePatternResult;
+import org.drools.analytics.result.AnalysisResult;
+import org.drools.analytics.result.Gap;
+
+import java.util.ArrayList;
+import java.util.TreeSet;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
+#declare any global variables here
+global AnalysisResult result
+
+#
+# If all pattern ranges are not checked for a field.
+# 
+# Type: Warning
+# Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
+# 					then Foo( bar == 30 ) is missing.
+rule "Range check for number patterns"
+	when
+		$f :Field( ( fieldType == Field.FieldType.INT || == Field.FieldType.DOUBLE ), 
+					$fieldId :id, $fieldName :name, $classId :classId )
+		AnalyticsClass( id == $classId, $className :name )
+		(
+			# Where pattern is false.
+			$validationResult :ValidatePatternResult( value != null)
+				from accumulate(
+					$r :LiteralRestriction( fieldId == $fieldId, 
+						patternIsNot == false, ( evaluator == "==" || == "!=" )),
+					validatePattern( $r )
+				)
+		) or (
+			# Where pattern is true.
+			$validationResult :ValidatePatternResult( value != null)
+				from accumulate(
+					$r :LiteralRestriction( fieldId == $fieldId, 
+						patternIsNot == true, ( evaluator == "==" || == "!=" )),
+					validatePattern( $r )
+				)
+		)
+	then
+		// TODO: Find out if evaluator is == or !=.
+		Gap gap = new Gap();
+		gap.setCause($f);
+		#gap.setRuleName($rule.getRuleName());
+		#gap.setEvaluator($r.getEvaluator());
+		gap.setFiredRuleName(drools.getRule().getName());
+		gap.setValue($validationResult.toString());
+		insert( gap );
+end
