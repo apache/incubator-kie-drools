@@ -735,7 +735,24 @@
         </figure>
       </section>
 
-      <para>Tip: As you may have many similar rules, you can create rule
+      <para>
+	In the above diagram - the "MM" indicates a value that will be used in the rule, yet "Mini Mal" will be displayed in the GUI. 
+      </para>
+
+      <para>
+	Getting data lists from external data sources: It is possible to have the BRMS call a piece of code which will load a list of Strings. To do this, you will need a bit of code that returns a java.util.List (of String's) to be on the classpath of the BRMS. Instead of specifying a list of values in the BRMS itself - the code can return the list of Strings (you can use the "=" inside the strings if you want to use a different display value to the rule value, as normal). 
+For example, in the 'Person.age' line above, you could change it to:
+<programlisting>
+  'Person.age' : (new com.yourco.DataHelper()).getListOfAges()
+</programlisting>
+This assumes you have a class called "DataHelper" which has a method "getListOfAges()" which returns a List of strings (and is on the classpath). You can of course mix these "dynamic" enumerations with fixed lists. You could for example load from a database using JDBC.
+      </para>
+
+    </section>
+
+    <section><title>Templates of assets/rules</title>
+
+          <para>Tip: As you may have many similar rules, you can create rule
       templates, which are simply rules which are kept in an inactive package
       - you can then categories templates accordingly, and copy them as needed
       (choosing a live package as the target package).</para>
