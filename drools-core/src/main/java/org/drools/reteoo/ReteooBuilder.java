@@ -209,14 +209,14 @@ public class ReteooBuilder
     }
     
     public BaseNode[] getTerminalNodes(final Rule rule) {
-        return (BaseNode[]) this.rules.remove( rule );
+        return (BaseNode[]) this.rules.get( rule );
     }
 
     public void removeRule(final Rule rule) {
         // reset working memories for potential propagation
         this.workingMemories = (InternalWorkingMemory[]) this.ruleBase.getWorkingMemories();
 
-        final Object object = this.rules.get( rule );
+        final Object object = this.rules.remove( rule );
 
         final BaseNode[] nodes = (BaseNode[]) object;
         for ( int i = 0, length = nodes.length; i < length; i++ ) {

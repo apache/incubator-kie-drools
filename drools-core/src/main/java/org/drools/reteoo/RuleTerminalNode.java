@@ -455,6 +455,8 @@ public final class RuleTerminalNode extends BaseNode
             workingMemory.executeQueuedActions();
         }
 
+        removeShare();
+        
         this.tupleSource.remove( this,
                                  workingMemories );
     }
