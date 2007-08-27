@@ -4,9 +4,18 @@ import org.drools.Cheese;
 
 global java.util.List list
 
+// make these rules share
+// so that we know things are being 
+// removed correctly still
 rule "like cheese"
     when
         Cheese( t:type )
     then
 		list.add( t );
+end    
+
+rule "like cheese2"
+    when
+        Cheese( t:type )
+    then
 end    

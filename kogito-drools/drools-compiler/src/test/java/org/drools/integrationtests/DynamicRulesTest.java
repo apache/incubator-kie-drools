@@ -174,22 +174,28 @@ public class DynamicRulesTest extends TestCase {
                                            5 );
         workingMemory.insert( cheddar );
 
-        assertEquals( 11,
+        assertEquals( 15,
                       workingMemory.getAgenda().getActivations().length );
 
         reteooRuleBase.removeRule( "org.drools.test",
                                    "Who likes Stilton" );
-        assertEquals( 8,
+        assertEquals( 12,
                       workingMemory.getAgenda().getActivations().length );
 
         reteooRuleBase.removeRule( "org.drools.test",
                                    "like cheese" );
+        
+//        reteooRuleBase.removeRule( "org.drools.test",
+//                                   "like cheese2" );        
 
         final Cheese muzzarela = new Cheese( "muzzarela",
                                              5 );
+        assertEquals( 8,
+                      workingMemory.getAgenda().getActivations().length );
+        
         workingMemory.insert( muzzarela );
 
-        assertEquals( 4,
+        assertEquals( 9,
                       workingMemory.getAgenda().getActivations().length );
 
         reteooRuleBase.removePackage( "org.drools.test" );
