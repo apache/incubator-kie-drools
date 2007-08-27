@@ -225,17 +225,17 @@ public class DynamicRulesTest extends TestCase {
         if ( reteooRuleBase != null ) {
             assertEquals( 1,
                           reteooRuleBase.getPackages().length );
-            assertEquals( 4,
+            assertEquals( 5,
                           reteooRuleBase.getPackages()[0].getRules().length );
 
             reteooRuleBase.removeRule( "org.drools.test",
                                        "Who likes Stilton" );
-            assertEquals( 3,
+            assertEquals( 4,
                           reteooRuleBase.getPackages()[0].getRules().length );
 
             reteooRuleBase.removeRule( "org.drools.test",
                                        "like cheese" );
-            assertEquals( 2,
+            assertEquals( 3,
                           reteooRuleBase.getPackages()[0].getRules().length );
 
             reteooRuleBase.removePackage( "org.drools.test" );
