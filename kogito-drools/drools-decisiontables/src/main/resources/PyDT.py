@@ -33,7 +33,7 @@ headers = map(make_header, table['condition_headers'])
 
     
 
-
+"""
 for row in table['data'] :
     #go through all the conditions, evaluating
     row_pass = True
@@ -61,31 +61,32 @@ for row in table['data'] :
 
 
 print str(fact)
+"""
+
 
 #lets try a map based approach
 def eval_table(row) :
     #go through all the conditions, evaluating
-    row_pass = True
-    for condition in headers :
+
+    def check_condition(condition) :    
+    #for condition in headers :
         col_index = condition[0]
+        if not row.has_key(col_index) :
+            return True
         cell_value = row[col_index]
-         
         predicate = str(condition[1]) + str(cell_value)
-        
-        if not eval(predicate) :
-            #then failure due to negation
-            row_pass = False
-            break
-        #if they all pass
-        #then iterate through and apply the action (unless we finish on first match)
-        #thats it !
-    if row_pass :
-        for action in table['action_headers'] :
-            
+        return eval(predicate)
+
+    size = len(filter(check_condition,headers))       
+
+    if size == len(headers) :
+        #for action in table['action_headers'] :
+        def apply_actions(action) :    
             col_label = action[0]
             if (row.has_key(col_label)) :
                 fact[action[1]] = row[col_label]
-
+        map(apply_actions, table['action_headers'])
+        
 map(eval_table, table['data'])
 
-
+print "And the result is: " + str(fact)
