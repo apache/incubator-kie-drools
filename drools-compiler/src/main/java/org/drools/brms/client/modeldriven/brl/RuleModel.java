@@ -7,6 +7,10 @@ public class RuleModel
     implements
     PortableObject {
 
+    /**
+     * This name is generally not used - the asset name or the
+     * file name is preferred (ie it could get out of sync with the name of the file it is in).
+     */
     public String          name;
     public String          modelVersion = "1.0";
 
@@ -16,10 +20,10 @@ public class RuleModel
     public IAction[]       rhs          = new IAction[0];
 
     /**
-     * This will return the fact pattern that a variable is bound to. 
-     * 
+     * This will return the fact pattern that a variable is bound to.
+     *
      * @param var The bound fact variable (NOT bound field).
-     * @return null or the FactPattern found. 
+     * @return null or the FactPattern found.
      */
     public FactPattern getBoundFact(final String var) {
         if ( this.lhs == null ) {
@@ -58,9 +62,9 @@ public class RuleModel
     }
 
     /**
-     * 
+     *
      * @param idx Remove this index from the LHS.
-     * @param Returns false if it was NOT allowed to remove this item (ie 
+     * @param Returns false if it was NOT allowed to remove this item (ie
      * it is used on the RHS).
      */
     public boolean removeLhsItem(final int idx) {
@@ -187,7 +191,7 @@ public class RuleModel
     }
 
     /**
-     * This uses a deceptively simple algorithm to determine 
+     * This uses a deceptively simple algorithm to determine
      * what bound variables are in scope for a given constraint (including connectives).
      * Does not take into account globals.
      */
@@ -234,7 +238,7 @@ public class RuleModel
         }
         return result;
     }
-    
+
     /**
      * This will get a list of all bound variables, including bound fields.
      */
@@ -247,7 +251,7 @@ public class RuleModel
                 if (fact.isBound()) {
                     result.add( fact.boundName );
                 }
-                
+
                 for ( int j = 0; j < fact.getFieldConstraints().length; j++ ) {
                     FieldConstraint fc = fact.getFieldConstraints()[j];
                     if (fc instanceof SingleFieldConstraint) {
@@ -257,13 +261,13 @@ public class RuleModel
                         }
                     }
                 }
-            } 
+            }
         }
         return result;
     }
 
     /**
-     * Checks to see if a variable is used or not, includes fields 
+     * Checks to see if a variable is used or not, includes fields
      * as well as facts.
      */
     public boolean isVariableNameUsed(String s) {
@@ -274,7 +278,7 @@ public class RuleModel
      * Returns true if any DSLSentences are used.
      */
     public boolean hasDSLSentences() {
-        
+
         if (this.lhs != null) {
             for ( int i = 0; i < this.lhs.length; i++ ) {
                 if ( lhs[i] instanceof DSLSentence ) {
@@ -282,7 +286,7 @@ public class RuleModel
                 }
             }
         }
-        
+
         if (this.rhs != null) {
             for ( int i = 0; i < this.rhs.length; i++ ) {
                 if ( rhs[i] instanceof DSLSentence ) {
@@ -290,7 +294,7 @@ public class RuleModel
                 }
             }
         }
-        
+
         return false;
    }
 
