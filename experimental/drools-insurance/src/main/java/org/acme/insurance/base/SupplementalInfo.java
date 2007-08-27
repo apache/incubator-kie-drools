@@ -1,7 +1,7 @@
 package org.acme.insurance.base;
 
 public class SupplementalInfo {
-    
+
     private int     driverId;
 
     private boolean extraCar;

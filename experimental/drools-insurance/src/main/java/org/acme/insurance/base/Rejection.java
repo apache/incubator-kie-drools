@@ -15,5 +15,5 @@ public class Rejection {
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
-	
+
 }

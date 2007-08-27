@@ -24,9 +24,9 @@ rule "Insurance Calcule"
 	salience 10
 	when
 		not Rejection()	
-		driver : Driver()
-		policy : Policy( approved == true )
+		driver : Driver(ifactor : insuranceFactor)
+		policy : Policy( approved == true, bp : basePrice, ip : insurancePrice )
 	then
-		policy.setInsurancePrice(policy.getBasePrice() * driver.getInsuranceFactor() + policy.getInsurancePrice());		
-		System.out.println("Insurance Calcule: " + policy.getInsurancePrice() );		
+		policy.setInsurancePrice((bp * ifactor) + ip);		
+		System.out.println("Insurance Calcule: " + ip );		
 end

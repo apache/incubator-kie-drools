@@ -7,8 +7,7 @@ import java.io.Reader;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.audit.WorkingMemoryLogger;
+import org.drools.agent.RuleAgent;
 import org.drools.compiler.PackageBuilder;
 
 public class InsuranceTestHelper {
@@ -17,8 +16,9 @@ public class InsuranceTestHelper {
 
 	public StatefulSession getSession() {
 		try { 
-			rulebase = loadRuleBase();
-			session = rulebase.newStatefulSession();
+			//rulebase = loadRuleBaseFromRuleAgent();
+            rulebase = loadRuleBaseFromDRL();
+            session = rulebase.newStatefulSession();
 			
 			session.setFocus("risk assessment");
 			
@@ -29,11 +29,19 @@ public class InsuranceTestHelper {
 		}
 		return null;
 	}
+	
+	public RuleBase loadRuleBaseFromRuleAgent() {
+		RuleAgent agent = RuleAgent
+				.newRuleAgent("/brmsdeployedrules.properties");
+		RuleBase rulebase = agent.getRuleBase();
+		return rulebase;
+	}
+	
 
-	private RuleBase loadRuleBase() throws Exception {
+	private RuleBase loadRuleBaseFromDRL() throws Exception {
 
 		PackageBuilder builder = new PackageBuilder();
-		builder.addPackageFromDrl(getTechnicalRules("/approval/raw.drl"));
+		builder.addPackageFromDrl(getTechnicalRules("/approval/insurancefactor.drl"));
 		builder.addPackageFromDrl(getTechnicalRules("/approval/approval.drl"));
 		builder.addPackageFromDrl(getTechnicalRules("/approval/calculateInsurance.drl"));
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();

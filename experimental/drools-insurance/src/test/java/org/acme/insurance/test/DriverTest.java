@@ -155,6 +155,32 @@ public class DriverTest extends TestCase {
         }
     }
 
+    // rewrite test or add rule in drl
+    
+    public void testMarginalWithPriorDriver() throws ParseException {
+        Driver driver = new Driver();
+
+        SimpleDateFormat df = new java.text.SimpleDateFormat( "dd/MM/yyyy" );
+        Date birhDate = df.parse( "18/09/2005" );
+        
+        
+        driver.setGenre( Driver.MALE );
+        driver.setMaritalState( Driver.MARRIED );
+        driver.setHasChildren( false );
+        driver.setBirhDate( birhDate );
+        driver.setPriorClaims( 9 );
+
+        Policy policy = new Policy();
+        policy.setApproved( false );
+
+        session.insert( driver );
+        session.insert( policy );
+
+        session.fireAllRules();
+        
+        assertFalse( policy.isApproved() );
+    }    
+
     public void testProblematicDriver() throws ParseException {
         Driver driver = new Driver();
 

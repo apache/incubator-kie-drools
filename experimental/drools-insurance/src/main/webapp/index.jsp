@@ -30,7 +30,7 @@
 			<tbody>
 				<tr class="seucorretor6">
 					<td class="seucorretor2" align="center">
-					<div align="left"><b>Dados do condutor principal</b></div>
+					<div align="left"><b>Driver's information</b></div>
 					</td>
 				</tr>
 
@@ -44,13 +44,13 @@
 								<td width="162" class="c1">Sexo:</td>
 
 								<td width="363"><select name="sexo">
-									<option value=0 selected="selected"> Masculino</option>
-									<option value=1>Feminino</option>
+									<option value=0 selected="selected">Male</option>
+									<option value=1>Female</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Data Nascimento:</td>
+								<td class="c1">Birth Date:</td>
 
 								<td><input size="2" name="data_nascimento_dia"
 									maxlength="2" value="01" type="text" width="2"> / <input
@@ -62,40 +62,40 @@
 							</tr>
 
 							<tr>
-								<td class="c1">Tempo de Habilitacao:</td>
+								<td class="c1">License Age:</td>
 
 								<td><input name="habilitacao" size="2" maxlength="2"
-									value="0" type="text"> <span class="c2">Anos</span></td>
+									value="0" type="text"> <span class="c2">Years</span></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Estado Civil:</td>
+								<td class="c1">Marital State:</td>
 
 								<td><select name="estadoCivil">
-									<option value="0" selected="selected" >Solteiro/Divorciado</option>
-									<option value="1">Casado/Uniao Estavel Viuvo</option>
+									<option value="0" selected="selected" >Single/Divorced</option>
+									<option value="1">Maried</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Tem filhos?</td>
+								<td class="c1">Has Child?</td>
 
 								<td><select name="temFilhos">
-									<option value="1">Sim, até 17 anos.</option>
-									<option value="2">Sim, entre 17 e 25 anos.</option>
-									<option value="3">Sim, até 30 anos.</option>
-									<option value="0" selected="selected" >Não ou Nenhuma das anteriores</option>
+									<option value="1">Yes, less than 17 years.</option>
+									<option value="2">Yes, Between 17 and 25 years.</option>
+									<option value="3">Yes, greater than 26 years old.</option>
+									<option value="0" selected="selected" >No, I don't have Child</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Escolaridade:</td>
+								<td class="c1">Degree:</td>
 
 								<td><select name="escolaridade">
-									<option value="1" selected="selected" >1 Grau</option>
-									<option value="2">2 Grau</option>
-									<option value="3">3 Grau (Univ.)</option>
-									<option value="4">Pós Graduação</option>
+									<option value="1" selected="selected" >Elementary School</option>
+									<option value="2">High School</option>
+									<option value="3">College</option>
+									<option value="4">Pos</option>
 								</select></td>
 							</tr>
 						</tbody>
@@ -113,8 +113,7 @@
 			<tbody>
 				<tr class="seucorretor6">
 					<td class="seucorretor2" align="center">
-					<div align="left"><b>Informacoes adicionais do condutor
-					principal</b></div>
+					<div align="left"><b>Driver's additional info </b></div>
 					</td>
 				</tr>
 
@@ -126,61 +125,61 @@
 						cellpadding="4" cellspacing="2">
 						<tbody>
 							<tr>
-								<td width="296" class="c1">Guarda do veiculo de dia:</td>
+								<td width="296" class="c1">Day veicle place:</td>
 
 								<td width="266"><select name="garagemDia">
-									<option value="1">Garagem fechada</option>
-									<option value="2">Estacionamento</option>
-									<option value="0" selected="selected" >Não informado ou na rua</option>
+									<option value="1">Closed Garage</option>
+									<option value="2">Parking</option>
+									<option value="0" selected="selected" >Street</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Guarda do veículo de noite:</td>
+								<td class="c1">Night veichle place:</td>
 
 								<td><select name="garagemNoite">
-									<option value="1">Garagem fechada</option>
-									<option value="2">Estacionamento</option>
-									<option value="0" selected="selected" >Não informado ou na rua</option>
+                                    <option value="1">Closed Garage</option>
+                                    <option value="2">Parking</option>
+                                    <option value="0" selected="selected" >Street</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Residência atual:</td>
+								<td class="c1">Residence Status:</td>
 
 								<td><select name="condicaoImovel">
-									<option value="1">Própria/Familia</option>
-									<option value="0" selected="selected">Alugada</option>
+									<option value="1">Owned</option>
+									<option value="0" selected="selected">Rented</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Emprego atual:</td>
+								<td class="c1">Actual Job:</td>
 
 								<td><select name="profissao">
 									<option value="0" selected="selected" >Desempregado</option>
-									<option value="1">Proprietário de Empresa ou Negócio</option>
-									<option value="2">Funcionario Publico</option>
-									<option value="3">Funcionario Privado</option>
-									<option value="4">Estudante</option>
+									<option value="1">Business owner</option>
+									<option value="2">Public employee</option>
+									<option value="3">Private employee</option>
+									<option value="4">Student</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Reside em:</td>
+								<td class="c1">Lives</td>
 
 								<td><select name="tipoResidencia">
-									<option value="0" selected="selected" >Casa</option>
-									<option value="1">Casa em condomínio fechado</option>
-									<option value="2">Apartamento</option>
+									<option value="0" selected="selected" >House</option>
+									<option value="1">Private village </option>
+									<option value="2">Appartment</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Quantos sinistros indenizados ?</td>
+								<td class="c1">previous claim numbers</td>
 
 								<td><select name="sinistros">
-									<option value="0" selected="selected">Nenhum</option>
+									<option value="0" selected="selected">none</option>
 									<option value="1">1</option>
 									<option value="2">2</option>
 									<option value="3">3</option>
@@ -189,7 +188,7 @@
 									<option value="6">6</option>
 									<option value="7">7</option>
 									<option value="8">8</option>
-									<option value="9">mais de 8</option>
+									<option value="9">more than 8</option>
 								</select></td>
 							</tr>
 						</tbody>
@@ -210,8 +209,7 @@
 			<tbody>
 				<tr class="seucorretor6">
 					<td align="center" bordercolor="#000000" class="seucorretor2">
-					<div align="left"><span class="seucorretor2 seucorretor2"><b>Clausulas
-					complementares</b></span></div>
+					<div align="left"><span class="seucorretor2 seucorretor2"><b>Supplemental thing</b></span></div>
 					</td>
 				</tr>
 
@@ -223,37 +221,37 @@
 						width="95%">
 						<tbody>
 							<tr>
-								<td class="c1" width="50%">Quer Carro Reserva?</td>
+								<td class="c1" width="50%">Whants extra car?</td>
 
 								<td width="50%"><select name="carroReserva">
-									<option value="1">Sim</option>
-									<option value="0" selected="selected" >Não</option>
+									<option value="1">Yes</option>
+									<option value="0" selected="selected" >No</option>
 								</select> &nbsp;</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Quer Assistência 24 horas?</td>
+								<td class="c1" width="50%">Wants 24/7 support?</td>
 								<td width="50%"><select name="assistencia24h">
-									<option value="1">Sim</option>
-									<option value="0" selected="selected" >Não</option>									
+                                    <option value="1">Yes</option>
+                                    <option value="0" selected="selected" >No</option>
 								</select> &nbsp;</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Quer Cobertura de vidros?</td>
+								<td class="c1" width="50%">Glass coverage?</td>
 
 								<td width="50%"><select name="vidros">
-									<option value="1">Sim</option>
-									<option value="0" selected="selected" >Não</option>									
+                                    <option value="1">Yes</option>
+                                    <option value="0" selected="selected" >No</option>
 								</select> &nbsp;</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Despesas Extraordinárias:</td>
+								<td class="c1" width="50%">Unrelated expenses:</td>
 
 								<td width="50%"><select name="despExtra">
-									<option value="1">Sim</option>
-									<option value="0" selected="selected" >Não</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0" selected="selected" >No</option>
 								</select> &nbsp;</td>
 							</tr>
 						</tbody>
@@ -271,8 +269,7 @@
 			<tbody>
 				<tr class="seucorretor6">
 					<td align="center" bordercolor="#000000" class="seucorretor2">
-					<div align="left"><span class="seucorretor1"><b>Cobertura
-					de Acessórios:</b></span></div>
+					<div align="left"><span class="seucorretor1"><b>Accessories Coverage:</b></span></div>
 					</td>
 				</tr>
 
@@ -284,27 +281,27 @@
 						width="95%">
 						<tbody>
 							<tr>
-								<td class="c5" width="50%">Descrição</td>
+								<td class="c5" width="50%"></td>
 
-								<td class="c5" width="50%">Valor (R$)</td>
+								<td class="c5" width="50%">Value ($)</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Alarme:</td>
+								<td class="c1" width="50%">Alarm:</td>
 
 								<td width="50%"><input size="12" name="alarme" value="0.00"
 									type="text"> &nbsp;</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Sistema de Som:</td>
+								<td class="c1" width="50%">Sound system:</td>
 
 								<td width="50%"><input size="12" name="sistemaSom"
 									value="0.00" type="text"> &nbsp;</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Blindagem:</td>
+								<td class="c1" width="50%">Armor:</td>
 
 								<td width="50%"><input size="12" name="blindagem"
 									value="0.00" type="text"> &nbsp;</td>

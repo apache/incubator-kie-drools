@@ -11,6 +11,7 @@ rule "approve"
 		$policy.setApproved(true);
 		update($policy);
 		drools.setFocus("insurancecalcule");
+		System.out.println("Policy aproved focusing insurance calcule agenda-group");
 end
 
 rule "rejection"
@@ -20,6 +21,5 @@ rule "rejection"
 		Rejection()
 	then
 		drools.halt();
-		System.out.println("rejection: ");
+		System.out.println("There's some rejection: halting drools ");
 end
-
