@@ -1,6 +1,12 @@
 #created on: Aug 14, 2007
 package org.acme.insurance
 
+import org.acme.insurance.base.Rejection;
+import org.acme.insurance.base.Policy;
+import org.acme.insurance.base.Driver;
+import org.acme.insurance.base.AccessoriesCoverage;
+
+
 // After approved insurance calcule the value
 rule "Insurance extra itens percent"
 	agenda-group "insurancecalcule"

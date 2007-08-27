@@ -1,5 +1,8 @@
 package org.acme.insurance;
 
+import org.acme.insurance.base.Rejection;
+import org.acme.insurance.base.Policy;
+
 rule "approve"
 	agenda-group "risk assessment"
 	salience -1
