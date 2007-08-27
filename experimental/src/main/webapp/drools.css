@@ -1,0 +1,96 @@
+body {
+	background-color: #333333;
+	color: #333333;
+	text-align: center;
+	margin: 0 0 0 0;
+	padding: 0 0 0 0;
+}
+
+body, p, ol, ul, td {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size:   13px;
+  line-height: 18px;
+}
+
+pre {
+  background-color: #eee;
+  padding: 10px;
+  font-size: 11px;
+}
+
+a { 
+	color: #000000;
+}
+
+a:hover {
+	color: #FFFFFF;
+	background-color: #000000;
+}
+
+.clear {
+	clear: both;
+}
+
+li.clear {
+	display: none;
+	clear: both;
+}
+
+#header {
+	width: 100%;
+	height: 84px;
+	display: block;
+	background: url(images/header-bg.100x42.png) repeat-x;
+	text-align: center;
+}
+
+#header div.area {
+	width: 676px;
+	text-align: left;
+	margin: 0 auto 0 auto;
+}
+
+#header a.logo span {
+	display: none;
+}
+
+#header a.logo {
+	display: block;
+	float: left;
+	width: 160px;
+	height: 84px;
+	background: url(images/droolslogo.png);
+	margin: 1px 10px 0 0;
+}
+
+#header div.column {
+	float: left;
+}
+
+#header ul.options {
+	display: block;
+	list-style: none;
+	margin: 0 0 0 0;
+	padding: 2px 0 0 0;
+}
+
+#header ul.options li {
+	list-style: none;
+	display: block;
+	float: left;
+}
+
+#header ul.options li a {
+	display: block;
+	text-decoration: none;
+	font-size: 12pt;
+	color: white;
+	font-weight: bold;
+	padding: 12px 20px 6px 4px;
+	letter-spacing: 0.03em;
+}
+
+#header ul.options li a:hover {
+	background: none;
+	text-decoration: underline;
+}
