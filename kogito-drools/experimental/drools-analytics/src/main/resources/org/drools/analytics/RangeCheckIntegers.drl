@@ -1,0 +1,169 @@
+#created on: 7.6.2007
+package org.drools.analytics.rangeChecks.integers;
+
+#list any import classes here.
+import org.drools.analytics.components.*;
+import org.drools.analytics.accumulateFunction.ValidatePattern;
+import org.drools.analytics.accumulateFunction.ValidatePatternResult;
+import org.drools.analytics.result.AnalysisResult;
+import org.drools.analytics.result.Gap;
+
+import java.util.ArrayList;
+import java.util.TreeSet;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
+#declare any global variables here
+global AnalysisResult result
+
+# If all ranges are not checked for a field.
+# 
+# Type: Warning
+# Example: in "Rule 1" Foo(bar > 42 ) and in "Rule 2" Foo( bar < 42 )
+# 					then Foo( bar == 42 ) is missing.
+rule "Range check for integers, smaller and greater than"
+	when
+		$f :Field( fieldType == Field.FieldType.INT, $fieldId :id, $fieldName :name, $classId :classId )
+		(
+				$r :LiteralRestriction( fieldId == $fieldId, evaluator == ">", 
+											$patternIsNot :patternIsNot, $value :intValue )
+			and
+				not LiteralRestriction( fieldId == $fieldId, ( evaluator == "==" || == "<=" ), 
+											patternIsNot == $patternIsNot, intValue == $value )
+		) or (
+				$r :LiteralRestriction( fieldId == $fieldId, evaluator == "<", 
+											$patternIsNot :patternIsNot, $value :intValue )
+			and
+				not LiteralRestriction( fieldId == $fieldId, ( evaluator == "==" || == ">=" ), 
+											patternIsNot == $patternIsNot, intValue == $value )
+		) or (
+				$r :LiteralRestriction( fieldId == $fieldId, evaluator == "<=", 
+											$patternIsNot :patternIsNot, $value :intValue )
+			and
+				not LiteralRestriction( fieldId == $fieldId, evaluator  == ">", 
+											patternIsNot == $patternIsNot, intValue == $value )
+			# XXX: Field might be double, then this pattern is useless.
+			and
+				not LiteralRestriction( fieldId == $fieldId, evaluator  == ">=", 
+											patternIsNot == $patternIsNot, eval( intValue == $value + 1 ) )
+		) or (
+				$r :LiteralRestriction( fieldId == $fieldId, evaluator == ">=", 
+											$patternIsNot :patternIsNot, $value :intValue )
+			and
+				not LiteralRestriction( fieldId == $fieldId, evaluator  == "<", 
+											patternIsNot == $patternIsNot, intValue == $value )
+			# XXX: Field might be double, then this pattern is useless. 
+			and
+				not LiteralRestriction( fieldId == $fieldId, evaluator  == "<=", 
+											patternIsNot == $patternIsNot, eval( intValue == $value - 1 ) )
+		)
+		$rule :AnalyticsRule( id == $r.ruleId )
+	then
+		Gap gap = new Gap();
+		gap.setCause($f);
+		gap.setRuleName($rule.getRuleName());
+		gap.setEvaluator($r.getEvaluator());
+		gap.setFiredRuleName(drools.getRule().getName());
+		gap.setValue($value +"");
+		insert( gap );
+end
+
+# If all ranges are not checked for a field.
+# If equality and smaller than exist check that greater than exists too.
+#
+# Type: Warning
+# Example: in "Rule 1" Foo(bar == 42 ) and in "Rule 2" Foo( bar < 42 )
+# 					then Foo( bar > 42 ) is missing.
+rule "Range check for integers, equal and greater than"
+	when
+		(
+		# Case Foo( bar == 42 ) Foo( bar >= 43 || == 43 ).
+				$f :Field( fieldType == Field.FieldType.INT )
+			and
+				$r :LiteralRestriction( fieldId == $f.id, evaluator == "==" )
+			and
+				LiteralRestriction( fieldId == $f.id, 
+										( evaluator == "==" || == ">=" ),
+										patternIsNot == $r.patternIsNot, 
+										eval( intValue == $r.getIntValue() + 1 ) )
+		) or (
+		# Case Foo( bar == 42 ) Foo( bar >= 42 || > 42 ).
+				$f :Field( fieldType == Field.FieldType.INT )
+			and
+				$r :LiteralRestriction( fieldId == $f.id, evaluator == "==" )
+			and
+				LiteralRestriction( fieldId == $f.id, 
+										( evaluator == ">" || == ">=" ), 
+										patternIsNot == $r.patternIsNot, 
+										intValue == $r.intValue )
+		)
+		# Check if Foo( bar < 42 || <= 42 ) is missing.
+		not	LiteralRestriction( fieldId == $f.id, 
+								( evaluator == "<" || == "<=" ), 
+								patternIsNot == $r.patternIsNot, 
+								intValue == $r.intValue )
+		# Check if Foo( bar == 41 || <= 41 ) is missing.
+		not	LiteralRestriction( fieldId == $f.id, 
+								( evaluator == "==" || == "<=" ), 
+								patternIsNot == $r.patternIsNot, 
+								eval( intValue == $r.getIntValue() - 1 ) )
+		$rule :AnalyticsRule( id == $r.ruleId )
+	then
+		Gap gap = new Gap();
+		gap.setCause($f);
+		gap.setRuleName($rule.getRuleName());
+		gap.setEvaluator("<");
+		gap.setFiredRuleName(drools.getRule().getName());
+		gap.setValue($r.getIntValue() + "");
+		insert( gap );
+end
+
+# If all ranges are not checked for a field.
+# If equality and smaller than exist check that greater than exists too.
+#
+# Type: Warning
+# Example: in "Rule 1" Foo(bar == 42 ) and in "Rule 2" Foo( bar > 42 )
+# 					then Foo( bar < 42 ) is missing.
+rule "Range check for integers, equal and smaller than"
+	when
+		(
+		# Case Foo( bar == 42 ) Foo( bar <= 43 || == 43 ).
+				$f :Field( fieldType == Field.FieldType.INT )
+			and
+				$r :LiteralRestriction( fieldId == $f.id, evaluator == "==" )
+			and
+				LiteralRestriction( fieldId == $f.id, 
+										( evaluator == "==" || == "<=" ),
+										patternIsNot == $r.patternIsNot, 
+										eval( intValue == $r.getIntValue() - 1 ) )
+		) or (
+		# Case Foo( bar == 42 ) Foo( bar <= 42 || < 42 ).
+				$f :Field( fieldType == Field.FieldType.INT )
+			and
+				$r :LiteralRestriction( fieldId == $f.id, evaluator == "==" )
+			and
+				LiteralRestriction( fieldId == $f.id, 
+										( evaluator == "<" || == "<=" ), 
+										patternIsNot == $r.patternIsNot, 
+										intValue == $r.intValue )
+		)
+		# Check if Foo( bar > 42 || >= 42 ) is missing.
+		not	LiteralRestriction( fieldId == $f.id, 
+								( evaluator == ">" || == ">=" ), 
+								patternIsNot == $r.patternIsNot, 
+								intValue == $r.intValue )
+		# Check if Foo( bar == 41 || >= 41 ) is missing.
+		not	LiteralRestriction( fieldId == $f.id, 
+								( evaluator == "==" || == ">=" ), 
+								patternIsNot == $r.patternIsNot, 
+								eval( intValue == $r.getIntValue() + 1 ) )
+		$rule :AnalyticsRule( id == $r.ruleId )
+	then
+		Gap gap = new Gap();
+		gap.setCause($f);
+		gap.setRuleName($rule.getRuleName());
+		gap.setEvaluator(">");
+		gap.setFiredRuleName(drools.getRule().getName());
+		gap.setValue($r.getIntValue() +"");
+		insert( gap );
+end
