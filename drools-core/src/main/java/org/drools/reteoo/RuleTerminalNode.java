@@ -449,10 +449,11 @@ public final class RuleTerminalNode extends BaseNode
                                                                                           null );
                 workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
                                                                                      propagationContext,
-                                                                                     this.rule );
+                                                                                     this.rule );                                
             }
 
             workingMemory.executeQueuedActions();
+            workingMemory.clearNodeMemory( this );
         }
 
         removeShare();

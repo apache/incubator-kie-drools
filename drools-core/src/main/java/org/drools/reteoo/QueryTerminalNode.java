@@ -153,6 +153,9 @@ public final class QueryTerminalNode extends BaseNode
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             workingMemories[i].clearNodeMemory( this );
         }
+        
+        removeShare();
+        
         this.tupleSource.remove( this,
                                  workingMemories );
     }
