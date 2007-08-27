@@ -746,6 +746,8 @@ For example, in the 'Person.age' line above, you could change it to:
   'Person.age' : (new com.yourco.DataHelper()).getListOfAges()
 </programlisting>
 This assumes you have a class called "DataHelper" which has a method "getListOfAges()" which returns a List of strings (and is on the classpath). You can of course mix these "dynamic" enumerations with fixed lists. You could for example load from a database using JDBC.
+The data enumerations are loaded the first time you use the guided editor in a session. If you have any guided editor sessions open - you will need to close and then open the rule to see the change. 
+To check the enumeration is loaded - if you go to the Package configuration screen, you can "save and validate" the package - this will check it and provide any error feedback.
       </para>
 
     </section>
