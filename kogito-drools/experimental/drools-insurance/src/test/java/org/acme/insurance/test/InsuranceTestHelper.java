@@ -31,8 +31,6 @@ public class InsuranceTestHelper {
             session = rulebase.newStatefulSession();
 
             session.startProcess( "insuranceProcess" );
-            session.fireAllRules();
-
             return session;
 
         } catch ( Exception e ) {
@@ -47,25 +45,6 @@ public class InsuranceTestHelper {
         return rulebase;
     }
 
-    protected Object serializeIn(final byte[] bytes) throws IOException,
-                                                    ClassNotFoundException {
-        final ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
-        final Object obj = in.readObject();
-        in.close();
-        return obj;
-    }
-
-    protected byte[] serializeOut(final Object obj) throws IOException {
-        // Serialize to a byte array
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        final ObjectOutput out = new ObjectOutputStream( bos );
-        out.writeObject( obj );
-        out.close();
-
-        // Get the bytes of the serialized object
-        final byte[] bytes = bos.toByteArray();
-        return bytes;
-    }
 
     private RuleBase loadRuleBaseFromDRL() throws Exception {
 
@@ -79,15 +58,6 @@ public class InsuranceTestHelper {
 
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        
-        Map map = new HashMap();
-        map.put( "x",
-                 ruleBase );
-        final byte[] ast = serializeOut( map );
-        map = (Map) serializeIn( ast );
-        ruleBase = (RuleBase) map.get( "x" );
-
-
         return ruleBase;
     }
 

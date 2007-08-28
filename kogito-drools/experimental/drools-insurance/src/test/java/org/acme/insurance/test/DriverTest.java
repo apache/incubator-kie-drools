@@ -201,7 +201,7 @@ public class DriverTest extends TestCase {
 
         session.fireAllRules();
 
-        assertEquals( 2.0,
+        assertEquals( 2.4,
                       driver.getInsuranceFactor() );
 
         assertTrue( policy.isApproved() );
