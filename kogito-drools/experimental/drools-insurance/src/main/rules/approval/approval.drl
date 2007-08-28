@@ -4,7 +4,7 @@ import org.acme.insurance.base.Rejection;
 import org.acme.insurance.base.Policy;
 
 rule "approve"
-	agenda-group "risk assessment"
+	ruleflow-group "risk assessment"
 	salience -1
 	when
 		not Rejection()
@@ -13,16 +13,13 @@ rule "approve"
 		System.out.println("approve: " + $policy.getInsurancePrice() );	
 		$policy.setApproved(true);
 		update($policy);
-		drools.setFocus("insurancecalcule");
 		System.out.println("Policy aproved focusing insurance calcule agenda-group");
 end
 
 rule "rejection"
-	agenda-group "rejection"
-	auto-focus 
+	ruleflow-group "rejection"
 	when
 		Rejection()
 	then
-		drools.halt();
 		System.out.println("There's some rejection: halting drools ");
 end

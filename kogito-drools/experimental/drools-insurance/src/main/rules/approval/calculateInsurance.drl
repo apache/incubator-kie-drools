@@ -9,30 +9,30 @@ import org.acme.insurance.base.AccessoriesCoverage;
 
 // After approved insurance calcule the value
 rule "Insurance extra itens percent"
-	agenda-group "insurancecalcule"
+	ruleflow-group "insurancecalcule"
 	salience 20
 	when
 		not Rejection()	
-		driver : Driver ( driverID : id )
-		access : AccessoriesCoverage ( driverId == driverID)
-		policy : Policy( approved == true )
+		$driver : Driver ( driverID : id )
+		$access : AccessoriesCoverage ( driverId == driverID)
+		$policy : Policy( approved == true )
 	then
-		policy.setInsurancePrice( policy.getInsurancePrice() + 
-			(access.getAlarmSystemValue() * 0.10) + 
-			(access.getArmorValue() * 0.20) +
-			(access.getSoundSystemValue() * 0.30 ));
+		$policy.setInsurancePrice( $policy.getInsurancePrice() + 
+			($access.getAlarmSystemValue() * 0.10) + 
+			($access.getArmorValue() * 0.20) +
+			($access.getSoundSystemValue() * 0.30 ));
 			
-		System.out.println("Insurance extra itens percent: " + policy.getInsurancePrice() );					
+		System.out.println("Insurance extra itens percent: " + $policy.getInsurancePrice() );					
 end
 
 rule "Insurance Calcule"
-	agenda-group "insurancecalcule"
+	ruleflow-group "insurancecalcule"
 	salience 10
 	when
 		not Rejection()	
-		driver : Driver(ifactor : insuranceFactor)
-		policy : Policy( approved == true, bp : basePrice, ip : insurancePrice )
+		$driver : Driver(ifactor : insuranceFactor)
+		$policy : Policy( approved == true, bp : basePrice, ip : insurancePrice )
 	then
-		policy.setInsurancePrice((bp * ifactor) + ip);		
+		$policy.setInsurancePrice((bp * ifactor) + ip);		
 		System.out.println("Insurance Calcule: " + ip );		
 end

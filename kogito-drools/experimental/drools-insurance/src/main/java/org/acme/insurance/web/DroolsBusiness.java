@@ -76,7 +76,7 @@ public class DroolsBusiness {
 
 	protected void setUp() throws Exception {
 
-		rulebase = loadRuleBaseFromRuleAgent();
+		rulebase = loadRuleBaseFromDRL();
 		session = rulebase.newStatefulSession();
 
 		session.setFocus("risk assessment");
