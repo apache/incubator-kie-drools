@@ -65,7 +65,7 @@ public class InsuranceCalculateTest extends TestCase {
         session.insert( suppinfo );
 
         session.fireAllRules();
-
+        
         assertEquals( 2.333772,
                       driver.getInsuranceFactor() );
 
@@ -101,7 +101,7 @@ public class InsuranceCalculateTest extends TestCase {
         session.insert( driverAdditional );
 
         session.fireAllRules();
-
+        
         assertEquals( 1.656,
                       driver.getInsuranceFactor() );
 

@@ -56,7 +56,6 @@ public class SupplementalInfoTest extends TestCase {
         session.insert( driver );
         session.insert( suppinfo );
 
-        session.setFocus("risk assessment");
         session.fireAllRules();
 
         assertEquals( 1.05,
