@@ -30,7 +30,7 @@ public class FunctionError extends DroolsError {
         super();
         this.functionDescr = functionDescr;
         this.object = object;
-        this.message = message;
+        this.message = createMessage( message );
     }
 
     public FunctionDescr getFunctionDescr() {
@@ -46,15 +46,24 @@ public class FunctionError extends DroolsError {
     }
     
     public String toString() {
+        return this.message;
+    }
+    
+    private String createMessage( String message ) {
         StringBuffer detail = new StringBuffer();
         if( object instanceof CompilationProblem[] ) {
             CompilationProblem[] cp = (CompilationProblem[]) object;
             for( int i = 0; i < cp.length ; i ++ ) {
-               detail.append( cp[i].toString() );
+                int line = cp[i].getStartLine() - this.functionDescr.getOffset() + this.getFunctionDescr().getLine() - 1;
+               detail.append( this.functionDescr.getName() );
+               detail.append( " (line:" );
+               detail.append( line );
+               detail.append( "): " );
+               detail.append( cp[i].getMessage() );
                detail.append( "\n" );
             }
         }
-        return "[ "+functionDescr.getName()+" : "+this.getMessage() + "\n"+detail.toString()+" ]";
+        return "[ "+functionDescr.getName()+" : "+message + "\n"+detail.toString()+" ]";
     }
 
 }
