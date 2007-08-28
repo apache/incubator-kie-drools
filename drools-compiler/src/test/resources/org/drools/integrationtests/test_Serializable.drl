@@ -9,6 +9,7 @@ global List list
 
 rule "match Person 1"
 	salience 10
+	dialect "mvel"
     when
         $person : Person()
     then
@@ -33,6 +34,7 @@ end
 
 rule "match Person 3"
 	agenda-group "xxx"	
+	dialect "mvel"
     when
        not Person( name == "mark" )
        exists Person( name == "mark" )       
