@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+<modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+	  <version>4.0.1.SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-analytics</artifactId>
+  <packaging>jar</packaging>
+  <name>Drools :: Analytics</name>
+
+  <build/>
+
+  <repositories>
+    <repository>
+      <id>basedir</id>
+      <url>file://${basedir}/../m2_repo</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <!-- Internal dependencies -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+     
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
