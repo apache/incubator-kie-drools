@@ -354,6 +354,8 @@ function
 		{
 			//strip out '{','}'
 			f.setText( $body.text.substring( 1, $body.text.length()-1 ) );
+			f.setEndCharacter( ((CommonToken)$body.stop).getStopIndex() );
+			f.setEndLocation(offset($body.stop.getLine()), $body.stop.getCharPositionInLine());
 		}
 	;
 

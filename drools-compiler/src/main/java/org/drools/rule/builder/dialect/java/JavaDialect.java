@@ -338,7 +338,11 @@ public class JavaDialect
         if ( result.getErrors().length > 0 ) {
             for ( int i = 0; i < result.getErrors().length; i++ ) {
                 final CompilationProblem err = result.getErrors()[i];
-
+                
+//                System.out.println("Line: "+err.getStartLine());
+//                LineMappings maps = this.pkg.getPackageCompilationData().getLineMappings( err.getFileName().replace( '/', '.' ).substring( 0, err.getFileName().length() - 5 ) );
+//                int line = err.getStartLine() + maps.getStartLine() - maps.getOffset() -1;
+//                System.out.println("Map:  "+line);
                 final ErrorHandler handler = (ErrorHandler) this.errorHandlers.get( err.getFileName() );
                 if ( handler instanceof RuleErrorHandler ) {
                     final RuleErrorHandler rh = (RuleErrorHandler) handler;
