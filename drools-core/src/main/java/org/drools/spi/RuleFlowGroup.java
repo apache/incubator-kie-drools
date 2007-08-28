@@ -16,9 +16,10 @@ package org.drools.spi;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Iterator;
 
-public interface RuleFlowGroup {
+public interface RuleFlowGroup extends Serializable {
 
     String getName();
 
