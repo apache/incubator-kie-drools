@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
+import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
@@ -24,7 +25,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     /**
      * Holds the instance of the variables.
      */
-    private Tuple             tuple;
+    private Object[]          tupleObjects;
     private KnowledgeHelper   knowledgeHelper;
     private Object            object;
     private Map               localDeclarations;
@@ -79,7 +80,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                            final Object object,
                            final WorkingMemory workingMemory,
                            final Map variables) {
-        this.tuple = tuple;
+        this.tupleObjects = ((ReteTuple) tuple).toObjectArray();
         this.knowledgeHelper = knowledgeHelper;
         this.object = object;
         this.workingMemory = workingMemory;
@@ -91,7 +92,8 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     }
 
     public Object getValue(final Declaration declaration) {
-        return this.tuple.get( declaration ).getObject();
+        int i = declaration.getPattern().getOffset();
+        return this.tupleObjects[ i ];
     }
 
     public Object getValue(final String identifier) {

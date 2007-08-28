@@ -45,7 +45,7 @@ public class DroolsMVELGlobalVariable
      * Not used in drools.
      */
     public Class getType() {
-        return null;
+        return this.knownType;
     }
 
     /**

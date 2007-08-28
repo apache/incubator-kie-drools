@@ -42,7 +42,7 @@ public class DroolsMVELKnowledgeHelper
      * Not used in drools.
      */
     public Class getType() {
-        return null;
+        return KnowledgeHelper.class;
     }
 
     /**

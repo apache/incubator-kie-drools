@@ -182,13 +182,15 @@ public class PackageCompilationData
 
     }
 
-    public void remove(final String resourceName) throws RuntimeDroolsException {
+    public boolean remove(final String resourceName) throws RuntimeDroolsException {
         this.invokerLookups.remove( resourceName );
         if ( this.store.remove( convertClassToResourcePath( resourceName ) ) != null ) {
             // we need to make sure the class is removed from the classLoader
             // reload();
             this.dirty = true;
+            return true;
         }
+        return false;
     }
 
     public String[] list() {

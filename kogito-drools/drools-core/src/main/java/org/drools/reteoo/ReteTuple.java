@@ -3,6 +3,7 @@ package org.drools.reteoo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.base.ShadowProxy;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
@@ -209,5 +210,19 @@ public class ReteTuple
             }
         }
         return entry;
+    }
+    
+    public Object[] toObjectArray() {        
+        Object[] objects = new Object[ this.index + 1 ];
+        ReteTuple entry = this;       
+        while ( entry != null ) {
+            Object object = entry.getLastHandle().getObject();
+            if ( object instanceof ShadowProxy ) {
+                object = ((ShadowProxy)object).getShadowedObject();
+            }
+            objects[entry.index] = object;
+            entry = entry.parent;
+        }   
+        return objects;
     }
 }

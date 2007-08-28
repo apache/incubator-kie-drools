@@ -327,13 +327,15 @@ public class Package
     public PackageCompilationData removeRule(final Rule rule) {
         this.rules.remove( rule.getName() );
         final String consequenceName = rule.getConsequence().getClass().getName();
-        this.packageCompilationData.remove( consequenceName );
-
-        removeClasses( rule.getLhs() );
-
-        // Now remove the rule class - the name is a subset of the consequence name
-        this.packageCompilationData.remove( consequenceName.substring( 0,
-                                                                       consequenceName.indexOf( "ConsequenceInvoker" ) ) );
+        
+        // check for compiled code and remove if present.
+        if ( this.packageCompilationData.remove( consequenceName ) ) {    
+            removeClasses( rule.getLhs() );
+    
+            // Now remove the rule class - the name is a subset of the consequence name
+            this.packageCompilationData.remove( consequenceName.substring( 0,
+                                                                           consequenceName.indexOf( "ConsequenceInvoker" ) ) );
+        }
         return this.packageCompilationData;
     }
 
