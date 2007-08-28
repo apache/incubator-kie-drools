@@ -1,7 +1,10 @@
 package org.drools.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.RuleBaseLoader;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.mvel.MVEL;
@@ -26,7 +30,22 @@ public class MVELTest extends TestCase {
     public void testHelloWorld() throws Exception {                   
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_mvel.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
+        
+        // Bellow lines are a way to make sure serialization is fine
+        // start of serialization block
+//        ByteArrayOutputStream out = new ByteArrayOutputStream();
+//        ObjectOutputStream obj = new ObjectOutputStream( out );
+//        obj.writeObject( ruleBase );
+//        obj.close();
+//        
+//        byte[] buf = out.toByteArray();
+//        
+//        ByteArrayInputStream input = new ByteArrayInputStream( buf );
+//        RuleBaseLoader loader = RuleBaseLoader.getInstance();
+//        ruleBase = loader.loadFromReader( new InputStreamReader( input ) );
+        // end of serialization block
+        
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
