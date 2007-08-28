@@ -41,10 +41,10 @@ public class InsuranceTestHelper {
 	private RuleBase loadRuleBaseFromDRL() throws Exception {
 
 		PackageBuilder builder = new PackageBuilder();
-		builder.addPackageFromDrl(getTechnicalRules("/approval/insurancefactor.drl"));
-		builder.addPackageFromDrl(getTechnicalRules("/approval/approval.drl"));
-		builder.addPackageFromDrl(getTechnicalRules("/approval/calculateInsurance.drl"));
-        
+        builder.addPackageFromDrl(getTechnicalRules("/approval/insurancefactor.drl"));
+        builder.addPackageFromDrl(getTechnicalRules("/approval/approval.drl"));
+        builder.addPackageFromDrl(getTechnicalRules("/approval/calculateInsurance.drl"));
+        builder.addPackageFromDrl(getTechnicalRules("/approval/marginalage.dslr"));
         builder.addRuleFlow( getTechnicalRules( "/approval/insurance-process.rfm" ) );
         
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();

@@ -62,7 +62,9 @@ public class DroolsBusiness {
 		builder.addPackageFromDrl(getTechnicalRules("/approval/approval.drl"));
 		builder.addPackageFromDrl(getTechnicalRules("/approval/calculateInsurance.drl"));
 		builder.addPackageFromDrl(getTechnicalRules("/approval/marginalage.drl"));
-		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        builder.addRuleFlow( getTechnicalRules( "/approval/insurance-process.rfm" ) );
+        
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage(builder.getPackage());
 		return ruleBase;
 	}
