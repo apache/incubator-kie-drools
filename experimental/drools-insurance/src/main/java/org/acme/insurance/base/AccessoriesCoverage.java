@@ -4,27 +4,27 @@ public class AccessoriesCoverage {
 
     private int driverId;
 
-    private Double soundSystemValue;
-    private Double armorValue;
-    private Double alarmSystemValue;
+    private double soundSystemValue;
+    private double armorValue;
+    private double alarmSystemValue;
 
-    public Double getArmorValue() {
+    public double getArmorValue() {
         return armorValue;
     }
-    public void setArmorValue(Double armorValue) {
+    public void setArmorValue(double armorValue) {
         this.armorValue = armorValue;
     }
 
-    public Double getSoundSystemValue() {
+    public double getSoundSystemValue() {
         return soundSystemValue;
     }
-    public void setSoundSystemValue(Double soundSystemValue) {
+    public void setSoundSystemValue(double soundSystemValue) {
         this.soundSystemValue = soundSystemValue;
     }
-    public Double getAlarmSystemValue() {
+    public double getAlarmSystemValue() {
         return alarmSystemValue;
     }
-    public void setAlarmSystemValue(Double alarmSystemValue) {
+    public void setAlarmSystemValue(double alarmSystemValue) {
         this.alarmSystemValue = alarmSystemValue;
     }
     public int getDriverId() {
