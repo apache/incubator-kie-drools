@@ -40,11 +40,8 @@ public class DroolsMVELLocalDeclarationVariable
         return 0;
     }
 
-    /**
-     * Not used in drools.
-     */
     public Class getType() {
-        return null;
+        return this.declaration.getExtractor().getExtractToClass();
     }
     
     /**
