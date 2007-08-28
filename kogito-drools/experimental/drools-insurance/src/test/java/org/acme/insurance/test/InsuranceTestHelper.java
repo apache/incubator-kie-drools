@@ -16,8 +16,8 @@ public class InsuranceTestHelper {
 
 	public StatefulSession getSession() {
 		try { 
-			//rulebase = loadRuleBaseFromRuleAgent();
-            rulebase = loadRuleBaseFromDRL();
+			rulebase = loadRuleBaseFromRuleAgent();
+            //rulebase = loadRuleBaseFromDRL();
             session = rulebase.newStatefulSession();
 			
             session.startProcess( "insuranceProcess" );
