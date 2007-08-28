@@ -1,8 +1,14 @@
 package org.drools.ruleflow.core.impl;
 
-public class DroolsConsequenceAction {
+import java.io.Serializable;
+
+public class DroolsConsequenceAction implements Serializable {
 	
-	private String consequence;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 400L;
+    private String consequence;
 	
 	public DroolsConsequenceAction(String consequence) {
 		this.consequence = consequence;
