@@ -44,7 +44,7 @@ public class InsuranceTestHelper {
         builder.addPackageFromDrl(getTechnicalRules("/approval/insurancefactor.drl"));
         builder.addPackageFromDrl(getTechnicalRules("/approval/approval.drl"));
         builder.addPackageFromDrl(getTechnicalRules("/approval/calculateInsurance.drl"));
-        builder.addPackageFromDrl(getTechnicalRules("/approval/marginalage.dslr"));
+        builder.addPackageFromDrl(getTechnicalRules("/approval/marginalage.dslr"), getTechnicalRules("/approval/acme.dsl") );
         builder.addRuleFlow( getTechnicalRules( "/approval/insurance-process.rfm" ) );
         
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
