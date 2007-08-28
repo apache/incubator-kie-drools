@@ -1,0 +1,32 @@
+package org.acme.insurance;
+
+import org.acme.insurance.base.Rejection;
+import org.acme.insurance.base.Policy;
+import org.acme.insurance.base.Approve;
+import org.acme.insurance.base.Driver;
+import org.acme.insurance.base.DriverAdditionalInfo;
+import org.acme.insurance.base.AccessoriesCoverage;
+import org.acme.insurance.base.SupplementalInfo;
+
+expander acme.dsl
+
+rule "Driver is in marginal age"
+	ruleflow-group "risk assessment" 	
+	when
+		There is a Driver
+			- age is between 18 and 24 years old
+			- has had more than 1 prior claims
+	then
+		Reject Policy with explanation : 'No accidents allowed if in marginal age group'
+end
+
+rule "Quick approval - safe driver, any policy type"
+	ruleflow-group "risk assessment"
+	when		
+		Policy has not been rejected	
+		There is a Driver
+			- age is at least 30
+			- has had exactly 0 prior claims
+	then
+		Approve Policy with the reason : 'Driver is safe and mature.'
+end
