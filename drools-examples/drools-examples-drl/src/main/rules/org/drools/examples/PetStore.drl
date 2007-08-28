@@ -11,7 +11,7 @@ import javax.swing.JFrame
         
 global JFrame frame 
 global javax.swing.JTextArea textArea
-
+ 
 dialect "mvel"
 
 // insert each item in the shopping cart into the Working Memory 
@@ -59,7 +59,7 @@ rule "Suggest Tank"
 		ArrayList( $total : size > 5 ) from collect( Purchase( product.name == "Gold Fish" ) )
 		$fishTank : Product( name == "Fish Tank" )		
 	then
-		requireTank(frame, drools.getWorkingMemory(), $order, $fishTank, $total); 		
+		requireTank(frame, drools.getWorkingMemory(), $order, $fishTank, $total); 	
 end	
 
 rule "Show Items"
@@ -84,7 +84,7 @@ rule "Gross Total"
     dialect "mvel"
 	when
 	    $order : Order( grossTotal == -1)
-		Number( total : doubleValue ) from accumulate( Purchase( $price : product.price ) from $order.items,
+		Number( total : doubleValue ) from accumulate( Purchase( $price : product.price ),
    			        			   				 	   sum( $price ) )
 	then	
 	    modify( $order ) { grossTotal = total };

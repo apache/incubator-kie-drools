@@ -7,9 +7,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.AbstractButton;
@@ -34,8 +33,6 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.RuleBaseLoader;
-import java.util.Iterator;
 
 public class PetStore {
 
