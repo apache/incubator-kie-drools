@@ -36,15 +36,15 @@ public class DroolsBusiness {
 		return policy.isApproved();
 	}
 
-	public Double getBasePrice() {
+	public double getBasePrice() {
 		return policy.getBasePrice();
 	}
 
-	public Double getRiskFactor() {
+	public double getRiskFactor() {
 		return driverMale.getInsuranceFactor();
 	}
 
-	public Double getInsurancePrice() {
+	public double getInsurancePrice() {
 		return policy.getInsurancePrice();
 	}
 

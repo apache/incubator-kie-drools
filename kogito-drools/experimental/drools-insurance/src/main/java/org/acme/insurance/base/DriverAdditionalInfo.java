@@ -16,16 +16,16 @@ public class DriverAdditionalInfo {
     public static final int BUSINESSOWNER      = 4;
 
     private int             driverId;
-    private Integer         dayVehiclePlace;
-    private Integer         nightVehiclePlace;
-    private Integer         jobStatus;
-    private Integer         residenceStatus;
+    private int         dayVehiclePlace;
+    private int         nightVehiclePlace;
+    private int         jobStatus;
+    private int         residenceStatus;
 
-    public Integer getDayVehiclePlace() {
+    public int getDayVehiclePlace() {
         return dayVehiclePlace;
     }
 
-    public void setDayVehiclePlace(Integer dayVehiclePlace) {
+    public void setDayVehiclePlace(int dayVehiclePlace) {
         this.dayVehiclePlace = dayVehiclePlace;
     }
 
@@ -37,27 +37,27 @@ public class DriverAdditionalInfo {
         this.driverId = driverId;
     }
 
-    public Integer getJobStatus() {
+    public int getJobStatus() {
         return jobStatus;
     }
 
-    public void setJobStatus(Integer jobStatus) {
+    public void setJobStatus(int jobStatus) {
         this.jobStatus = jobStatus;
     }
 
-    public Integer getNightVehiclePlace() {
+    public int getNightVehiclePlace() {
         return nightVehiclePlace;
     }
 
-    public void setNightVehiclePlace(Integer nightVehiclePlace) {
+    public void setNightVehiclePlace(int nightVehiclePlace) {
         this.nightVehiclePlace = nightVehiclePlace;
     }
 
-    public Integer getResidenceStatus() {
+    public int getResidenceStatus() {
         return residenceStatus;
     }
 
-    public void setResidenceStatus(Integer residenceStatus) {
+    public void setResidenceStatus(int residenceStatus) {
         this.residenceStatus = residenceStatus;
     }
 

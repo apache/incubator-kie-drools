@@ -18,24 +18,24 @@ public class Driver {
 
     private String  name;
     private Date    birhDate;
-    private Integer licenceYears;
+    private int licenceYears;
 
-    private Integer priorClaims;
-    private Integer maritalState;
+    private int priorClaims;
+    private int maritalState;
     private boolean hasChildren;
-    private Integer genre;
+    private int genre;
 
-    private Double  insuranceFactor = 1.0;
+    private double  insuranceFactor = 1.0;
 
-    public Double getInsuranceFactor(){
+    public double getInsuranceFactor(){
         return insuranceFactor;
     }
 
-    public void setInsuranceFactor(Double factor) {
+    public void setInsuranceFactor(double factor) {
     	updateInsuranceFactor(factor);
     }
 
-    public void updateInsuranceFactor(Double factor) {
+    public void updateInsuranceFactor(double factor) {
         this.insuranceFactor *= factor;
     }
 
@@ -75,19 +75,19 @@ public class Driver {
         this.id = id;
     }
 
-    public Integer getLicenceYears() {
+    public int getLicenceYears() {
         return licenceYears;
     }
 
-    public void setLicenceYears(Integer licenceYears) {
+    public void setLicenceYears(int licenceYears) {
         this.licenceYears = licenceYears;
     }
 
-    public Integer getMaritalState() {
+    public int getMaritalState() {
         return maritalState;
     }
 
-    public void setMaritalState(Integer maritalState) {
+    public void setMaritalState(int maritalState) {
         this.maritalState = maritalState;
     }
 
@@ -99,11 +99,11 @@ public class Driver {
         this.name = name;
     }
 
-    public Integer getPriorClaims() {
+    public int getPriorClaims() {
         return priorClaims;
     }
 
-    public void setPriorClaims(Integer priorClaims) {
+    public void setPriorClaims(int priorClaims) {
         this.priorClaims = priorClaims;
     }
 }
