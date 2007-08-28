@@ -80,7 +80,9 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                            final Object object,
                            final WorkingMemory workingMemory,
                            final Map variables) {
-        this.tupleObjects = ((ReteTuple) tuple).toObjectArray();
+        if ( tuple != null ) {
+           this.tupleObjects = ((ReteTuple) tuple).toObjectArray();
+        }
         this.knowledgeHelper = knowledgeHelper;
         this.object = object;
         this.workingMemory = workingMemory;
