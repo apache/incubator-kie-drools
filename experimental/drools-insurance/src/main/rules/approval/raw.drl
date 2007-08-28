@@ -73,7 +73,7 @@ rule "Night Vehicle Place"
 		$daddit : DriverAdditionalInfo ( driverId == driverID, nightVehiclePlace  == DriverAdditionalInfo.STREET ) 
 	then
 		$driver.updateInsuranceFactor(1.44); // streets are very dangerous dangerous at night ;) 
-		System.out.println("Night Vehicle Place: " + driver.getInsuranceFactor());		
+		System.out.println("Night Vehicle Place: " + $driver.getInsuranceFactor());		
 end
 
 // Supplemental itens insurance 
