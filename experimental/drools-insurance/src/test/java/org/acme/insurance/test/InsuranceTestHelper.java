@@ -1,17 +1,8 @@
 package org.acme.insurance.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -25,11 +16,10 @@ public class InsuranceTestHelper {
 
     public StatefulSession getSession() {
         try {
-            //rulebase = loadRuleBaseFromRuleAgent();
+            rulebase = loadRuleBaseFromRuleAgent();
             rulebase = loadRuleBaseFromDRL();
 
             session = rulebase.newStatefulSession();
-
             session.startProcess( "insuranceProcess" );
             return session;
 
