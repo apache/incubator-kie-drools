@@ -20,7 +20,7 @@ public class InsuranceTestHelper {
             rulebase = loadRuleBaseFromDRL();
             session = rulebase.newStatefulSession();
 			
-			session.setFocus("risk assessment");
+            session.startProcess( "insuranceProcess" );
 			
 			return session;
 			
@@ -44,6 +44,9 @@ public class InsuranceTestHelper {
 		builder.addPackageFromDrl(getTechnicalRules("/approval/insurancefactor.drl"));
 		builder.addPackageFromDrl(getTechnicalRules("/approval/approval.drl"));
 		builder.addPackageFromDrl(getTechnicalRules("/approval/calculateInsurance.drl"));
+        
+        builder.addRuleFlow( getTechnicalRules( "/approval/insurance-process.rfm" ) );
+        
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage(builder.getPackage());
 		return ruleBase;

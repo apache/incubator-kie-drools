@@ -30,7 +30,7 @@
 			<tbody>
 				<tr class="seucorretor6">
 					<td class="seucorretor2" align="center">
-					<div align="left"><b>Driver's information</b></div>
+					<div align="left"><b>Dados do condutor principal</b></div>
 					</td>
 				</tr>
 
@@ -44,58 +44,58 @@
 								<td width="162" class="c1">Sexo:</td>
 
 								<td width="363"><select name="sexo">
-									<option value=0 selected="selected">Male</option>
-									<option value=1>Female</option>
+									<option value=0 <% if (request.getParameter("sexo") == "0") { out.print("selected='selected'"); } %>> Masculino</option>
+									<option value=1 <% if (request.getParameter("sexo") == "1") { out.print("selected='selected'"); } %>>Feminino</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Birth Date:</td>
+								<td class="c1">Data Nascimento:</td>
 
 								<td><input size="2" name="data_nascimento_dia"
-									maxlength="2" value="01" type="text" width="2"> / <input
-									size="2" name="data_nascimento_mes" maxlength="2" value="01"
+									maxlength="2" value="<% out.print(request.getParameter("data_nascimento_dia"));%>" type="text" width="2"> / <input
+									size="2" name="data_nascimento_mes" maxlength="2" value="<% out.print(request.getParameter("data_nascimento_mes"));%>"
 									type="text"> / <input size="4"
-									name="data_nascimento_ano" maxlength="4" value="1900"
+									name="data_nascimento_ano" maxlength="4" value="<% out.print(request.getParameter("data_nascimento_ano"));%>"
 									type="text"> <span class="c2">&nbsp; (dd/mm/aaaa
 								)</span></td>
 							</tr>
 
 							<tr>
-								<td class="c1">License Age:</td>
+								<td class="c1">Tempo de Habilitacao:</td>
 
 								<td><input name="habilitacao" size="2" maxlength="2"
-									value="0" type="text"> <span class="c2">Years</span></td>
+									value="<% out.print(request.getParameter("habilitacao"));%>" type="text"> <span class="c2">Anos</span></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Marital State:</td>
+								<td class="c1">Estado Civil:</td>
 
 								<td><select name="estadoCivil">
-									<option value="0" selected="selected" >Single/Divorced</option>
-									<option value="1">Maried</option>
+									<option value="0" <% if (request.getParameter("estadoCivil") == "0") { out.print("selected='selected'"); } %> >Solteiro/Divorciado</option>
+									<option value="1" <% if (request.getParameter("estadoCivil") == "1") { out.print("selected='selected'"); } %>>Casado/Uniao Estavel Viuvo</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Has Child?</td>
+								<td class="c1">Tem filhos?</td>
 
 								<td><select name="temFilhos">
-									<option value="1">Yes, less than 17 years.</option>
-									<option value="2">Yes, Between 17 and 25 years.</option>
-									<option value="3">Yes, greater than 26 years old.</option>
-									<option value="0" selected="selected" >No, I don't have Child</option>
+									<option value="1" <% if (request.getParameter("temFilhos") == "1") { out.print("selected='selected'"); } %> >Sim, ate 17 anos.</option>
+									<option value="2" <% if (request.getParameter("temFilhos") == "2") { out.print("selected='selected'"); } %> >Sim, entre 17 e 25 anos.</option>
+									<option value="3" <% if (request.getParameter("temFilhos") == "3") { out.print("selected='selected'"); } %> >Sim, ate 30 anos.</option>
+									<option value="0" <% if (request.getParameter("temFilhos") == "0") { out.print("selected='selected'"); } %> >Nao ou Nenhuma das anteriores</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Degree:</td>
+								<td class="c1">Escolaridade:</td>
 
 								<td><select name="escolaridade">
-									<option value="1" selected="selected" >Elementary School</option>
-									<option value="2">High School</option>
-									<option value="3">College</option>
-									<option value="4">Pos</option>
+									<option value="1" selected="selected" >Elementar</option>
+									<option value="2">Medio</option>
+									<option value="3">Universitario</option>
+									<option value="4">Pos Graduacao</option>
 								</select></td>
 							</tr>
 						</tbody>
@@ -113,7 +113,8 @@
 			<tbody>
 				<tr class="seucorretor6">
 					<td class="seucorretor2" align="center">
-					<div align="left"><b>Driver's additional info </b></div>
+					<div align="left"><b>Informacoes adicionais do condutor
+					principal</b></div>
 					</td>
 				</tr>
 
@@ -125,70 +126,70 @@
 						cellpadding="4" cellspacing="2">
 						<tbody>
 							<tr>
-								<td width="296" class="c1">Day veicle place:</td>
+								<td width="296" class="c1">Guarda do veiculo de dia:</td>
 
 								<td width="266"><select name="garagemDia">
-									<option value="1">Closed Garage</option>
-									<option value="2">Parking</option>
-									<option value="0" selected="selected" >Street</option>
+									<option value="1" <% if (request.getParameter("garagemDia") == "1") { out.print("selected='selected'"); } %>>Garagem fechada</option>
+									<option value="2" <% if (request.getParameter("garagemDia") == "2") { out.print("selected='selected'"); } %>>Estacionamento</option>
+									<option value="0" <% if (request.getParameter("garagemDia") == "0") { out.print("selected='selected'"); } %> >Nao informado ou na rua</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Night veichle place:</td>
+								<td class="c1">Guarda do veiculo de noite:</td>
 
 								<td><select name="garagemNoite">
-                                    <option value="1">Closed Garage</option>
-                                    <option value="2">Parking</option>
-                                    <option value="0" selected="selected" >Street</option>
+									<option value="1" <% if (request.getParameter("garagemNoite") == "1") { out.print("selected='selected'"); } %> >Garagem fechada</option>
+									<option value="2" <% if (request.getParameter("garagemNoite") == "2") { out.print("selected='selected'"); } %>>Estacionamento</option>
+									<option value="0" <% if (request.getParameter("garagemNoite") == "0") { out.print("selected='selected'"); } %>selected="selected" >Nao informado ou na rua</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Residence Status:</td>
+								<td class="c1">Residencia atual:</td>
 
 								<td><select name="condicaoImovel">
-									<option value="1">Owned</option>
-									<option value="0" selected="selected">Rented</option>
+									<option value="1" <% if (request.getParameter("condicaoImovel") == "1") { out.print("selected='selected'"); } %> >Propria/Familia</option>
+									<option value="0" <% if (request.getParameter("condicaoImovel") == "0") { out.print("selected='selected'"); } %>>Alugada</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Actual Job:</td>
+								<td class="c1">Emprego atual:</td>
 
 								<td><select name="profissao">
-									<option value="0" selected="selected" >Desempregado</option>
-									<option value="1">Business owner</option>
-									<option value="2">Public employee</option>
-									<option value="3">Private employee</option>
-									<option value="4">Student</option>
+									<option value="0" <% if (request.getParameter("profissao") == "0") { out.print("selected='selected'"); } %> >Desempregado</option>
+									<option value="1" <% if (request.getParameter("profissao") == "1") { out.print("selected='selected'"); } %>>Proprietario de Empresa ou Negocio</option>
+									<option value="2" <% if (request.getParameter("profissao") == "2") { out.print("selected='selected'"); } %>>Funcionario Publico</option>
+									<option value="3" <% if (request.getParameter("profissao") == "3") { out.print("selected='selected'"); } %>>Funcionario Privado</option>
+									<option value="4" <% if (request.getParameter("profissao") == "4") { out.print("selected='selected'"); } %>>Estudante</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">Lives</td>
+								<td class="c1">Reside em:</td>
 
 								<td><select name="tipoResidencia">
-									<option value="0" selected="selected" >House</option>
-									<option value="1">Private village </option>
-									<option value="2">Appartment</option>
+									<option value="0"  <% if (request.getParameter("tipoResidencia") == "0") { out.print("selected='selected'"); } %> >Casa</option>
+									<option value="1"  <% if (request.getParameter("tipoResidencia") == "1") { out.print("selected='selected'"); } %>>Casa em condominio fechado</option>
+									<option value="2"  <% if (request.getParameter("tipoResidencia") == "2") { out.print("selected='selected'"); } %>>Apartamento</option>
 								</select></td>
 							</tr>
 
 							<tr>
-								<td class="c1">previous claim numbers</td>
+								<td class="c1">Quantos sinistros indenizados ?</td>
 
 								<td><select name="sinistros">
-									<option value="0" selected="selected">none</option>
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4">4</option>
-									<option value="5">5</option>
-									<option value="6">6</option>
-									<option value="7">7</option>
-									<option value="8">8</option>
-									<option value="9">more than 8</option>
+									<option value="0" <% if (request.getParameter("sinistros") == "0") { out.print("selected='selected'"); } %>>Nenhum</option>
+									<option value="1" <% if (request.getParameter("sinistros") == "1") { out.print("selected='selected'"); } %>>1</option>
+									<option value="2" <% if (request.getParameter("sinistros") == "2") { out.print("selected='selected'"); } %>>2</option>
+									<option value="3" <% if (request.getParameter("sinistros") == "3") { out.print("selected='selected'"); } %>>3</option>
+									<option value="4"<% if (request.getParameter("sinistros") == "4") { out.print("selected='selected'"); } %>>4</option>
+									<option value="5"<% if (request.getParameter("sinistros") == "5") { out.print("selected='selected'"); } %>>5</option>
+									<option value="6"<% if (request.getParameter("sinistros") == "6") { out.print("selected='selected'"); } %>>6</option>
+									<option value="7"<% if (request.getParameter("sinistros") == "7") { out.print("selected='selected'"); } %>>7</option>
+									<option value="8"<% if (request.getParameter("sinistros") == "8") { out.print("selected='selected'"); } %>>8</option>
+									<option value="9"<% if (request.getParameter("sinistros") == "9") { out.print("selected='selected'"); } %>>mais de 8</option>
 								</select></td>
 							</tr>
 						</tbody>
@@ -209,7 +210,8 @@
 			<tbody>
 				<tr class="seucorretor6">
 					<td align="center" bordercolor="#000000" class="seucorretor2">
-					<div align="left"><span class="seucorretor2 seucorretor2"><b>Supplemental thing</b></span></div>
+					<div align="left"><span class="seucorretor2 seucorretor2"><b>Clausulas
+					complementares</b></span></div>
 					</td>
 				</tr>
 
@@ -221,37 +223,37 @@
 						width="95%">
 						<tbody>
 							<tr>
-								<td class="c1" width="50%">Whants extra car?</td>
+								<td class="c1" width="50%">Quer Carro Reserva?</td>
 
 								<td width="50%"><select name="carroReserva">
-									<option value="1">Yes</option>
-									<option value="0" selected="selected" >No</option>
+									<option value="1" <% if (request.getParameter("carroReserva") == "1") { out.print("selected='selected'"); } %>>Sim</option>
+									<option value="0" <% if (request.getParameter("carroReserva") == "0") { out.print("selected='selected'"); } %>>Nao</option>
 								</select> &nbsp;</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Wants 24/7 support?</td>
+								<td class="c1" width="50%">Quer Assistencia 24 horas?</td>
 								<td width="50%"><select name="assistencia24h">
-                                    <option value="1">Yes</option>
-                                    <option value="0" selected="selected" >No</option>
+									<option value="1" <% if (request.getParameter("assistencia24h") == "1") { out.print("selected='selected'"); } %>>Sim</option>
+									<option value="0" <% if (request.getParameter("assistencia24h") == "0") { out.print("selected='selected'"); } %>>Nao</option>									
 								</select> &nbsp;</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Glass coverage?</td>
+								<td class="c1" width="50%">Quer Cobertura de vidros?</td>
 
 								<td width="50%"><select name="vidros">
-                                    <option value="1">Yes</option>
-                                    <option value="0" selected="selected" >No</option>
+									<option value="1" <% if (request.getParameter("vidros") == "1") { out.print("selected='selected'"); } %>>Sim</option>
+									<option value="0" <% if (request.getParameter("vidros") == "0") { out.print("selected='selected'"); } %> >Nao</option>									
 								</select> &nbsp;</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Unrelated expenses:</td>
+								<td class="c1" width="50%">Despesas Extraordinarias:</td>
 
 								<td width="50%"><select name="despExtra">
-                                    <option value="1">Yes</option>
-                                    <option value="0" selected="selected" >No</option>
+									<option value="1" <% if (request.getParameter("despExtra") == "1") { out.print("selected='selected'"); } %>>Sim</option>
+									<option value="0" <% if (request.getParameter("despExtra") == "0") { out.print("selected='selected'"); } %>>Nao</option>
 								</select> &nbsp;</td>
 							</tr>
 						</tbody>
@@ -269,7 +271,8 @@
 			<tbody>
 				<tr class="seucorretor6">
 					<td align="center" bordercolor="#000000" class="seucorretor2">
-					<div align="left"><span class="seucorretor1"><b>Accessories Coverage:</b></span></div>
+					<div align="left"><span class="seucorretor1"><b>Cobertura
+					de Acess—rios:</b></span></div>
 					</td>
 				</tr>
 
@@ -281,30 +284,30 @@
 						width="95%">
 						<tbody>
 							<tr>
-								<td class="c5" width="50%"></td>
+								<td class="c5" width="50%">Descricao</td>
 
-								<td class="c5" width="50%">Value ($)</td>
+								<td class="c5" width="50%">Valor (R$)</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Alarm:</td>
+								<td class="c1" width="50%">Alarme:</td>
 
-								<td width="50%"><input size="12" name="alarme" value="0.00"
+								<td width="50%"><input size="12" name="alarme" value="<% out.print(request.getParameter("alarme"));%>"
 									type="text"> &nbsp;</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Sound system:</td>
+								<td class="c1" width="50%">Sistema de Som:</td>
 
 								<td width="50%"><input size="12" name="sistemaSom"
-									value="0.00" type="text"> &nbsp;</td>
+									value="<% out.print(request.getParameter("sistemaSom"));%>" type="text"> &nbsp;</td>
 							</tr>
 
 							<tr>
-								<td class="c1" width="50%">Armor:</td>
+								<td class="c1" width="50%">Blindagem:</td>
 
 								<td width="50%"><input size="12" name="blindagem"
-									value="0.00" type="text"> &nbsp;</td>
+									value="<% out.print(request.getParameter("blindagem"));%>" type="text"> &nbsp;</td>
 							</tr>
 						</tbody>
 					</table>
