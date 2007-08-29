@@ -208,14 +208,16 @@ public class DrlDumper extends ReflectiveVisitor
     public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
         this.template = "";
         String text = descr.getText();
-        if ( text == null ) {
+        if ( text == null || descr.getType() == LiteralRestrictionDescr.TYPE_NULL ) {
             text = "null";
-        } else {
+        } else if( descr.getType() == LiteralRestrictionDescr.TYPE_NUMBER ) {
             try {
                 Integer.parseInt( text );
             } catch ( final NumberFormatException e ) {
                 text = "\"" + text + "\"";
             }
+        } else if( descr.getType() == LiteralRestrictionDescr.TYPE_STRING ) {
+            text = "\"" + text + "\"";
         }
         this.template = descr.getEvaluator() + " " + text;
     }

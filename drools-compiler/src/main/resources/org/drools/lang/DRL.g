@@ -1523,7 +1523,7 @@ expression_value[RestrictionConnectiveDescr base, String op] returns [Restrictio
 			}						
 		|	lc=literal_constraint 
 			{ 
-				$rd  = new LiteralRestrictionDescr($op, $lc.text);
+				$rd  = new LiteralRestrictionDescr($op, $lc.text, $lc.type );
 			}
 		|	rvc=paren_chunk 
 			{ 
@@ -1538,15 +1538,15 @@ expression_value[RestrictionConnectiveDescr base, String op] returns [Restrictio
 		}
 	;	
 	
-literal_constraint returns [String text]
+literal_constraint returns [String text, int type]
 	@init {
 		$text = null;
 	}
-	:	(	t=STRING { $text = getString( $t.text ); } 
-		|	t=INT    { $text = $t.text; }
-		|	t=FLOAT	 { $text = $t.text; }
-		|	t=BOOL 	 { $text = $t.text; }
-		|	t=NULL   { $text = null; }
+	:	(	t=STRING { $text = getString( $t.text ); $type = LiteralRestrictionDescr.TYPE_STRING; } 
+		|	t=INT    { $text = $t.text; $type = LiteralRestrictionDescr.TYPE_NUMBER; }
+		|	t=FLOAT	 { $text = $t.text; $type = LiteralRestrictionDescr.TYPE_NUMBER; }
+		|	t=BOOL 	 { $text = $t.text; $type = LiteralRestrictionDescr.TYPE_BOOLEAN; }
+		|	t=NULL   { $text = null; $type = LiteralRestrictionDescr.TYPE_NULL; }
 		)
 	;
 	

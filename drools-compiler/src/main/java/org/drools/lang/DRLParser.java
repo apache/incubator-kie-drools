@@ -1,4 +1,4 @@
-// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-08-28 11:00:44
+// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-08-29 17:26:19
 
 	package org.drools.lang;
 	import java.util.List;
@@ -5931,7 +5931,7 @@ public class DRLParser extends Parser {
 
         accessor_path_return ap = null;
 
-        String lc = null;
+        literal_constraint_return lc = null;
 
         paren_chunk_return rvc = null;
 
@@ -6027,7 +6027,7 @@ public class DRLParser extends Parser {
                     if (failed) return rd;
                     if ( backtracking==0 ) {
                        
-                      				rd = new LiteralRestrictionDescr(op, lc);
+                      				rd = new LiteralRestrictionDescr(op, lc.text, lc.type );
                       			
                     }
 
@@ -6073,16 +6073,21 @@ public class DRLParser extends Parser {
     }
     // $ANTLR end expression_value
 
+    public static class literal_constraint_return extends ParserRuleReturnScope {
+        public String text;
+        public int type;
+    };
 
     // $ANTLR start literal_constraint
-    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1541:1: literal_constraint returns [String text] : (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL ) ;
-    public final String literal_constraint() throws RecognitionException {
-        String text = null;
+    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1541:1: literal_constraint returns [String text, int type] : (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL ) ;
+    public final literal_constraint_return literal_constraint() throws RecognitionException {
+        literal_constraint_return retval = new literal_constraint_return();
+        retval.start = input.LT(1);
 
         Token t=null;
 
 
-        		text = null;
+        		retval.text = null;
         	
         try {
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1545:2: ( (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL ) )
@@ -6117,7 +6122,7 @@ public class DRLParser extends Parser {
                 }
                 break;
             default:
-                if (backtracking>0) {failed=true; return text;}
+                if (backtracking>0) {failed=true; return retval;}
                 NoViableAltException nvae =
                     new NoViableAltException("1545:4: (t= STRING | t= INT | t= FLOAT | t= BOOL | t= NULL )", 71, 0, input);
 
@@ -6129,9 +6134,9 @@ public class DRLParser extends Parser {
                     // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1545:6: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_literal_constraint4206); if (failed) return text;
+                    match(input,STRING,FOLLOW_STRING_in_literal_constraint4206); if (failed) return retval;
                     if ( backtracking==0 ) {
-                       text = getString( t.getText() ); 
+                       retval.text = getString( t.getText() ); retval.type = LiteralRestrictionDescr.TYPE_STRING; 
                     }
 
                     }
@@ -6140,9 +6145,9 @@ public class DRLParser extends Parser {
                     // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1546:5: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_literal_constraint4217); if (failed) return text;
+                    match(input,INT,FOLLOW_INT_in_literal_constraint4217); if (failed) return retval;
                     if ( backtracking==0 ) {
-                       text = t.getText(); 
+                       retval.text = t.getText(); retval.type = LiteralRestrictionDescr.TYPE_NUMBER; 
                     }
 
                     }
@@ -6151,9 +6156,9 @@ public class DRLParser extends Parser {
                     // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1547:5: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_literal_constraint4230); if (failed) return text;
+                    match(input,FLOAT,FOLLOW_FLOAT_in_literal_constraint4230); if (failed) return retval;
                     if ( backtracking==0 ) {
-                       text = t.getText(); 
+                       retval.text = t.getText(); retval.type = LiteralRestrictionDescr.TYPE_NUMBER; 
                     }
 
                     }
@@ -6162,9 +6167,9 @@ public class DRLParser extends Parser {
                     // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1548:5: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_literal_constraint4241); if (failed) return text;
+                    match(input,BOOL,FOLLOW_BOOL_in_literal_constraint4241); if (failed) return retval;
                     if ( backtracking==0 ) {
-                       text = t.getText(); 
+                       retval.text = t.getText(); retval.type = LiteralRestrictionDescr.TYPE_BOOLEAN; 
                     }
 
                     }
@@ -6173,9 +6178,9 @@ public class DRLParser extends Parser {
                     // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1549:5: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_literal_constraint4253); if (failed) return text;
+                    match(input,NULL,FOLLOW_NULL_in_literal_constraint4253); if (failed) return retval;
                     if ( backtracking==0 ) {
-                       text = null; 
+                       retval.text = null; retval.type = LiteralRestrictionDescr.TYPE_NULL; 
                     }
 
                     }
@@ -6186,6 +6191,8 @@ public class DRLParser extends Parser {
 
             }
 
+            retval.stop = input.LT(-1);
+
         }
         catch (RecognitionException re) {
             reportError(re);
@@ -6193,7 +6200,7 @@ public class DRLParser extends Parser {
         }
         finally {
         }
-        return text;
+        return retval;
     }
     // $ANTLR end literal_constraint
 
