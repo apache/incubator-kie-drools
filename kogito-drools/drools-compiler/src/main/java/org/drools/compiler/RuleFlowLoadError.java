@@ -12,11 +12,16 @@ public class RuleFlowLoadError extends DroolsError {
 
     private String message;
     private Exception exception;
+    private static final int[] lines = new int[0];
 
     public RuleFlowLoadError(String message, Exception nested) {
         
         this.message = message;
         this.exception = nested;
+    }
+    
+    public int[] getErrorLines() {
+        return this.lines;
     }
     
     public String getMessage() {

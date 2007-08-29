@@ -25,6 +25,7 @@ public class RuleError extends DroolsError {
     private BaseDescr descr;
     private Object    object;
     private String    message;
+    private int[]     errorLines = new int[0];
 
     public RuleError(final Rule rule,
                      final BaseDescr descr,
@@ -48,17 +49,17 @@ public class RuleError extends DroolsError {
     public Object getObject() {
         return this.object;
     }
+    
+    public int[] getErrorLines() {
+        return this.errorLines;
+    }
 
     /** 
      * This will return the line number of the error, if possible
      * Otherwise it will be -1
      */
     public int getLine() {
-        if ( this.descr != null ) {
-            return this.descr.getLine();
-        } else {
-            return -1;
-        }
+        return this.descr != null ? this.descr.getLine() : -1;
     }
 
     public String getMessage() {
@@ -96,4 +97,29 @@ public class RuleError extends DroolsError {
         return buf.toString();
     }
 
+//    private String createMessage( String message ) {
+//        StringBuffer detail = new StringBuffer();
+//        detail.append( this.message );
+//        detail.append( " : " );
+//        detail.append( this.rule );
+//        detail.append( "\n" );
+//        if( object instanceof CompilationProblem[] ) {
+//            CompilationProblem[] cp = (CompilationProblem[]) object;
+//            this.errorLines = new int[cp.length];
+//            for( int i = 0; i < cp.length ; i ++ ) {
+//               this.errorLines[i] = cp[i].getStartLine() - this.descr.getOffset() + this.descr.getLine() - 1; 
+//               detail.append( this.rule.getName() );
+//               detail.append( " (line:" );
+//               detail.append( this.errorLines[i] );
+//               detail.append( "): " );
+//               detail.append( cp[i].getMessage() );
+//               detail.append( "\n" );
+//            }
+//        } else {
+//            this.errorLines = new int[0];
+//        }
+//        return "[ "+this.rule.getName()+" : "+message + "\n"+detail.toString()+" ]";
+//    }
+    
+    
 }

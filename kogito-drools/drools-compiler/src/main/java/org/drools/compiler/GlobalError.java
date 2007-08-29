@@ -18,13 +18,19 @@ package org.drools.compiler;
 
 public class GlobalError extends DroolsError {
     private String global;
+    private int[]  line;
 
-    public GlobalError(final String global) {
+    public GlobalError(final String global, final int line) {
         this.global = global;
+        this.line = new int[] { line };
     }
 
     public String getGlobal() {
         return this.global;
+    }
+    
+    public int[] getErrorLines() {
+        return this.line;
     }
 
     public String getMessage() {

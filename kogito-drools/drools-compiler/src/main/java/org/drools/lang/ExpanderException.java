@@ -26,20 +26,24 @@ public class ExpanderException extends DroolsError {
     private static final long serialVersionUID = 400L;
 
     private String            message;
-    private int               line;
+    private int[]             line;
 
     public ExpanderException(final String message,
                              final int line) {
         this.message = message;
-        this.line = line;
+        this.line = new int[] { line };
+    }
+    
+    public int[] getErrorLines() {
+        return this.line;
     }
 
     public String getMessage() {
-        return "[" + this.line + "] " + this.message;
+        return "[" + this.line[0] + "] " + this.message;
     }
     
     public int getLine() {
-        return this.line;
+        return this.line[0];
     }
 
 }

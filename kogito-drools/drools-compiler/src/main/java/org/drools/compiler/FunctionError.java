@@ -20,9 +20,10 @@ import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.FunctionDescr;
 
 public class FunctionError extends DroolsError {
-    private FunctionDescr functionDescr;
-    private Object        object;
-    private String        message;
+    final private FunctionDescr functionDescr;
+    final private Object        object;
+    final private String        message;
+    private int[]         errorLines;
 
     public FunctionError(final FunctionDescr functionDescr,
                          final Object object,
@@ -40,6 +41,10 @@ public class FunctionError extends DroolsError {
     public Object getObject() {
         return this.object;
     }
+    
+    public int[] getErrorLines() {
+        return errorLines;        
+    }
 
     public String getMessage() {
         return this.message;
@@ -53,15 +58,18 @@ public class FunctionError extends DroolsError {
         StringBuffer detail = new StringBuffer();
         if( object instanceof CompilationProblem[] ) {
             CompilationProblem[] cp = (CompilationProblem[]) object;
+            this.errorLines = new int[cp.length];
             for( int i = 0; i < cp.length ; i ++ ) {
-                int line = cp[i].getStartLine() - this.functionDescr.getOffset() + this.getFunctionDescr().getLine() - 1;
+               this.errorLines[i] = cp[i].getStartLine() - this.functionDescr.getOffset() + this.getFunctionDescr().getLine() - 1; 
                detail.append( this.functionDescr.getName() );
                detail.append( " (line:" );
-               detail.append( line );
+               detail.append( this.errorLines[i] );
                detail.append( "): " );
                detail.append( cp[i].getMessage() );
                detail.append( "\n" );
             }
+        } else {
+            this.errorLines = new int[0];
         }
         return "[ "+functionDescr.getName()+" : "+message + "\n"+detail.toString()+" ]";
     }
