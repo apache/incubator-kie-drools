@@ -248,7 +248,7 @@ public class MVELDialect
                 Class cls = this.typeResolver.resolveType( importEntry );                
                 this.imports.put( ParseTools.getSimpleClassName( cls ), cls );
             } catch ( ClassNotFoundException e ) {
-                this.results.add( new ImportError( importEntry ) );
+                this.results.add( new ImportError( importEntry, 1 ) );
             }
         }
     }
@@ -284,7 +284,7 @@ public class MVELDialect
                 }
             }
         } catch ( ClassNotFoundException e ) {
-            this.results.add( new ImportError( staticImportEntry ) );
+            this.results.add( new ImportError( staticImportEntry, -1 ) );
         }
     }
 

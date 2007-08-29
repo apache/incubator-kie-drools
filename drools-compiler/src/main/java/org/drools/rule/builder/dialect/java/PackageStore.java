@@ -66,7 +66,7 @@ public class PackageStore
         try {
             this.packageCompilationData.remove( resourceName );
         } catch ( final Exception e ) {
-            this.errors.add( new JavaDialectError( "PackageStore was unable to remove resourceName='" + resourceName + "'" ) );
+            this.errors.add( new JavaDialectError( "PackageStore was unable to remove resourceName='" + resourceName + "'"  ) );
         }
     }
 

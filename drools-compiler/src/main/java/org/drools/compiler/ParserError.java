@@ -33,6 +33,10 @@ public class ParserError extends DroolsError {
     public String getMessage() {
         return this.message;
     }
+    
+    public int[] getErrorLines() {
+        return new int[] { this.row };
+    }
 
     public int getCol() {
         return this.col;

@@ -25,6 +25,7 @@ public class FieldTemplateError extends DroolsError {
     private BaseDescr descr;
     private Object    object;
     private String    message;
+    private int[]     line;
 
     public FieldTemplateError(final Package pkg,
                               final BaseDescr descr,
@@ -34,6 +35,7 @@ public class FieldTemplateError extends DroolsError {
         this.descr = descr;
         this.object = object;
         this.message = message;
+        this.line = new int[] { ( this.descr != null ) ? this.descr.getLine() : -1 };
     }
 
     public Package getPackage() {
@@ -47,17 +49,17 @@ public class FieldTemplateError extends DroolsError {
     public Object getObject() {
         return this.object;
     }
+    
+    public int[] getErrorLines() {
+        return this.line;
+    }
 
     /** 
      * This will return the line number of the error, if possible
      * Otherwise it will be -1
      */
     public int getLine() {
-        if ( this.descr != null ) {
-            return this.descr.getLine();
-        } else {
-            return -1;
-        }
+        return this.line[0];
     }
 
     public String getMessage() {

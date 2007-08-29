@@ -18,13 +18,19 @@ package org.drools.compiler;
 
 public class ImportError extends DroolsError {
     private String importName;
+    private int[]  line;
 
-    public ImportError(final String importName) {
+    public ImportError(final String importName, final int line) {
         this.importName = importName;
+        this.line = new int[] { line };
     }
 
     public String getGlobal() {
         return this.importName;
+    }
+
+    public int[] getErrorLines() {
+        return this.line;
     }
 
     public String getMessage() {

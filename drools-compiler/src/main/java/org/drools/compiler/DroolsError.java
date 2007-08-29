@@ -23,4 +23,10 @@ public abstract class DroolsError {
      * which summarises the error.
      */
     public abstract String getMessage();
+    
+    /**
+     * Returns the lines of the error in the source file
+     * @return
+     */
+    public abstract int[] getErrorLines();
 }

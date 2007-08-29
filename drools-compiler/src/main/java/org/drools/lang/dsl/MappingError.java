@@ -41,17 +41,20 @@ public class MappingError extends DroolsError {
     private final int       offset;
     private final String    token;
     private String          templateText;
+    private final int[]     line;
 
     public MappingError(final int errorCode,
                         final int template,
                         final int offset,
                         final String token,
-                        final String templateText) {
+                        final String templateText,
+                        final int line ) {
         this.errorCode = errorCode;
         this.template = template;
         this.token = token;
         this.offset = offset;
         this.templateText = templateText;
+        this.line = new int[] { line };
     }
 
     /**
@@ -60,6 +63,10 @@ public class MappingError extends DroolsError {
      */
     public int getErrorCode() {
         return this.errorCode;
+    }
+    
+    public int[] getErrorLines() {
+        return this.line;
     }
 
     /**
