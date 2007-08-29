@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.Serializable;
@@ -19,10 +18,10 @@ import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.RuleBaseLoader;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.mvel.MVEL;
@@ -42,7 +41,7 @@ public class MVELTest extends TestCase {
         
         byte[] buf = out.toByteArray();
         
-        ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( buf ) );
+        DroolsObjectInputStream in = new DroolsObjectInputStream( new ByteArrayInputStream( buf ) );
         ruleBase = (RuleBase) in.readObject();
         // end of serialization block
         
