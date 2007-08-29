@@ -161,8 +161,6 @@ public class RuleBaseConfiguration
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
                                                                                                                   "org.drools.conflict.DepthConflictResolver" ) ) );
 
-        setShareBetaNodes( Boolean.valueOf( this.chainedProperties.getProperty( "drools.shadowproxy",
-                                                                                "true" ) ).booleanValue() );
 
         setShadowProxy( determineShadowProxy( this.chainedProperties.getProperty( "drools.shadowproxy",
                                                                                   null ) ) );
