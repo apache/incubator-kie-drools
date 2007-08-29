@@ -1,5 +1,6 @@
 package org.acme.insurance.base;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -23,23 +24,29 @@ import org.mvel.MVEL;
 
 public class MVELTest extends TestCase {
     public void testHelloWorld() throws Exception {
+
+        String tempFile = "/Users/michaelneale/foo3.pkg";
+
         // read in the source
+
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "mvel_test.drl" ) );
 
 
-// /* uncomment the block below to create a binary package to use the next time you run it */
+
+
+ /* uncomment the block below to create a binary package to use the next time you run it */
 //        Package pkg = loadPackage( reader );
 //
 //
 //
-//        FileOutputStream out = new FileOutputStream("/Users/michaelneale/foo2.pkg");
+//        FileOutputStream out = new FileOutputStream(tempFile);
 //        ObjectOutputStream obj = new ObjectOutputStream( out );
 //        obj.writeObject( pkg );
 //        obj.close();
 
 
 
-        ObjectInputStream in = new ObjectInputStream( new FileInputStream("/Users/michaelneale/foo2.pkg") );
+        ObjectInputStream in = new ObjectInputStream( new FileInputStream(tempFile) );
         Package pkg2 = (Package) in.readObject();
         // end of serialization block
 
@@ -59,16 +66,10 @@ public class MVELTest extends TestCase {
         workingMemory.insert( new Driver() );
 
         workingMemory.fireAllRules();
-//        assertEquals( 2, list.size() );
-//        assertEquals( new Integer(30), list.get(0));
-//        assertEquals( new Integer(22), list.get(1));
 
     }
 
-    public Object compiledExecute(String ex) {
-        Serializable compiled = MVEL.compileExpression(ex);
-        return MVEL.executeExpression(compiled, new Object(), new HashMap());
-    }
+
 
 
 
