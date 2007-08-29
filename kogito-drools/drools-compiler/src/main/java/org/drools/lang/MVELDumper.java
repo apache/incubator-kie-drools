@@ -27,7 +27,6 @@ import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
-import org.drools.spi.Evaluator;
 import org.drools.util.ReflectiveVisitor;
 
 /**
@@ -65,14 +64,16 @@ public class MVELDumper extends ReflectiveVisitor {
 
     public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
         String text = descr.getText();
-        if ( text == null ) {
+        if ( text == null || descr.getType() == LiteralRestrictionDescr.TYPE_NULL ) {
             text = "null";
-        } else {
+        } else if( descr.getType() == LiteralRestrictionDescr.TYPE_NUMBER ) {
             try {
                 Integer.parseInt( text );
             } catch ( final NumberFormatException e ) {
                 text = "\"" + text + "\"";
             }
+        } else if( descr.getType() == LiteralRestrictionDescr.TYPE_STRING ) {
+            text = "\"" + text + "\"";
         }
         this.template = processRestriction( descr.getEvaluator(), text );
     }
