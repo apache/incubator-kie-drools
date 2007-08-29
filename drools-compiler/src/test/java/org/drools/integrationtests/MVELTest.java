@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.Serializable;
@@ -34,16 +35,15 @@ public class MVELTest extends TestCase {
         
         // Bellow lines are a way to make sure serialization is fine
         // start of serialization block
-//        ByteArrayOutputStream out = new ByteArrayOutputStream();
-//        ObjectOutputStream obj = new ObjectOutputStream( out );
-//        obj.writeObject( ruleBase );
-//        obj.close();
-//        
-//        byte[] buf = out.toByteArray();
-//        
-//        ByteArrayInputStream input = new ByteArrayInputStream( buf );
-//        RuleBaseLoader loader = RuleBaseLoader.getInstance();
-//        ruleBase = loader.loadFromReader( new InputStreamReader( input ) );
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ObjectOutputStream obj = new ObjectOutputStream( out );
+        obj.writeObject( ruleBase );
+        obj.close();
+        
+        byte[] buf = out.toByteArray();
+        
+        ObjectInputStream in = new ObjectInputStream( new ByteArrayInputStream( buf ) );
+        ruleBase = (RuleBase) in.readObject();
         // end of serialization block
         
 
