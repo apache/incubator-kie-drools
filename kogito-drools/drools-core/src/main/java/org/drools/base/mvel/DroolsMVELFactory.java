@@ -14,9 +14,11 @@ import org.drools.spi.Tuple;
 import org.mvel.CompileException;
 import org.mvel.integration.VariableResolver;
 import org.mvel.integration.impl.BaseVariableResolverFactory;
+import org.mvel.integration.impl.LocalVariableResolverFactory;
 
 public class DroolsMVELFactory extends BaseVariableResolverFactory
     implements
+    LocalVariableResolverFactory,
     Serializable,
     Cloneable {
 
