@@ -375,6 +375,7 @@ public class MVELDialect
         ExpressionCompiler compiler = new ExpressionCompiler( text.trim() );
 
         if (MVELDebugHandler.isDebugMode()) {
+        	System.out.println("Source before MVEL Compilation:\n"+text.trim());
             compiler.setDebugSymbols( true );
         }
 
