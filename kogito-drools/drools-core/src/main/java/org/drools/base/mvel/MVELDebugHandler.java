@@ -43,6 +43,7 @@ public final class MVELDebugHandler {
         //int oldReturn = onBreakReturn;
         //onBreakReturn = Debugger.CONTINUE;
         //return oldReturn;
+		System.out.println("Continuing with "+(onBreakReturn==Debugger.CONTINUE?"continue":"step-over"));
         return onBreakReturn;
 	}
 
