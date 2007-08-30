@@ -47,17 +47,17 @@ public final class MVELDebugHandler {
 	}
 
     protected final static void registerBreakpoint(String sourceName, int lineNumber) {
-        //System.out.println("Registering breakpoint for "+sourceName+":"+lineNumber);
+        System.out.println("Registering breakpoint for "+sourceName+":"+lineNumber);
         MVELRuntime.registerBreakpoint( sourceName, lineNumber );
     }
     
     protected final static void clearAllBreakpoints() {
-        //System.out.println("Clearing all breakpoints");
+        System.out.println("Clearing all breakpoints");
         MVELRuntime.clearAllBreakpoints();
     }
     
     protected final static void removeBreakpoint(String sourceName, int lineNumber) {
-        //System.out.println("Removing breakpoint from "+sourceName+":"+lineNumber);
+        System.out.println("Removing breakpoint from "+sourceName+":"+lineNumber);
         MVELRuntime.removeBreakpoint( sourceName, lineNumber );
     }
     
@@ -67,6 +67,7 @@ public final class MVELDebugHandler {
         }
         
 		public int onBreak(Frame frame) {
+			System.out.println("onBreak call for "+frame.getSourceName()+":"+frame.getLineNumber());
 			return MVELDebugHandler.onBreak(frame);
 			// This call is supposed to be catched by the remote debugger
 		}
