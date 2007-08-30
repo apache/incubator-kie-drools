@@ -7,6 +7,7 @@ import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel.CompiledExpression;
 import org.mvel.MVEL;
+import org.mvel.debug.DebugTools;
 
 public class MVELConsequence
     implements
@@ -36,6 +37,7 @@ public class MVELConsequence
         MVELDebugHandler.prepare();
         
         if (MVELDebugHandler.isDebugMode()) {       
+        	System.out.println(DebugTools.decompile(compexpr));
             MVEL.executeDebugger( compexpr, null, this.factory);
         } else {
             MVEL.executeExpression( compexpr, null, this.factory);
