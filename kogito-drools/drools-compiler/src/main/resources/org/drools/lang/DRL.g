@@ -731,10 +731,10 @@ lhs_or returns [BaseDescr d]
 			$d = or;
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
 		}
-		lhsand=lhs_and+ 
+		( lhsand=lhs_and 
 		{
 			or.addDescr( $lhsand.d );
-		}
+		})+
 		RIGHT_PAREN // PREFIX
 	|	
 	        left=lhs_and { $d = $left.d; }
@@ -766,10 +766,10 @@ lhs_and returns [BaseDescr d]
 			$d = and;
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
 		}
-		lhsunary=lhs_unary+ 
+		(lhsunary=lhs_unary
 		{
 			and.addDescr( $lhsunary.d );
-		}
+		})+
 		RIGHT_PAREN 
 	|	
 	        left=lhs_unary { $d = $left.d; }

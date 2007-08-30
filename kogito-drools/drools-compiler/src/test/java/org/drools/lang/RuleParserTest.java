@@ -3422,6 +3422,38 @@ public class RuleParserTest extends TestCase {
         assertTrue( parser.hasErrors() );
     }
 
+    public void testRuleParseLhs3() throws Exception {
+        final String text = "(or\nnot Person()\n(and Cheese()\nMeat()\nWine()))";
+        final AndDescr descrs = new AndDescr();
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+        parser.setLineOffset( descrs.getLine() );
+        parser.normal_lhs_block( descrs );
+        if ( parser.hasErrors() ) {
+            System.err.println( parser.getErrorMessages() );
+        }
+        assertFalse( parser.hasErrors() );
+        assertEquals( 1, descrs.getDescrs().size()); 
+        OrDescr or = (OrDescr) descrs.getDescrs().get(0);
+        assertEquals( 2, or.getDescrs().size());
+        NotDescr not = (NotDescr) or.getDescrs().get( 0 );
+        AndDescr and = (AndDescr) or.getDescrs().get( 1 );
+        assertEquals( 1, not.getDescrs().size());
+        PatternDescr person = (PatternDescr) not.getDescrs().get( 0 );
+        assertEquals( "Person", person.getObjectType() );
+        assertEquals( 3, and.getDescrs().size());
+        PatternDescr cheese = (PatternDescr) and.getDescrs().get( 0 );
+        assertEquals( "Cheese", cheese.getObjectType() );
+        PatternDescr meat = (PatternDescr) and.getDescrs().get( 1 );
+        assertEquals( "Meat", meat.getObjectType() );
+        PatternDescr wine = (PatternDescr) and.getDescrs().get( 2 );
+        assertEquals( "Wine", wine.getObjectType() );
+        
+        
+    }
+
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;
