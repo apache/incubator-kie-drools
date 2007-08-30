@@ -18,5 +18,5 @@
   <classpathentry kind="src" path="/drools-decisiontables"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/3.2.3.v_686_R32x/core-3.2.3.v_686_R32x.jar"/>
   <classpathentry kind="var" path="M2_REPO/jsr94/jsr94-tck/1.0.3/jsr94-tck-1.0.3.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2rc4rv908/mvel14-1.2rc4rv908.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel14/1.2rc4rv913/mvel14-1.2rc4rv913.jar"/>
 </classpath>
