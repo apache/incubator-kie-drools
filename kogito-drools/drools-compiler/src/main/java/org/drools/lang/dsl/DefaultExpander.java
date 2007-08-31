@@ -234,7 +234,7 @@ public class DefaultExpander
                 // do we need to report errors for that?
                 if ( lines[i].equals( expanded[lastExpanded] ) ) {
                     // report error
-                    this.addError( new ExpanderException( "Unable to expand: [" + lines[i] + "]",
+                    this.addError( new ExpanderException( "Unable to expand: " + lines[i].replaceAll( "[\n\r]", "" ),
                                                           i + lineOffset ) );
                 }
                 // but if the original starts with a "-", it means we need to add it

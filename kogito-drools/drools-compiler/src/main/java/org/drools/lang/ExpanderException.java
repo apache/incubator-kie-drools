@@ -45,5 +45,9 @@ public class ExpanderException extends DroolsError {
     public int getLine() {
         return this.line[0];
     }
+    
+    public String toString() { 
+        return this.getMessage();
+    }
 
 }
