@@ -1,0 +1,151 @@
+package org.drools.examples.sudoku
+
+import org.drools.examples.sudoku.rules.PossibleCellValue;
+import org.drools.examples.sudoku.rules.ResolvedCellValue;
+
+/**
+ * This rule package defines a set of rules that can be used to solve a partially filled Sudoku grid.
+ * It expects to have objects of type PossibleCellValue and ResolvedCellValue
+ * inserted into the working memory and will then work to remove PossibleCellValues and to 
+ * insert ResolvedCellValues until a single ResolvedCellValue is present for each row and column
+ * and not PossibleCellValues remain.
+ *
+ * Any issues discovered are inserted as Strings into the issues global.
+ *
+ * @author <a href="pbennett@redhat.com">Pete Bennett</a>
+ * @author <a href="mailto:michael.frandsen@syngenio.de">Michael Frandsen</a>
+ * @version $Revision: 1.1 $
+ */
+
+rule "#1 Once a specific cell has a ResolvedCellValue, remove all the other PossibleCellValues for the same cell"
+	# this rule requires a high salience so that, when it is activated it is executed, as soon as a 
+	# ResolvedCellValue is set, we need to clear out the PossibleCellValues for the same cell location, 
+	# otherwise other rules misfire - a good example of a valid use for salience
+	salience 50 
+	when
+		$resolved : ResolvedCellValue($resolvedRow : row, $resolvedCol : col)
+		$possible : PossibleCellValue(row == $resolvedRow, col == $resolvedCol)
+	then
+		retract($possible);
+		update ($resolved); # this is done so that listeners can be triggered to know this cell is now resolved
+		System.out.println("Rule #1 cleared the other PossibleCellValues for ("+$resolved.getRow()+","+$resolved.getCol()+") as a ResolvedCellValue of "+$resolved.getValue()+" exists for this cell.");
+end
+
+rule "#2 If a cell has only a single PossibleCellValue, remove it and replace it with the equivalent ResolvedCellValue"
+	when
+		$possible : PossibleCellValue ( $possibleRow : row, $possibleCol : col, $possibleValue : value )
+		not ( PossibleCellValue ( row == $possibleRow, col == $possibleCol, value != $possibleValue ) )
+	then
+		retract( $possible );
+		insert( new ResolvedCellValue( $possibleValue, $possibleRow, $possibleCol ) );
+		System.out.println("Rule #2 changed the only PossibleCellValue at ("+$possibleRow+","+$possibleCol+") to a ResolvedCellValue for with the value of "+$possibleValue);
+end
+
+rule "#3 If a row has a ResolvedCellValue in it, remove this value as a PossibleCellValue from all other cells in the same row"
+  	when		
+		$resolved : ResolvedCellValue( $resolvedRow : row, $resolvedValue : value )
+		$possible : PossibleCellValue( row == $resolvedRow, value == $resolvedValue )
+	then
+		retract( $possible );
+		System.out.println("Rule #3 determined the value at ("+$possible.getRow()+","+$possible.getCol()+") could not be "+$possible.getValue()+" as this value already exists in the same row at ("+$resolved.getRow()+","+$resolved.getCol()+")");
+end
+
+rule "#4 If a column has a ResolvedCellValue in it, remove this value as a PossibleCellValue from all other cells in the same column"
+    when		
+		$resolved : ResolvedCellValue( $resolvedCol : col, $resolvedValue : value )
+		$possible : PossibleCellValue( col == $resolvedCol, value == $resolvedValue )
+	then
+		retract( $possible );
+		System.out.println("Rule #3 determined the value at ("+$possible.getRow()+","+$possible.getCol()+") could not be "+$possible.getValue()+" as this value already exists in the same column at ("+$resolved.getRow()+","+$resolved.getCol()+")");
+end
+
+rule "#5 If a zone has a ResolvedCellValue in it, remove this value as a PossibleCellValue from all other cells in the same zone"
+	when		
+		$resolved : ResolvedCellValue( $resolvedZone : zone, $resolvedValue : value )
+		$possible : PossibleCellValue( zone == $resolvedZone, value == $resolvedValue )
+	then
+		retract( $possible );
+		System.out.println("Rule #3 determined the value at ("+$possible.getRow()+","+$possible.getCol()+") could not be "+$possible.getValue()+" as this value already exists in the same zone at ("+$resolved.getRow()+","+$resolved.getCol()+")");
+end
+
+rule "#6 If a PossibleCellValue only appears once in a row, then this must be the ResolvedCellValue"
+	when		
+		$possible : PossibleCellValue( $zone : zone, $value : value, $col : col, $row : row)
+		not (PossibleCellValue( row == $row, value == $value ))
+		not (ResolvedCellValue( value == $value, zone == $zone) )
+		not (ResolvedCellValue( value == $value, row == $row) )
+		not (ResolvedCellValue( value == $value, col == $col) )
+	then
+		retract( $possible );
+		insert( new ResolvedCellValue( $value, $row, $col) );
+		System.out.println("Rule #6 determined ("+$row+","+$col+") is "+$value+" as this is the only possible cell in the row that can have this value");
+end
+
+rule "#7 If a PossibleCellValue only appears once in a column, then this must be the ResolvedCellValue"
+	when		
+		$possible : PossibleCellValue( $zone : zone, $value : value, $col : col, $row : row)
+		not (PossibleCellValue( col == $col, value == $value ))
+		not (ResolvedCellValue( value == $value, zone == $zone) )
+		not (ResolvedCellValue( value == $value, row == $row) )
+		not (ResolvedCellValue( value == $value, col == $col) )
+	then
+		retract( $possible );
+		insert( new ResolvedCellValue( $value, $row, $col) );
+		System.out.println("Rule #7 determined ("+$row+","+$col+") is "+$value+" as this is the only possible cell in the column that can have this value");
+end
+
+rule "#8 If a PossibleCellValue only appears once in a zone, then this must be the ResolvedCellValue"
+	when		
+		$possible : PossibleCellValue( $zone : zone, $value : value, $col : col, $row : row)
+		not (PossibleCellValue( zone == $zone, value == $value ))
+		not (ResolvedCellValue( value == $value, zone == $zone) )
+		not (ResolvedCellValue( value == $value, row == $row) )
+		not (ResolvedCellValue( value == $value, col == $col) )
+	then
+		retract( $possible );
+		insert( new ResolvedCellValue( $value, $row, $col) );
+		System.out.println("Rule #8 determined ("+$row+","+$col+") is "+$value+" as this is the only possible cell in the zone that can have this value");
+end
+
+rule "#9 If there are two fields with only two possible values in the same row, remove the PossibleValues for the same Value in the rest of the zone"
+	when
+		PossibleCellValue( $zone1 : zone, $val1 : value, $row1 : row, $col1 : col )
+		PossibleCellValue( zone == $zone1, value == $val1, $row2 : row, $col2 : col != $col1)
+		PossibleCellValue( zone == $zone1, row == $row1, col == $col1, $val2 : value )
+		PossibleCellValue( zone == $zone1, row == $row2, col == $col2, value == $val2 )
+		not ( PossibleCellValue( zone == $zone1, row == $row1, col == $col1, value != $val1, value != $val2 ) )
+		not ( PossibleCellValue( zone == $zone1, row == $row2, col == $col2, value != $val1, value != $val2 ) )
+		$possible : PossibleCellValue( zone == $zone1, value == $val1)
+	then
+		retract( $possible );
+		System.out.println("Rule #9 fired");
+end
+
+rule "#10 If there are two fields with only two possible values in the same column, remove the PossibleValues for the same Value in the rest of the zone"
+	when
+		PossibleCellValue( $zone1 : zone, $val1 : value, $row1 : row, $col1 : col )
+		PossibleCellValue( zone == $zone1, value == $val1, $row2 : row != $row1, $col2 : col)
+		PossibleCellValue( zone == $zone1, row == $row1, col == $col1, $val2 : value )
+		PossibleCellValue( zone == $zone1, row == $row2, col == $col2, value == $val2 )
+		not ( PossibleCellValue( zone == $zone1, row == $row1, col == $col1, value != $val1, value != $val2 ) )
+		not ( PossibleCellValue( zone == $zone1, row == $row2, col == $col2, value != $val1, value != $val2 ) )
+		$possible : PossibleCellValue( zone == $zone1, value == $val1)
+	then
+		retract( $possible );
+		System.out.println("Rule #10 fired");
+end
+
+rule "#11 If there are two fields with only two possible values in the same zone, remove the PossibleValues for the same Value in the rest of the zone"
+#	salience 4
+	when
+		PossibleCellValue( $zone1 : zone, $val1 : value, $row1 : row, $col1 : col )
+		PossibleCellValue( $zone2 : zone != $zone1, value == $val1, $row2 : row, $col2 : col)
+		PossibleCellValue( zone == $zone1, row == $row1, col == $col1, $val2 : value )
+		PossibleCellValue( zone == $zone1, row == $row2, col == $col2, value == $val2 )
+		not ( PossibleCellValue( zone == $zone1, row == $row1, col == $col1, value != $val1, value != $val2 ) )
+		not ( PossibleCellValue( zone == $zone1, row == $row2, col == $col2, value != $val1, value != $val2 ) )
+		$possible : PossibleCellValue( zone == $zone1, value == $val1)
+	then
+		retract( $possible );
+		System.out.println("Rule #11 fired");
+end
