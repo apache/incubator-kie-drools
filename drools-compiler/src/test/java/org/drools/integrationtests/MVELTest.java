@@ -50,12 +50,18 @@ public class MVELTest extends TestCase {
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
+        
+        final List list2 = new ArrayList();
+        workingMemory.setGlobal( "list2",
+                                 list2 );        
 
         workingMemory.insert( new Cheese("stilton", 10) );
         workingMemory.fireAllRules();
         assertEquals( 2, list.size() );
         assertEquals( new Integer(30), list.get(0));
         assertEquals( new Integer(22), list.get(1));
+        
+        assertEquals( "hello world", list2.get(0));        
         
     }
     
