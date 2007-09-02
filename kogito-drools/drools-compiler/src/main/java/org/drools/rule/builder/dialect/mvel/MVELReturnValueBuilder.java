@@ -61,8 +61,6 @@ public class MVELReturnValueBuilder
         }             
         
         final DroolsMVELFactory factory = new DroolsMVELFactory(previousMap, localMap,  context.getPkg().getGlobals() );
-        factory.setNextFactory( ((MVELDialect) context.getDialect()).getStaticMethodImportResolverFactory() );
-
         
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   returnValueRestrictionDescr,

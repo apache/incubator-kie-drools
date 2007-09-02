@@ -185,6 +185,7 @@ public class Package
         //  Use a custom ObjectInputStream that can resolve against a given classLoader
         final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ),
                                                                                       this.packageCompilationData.getClassLoader() );
+        
 
         this.rules = (Map) streamWithLoader.readObject();
     }

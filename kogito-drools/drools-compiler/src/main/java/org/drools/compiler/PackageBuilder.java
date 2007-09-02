@@ -266,18 +266,29 @@ public class PackageBuilder {
                 addFactTemplate( (FactTemplateDescr) it.next() );
             }
             
-            // add static imports for all functions
-            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-                FunctionDescr functionDescr = (FunctionDescr) it.next();
-                final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
-                functionDescr.setClassName( functionClassName );
-                this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
+            if ( !packageDescr.getFunctions().isEmpty() ) {
+	            // add static imports for all functions
+	            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+	                FunctionDescr functionDescr = (FunctionDescr) it.next();
+	                final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
+	                functionDescr.setClassName( functionClassName );
+	                this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
+	            }            	                        
+	
+	            // iterate and compile
+	            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+	                addFunction( (FunctionDescr) it.next() );
+	            }
+            
+	            // We need to compile all the functions, so scripting languages like mvel can find them
+	            this.configuration.getDialectRegistry().compileAll();
+	            
+	            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+	                FunctionDescr functionDescr = (FunctionDescr) it.next();
+	                final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
+	                this.configuration.getDialectRegistry().addStaticImport(functionClassName + "." + functionDescr.getName());
+	            }	            
             }
-
-            // iterate and compile
-            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-                addFunction( (FunctionDescr) it.next() );
-            }                            
 
             // iterate and compile
             for ( final Iterator it = packageDescr.getRules().iterator(); it.hasNext(); ) {

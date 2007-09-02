@@ -74,7 +74,6 @@ public class MVELEvalBuilder
             final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                      null,
                                                                      context.getPkg().getGlobals() );
-            factory.setNextFactory( ((MVELDialect) context.getDialect()).getStaticMethodImportResolverFactory() );
 
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       evalDescr,

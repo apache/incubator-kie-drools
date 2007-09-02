@@ -31,7 +31,7 @@ public class MVELTest extends TestCase {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_mvel.drl" ) );
         RuleBase ruleBase = loadRuleBase( reader );
-        
+                
         // Bellow lines are a way to make sure serialization is fine
         // start of serialization block
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -43,8 +43,7 @@ public class MVELTest extends TestCase {
         
         DroolsObjectInputStream in = new DroolsObjectInputStream( new ByteArrayInputStream( buf ) );
         ruleBase = (RuleBase) in.readObject();
-        // end of serialization block
-        
+        // end of serialization block        
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -76,6 +75,9 @@ public class MVELTest extends TestCase {
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
+        
+        System.out.println( builder.getErrors() );
+        
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase

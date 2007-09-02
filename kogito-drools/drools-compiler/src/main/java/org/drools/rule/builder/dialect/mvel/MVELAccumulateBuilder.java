@@ -77,7 +77,6 @@ public class MVELAccumulateBuilder
         final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                  sourcePattern.getOuterDeclarations(),
                                                                  context.getPkg().getGlobals() );
-        factory.setNextFactory( dialect.getStaticMethodImportResolverFactory() );
 
         Accumulator accumulator = null;
         Declaration[] declarations = null;

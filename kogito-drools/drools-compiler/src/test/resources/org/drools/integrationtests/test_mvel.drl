@@ -4,6 +4,10 @@ import org.drools.Cheese;
 
 global java.util.List list;
 
+function String someFunction() {
+    return "hello world";
+}
+
 rule "mvel1"
 	dialect "mvel"
     when
@@ -27,4 +31,5 @@ rule "mvel2"
         $c : Cheese(type == "stilton", price == 20 )
     then
         list.add( $c.price + 2);       
+        System.out.println( someFunction() );
 end
