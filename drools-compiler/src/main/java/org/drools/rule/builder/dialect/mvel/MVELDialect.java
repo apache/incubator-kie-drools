@@ -66,6 +66,7 @@ import org.mvel.integration.VariableResolverFactory;
 import org.mvel.integration.impl.ClassImportResolverFactory;
 import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 import org.mvel.optimizers.OptimizerFactory;
+import org.mvel.util.MethodStub;
 import org.mvel.util.ParseTools;
 
 public class MVELDialect
@@ -107,8 +108,6 @@ public class MVELDialect
     
     private Map                               imports;
     private Map                               packageImports;
-    private StaticMethodImportResolverFactory staticImportFactory;
-//    private ClassImportResolverFactory        importFactory;
 
     private boolean                           strictMode;
 
@@ -150,11 +149,8 @@ public class MVELDialect
         this.interceptors.put( "Modify",
                                new ModifyInterceptor() );
 
-//        this.importFactory = new ClassImportResolverFactory();
         this.imports = new HashMap();
         this.packageImports = new HashMap();
-        this.staticImportFactory = new StaticMethodImportResolverFactory();
-//        this.importFactory.setNextFactory( this.staticImportFactory );
     }
 
     public void initBuilder() {
@@ -269,16 +265,13 @@ public class MVELDialect
         int index = staticImportEntry.lastIndexOf( '.' );
         String className = staticImportEntry.substring( 0,
                                                         index );
-        String methodName = staticImportEntry.substring( 0,
-                                                         index + 1 );
+        String methodName = staticImportEntry.substring( index + 1 );
 
         try {
-            Class cls = this.configuration.getPackageBuilderConfiguration().getClassLoader().loadClass( className );
+            Class cls = this.pkg.getPackageCompilationData().getClassLoader().loadClass( className );
             Method[] methods = cls.getDeclaredMethods();
             for ( int i = 0; i < methods.length; i++ ) {
-                if ( methods[i].equals( "methodName" ) ) {
-                    this.staticImportFactory.createVariable( methodName,
-                                                             methods[i] );
+                if ( methods[i].getName().equals( methodName ) ) {
                     this.imports.put( methodName, methods[i] );
                     break;
                 }
@@ -287,14 +280,6 @@ public class MVELDialect
             this.results.add( new ImportError( staticImportEntry, -1 ) );
         }
     }
-
-    public StaticMethodImportResolverFactory getStaticMethodImportResolverFactory() {
-        return this.staticImportFactory;
-    }
-
-//    public ClassImportResolverFactory getClassImportResolverFactory() {
-//        return this.importFactory;
-//    }
 
     public boolean isStrictMode() {
         return strictMode;
@@ -384,7 +369,7 @@ public class MVELDialect
     }
     
     public ParserContext getParserContext(final Dialect.AnalysisResult analysis, final Map outerDeclarations, final RuleBuildContext context) {
-        final ParserContext parserContext = new ParserContext( imports,
+        final ParserContext parserContext = new ParserContext( this.imports,
                                                                null,
                                                                context.getPkg().getName()+"."+context.getRuleDescr().getClassName() );
         
@@ -392,8 +377,6 @@ public class MVELDialect
             String packageImport = ( String ) it.next();
             parserContext.addPackageImport( packageImport );
         }
-
-        //this.configuration.get
 
         parserContext.setStrictTypeEnforcement( strictMode );
 

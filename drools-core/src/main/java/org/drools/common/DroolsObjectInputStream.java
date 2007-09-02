@@ -8,11 +8,13 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.HashMap;
+import org.drools.rule.Package;
 
 public class DroolsObjectInputStream extends ObjectInputStream {
     private final ClassLoader      classLoader;
     private InternalRuleBase ruleBase;
     private InternalWorkingMemory  workingMemory;
+    private Package                pkg;
 
     /** table mapping primitive type names to corresponding class objects */
     private static final HashMap   primClasses = new HashMap( 8,
@@ -93,5 +95,15 @@ public class DroolsObjectInputStream extends ObjectInputStream {
     public InternalWorkingMemory getWorkingMemory() {
         return workingMemory;
     }
+
+	public Package getPackage() {
+		return pkg;
+	}
+
+	public void setPackage(Package pkg) {
+		this.pkg = pkg;
+	}
+    
+    
 
 }

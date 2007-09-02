@@ -63,8 +63,7 @@ public class MVELPredicateBuilder
         try {
             final DroolsMVELFactory factory = new DroolsMVELFactory( previousMap,
                                                                      localMap,
-                                                                     context.getPkg().getGlobals() );
-            factory.setNextFactory( ((MVELDialect) context.getDialect()).getStaticMethodImportResolverFactory() );                
+                                                                     context.getPkg().getGlobals() );                
             
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       predicateDescr,

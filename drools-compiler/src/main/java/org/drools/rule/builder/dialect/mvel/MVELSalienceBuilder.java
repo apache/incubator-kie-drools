@@ -25,9 +25,10 @@ public class MVELSalienceBuilder
             final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                      null,
                                                                      context.getPkg().getGlobals() );
+            
+            // This builder is re-usable in other dialects, so specify by name            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-            // This builder is re-usable in other dialects, so specify by name
-            factory.setNextFactory( dialect.getStaticMethodImportResolverFactory() );
+
 
             Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                          context.getRuleDescr(),
