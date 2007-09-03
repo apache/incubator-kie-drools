@@ -8,6 +8,9 @@
   problem domain. They are wired in to the rule language for you, and can make
   use of all the underlying rule language and engine features.</para>
 
+  <para>DSLs are used both in the IDE, as well as the web based BRMS. Of
+  course as rules are text, you can use them even without this tooling.</para>
+
   <section>
     <title>When to use a DSL</title>
 
@@ -40,12 +43,19 @@
     but the format of the file is quite simple, and is basically a properties
     file.</para>
 
+    <para>Note that since Drools 4.0, DSLs have become more powerful in
+    allowing you to customise almost any part of the language, including
+    keywords. Regular expressions can also be used to match words/sentences if
+    needed (this is provided for enhanced localisation). However, not all
+    features are supported by all the tools (although you can use them, the
+    content assistance just may not be 100% accurate in certain cases).</para>
+
     <example>
       <title>Example <indexterm>
           <primary>DSL</primary>
         </indexterm> mapping</title>
 
-      <programlisting>[when][]This is {something}=Something(something=={something})</programlisting>
+      <programlisting>[when]This is {something}=Something(something=={something})</programlisting>
     </example>
 
     <para>Referring to the above example, the [when] refers to the scope of
@@ -62,6 +72,13 @@
     input. The values that match the tokens are then interpolated with the
     corresponding {something} (named Tokens) on the right hand side of the
     mapping (the target expression that the rule engine actually uses).</para>
+
+    <para>Note also that the "sentences" above can be regular expressions.
+    This means the parser will match the sentence fragements that match the
+    expressions. This means you can use (for instance) the '?' to indicate the
+    character before it is optional (think of each sentence as a regular
+    expression pattern - this means if you want to use regex characters - you
+    will need to escape them with a '\' of course.</para>
 
     <para>It is important to note that the DSL expressions are processed one
     line at a time. This means that in the above example, all the text after
@@ -216,6 +233,19 @@ There is a person called Mike who is sad
     using context assistant, if you press "-" followed by CTRL+space it will
     conveniently provide you with a filtered list of field constraints to
     choose from.</para>
+
+    <para>To take this further, after alter the DSL to have
+    [when][org.drools.Cheese]- age is less than {age} ... (and similar to all
+    the items in the example above).</para>
+
+    <para>The extra [org.drools.Cheese] indicates that the sentence only
+    applies for the main constraint sentence above it (in this case "There is
+    a Cheese with"). For example, if you have a class called "Cheese" - then
+    if you are adding contraints to the rule (by typing "-" and waiting for
+    content assistance) then it will know that only items marked as having an
+    object-scope of "com.yourcompany.Something" are valid, and suggest only
+    them. This is entirely optional (you can leave out that section if needed
+    - OR it can be left blank).</para>
   </section>
 
   <section>
@@ -243,11 +273,6 @@ There is a person called Mike who is sad
     matched. The "{" and "}" are not included in the values that are
     extracted, they are only used to demarcate the tokens - you should not use
     these characters in the DSL expression (but you can in the target).</para>
-
-    <para>Refer to the ExpanderResolver, Expander and DefaultExpander classes
-    for more indepth information if required. As the parser works off the
-    Expander and ExpanderResolver interfaces, it is possible to plug in your
-    own advanced expanders if required.</para>
   </section>
 
   <section>
@@ -317,11 +342,34 @@ There is a person called Mike who is sad
           track.</para>
         </listitem>
       </itemizedlist></para>
+  </section>
 
-    <para>A challenging concept to express in DSLs is bound variables. A tip
-    for this is to have a DSL expressions that just bind a given variable name
-    to an Object Type (with no conditions - you can add conditions to that
-    bound object type in subsequent statements). You can then use that name
-    elsewhere in the DSL (including in the action part of the rule).</para>
+  <section>
+    <title>Scope and keywords</title>
+    <para>
+      If you are editing the DSL with the GUI, or as text, you will notice there is a [scope] item at the start of each mapping line. This indicates if the sentence/word applies to the LHS, RHS or is a keyword. Valid values for this are [condition], [consequence] and [keyword] (with [when] and [then] being the same as [condition] and [consequence] respectively). 
+When [keyword] is used, it means you can map any keyword of the language like "rule" or "end" to something else. Generally this is only used when you want to have a non English rule language (and you would ideally map it to a single word).
+    </para>
+  </section>
+
+  <section>
+    <title>DSLs in the BRMS and IDE</title>
+
+    <para>You can use DSLs in the BRMS in both guided editor rules, and
+    textual rules that use a dsl. (In fact, the same applies to the
+    IDE).</para>
+
+    <para>In the guided editor - the DSLs generally have to be simpler - what
+    you are doing is defining little "forms" to capture data from users in
+    text fields (ie as you pick a DSL expression - it will add an item to the
+    GUI which only allows you enter data in the {token} parts of a DSL
+    expression). You can not use sophisticated regular expressions to match
+    text. However, in textual rules (which have a .dslr extension in the IDE)
+    you are free to use the full power as needed.</para>
+
+    <para>In the BRMS - when you build a package the DSLs are already included
+    and all the work is done for you. In the IDE (or in any IDE) - you will
+    either need to use the drools-ant task, or otherwise use the code shown in
+    sections above.</para>
   </section>
 </section>
