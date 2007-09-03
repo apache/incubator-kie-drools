@@ -114,7 +114,7 @@
     </chapter>
 
     <chapter>
-      <title>The Rule Workbench (IDE)</title>
+      <title>The (Eclipse based) Rule IDE</title>
 
       <xi:include href="Chapter-IDE/Section-QuickStart.xml" />
     </chapter>
