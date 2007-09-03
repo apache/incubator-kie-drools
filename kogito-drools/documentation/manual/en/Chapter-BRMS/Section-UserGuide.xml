@@ -658,7 +658,7 @@
         <para>Rule flows: Rule flows allow you to visually describe the steps
         taken - so not all rules are evaluated at once, but there is a flow of
         logic. Rule flows are not covered in this chapter on the BRMS, but you
-        can use the IDE to graphically draw ruleflows, and upload the .rf file
+        can use the IDE to graphically draw ruleflows, and upload the .rfm file
         to the BRMS.</para>
 
         <para>Similar to spreadsheets, you upload/download ruleflow files (the
