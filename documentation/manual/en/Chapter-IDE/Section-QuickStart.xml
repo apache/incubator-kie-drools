@@ -4,21 +4,21 @@
 <section>
   <title>Introduction</title>
 
-  <para>The JBoss Rules workbench is delivered as an eclipse plugin, which
+  <para>
+    The IDE provides developers (and very technical users) with an environment to edit and test rules in various formats, and integrate it deeply with their applications. In cases where you prefer business rules and web tooling, you will want to look at the BRMS (but using the BRMS and the IDE together is not uncommon).</para>
+
+  <para>The JBoss Drools IDE is delivered as an eclipse plugin, which
   allows you to author and manage rules from within Eclipse, as well as
   integrate rules with your application. This is an optional tool, and not all
   components are required to be used, you can use what components are relevant
-  to you. Other flavors of the workbench will follow, which will be aimed at
-  less technical rule management (such as allowing business analysts to review
-  and manage rules) - all this is based on the Eclipse platform (hence the
-  term "Workbench").</para>
+  to you. The Drools IDE is also a part of the Red Hat Developer Studio (formerly known as JBoss IDE).</para>
 
-  <para>This guide will cover some of the features of JBoss rules, in as far
-  as the workbench touches on them (it is assumed that the reader has some
+  <para>This guide will cover some of the features of JBoss Drools, in as far
+  as the IDE touches on them (it is assumed that the reader has some
   familiarity with rule engines, and Drools in particular. It is important to
   note that none of the underlying features of the rule engine are dependent
   on Eclipse, and integrators are free to use their tools of choice, as always
-  !</para>
+  ! Plenty of people use IntelliJ with rules, for instance.</para>
 
   <para>Note you can get the plug in either as a zip to download, or from an
   update site (refer to the chapter on installation).</para>
@@ -36,7 +36,7 @@
   <section>
     <title>Features outline</title>
 
-    <para>The rules workbench has the following features</para>
+    <para>The rules IDE has the following features</para>
 
     <itemizedlist>
       <listitem>
@@ -47,7 +47,15 @@
             <para>An editor that is aware of DRL syntax, and provides content
             assistance (including an outline view)</para>
           </listitem>
+	  <listitem>
+	    <para>An editor that is aware of DSL (domain specific langauge) extensions, and provides content assistance.</para>
+	  </listitem>
         </itemizedlist>
+      </listitem>
+
+      <listitem>
+	<para>RuleFlow graphical editor</para>
+	<para>You can edit visual graphs which represent a process (a rule flow). The RuleFlow can then be applied to your rule package to have imperative control.</para>
       </listitem>
 
       <listitem>
@@ -65,6 +73,12 @@
           <listitem>
             <para>Create a new Domain Specific language</para>
           </listitem>
+
+	  <listitem>
+	    <para>Create a new decision table, guided editor, ruleflow</para>
+	  </listitem>
+
+
         </itemizedlist>
       </listitem>
 
@@ -106,6 +120,9 @@
     <figure>
       <title>New rule project scaffolding</title>
 
+
+      <para>When you choose to create a new "rule project" - you will get a choice to add some default artifacts to it (like rules, decision tables, ruleflows etc). These can serve as a starting point, and will give you something executable to play with (which you can then modify and mould to your needs). The simplest case (a hello world rule) is shown below. Feel free to experiment with the plugin at this point.</para>
+
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="new_project1.jpg" format="JPG" />
@@ -128,7 +145,7 @@
     be used to execute the rules in a Drools engine in the folder src/java, in
     the com.sample package. All the others jars that are necessary during
     execution are also added to the classpath in a custom classpath container
-    called Drools Library [3.0]. Rules do not have to be kept in "java"
+    called Drools Library. Rules do not have to be kept in "java"
     projects at all, this is just a convenience for people who are already
     using eclipse as their Java IDE.</para>
 
@@ -138,7 +155,7 @@
     change. This happens automatically with the Rule Project Wizard, but you
     can also enable it manually on any project. One downside of this is if you
     have rule files that have a large number of rules (&gt;500 rules per file)
-    - as it means that the background builder may be doing a lot of work to
+     it means that the background builder may be doing a lot of work to
     build the rules on each change. An option here is to turn off the builder,
     or put the large rules into .rule files, where you can still use the rule
     editor, but it won't build them in the background - to fully validate the
@@ -150,7 +167,7 @@
 
     <para>You can create a rule simple as an empty text ".drl" file, or use
     the wizard to do so. The wizard menu can be invoked by Control+N, or
-    choosing it from the toolbar (there will be a menu with the JBoss Rules
+    choosing it from the toolbar (there will be a menu with the JBoss Drools
     icon).</para>
 
     <figure>
@@ -187,7 +204,7 @@
   </section>
 
   <section>
-    <title>Rule editor</title>
+    <title>Textual rule editor</title>
 
     <para>The rule editor is where rule managers and developers will be
     spending most of their time. The rule editor follows the pattern of a
@@ -236,12 +253,44 @@
     </figure>
   </section>
 
+<section>
+  <title>Guided editor (rule GUI)</title>
+  <para>
+    A new feature of the Drools IDE (since version 4) is the guided editor for rules. This is similar to the web based editor that is available in the BRMS. This allows you to build rules in a GUI driven fashion, based on your object model. 
+  </para>
+
+    <figure>
+      <title>The guided editor</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="guidededitor1.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>
+      To create a rule this way, use the wizard menu. It will create a instance of a .brl file and open an editor. The guided editor works based on a .package file in the same directory as the .brl file. In this "package" file - you have the package name and import statements - just like you would in the top of a normal DRL file. So the first time you create a brl rule - you will need to ppulate the package file with the fact classes you are interested in. Once you have this the guided editor will be able to prompt you with facts/fields and build rules graphically.
+    </para>
+
+    <para>
+      The guided editor works off the model classes (fact classes) that you configure. It then is able to "render" to DRL the rule that you have entered graphically. You can do this visually - and use it as a basis for learning DRL, or you can use it and build rules of the brl directly. To do this, you can either use the drools-ant module (it is an ant task that will build up all the rule assets in a folder as a rule package - so you can then deploy it as a binary file), OR you can use the following snippet of code to convert the brl to a drl rule:
+
+    </para>
+
+    <programlisting>BRXMLPersitence read = BRXMLPersitence.getInstance();
+BRDRLPersistence write = BRDRLPersistence.getInstance();
+String brl = ... read from the .brl file as needed...
+String outputDRL = write.marshall(read.unmarshal(brl));
+//then pass the outputDRL to the PackageBuilder as normal</programlisting>
+</section>
+
   <section>
     <title>Views</title>
 
-    <para>When debugging an application using a Drools engine, three new views
+    <para>When debugging an application using a Drools engine, these views
     can be used to check the state of the Drools engine itself: the Working
-    Memory View, the Agenda View and the Global Data View. To be able to use
+    Memory View, the Agenda View the Global Data View. To be able to use
     these views, create breakpoints in your code invoking the working memory.
     For example, the line where you call workingMemory.fireAllRules() is a
     good candidate. If the debugger halts at that joinpoint, you should select
