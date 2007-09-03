@@ -158,6 +158,10 @@ There is a Person with name of "bob" and Person is at least 30 years old and liv
     the parser to take that line literally, and not try and expand it (this is
     handy also if you are debugging why something isn't working).</para>
 
+    <para>Also, it is better to rename the extension of your rules file from
+    ".drl" to ".dslr" when you start using DSLs, as that will allow the IDE to
+    correctly recognize and work with your rules file.</para>
+
     <para>As you work through building up your DSL, you will find that the DSL
     configuration stabilizes pretty quickly, and that as you add new rules and
     edit rules you are reusing the same DSL expressions over and over. The aim
@@ -346,10 +350,16 @@ There is a person called Mike who is sad
 
   <section>
     <title>Scope and keywords</title>
-    <para>
-      If you are editing the DSL with the GUI, or as text, you will notice there is a [scope] item at the start of each mapping line. This indicates if the sentence/word applies to the LHS, RHS or is a keyword. Valid values for this are [condition], [consequence] and [keyword] (with [when] and [then] being the same as [condition] and [consequence] respectively). 
-When [keyword] is used, it means you can map any keyword of the language like "rule" or "end" to something else. Generally this is only used when you want to have a non English rule language (and you would ideally map it to a single word).
-    </para>
+
+    <para>If you are editing the DSL with the GUI, or as text, you will notice
+    there is a [scope] item at the start of each mapping line. This indicates
+    if the sentence/word applies to the LHS, RHS or is a keyword. Valid values
+    for this are [condition], [consequence] and [keyword] (with [when] and
+    [then] being the same as [condition] and [consequence] respectively). When
+    [keyword] is used, it means you can map any keyword of the language like
+    "rule" or "end" to something else. Generally this is only used when you
+    want to have a non English rule language (and you would ideally map it to
+    a single word).</para>
   </section>
 
   <section>
