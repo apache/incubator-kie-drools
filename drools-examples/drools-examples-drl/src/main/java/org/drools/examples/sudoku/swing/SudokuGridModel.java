@@ -35,6 +35,9 @@ public interface SudokuGridModel
     */
    public static int NUM_COLS = 9;
    
+   public static int INNER_GRID_HEIGHT = 3;
+   
+   public static int INNER_GRID_WIDTH = 3;   
    
    /**
     * A NUM_ROWSxNUM_COLS two dimensional array which maps from rows and columns
