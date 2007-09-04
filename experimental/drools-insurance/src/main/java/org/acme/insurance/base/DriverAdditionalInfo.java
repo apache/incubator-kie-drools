@@ -2,24 +2,24 @@ package org.acme.insurance.base;
 
 public class DriverAdditionalInfo {
 
-    public static final int STREET             = 0;
-    public static final int GARAGE             = 1;
-    public static final int PUBLICPARKING      = 2;
+    public static final int STREET = 0;
+    public static final int GARAGE = 1;
+    public static final int PUBLICPARKING = 2;
 
-    public static final int RENTEDHOME         = 0;
-    public static final int OWNHOME            = 1;
+    public static final int RENTEDHOME = 0;
+    public static final int OWNHOME = 1;
 
-    public static final int UNEMPLOYED         = 0;
-    public static final int STUDENT            = 1;
+    public static final int UNEMPLOYED = 0;
+    public static final int STUDENT = 1;
     public static final int GOVERNMENTEMPLOYEE = 2;
-    public static final int PRIVATEEMPLOYEE    = 3;
-    public static final int BUSINESSOWNER      = 4;
+    public static final int PRIVATEEMPLOYEE = 3;
+    public static final int BUSINESSOWNER = 4;
 
-    private int             driverId;
-    private int         dayVehiclePlace;
-    private int         nightVehiclePlace;
-    private int         jobStatus;
-    private int         residenceStatus;
+    private int driverId;
+    private int dayVehiclePlace;
+    private int nightVehiclePlace;
+    private int jobStatus;
+    private int residenceStatus;
 
     public int getDayVehiclePlace() {
         return dayVehiclePlace;

@@ -14,10 +14,10 @@ public class Driver {
     public static final int SINGLE = 0;
     public static final int MARRIED = 1;
 
-    private int     id;
+    private int id;
 
-    private String  name;
-    private Date    birhDate;
+    private String name;
+    private Date birhDate;
     private int licenceYears;
 
     private int priorClaims;
@@ -25,14 +25,14 @@ public class Driver {
     private boolean hasChildren;
     private int genre;
 
-    private double  insuranceFactor = 1.0;
+    private double insuranceFactor = 1.0;
 
-    public double getInsuranceFactor(){
+    public double getInsuranceFactor() {
         return insuranceFactor;
     }
 
     public void setInsuranceFactor(double factor) {
-    	updateInsuranceFactor(factor);
+        updateInsuranceFactor(factor);
     }
 
     public void updateInsuranceFactor(double factor) {
