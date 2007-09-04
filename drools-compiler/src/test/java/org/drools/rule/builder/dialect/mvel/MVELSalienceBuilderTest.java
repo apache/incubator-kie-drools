@@ -28,7 +28,7 @@ public class MVELSalienceBuilderTest extends TestCase {
     public void testSimpleExpression() {        
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
-        ruleDescr.setSalience( "p.age + 20" );
+        ruleDescr.setSalience( "(p.age + 20)/2" );
         ruleDescr.setConsequence( "" );
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
@@ -69,7 +69,7 @@ public class MVELSalienceBuilderTest extends TestCase {
         SalienceBuilder salienceBuilder = new MVELSalienceBuilder();
         salienceBuilder.build( context );
                 
-        assertEquals( 51, context.getRule().getSalience().getValue( tuple, wm ) );
+        assertEquals( 25, context.getRule().getSalience().getValue( tuple, wm ) );
       
     }
 }
