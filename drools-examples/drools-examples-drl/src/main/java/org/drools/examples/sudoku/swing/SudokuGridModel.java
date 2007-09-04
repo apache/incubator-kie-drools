@@ -24,7 +24,7 @@ import java.util.List;
  * @version $Revision: 1.1 $
  */
 public interface SudokuGridModel
-{
+{ 
    /**
     * The number of rows in the Grid, i.e. the height
     */
