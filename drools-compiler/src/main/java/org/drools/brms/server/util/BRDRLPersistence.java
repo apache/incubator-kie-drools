@@ -23,7 +23,7 @@ import org.drools.util.ReflectiveVisitor;
 
 /**
  * This class persists the rule model to DRL and back
- * 
+ *
  * @author etirelli
  */
 public class BRDRLPersistence
@@ -71,7 +71,7 @@ public class BRDRLPersistence
 
     /**
      * Marshal model attributes
-     * 
+     *
      * @param buf
      * @param model
      */
@@ -80,16 +80,16 @@ public class BRDRLPersistence
         boolean hasDialect = false;
         for ( int i = 0; i < model.attributes.length; i++ ) {
             RuleAttribute attr = model.attributes[i];
-            
+
             buf.append( "\t" );
             buf.append( attr );
-            
+
             buf.append( "\n" );
             if (attr.attributeName.equals( "dialect" )) {
                 hasDialect = true;
-            }            
+            }
         }
-//Un comment below for mvel        
+//Un comment below for mvel
         if (!hasDialect) {
             RuleAttribute attr = new RuleAttribute("dialect", "mvel");
             buf.append( "\t" );
@@ -100,7 +100,7 @@ public class BRDRLPersistence
 
     /**
      * Marshal LHS patterns
-     * 
+     *
      * @param buf
      * @param model
      */
@@ -156,7 +156,7 @@ public class BRDRLPersistence
             }
             if ( CompositeFactPattern.COMPOSITE_TYPE_EXISTS.equals( pattern.type ) ) {
                 buf.append( pattern.type );
-                buf.append( " " );                
+                buf.append( " " );
                 renderSubPattern( pattern );
                 buf.append( "\n" );
             } else if ( CompositeFactPattern.COMPOSITE_TYPE_NOT.equals( pattern.type ) ) {
@@ -223,16 +223,18 @@ public class BRDRLPersistence
          * This makes for more readable DRL in the most common cases.
          */
         private void generateConstraint(FieldConstraint con, boolean nested) {
-            if (con instanceof CompositeFieldConstraint) {                
+            if (con instanceof CompositeFieldConstraint) {
                 CompositeFieldConstraint cfc = (CompositeFieldConstraint) con;
                 if (nested) buf.append( "( " );
                 FieldConstraint[] nestedConstraints = cfc.constraints;
-                for ( int i = 0; i < nestedConstraints.length; i++ ) {
-                    generateConstraint( nestedConstraints[i] , true);
-                    if (i < (nestedConstraints.length - 1)) {
-                        //buf.append(" ) ");
-                        buf.append( cfc.compositeJunctionType + " ");
-                        //buf.append(" ( ");
+                if (nestedConstraints != null) {
+                    for ( int i = 0; i < nestedConstraints.length; i++ ) {
+                        generateConstraint( nestedConstraints[i] , true);
+                        if (i < (nestedConstraints.length - 1)) {
+                            //buf.append(" ) ");
+                            buf.append( cfc.compositeJunctionType + " ");
+                            //buf.append(" ( ");
+                        }
                     }
                 }
                 if (nested) buf.append( ")" );
@@ -240,10 +242,10 @@ public class BRDRLPersistence
                 generateSingleFieldConstraint( (SingleFieldConstraint) con );
             }
         }
-        
+
         private void generateSingleFieldConstraint(final SingleFieldConstraint constr) {
             if ( constr.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE ) {
-                buf.append( "( " );
+                buf.append( "eval( " );
                 buf.append( constr.value );
                 buf.append( " )" );
             } else {
@@ -285,7 +287,7 @@ public class BRDRLPersistence
             if (operator == null) {
                 return;
             }
-            
+
             buf.append( " " );
             buf.append( operator );
             buf.append( " " );

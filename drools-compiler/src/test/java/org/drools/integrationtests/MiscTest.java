@@ -2,13 +2,13 @@ package org.drools.integrationtests;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -296,6 +296,7 @@ public class MiscTest extends TestCase {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
+            System.err.println(parser.getErrors());
             Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
@@ -356,6 +357,22 @@ public class MiscTest extends TestCase {
         assertEquals( message,
                       list.get( 0 ) );
 
+    }
+
+    public void testMVELSoundex() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "MVEL_soundex.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        Cheese c = new Cheese("fubar", 2);
+
+
+        workingMemory.insert( c );
+        workingMemory.fireAllRules();
+        assertEquals(42, c.getPrice());
     }
 
     public void testLiteral() throws Exception {
@@ -657,7 +674,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
-    public void testJaninoEval() throws Exception {        
+    public void testJaninoEval() throws Exception {
         final PackageBuilderConfiguration config = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf = (JavaDialectConfiguration) config.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
@@ -1159,8 +1176,8 @@ public class MiscTest extends TestCase {
                           e.getCause().getMessage() );
         }
     }
-    
-    public void testCustomConsequenceException() throws Exception {        
+
+    public void testCustomConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1168,7 +1185,7 @@ public class MiscTest extends TestCase {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         CustomConsequenceExceptionHandler handler = new CustomConsequenceExceptionHandler();
         conf.setConsequenceExceptionHandler( handler );
-        
+
         final RuleBase ruleBase = getRuleBase(conf);
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -1178,24 +1195,24 @@ public class MiscTest extends TestCase {
         workingMemory.insert( brie );
 
         workingMemory.fireAllRules();
-        
+
         assertTrue( handler.isCalled() );
     }
-    
+
     public static class CustomConsequenceExceptionHandler implements ConsequenceExceptionHandler {
-        
+
         private boolean called;
 
         public void handleException(Activation activation,
                                     WorkingMemory workingMemory,
                                     Exception exception) {
-            this.called = true;            
+            this.called = true;
         }
-        
+
         public boolean isCalled() {
             return this.called;
         }
-        
+
     }
 
     public void testFunctionException() throws Exception {
@@ -3774,54 +3791,54 @@ public class MiscTest extends TestCase {
         assertEquals( results.get( 0 ),
                       events.next() );
     }
-    
+
     public void testNotInStatelessSession() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NotInStatelessSession.drl" )) );
         final Package pkg = builder.getPackage();
-        
+
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );
         final RuleBase ruleBase = getRuleBase(conf);
         ruleBase.addPackage( pkg );
-        
+
         StatelessSession session = ruleBase.newStatelessSession();
         List list = new ArrayList();
         session.setGlobal( "list", list );
         session.execute( "not integer" );
-        assertEquals("not integer", list.get( 0 ) );        
+        assertEquals("not integer", list.get( 0 ) );
     }
-    
+
     public void testDynamicallyAddInitialFactRule() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         String rule = "package org.drools.test\n global java.util.List list\n rule xxx\n when\n i:Integer()\nthen\n list.add(i);\nend";
         builder.addPackageFromDrl( new StringReader( rule ) );
         Package pkg = builder.getPackage();
-        
+
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        
+
         StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
         session.setGlobal( "list", list );
-        
+
         session.insert( new Integer( 5) );
         session.fireAllRules();
-        
+
         assertEquals( new Integer(5), list.get( 0 ) );
-        
+
         builder = new PackageBuilder();
         rule = "package org.drools.test\n global java.util.List list\n rule xxx\n when\nthen\n list.add(\"x\");\nend";
         builder.addPackageFromDrl( new StringReader( rule ) );
         pkg = builder.getPackage();
-        
+
         // Make sure that this rule is fired as the Package is updated, it also tests that InitialFactImpl is still in the network
         // even though the first rule didn't use it.
         ruleBase.addPackage( pkg );
-        
+
         assertEquals( "x", list.get( 1 ) );
-        
-    }    
+
+    }
 
     // FIXME
     public void FIXMEtestEvalRewriteWithSpecialOperators() throws Exception {
@@ -3895,12 +3912,12 @@ public class MiscTest extends TestCase {
         assertEquals( item41, list.get( index++ ) );
         assertEquals( order5, list.get( index++ ) );
         assertEquals( order5, list.get( index++ ) );
-        
-        
+
+
     }
-    
+
     public void testImportColision() throws Exception {
-        
+
         final PackageBuilder builder = new PackageBuilder();
         final PackageBuilder builder2 = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "nested1.drl" ) ) );
@@ -3965,9 +3982,9 @@ public class MiscTest extends TestCase {
 
         assertEquals( 1,
                       results.size() );
-        assertEquals( 1, 
+        assertEquals( 1,
                       cheesery.getCheeses().size() );
-        assertEquals( results.get( 0 ), 
+        assertEquals( results.get( 0 ),
                       cheesery.getCheeses().get( 0 ) );
     }
 
