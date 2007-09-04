@@ -30,7 +30,7 @@ public class MVELSalienceExpression
                                  null,
                                  workingMemory,
                                  null );
-        return ((Integer) MVEL.executeExpression( this.expr,
+        return ((Number) MVEL.executeExpression( this.expr,
                                                   this.factory )).intValue();
     }
 
