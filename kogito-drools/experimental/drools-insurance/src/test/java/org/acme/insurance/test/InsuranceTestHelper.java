@@ -16,7 +16,7 @@ public class InsuranceTestHelper {
 
     public StatefulSession getSession() {
         try {
-            rulebase = loadRuleBaseFromRuleAgent();
+            //rulebase = loadRuleBaseFromRuleAgent();
             rulebase = loadRuleBaseFromDRL();
 
             session = rulebase.newStatefulSession();
@@ -30,6 +30,9 @@ public class InsuranceTestHelper {
     }
 
     public RuleBase loadRuleBaseFromRuleAgent() {
+
+
+
         RuleAgent agent = RuleAgent.newRuleAgent( "/brmsdeployedrules.properties" );
         RuleBase rulebase = agent.getRuleBase();
         return rulebase;
@@ -45,6 +48,8 @@ public class InsuranceTestHelper {
         builder.addPackageFromDrl( getTechnicalRules( "/approval/marginalage.dslr" ),
                                    getTechnicalRules( "/approval/acme.dsl" ) );
         builder.addRuleFlow( getTechnicalRules( "/approval/insurance-process.rfm" ) );
+
+        
 
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );

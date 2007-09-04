@@ -121,7 +121,7 @@ public class Package
     public Package(final String name,
                    ClassLoader parentClassLoader) {
         this.name = name;
-        this.imports = new HashSet( 2 );
+        this.imports = new HashSet();
         this.staticImports = Collections.EMPTY_SET;
         this.rules = new LinkedHashMap();
         this.ruleFlows = Collections.EMPTY_MAP;

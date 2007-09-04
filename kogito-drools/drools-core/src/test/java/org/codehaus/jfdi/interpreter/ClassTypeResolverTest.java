@@ -111,7 +111,7 @@ public class ClassTypeResolverTest extends TestCase {
         assertEquals( SecondClass.AlternativeKey.class,
                       resolver.resolveType( "org.drools.SecondClass.AlternativeKey" ) );
     }
-
+    
     public void testResolveObjectFromImportMultipleClassesDifferentPackages() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.Cheese" );

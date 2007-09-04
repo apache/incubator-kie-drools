@@ -1,9 +1,0 @@
-rule "Quick approval - safe driver, any policy type"
-
-	dialect "mvel"
-	when
-		Driver( )
-	then
-	insert(new Approve(" Safe and mature "));
-	System.out.println("yeah");
-end
