@@ -10,6 +10,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.StringFactory;
 import org.drools.base.field.ObjectFieldImpl;
+import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.LiteralConstraint;
@@ -380,7 +381,8 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                      final ObjectSource rightInput) {
             super( id,
                    leftInput,
-                   rightInput );
+                   rightInput,
+                   EmptyBetaConstraints.getInstance() );
             //  Auto-generated constructor stub
         }
 

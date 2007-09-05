@@ -41,6 +41,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
+import org.drools.base.DroolsQuery;
 import org.drools.base.MapGlobalResolver;
 import org.drools.base.ShadowProxy;
 import org.drools.event.AgendaEventListener;
@@ -834,10 +835,10 @@ public abstract class AbstractWorkingMemory
         return handle;
     }
 
-    private void insert(InternalFactHandle handle,
-                        Object object,
-                        Rule rule,
-                        Activation activation) {
+    protected void insert(InternalFactHandle handle,
+                          Object object,
+                          Rule rule,
+                          Activation activation) {
         this.ruleBase.executeQueuedActions();
 
         if ( activation != null ) {
@@ -1095,7 +1096,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
-            
+
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
             final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
 
@@ -1170,7 +1171,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
-            
+
             // only needed if we maintain tms, but either way we must get it before we do the retract
             int status = -1;
             if ( this.maintainTms ) {
@@ -1389,33 +1390,33 @@ public abstract class AbstractWorkingMemory
         }
         return result;
     }
-    
+
     public Entry[] getActivationParameters(long activationId) {
-    	Activation[] activations = getAgenda().getActivations();
-    	for (int i = 0; i < activations.length; i++) {
-    		if (activations[i].getActivationNumber() == activationId) {
-    			Map params = getActivationParameters(activations[i]);
-    			return (Entry[]) params.entrySet().toArray(new Entry[params.size()]);
-    		}
-    	}
-    	return new Entry[0];
+        Activation[] activations = getAgenda().getActivations();
+        for ( int i = 0; i < activations.length; i++ ) {
+            if ( activations[i].getActivationNumber() == activationId ) {
+                Map params = getActivationParameters( activations[i] );
+                return (Entry[]) params.entrySet().toArray( new Entry[params.size()] );
+            }
+        }
+        return new Entry[0];
     }
-    
+
     /**
      * Helper method 
      */
     public Map getActivationParameters(Activation activation) {
-    	Map result = new HashMap();
-    	Declaration[] declarations = activation.getRule().getDeclarations();
-    	for (int i = 0; i < declarations.length; i++) {
-    		FactHandle handle = activation.getTuple().get(declarations[i]);
-    		if (handle instanceof InternalFactHandle) {
-    			result.put(declarations[i].getIdentifier(),
-					declarations[i].getValue(this,
-						((InternalFactHandle) handle).getObject()));
-    		}
-    	}
-    	return result;
+        Map result = new HashMap();
+        Declaration[] declarations = activation.getRule().getDeclarations();
+        for ( int i = 0; i < declarations.length; i++ ) {
+            FactHandle handle = activation.getTuple().get( declarations[i] );
+            if ( handle instanceof InternalFactHandle ) {
+                result.put( declarations[i].getIdentifier(),
+                            declarations[i].getValue( this,
+                                                      ((InternalFactHandle) handle).getObject() ) );
+            }
+        }
+        return result;
     }
 
 }

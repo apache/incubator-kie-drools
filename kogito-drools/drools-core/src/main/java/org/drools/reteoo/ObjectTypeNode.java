@@ -24,6 +24,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
@@ -80,6 +81,18 @@ public class ObjectTypeNode extends ObjectSource
     // Constructors
     // ------------------------------------------------------------
 
+    public ObjectTypeNode(final int id,
+                          final ObjectType objectType,
+                          final Rete rete,
+                          final int alphaNodeHashingThreshold ) {
+        super( id,
+               null,
+               alphaNodeHashingThreshold );
+        this.rete = rete;
+        this.objectType = objectType;
+        setHasMemory( true );  
+    }
+    
     /**
      * Construct given a semantic <code>ObjectType</code> and the provided
      * unique id. All <code>ObjectTypdeNode</code> have node memory.
@@ -91,14 +104,13 @@ public class ObjectTypeNode extends ObjectSource
      */
     public ObjectTypeNode(final int id,
                           final ObjectType objectType,
-                          final Rete rete,
-                          final int alphaNodeHashingThreshold) {
+                          final BuildContext context) {
         super( id,
-               null,
-               alphaNodeHashingThreshold );
-        this.rete = rete;
+               context.getRuleBase().getRete(),
+               context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
+        this.rete = (Rete) this.objectSource;
         this.objectType = objectType;
-        setHasMemory( true );
+        setHasMemory( context.hasObjectTypeMemory() );
     }
 
     // ------------------------------------------------------------

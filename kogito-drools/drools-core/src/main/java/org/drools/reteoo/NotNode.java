@@ -20,6 +20,7 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
@@ -61,29 +62,14 @@ public class NotNode extends BetaNode {
      */
     public NotNode(final int id,
                    final TupleSource leftInput,
-                   final ObjectSource rightInput) {
-        super( id,
-               leftInput,
-               rightInput,
-               EmptyBetaConstraints.getInstance() );
-    }
-
-    /**
-     * Construct.
-     * 
-     * @param leftInput
-     *            The left input <code>TupleSource</code>.
-     * @param rightInput
-     *            The right input <code>TupleSource</code>.
-     */
-    public NotNode(final int id,
-                   final TupleSource leftInput,
                    final ObjectSource rightInput,
-                   final BetaConstraints joinNodeBinder) {
+                   final BetaConstraints joinNodeBinder,
+                   final BuildContext context) {
         super( id,
                leftInput,
                rightInput,
                joinNodeBinder );
+        this.hasLeftMemory = context.hasLeftMemory();        
     }
 
     /**
@@ -103,7 +89,7 @@ public class NotNode extends BetaNode {
                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         
-        if ( !workingMemory.isSequential() ) {
+        if ( this.hasLeftMemory ) {
             memory.getTupleMemory().add( leftTuple );
         }
 
@@ -145,7 +131,7 @@ public class NotNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getFactHandleMemory().add( handle );
         
-        if ( workingMemory.isSequential() ) {
+        if ( !this.hasLeftMemory ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
             return;
         }        

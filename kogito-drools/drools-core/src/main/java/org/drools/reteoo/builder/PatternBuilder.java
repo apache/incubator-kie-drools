@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.AlphaNode;
@@ -145,17 +146,17 @@ public class PatternBuilder
         }
     }
     
-    public static ObjectTypeNode attachObjectTypeNode(Rete rete, ObjectType objectType) {
-        ReteooRuleBase ruleBase = ( ReteooRuleBase ) rete.getRuleBase();
-        ReteooBuilder builder = ruleBase.getReteooBuilder();
-                
-        ObjectTypeNode otn = new ObjectTypeNode( builder.getIdGenerator().getNextId(),
+    public static ObjectTypeNode attachObjectTypeNode(BuildContext context, ObjectType objectType) {                
+        ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
                             objectType,
-                            rete,
-                            ruleBase.getConfiguration().getAlphaNodeHashingThreshold() );
+                            context );
                 
-        InternalWorkingMemory[] wms = ruleBase.getWorkingMemories();
-        otn.attach( wms );      
+        InternalWorkingMemory[] wms = context.getWorkingMemories();
+        if ( wms.length > 0 ) {
+            otn.attach( wms );
+        } else {
+            otn.attach();
+        }
         
         return otn;
     }
@@ -165,11 +166,18 @@ public class PatternBuilder
                                  final Pattern pattern,
                                  List alphaConstraints) throws InvalidPatternException {
 
+        if ( pattern.getObjectType() instanceof ClassObjectType ) {
+            if ( DroolsQuery.class ==((ClassObjectType)pattern.getObjectType()).getClassType() ) {
+                context.setHasLeftMemory( false );
+                context.setHasObjectTypeMemory( false );
+                context.setHasTerminalNodeMemory( false );
+            }
+        }
+        
         context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                   new ObjectTypeNode( context.getNextId(),
                                                                                       pattern.getObjectType(),
-                                                                                      context.getRuleBase().getRete(),
-                                                                                      context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() ) ) );
+                                                                                      context) ) );
 
         for ( final Iterator it = alphaConstraints.iterator(); it.hasNext(); ) {
             final AlphaNodeFieldConstraint constraint = (AlphaNodeFieldConstraint) it.next();

@@ -34,15 +34,22 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 
 public class LogicalAssertionTest extends DroolsTestCase {
-
+    private ReteooRuleBase ruleBase;
+    private BuildContext buildContext;
+    
+    protected void setUp() throws Exception {
+        ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+    }
+    
     public void testSingleLogicalRelationship() throws Exception {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
@@ -60,7 +67,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
-                                                            rule1.getLhs() );
+                                                            rule1.getLhs(),
+                                                            buildContext );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
@@ -147,7 +155,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // MockObjectSink so w can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
 
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
@@ -162,7 +169,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
-                                                            rule1.getLhs() );
+                                                            rule1.getLhs(),
+                                                            buildContext );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -238,7 +246,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
@@ -252,7 +259,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
-                                                            rule1.getLhs() );
+                                                            rule1.getLhs(),
+                                                            buildContext  );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -378,6 +386,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setLogicalOverride( LogicalOverride.PRESERVE );
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(conf);
+        
+        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
@@ -391,7 +402,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
-                                                            rule1.getLhs() );
+                                                            rule1.getLhs(),
+                                                            buildContext  );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -466,7 +478,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
@@ -480,7 +491,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
-                                                            rule1.getLhs() );
+                                                            rule1.getLhs(),
+                                                            buildContext  );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -525,7 +537,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final RuleTerminalNode node2 = new RuleTerminalNode( idGenerator.getNextId(),
                                                              new MockTupleSource( 3 ),
                                                              rule2,
-                                                             rule2.getLhs() );
+                                                             rule2.getLhs(),
+                                                             buildContext  );
         rule2.setConsequence( consequence );
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
@@ -563,7 +576,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     public void testMultipleLogicalRelationships() throws FactException {
         final Rule rule1 = new Rule( "test-rule1" );
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
@@ -580,7 +592,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
                                                             new MockTupleSource(  idGenerator.getNextId() ),
                                                             rule1,
-                                                            rule1.getLhs() );
+                                                            rule1.getLhs(),
+                                                            buildContext  );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -618,7 +631,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final RuleTerminalNode node2 = new RuleTerminalNode(  idGenerator.getNextId(),
                                                              new MockTupleSource(  idGenerator.getNextId() ),
                                                              rule2,
-                                                             rule2.getLhs() );
+                                                             rule2.getLhs(),
+                                                             buildContext  );
         rule2.setConsequence( consequence );
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
@@ -696,7 +710,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
@@ -710,7 +723,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
-                                                            rule1.getLhs() );
+                                                            rule1.getLhs(),
+                                                            buildContext  );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -798,7 +812,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final Rule rule1 = new Rule( "test-rule1" );
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
@@ -812,7 +825,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
-                                                            rule1.getLhs() );
+                                                            rule1.getLhs(),
+                                                            buildContext  );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();

@@ -95,7 +95,8 @@ public class CollectBuilder
                                                                                  binder, // source binder
                                                                                  resultBinder,
                                                                                  collect,
-                                                                                 existSubNetwort ) ) );
+                                                                                 existSubNetwort,
+                                                                                 context ) ) );
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
         context.setCurrentPatternOffset( currentPatternIndex );

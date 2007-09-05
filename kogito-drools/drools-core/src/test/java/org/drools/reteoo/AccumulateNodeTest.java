@@ -22,14 +22,17 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -63,8 +66,12 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                    PropagationContext.ASSERTION,
                                                    null,
                                                    null );
-        this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase,
+                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+        
+        this.workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         this.tupleSource = new MockTupleSource( 4 );
         this.objectSource = new MockObjectSource( 4 );
@@ -79,11 +86,18 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                           new Declaration[0],
                                           new Declaration[0],
                                           this.accumulator );
+        
+        
 
         this.node = new AccumulateNode( 15,
                                         this.tupleSource,
                                         this.objectSource,
-                                        this.accumulate );
+                                        new AlphaNodeFieldConstraint[0],
+                                        EmptyBetaConstraints.getInstance(),
+                                        EmptyBetaConstraints.getInstance(),
+                                        this.accumulate,
+                                        false,
+                                        buildContext );
 
         this.node.addTupleSink( this.sink );
 
@@ -362,8 +376,11 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     public void testMemory() {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase,
+                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+        
+        this.workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final MockObjectSource objectSource = new MockObjectSource( 1 );
         final MockTupleSource tupleSource = new MockTupleSource( 1 );
@@ -371,9 +388,14 @@ public class AccumulateNodeTest extends DroolsTestCase {
         final AccumulateNode accumulateNode = new AccumulateNode( 2,
                                                                   tupleSource,
                                                                   objectSource,
-                                                                  this.accumulate );
+                                                                  new AlphaNodeFieldConstraint[0],
+                                                                  EmptyBetaConstraints.getInstance(),
+                                                                  EmptyBetaConstraints.getInstance(),
+                                                                  this.accumulate,
+                                                                  false,
+                                                                  buildContext  );
 
-        final BetaMemory memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;
+        final BetaMemory memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( accumulateNode )).betaMemory;
 
         assertNotNull( memory );
     }

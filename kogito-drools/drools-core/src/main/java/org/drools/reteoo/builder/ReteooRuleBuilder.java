@@ -105,6 +105,11 @@ public class ReteooRuleBuilder {
             // creates a clean build context for each subrule
             final BuildContext context = new BuildContext( rulebase,
                                                            idGenerator );
+            if ( rulebase.getConfiguration().isSequential() ) {
+                context.setHasLeftMemory( false );
+                context.setHasObjectTypeMemory( false );
+                context.setHasTerminalNodeMemory( false );
+            }
             // adds subrule
             final TerminalNode node = this.addSubRule( context,
                                                        subrules[i],
@@ -147,7 +152,8 @@ public class ReteooRuleBuilder {
             terminal = new RuleTerminalNode( context.getNextId(),
                                              context.getTupleSource(),
                                              rule,
-                                             subrule );
+                                             subrule,
+                                             context );
         } else {
             // Check there is no consequence
             if ( rule.getConsequence() != null ) {

@@ -43,6 +43,7 @@ import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.objenesis.Objenesis;
 import org.drools.objenesis.ObjenesisStd;
 import org.drools.objenesis.instantiator.ObjectInstantiator;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -353,8 +354,10 @@ public class Rete extends ObjectSource
             ObjectType objectType = new FactTemplateObjectType(factTemplate);
             this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes().get( objectType );
             if ( this.concreteObjectTypeNode == null ) {
+                BuildContext context = new BuildContext(ruleBase, 
+                                                        ((ReteooRuleBase)ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator());                
                 // there must exist an ObjectTypeNode for this concrete class                
-                this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( ruleBase.getRete(),
+                this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( context,
                                                                                    objectType );
             }           
             this.cache = new ObjectTypeNode[] { this.concreteObjectTypeNode };
@@ -414,8 +417,10 @@ public class Rete extends ObjectSource
             ObjectType objectType =  new ClassObjectType( clazz );
             this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes().get( objectType );
             if ( this.concreteObjectTypeNode == null ) {
+                BuildContext context = new BuildContext(ruleBase, 
+                                                        ((ReteooRuleBase)ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator());
                 // there must exist an ObjectTypeNode for this concrete class
-                this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( ruleBase.getRete(),
+                this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( context,
                                                                                    objectType );
             }
 

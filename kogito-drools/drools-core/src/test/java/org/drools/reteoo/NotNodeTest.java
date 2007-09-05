@@ -30,6 +30,7 @@ import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
@@ -62,12 +63,17 @@ public class NotNodeTest extends DroolsTestCase {
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase,
+                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+
         // string1Declaration is bound to pattern 3 
         this.node = new NotNode( 15,
                                  new MockTupleSource( 5 ),
                                  new MockObjectSource( 8 ),
                                  new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
-                                                             configuration ) );
+                                                             configuration ),
+                                 buildContext );
 
         this.sink = new MockTupleSink();
         this.node.addTupleSink( this.sink );
@@ -131,7 +137,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         // assert tuple, will have matches, so no propagation
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( new Cheese( "gouda",
-                                                                                                      10 ) );
+                                                                                                10 ) );
         final ReteTuple tuple2 = new ReteTuple( f2 );
         this.node.assertTuple( tuple2,
                                this.context,
@@ -210,7 +216,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         // assert tuple, will have no matches, so do assert propagation
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( new Cheese( "gouda",
-                                                                                                      10 ) );
+                                                                                                10 ) );
         final ReteTuple tuple2 = new ReteTuple( f2 );
         this.node.assertTuple( tuple2,
                                this.context,
@@ -300,15 +306,20 @@ public class NotNodeTest extends DroolsTestCase {
 
     public void testGetConstraints_ReturnsNullEvenWithEmptyBinder() {
         final BetaConstraints nullConstraints = EmptyBetaConstraints.getInstance();
+        
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        
         final NotNode notNode = new NotNode( 1,
-                                       this.tupleSource,
-                                       this.objectSource,
-                                       nullConstraints );
+                                             this.tupleSource,
+                                             this.objectSource,
+                                             nullConstraints,
+                                             buildContext );
         final BetaNodeFieldConstraint[] constraints = notNode.getConstraints();
         assertEquals( 0,
                       constraints.length );
     }
-    
+
     /**
      * Test just tuple assertions
      * 
@@ -318,15 +329,25 @@ public class NotNodeTest extends DroolsTestCase {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );
 
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
+        
         this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
+                                                      ruleBase );
+
+        BuildContext buildContext = new BuildContext( ruleBase,
+                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+        
+        buildContext.setHasLeftMemory( false );
+        buildContext.setHasObjectTypeMemory( false );
+        buildContext.setHasTerminalNodeMemory( false );
 
         // override setup, so its working in sequential mode
         this.node = new NotNode( 15,
-                                  this.tupleSource,
-                                  this.objectSource,
-                                  new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
-                                                              conf ) );
+                                 this.tupleSource,
+                                 this.objectSource,
+                                 new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
+                                                             conf ),
+                                 buildContext );
 
         this.node.addTupleSink( this.sink );
 
@@ -354,7 +375,5 @@ public class NotNodeTest extends DroolsTestCase {
                       this.memory.getFactHandleMemory().size() );
 
     }
-
-    
 
 }

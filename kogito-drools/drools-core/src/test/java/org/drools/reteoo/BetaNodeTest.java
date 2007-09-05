@@ -16,6 +16,10 @@
 
 package org.drools.reteoo;
 
+import org.drools.RuleBaseFactory;
+import org.drools.common.EmptyBetaConstraints;
+import org.drools.reteoo.builder.BuildContext;
+
 import junit.framework.TestCase;
 
 /**
@@ -45,18 +49,29 @@ public class BetaNodeTest extends TestCase {
         final TupleSource ts = new MockTupleSource( 1 );
         final ObjectSource os = new MockObjectSource( 2 );
 
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );        
+        
         final BetaNode j1 = new JoinNode( 1,
-                                    ts,
-                                    os );
+                                          ts,
+                                          os,
+                                          EmptyBetaConstraints.getInstance(),
+                                          buildContext );
         final BetaNode j2 = new JoinNode( 2,
-                                    ts,
-                                    os );
+                                          ts,
+                                          os,
+                                          EmptyBetaConstraints.getInstance(),
+                                          buildContext );
         final BetaNode n1 = new NotNode( 3,
-                                   ts,
-                                   os );
+                                         ts,
+                                         os,
+                                         EmptyBetaConstraints.getInstance(),
+                                         buildContext );
         final BetaNode n2 = new NotNode( 4,
-                                   ts,
-                                   os );
+                                         ts,
+                                         os,
+                                         EmptyBetaConstraints.getInstance(),
+                                         buildContext );
 
         assertEquals( j1,
                       j1 );
