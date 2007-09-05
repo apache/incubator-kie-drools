@@ -159,7 +159,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
       <para>
       In addition, the validation rule set outputs all of the issues which 
       are discovered to the console.
-      <computeroutput>
+      <programlisting>
 There are two cells on the same column with the same value at (6,0) and (4,0)
 There are two cells on the same column with the same value at (4,0) and (6,0)
 There are two cells on the same row with the same value at (2,4) and (2,2)
@@ -175,8 +175,8 @@ There are two cells on the same column with the same value at (3,2) and (1,2)
 There are two cells in the same zone with the same value at (6,3) and (7,3)
 There are two cells in the same zone with the same value at (7,3) and (6,3)
 There are two cells on the same column with the same value at (7,3) and (6,3)
-There are two cells on the same column with the same value at (6,3) and (7,3)      
-      </computeroutput>      
+There are two cells on the same column with the same value at (6,3) and (7,3)   
+      </programlisting>      
       </para>
       <para>
       We will look at the solving rule set later in this section, but for the 
