@@ -21,12 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.DroolsTestCase;
+import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
@@ -62,12 +65,16 @@ public class JoinNodeTest extends DroolsTestCase {
         this.sink = new MockTupleSink();
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
+        
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
 
         this.node = new JoinNode( 15,
                                   this.tupleSource,
                                   this.objectSource,
                                   new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
-                                                              configuration ) );
+                                                              configuration ),
+                                  buildContext );
 
         this.node.addTupleSink( this.sink );
 
@@ -121,9 +128,13 @@ public class JoinNodeTest extends DroolsTestCase {
         final MockObjectSource objectSource = new MockObjectSource( 1 );
         final MockTupleSource tupleSource = new MockTupleSource( 1 );
 
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );        
         final JoinNode joinNode = new JoinNode( 2,
                                                 tupleSource,
-                                                objectSource );
+                                                objectSource,
+                                                EmptyBetaConstraints.getInstance(),
+                                                buildContext );
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( joinNode );
 
@@ -179,12 +190,18 @@ public class JoinNodeTest extends DroolsTestCase {
         this.workingMemory = new ReteooWorkingMemory( 1,
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
 
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        buildContext.setHasLeftMemory( false );
+        buildContext.setHasObjectTypeMemory( false );
+        
         // override setup, so its working in sequential mode
         this.node = new JoinNode( 15,
                                   this.tupleSource,
                                   this.objectSource,
                                   new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
-                                                              conf ) );
+                                                              conf ),
+                                  buildContext);
 
         this.node.addTupleSink( this.sink );
 
@@ -418,9 +435,14 @@ public class JoinNodeTest extends DroolsTestCase {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        
         final JoinNode joinNode = new JoinNode( 1,
                                                 this.tupleSource,
-                                                this.objectSource );
+                                                this.objectSource,
+                                                EmptyBetaConstraints.getInstance(),
+                                                buildContext );
 
         // Add the first tuple sink and assert a tuple and object
         // The sink has no memory

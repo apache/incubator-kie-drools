@@ -35,6 +35,8 @@ import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
+import org.drools.common.EmptyBetaConstraints;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Query;
 import org.drools.spi.Evaluator;
@@ -99,9 +101,13 @@ public class QueryTerminalNodeTest extends TestCase {
                                    3  );
         alphaNode.attach();
 
+        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        
         final JoinNode joinNode = new JoinNode( 6,
                                                 liaNode,
-                                                alphaNode );
+                                                alphaNode,
+                                                EmptyBetaConstraints.getInstance(),
+                                                buildContext );
         joinNode.attach();
 
         final Query query = new Query( "query-1" );

@@ -24,6 +24,7 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -51,32 +52,6 @@ public class AccumulateNode extends BetaNode {
     private final AlphaNodeFieldConstraint[] resultConstraints;
     private final BetaConstraints            resultBinder;
 
-    /**
-     * Construct.
-     * 
-     * @param id
-     *            The id for the node
-     * @param leftInput
-     *            The left input <code>TupleSource</code>.
-     * @param rightInput
-     *            The right input <code>ObjectSource</code>.
-     * @param accumulate
-     *            The accumulate conditional element
-     */
-    AccumulateNode(final int id,
-                   final TupleSource leftInput,
-                   final ObjectSource rightInput,
-                   final Accumulate accumulate) {
-        this( id,
-              leftInput,
-              rightInput,
-              new AlphaNodeFieldConstraint[0],
-              EmptyBetaConstraints.getInstance(),
-              EmptyBetaConstraints.getInstance(),
-              accumulate,
-              false );
-    }
-
     public AccumulateNode(final int id,
                           final TupleSource leftInput,
                           final ObjectSource rightInput,
@@ -84,7 +59,8 @@ public class AccumulateNode extends BetaNode {
                           final BetaConstraints sourceBinder,
                           final BetaConstraints resultBinder,
                           final Accumulate accumulate,
-                          final boolean unwrapRightObject) {
+                          final boolean unwrapRightObject,
+                          final BuildContext context) {
         super( id,
                leftInput,
                rightInput,
@@ -93,6 +69,7 @@ public class AccumulateNode extends BetaNode {
         this.resultConstraints = resultConstraints;
         this.accumulate = accumulate;
         this.unwrapRightObject = unwrapRightObject;
+        this.hasLeftMemory = context.hasLeftMemory();
     }
 
     /**
@@ -122,7 +99,7 @@ public class AccumulateNode extends BetaNode {
 
         AccumulateResult accresult = new AccumulateResult();
 
-        if ( !workingMemory.isSequential() ) {
+        if ( this.hasLeftMemory ) {
             memory.betaMemory.getTupleMemory().add( leftTuple );
             memory.betaMemory.getCreatedHandles().put( leftTuple,
                                             accresult,
@@ -233,7 +210,7 @@ public class AccumulateNode extends BetaNode {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
         memory.betaMemory.getFactHandleMemory().add( handle );
 
-        if ( workingMemory.isSequential() ) {
+        if ( ! this.hasLeftMemory ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
             return;
         }

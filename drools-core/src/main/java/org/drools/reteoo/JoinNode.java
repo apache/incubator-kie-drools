@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
@@ -52,36 +53,22 @@ public class JoinNode extends BetaNode {
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-
+    
     /**
      * 
      */
     private static final long serialVersionUID = 400L;
 
-    /**
-     * Construct.
-     * 
-     * @param leftInput
-     *            The left input <code>TupleSource</code>.
-     * @param rightInput
-     *            The right input <code>TupleSource</code>.
-     */
-    public JoinNode(final int id,
-                    final TupleSource leftInput,
-                    final ObjectSource rightInput) {
-        super( id,
-               leftInput,
-               rightInput );
-    }
-
     public JoinNode(final int id,
                     final TupleSource leftInput,
                     final ObjectSource rightInput,
-                    final BetaConstraints binder) {
+                    final BetaConstraints binder,
+                    final BuildContext context) {
         super( id,
                leftInput,
                rightInput,
                binder );
+        this.hasLeftMemory = context.hasLeftMemory();
     }
 
     /**
@@ -107,7 +94,7 @@ public class JoinNode extends BetaNode {
                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         
-        if ( !workingMemory.isSequential() ) {
+        if ( this.hasLeftMemory ) {
             memory.getTupleMemory().add( leftTuple );
         }
 
@@ -149,7 +136,7 @@ public class JoinNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         memory.getFactHandleMemory().add( handle );
-        if ( workingMemory.isSequential() ) {
+        if ( ! this.hasLeftMemory ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
             return;
         }

@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
@@ -30,6 +31,7 @@ import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.TupleSource;
 import org.drools.rule.GroupElement;
@@ -128,11 +130,13 @@ public class GroupElementBuilder
                     final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                             context.getBetaconstraints(),
                                                                                             false );
+                    
                     context.setTupleSource( (TupleSource) utils.attachNode( context,
                                                                             new JoinNode( context.getNextId(),
                                                                                           context.getTupleSource(),
                                                                                           context.getObjectSource(),
-                                                                                          betaConstraints ) ) );
+                                                                                          betaConstraints,
+                                                                                          context ) ) );
                     context.setBetaconstraints( null );
                     context.setObjectSource( null );
                 }
@@ -237,7 +241,8 @@ public class GroupElementBuilder
                                                                     new NotNode( context.getNextId(),
                                                                                  context.getTupleSource(),
                                                                                  context.getObjectSource(),
-                                                                                 betaConstraints ) ) );
+                                                                                 betaConstraints,
+                                                                                 context ) ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 
@@ -313,7 +318,8 @@ public class GroupElementBuilder
                                                                     new ExistsNode( context.getNextId(),
                                                                                     context.getTupleSource(),
                                                                                     context.getObjectSource(),
-                                                                                    betaConstraints ) ) );
+                                                                                    betaConstraints,
+                                                                                    context ) ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 

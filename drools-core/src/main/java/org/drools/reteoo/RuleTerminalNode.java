@@ -32,6 +32,7 @@ import org.drools.common.LogicalDependency;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.ScheduledAgendaItem;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -94,11 +95,13 @@ public final class RuleTerminalNode extends BaseNode
     public RuleTerminalNode(final int id,
                             final TupleSource source,
                             final Rule rule,
-                            final GroupElement subrule) {
+                            final GroupElement subrule,
+                            final BuildContext buildContext) {
         super( id );
         this.rule = rule;
         this.tupleSource = source;
         this.subrule = subrule;
+        this.hasMemory = buildContext.hasTerminalNodeMemory();
     }
 
     // ------------------------------------------------------------
@@ -191,7 +194,7 @@ public final class RuleTerminalNode extends BaseNode
             agenda.scheduleItem( item );
             tuple.setActivation( item );
             
-            if ( !workingMemory.isSequential() ) {
+            if ( this.hasMemory ) {
                 memory.getTupleMemory().add( tuple );
             }
 
@@ -232,7 +235,7 @@ public final class RuleTerminalNode extends BaseNode
                                                     this.rule,
                                                     this.subrule );
             
-            if ( workingMemory.isSequential() ) {
+            if ( this.hasMemory ) {
                 item.setSequenence( this.sequence );
             }
 

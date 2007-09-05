@@ -67,20 +67,32 @@ public class BuildContext {
 
     // alpha constraints from the last pattern attached
     private List                      alphaConstraints;
+    
+    private boolean                   hasLeftMemory;
+    
+    private boolean                   hasObjectTypeMemory;    
+    
+    private boolean                   hasTerminalNodeMemory;
 
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.rulebase = rulebase;
-        this.workingMemories = (InternalWorkingMemory[]) this.rulebase.getWorkingMemories();
-        this.idGenerator = idGenerator;
 
-        this.objectType = new LinkedList();
-        this.buildstack = new LinkedList();
+        this.idGenerator = idGenerator;
+        
+        this.workingMemories = null;
+
+        this.objectType = null;
+        this.buildstack = null;
 
         this.tupleSource = null;
         this.objectSource = null;
 
         this.currentPatternOffset = 0;
+        
+        this.hasLeftMemory = true;
+        
+        this.hasObjectTypeMemory = true;
     }
 
     /**
@@ -99,6 +111,9 @@ public class BuildContext {
     }
 
     public void syncObjectTypesWithPatternOffset() {
+        if (this.objectType == null ) {
+            this.objectType = new LinkedList();
+        }
         while ( this.objectType.size() > this.currentPatternOffset ) {
             this.objectType.removeLast();
         }
@@ -122,6 +137,9 @@ public class BuildContext {
      * @return the objectType
      */
     public LinkedList getObjectType() {
+        if (this.objectType == null ) {
+            this.objectType = new LinkedList();
+        }        
         return this.objectType;
     }
 
@@ -129,6 +147,9 @@ public class BuildContext {
      * @param objectType the objectType to set
      */
     public void setObjectType(final LinkedList objectType) {
+        if (this.objectType == null ) {
+            this.objectType = new LinkedList();
+        }        
         this.objectType = objectType;
     }
 
@@ -170,6 +191,9 @@ public class BuildContext {
      * @return
      */
     public InternalWorkingMemory[] getWorkingMemories() {
+        if ( this.workingMemories == null ) {
+            this.workingMemories = (InternalWorkingMemory[]) this.rulebase.getWorkingMemories();
+        }
         return this.workingMemories;
     }
 
@@ -193,6 +217,9 @@ public class BuildContext {
      * @param rce
      */
     public void push(final RuleConditionElement rce) {
+        if ( this.buildstack == null ) {
+            this.buildstack = new LinkedList();            
+        }        
         this.buildstack.addLast( rce );
     }
 
@@ -201,6 +228,9 @@ public class BuildContext {
      * @return
      */
     public RuleConditionElement pop() {
+        if ( this.buildstack == null ) {
+            this.buildstack = new LinkedList();            
+        }
         return (RuleConditionElement) this.buildstack.removeLast();
     }
 
@@ -209,6 +239,9 @@ public class BuildContext {
      * @return
      */
     public RuleConditionElement peek() {
+        if ( this.buildstack == null ) {
+            this.buildstack = new LinkedList();            
+        }        
         return (RuleConditionElement) this.buildstack.getLast();
     }
 
@@ -217,6 +250,9 @@ public class BuildContext {
      * @return
      */
     public ListIterator stackIterator() {
+        if ( this.buildstack == null ) {
+            this.buildstack = new LinkedList();            
+        }        
         return this.buildstack.listIterator();
     }
 
@@ -258,4 +294,28 @@ public class BuildContext {
         this.alphaConstraints = alphaConstraints;
     }
 
+    public boolean hasLeftMemory() {
+        return this.hasLeftMemory;
+    }
+
+    public void setHasLeftMemory(boolean hasLeftMemory) {
+        this.hasLeftMemory = hasLeftMemory;
+    }
+
+    public boolean hasObjectTypeMemory() {
+        return hasObjectTypeMemory;
+    }
+
+    public void setHasObjectTypeMemory(boolean hasObjectTypeMemory) {
+        this.hasObjectTypeMemory = hasObjectTypeMemory;
+    }
+
+    public boolean hasTerminalNodeMemory() {
+        return hasTerminalNodeMemory;
+    }
+
+    public void setHasTerminalNodeMemory(boolean hasTerminalNodeMemory) {
+        this.hasTerminalNodeMemory = hasTerminalNodeMemory;
+    }        
+        
 }

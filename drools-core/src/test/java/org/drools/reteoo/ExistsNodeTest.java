@@ -28,6 +28,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultBetaConstraints;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
@@ -59,8 +60,12 @@ public class ExistsNodeTest extends DroolsTestCase {
                                                    PropagationContext.ASSERTION,
                                                    null,
                                                    null );
-        this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase,
+                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+
+        this.workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
@@ -69,7 +74,8 @@ public class ExistsNodeTest extends DroolsTestCase {
                                     new MockTupleSource( 5 ),
                                     new MockObjectSource( 8 ),
                                     new DefaultBetaConstraints( new BetaNodeFieldConstraint[]{this.constraint},
-                                                                configuration ) );
+                                                                configuration ),
+                                    buildContext );
 
         this.sink = new MockTupleSink();
         this.node.addTupleSink( this.sink );
@@ -122,7 +128,7 @@ public class ExistsNodeTest extends DroolsTestCase {
 
         // assert tuple, will have matches, so propagate
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( new Cheese( "gouda",
-                                                                                                      10 ) );
+                                                                                                10 ) );
         final ReteTuple tuple2 = new ReteTuple( f2 );
         this.node.assertTuple( tuple2,
                                this.context,
@@ -198,7 +204,7 @@ public class ExistsNodeTest extends DroolsTestCase {
 
         // assert tuple, will have matches, so do assert propagation
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( new Cheese( "gouda",
-                                                                                                      10 ) );
+                                                                                                10 ) );
         final ReteTuple tuple2 = new ReteTuple( f2 );
         this.node.assertTuple( tuple2,
                                this.context,

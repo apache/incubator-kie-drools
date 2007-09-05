@@ -23,6 +23,7 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Collect;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -57,32 +58,6 @@ public class CollectNode extends BetaNode
      *            The left input <code>TupleSource</code>.
      * @param rightInput
      *            The right input <code>ObjectSource</code>.
-     * @param collect
-     *            The collect conditional element
-     */
-    CollectNode(final int id,
-                final TupleSource leftInput,
-                final ObjectSource rightInput,
-                final Collect collect) {
-        this( id,
-              leftInput,
-              rightInput,
-              new AlphaNodeFieldConstraint[0],
-              EmptyBetaConstraints.getInstance(),
-              EmptyBetaConstraints.getInstance(),
-              collect,
-              false );
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param id
-     *            The id for the node
-     * @param leftInput
-     *            The left input <code>TupleSource</code>.
-     * @param rightInput
-     *            The right input <code>ObjectSource</code>.
      * @param resultConstraints
      *            The alpha constraints to be applied to the resulting collection
      * @param sourceBinder
@@ -99,7 +74,8 @@ public class CollectNode extends BetaNode
                        final BetaConstraints sourceBinder,
                        final BetaConstraints resultsBinder,
                        final Collect collect,
-                       final boolean unwrapRight ) {
+                       final boolean unwrapRight,
+                       final BuildContext context) {
         super( id,
                leftInput,
                rightInput,
@@ -108,6 +84,7 @@ public class CollectNode extends BetaNode
         this.resultConstraints = resultConstraints;
         this.collect = collect;
         this.unwrapRightObject = unwrapRight;
+        this.hasLeftMemory = context.hasLeftMemory();
     }
 
     /**
@@ -136,7 +113,7 @@ public class CollectNode extends BetaNode
         colresult.propagated = false;
         
         // do not add tuple and result to the memory in sequential mode
-        if( ! workingMemory.isSequential() ) {
+        if ( this.hasLeftMemory ) {
             memory.getTupleMemory().add( leftTuple );
             memory.getCreatedHandles().put( leftTuple,
                                             colresult,
@@ -221,7 +198,7 @@ public class CollectNode extends BetaNode
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getFactHandleMemory().add( handle );
         
-        if ( workingMemory.isSequential() ) {
+        if ( !this.hasLeftMemory ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
             return;
         }        

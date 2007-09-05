@@ -84,13 +84,21 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         return getQueryResults( query, null );
     }
     public QueryResults getQueryResults(final String query, final Object[] arguments) {
-        final FactHandle handle = insert( new DroolsQuery( query, arguments ) );
+
+        Object object = new DroolsQuery( query, arguments );
+        InternalFactHandle handle = this.handleFactory.newFactHandle( object );
+        
+        insert( handle,
+                object,
+                null,
+                null );
+        
         final QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
         Query queryObj = null;
         List list = null;
 
         if ( node == null ) {
-            // There are no results, first check the query object actually exists and then retract the DroolsQuery object
+            // There are no results, first check the query object actually exists
             final org.drools.rule.Package[] pkgs = this.ruleBase.getPackages();
             for ( int i = 0; i < pkgs.length; i++ ) {
                 final Rule rule = pkgs[i].getRule( query );
@@ -99,20 +107,26 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                     break;
                 }
             }
-            retract( handle );
+
+            this.handleFactory.destroyFactHandle( handle );
+            
             if ( queryObj == null ) {
                 throw new IllegalArgumentException( "Query '" + query + "' does not exist" );
             }
             list = Collections.EMPTY_LIST;
         } else {
             list = (List) this.nodeMemories.remove( node.getId() );
-
-            retract( handle );
+            
             if ( list == null ) {
                 list = Collections.EMPTY_LIST;
             }
             queryObj = (Query) node.getRule();
+            
+            this.handleFactory.destroyFactHandle( handle );
         }
+        
+        
+        
 
         return new QueryResults( list,
                                  queryObj,

@@ -65,27 +65,12 @@ abstract class BetaNode extends TupleSource
 
     private ObjectSinkNode          previousObjectSinkNode;
     private ObjectSinkNode          nextObjectSinkNode;
+    
+    protected boolean hasLeftMemory = true;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-
-    /**
-     * The constructor defaults to using a BetaNodeBinder with no constraints
-     * 
-     * @param leftInput
-     *            The left input <code>TupleSource</code>.
-     * @param rightInput
-     *            The right input <code>ObjectSource</code>.
-     */
-    BetaNode(final int id,
-             final TupleSource leftInput,
-             final ObjectSource rightInput) {
-        this( id,
-              leftInput,
-              rightInput,
-              EmptyBetaConstraints.getInstance() );
-    }
 
     /**
      * Constructs a <code>BetaNode</code> using the specified <code>BetaNodeBinder</code>.
@@ -224,7 +209,7 @@ abstract class BetaNode extends TupleSource
 
         final BetaNode other = (BetaNode) object;
 
-        return this.getClass() == other.getClass() && this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.constraints.equals( other.constraints );
+        return this.getClass() == other.getClass() && this.hasLeftMemory == other.hasLeftMemory && this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.constraints.equals( other.constraints );
     }
 
     /**

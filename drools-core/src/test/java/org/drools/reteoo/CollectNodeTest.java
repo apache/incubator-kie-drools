@@ -26,10 +26,13 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.MockConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -66,8 +69,12 @@ public class CollectNodeTest extends DroolsTestCase {
                                                          PropagationContext.RETRACTION,
                                                          null,
                                                          null );
-        this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase,
+                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+        
+        this.workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         this.tupleSource = new MockTupleSource( 4 );
         this.objectSource = new MockObjectSource( 4 );
@@ -85,7 +92,12 @@ public class CollectNodeTest extends DroolsTestCase {
         this.node = new CollectNode( 15,
                                      this.tupleSource,
                                      this.objectSource,
-                                     this.collect );
+                                     new AlphaNodeFieldConstraint[0],
+                                     EmptyBetaConstraints.getInstance(),
+                                     EmptyBetaConstraints.getInstance(),
+                                     this.collect,
+                                     false,
+                                     buildContext );
 
         this.node.addTupleSink( this.sink );
 
@@ -349,8 +361,11 @@ public class CollectNodeTest extends DroolsTestCase {
     }
 
     public void testMemory() {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        BuildContext buildContext = new BuildContext( ruleBase,
+                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+        
+        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) ruleBase.newStatefulSession();
 
         final MockObjectSource objectSource = new MockObjectSource( 1 );
         final MockTupleSource tupleSource = new MockTupleSource( 1 );
@@ -358,7 +373,12 @@ public class CollectNodeTest extends DroolsTestCase {
         final CollectNode collectNode = new CollectNode( 2,
                                                          tupleSource,
                                                          objectSource,
-                                                         this.collect );
+                                                         new AlphaNodeFieldConstraint[0],
+                                                         EmptyBetaConstraints.getInstance(),
+                                                         EmptyBetaConstraints.getInstance(),
+                                                         this.collect,
+                                                         false,
+                                                         buildContext  );
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( collectNode );
 
@@ -373,6 +393,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
         
         this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
+        this.node.hasLeftMemory = false;
 
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );

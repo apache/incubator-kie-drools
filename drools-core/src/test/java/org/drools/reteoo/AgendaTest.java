@@ -39,6 +39,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
@@ -55,9 +56,15 @@ import org.drools.spi.RuleFlowGroup;
  */
 
 public class AgendaTest extends DroolsTestCase {
+    private InternalRuleBase ruleBase;
+    private BuildContext buildContext;
+    
+    protected void setUp() throws Exception {
+        ruleBase = ( InternalRuleBase ) RuleBaseFactory.newRuleBase();
+        buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+    }
+    
     public void testClearAgenda() {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Agenda agenda = workingMemory.getAgenda();
@@ -68,12 +75,14 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node1 = new RuleTerminalNode( 3,
                                                              new MockTupleSource( 2 ),
                                                              rule1,
-                                                             rule1.getLhs() );
+                                                             rule1.getLhs(),
+                                                             buildContext );
         
         final RuleTerminalNode node2 = new RuleTerminalNode( 5,
                                                              new MockTupleSource( 4 ),
                                                              rule2,
-                                                             rule2.getLhs() );        
+                                                             rule2.getLhs(),
+                                                             buildContext );        
 
         final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
@@ -143,16 +152,16 @@ public class AgendaTest extends DroolsTestCase {
     }
 
     public void testFilters() throws Exception {
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
         final RuleTerminalNode node = new RuleTerminalNode( 3,
                                                             new MockTupleSource( 2 ),
                                                             rule,
-                                                            rule.getLhs() );
+                                                            rule.getLhs(),
+                                                            buildContext );
 
         final Map results = new HashMap();
         // add consequence
@@ -235,8 +244,6 @@ public class AgendaTest extends DroolsTestCase {
     }
 
     public void testFocusStack() throws ConsequenceException {
-        final InternalRuleBase ruleBase = ( InternalRuleBase ) RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         // create the consequence
@@ -257,7 +264,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node0 = new RuleTerminalNode( 3,
                                                              new MockTupleSource( 2 ),
                                                              rule0,
-                                                             rule0.getLhs() );
+                                                             rule0.getLhs(),
+                                                             buildContext );
         rule0.setConsequence( consequence );
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -269,7 +277,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node1 = new RuleTerminalNode( 5,
                                                              new MockTupleSource( 4 ),
                                                              rule1,
-                                                             rule1.getLhs() );
+                                                             rule1.getLhs(),
+                                                             buildContext );
         rule1.setConsequence( consequence );
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -281,7 +290,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node2 = new RuleTerminalNode( 7,
                                                              new MockTupleSource( 6 ),
                                                              rule2,
-                                                             rule2.getLhs() );
+                                                             rule2.getLhs(),
+                                                             buildContext );
         rule2.setConsequence( consequence );
         final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -293,7 +303,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node3 = new RuleTerminalNode( 9,
                                                              new MockTupleSource( 8 ),
                                                              rule3,
-                                                             rule3.getLhs() );
+                                                             rule3.getLhs(),
+                                                             buildContext );
         rule3.setConsequence( consequence );
         final PropagationContext context3 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -454,8 +465,6 @@ public class AgendaTest extends DroolsTestCase {
 
     //
     public void testAutoFocus() throws ConsequenceException {
-        final InternalRuleBase ruleBase = ( InternalRuleBase ) RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
@@ -485,7 +494,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                             new MockTupleSource( 2 ),
                                                             rule,
-                                                            rule.getLhs() );
+                                                            rule.getLhs(),
+                                                            buildContext );
         rule.setConsequence( consequence );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -549,7 +559,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                             new MockTupleSource( 2 ),
                                                             rule,
-                                                            rule.getLhs() );
+                                                            rule.getLhs(),
+                                                            buildContext );
 
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -615,7 +626,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node0 = new RuleTerminalNode( 3,
                                                              new MockTupleSource( 2 ),
                                                              rule0,
-                                                             rule0.getLhs() );
+                                                             rule0.getLhs(),
+                                                             buildContext );
         rule0.setConsequence( consequence );
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -627,7 +639,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node1 = new RuleTerminalNode( 5,
                                                              new MockTupleSource( 4 ),
                                                              rule1,
-                                                             rule1.getLhs() );
+                                                             rule1.getLhs(),
+                                                             buildContext );
         rule1.setConsequence( consequence );
         final PropagationContext context1 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -638,7 +651,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node2 = new RuleTerminalNode( 7,
                                                              new MockTupleSource( 6 ),
                                                              rule2,
-                                                             rule2.getLhs() );
+                                                             rule2.getLhs(),
+                                                             buildContext );
         rule2.setConsequence( consequence );
         final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -651,7 +665,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node3 = new RuleTerminalNode( 9,
                                                              new MockTupleSource( 8 ),
                                                              rule3,
-                                                             rule3.getLhs() );
+                                                             rule3.getLhs(),
+                                                             buildContext );
         rule3.setConsequence( consequence );
         final PropagationContext context3 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -800,7 +815,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node0 = new RuleTerminalNode( 3,
                                                              new MockTupleSource( 2 ),
                                                              rule0,
-                                                             rule0.getLhs() );
+                                                             rule0.getLhs(),
+                                                             buildContext );
 
         final Rule rule1 = new Rule( "test-rule1" );
         rule1.setRuleFlowGroup( "rule-flow-group-1" );
@@ -809,7 +825,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node1 = new RuleTerminalNode( 4,
                                                              new MockTupleSource( 2 ),
                                                              rule1,
-                                                             rule1.getLhs() );
+                                                             rule1.getLhs(),
+                                                             buildContext );
 
         final Rule rule2 = new Rule( "test-rule2" );
         rule2.setRuleFlowGroup( "rule-flow-group-2" );
@@ -819,7 +836,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node2 = new RuleTerminalNode( 5,
                                                              new MockTupleSource( 2 ),
                                                              rule2,
-                                                             rule2.getLhs() );
+                                                             rule2.getLhs(),
+                                                             buildContext );
 
         final PropagationContext context0 = new PropagationContextImpl( 0,
                                                                         PropagationContext.ASSERTION,
@@ -946,7 +964,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node1 = new RuleTerminalNode( 4,
                                                              new MockTupleSource( 2 ),
                                                              rule1,
-                                                             rule1.getLhs() );
+                                                             rule1.getLhs(),
+                                                             buildContext );
 
         // create context
         final PropagationContext context0 = new PropagationContextImpl( 0,
@@ -976,7 +995,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node0 = new RuleTerminalNode( 3,
                                                              new MockTupleSource( 2 ),
                                                              rule0,
-                                                             rule0.getLhs() );
+                                                             rule0.getLhs(),
+                                                             buildContext );
 
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
@@ -1043,7 +1063,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node1 = new RuleTerminalNode( 4,
                                                              new MockTupleSource( 2 ),
                                                              rule1,
-                                                             rule1.getLhs() );
+                                                             rule1.getLhs(),
+                                                             buildContext );
 
         // create context
         final PropagationContext context0 = new PropagationContextImpl( 0,
@@ -1075,7 +1096,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node0 = new RuleTerminalNode( 3,
                                                              new MockTupleSource( 2 ),
                                                              rule0,
-                                                             rule0.getLhs() );
+                                                             rule0.getLhs(),
+                                                             buildContext );
 
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
@@ -1142,7 +1164,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node0 = new RuleTerminalNode( 1,
                                                              new MockTupleSource( 2 ),
                                                              rule0,
-                                                             rule0.getLhs() );
+                                                             rule0.getLhs(),
+                                                             buildContext );
 
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
@@ -1230,7 +1253,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node0 = new RuleTerminalNode( idGenerator.getNextId(),
                                                              new MockTupleSource( idGenerator.getNextId() ),
                                                              rule0,
-                                                             rule0.getLhs() );
+                                                             rule0.getLhs(),
+                                                             buildContext );
 
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
         assertTrue( ruleFlowGroup0.isAutoDeactivate() );
@@ -1377,7 +1401,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node = new RuleTerminalNode( 2,
                                                             new MockTupleSource( 2 ),
                                                             rule,
-                                                            rule.getLhs() );
+                                                            rule.getLhs(),
+                                                            buildContext );
 
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -1440,7 +1465,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node0 = new RuleTerminalNode( 3,
                                                              new MockTupleSource( 2 ),
                                                              rule0,
-                                                             rule0.getLhs() );
+                                                             rule0.getLhs(),
+                                                             buildContext );
         node0.setSequence( 72 );
         rule0.setConsequence( consequence );
         final PropagationContext context0 = new PropagationContextImpl( 0,
@@ -1453,7 +1479,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node1 = new RuleTerminalNode( 5,
                                                              new MockTupleSource( 4 ),
                                                              rule1,
-                                                             rule1.getLhs() );
+                                                             rule1.getLhs(),
+                                                             buildContext );
         node1.setSequence( 10 );
         rule1.setConsequence( consequence );
         final PropagationContext context1 = new PropagationContextImpl( 0,
@@ -1466,7 +1493,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node2 = new RuleTerminalNode( 7,
                                                              new MockTupleSource( 6 ),
                                                              rule2,
-                                                             rule2.getLhs() );
+                                                             rule2.getLhs(),
+                                                             buildContext );
         node2.setSequence( 7 );
         rule2.setConsequence( consequence );
         final PropagationContext context2 = new PropagationContextImpl( 0,
@@ -1479,7 +1507,8 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNode node3 = new RuleTerminalNode( 9,
                                                              new MockTupleSource( 8 ),
                                                              rule3,
-                                                             rule3.getLhs() );
+                                                             rule3.getLhs(),
+                                                             buildContext );
         node3.setSequence( 0 );
         rule3.setConsequence( consequence );
         final PropagationContext context3 = new PropagationContextImpl( 0,
