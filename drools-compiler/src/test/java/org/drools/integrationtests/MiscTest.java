@@ -55,6 +55,7 @@ import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.PersonWithEquals;
 import org.drools.Primitives;
+import org.drools.QueryResult;
 import org.drools.QueryResults;
 import org.drools.RandomNumber;
 import org.drools.RuleBase;
@@ -3986,6 +3987,27 @@ public class MiscTest extends TestCase {
                       cheesery.getCheeses().size() );
         assertEquals( results.get( 0 ),
                       cheesery.getCheeses().get( 0 ) );
+    }
+
+    public void testQueryWithCollect() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        workingMemory.fireAllRules();
+
+        final QueryResults results = workingMemory.getQueryResults( "collect objects" );
+        assertEquals( 1,
+                      results.size() );
+        
+        final QueryResult result = results.get( 0 );
+        final List list = (List) result.get( "$list" );
+        
+        assertEquals( 2, 
+                      list.size() );
     }
 
 }
