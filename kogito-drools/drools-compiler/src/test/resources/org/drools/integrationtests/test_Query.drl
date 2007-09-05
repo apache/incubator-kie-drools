@@ -1,6 +1,7 @@
 package org.drools.integrationtests;
 
 import org.drools.InsertedObject;
+import java.util.ArrayList;
 
 rule rule1
   when
@@ -12,3 +13,7 @@ end
 query "assertedobjquery"
     assertedobj : InsertedObject( value=="value1" )
 end 
+
+query "collect objects"
+    $list : ArrayList() from collect( InsertedObject() )
+end
