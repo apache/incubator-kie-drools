@@ -32,7 +32,7 @@ public class StateExampleUsingSalience {
         final State d = new State( "D" );
 
         // By setting dynamic to TRUE, Drools will use JavaBean
-        // PropertyChangeListeners so you don't have to call modifyObject().
+        // PropertyChangeListeners so you don't have to call update().
         final boolean dynamic = true;
 
         session.insert( a,

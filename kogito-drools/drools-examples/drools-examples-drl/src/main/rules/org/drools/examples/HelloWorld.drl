@@ -13,12 +13,10 @@ rule "Hello World"
 	update ( m );    	               
 end
 
-rule "GoodBye"
+rule "Good Bye"
     dialect "mvel"
-	no-loop true
 	when
-		m : Message( status == Message.GOODBYE, message : message )
+		Message( status == Message.GOODBYE, message : message )
 	then
 		System.out.println( message ); 
-		m.setMessage( message );				
 end
