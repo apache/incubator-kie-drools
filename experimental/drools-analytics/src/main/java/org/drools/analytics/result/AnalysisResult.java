@@ -1,14 +1,18 @@
 package org.drools.analytics.result;
 
+import java.util.List;
+
 /**
  * 
  * @author Toni Rikkola
  */
 public interface AnalysisResult {
 
-	public void addError(Cause[] causes, String message, int lineNumber);
+	public void add(AnalysisMessage notification);
 
-	public void addNote(Cause[] causes, String message, int lineNumber);
+	public List<AnalysisError> getErrors();
 
-	public void addWarning(Cause[] causes, String message, int lineNumber);
+	public List<AnalysisNote> getNotes();
+
+	public List<AnalysisWarning> getWarnings();
 }

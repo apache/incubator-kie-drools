@@ -10,7 +10,7 @@ import org.drools.analytics.result.Cause;
  */
 public interface Possibility extends Cause {
 
-	public int getId();
-
 	public Set<Cause> getItems();
+	
+	public int getAmountOfItems();
 }

@@ -49,15 +49,8 @@ rule "Range check for doubles, smaller and greater than"
 											patternIsNot == $r.patternIsNot, 
 											doubleValue == $r.doubleValue )
 		)
-		$rule :AnalyticsRule( id == $r.ruleId )
 	then
-		Gap gap = new Gap();
-		gap.setCause($f);
-		gap.setRuleName($rule.getRuleName());
-		gap.setEvaluator($r.getEvaluator());
-		gap.setFiredRuleName(drools.getRule().getName());
-		gap.setValue($r.getDoubleValue() +"");
-		insert( gap );
+		insert( new Gap( $f, $r, drools.getRule().getName()) );
 end
 
 # If all ranges are not checked for a field.
@@ -80,15 +73,8 @@ rule "Range check for doubles, equal and greater than"
 								( evaluator == "<" || == "<=" ), 
 								patternIsNot == $r.patternIsNot, 
 								doubleValue == $r.doubleValue )
-		$rule :AnalyticsRule( id == $r.ruleId )
 	then
-		Gap gap = new Gap();
-		gap.setCause($f);
-		gap.setRuleName($rule.getRuleName());
-		gap.setEvaluator("<");
-		gap.setFiredRuleName(drools.getRule().getName());
-		gap.setValue($r.getDoubleValue() + "");
-		insert( gap );
+		insert( new Gap( $f, $r, drools.getRule().getName()) );
 end
 
 # If all ranges are not checked for a field.
@@ -111,14 +97,7 @@ rule "Range check for doubles, equal and smaller than"
 								( evaluator == ">" || == ">=" ), 
 								patternIsNot == $r.patternIsNot, 
 								doubleValue == $r.doubleValue )
-		$rule :AnalyticsRule( id == $r.ruleId )
 	then
-		Gap gap = new Gap();
-		gap.setCause($f);
-		gap.setRuleName($rule.getRuleName());
-		gap.setEvaluator(">");
-		gap.setFiredRuleName(drools.getRule().getName());
-		gap.setValue($r.getDoubleValue() +"");
-		insert( gap );
+		insert( new Gap( $f, $r, drools.getRule().getName()) );
 end
 

@@ -12,10 +12,10 @@ import org.drools.analytics.components.Constraint;
 import org.drools.analytics.components.Field;
 import org.drools.analytics.components.FieldClassLink;
 import org.drools.analytics.components.Pattern;
+import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.Restriction;
+import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.components.Variable;
-
-
 
 /**
  * 
@@ -34,6 +34,21 @@ public class AnalyticsDataMaps implements AnalyticsData {
 	private Map<Integer, Restriction> restrictionsById = new HashMap<Integer, Restriction>();
 
 	private Map<String, Variable> variablesByRuleAndVariableName = new HashMap<String, Variable>();
+
+	private Map<Integer, PatternPossibility> patternPossibilitiesById = new HashMap<Integer, PatternPossibility>();
+	private Map<Integer, RulePossibility> rulePossibilitiesById = new HashMap<Integer, RulePossibility>();
+
+	private static AnalyticsDataMaps map;
+
+	private AnalyticsDataMaps() {
+	}
+
+	public static AnalyticsDataMaps getAnalyticsDataMaps() {
+		if (map == null) {
+			map = new AnalyticsDataMaps();
+		}
+		return map;
+	}
 
 	public void insert(AnalyticsClass clazz) {
 		classesById.put(Integer.valueOf(clazz.getId()), clazz);
@@ -93,6 +108,14 @@ public class AnalyticsDataMaps implements AnalyticsData {
 		return fieldClassLinkByIds.get(id + "." + id2);
 	}
 
+	public void insert(PatternPossibility possibility) {
+		patternPossibilitiesById.put(possibility.getId(), possibility);
+	}
+
+	public void insert(RulePossibility possibility) {
+		rulePossibilitiesById.put(possibility.getId(), possibility);
+	}
+
 	public Collection<? extends Object> getAll() {
 		List<Object> objects = new ArrayList<Object>();
 
@@ -100,6 +123,9 @@ public class AnalyticsDataMaps implements AnalyticsData {
 		objects.addAll(patternsById.values());
 		objects.addAll(constraintsById.values());
 		objects.addAll(restrictionsById.values());
+
+		objects.addAll(patternPossibilitiesById.values());
+		objects.addAll(rulePossibilitiesById.values());
 
 		objects.addAll(classesByName.values());
 		objects.addAll(fieldsByClassAndFieldName.values());

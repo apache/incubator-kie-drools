@@ -1,33 +1,52 @@
 package org.drools.analytics.result;
 
+import org.drools.analytics.components.Restriction;
+
 /**
  * 
  * @author Toni Rikkola
  */
-public class Gap {
+public class Gap implements Cause {
+
+	private static int index = 0;
+
+	private int id;
 
 	private Cause cause;
-	private String ruleName;
+	private Restriction restriction;
 	private String firedRuleName;
-	private String evaluator;
-	private String value;
 
-	public String getReversedEvaluator() {
-		if (evaluator.equals("!=")) {
+	public Gap(Cause cause, Restriction restriction, String firedRuleName) {
+		id = index;
+		this.cause = cause;
+		this.restriction = restriction;
+		this.firedRuleName = firedRuleName;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public String getRuleName() {
+		return restriction.getRuleName();
+	}
+
+	private String getReversedEvaluator() {
+		if (restriction.getEvaluator().equals("!=")) {
 			return "==";
-		} else if (evaluator.equals("==")) {
+		} else if (restriction.getEvaluator().equals("==")) {
 			return "!=";
-		} else if (evaluator.equals(">")) {
+		} else if (restriction.getEvaluator().equals(">")) {
 			return "<=";
-		} else if (evaluator.equals("<")) {
+		} else if (restriction.getEvaluator().equals("<")) {
 			return ">=";
-		} else if (evaluator.equals(">=")) {
+		} else if (restriction.getEvaluator().equals(">=")) {
 			return "<";
-		} else if (evaluator.equals("<=")) {
+		} else if (restriction.getEvaluator().equals("<=")) {
 			return ">";
 		}
 
-		return evaluator;
+		return null;
 	}
 
 	public Cause getCause() {
@@ -38,12 +57,12 @@ public class Gap {
 		this.cause = cause;
 	}
 
-	public String getEvaluator() {
-		return evaluator;
+	public Restriction getRestriction() {
+		return restriction;
 	}
 
-	public void setEvaluator(String evaluator) {
-		this.evaluator = evaluator;
+	public void setRestriction(Restriction restriction) {
+		this.restriction = restriction;
 	}
 
 	public String getFiredRuleName() {
@@ -54,24 +73,9 @@ public class Gap {
 		this.firedRuleName = firedRuleName;
 	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
 	@Override
 	public String toString() {
-		return "Gap: (" + cause + ") " + getReversedEvaluator() + " " + value;
-	}
-
-	public String getRuleName() {
-		return ruleName;
-	}
-
-	public void setRuleName(String ruleName) {
-		this.ruleName = ruleName;
+		return "Gap: (" + cause + ") " + getReversedEvaluator() + " "
+				+ restriction.getValueAsString();
 	}
 }

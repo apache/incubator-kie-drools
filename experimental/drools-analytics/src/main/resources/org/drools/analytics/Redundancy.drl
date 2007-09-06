@@ -7,6 +7,7 @@ import org.drools.analytics.result.*;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 #declare any global variables here
 global AnalysisResult result
@@ -64,7 +65,7 @@ rule "Find redundant VariableRestriction"
 			objectId == $v.objectId
 		)
 	then
-		insert( new Redundancy( $left, $right ) );
+		insert( new Redundancy( Redundancy.Type.STRONG, $left, $right ) );
 end
 
 /*
@@ -167,7 +168,7 @@ rule "Find redundant LiteralRestriction"
 			right == $right 
 		)
 	then
-		insert( new Redundancy( $left, $right ) );
+		insert( new Redundancy( Redundancy.Type.STRONG, $left, $right ) );
 end
 
 
@@ -196,7 +197,7 @@ rule "Find redundant Pattern shells"
 			right == $right 
 		)
 	then
-		insert( new Redundancy( $left, $right ) );
+		insert( new Redundancy( Redundancy.Type.WEAK, $left, $right ) );
 end
 
 #
@@ -220,7 +221,7 @@ rule "Find redundant Rule shells"
 			right == $right 
 		)
 	then
-		insert( new Redundancy( $left, $right ) );
+		insert( new Redundancy( Redundancy.Type.WEAK, $left, $right ) );
 end
 
 
@@ -273,55 +274,159 @@ rule "Find part of redundant RulePossibility combination"
 			ruleId == $r2.id, 
 			items contains $redundancy.right 
 		)
+		# TODO: Not here.
 	then
 		insert( new PartialRedundancy( $rp1, $rp2, $redundancy ) );
 end
 
-/*
+
 #
 # Handles both RulePossibilities and PatternPossibilities.
 #
 rule "Find subsumptant Possibilities"
 	when
-		$pp1 :Possibility()
-		$pp2 :Possibility( id != $pp1.id )
+		$p1 :Possibility()
+		$p2 :Possibility( id != $p1.id )
 		
-		# Count that there is as many redundant items as there is PartialRedundancies.
-		Number( intValue == $pp1.items.size )
-			from accumulate(
-				$pr :PartialRedundancy( 
-					left == $pp1, 
-					right == $pp2 
-				), 
-				count( $pr )
+		not Subsumption( 
+				left == $p1, 
+				right == $p2 
+		)
+		
+		# At least one partial redundancy exists between these possibilities.
+		exists( 
+				PartialRedundancy( 
+					left == $p1, 
+					right == $p2 
+				) 
+		)
+		
+		# Collect all the partial redundancies.
+		$list :ArrayList()
+			from collect(
+				PartialRedundancy( 
+					left == $p1, 
+					right == $p2 
+				)
 			)
+			
+		# If there as much partial redundancies as there is items in $p1,
+		# then $p1 is subsumptant to $p2.
+		eval( $list.size() == $p1.getAmountOfItems() )
 	then
-		insert( new Subsumption( $pp1, $pp2 ) );
+		insert( new Subsumption( $p1, $p2 ) );
 end
 
-
 #
-# Checks for all PartialRedundancys that contain either PatternPossibilities
-# or RulePossibilities.
+# If two possibilities are subsumptant to each others, then they are redundant.
+# Since this tests only one possibility, the entire rule or pattern might not be redundant.
 #
-rule "Find redundant PartialRedundancies"
+rule "Find redundant Possibilities"
 	when
-		# If both sides are in subsumption with each other, 
-		# then they are also redundant.
-		$pr :PartialRedundancy()
-		PartialRedundancy( 
-			leftParent == $pr.rightParent, 
-			rightParent == $pr.leftParent 
+		$p1 :Possibility()
+		$p2 :Possibility( id != $p1.id )
+		
+		not Redundancy( 
+			left == $p1, 
+			right == $p2 
+		)
+		
+		not Redundancy( 
+			left == $p2, 
+			right == $p1 
+		)
+		
+		Subsumption( 
+				left == $p1, 
+				right == $p2 
+		)
+		
+		Subsumption( 
+				left == $p2, 
+				right == $p1 
 		)
 	then
-		insert( new Redundancy( $pr.leftParent, $pr.rightParent ) );
+		insert( new Redundancy( $p1, $p2 ) );
 end
 
+/*
+#
+# When two patterns and all theyr possibilities are redundant.
+#
+rule "Find redundant pattern"
+	when
+		$p1 :Pattern()
+		$p2 :Pattern( id != $p1.id )
+		
+		$set1 :HashSet()
+			from collect(
+				PatternPossibility( patternId == $p1.id )
+			)
 
+		$set2 :HashSet()
+			from collect(
+				PatternPossibility( patternId == $p2.id )
+			)
+		
+		# Check that sizes are the same.
+		eval( $set1.size() == $set2.size() )
+		
+		$redundancyList :ArrayList()
+			from collect(
+				Redundancy( 
+					eval( $set1.contains( left ) ),
+					eval( $set2.contains( right ) )
+				)
+			)
+		
+		eval( $set1.size() == $redundancyList.size() )
+		
+	then
+		# Type is set to strong because all the pattern possibilities are redundant.
+		insert( new Redundancy( Redundancy.Type.STRONG, $p1, $p2 ) );
+end
+
+#
+# When two rules and all theyr possibilities are redundant.
+#
+rule "Find redundant rule"
+	when
+		$r1 :AnalyticsRule()
+		$r2 :AnalyticsRule( id != $r1.id )
+		
+		# If all the patterns in rule 1 are strongly redundant to rule 2, and vice versa.
+		# Then the redundancy is strong.
+		$set1 :HashSet()
+			from collect(
+				Pattern( ruleId == $r1.id )
+			)
+
+		$set2 :HashSet()
+			from collect(
+				Pattern( ruleId == $r2.id )
+			)
+		
+		# Find only strong pattern
+		$redundancyList :ArrayList()
+			from collect(
+				Redundancy( 
+					type == Redundancy.Type.STRONG,
+					eval( $set1.contains( left ) ),
+					eval( $set2.contains( right ) )
+				)
+			)
+		 
+		eval( $set1.size() == $redundancyList.size() )
+		
+	then
+		# Type is set to strong because all the rule possibilities are redundant.
+		insert( new Redundancy( Redundancy.Type.STRONG, $r1, $r2 ) );
+end
+*/
+/*
 # TODO: Partial redundancy, when some two rulepossibilities from different rules 
 # are redundant. but not all of the possibilities are redundant!
 # NOTE: Write this one to to out put rules.
-
 */
 
 

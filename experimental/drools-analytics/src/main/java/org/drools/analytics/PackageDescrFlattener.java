@@ -1,7 +1,5 @@
 package org.drools.analytics;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.drools.analytics.components.AnalyticsAccessorDescr;
@@ -63,11 +61,9 @@ import org.drools.lang.descr.VariableRestrictionDescr;
  * @author Toni Rikkola
  * 
  */
-public class RuleFlattener {
+public class PackageDescrFlattener {
 
 	private Solvers solvers = new Solvers();
-
-	private AnalyticsData data = new AnalyticsDataMaps();
 
 	private AnalyticsRule currentRule = null;
 	private Pattern currentPattern = null;
@@ -76,110 +72,111 @@ public class RuleFlattener {
 	private Field currentField = null;
 
 	public void insert(PackageDescr packageDescr) {
-		solve(packageDescr.getRules());
+		flatten(packageDescr.getRules());
+		formPossibilities();
 	}
 
-	private void solve(List descrs) {
+	private void flatten(List descrs) {
 
 		for (Object o : descrs) {
 			BaseDescr descr = (BaseDescr) o;
 			if (descr instanceof PackageDescr) {
-				solve((PackageDescr) descr);
+				flatten((PackageDescr) descr);
 			} else if (descr instanceof RuleDescr) {
-				solve((RuleDescr) descr);
+				flatten((RuleDescr) descr);
 			} else if (descr instanceof PatternDescr) {
-				solve((PatternDescr) descr);
+				flatten((PatternDescr) descr);
 			} else if (descr instanceof VariableRestrictionDescr) {
-				solve((VariableRestrictionDescr) descr);
+				flatten((VariableRestrictionDescr) descr);
 			} else if (descr instanceof FieldBindingDescr) {
-				solve((FieldBindingDescr) descr);
+				flatten((FieldBindingDescr) descr);
 			} else if (descr instanceof FieldConstraintDescr) {
-				solve((FieldConstraintDescr) descr);
+				flatten((FieldConstraintDescr) descr);
 			} else if (descr instanceof RestrictionConnectiveDescr) {
-				solve((RestrictionConnectiveDescr) descr);
+				flatten((RestrictionConnectiveDescr) descr);
 			} else if (descr instanceof LiteralRestrictionDescr) {
-				solve((LiteralRestrictionDescr) descr);
+				flatten((LiteralRestrictionDescr) descr);
 			} else if (descr instanceof ReturnValueRestrictionDescr) {
-				solve((ReturnValueRestrictionDescr) descr);
+				flatten((ReturnValueRestrictionDescr) descr);
 			} else if (descr instanceof QualifiedIdentifierRestrictionDescr) {
-				solve((QualifiedIdentifierRestrictionDescr) descr);
+				flatten((QualifiedIdentifierRestrictionDescr) descr);
 			} else if (descr instanceof FunctionCallDescr) {
-				solve((FunctionCallDescr) descr);
+				flatten((FunctionCallDescr) descr);
 			} else if (descr instanceof PredicateDescr) {
-				solve((PredicateDescr) descr);
+				flatten((PredicateDescr) descr);
 			} else if (descr instanceof AccessorDescr) {
-				solve((AccessorDescr) descr);
+				flatten((AccessorDescr) descr);
 			} else if (descr instanceof MethodAccessDescr) {
-				solve((MethodAccessDescr) descr);
+				flatten((MethodAccessDescr) descr);
 			} else if (descr instanceof FieldAccessDescr) {
-				solve((FieldAccessDescr) descr);
+				flatten((FieldAccessDescr) descr);
 			} else if (descr instanceof PatternSourceDescr) {
-				solve((PatternSourceDescr) descr);
+				flatten((PatternSourceDescr) descr);
 			} else if (descr instanceof ConditionalElementDescr) {
-				solve((ConditionalElementDescr) descr);
+				flatten((ConditionalElementDescr) descr);
 			}
 		}
 	}
 
-	private AnalyticsComponent solve(PatternSourceDescr descr) {
+	private AnalyticsComponent flatten(PatternSourceDescr descr) {
 		if (descr instanceof AccumulateDescr) {
-			return solve((AccumulateDescr) descr);
+			return flatten((AccumulateDescr) descr);
 		} else if (descr instanceof CollectDescr) {
-			return solve((CollectDescr) descr);
+			return flatten((CollectDescr) descr);
 		} else if (descr instanceof FromDescr) {
-			return solve((FromDescr) descr);
+			return flatten((FromDescr) descr);
 		}
 		return null;
 	}
 
-	private AnalyticsComponent solve(DeclarativeInvokerDescr descr) {
+	private AnalyticsComponent flatten(DeclarativeInvokerDescr descr) {
 		if (descr instanceof AccessorDescr) {
-			return solve((AccessorDescr) descr);
+			return flatten((AccessorDescr) descr);
 		} else if (descr instanceof FieldAccessDescr) {
-			return solve((FieldAccessDescr) descr);
+			return flatten((FieldAccessDescr) descr);
 		} else if (descr instanceof FunctionCallDescr) {
-			return solve((FunctionCallDescr) descr);
+			return flatten((FunctionCallDescr) descr);
 		} else if (descr instanceof MethodAccessDescr) {
-			return solve((MethodAccessDescr) descr);
+			return flatten((MethodAccessDescr) descr);
 		}
 		return null;
 	}
 
-	private void solve(ConditionalElementDescr descr) {
+	private void flatten(ConditionalElementDescr descr) {
 		if (descr instanceof AndDescr) {
-			solve((AndDescr) descr);
+			flatten((AndDescr) descr);
 		} else if (descr instanceof CollectDescr) {
-			solve((CollectDescr) descr);
+			flatten((CollectDescr) descr);
 		} else if (descr instanceof EvalDescr) {
-			solve((EvalDescr) descr);
+			flatten((EvalDescr) descr);
 		} else if (descr instanceof ExistsDescr) {
-			solve((ExistsDescr) descr);
+			flatten((ExistsDescr) descr);
 		} else if (descr instanceof ForallDescr) {
-			solve((ForallDescr) descr);
+			flatten((ForallDescr) descr);
 		} else if (descr instanceof FromDescr) {
-			solve((FromDescr) descr);
+			flatten((FromDescr) descr);
 		} else if (descr instanceof NotDescr) {
-			solve((NotDescr) descr);
+			flatten((NotDescr) descr);
 		} else if (descr instanceof OrDescr) {
-			solve((OrDescr) descr);
+			flatten((OrDescr) descr);
 		}
 	}
 
-	private void solve(ForallDescr descr) {
+	private void flatten(ForallDescr descr) {
 		solvers.startForall();
-		solve(descr.getDescrs());
+		flatten(descr.getDescrs());
 		solvers.endForall();
 	}
 
-	private void solve(ExistsDescr descr) {
+	private void flatten(ExistsDescr descr) {
 		solvers.startExists();
-		solve(descr.getDescrs());
+		flatten(descr.getDescrs());
 		solvers.endExists();
 	}
 
-	private void solve(NotDescr descr) {
+	private void flatten(NotDescr descr) {
 		solvers.startNot();
-		solve(descr.getDescrs());
+		flatten(descr.getDescrs());
 		solvers.endNot();
 	}
 
@@ -189,7 +186,7 @@ public class RuleFlattener {
 	 * @param descr
 	 * @return
 	 */
-	private AnalyticsFunctionCallDescr solve(FunctionCallDescr descr) {
+	private AnalyticsFunctionCallDescr flatten(FunctionCallDescr descr) {
 		AnalyticsFunctionCallDescr functionCall = new AnalyticsFunctionCallDescr();
 		functionCall.setName(descr.getName());
 		functionCall.setArguments(descr.getArguments());
@@ -203,7 +200,7 @@ public class RuleFlattener {
 	 * @param descr
 	 * @return
 	 */
-	private AnalyticsPredicateDescr solve(PredicateDescr descr) {
+	private AnalyticsPredicateDescr flatten(PredicateDescr descr) {
 		AnalyticsPredicateDescr predicate = new AnalyticsPredicateDescr();
 		predicate.setContent(descr.getContent().toString());
 		predicate.setClassMethodName(descr.getClassMethodName());
@@ -217,7 +214,7 @@ public class RuleFlattener {
 	 * @param descr
 	 * @return
 	 */
-	private AnalyticsEvalDescr solve(EvalDescr descr) {
+	private AnalyticsEvalDescr flatten(EvalDescr descr) {
 		AnalyticsEvalDescr eval = new AnalyticsEvalDescr();
 		eval.setContent(descr.getContent().toString());
 		eval.setClassMethodName(descr.getClassMethodName());
@@ -231,20 +228,20 @@ public class RuleFlattener {
 	 * @param descr
 	 * @return
 	 */
-	private AnalyticsFromDescr solve(FromDescr descr) {
+	private AnalyticsFromDescr flatten(FromDescr descr) {
 		AnalyticsFromDescr from = new AnalyticsFromDescr();
 
-		AnalyticsComponent ds = solve(descr.getDataSource());
+		AnalyticsComponent ds = flatten(descr.getDataSource());
 		from.setDataSourceId(ds.getId());
 		from.setDataSourceType(ds.getComponentType());
 
 		return from;
 	}
 
-	private AnalyticsAccumulateDescr solve(AccumulateDescr descr) {
+	private AnalyticsAccumulateDescr flatten(AccumulateDescr descr) {
 		AnalyticsAccumulateDescr accumulate = new AnalyticsAccumulateDescr();
 
-		accumulate.setInputPatternId(solve(descr.getInputPattern()));
+		accumulate.setInputPatternId(flatten(descr.getInputPattern()));
 		accumulate.setInitCode(descr.getInitCode());
 		accumulate.setActionCode(descr.getActionCode());
 		accumulate.setReverseCode(descr.getReverseCode());
@@ -261,15 +258,15 @@ public class RuleFlattener {
 		return accumulate;
 	}
 
-	private AnalyticsCollectDescr solve(CollectDescr descr) {
+	private AnalyticsCollectDescr flatten(CollectDescr descr) {
 		AnalyticsCollectDescr collect = new AnalyticsCollectDescr();
 		collect.setClassMethodName(descr.getClassMethodName());
-		collect.setInsidePatternId(solve(descr.getInputPattern()));
+		collect.setInsidePatternId(flatten(descr.getInputPattern()));
 
 		return collect;
 	}
 
-	private AnalyticsAccessorDescr solve(AccessorDescr descr) {
+	private AnalyticsAccessorDescr flatten(AccessorDescr descr) {
 		AnalyticsAccessorDescr accessor = new AnalyticsAccessorDescr();
 		// TODO: I wonder what this descr does.
 		return accessor;
@@ -280,7 +277,7 @@ public class RuleFlattener {
 	 * 
 	 * @param descr
 	 */
-	private AnalyticsMethodAccessDescr solve(MethodAccessDescr descr) {
+	private AnalyticsMethodAccessDescr flatten(MethodAccessDescr descr) {
 		AnalyticsMethodAccessDescr accessor = new AnalyticsMethodAccessDescr();
 		accessor.setMethodName(descr.getMethodName());
 		accessor.setArguments(descr.getArguments());
@@ -292,18 +289,19 @@ public class RuleFlattener {
 	 * 
 	 * @param descr
 	 */
-	private AnalyticsFieldAccessDescr solve(FieldAccessDescr descr) {
+	private AnalyticsFieldAccessDescr flatten(FieldAccessDescr descr) {
 		AnalyticsFieldAccessDescr accessor = new AnalyticsFieldAccessDescr();
 		accessor.setFieldName(descr.getFieldName());
 		accessor.setArgument(descr.getArgument());
 		return accessor;
 	}
 
-	private void solve(PackageDescr descr) {
-		solve(descr.getRules());
+	private void flatten(PackageDescr descr) {
+		flatten(descr.getRules());
 	}
 
-	private void solve(RuleDescr descr) {
+	private void flatten(RuleDescr descr) {
+		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
 
 		AnalyticsRule rule = new AnalyticsRule();
 		rule.setRuleName(descr.getName());
@@ -315,27 +313,29 @@ public class RuleFlattener {
 		currentRule = rule;
 
 		solvers.startRuleSolver(rule);
-		solve(descr.getLhs());
+		flatten(descr.getLhs());
 		solvers.endRuleSolver();
 	}
 
-	private void solve(OrDescr descr) {
+	private void flatten(OrDescr descr) {
 		OperatorDescr operatorDescr = OperatorDescr
 				.valueOf(OperatorDescr.Type.OR);
 		solvers.startOperator(operatorDescr);
-		solve(descr.getDescrs());
+		flatten(descr.getDescrs());
 		solvers.endOperator();
 	}
 
-	private void solve(AndDescr descr) {
+	private void flatten(AndDescr descr) {
 		OperatorDescr operatorDescr = OperatorDescr
 				.valueOf(OperatorDescr.Type.AND);
 		solvers.startOperator(operatorDescr);
-		solve(descr.getDescrs());
+		flatten(descr.getDescrs());
 		solvers.endOperator();
 	}
 
-	private int solve(PatternDescr descr) {
+	private int flatten(PatternDescr descr) {
+		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+
 		AnalyticsClass clazz = data.getClassByName(descr.getObjectType());
 		if (clazz == null) {
 			clazz = new AnalyticsClass();
@@ -367,9 +367,9 @@ public class RuleFlattener {
 			data.insert(variable);
 		}
 
-		// Solve source.
+		// flatten source.
 		if (descr.getSource() != null) {
-			AnalyticsComponent source = solve(descr.getSource());
+			AnalyticsComponent source = flatten(descr.getSource());
 			pattern.setSourceId(source.getId());
 			pattern.setSourceType(source.getComponentType());
 		} else {
@@ -377,13 +377,15 @@ public class RuleFlattener {
 			pattern.setSourceType(AnalyticsComponentType.NOTHING);
 		}
 		solvers.startPatternSolver(pattern);
-		solve(descr.getConstraint());
+		flatten(descr.getConstraint());
 		solvers.endPatternSolver();
 
 		return pattern.getId();
 	}
 
-	private void solve(FieldConstraintDescr descr) {
+	private void flatten(FieldConstraintDescr descr) {
+		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+
 		Field field = data.getFieldByClassAndFieldName(currentClass.getName(),
 				descr.getFieldName());
 		if (field == null) {
@@ -405,12 +407,12 @@ public class RuleFlattener {
 
 		currentConstraint = constraint;
 
-		solve(descr.getRestriction());
+		flatten(descr.getRestriction());
 	}
 
-	private void solve(RestrictionConnectiveDescr descr) {
+	private void flatten(RestrictionConnectiveDescr descr) {
 		// TODO: check.
-		solve(descr.getRestrictions());
+		flatten(descr.getRestrictions());
 	}
 
 	/**
@@ -418,7 +420,9 @@ public class RuleFlattener {
 	 * 
 	 * @param descr
 	 */
-	private void solve(FieldBindingDescr descr) {
+	private void flatten(FieldBindingDescr descr) {
+		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+
 		Variable variable = new Variable();
 		variable.setRuleId(currentRule.getId());
 		variable.setName(descr.getIdentifier());
@@ -436,7 +440,9 @@ public class RuleFlattener {
 	 * 
 	 * @param descr
 	 */
-	private void solve(VariableRestrictionDescr descr) {
+	private void flatten(VariableRestrictionDescr descr) {
+		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+
 		Variable variable = data.getVariableByRuleAndVariableName(currentRule
 				.getRuleName(), descr.getIdentifier());
 		VariableRestriction restriction = new VariableRestriction();
@@ -463,7 +469,9 @@ public class RuleFlattener {
 	 * 
 	 * @param descr
 	 */
-	private void solve(ReturnValueRestrictionDescr descr) {
+	private void flatten(ReturnValueRestrictionDescr descr) {
+		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+
 		ReturnValueRestriction restriction = new ReturnValueRestriction();
 
 		restriction.setRuleId(currentRule.getId());
@@ -487,7 +495,9 @@ public class RuleFlattener {
 	 * 
 	 * @param descr
 	 */
-	private void solve(LiteralRestrictionDescr descr) {
+	private void flatten(LiteralRestrictionDescr descr) {
+		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+
 		LiteralRestriction restriction = new LiteralRestriction();
 
 		restriction.setRuleId(currentRule.getId());
@@ -512,7 +522,9 @@ public class RuleFlattener {
 	 * 
 	 * @param descr
 	 */
-	private void solve(QualifiedIdentifierRestrictionDescr descr) {
+	private void flatten(QualifiedIdentifierRestrictionDescr descr) {
+		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+
 		String text = descr.getText();
 		Variable variable = data.getVariableByRuleAndVariableName(currentRule
 				.getRuleName(), text.substring(0, text.indexOf(".")));
@@ -549,20 +561,14 @@ public class RuleFlattener {
 		return field;
 	}
 
-	public List<PatternPossibility> getPatternPossibilities() {
-		return solvers.getPatternPossibilities();
-	}
+	private void formPossibilities() {
+		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
 
-	public List<RulePossibility> getRulePossibilities() {
-		return solvers.getRulePossibilities();
-	}
-
-	public Collection<Object> getDataObjects() {
-		Collection<Object> objects = new ArrayList<Object>();
-		objects.addAll(data.getAll());
-		objects.addAll(solvers.getPatternPossibilities());
-		objects.addAll(solvers.getRulePossibilities());
-
-		return objects;
+		for (PatternPossibility possibility : solvers.getPatternPossibilities()) {
+			data.insert(possibility);
+		}
+		for (RulePossibility possibility : solvers.getRulePossibilities()) {
+			data.insert(possibility);
+		}
 	}
 }

@@ -11,6 +11,11 @@ public class VariableRestriction extends Restriction implements Cause {
 	protected String variableName;
 	protected int variableId;
 
+	@Override
+	public String getValueAsString() {
+		return variableName;
+	}
+
 	public int getVariableId() {
 		return variableId;
 	}

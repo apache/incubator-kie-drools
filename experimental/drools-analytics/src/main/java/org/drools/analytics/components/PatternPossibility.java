@@ -5,8 +5,6 @@ import java.util.Set;
 
 import org.drools.analytics.result.Cause;
 
-
-
 /**
  * Instance of this class represents a possible combination of Constraints under
  * one Pattern. Each possibility returns true if all the Constraints in the
@@ -37,6 +35,10 @@ public class PatternPossibility extends AnalyticsComponent implements
 		return items;
 	}
 
+	public int getAmountOfItems() {
+		return items.size();
+	}
+
 	public int getPatternId() {
 		return patternId;
 	}
@@ -55,5 +57,11 @@ public class PatternPossibility extends AnalyticsComponent implements
 
 	public void add(Restriction restriction) {
 		items.add(restriction);
+	}
+
+	@Override
+	public String toString() {
+		return "PatternPossibility from rule: " + ruleName
+				+ ", amount of items:" + items.size();
 	}
 }

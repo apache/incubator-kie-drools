@@ -26,7 +26,7 @@ public class RangeCheckIntegersTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for integers, smaller and greater than"));
 
-		Collection<Object> data = getTestData(this.getClass()
+		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForInts.drl"));
 
 		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
@@ -84,7 +84,7 @@ public class RangeCheckIntegersTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for integers, equal and greater than"));
 
-		Collection<Object> data = getTestData(this.getClass()
+		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForInts.drl"));
 
 		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
@@ -121,7 +121,7 @@ public class RangeCheckIntegersTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for integers, equal and smaller than"));
 
-		Collection<Object> data = getTestData(this.getClass()
+		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForInts.drl"));
 
 		AnalysisResultNormal analysisResult = new AnalysisResultNormal();

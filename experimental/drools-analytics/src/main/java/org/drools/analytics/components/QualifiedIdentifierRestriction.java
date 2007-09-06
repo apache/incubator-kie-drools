@@ -15,6 +15,11 @@ public class QualifiedIdentifierRestriction extends Restriction {
 		return RestrictionType.QUALIFIED_IDENTIFIER;
 	}
 
+	@Override
+	public String getValueAsString() {
+		return variablePath + "." + variableName;
+	}
+
 	public int getVariableId() {
 		return variableId;
 	}
