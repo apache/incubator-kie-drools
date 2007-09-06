@@ -4008,5 +4008,58 @@ public class MiscTest extends TestCase {
         assertEquals( 2, 
                       list.size() );
     }
+    
+    public void testNestedAccessors() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedAccessors.drl" ) ) );
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        final Order order1 = new Order( 11, "Bob" );
+        final OrderItem item11 = new OrderItem( order1, 1 );
+        final OrderItem item12 = new OrderItem( order1, 2 );
+        order1.addItem( item11 );
+        order1.addItem( item12 );
+        
+        workingMemory.insert( order1 );
+        workingMemory.insert( item11 );
+        workingMemory.insert( item12 );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 0,
+                      list.size() );
+        
+        final Order order2 = new Order( 12, "Mark" );
+        Order.OrderStatus status = new Order.OrderStatus();
+        status.setActive( true );
+        order2.setStatus( status );
+        final OrderItem item21 = new OrderItem( order2, 1 );
+        final OrderItem item22 = new OrderItem( order2, 2 );
+        order1.addItem( item21 );
+        order1.addItem( item22 );
+        
+        workingMemory.insert( order2 );
+        workingMemory.insert( item21 );
+        workingMemory.insert( item22 );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 2,
+                      list.size() );
+        assertSame( item21,
+                    list.get( 0 ) );
+        assertSame( item22,
+                    list.get( 1 ) );
+        
+        
+    }
 
 }

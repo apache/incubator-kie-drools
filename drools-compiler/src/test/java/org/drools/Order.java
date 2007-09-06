@@ -31,6 +31,8 @@ public class Order {
     private String customer;
     
     private Map items;
+    
+    private OrderStatus status;
 
     public Order() {
         this( 0, "Bob" );
@@ -112,6 +114,29 @@ public class Order {
     
     public String toString() {
         return "Order( number="+this.getNumber()+" customer=\""+this.getCustomer()+"\" )";
+    }
+
+    public OrderStatus getStatus() {
+        if( status == null ) {
+            status = new OrderStatus();
+        }
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+    
+    public static class OrderStatus {
+        private boolean active;
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
     }
 
 }
