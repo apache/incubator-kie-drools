@@ -13,9 +13,6 @@ import java.util.TreeSet;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-#declare any global variables here
-global AnalysisResult result
-
 # If all ranges are not checked for a field.
 # 
 # Type: Warning
@@ -42,7 +39,6 @@ rule "Range check for integers, smaller and greater than"
 			and
 				not LiteralRestriction( fieldId == $fieldId, evaluator  == ">", 
 											patternIsNot == $patternIsNot, intValue == $value )
-			# XXX: Field might be double, then this pattern is useless.
 			and
 				not LiteralRestriction( fieldId == $fieldId, evaluator  == ">=", 
 											patternIsNot == $patternIsNot, eval( intValue == $value + 1 ) )
@@ -52,20 +48,12 @@ rule "Range check for integers, smaller and greater than"
 			and
 				not LiteralRestriction( fieldId == $fieldId, evaluator  == "<", 
 											patternIsNot == $patternIsNot, intValue == $value )
-			# XXX: Field might be double, then this pattern is useless. 
 			and
 				not LiteralRestriction( fieldId == $fieldId, evaluator  == "<=", 
 											patternIsNot == $patternIsNot, eval( intValue == $value - 1 ) )
 		)
-		$rule :AnalyticsRule( id == $r.ruleId )
 	then
-		Gap gap = new Gap();
-		gap.setCause($f);
-		gap.setRuleName($rule.getRuleName());
-		gap.setEvaluator($r.getEvaluator());
-		gap.setFiredRuleName(drools.getRule().getName());
-		gap.setValue($value +"");
-		insert( gap );
+		insert( new Gap( $f, $r, drools.getRule().getName()) );
 end
 
 # If all ranges are not checked for a field.
@@ -107,19 +95,12 @@ rule "Range check for integers, equal and greater than"
 								( evaluator == "==" || == "<=" ), 
 								patternIsNot == $r.patternIsNot, 
 								eval( intValue == $r.getIntValue() - 1 ) )
-		$rule :AnalyticsRule( id == $r.ruleId )
 	then
-		Gap gap = new Gap();
-		gap.setCause($f);
-		gap.setRuleName($rule.getRuleName());
-		gap.setEvaluator("<");
-		gap.setFiredRuleName(drools.getRule().getName());
-		gap.setValue($r.getIntValue() + "");
-		insert( gap );
+		insert( new Gap( $f, $r, drools.getRule().getName()) );
 end
 
 # If all ranges are not checked for a field.
-# If equality and smaller than exist check that greater than exists too.
+# If equality and greater than exist check that smaller than exists too.
 #
 # Type: Warning
 # Example: in "Rule 1" Foo(bar == 42 ) and in "Rule 2" Foo( bar > 42 )
@@ -157,13 +138,6 @@ rule "Range check for integers, equal and smaller than"
 								( evaluator == "==" || == ">=" ), 
 								patternIsNot == $r.patternIsNot, 
 								eval( intValue == $r.getIntValue() + 1 ) )
-		$rule :AnalyticsRule( id == $r.ruleId )
 	then
-		Gap gap = new Gap();
-		gap.setCause($f);
-		gap.setRuleName($rule.getRuleName());
-		gap.setEvaluator(">");
-		gap.setFiredRuleName(drools.getRule().getName());
-		gap.setValue($r.getIntValue() +"");
-		insert( gap );
+		insert( new Gap( $f, $r, drools.getRule().getName()) );
 end

@@ -62,15 +62,8 @@ rule "Range check for dates, smaller and greater than"
 											patternIsNot == $r.patternIsNot, 
 											eval( dateValue.equals($r.getDateValue()) ) )
 		)
-		$rule :AnalyticsRule( id == $r.ruleId )
 	then
-		Gap gap = new Gap();
-		gap.setCause($f);
-		gap.setRuleName($rule.getRuleName());
-		gap.setEvaluator($r.getEvaluator());
-		gap.setFiredRuleName(drools.getRule().getName());
-		gap.setValue( dateToString($r.getDateValue()));
-		insert( gap );
+		insert( new Gap( $f, $r, drools.getRule().getName()) );
 end
 
 # If all ranges are not checked for a field.
@@ -93,15 +86,8 @@ rule "Range check for dates, equal and greater than"
 								( evaluator == "<" || == "<=" ), 
 								patternIsNot == $r.patternIsNot, 
 								eval( dateValue.equals($r.getDateValue())) )
-		$rule :AnalyticsRule( id == $r.ruleId )
 	then
-		Gap gap = new Gap();
-		gap.setCause($f);
-		gap.setRuleName($rule.getRuleName());
-		gap.setEvaluator("<");
-		gap.setFiredRuleName(drools.getRule().getName());
-		gap.setValue( dateToString($r.getDateValue()));
-		insert( gap );
+		insert( new Gap( $f, $r, drools.getRule().getName()) );
 end
 
 # If all ranges are not checked for a field.
@@ -124,13 +110,6 @@ rule "Range check for dates, equal and smaller than"
 								( evaluator == ">" || == ">=" ), 
 								patternIsNot == $r.patternIsNot, 
 								eval( dateValue.equals($r.getDateValue())) )
-		$rule :AnalyticsRule( id == $r.ruleId )
 	then
-		Gap gap = new Gap();
-		gap.setCause($f);
-		gap.setRuleName($rule.getRuleName());
-		gap.setEvaluator(">");
-		gap.setFiredRuleName(drools.getRule().getName());
-		gap.setValue( dateToString($r.getDateValue()));
-		insert( gap );
+		insert( new Gap( $f, $r, drools.getRule().getName()) );
 end

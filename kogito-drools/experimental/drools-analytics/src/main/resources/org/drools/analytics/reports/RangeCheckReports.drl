@@ -1,0 +1,24 @@
+#created on: 7.6.2007
+package org.drools.analytics.rangeChecks.reports;
+
+#list any import classes here.
+import org.drools.analytics.components.Field;
+import org.drools.analytics.result.AnalysisWarning;
+import org.drools.analytics.result.AnalysisResult;
+import org.drools.analytics.result.Gap;
+
+import java.util.ArrayList;
+
+#declare any global variables here
+global AnalysisResult result
+
+rule "Collect gaps"
+	when
+		$f :Field()
+		$list :ArrayList( size > 1)
+			from collect(
+				Gap( cause == $f )
+			)
+	then
+		result.add( new AnalysisWarning( $f.getRuleName(), $f + " has one or more gaps.", $list ) );
+end

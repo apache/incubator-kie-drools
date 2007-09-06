@@ -26,7 +26,7 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, smaller and greater than"));
 
-		Collection<Object> data = getTestData(this.getClass()
+		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"));
 
 		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
@@ -88,7 +88,7 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and greater than"));
 
-		Collection<Object> data = getTestData(this.getClass()
+		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"));
 
 		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
@@ -124,7 +124,7 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and smaller than"));
 
-		Collection<Object> data = getTestData(this.getClass()
+		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"));
 
 		AnalysisResultNormal analysisResult = new AnalysisResultNormal();

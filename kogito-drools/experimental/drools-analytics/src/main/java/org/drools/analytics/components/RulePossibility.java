@@ -6,8 +6,6 @@ import java.util.Set;
 
 import org.drools.analytics.result.Cause;
 
-
-
 /**
  * Instance of this class represents a possible combination of
  * PatternPosibilities under one Rule. Each possibility returns true if all the
@@ -37,6 +35,10 @@ public class RulePossibility extends AnalyticsComponent implements
 		return items;
 	}
 
+	public int getAmountOfItems() {
+		return items.size();
+	}
+
 	public int getRuleId() {
 		return ruleId;
 	}
@@ -47,5 +49,11 @@ public class RulePossibility extends AnalyticsComponent implements
 
 	public void add(PatternPossibility patternPossibility) {
 		items.add(patternPossibility);
+	}
+
+	@Override
+	public String toString() {
+		return "RulePossibility from rule: " + ruleName
+				+ ", amount of items:" + items.size();
 	}
 }

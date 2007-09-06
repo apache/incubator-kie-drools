@@ -1,6 +1,7 @@
 package org.drools.analytics.result;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 
@@ -12,7 +13,13 @@ abstract class AnalysisMessage implements Serializable {
 
 	protected String ruleName;
 	protected String message;
-	protected int lineNumber;
+	protected List<Cause> causes;
+
+	public AnalysisMessage(String ruleName, String message, List<Cause> reasons) {
+		this.ruleName = ruleName;
+		this.message = message;
+		this.causes = reasons;
+	}
 
 	public int getId() {
 		return id;
@@ -20,14 +27,6 @@ abstract class AnalysisMessage implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public int getLineNumber() {
-		return lineNumber;
-	}
-
-	public void setLineNumber(int lineNumber) {
-		this.lineNumber = lineNumber;
 	}
 
 	public String getMessage() {
@@ -46,7 +45,11 @@ abstract class AnalysisMessage implements Serializable {
 		this.ruleName = ruleName;
 	}
 
-	public String toString() {
-		return ruleName + ": " + message + " On line " + lineNumber;
+	public List<Cause> getCauses() {
+		return causes;
+	}
+
+	public void setCauses(List<Cause> reasons) {
+		this.causes = reasons;
 	}
 }

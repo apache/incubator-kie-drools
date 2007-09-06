@@ -6,8 +6,6 @@ import java.util.Locale;
 
 import org.drools.analytics.result.Cause;
 
-
-
 /**
  * 
  * @author Toni Rikkola
@@ -24,6 +22,11 @@ public class LiteralRestriction extends Restriction implements Cause {
 
 	public RestrictionType getRestrictionType() {
 		return Restriction.RestrictionType.LITERAL;
+	}
+
+	@Override
+	public String getValueAsString() {
+		return stringValue;
 	}
 
 	public String getStringValue() {

@@ -8,10 +8,10 @@ import org.drools.analytics.components.Constraint;
 import org.drools.analytics.components.Field;
 import org.drools.analytics.components.FieldClassLink;
 import org.drools.analytics.components.Pattern;
+import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.Restriction;
+import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.components.Variable;
-
-
 
 /**
  * 
@@ -34,6 +34,10 @@ public interface AnalyticsData {
 	public void insert(Restriction restriction);
 
 	public void insert(FieldClassLink link);
+
+	public void insert(PatternPossibility possibility);
+
+	public void insert(RulePossibility possibility);
 
 	public AnalyticsClass getClassByName(String name);
 
