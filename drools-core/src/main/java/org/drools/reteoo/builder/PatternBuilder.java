@@ -94,7 +94,7 @@ public class PatternBuilder
 
         } else {
             context.setAlphaConstraints( alphaConstraints );
-            
+
             PatternSource source = pattern.getSource();
 
             ReteooComponentBuilder builder = utils.getBuilderFor( source );
@@ -131,7 +131,7 @@ public class PatternBuilder
 
             boolean isAlphaConstraint = true;
             for ( int i = 0; isAlphaConstraint && i < declarations.length; i++ ) {
-                if ( ! declarations[i].isGlobal() && declarations[i].getPattern() != pattern ) {
+                if ( !declarations[i].isGlobal() && declarations[i].getPattern() != pattern ) {
                     isAlphaConstraint = false;
                 }
             }
@@ -145,20 +145,23 @@ public class PatternBuilder
             }
         }
     }
+
+    public static ObjectTypeNode attachObjectTypeNode(BuildContext context,
+                                                      ObjectType objectType) {
+        synchronized ( context.getRuleBase().getPackagesMap() ) {                           
+            ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
+                                                     objectType,
+                                                     context );
     
-    public static ObjectTypeNode attachObjectTypeNode(BuildContext context, ObjectType objectType) {                
-        ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
-                            objectType,
-                            context );
-                
-        InternalWorkingMemory[] wms = context.getWorkingMemories();
-        if ( wms.length > 0 ) {
-            otn.attach( wms );
-        } else {
-            otn.attach();
-        }
-        
-        return otn;
+            InternalWorkingMemory[] wms = context.getWorkingMemories();
+            if ( wms.length > 0 ) {
+                otn.attach( wms );
+            } else {
+                otn.attach();
+            }
+    
+            return otn;
+        } 
     }
 
     public void attachAlphaNodes(final BuildContext context,
@@ -167,17 +170,17 @@ public class PatternBuilder
                                  List alphaConstraints) throws InvalidPatternException {
 
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
-            if ( DroolsQuery.class ==((ClassObjectType)pattern.getObjectType()).getClassType() ) {
+            if ( DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
                 context.setHasLeftMemory( false );
                 context.setHasObjectTypeMemory( false );
                 context.setHasTerminalNodeMemory( false );
             }
         }
-        
+
         context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                   new ObjectTypeNode( context.getNextId(),
                                                                                       pattern.getObjectType(),
-                                                                                      context) ) );
+                                                                                      context ) ) );
 
         for ( final Iterator it = alphaConstraints.iterator(); it.hasNext(); ) {
             final AlphaNodeFieldConstraint constraint = (AlphaNodeFieldConstraint) it.next();
@@ -223,6 +226,6 @@ public class PatternBuilder
      */
     public boolean requiresLeftActivation(final BuildUtils utils,
                                           final RuleConditionElement rce) {
-        return ((Pattern)rce).getSource() != null;
+        return ((Pattern) rce).getSource() != null;
     }
 }
