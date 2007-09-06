@@ -2,6 +2,7 @@ package org.drools;
 
 global java.util.List results;
 
+
 rule "eval rewrite"
 	when
 		$o : OrderItem( order.number == 10 )
@@ -20,7 +21,7 @@ end
 rule "eval rewrite3"
 	when
 		$o1 : OrderItem( order.number == 12, seq == 1 )
-		$o : Order( items[1] == $o1 ) 
+		$o : Order( items[(Long) 1] == $o1 ) 
 	then
 		results.add( $o );
 end 

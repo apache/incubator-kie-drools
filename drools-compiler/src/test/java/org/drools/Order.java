@@ -69,7 +69,7 @@ public class Order {
     }
     
     public void addItem( OrderItem item ) {
-        this.items.put( new Integer( item.getSeq() ), item );
+        this.items.put( new Long( item.getSeq() ), item );
     }
 
     /* (non-Javadoc)
@@ -108,6 +108,10 @@ public class Order {
 
     public void setCustomer(String customer) {
         this.customer = customer;
+    }
+    
+    public String toString() {
+        return "Order( number="+this.getNumber()+" customer=\""+this.getCustomer()+"\" )";
     }
 
 }
