@@ -100,5 +100,8 @@ public class OrderItem {
         }
         return true;
     }
-
+    
+    public String toString() {
+        return "OrderItem( order="+this.getOrder()+" seq="+this.getSeq()+")";
+    }
 }

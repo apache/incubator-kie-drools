@@ -3841,8 +3841,7 @@ public class MiscTest extends TestCase {
 
     }
 
-    // FIXME
-    public void FIXMEtestEvalRewriteWithSpecialOperators() throws Exception {
+    public void testEvalRewriteWithSpecialOperators() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewriteWithSpecialOperators.drl" ) ) );
         final Package pkg = builder.getPackage();
