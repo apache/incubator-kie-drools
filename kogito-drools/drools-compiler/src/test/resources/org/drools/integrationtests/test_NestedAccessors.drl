@@ -1,0 +1,19 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "Test nested accessors 1"
+    salience 10
+when
+    $oi : OrderItem( seq == 1, order.status.active == true )
+then
+    results.add( $oi );
+end
+
+rule "Test nested accessors 2"
+when
+    $oi : OrderItem( seq == 2, this.order.status.active == true )
+then
+    results.add( $oi );
+end
+
