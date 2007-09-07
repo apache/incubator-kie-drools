@@ -34,7 +34,7 @@ public class SuggestionCompletionEngine
 
     private static final String[] STANDARD_OPERATORS     = new String[]{"==", "!="};
     private static final String[] COMPARABLE_OPERATORS   = new String[]{"==", "!=", "<", ">", "<=", ">="};
-    private static final String[] STRING_OPERATORS       = new String[]{"==", "!=", "matches"};
+    private static final String[] STRING_OPERATORS       = new String[]{"==", "!=", "matches", "soundslike"};
     private static final String[] COLLECTION_OPERATORS   = new String[]{"contains", "excludes", "==", "!="};
 
     /** The top level conditional elements (first order logic) */

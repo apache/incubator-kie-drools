@@ -116,7 +116,7 @@ public class SuggestionCompletionTest extends TestCase {
 
         c = com.getOperatorCompletions( "Person",
                                         "name" );
-        assertEquals( 3,
+        assertEquals( 4,
                       c.length );
         assertEquals( "==",
                       c[0] );
