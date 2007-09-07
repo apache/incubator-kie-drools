@@ -1,0 +1,13 @@
+package nesting;
+
+
+
+
+rule "test something"
+
+	when
+		p: Person( name soundslike "Michael" )
+	then
+		p.name = "goober"
+		System.out.println(p.name)
+end

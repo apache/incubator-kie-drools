@@ -2174,6 +2174,16 @@ public class RuleParserTest extends TestCase {
         assertTrue( this.parser.hasErrors() );
     }
 
+    public void testSoundsLike() throws Exception {
+        parseResource( "soundslike_operator.drl" ).compilation_unit();
+        assertFalse(this.parser.getErrorMessages().toString(), this.parser.hasErrors());
+
+        RuleDescr rule = (RuleDescr) this.parser.getPackageDescr().getRules().get( 0 );
+        PatternDescr pat = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        pat.getConstraint();
+    }
+
     public void testPackageAttributes() throws Exception {
         parseResource( "package_attributes.drl" ).compilation_unit();
         assertFalse( this.parser.getErrorMessages().toString(),
@@ -3435,7 +3445,7 @@ public class RuleParserTest extends TestCase {
             System.err.println( parser.getErrorMessages() );
         }
         assertFalse( parser.hasErrors() );
-        assertEquals( 1, descrs.getDescrs().size()); 
+        assertEquals( 1, descrs.getDescrs().size());
         OrDescr or = (OrDescr) descrs.getDescrs().get(0);
         assertEquals( 2, or.getDescrs().size());
         NotDescr not = (NotDescr) or.getDescrs().get( 0 );
@@ -3450,8 +3460,8 @@ public class RuleParserTest extends TestCase {
         assertEquals( "Meat", meat.getObjectType() );
         PatternDescr wine = (PatternDescr) and.getDescrs().get( 2 );
         assertEquals( "Wine", wine.getObjectType() );
-        
-        
+
+
     }
 
     private DRLParser parse(final String text) throws Exception {
