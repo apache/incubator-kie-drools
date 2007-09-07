@@ -1,8 +1,6 @@
 package org.drools.analytics;
 
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -10,8 +8,7 @@ import org.drools.WorkingMemory;
 import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.dao.AnalyticsDataMaps;
 import org.drools.analytics.result.AnalysisResultNormal;
-import org.drools.analytics.result.ReportWriter;
-import org.drools.compiler.PackageBuilder;
+import org.drools.analytics.result.ReportModeller;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 
@@ -40,10 +37,10 @@ public class Analyzer {
 			AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
 
 			System.setProperty("drools.accumulate.function.validatePattern",
-					"com.analytics.accumulateFunction.ValidatePattern");
+					"org.drools.analytics.accumulateFunction.ValidatePattern");
 
 			// load up the rulebase
-			RuleBase ruleBase = readRules();
+			RuleBase ruleBase = createRuleBase();
 
 			WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -66,7 +63,7 @@ public class Analyzer {
 	 * @return Analysis results as plain text.
 	 */
 	public String getResultAsPlainText() {
-		return ReportWriter.writePlainText(result);
+		return ReportModeller.writePlainText(result);
 	}
 
 	/**
@@ -75,7 +72,7 @@ public class Analyzer {
 	 * @return Analysis results as XML
 	 */
 	public String getResultAsXML() {
-		return ReportWriter.writeXML(result);
+		return ReportModeller.writeXML(result);
 	}
 
 	/**
@@ -87,24 +84,13 @@ public class Analyzer {
 		return result;
 	}
 
-	private static RuleBase readRules() throws Exception {
-		// read in the source
-		List<InputStreamReader> list = new ArrayList<InputStreamReader>();
-
-		list.add(new InputStreamReader(Analyzer.class
-				.getResourceAsStream("RangeCheckIntegers.drl")));
-		list.add(new InputStreamReader(Analyzer.class
-				.getResourceAsStream("reports/RangeCheckReports.drl")));
+	private static RuleBase createRuleBase() throws Exception {
 
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
-		for (InputStreamReader reader : list) {
+		Collection<Package> packages = RuleLoader.loadPackages();
+		for (Package pkg : packages) {
 
-			PackageBuilder builder = new PackageBuilder();
-
-			builder.addPackageFromDrl(reader);
-
-			Package pkg = builder.getPackage();
 			ruleBase.addPackage(pkg);
 		}
 

@@ -6,12 +6,12 @@ import org.drools.analytics.components.*;
 import org.drools.analytics.accumulateFunction.ValidatePattern;
 import org.drools.analytics.accumulateFunction.ValidatePatternResult;
 import org.drools.analytics.result.AnalysisResult;
-import org.drools.analytics.result.Gap;
+import org.drools.analytics.result.MissingNumberPattern;
+import org.drools.analytics.result.Cause;
+import org.drools.analytics.result.AnalysisWarning;
 
 import java.util.ArrayList;
-import java.util.TreeSet;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import java.util.List;
 
 #declare any global variables here
 global AnalysisResult result
@@ -26,31 +26,35 @@ rule "Range check for number patterns"
 	when
 		$f :Field( ( fieldType == Field.FieldType.INT || == Field.FieldType.DOUBLE ), 
 					$fieldId :id, $fieldName :name, $classId :classId )
-		AnalyticsClass( id == $classId, $className :name )
 		(
 			# Where pattern is false.
 			$validationResult :ValidatePatternResult( value != null)
 				from accumulate(
-					$r :LiteralRestriction( fieldId == $fieldId, 
-						patternIsNot == false, ( evaluator == "==" || == "!=" )),
+					$r :LiteralRestriction( 
+						fieldId == $fieldId, 
+						patternIsNot == false, 
+						( evaluator == "==" || == "!=" ),
+						$evaluator :evaluator
+					),
 					validatePattern( $r )
 				)
 		) or (
 			# Where pattern is true.
 			$validationResult :ValidatePatternResult( value != null)
 				from accumulate(
-					$r :LiteralRestriction( fieldId == $fieldId, 
-						patternIsNot == true, ( evaluator == "==" || == "!=" )),
+					$r :LiteralRestriction( 
+						fieldId == $fieldId, 
+						patternIsNot == true, 
+						( evaluator == "==" || == "!=" ),
+						$evaluator :evaluator
+					),
 					validatePattern( $r )
 				)
 		)
 	then
-		// TODO: Find out if evaluator is == or !=.
-		Gap gap = new Gap();
-		gap.setCause($f);
-		#gap.setRuleName($rule.getRuleName());
-		#gap.setEvaluator($r.getEvaluator());
-		gap.setFiredRuleName(drools.getRule().getName());
-		gap.setValue($validationResult.toString());
-		insert( gap );
+	List<Cause> list = new ArrayList<Cause>();
+	list.add(
+			new MissingNumberPattern( $f.getId(), "==", $validationResult.getValue().toString() ));
+	
+	result.add( new AnalysisWarning( $f.getRuleName(), $f + " is missing a number from pattern.", list ) );
 end

@@ -1,0 +1,73 @@
+#created on: 7.9.2007
+package org.drools.analytics.redundancy.patterns
+
+import org.drools.analytics.components.*;
+import org.drools.analytics.result.Redundancy;
+
+#
+# Only checks for redundant pattern specifications, 
+# does not include actual restriction checks.
+#
+rule "Find redundant Pattern shells"
+	when
+		# Check that Patterns $left and $right have redundant fields.
+		$left :Pattern()
+		$right :Pattern( 
+			id != $left.id, 
+	  		classId == $left.classId,
+	  		# TODO: In some cases the source might be redundant with different sources.
+	 		sourceType == $left.sourceType, 
+	  		sourceId == $left.sourceId,
+	  		patternNot == $left.patternNot,
+	  		patternExists == $left.patternExists,
+	  		patternForall == $left.patternForall
+		)
+		
+		# Check that there is not already a pair with these values.
+		not Redundancy( 
+			left == $left, 
+			right == $right 
+		)
+	then
+		insert( new Redundancy( Redundancy.Type.WEAK, $left, $right ) );
+end
+
+
+
+/*
+#
+# When two patterns and all theyr possibilities are redundant.
+#
+rule "Find redundant pattern"
+	when
+		$p1 :Pattern()
+		$p2 :Pattern( id != $p1.id )
+		
+		$set1 :HashSet()
+			from collect(
+				PatternPossibility( patternId == $p1.id )
+			)
+
+		$set2 :HashSet()
+			from collect(
+				PatternPossibility( patternId == $p2.id )
+			)
+		
+		# Check that sizes are the same.
+		eval( $set1.size() == $set2.size() )
+		
+		$redundancyList :ArrayList()
+			from collect(
+				Redundancy( 
+					eval( $set1.contains( left ) ),
+					eval( $set2.contains( right ) )
+				)
+			)
+		
+		eval( $set1.size() == $redundancyList.size() )
+		
+	then
+		# Type is set to strong because all the pattern possibilities are redundant.
+		insert( new Redundancy( Redundancy.Type.STRONG, $p1, $p2 ) );
+end
+*/

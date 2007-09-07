@@ -20,7 +20,7 @@ public class RangeCheckDatesTest extends TestBase {
 
 	public void testSmallerAndGreaterThan() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("RangeCheckDates.drl"));
+				.getResourceAsStream("rangeChecks/RangeCheckDates.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, smaller and greater than"));
@@ -82,7 +82,7 @@ public class RangeCheckDatesTest extends TestBase {
 
 	public void testEqualAndGreaterThan() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("RangeCheckDates.drl"));
+				.getResourceAsStream("rangeChecks/RangeCheckDates.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, equal and greater than"));
@@ -118,7 +118,7 @@ public class RangeCheckDatesTest extends TestBase {
 
 	public void testEqualAndSmallerThan() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("RangeCheckDates.drl"));
+				.getResourceAsStream("rangeChecks/RangeCheckDates.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, equal and smaller than"));

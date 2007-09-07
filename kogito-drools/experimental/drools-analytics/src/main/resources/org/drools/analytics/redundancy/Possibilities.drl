@@ -1,0 +1,134 @@
+#created on: 7.9.2007
+package org.drools.analytics.redundancy.possibilities
+
+import org.drools.analytics.components.*;
+import org.drools.analytics.result.Redundancy;
+import org.drools.analytics.result.PartialRedundancy;
+import org.drools.analytics.result.Subsumption;
+
+import java.util.ArrayList;
+
+
+rule "Find part of redundant PatternPossibility combination"
+	when
+		# Restriction Redundancy.
+		$redundancy :Redundancy()
+		
+		# Check that patterns are redundant.
+		$p1 :Pattern()
+		$p2 :Pattern( id != $p1.id )
+		Redundancy( 
+			left == $p1, 
+			right == $p2 
+		)
+		
+		# Find two PatternPossibilities.
+		$pp1 :PatternPossibility( 
+			patternId == $p1.id, 
+			items contains $redundancy.left 
+		)
+		$pp2 :PatternPossibility( 
+			patternId == $p2.id, 
+			items contains $redundancy.right 
+		)
+	then
+		insert( new PartialRedundancy( $pp1, $pp2, $redundancy ) );
+end
+
+
+rule "Find part of redundant RulePossibility combination"
+	when
+		# PatternPossibility Redundancy.
+		$redundancy :Redundancy()
+		
+		# Check that rules are redundant.
+		$r1 :AnalyticsRule()
+		$r2 :AnalyticsRule( id != $r1.id )
+		Redundancy( 
+			left == $r1, 
+			right == $r2 
+		)
+		
+		# Find two RulePossibilities.
+		$rp1 :RulePossibility( 
+			ruleId == $r1.id,
+			items contains $redundancy.left 
+		)
+		$rp2 :RulePossibility( 
+			ruleId == $r2.id, 
+			items contains $redundancy.right 
+		)
+		# TODO: Not here.
+	then
+		insert( new PartialRedundancy( $rp1, $rp2, $redundancy ) );
+end
+
+
+#
+# Handles both RulePossibilities and PatternPossibilities.
+#
+rule "Find subsumptant Possibilities"
+	when
+		$p1 :Possibility()
+		$p2 :Possibility( id != $p1.id )
+		
+		not Subsumption( 
+				left == $p1, 
+				right == $p2 
+		)
+		
+		# At least one partial redundancy exists between these possibilities.
+		exists( 
+				PartialRedundancy( 
+					left == $p1, 
+					right == $p2 
+				) 
+		)
+		
+		# Collect all the partial redundancies.
+		$list :ArrayList()
+			from collect(
+				PartialRedundancy( 
+					left == $p1, 
+					right == $p2 
+				)
+			)
+			
+		# If there as much partial redundancies as there is items in $p1,
+		# then $p1 is subsumptant to $p2.
+		eval( $list.size() == $p1.getAmountOfItems() )
+	then
+		insert( new Subsumption( $p1, $p2 ) );
+end
+
+#
+# If two possibilities are subsumptant to each others, then they are redundant.
+# Since this tests only one possibility, the entire rule or pattern might not be redundant.
+#
+rule "Find redundant Possibilities"
+	when
+		$p1 :Possibility()
+		$p2 :Possibility( id != $p1.id )
+		
+		not Redundancy( 
+			left == $p1, 
+			right == $p2 
+		)
+		
+		not Redundancy( 
+			left == $p2, 
+			right == $p1 
+		)
+		
+		Subsumption( 
+				left == $p1, 
+				right == $p2 
+		)
+		
+		Subsumption( 
+				left == $p2, 
+				right == $p1 
+		)
+	then
+		insert( new Redundancy( $p1, $p2 ) );
+end

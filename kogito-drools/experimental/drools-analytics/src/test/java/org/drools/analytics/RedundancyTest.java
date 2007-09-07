@@ -30,7 +30,7 @@ public class RedundancyTest extends TestBase {
 
 	public void testPartOfRulePossibilityRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Redundancy.drl"));
+				.getResourceAsStream("redundancy/Possibilities.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find part of redundant RulePossibility combination"));
@@ -107,7 +107,7 @@ public class RedundancyTest extends TestBase {
 
 	public void testPossibilityRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Redundancy.drl"));
+				.getResourceAsStream("redundancy/Possibilities.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Possibilities"));
@@ -149,7 +149,7 @@ public class RedundancyTest extends TestBase {
 
 	public void testPartOfPatternPossibilityRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Redundancy.drl"));
+				.getResourceAsStream("redundancy/Possibilities.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find part of redundant PatternPossibility combination"));
@@ -260,7 +260,7 @@ public class RedundancyTest extends TestBase {
 
 	public void testPatternRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Redundancy.drl"));
+				.getResourceAsStream("redundancy/Patterns.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Pattern shells"));
@@ -300,7 +300,7 @@ public class RedundancyTest extends TestBase {
 
 	public void testAnalyticsLiteralRestrictionRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Redundancy.drl"));
+				.getResourceAsStream("redundancy/Restrictions.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant LiteralRestriction"));
@@ -336,7 +336,7 @@ public class RedundancyTest extends TestBase {
 
 	public void testAnalyticsVariableRestrictionRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Redundancy.drl"));
+				.getResourceAsStream("redundancy/Restrictions.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant VariableRestriction"));

@@ -1,6 +1,6 @@
 package org.drools.analytics.result;
 
-import org.drools.analytics.components.Restriction;
+import org.drools.analytics.components.Field;
 
 /**
  * 
@@ -10,16 +10,15 @@ public class Gap implements Cause {
 
 	private static int index = 0;
 
-	private int id;
+	private int id = index++;
 
-	private Cause cause;
-	private Restriction restriction;
+	private Field field;
+	private RangeCheckCause cause;
 	private String firedRuleName;
 
-	public Gap(Cause cause, Restriction restriction, String firedRuleName) {
-		id = index;
+	public Gap(Field field, RangeCheckCause cause, String firedRuleName) {
+		this.field = field;
 		this.cause = cause;
-		this.restriction = restriction;
 		this.firedRuleName = firedRuleName;
 	}
 
@@ -28,41 +27,52 @@ public class Gap implements Cause {
 	}
 
 	public String getRuleName() {
-		return restriction.getRuleName();
+		return cause.getRuleName();
 	}
 
-	private String getReversedEvaluator() {
-		if (restriction.getEvaluator().equals("!=")) {
-			return "==";
-		} else if (restriction.getEvaluator().equals("==")) {
-			return "!=";
-		} else if (restriction.getEvaluator().equals(">")) {
-			return "<=";
-		} else if (restriction.getEvaluator().equals("<")) {
-			return ">=";
-		} else if (restriction.getEvaluator().equals(">=")) {
-			return "<";
-		} else if (restriction.getEvaluator().equals("<=")) {
-			return ">";
+	/**
+	 * Evaluator is reversed unless the cause is MissingNumberPattern. For
+	 * others the evaluator needs to be turned in order to show the missing
+	 * range, not the the range that cause covers.
+	 * 
+	 * @return evaluator
+	 */
+	private String getCauseEvaluator() {
+		if (cause instanceof MissingNumberPattern) {
+			return cause.getEvaluator();
+		} else {
+			if (cause.getEvaluator().equals("!=")) {
+				return "==";
+			} else if (cause.getEvaluator().equals("==")) {
+				return "!=";
+			} else if (cause.getEvaluator().equals(">")) {
+				return "<=";
+			} else if (cause.getEvaluator().equals("<")) {
+				return ">=";
+			} else if (cause.getEvaluator().equals(">=")) {
+				return "<";
+			} else if (cause.getEvaluator().equals("<=")) {
+				return ">";
+			}
 		}
 
 		return null;
 	}
 
-	public Cause getCause() {
+	public Field getField() {
+		return field;
+	}
+
+	public void setField(Field field) {
+		this.field = field;
+	}
+
+	public RangeCheckCause getRangeCheckCause() {
 		return cause;
 	}
 
-	public void setCause(Cause cause) {
+	public void setRangeCheckCause(RangeCheckCause cause) {
 		this.cause = cause;
-	}
-
-	public Restriction getRestriction() {
-		return restriction;
-	}
-
-	public void setRestriction(Restriction restriction) {
-		this.restriction = restriction;
 	}
 
 	public String getFiredRuleName() {
@@ -75,7 +85,7 @@ public class Gap implements Cause {
 
 	@Override
 	public String toString() {
-		return "Gap: (" + cause + ") " + getReversedEvaluator() + " "
-				+ restriction.getValueAsString();
+		return "Gap: (" + field + ") " + getCauseEvaluator() + " "
+				+ cause.getValueAsString();
 	}
 }

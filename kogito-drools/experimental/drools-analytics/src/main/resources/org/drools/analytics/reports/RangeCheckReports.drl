@@ -17,7 +17,7 @@ rule "Collect gaps"
 		$f :Field()
 		$list :ArrayList( size > 1)
 			from collect(
-				Gap( cause == $f )
+				Gap( field == $f )
 			)
 	then
 		result.add( new AnalysisWarning( $f.getRuleName(), $f + " has one or more gaps.", $list ) );

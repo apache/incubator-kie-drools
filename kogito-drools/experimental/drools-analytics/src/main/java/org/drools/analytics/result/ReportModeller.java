@@ -1,12 +1,14 @@
 package org.drools.analytics.result;
 
+import org.drools.analytics.components.LiteralRestriction;
+
 import com.thoughtworks.xstream.XStream;
 
 /**
  * 
  * @author Toni Rikkola
  */
-public class ReportWriter {
+public class ReportModeller {
 
 	public static String writeXML(AnalysisResultNormal result) {
 		XStream xstream = new XStream();
@@ -15,6 +17,12 @@ public class ReportWriter {
 		xstream.alias("note", AnalysisNote.class);
 		xstream.alias("error", AnalysisError.class);
 		xstream.alias("warning", AnalysisWarning.class);
+
+		xstream.alias("Gap", Gap.class);
+
+		xstream.alias("Field", org.drools.analytics.components.Field.class);
+
+		xstream.alias("LiteralRestriction", LiteralRestriction.class);
 
 		return "<?xml version=\"1.0\"?>\n" + xstream.toXML(result);
 	}

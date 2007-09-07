@@ -13,11 +13,6 @@ public class ReturnValueRestriction extends Restriction implements Cause {
 	private String classMethodName;
 
 	@Override
-	public String getValueAsString() {
-		return classMethodName;
-	}
-
-	@Override
 	public RestrictionType getRestrictionType() {
 		return RestrictionType.RETURN_VALUE_RESTRICTION;
 	}
