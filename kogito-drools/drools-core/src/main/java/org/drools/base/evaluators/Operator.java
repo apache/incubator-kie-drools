@@ -24,6 +24,8 @@ public class Operator
     public static final Operator MEMBEROF         = new Operator( "memberOf" );
     public static final Operator NOTMEMBEROF      = new Operator( "not memberOf" );
 
+    public static final Operator SOUNDSLIKE       = new Operator("soundslike");
+
     private String               operator;
 
     private Operator(final String operator) {
@@ -61,6 +63,8 @@ public class Operator
             return Operator.MEMBEROF;
         } else if ( string.equals( "not memberOf" ) ) {
             return Operator.NOTMEMBEROF;
+        } else if ( string.equals( "soundslike" ) ) {
+            return Operator.SOUNDSLIKE;
         }
         throw new RuntimeDroolsException( "unable to determine operator for String [" + string + "]" );
     }
@@ -68,7 +72,7 @@ public class Operator
     public String toString() {
         return "Operator = '" + this.operator + "'";
     }
-    
+
     public String getOperatorString() {
         return this.operator;
     }
