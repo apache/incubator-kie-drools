@@ -1456,6 +1456,7 @@ simple_operator[RestrictionConnectiveDescr base]
 		|	n=NOT t=CONTAINS
 		|	t=EXCLUDES
 		|	t=MATCHES
+		|	t=SOUNDSLIKE
 		|	n=NOT t=MATCHES
 		|	t=MEMBEROF
 		|	n=NOT t=MEMBEROF
@@ -1672,7 +1673,8 @@ identifier
         |       CONTAINS 	
         |       EXCLUDES 	
         |       MEMBEROF
-        |       MATCHES         
+        |       MATCHES 
+        |       SOUNDSLIKE        
 //        |       NULL	        
         |       WHEN            
         |       THEN	        
@@ -1817,6 +1819,8 @@ MEMBEROF
 	:	'memberOf';
 
 MATCHES :	'matches';
+
+SOUNDSLIKE :	'soundslike';
 
 IN	:	'in';
 
