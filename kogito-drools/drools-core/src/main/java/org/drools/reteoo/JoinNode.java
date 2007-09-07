@@ -255,4 +255,9 @@ public class JoinNode extends BetaNode {
 
         return "[JoinNode - " + ((ObjectTypeNode) source).getObjectType() + "]";
     }
+
+    public void setIsMemoryAllowed(boolean memoryAllowed) {
+        // TODO Auto-generated method stub
+        
+    }
 }

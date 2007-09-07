@@ -102,6 +102,7 @@ public class QueryTerminalNodeTest extends TestCase {
         alphaNode.attach();
 
         BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        buildContext.setHasLeftMemory( false );
         
         final JoinNode joinNode = new JoinNode( 6,
                                                 liaNode,

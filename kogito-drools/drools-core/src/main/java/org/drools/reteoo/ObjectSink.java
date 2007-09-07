@@ -61,4 +61,6 @@ public interface ObjectSink
     void retractObject(InternalFactHandle handle,
                        PropagationContext context,
                        InternalWorkingMemory workingMemory);
+    
+    public void setIsMemoryAllowed(boolean memoryAllowed);
 }
