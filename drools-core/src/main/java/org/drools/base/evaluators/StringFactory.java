@@ -2,13 +2,13 @@ package org.drools.base.evaluators;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,12 +24,13 @@ import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
+import org.mvel.Soundex;
 
 /**
  * This is the misc "bucket" evaluator factory for objects.
- * It is fairly limited in operations, 
+ * It is fairly limited in operations,
  * and what operations are available are dependent on the exact type.
- * 
+ *
  * @author Michael Neale
  */
 public class StringFactory
@@ -63,6 +64,8 @@ public class StringFactory
             return StringMemberOfEvaluator.INSTANCE;
         } else if ( operator == Operator.NOTMEMBEROF ) {
             return StringNotMemberOfEvaluator.INSTANCE;
+        } else if (operator == Operator.SOUNDSLIKE ){
+            return StringSoundsLikeEvaluator.INSTANCE;
         } else {
             throw new RuntimeException( "Operator '" + operator + "' does not exist for StringEvaluator" );
         }
@@ -70,7 +73,7 @@ public class StringFactory
 
     static class StringEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringEqualEvaluator();
@@ -129,7 +132,7 @@ public class StringFactory
 
     static class StringNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotEqualEvaluator();
@@ -187,7 +190,7 @@ public class StringFactory
 
     static class StringMatchesEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringMatchesEvaluator();
@@ -242,10 +245,10 @@ public class StringFactory
             return "String matches";
         }
     }
-    
+
     static class StringNotMatchesEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotMatchesEvaluator();
@@ -300,7 +303,7 @@ public class StringFactory
             return "String not matches";
         }
     }
-    
+
     static class StringMemberOfEvaluator extends BaseMemberOfEvaluator {
 
         private static final long     serialVersionUID = 400L;
@@ -330,6 +333,63 @@ public class StringFactory
             return "String not memberOf";
         }
     }
-    
+
+    static class StringSoundsLikeEvaluator extends BaseEvaluator {
+
+        private static final long     serialVersionUID = 400L;
+        public final static Evaluator INSTANCE         = new StringSoundsLikeEvaluator();
+
+        private StringSoundsLikeEvaluator() {
+            super( ValueType.STRING_TYPE,
+                   Operator.SOUNDSLIKE );
+        }
+
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor,
+                                final Object object1, final FieldValue object2) {
+            final String value1 = (String) extractor.getValue( workingMemory, object1 );
+            final String value2 = (String) object2.getValue();
+            if ( value1 == null ) {
+                return false;
+            }
+
+            return Soundex.soundex( value1 ).equals(  Soundex.soundex(value2) );
+        }
+
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
+            final String value = (String) ((ObjectVariableContextEntry) context).right;
+            if ( value == null ) {
+                return false;
+            }
+            return Soundex.soundex( value ).equals( Soundex.soundex((String) context.declaration.getExtractor().getValue( workingMemory, left )) );
+        }
+
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            final String value = (String) context.extractor.getValue( workingMemory, right );
+            if ( value == null ) {
+                return false;
+            }
+            return Soundex.soundex(value).equals( Soundex.soundex((String) ((ObjectVariableContextEntry) context).left ));
+        }
+
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Extractor extractor1,
+                                final Object object1,
+                                final Extractor extractor2, final Object object2) {
+            final Object value1 = extractor1.getValue( workingMemory, object1 );
+            final Object value2 = extractor2.getValue( workingMemory, object2 );
+            if ( value1 == null ) {
+                return false;
+            }
+            return Soundex.soundex( ((String) value1)).equals( Soundex.soundex( (String) value2 ));
+        }
+
+        public String toString() {
+            return "Strings sound alike";
+        }
+    }
+
 
 }

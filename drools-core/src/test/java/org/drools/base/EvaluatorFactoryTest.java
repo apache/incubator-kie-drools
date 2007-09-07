@@ -2,13 +2,13 @@ package org.drools.base;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,29 +59,29 @@ public class EvaluatorFactoryTest extends TestCase {
         Collection col = Arrays.asList( new String[] { "foo", "bar", null} );
 
         final Object[][] data = {
-                                 {"foo", "==", "bar", Boolean.FALSE}, 
-                                 {"foo", "==", "foo", Boolean.TRUE}, 
-                                 {"foo", "!=", "bar", Boolean.TRUE}, 
-                                 {list, "contains", "foo", Boolean.TRUE}, 
+                                 {"foo", "==", "bar", Boolean.FALSE},
+                                 {"foo", "==", "foo", Boolean.TRUE},
+                                 {"foo", "!=", "bar", Boolean.TRUE},
+                                 {list, "contains", "foo", Boolean.TRUE},
                                  {list, "contains", "bar", Boolean.FALSE},
                                  {list, "contains", null, Boolean.TRUE},
                                  {null, "contains", "bar", Boolean.FALSE},
                                  {null, "contains", null, Boolean.FALSE},
-                                 {list, "==", null, Boolean.FALSE}, 
-                                 {list, "!=", null, Boolean.TRUE}, 
-                                 {null, "==", null, Boolean.TRUE}, 
-                                 {null, "==", list, Boolean.FALSE}, 
+                                 {list, "==", null, Boolean.FALSE},
+                                 {list, "!=", null, Boolean.TRUE},
+                                 {null, "==", null, Boolean.TRUE},
+                                 {null, "==", list, Boolean.FALSE},
                                  {null, "!=", list, Boolean.TRUE},
-                                 {null, "<", new Integer( 43 ), Boolean.FALSE}, 
+                                 {null, "<", new Integer( 43 ), Boolean.FALSE},
                                  {null, ">=", new Integer( -10 ), Boolean.FALSE},
-                                 {null, ">", new Integer( -10 ), Boolean.FALSE}, 
+                                 {null, ">", new Integer( -10 ), Boolean.FALSE},
                                  {null, "<=", new Integer( 42 ), Boolean.FALSE},
-                                 {new BigDecimal( "42.42" ), "<", new BigDecimal( "43" ), Boolean.TRUE}, 
-                                 {new BigDecimal( "42.42" ), ">", new BigDecimal( "43" ), Boolean.FALSE}, 
+                                 {new BigDecimal( "42.42" ), "<", new BigDecimal( "43" ), Boolean.TRUE},
+                                 {new BigDecimal( "42.42" ), ">", new BigDecimal( "43" ), Boolean.FALSE},
                                  {new BigDecimal( "42.42" ), "<=", new BigDecimal( "42.42" ), Boolean.TRUE},
-                                 {new BigInteger( "42" ), ">=", new BigInteger( "43" ), Boolean.FALSE}, 
-                                 {new BigInteger( "42" ), ">=", new BigInteger( "43" ), Boolean.FALSE}, 
-                                 {list, "excludes", "baz", Boolean.TRUE}, 
+                                 {new BigInteger( "42" ), ">=", new BigInteger( "43" ), Boolean.FALSE},
+                                 {new BigInteger( "42" ), ">=", new BigInteger( "43" ), Boolean.FALSE},
+                                 {list, "excludes", "baz", Boolean.TRUE},
                                  {list, "excludes", "foo", Boolean.FALSE},
                                  {"foo", "memberOf", col, Boolean.TRUE},
                                  {"xyz", "memberOf", col, Boolean.FALSE},
@@ -103,31 +103,31 @@ public class EvaluatorFactoryTest extends TestCase {
 
         final Object[] field = new Object[]{"foo", "bar"};
 
-        final Object[][] data = {{field, "==", new Object[]{"foo"}, Boolean.FALSE}, 
-                                 {field, "==", field, Boolean.TRUE}, 
-                                 {field, "!=", new Object[]{"foo"}, Boolean.TRUE}, 
-                                 {field, "contains", "foo", Boolean.TRUE}, 
-                                 {field, "contains", "xyz", Boolean.FALSE}, 
-                                 {field, "contains", null, Boolean.FALSE}, 
-                                 {null, "contains", "foo", Boolean.FALSE}, 
-                                 {field, "excludes", "foo", Boolean.FALSE}, 
+        final Object[][] data = {{field, "==", new Object[]{"foo"}, Boolean.FALSE},
+                                 {field, "==", field, Boolean.TRUE},
+                                 {field, "!=", new Object[]{"foo"}, Boolean.TRUE},
+                                 {field, "contains", "foo", Boolean.TRUE},
+                                 {field, "contains", "xyz", Boolean.FALSE},
+                                 {field, "contains", null, Boolean.FALSE},
+                                 {null, "contains", "foo", Boolean.FALSE},
+                                 {field, "excludes", "foo", Boolean.FALSE},
                                  {field, "excludes", "xyz", Boolean.TRUE},
-                                 {field, "excludes", null, Boolean.TRUE}, 
-                                 {null, "excludes", "foo", Boolean.FALSE}, 
+                                 {field, "excludes", null, Boolean.TRUE},
+                                 {null, "excludes", "foo", Boolean.FALSE},
                                  {field, "!=", null, Boolean.TRUE},
-                                 {field, "==", null, Boolean.FALSE}, 
-                                 {null, "==", field, Boolean.FALSE}, 
-                                 {null, "==", null, Boolean.TRUE}, 
-                                 {null, "!=", field, Boolean.TRUE}, 
-                                 {null, "!=", null, Boolean.FALSE}, 
-                                 {"foo", "memberOf", field, Boolean.TRUE}, 
+                                 {field, "==", null, Boolean.FALSE},
+                                 {null, "==", field, Boolean.FALSE},
+                                 {null, "==", null, Boolean.TRUE},
+                                 {null, "!=", field, Boolean.TRUE},
+                                 {null, "!=", null, Boolean.FALSE},
+                                 {"foo", "memberOf", field, Boolean.TRUE},
                                  {"xyz", "memberOf", field, Boolean.FALSE},
-                                 {null, "memberOf", field, Boolean.FALSE}, 
-                                 {"foo", "memberOf", null, Boolean.FALSE}, 
-                                 {"foo", "not memberOf", field, Boolean.FALSE}, 
+                                 {null, "memberOf", field, Boolean.FALSE},
+                                 {"foo", "memberOf", null, Boolean.FALSE},
+                                 {"foo", "not memberOf", field, Boolean.FALSE},
                                  {"xyz", "not memberOf", field, Boolean.TRUE},
-                                 {null, "not memberOf", field, Boolean.TRUE}, 
-                                 {"foo", "not memberOf", null, Boolean.FALSE} 
+                                 {null, "not memberOf", field, Boolean.TRUE},
+                                 {"foo", "not memberOf", null, Boolean.FALSE}
                                  };
 
         runEvaluatorTest( data,
@@ -136,21 +136,21 @@ public class EvaluatorFactoryTest extends TestCase {
     }
 
     public void testString() {
-        
+
         Collection col = Arrays.asList( new String[] { "foo", "bar", null} );
 
-        final Object[][] data = {{"foo", "==", "bar", Boolean.FALSE}, 
-                                 {"foo", "==", "foo", Boolean.TRUE}, 
-                                 {"foo", "!=", "bar", Boolean.TRUE}, 
-                                 {"something foo", "matches", ".*foo", Boolean.TRUE}, 
+        final Object[][] data = {{"foo", "==", "bar", Boolean.FALSE},
+                                 {"foo", "==", "foo", Boolean.TRUE},
+                                 {"foo", "!=", "bar", Boolean.TRUE},
+                                 {"something foo", "matches", ".*foo", Boolean.TRUE},
                                  {"foo", "matches", ".*foo", Boolean.TRUE},
-                                 {"foo", "matches", "bar", Boolean.FALSE}, 
-                                 {null, "matches", ".*foo", Boolean.FALSE}, 
-                                 {"foo", "==", null, Boolean.FALSE}, 
-                                 {"foo", "!=", null, Boolean.TRUE}, 
-                                 {null, "==", null, Boolean.TRUE}, 
+                                 {"foo", "matches", "bar", Boolean.FALSE},
+                                 {null, "matches", ".*foo", Boolean.FALSE},
+                                 {"foo", "==", null, Boolean.FALSE},
                                  {"foo", "!=", null, Boolean.TRUE},
-                                 {null, "!=", "foo", Boolean.TRUE}, 
+                                 {null, "==", null, Boolean.TRUE},
+                                 {"foo", "!=", null, Boolean.TRUE},
+                                 {null, "!=", "foo", Boolean.TRUE},
                                  {null, "!=", null, Boolean.FALSE},
                                  {"foo", "memberOf", col, Boolean.TRUE},
                                  {"xyz", "memberOf", col, Boolean.FALSE},
@@ -159,7 +159,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {"foo", "not memberOf", col, Boolean.FALSE},
                                  {"xyz", "not memberOf", col, Boolean.TRUE},
                                  {null, "not memberOf", col, Boolean.FALSE},
-                                 {"foo", "not memberOf", null, Boolean.FALSE}
+                                 {"foo", "not memberOf", null, Boolean.FALSE},
+                                 {"foobar", "soundslike", "fubar", Boolean.TRUE},
+                                 {"fubar", "soundslike", "foobar", Boolean.TRUE},
+                                 {"foobar", "soundslike", "wanklerotaryengine", Boolean.FALSE}
                                  };
 
         runEvaluatorTest( data,
@@ -173,22 +176,22 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new Integer(42) );
         col.add( new Integer(45) );
 
-        final Object[][] data = {{new Integer( 42 ), "==", new Integer( 42 ), Boolean.TRUE}, 
-                                 {new Integer( 42 ), "<", new Integer( 43 ), Boolean.TRUE}, 
+        final Object[][] data = {{new Integer( 42 ), "==", new Integer( 42 ), Boolean.TRUE},
+                                 {new Integer( 42 ), "<", new Integer( 43 ), Boolean.TRUE},
                                  {new Integer( 42 ), ">=", new Integer( 41 ), Boolean.TRUE},
-                                 {new Integer( 42 ), "!=", new Integer( 41 ), Boolean.TRUE}, 
-                                 {new Integer( 42 ), ">", new Integer( 41 ), Boolean.TRUE}, 
+                                 {new Integer( 42 ), "!=", new Integer( 41 ), Boolean.TRUE},
+                                 {new Integer( 42 ), ">", new Integer( 41 ), Boolean.TRUE},
                                  {new Integer( 42 ), "<=", new Integer( 42 ), Boolean.TRUE},
-                                 {new Integer( 42 ), ">", new Integer( 100 ), Boolean.FALSE}, 
-                                 {new Integer( 42 ), "!=", null, Boolean.TRUE}, 
-                                 {new Integer( 42 ), "==", null, Boolean.FALSE}, 
-                                 {null, "==", null, Boolean.TRUE}, 
-                                 {null, "!=", null, Boolean.FALSE}, 
-                                 {null, "!=", new Integer( 42 ), Boolean.TRUE}, 
+                                 {new Integer( 42 ), ">", new Integer( 100 ), Boolean.FALSE},
+                                 {new Integer( 42 ), "!=", null, Boolean.TRUE},
+                                 {new Integer( 42 ), "==", null, Boolean.FALSE},
+                                 {null, "==", null, Boolean.TRUE},
+                                 {null, "!=", null, Boolean.FALSE},
+                                 {null, "!=", new Integer( 42 ), Boolean.TRUE},
                                  {null, "==", new Integer( 42 ), Boolean.FALSE},
-                                 {null, "<", new Integer( 43 ), Boolean.FALSE}, 
+                                 {null, "<", new Integer( 43 ), Boolean.FALSE},
                                  {null, ">=", new Integer( -10 ), Boolean.FALSE},
-                                 {null, ">", new Integer( -10 ), Boolean.FALSE}, 
+                                 {null, ">", new Integer( -10 ), Boolean.FALSE},
                                  {null, "<=", new Integer( 42 ), Boolean.FALSE},
                                  {new Integer( 42 ), "memberOf", col, Boolean.TRUE},
                                  {new Integer( 43 ), "memberOf", col, Boolean.FALSE},
@@ -215,20 +218,20 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new BigDecimal(42) );
         col.add( new BigDecimal(45) );
 
-        final Object[][] data = {{new BigDecimal( 42 ), "==", new BigDecimal( 42 ), Boolean.TRUE}, 
-                                 {new BigDecimal( 42 ), "<", new BigDecimal( 43 ), Boolean.TRUE}, 
+        final Object[][] data = {{new BigDecimal( 42 ), "==", new BigDecimal( 42 ), Boolean.TRUE},
+                                 {new BigDecimal( 42 ), "<", new BigDecimal( 43 ), Boolean.TRUE},
                                  {new BigDecimal( 42 ), ">=", new BigDecimal( 41 ), Boolean.TRUE},
-                                 {new BigDecimal( 42 ), "!=", new BigDecimal( 41 ), Boolean.TRUE}, 
-                                 {new BigDecimal( 42 ), ">", new BigDecimal( 41 ), Boolean.TRUE}, 
+                                 {new BigDecimal( 42 ), "!=", new BigDecimal( 41 ), Boolean.TRUE},
+                                 {new BigDecimal( 42 ), ">", new BigDecimal( 41 ), Boolean.TRUE},
                                  {new BigDecimal( 42 ), "<=", new BigDecimal( 42 ), Boolean.TRUE},
-                                 {new BigDecimal( 42 ), ">", new BigDecimal( 100 ), Boolean.FALSE}, 
-                                 {new BigDecimal( 42 ), "==", null, Boolean.FALSE}, 
-                                 {new BigDecimal( 42 ), "!=", null, Boolean.TRUE}, 
+                                 {new BigDecimal( 42 ), ">", new BigDecimal( 100 ), Boolean.FALSE},
+                                 {new BigDecimal( 42 ), "==", null, Boolean.FALSE},
+                                 {new BigDecimal( 42 ), "!=", null, Boolean.TRUE},
                                  {null, "==", new BigDecimal( 42 ), Boolean.FALSE},
                                  {null, "!=", new BigDecimal( 42 ), Boolean.TRUE},
-                                 {null, "<", new BigDecimal( 43 ), Boolean.FALSE}, 
+                                 {null, "<", new BigDecimal( 43 ), Boolean.FALSE},
                                  {null, ">=", new BigDecimal( -10 ), Boolean.FALSE},
-                                 {null, ">", new BigDecimal( -10 ), Boolean.FALSE}, 
+                                 {null, ">", new BigDecimal( -10 ), Boolean.FALSE},
                                  {null, "<=", new BigDecimal( 42 ), Boolean.FALSE},
                                  {new BigDecimal( 42 ), "memberOf", col, Boolean.TRUE},
                                  {new BigDecimal( 43 ), "memberOf", col, Boolean.FALSE},
@@ -255,20 +258,20 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new BigInteger("42") );
         col.add( new BigInteger("45") );
 
-        final Object[][] data = {{new BigInteger( "42" ), "==", new BigInteger( "42" ), Boolean.TRUE}, 
-                                 {new BigInteger( "42" ), "<", new BigInteger( "43" ), Boolean.TRUE}, 
+        final Object[][] data = {{new BigInteger( "42" ), "==", new BigInteger( "42" ), Boolean.TRUE},
+                                 {new BigInteger( "42" ), "<", new BigInteger( "43" ), Boolean.TRUE},
                                  {new BigInteger( "42" ), ">=", new BigInteger( "41" ), Boolean.TRUE},
-                                 {new BigInteger( "42" ), "!=", new BigInteger( "41" ), Boolean.TRUE}, 
-                                 {new BigInteger( "42" ), ">", new BigInteger( "41" ), Boolean.TRUE}, 
+                                 {new BigInteger( "42" ), "!=", new BigInteger( "41" ), Boolean.TRUE},
+                                 {new BigInteger( "42" ), ">", new BigInteger( "41" ), Boolean.TRUE},
                                  {new BigInteger( "42" ), "<=", new BigInteger( "42" ), Boolean.TRUE},
-                                 {new BigInteger( "42" ), ">", new BigInteger( "100" ), Boolean.FALSE}, 
-                                 {new BigInteger( "42" ), "==", null, Boolean.FALSE}, 
-                                 {new BigInteger( "42" ), "!=", null, Boolean.TRUE}, 
+                                 {new BigInteger( "42" ), ">", new BigInteger( "100" ), Boolean.FALSE},
+                                 {new BigInteger( "42" ), "==", null, Boolean.FALSE},
+                                 {new BigInteger( "42" ), "!=", null, Boolean.TRUE},
                                  {null, "==", new BigInteger( "42" ), Boolean.FALSE},
                                  {null, "!=", new BigInteger( "42" ), Boolean.TRUE},
-                                 {null, "<", new BigInteger( "43" ), Boolean.FALSE}, 
+                                 {null, "<", new BigInteger( "43" ), Boolean.FALSE},
                                  {null, ">=", new BigInteger( "-10" ), Boolean.FALSE},
-                                 {null, ">", new BigInteger( "-10" ), Boolean.FALSE}, 
+                                 {null, ">", new BigInteger( "-10" ), Boolean.FALSE},
                                  {null, "<=", new BigInteger( "42" ), Boolean.FALSE},
                                  {new BigInteger( "42" ), "memberOf", col, Boolean.TRUE},
                                  {new BigInteger( "43" ), "memberOf", col, Boolean.FALSE},
@@ -292,18 +295,18 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new Short( (short) 45) );
 
         //Test data: Obj1, Operand, Obj2
-        final Object[][] data = {{new Short( (short) 42 ), "==", new Short( (short) 42 ), Boolean.TRUE}, 
-                                 {new Short( (short) 42 ), "<", new Short( (short) 43 ), Boolean.TRUE}, 
+        final Object[][] data = {{new Short( (short) 42 ), "==", new Short( (short) 42 ), Boolean.TRUE},
+                                 {new Short( (short) 42 ), "<", new Short( (short) 43 ), Boolean.TRUE},
                                  {new Short( (short) 42 ), ">=", new Short( (short) 41 ), Boolean.TRUE},
-                                 {new Short( (short) 42 ), "!=", new Short( (short) 41 ), Boolean.TRUE}, 
-                                 {new Short( (short) 42 ), "==", null, Boolean.FALSE}, 
-                                 {null, "==", null, Boolean.TRUE}, 
-                                 {null, "!=", null, Boolean.FALSE}, 
-                                 {null, "!=", new Short( (short) 42 ), Boolean.TRUE}, 
+                                 {new Short( (short) 42 ), "!=", new Short( (short) 41 ), Boolean.TRUE},
+                                 {new Short( (short) 42 ), "==", null, Boolean.FALSE},
+                                 {null, "==", null, Boolean.TRUE},
+                                 {null, "!=", null, Boolean.FALSE},
+                                 {null, "!=", new Short( (short) 42 ), Boolean.TRUE},
                                  {null, "==", new Short( (short) 42 ), Boolean.FALSE},
-                                 {null, "<", new Short( (short)43 ), Boolean.FALSE}, 
+                                 {null, "<", new Short( (short)43 ), Boolean.FALSE},
                                  {null, ">=", new Short( (short)-10 ), Boolean.FALSE},
-                                 {null, ">", new Short( (short)-10 ), Boolean.FALSE}, 
+                                 {null, ">", new Short( (short)-10 ), Boolean.FALSE},
                                  {null, "<=", new Short((short) 42 ), Boolean.FALSE},
                                  {new Short( (short) 42 ), "memberOf", col, Boolean.TRUE},
                                  {new Short( (short) 43 ), "memberOf", col, Boolean.FALSE},
@@ -326,14 +329,14 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new Boolean( true ) );
 
         //Test data: Obj1, Operand, Obj2
-        final Object[][] data = {{new Boolean( true ), "==", new Boolean( true ), Boolean.TRUE}, 
-                                 {new Boolean( false ), "!=", new Boolean( true ), Boolean.TRUE}, 
+        final Object[][] data = {{new Boolean( true ), "==", new Boolean( true ), Boolean.TRUE},
+                                 {new Boolean( false ), "!=", new Boolean( true ), Boolean.TRUE},
                                  {new Boolean( true ), "==", new Boolean( false ), Boolean.FALSE},
-                                 {new Boolean( true ), "!=", new Boolean( false ), Boolean.TRUE}, 
-                                 {new Boolean( true ), "==", null, Boolean.FALSE}, 
-                                 {null, "==", null, Boolean.TRUE}, 
-                                 {null, "!=", null, Boolean.FALSE}, 
-                                 {null, "!=", new Boolean( true ), Boolean.TRUE}, 
+                                 {new Boolean( true ), "!=", new Boolean( false ), Boolean.TRUE},
+                                 {new Boolean( true ), "==", null, Boolean.FALSE},
+                                 {null, "==", null, Boolean.TRUE},
+                                 {null, "!=", null, Boolean.FALSE},
+                                 {null, "!=", new Boolean( true ), Boolean.TRUE},
                                  {null, "==", new Boolean( true ), Boolean.FALSE},
                                  {new Boolean( true ), "memberOf", col, Boolean.TRUE},
                                  {new Boolean( false ), "memberOf", col, Boolean.FALSE},
@@ -354,23 +357,23 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new Double(42) );
         col.add( new Double(45) );
 
-        final Object[][] data = {{new Double( 42 ), "==", new Double( 42 ), Boolean.TRUE}, 
-                                 {new Double( 42 ), "<", new Double( 43 ), Boolean.TRUE}, 
+        final Object[][] data = {{new Double( 42 ), "==", new Double( 42 ), Boolean.TRUE},
+                                 {new Double( 42 ), "<", new Double( 43 ), Boolean.TRUE},
                                  {new Double( 42 ), ">=", new Double( 41 ), Boolean.TRUE},
-                                 {new Double( 42 ), "!=", new Double( 41 ), Boolean.TRUE}, 
-                                 {new Double( 42 ), ">", new Double( 41 ), Boolean.TRUE}, 
-                                 {new Double( 42 ), ">=", new Double( 41 ), Boolean.TRUE}, 
+                                 {new Double( 42 ), "!=", new Double( 41 ), Boolean.TRUE},
+                                 {new Double( 42 ), ">", new Double( 41 ), Boolean.TRUE},
+                                 {new Double( 42 ), ">=", new Double( 41 ), Boolean.TRUE},
                                  {new Double( 42 ), ">=", new Double( 42 ), Boolean.TRUE},
-                                 {new Double( 42 ), ">=", new Double( 100 ), Boolean.FALSE}, 
-                                 {new Double( 42 ), "<", new Double( 1 ), Boolean.FALSE}, 
-                                 {new Double( 42 ), "==", null, Boolean.FALSE}, 
-                                 {null, "==", null, Boolean.TRUE}, 
-                                 {null, "!=", null, Boolean.FALSE}, 
-                                 {null, "!=", new Double( 42 ), Boolean.TRUE}, 
+                                 {new Double( 42 ), ">=", new Double( 100 ), Boolean.FALSE},
+                                 {new Double( 42 ), "<", new Double( 1 ), Boolean.FALSE},
+                                 {new Double( 42 ), "==", null, Boolean.FALSE},
+                                 {null, "==", null, Boolean.TRUE},
+                                 {null, "!=", null, Boolean.FALSE},
+                                 {null, "!=", new Double( 42 ), Boolean.TRUE},
                                  {null, "==", new Double( 42 ), Boolean.FALSE},
-                                 {null, "<", new Double( 43 ), Boolean.FALSE}, 
+                                 {null, "<", new Double( 43 ), Boolean.FALSE},
                                  {null, ">=", new Double( -10 ), Boolean.FALSE},
-                                 {null, ">", new Double( -10 ), Boolean.FALSE}, 
+                                 {null, ">", new Double( -10 ), Boolean.FALSE},
                                  {null, "<=", new Double( 42 ), Boolean.FALSE},
                                  {new Double( 42 ), "memberOf", col, Boolean.TRUE},
                                  {new Double( 43 ), "memberOf", col, Boolean.FALSE},
@@ -391,23 +394,23 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new Float(42) );
         col.add( new Float(45) );
 
-        final Object[][] data = {{new Float( 42 ), "==", new Float( 42 ), Boolean.TRUE}, 
-                                 {new Float( 42 ), "<", new Float( 43 ), Boolean.TRUE}, 
+        final Object[][] data = {{new Float( 42 ), "==", new Float( 42 ), Boolean.TRUE},
+                                 {new Float( 42 ), "<", new Float( 43 ), Boolean.TRUE},
                                  {new Float( 42 ), ">=", new Float( 41 ), Boolean.TRUE},
-                                 {new Float( 42 ), "!=", new Float( 41 ), Boolean.TRUE}, 
-                                 {new Float( 42 ), ">", new Float( 41 ), Boolean.TRUE}, 
-                                 {new Float( 42 ), ">=", new Float( 41 ), Boolean.TRUE}, 
+                                 {new Float( 42 ), "!=", new Float( 41 ), Boolean.TRUE},
+                                 {new Float( 42 ), ">", new Float( 41 ), Boolean.TRUE},
+                                 {new Float( 42 ), ">=", new Float( 41 ), Boolean.TRUE},
                                  {new Float( 42 ), ">=", new Float( 42 ), Boolean.TRUE},
-                                 {new Float( 42 ), ">=", new Float( 100 ), Boolean.FALSE}, 
-                                 {new Float( 42 ), "<", new Float( 1 ), Boolean.FALSE}, 
-                                 {new Float( 42 ), "==", null, Boolean.FALSE}, 
-                                 {null, "==", null, Boolean.TRUE}, 
-                                 {null, "!=", null, Boolean.FALSE}, 
-                                 {null, "!=", new Float( 42 ), Boolean.TRUE}, 
+                                 {new Float( 42 ), ">=", new Float( 100 ), Boolean.FALSE},
+                                 {new Float( 42 ), "<", new Float( 1 ), Boolean.FALSE},
+                                 {new Float( 42 ), "==", null, Boolean.FALSE},
+                                 {null, "==", null, Boolean.TRUE},
+                                 {null, "!=", null, Boolean.FALSE},
+                                 {null, "!=", new Float( 42 ), Boolean.TRUE},
                                  {null, "==", new Float( 42 ), Boolean.FALSE},
-                                 {null, "<", new Float( 43 ), Boolean.FALSE}, 
+                                 {null, "<", new Float( 43 ), Boolean.FALSE},
                                  {null, ">=", new Float( -10 ), Boolean.FALSE},
-                                 {null, ">", new Float( -10 ), Boolean.FALSE}, 
+                                 {null, ">", new Float( -10 ), Boolean.FALSE},
                                  {null, "<=", new Float( 42 ), Boolean.FALSE},
                                  {new Float( 42 ), "memberOf", col, Boolean.TRUE},
                                  {new Float( 43 ), "memberOf", col, Boolean.FALSE},
@@ -428,23 +431,23 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new Long(42) );
         col.add( new Long(45) );
 
-        final Object[][] data = {{new Long( 42 ), "==", new Long( 42 ), Boolean.TRUE}, 
-                                 {new Long( 42 ), "<", new Long( 43 ), Boolean.TRUE}, 
-                                 {new Long( 42 ), ">=", new Long( 41 ), Boolean.TRUE}, 
+        final Object[][] data = {{new Long( 42 ), "==", new Long( 42 ), Boolean.TRUE},
+                                 {new Long( 42 ), "<", new Long( 43 ), Boolean.TRUE},
+                                 {new Long( 42 ), ">=", new Long( 41 ), Boolean.TRUE},
                                  {new Long( 42 ), "!=", new Long( 41 ), Boolean.TRUE},
-                                 {new Long( 42 ), ">", new Long( 41 ), Boolean.TRUE}, 
-                                 {new Long( 42 ), ">=", new Long( 41 ), Boolean.TRUE}, 
-                                 {new Long( 42 ), ">=", new Long( 42 ), Boolean.TRUE}, 
+                                 {new Long( 42 ), ">", new Long( 41 ), Boolean.TRUE},
+                                 {new Long( 42 ), ">=", new Long( 41 ), Boolean.TRUE},
+                                 {new Long( 42 ), ">=", new Long( 42 ), Boolean.TRUE},
                                  {new Long( 42 ), ">=", new Long( 100 ), Boolean.FALSE},
-                                 {new Long( 42 ), "<", new Long( 1 ), Boolean.FALSE}, 
-                                 {new Long( 42 ), "==", null, Boolean.FALSE}, 
+                                 {new Long( 42 ), "<", new Long( 1 ), Boolean.FALSE},
+                                 {new Long( 42 ), "==", null, Boolean.FALSE},
                                  {null, "==", null, Boolean.TRUE},
-                                 {null, "!=", null, Boolean.FALSE}, 
-                                 {null, "!=", new Long( 42 ), Boolean.TRUE}, 
+                                 {null, "!=", null, Boolean.FALSE},
+                                 {null, "!=", new Long( 42 ), Boolean.TRUE},
                                  {null, "==", new Long( 42 ), Boolean.FALSE},
-                                 {null, "<", new Long( 43 ), Boolean.FALSE}, 
+                                 {null, "<", new Long( 43 ), Boolean.FALSE},
                                  {null, ">=", new Long( -10 ), Boolean.FALSE},
-                                 {null, ">", new Long( -10 ), Boolean.FALSE}, 
+                                 {null, ">", new Long( -10 ), Boolean.FALSE},
                                  {null, "<=", new Long( 42 ), Boolean.FALSE},
                                  {new Long( 42 ), "memberOf", col, Boolean.TRUE},
                                  {new Long( 43 ), "memberOf", col, Boolean.FALSE},
@@ -465,23 +468,23 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new Character( 'a' ) );
         col.add( new Character( 'b' ) );
 
-        final Object[][] data = {{new Character( 'a' ), "==", new Character( 'a' ), Boolean.TRUE}, 
-                                 {new Character( 'a' ), "<", new Character( 'b' ), Boolean.TRUE}, 
+        final Object[][] data = {{new Character( 'a' ), "==", new Character( 'a' ), Boolean.TRUE},
+                                 {new Character( 'a' ), "<", new Character( 'b' ), Boolean.TRUE},
                                  {new Character( 'a' ), ">=", new Character( 'a' ), Boolean.TRUE},
-                                 {new Character( 'a' ), "!=", new Character( 'Z' ), Boolean.TRUE}, 
-                                 {new Character( 'z' ), ">", new Character( 'a' ), Boolean.TRUE}, 
+                                 {new Character( 'a' ), "!=", new Character( 'Z' ), Boolean.TRUE},
+                                 {new Character( 'z' ), ">", new Character( 'a' ), Boolean.TRUE},
                                  {new Character( 'z' ), ">=", new Character( 'z' ), Boolean.TRUE},
-                                 {new Character( 'z' ), ">=", new Character( 'a' ), Boolean.TRUE}, 
-                                 {new Character( 'a' ), ">=", new Character( 'z' ), Boolean.FALSE}, 
+                                 {new Character( 'z' ), ">=", new Character( 'a' ), Boolean.TRUE},
+                                 {new Character( 'a' ), ">=", new Character( 'z' ), Boolean.FALSE},
                                  {new Character( 'z' ), "<", new Character( 'a' ), Boolean.FALSE},
-                                 {new Character( 'z' ), "==", null, Boolean.FALSE}, 
-                                 {null, "==", null, Boolean.TRUE}, 
-                                 {null, "!=", null, Boolean.FALSE}, 
-                                 {null, "!=", new Character( 'z' ), Boolean.TRUE}, 
+                                 {new Character( 'z' ), "==", null, Boolean.FALSE},
+                                 {null, "==", null, Boolean.TRUE},
+                                 {null, "!=", null, Boolean.FALSE},
+                                 {null, "!=", new Character( 'z' ), Boolean.TRUE},
                                  {null, "==", new Character( 'z' ), Boolean.FALSE},
-                                 {null, "<", new Character( 'a' ), Boolean.FALSE}, 
+                                 {null, "<", new Character( 'a' ), Boolean.FALSE},
                                  {null, ">=", new Character( '\0' ), Boolean.FALSE},
-                                 {null, ">", new Character( '\0' ), Boolean.FALSE}, 
+                                 {null, ">", new Character( '\0' ), Boolean.FALSE},
                                  {null, "<=", new Character( 'a' ), Boolean.FALSE},
                                  {new Character( 'a' ), "memberOf", col, Boolean.TRUE},
                                  {new Character( 'z' ), "memberOf", col, Boolean.FALSE},
@@ -505,25 +508,25 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( df.parse( "11-Jul-1974" ) );
 
         //note that strings are also allowed on the right
-        final Object[][] data = {{df.parse( "10-Jul-1974" ), "==", df.parse( "10-Jul-1974" ), Boolean.TRUE}, 
+        final Object[][] data = {{df.parse( "10-Jul-1974" ), "==", df.parse( "10-Jul-1974" ), Boolean.TRUE},
                                  {df.parse( "10-Jul-1974" ), "<", df.parse( "11-Jul-1974" ), Boolean.TRUE},
-                                 {df.parse( "10-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE}, 
-                                 {df.parse( "10-Jul-1974" ), "!=", df.parse( "11-Jul-1974" ), Boolean.TRUE}, 
+                                 {df.parse( "10-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE},
+                                 {df.parse( "10-Jul-1974" ), "!=", df.parse( "11-Jul-1974" ), Boolean.TRUE},
                                  {df.parse( "10-Jul-2000" ), ">", df.parse( "10-Jul-1974" ), Boolean.TRUE},
-                                 {df.parse( "10-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE}, 
-                                 {df.parse( "11-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE}, 
+                                 {df.parse( "10-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE},
+                                 {df.parse( "11-Jul-1974" ), ">=", df.parse( "10-Jul-1974" ), Boolean.TRUE},
                                  {df.parse( "10-Jul-1974" ), ">=", df.parse( "11-Jul-1974" ), Boolean.FALSE},
                                  {df.parse( "10-Jul-2000" ), "<", df.parse( "10-Jul-1974" ), Boolean.FALSE},
-                                 {df.parse( "10-Jul-1974" ), "<", df.parse( "11-Jul-1974" ), Boolean.TRUE}, 
+                                 {df.parse( "10-Jul-1974" ), "<", df.parse( "11-Jul-1974" ), Boolean.TRUE},
                                  {df.parse( "10-Jul-1974" ), "==", null, Boolean.FALSE},
-                                 {df.parse( "10-Jul-1974" ), "!=", null, Boolean.TRUE}, 
-                                 {null, "==", null, Boolean.TRUE}, 
-                                 {null, "==", df.parse( "10-Jul-1974" ), Boolean.FALSE}, 
-                                 {null, "!=", null, Boolean.FALSE}, 
+                                 {df.parse( "10-Jul-1974" ), "!=", null, Boolean.TRUE},
+                                 {null, "==", null, Boolean.TRUE},
+                                 {null, "==", df.parse( "10-Jul-1974" ), Boolean.FALSE},
+                                 {null, "!=", null, Boolean.FALSE},
                                  {null, "!=", df.parse( "10-Jul-1974" ), Boolean.TRUE},
-                                 {null, "<", df.parse( "10-Jul-1974" ), Boolean.FALSE}, 
+                                 {null, "<", df.parse( "10-Jul-1974" ), Boolean.FALSE},
                                  {null, ">=", new Date(0), Boolean.FALSE},
-                                 {null, ">", new Date(0), Boolean.FALSE}, 
+                                 {null, ">", new Date(0), Boolean.FALSE},
                                  {null, "<=", df.parse( "10-Jul-1974" ), Boolean.FALSE},
                                  {df.parse( "10-Jul-1974" ), "memberOf", col, Boolean.TRUE},
                                  {df.parse( "15-Jul-1974" ), "memberOf", col, Boolean.FALSE},
@@ -543,23 +546,23 @@ public class EvaluatorFactoryTest extends TestCase {
         col.add( new Byte( "1" ) );
         col.add( new Byte( "2" ) );
 
-        final Object[][] data = {{new Byte( "1" ), "==", new Byte( "1" ), Boolean.TRUE}, 
-                                 {new Byte( "1" ), "==", new Byte( "2" ), Boolean.FALSE}, 
+        final Object[][] data = {{new Byte( "1" ), "==", new Byte( "1" ), Boolean.TRUE},
+                                 {new Byte( "1" ), "==", new Byte( "2" ), Boolean.FALSE},
                                  {new Byte( "1" ), "!=", new Byte( "2" ), Boolean.TRUE},
-                                 {new Byte( "1" ), "!=", new Byte( "1" ), Boolean.FALSE}, 
-                                 {new Byte( "1" ), "<=", new Byte( "1" ), Boolean.TRUE}, 
-                                 {new Byte( "1" ), "==", null, Boolean.FALSE}, 
-                                 {new Byte( "1" ), "<", new Byte( "2" ), Boolean.TRUE}, 
+                                 {new Byte( "1" ), "!=", new Byte( "1" ), Boolean.FALSE},
+                                 {new Byte( "1" ), "<=", new Byte( "1" ), Boolean.TRUE},
+                                 {new Byte( "1" ), "==", null, Boolean.FALSE},
+                                 {new Byte( "1" ), "<", new Byte( "2" ), Boolean.TRUE},
                                  {new Byte( "2" ), ">=", new Byte( "1" ), Boolean.TRUE},
-                                 {new Byte( "2" ), ">", new Byte( "1" ), Boolean.TRUE}, 
+                                 {new Byte( "2" ), ">", new Byte( "1" ), Boolean.TRUE},
                                  {new Byte( "1" ), "<=", new Byte( "2" ), Boolean.TRUE},
-                                 {null, "==", null, Boolean.TRUE}, 
-                                 {null, "!=", null, Boolean.FALSE}, 
-                                 {null, "!=", new Byte( "1" ), Boolean.TRUE}, 
+                                 {null, "==", null, Boolean.TRUE},
+                                 {null, "!=", null, Boolean.FALSE},
+                                 {null, "!=", new Byte( "1" ), Boolean.TRUE},
                                  {null, "==", new Byte( "1" ), Boolean.FALSE},
-                                 {null, "<", new Byte( Byte.MAX_VALUE), Boolean.FALSE}, 
+                                 {null, "<", new Byte( Byte.MAX_VALUE), Boolean.FALSE},
                                  {null, ">=", new Byte( Byte.MIN_VALUE ), Boolean.FALSE},
-                                 {null, ">", new Byte( Byte.MIN_VALUE ), Boolean.FALSE}, 
+                                 {null, ">", new Byte( Byte.MIN_VALUE ), Boolean.FALSE},
                                  {null, "<=", new Byte( Byte.MAX_VALUE ), Boolean.FALSE},
                                  {new Byte( "1" ), "memberOf", col, Boolean.TRUE},
                                  {new Byte( "3" ), "memberOf", col, Boolean.FALSE},
@@ -644,7 +647,7 @@ public class EvaluatorFactoryTest extends TestCase {
                                                  final Extractor extractor,
                                                  final Object[] row,
                                                  final Evaluator evaluator) {
-        final VariableContextEntry context = this.getContextEntry( evaluator, 
+        final VariableContextEntry context = this.getContextEntry( evaluator,
                                                              (FieldExtractor) extractor,
                                                              valueType,
                                                              row );
@@ -720,7 +723,7 @@ public class EvaluatorFactoryTest extends TestCase {
         final Declaration declaration = new Declaration( "test",
                                                    extractor,
                                                    null );
-        
+
         if( Operator.MEMBEROF.equals( evaluator.getOperator() ) ||
             Operator.NOTMEMBEROF.equals( evaluator.getOperator() ) ) {
 
@@ -731,25 +734,25 @@ public class EvaluatorFactoryTest extends TestCase {
             } else {
                context.left = row[2];
             }
-           
+
             if (row[0] == null) {
                context.rightNull = true;
             } else {
                context.right = row[0];
             }
             return context;
-            
+
         } else {
             if ( valueType.isIntegerNumber() ) {
                 final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
                                                                                  declaration );
-                
+
                 if (row[2] == null) {
                     context.leftNull = true;
                 } else {
                     context.left = ((Number) row[2]).longValue();
                 }
-                
+
                 if (row[0] == null) {
                     context.rightNull = true;
                 } else {
@@ -759,13 +762,13 @@ public class EvaluatorFactoryTest extends TestCase {
             } else if ( valueType.isChar() ) {
                 final CharVariableContextEntry context = new CharVariableContextEntry( extractor,
                                                                                        declaration );
-                      
+
                 if (row[2] == null) {
                     context.leftNull = true;
                 } else {
                     context.left = ((Character) row[2]).charValue();
                 }
-                
+
                 if (row[0] == null) {
                     context.rightNull = true;
                 } else {
@@ -775,13 +778,13 @@ public class EvaluatorFactoryTest extends TestCase {
             } else if ( valueType.isBoolean() ) {
                 final BooleanVariableContextEntry context = new BooleanVariableContextEntry( extractor,
                                                                                        declaration );
-                
+
                 if (row[2] == null) {
                     context.leftNull = true;
                 } else {
                     context.left = ((Boolean) row[2]).booleanValue();
                 }
-                
+
                 if (row[0] == null) {
                     context.rightNull = true;
                 } else {
@@ -796,7 +799,7 @@ public class EvaluatorFactoryTest extends TestCase {
                 } else {
                     context.left = ((Number) row[2]).doubleValue();
                 }
-                
+
                 if (row[0] == null) {
                     context.rightNull = true;
                 } else {
@@ -811,7 +814,7 @@ public class EvaluatorFactoryTest extends TestCase {
                 } else {
                     context.left = row[2];
                 }
-                
+
                 if (row[0] == null) {
                     context.rightNull = true;
                 } else {
@@ -879,7 +882,7 @@ public class EvaluatorFactoryTest extends TestCase {
         public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
             return object;
         }
-        
+
         public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object ) {
             return object == null;
         }
@@ -907,9 +910,9 @@ public class EvaluatorFactoryTest extends TestCase {
     //            b = ("something foo".matches( ".*foo" ));
     //        }
     //        System.out.println("time: " + (System.currentTimeMillis() - start));
-    //        
+    //
     //        start = System.currentTimeMillis();
-    //        for (int i = 0; i < 1000000; i++) {        
+    //        for (int i = 0; i < 1000000; i++) {
     //            Matcher m = p.matcher( "something foo" );
     //            b = m.matches();
     //        }
