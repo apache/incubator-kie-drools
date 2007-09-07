@@ -1,10 +1,11 @@
 package org.drools.analytics.components;
 
+
 /**
  * 
  * @author Toni Rikkola
  */
-public class QualifiedIdentifierRestriction extends Restriction {
+public class QualifiedIdentifierRestriction extends Restriction  {
 
 	private int variableId;
 	private String variableName;
@@ -15,7 +16,6 @@ public class QualifiedIdentifierRestriction extends Restriction {
 		return RestrictionType.QUALIFIED_IDENTIFIER;
 	}
 
-	@Override
 	public String getValueAsString() {
 		return variablePath + "." + variableName;
 	}

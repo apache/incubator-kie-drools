@@ -33,8 +33,6 @@ public abstract class Restriction extends AnalyticsComponent implements Cause {
 
 	public abstract RestrictionType getRestrictionType();
 
-	public abstract String getValueAsString();
-
 	public String getEvaluator() {
 		return evaluator;
 	}

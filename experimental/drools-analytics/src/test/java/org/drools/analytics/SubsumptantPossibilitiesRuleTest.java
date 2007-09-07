@@ -24,7 +24,7 @@ public class SubsumptantPossibilitiesRuleTest extends TestBase {
 
 	public void testSubsumptantPossibilitiesPattern() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Redundancy.drl"));
+				.getResourceAsStream("redundancy/Possibilities.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(RULE_NAME));
 
@@ -47,7 +47,7 @@ public class SubsumptantPossibilitiesRuleTest extends TestBase {
 
 	public void testSubsumptantPossibilitiesRule() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Redundancy.drl"));
+				.getResourceAsStream("redundancy/Possibilities.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(RULE_NAME));
 
@@ -70,7 +70,7 @@ public class SubsumptantPossibilitiesRuleTest extends TestBase {
 
 	public void testSubsumptantPossibilitiesBoth() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("Redundancy.drl"));
+				.getResourceAsStream("redundancy/Possibilities.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(RULE_NAME));
 
