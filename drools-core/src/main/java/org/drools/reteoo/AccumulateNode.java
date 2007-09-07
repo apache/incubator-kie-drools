@@ -454,4 +454,11 @@ public class AccumulateNode extends BetaNode {
         public Object             context;
     }
 
+    public void setIsMemoryAllowed(boolean memoryAllowed) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    
+
 }

@@ -88,4 +88,9 @@ public class MockObjectSink
         this.previousObjectSinkNode = previous;
     }
 
+    public void setIsMemoryAllowed(boolean memoryAllowed) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

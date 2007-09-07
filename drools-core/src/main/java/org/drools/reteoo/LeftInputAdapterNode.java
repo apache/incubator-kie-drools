@@ -301,6 +301,16 @@ public class LeftInputAdapterNode extends TupleSource
                                   final InternalWorkingMemory workingMemory) {
             throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
         }
+
+        public void setIsMemoryAllowed(boolean memoryAllowed) {
+            // TODO Auto-generated method stub
+            
+        }
+    }
+
+    public void setIsMemoryAllowed(boolean memoryAllowed) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

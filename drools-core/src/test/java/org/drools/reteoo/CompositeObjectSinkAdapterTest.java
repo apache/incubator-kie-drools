@@ -421,5 +421,10 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         }
 
+        public void setIsMemoryAllowed(boolean memoryAllowed) {
+            // TODO Auto-generated method stub
+            
+        }
+
     }
 }

@@ -19,6 +19,8 @@ package org.drools.reteoo;
 import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -219,7 +221,7 @@ public class ObjectTypeNode extends ObjectSource
      */
     public void attach() {
         this.rete.addObjectSink( this );
-    }
+    }    
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
@@ -295,13 +297,18 @@ public class ObjectTypeNode extends ObjectSource
         return this.objectType.equals( other.objectType );
     }
 
-    /**
+    /** 
      * @inheritDoc
      */
     protected void addObjectSink(final ObjectSink objectSink) {
         super.addObjectSink( objectSink );
         this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
+        if ( objectType instanceof ClassObjectType && ((ClassObjectType)this.objectType).getClassType() == DroolsQuery.class ) {
+            objectSink.setIsMemoryAllowed( false );
+        }        
     }
+    
+    
 
     /**
      * @inheritDoc
