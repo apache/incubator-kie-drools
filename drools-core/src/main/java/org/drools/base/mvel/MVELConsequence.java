@@ -12,7 +12,7 @@ import org.mvel.debug.DebugTools;
 public class MVELConsequence
     implements
     Consequence,
-    Serializable  {
+    Serializable {
     private static final long       serialVersionUID = 400L;
 
     private final Serializable      expr;
@@ -31,16 +31,22 @@ public class MVELConsequence
                                  null,
                                  workingMemory,
                                  null );
-        CompiledExpression compexpr = (CompiledExpression)this.expr;
+        CompiledExpression compexpr = (CompiledExpression) this.expr;
 
         //Receive breakpoints from debugger
         MVELDebugHandler.prepare();
-        
-        if (MVELDebugHandler.isDebugMode()) {       
-        	System.out.println(DebugTools.decompile(compexpr));
-            MVEL.executeDebugger( compexpr, null, this.factory);
+
+        if ( MVELDebugHandler.isDebugMode() ) {
+            if ( MVELDebugHandler.verbose ) {
+                System.out.println( DebugTools.decompile( compexpr ) );
+            }
+            MVEL.executeDebugger( compexpr,
+                                  null,
+                                  this.factory );
         } else {
-            MVEL.executeExpression( compexpr, null, this.factory);
+            MVEL.executeExpression( compexpr,
+                                    null,
+                                    this.factory );
         }
 
     }
