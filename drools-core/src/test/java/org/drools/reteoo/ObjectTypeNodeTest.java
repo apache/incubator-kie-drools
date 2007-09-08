@@ -34,26 +34,32 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactHashTable;
 import org.drools.util.ObjectHashMap;
 
 public class ObjectTypeNodeTest extends DroolsTestCase {
-
+    private ReteooRuleBase ruleBase;
+    private BuildContext buildContext;
+    
+    protected void setUp() throws Exception {
+        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+    }
+    
     public void testAttach() throws Exception {
-        ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
-        final Rete source = new Rete( (InternalRuleBase)ruleBase);        
+        final Rete source = this.ruleBase.getRete();    
 
         final ObjectType objectType = new ClassObjectType( String.class );
 
         int id = idGenerator.getNextId();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( id,
                                                                   objectType,
-                                                                  source,
-                                                                  3 );
+                                                                  buildContext );
 
         assertEquals( id,
                       objectTypeNode.getId() );
@@ -89,8 +95,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  source,
-                                                                  3 );
+                                                                  buildContext );
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -127,6 +132,8 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
+        buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            ruleBase );
 
@@ -134,8 +141,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
-                                                                  source,
-                                                                  3 );
+                                                                  buildContext );
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -170,8 +176,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  new Rete( (InternalRuleBase) ruleBase),
-                                                                  3 );
+                                                                  buildContext );
 
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( objectTypeNode );
 
@@ -185,8 +190,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                             new ClassObjectType( String.class ),
-                                                            source,
-                                                            3 );
+                                                            buildContext );
 
         assertFalse( objectTypeNode.matches( new Object() ) );
         assertFalse( objectTypeNode.matches( new Integer( 5 ) ) );
@@ -194,8 +198,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                              new ClassObjectType( Object.class ),
-                                             source,
-                                             3 );
+                                             buildContext );
 
         assertTrue( objectTypeNode.matches( new Object() ) );
         assertTrue( objectTypeNode.matches( new Integer( 5 ) ) );
@@ -217,8 +220,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  source,
-                                                                  3 );
+                                                                  buildContext );
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -269,8 +271,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( String.class ),
-                                                                  source,
-                                                                  3 );
+                                                                  buildContext );
 
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
@@ -335,8 +336,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( Cheese.class  ),
-                                                                  source,
-                                                                  3 );
+                                                                  buildContext );
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -377,8 +377,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final Class shadowClass = ShadowProxyFactory.getProxy( Person.class );
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( Person.class ),
-                                                                  source,
-                                                                  3 );
+                                                                  buildContext );
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );

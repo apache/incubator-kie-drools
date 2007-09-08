@@ -57,8 +57,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // MockObjectSink so we can detect assertions and retractions
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -160,8 +159,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -251,8 +249,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -394,8 +391,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -483,8 +479,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -584,8 +579,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // MockObjectSink so we can detect assertions and retractions
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -715,8 +709,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -817,8 +810,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   new ClassObjectType( String.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );

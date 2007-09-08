@@ -49,8 +49,6 @@ public abstract class ObjectSource extends BaseNode
     protected ObjectSource         objectSource;
 
     private int                    alphaNodeHashingThreshold;
-    
-    private boolean                memoryAllowed;
 
     // ------------------------------------------------------------
     // Constructors
@@ -135,10 +133,6 @@ public abstract class ObjectSource extends BaseNode
 
     public ObjectSinkPropagator getSinkPropagator() {
         return this.sink;
-    }
-    
-    public void setIsMemoryAllowed(boolean memoryAllowed) {
-        this.memoryAllowed = memoryAllowed;
     }
 
 }

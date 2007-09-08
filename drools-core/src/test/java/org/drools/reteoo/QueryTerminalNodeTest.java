@@ -43,16 +43,19 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 
 public class QueryTerminalNodeTest extends TestCase {
+    private ReteooRuleBase ruleBase;
+    private BuildContext buildContext;
+    
+    protected void setUp() throws Exception {
+        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+    }
+    
     public void testQueryTerminalNode() {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-
-        final Rete rete = ruleBase.getRete();
-
         final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
         final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( 1,
                                                                        queryObjectType,
-                                                                       rete,
-                                                                       3 );
+                                                                       buildContext );
         queryObjectTypeNode.attach();
 
         ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( DroolsQuery.class,
@@ -69,8 +72,7 @@ public class QueryTerminalNodeTest extends TestCase {
         AlphaNode alphaNode = new AlphaNode( 2,
                                              constraint,
                                              queryObjectTypeNode,
-                                             true,
-                                             3  );
+                                             buildContext  );
         alphaNode.attach();
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 3,
@@ -80,8 +82,7 @@ public class QueryTerminalNodeTest extends TestCase {
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
         final ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( 4,
                                                                         cheeseObjectType,
-                                                                        rete,
-                                                                        3 );
+                                                                        buildContext );
         cheeseObjectTypeNode.attach();
 
         extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
@@ -97,8 +98,7 @@ public class QueryTerminalNodeTest extends TestCase {
         alphaNode = new AlphaNode( 5,
                                    constraint,
                                    cheeseObjectTypeNode,
-                                   true,
-                                   3  );
+                                   buildContext  );
         alphaNode.attach();
 
         BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );

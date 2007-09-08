@@ -21,6 +21,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalRuleBase;
+import org.drools.reteoo.builder.BuildContext;
 
 public class AddRemoveTest extends DroolsTestCase {
     public void testAdd() {
@@ -28,12 +29,12 @@ public class AddRemoveTest extends DroolsTestCase {
          * create a RuleBase with a single ObjectTypeNode we attach a
          * MockObjectSink so we can detect assertions and retractions
          */
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final Rete rete = new Rete( (InternalRuleBase) ruleBase);
+        final ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();        
+        BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+                        
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
                                                                   new ClassObjectType( Object.class ),
-                                                                  rete,
-                                                                  1 );
+                                                                  context );
         objectTypeNode.attach();
 
         final MockObjectSink sink = new MockObjectSink();

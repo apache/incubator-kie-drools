@@ -38,6 +38,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.Rete.ClassObjectTypeConf;
 import org.drools.reteoo.Rete.ObjectTypeConf;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
 
@@ -46,27 +47,30 @@ import org.drools.util.ObjectHashMap;
  *
  */
 public class ReteTest extends DroolsTestCase {
-
+    private ReteooRuleBase ruleBase;
+    private BuildContext buildContext;
+    
+    protected void setUp() throws Exception {
+        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+    }
+    
     /**
      * Tests ObjectTypeNodes are correctly added to the Rete object
      * 
      * @throws Exception
      */
     public void testObjectTypeNodes() throws Exception {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-
         final Rete rete = ruleBase.getRete();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( Object.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
 
         final ObjectTypeNode stringTypeNode = new ObjectTypeNode( 2,
                                                                   new ClassObjectType( String.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         stringTypeNode.attach();
 
         final Field field = Rete.class.getDeclaredField( "objectTypeNodes" );
@@ -87,32 +91,27 @@ public class ReteTest extends DroolsTestCase {
      * @throws FactException
      */
     public void testCache() throws FactException {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           ruleBase );
+        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                             new ClassObjectType( List.class ),
-                                                            rete,
-                                                            3 );
+                                                            buildContext );
         objectTypeNode.attach();
         MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
         objectTypeNode = new ObjectTypeNode( 1,
                                              new ClassObjectType( Collection.class ),
-                                             rete,
-                                             3 );
+                                             buildContext );
         objectTypeNode.attach();
         sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
 
         objectTypeNode = new ObjectTypeNode( 1,
                                              new ClassObjectType( ArrayList.class ),
-                                             rete,
-                                             3 );
+                                             buildContext );
         objectTypeNode.attach();
         sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
@@ -153,16 +152,13 @@ public class ReteTest extends DroolsTestCase {
      * @throws Exception
      */
     public void testAssertObject() throws Exception {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           ruleBase );
+        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( List.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
@@ -205,8 +201,7 @@ public class ReteTest extends DroolsTestCase {
     }
 
     public void testAssertObjectWithNoMatchingObjectTypeNode() {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
 
         final Rete rete = ruleBase.getRete();
         assertEquals( 0,
@@ -221,8 +216,7 @@ public class ReteTest extends DroolsTestCase {
     }
 
     public void testHierarchy() {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
 
         final Rete rete = ruleBase.getRete();
         final IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
@@ -230,8 +224,7 @@ public class ReteTest extends DroolsTestCase {
         // Attach a List ObjectTypeNode
         final ObjectTypeNode listOtn = new ObjectTypeNode( idGenerator.getNextId(),
                                                            new ClassObjectType( List.class ),
-                                                           rete,
-                                                           3 );
+                                                           buildContext );
         listOtn.attach();
 
         // Will automatically create an ArrayList ObjectTypeNode
@@ -277,8 +270,7 @@ public class ReteTest extends DroolsTestCase {
         // Add a Collection ObjectTypeNode, so that we can check that the data from ArrayList is sent to it
         final ObjectTypeNode collectionOtn = new ObjectTypeNode( idGenerator.getNextId(),
                                                                  new ClassObjectType( Collection.class ),
-                                                                 rete,
-                                                                 3 );
+                                                                 buildContext );
         final MockObjectSink collectionSink = new MockObjectSink();
         collectionOtn.addObjectSink( collectionSink );
         collectionOtn.attach( new InternalWorkingMemory[]{workingMemory} );
@@ -299,16 +291,13 @@ public class ReteTest extends DroolsTestCase {
      * ObjectTypeNodes.
      */
     public void testRetractObject() throws Exception {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           ruleBase );
+        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( List.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
@@ -359,16 +348,13 @@ public class ReteTest extends DroolsTestCase {
     }
 
     public void testIsShadowed() {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           ruleBase );
+        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( Cheese.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );
@@ -400,6 +386,7 @@ public class ReteTest extends DroolsTestCase {
                                 "org.drools.Cheese" );
         RuleBaseConfiguration conf = new RuleBaseConfiguration( properties );
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
+        buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            ruleBase );
 
@@ -407,8 +394,7 @@ public class ReteTest extends DroolsTestCase {
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( Cheese.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
         objectTypeNode.attach();
         final MockObjectSink sink1 = new MockObjectSink();
         objectTypeNode.addObjectSink( sink1 );

@@ -452,13 +452,5 @@ public class AccumulateNode extends BetaNode {
         // keeping attributes public just for performance
         public InternalFactHandle handle;
         public Object             context;
-    }
-
-    public void setIsMemoryAllowed(boolean memoryAllowed) {
-        // TODO Auto-generated method stub
-        
-    }
-    
-    
-
+    }      
 }

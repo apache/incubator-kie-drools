@@ -30,6 +30,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
 import org.drools.spi.Evaluator;
@@ -39,16 +40,18 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.FactHashTable;
 
 public class AlphaNodeTest extends DroolsTestCase {
-
+    
     public void testMemory() {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-
-        final AlphaNode alphaNode = new AlphaNode( 2,
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setAlphaMemory( false );
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase( config );
+        BuildContext buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    null,
                                                    null,
-                                                   true,
-                                                   3);
+                                                   buildContext);
 
         final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
 
@@ -56,15 +59,19 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
 
     public void testLiteralConstraintAssertObjectWithMemory() throws Exception {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setAlphaMemory( true );
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase( config );
+        BuildContext buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );        
+        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        final MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
                                                                                      "type",
@@ -78,11 +85,10 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     field );
 
         // With Memory
-        final AlphaNode alphaNode = new AlphaNode( 2,
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
-                                                   true,
-                                                   3 ); // has memory
+                                                   buildContext ); // has memory
 
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
@@ -138,15 +144,19 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
 
     public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setAlphaMemory( false );
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase( config );
+        BuildContext buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );        
+        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        final MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
                                                                                       "type",
@@ -160,11 +170,10 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     field );
 
         // With Memory
-        final AlphaNode alphaNode = new AlphaNode( 2,
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
-                                                   false,
-                                                   3 ); // no memory
+                                                   buildContext ); // no memory
 
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
@@ -220,17 +229,19 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
     
     public void testLiteralConstraintAssertSequentialMode() throws Exception {
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setSequential( true );
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setSequential( true );
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase( config );
+        BuildContext buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );        
+        ReteooWorkingMemory workingMemory = new ReteooWorkingMemory(buildContext.getNextId(), ruleBase);       
+        
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        final MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
                                                                                      "type",
@@ -244,11 +255,10 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     field );
 
         // With Memory
-        final AlphaNode alphaNode = new AlphaNode( 2,
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
-                                                   true,
-                                                   3 ); // has memory
+                                                   buildContext ); // has memory
 
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
@@ -307,15 +317,19 @@ public class AlphaNodeTest extends DroolsTestCase {
      * Constraint type.
      */
     public void testReturnValueConstraintAssertObject() throws Exception {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setAlphaMemory( false );
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase( config );
+        BuildContext buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );        
+        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        final MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
                                                                                 "type",
@@ -328,11 +342,10 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     evaluator,
                                                                     field );
 
-        final AlphaNode alphaNode = new AlphaNode( 2,
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
-                                                   true,
-                                                   3 );
+                                                   buildContext );
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
 
@@ -371,15 +384,19 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
 
     public void testRetractObjectWithMemory() throws Exception {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setAlphaMemory( true );
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase( config );
+        BuildContext buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );        
+        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        final MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
                                                                                 "type",
@@ -392,11 +409,10 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     evaluator,
                                                                     field );
 
-        final AlphaNode alphaNode = new AlphaNode( 2,
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
-                                                   true,
-                                                   3 ); // has memory
+                                                   buildContext ); // has memory
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
 
@@ -450,15 +466,19 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
 
     public void testRetractObjectWithoutMemory() throws Exception {
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setAlphaMemory( false );
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase( config );
+        BuildContext buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );        
+        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        final MockObjectSource source = new MockObjectSource( 15 );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
                                                                                  "type",
@@ -471,11 +491,10 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     evaluator,
                                                                     field );
 
-        final AlphaNode alphaNode = new AlphaNode( 2,
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
-                                                   false,
-                                                   3 ); // no memory
+                                                   buildContext ); // no memory
         final MockObjectSink sink = new MockObjectSink();
         alphaNode.addObjectSink( sink );
 
@@ -533,16 +552,19 @@ public class AlphaNodeTest extends DroolsTestCase {
                                           IntrospectionException {
         // An AlphaNode with memory should not try and repropagate from its source
         // Also it should only update the latest tuple sinky
-
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setAlphaMemory( true );
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase( config );
+        BuildContext buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );        
+        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        final MockObjectSource source = new MockObjectSource( 1 );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
                                                                                 "type",
@@ -555,11 +577,10 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     evaluator,
                                                                     field );
 
-        final AlphaNode alphaNode = new AlphaNode( 2,
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
-                                                   true,
-                                                   3 ); // has memory
+                                                   buildContext ); // has memory
 
         alphaNode.attach();
 
@@ -602,15 +623,19 @@ public class AlphaNodeTest extends DroolsTestCase {
     public void testUpdateSinkWithoutMemory() throws FactException,
                                              IntrospectionException {
         // An AlphaNode without memory should try and repropagate from its source
-        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
-                                                                           (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setAlphaMemory( false );
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase( config );
+        BuildContext buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );        
+        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        
         final Rule rule = new Rule( "test-rule" );
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null );
 
-        final MockObjectSource source = new MockObjectSource( 1 );
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor(Cheese.class,
                                                                                "type",
@@ -623,11 +648,10 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     evaluator,
                                                                     field );
 
-        final AlphaNode alphaNode = new AlphaNode( 2,
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
-                                                   false,
-                                                   3 ); // no memory
+                                                   buildContext ); // no memory
 
         alphaNode.attach();
 
