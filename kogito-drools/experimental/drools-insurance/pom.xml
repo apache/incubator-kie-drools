@@ -8,7 +8,7 @@
     <artifactId>insurance</artifactId>
     <packaging>war</packaging>
     <name>DroolsInsurance</name>
-    <version>4.0.1.SNAPSHOT</version>
+    <version>4.0.2.SNAPSHOT</version>
     <description>
     </description>
 
@@ -283,12 +283,12 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
-            <version>4.0.1.SNAPSHOT</version>
+            <version>4.0.2.SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
-            <version>4.0.1.SNAPSHOT</version>
+            <version>4.0.2.SNAPSHOT</version>
         </dependency>
 
         <!-- Xstream -->
