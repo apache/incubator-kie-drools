@@ -82,18 +82,6 @@ public class ObjectTypeNode extends ObjectSource
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-
-    public ObjectTypeNode(final int id,
-                          final ObjectType objectType,
-                          final Rete rete,
-                          final int alphaNodeHashingThreshold ) {
-        super( id,
-               null,
-               alphaNodeHashingThreshold );
-        this.rete = rete;
-        this.objectType = objectType;
-        setHasMemory( true );  
-    }
     
     /**
      * Construct given a semantic <code>ObjectType</code> and the provided
@@ -303,9 +291,6 @@ public class ObjectTypeNode extends ObjectSource
     protected void addObjectSink(final ObjectSink objectSink) {
         super.addObjectSink( objectSink );
         this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
-        if ( objectType instanceof ClassObjectType && ((ClassObjectType)this.objectType).getClassType() == DroolsQuery.class ) {
-            objectSink.setIsMemoryAllowed( false );
-        }        
     }
     
     

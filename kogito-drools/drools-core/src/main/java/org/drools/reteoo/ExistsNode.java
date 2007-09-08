@@ -249,9 +249,4 @@ public class ExistsNode extends BetaNode {
         return "[ExistsNode - " + ((ObjectTypeNode) source).getObjectType() + "]";
     }
 
-    public void setIsMemoryAllowed(boolean memoryAllowed) {
-        // TODO Auto-generated method stub
-        
-    }
-
 }

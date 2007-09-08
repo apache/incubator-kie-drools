@@ -169,11 +169,19 @@ public class PatternBuilder
                                  final Pattern pattern,
                                  List alphaConstraints) throws InvalidPatternException {
 
+        // Drools Query ObjectTypeNode never has memory, but other ObjectTypeNode/AlphaNoesNodes may (if not in sequential), 
+        //so need to preserve, so we can resotre after this node is added. LeftMemory  and Terminal remain the same once set.
+        
+        boolean objectMemory = context.hasObjectTypeMemory(); 
+        boolean alphaMemory = context.isAlphaMemoryAllowed();
+                
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
+            // Is this the query node, if so we don't want any memory
             if ( DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
                 context.setHasLeftMemory( false );
                 context.setHasObjectTypeMemory( false );
                 context.setHasTerminalNodeMemory( false );
+                context.setAlphaMemoryAllowed( false );
             }
         }
 
@@ -189,9 +197,12 @@ public class PatternBuilder
                                                                       new AlphaNode( context.getNextId(),
                                                                                      (AlphaNodeFieldConstraint) constraint,
                                                                                      context.getObjectSource(),
-                                                                                     context.getRuleBase().getConfiguration().isAlphaMemory(),
-                                                                                     context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() ) ) );
+                                                                                     context ) ) );
         }
+        
+        // now restore back to original values
+        context.setHasObjectTypeMemory( objectMemory );
+        context.setAlphaMemoryAllowed( alphaMemory );
 
     }
 

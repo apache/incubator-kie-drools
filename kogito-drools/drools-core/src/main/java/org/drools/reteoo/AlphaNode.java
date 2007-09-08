@@ -22,6 +22,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
@@ -55,6 +56,8 @@ public class AlphaNode extends ObjectSource
 
     private ObjectSinkNode                 previousObjectSinkNode;
     private ObjectSinkNode                 nextObjectSinkNode;
+    
+    private boolean                        memoryAllowed;
 
     /**
      * Construct an <code>AlphaNode</code> with a unique id using the provided
@@ -71,13 +74,13 @@ public class AlphaNode extends ObjectSource
     public AlphaNode(final int id,
                      final AlphaNodeFieldConstraint constraint,
                      final ObjectSource objectSource,
-                     final boolean hasMemory,
-                     final int alphaNodeHashingThreshold) {
+                     final BuildContext context) {
         super( id,
                objectSource,
-               alphaNodeHashingThreshold );
+               context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.constraint = constraint;
-        setHasMemory( hasMemory );
+        setHasMemory( context.getRuleBase().getConfiguration().isAlphaMemory() );
+        this.memoryAllowed = context.isAlphaMemoryAllowed();
     }
 
     /**
@@ -102,8 +105,10 @@ public class AlphaNode extends ObjectSource
         attach();
 
         // we are attaching this node with existing working memories
-        // so this  node must also have memory
-        setHasMemory( true );
+        // indicating that we are in a dynamic environment, that might benefit from alpha node memory, if allowed
+        if ( this.memoryAllowed ) {
+            setHasMemory( true );
+        }
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
@@ -189,6 +194,10 @@ public class AlphaNode extends ObjectSource
         this.objectSource.remove( this,
                                   workingMemories );
     }
+    
+    public void setMemoryAllowed(boolean memoryAllowed) {
+        this.memoryAllowed = memoryAllowed;
+    }
 
     /**
      * Creates a HashSet for the AlphaNode's memory.
@@ -196,6 +205,13 @@ public class AlphaNode extends ObjectSource
     public Object createMemory(final RuleBaseConfiguration config) {
         return new FactHashTable();
     }
+    
+    /** 
+     * @inheritDoc
+     */
+    protected void addObjectSink(final ObjectSink objectSink) {
+        super.addObjectSink( objectSink );
+    }    
 
     public String toString() {
         return "[AlphaNode(" + this.id + ") constraint=" + this.constraint + "]";

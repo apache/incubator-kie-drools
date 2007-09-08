@@ -7,19 +7,23 @@ import junit.framework.TestCase;
 
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
+import org.drools.reteoo.builder.BuildContext;
 
 public class PropertyChangeListenerTest extends TestCase {
+    private ReteooRuleBase ruleBase;
+    private BuildContext buildContext;
+    
+    protected void setUp() throws Exception {
+        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+    }
+    
     public void test1() {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
-
-        final Rete rete = ruleBase.getRete();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
                                                                   new ClassObjectType( State.class ),
-                                                                  rete,
-                                                                  3 );
+                                                                  buildContext );
 
         objectTypeNode.attach();
 

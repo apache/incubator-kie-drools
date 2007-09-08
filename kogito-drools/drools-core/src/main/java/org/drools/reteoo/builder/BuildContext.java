@@ -73,6 +73,9 @@ public class BuildContext {
     private boolean                   hasObjectTypeMemory;    
     
     private boolean                   hasTerminalNodeMemory;
+    
+    /** This one is slightly different as alphaMemory can be adaptive, only turning on for new rule attachments */
+    private boolean                   alphaMemoryAllowed;
 
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
@@ -316,6 +319,14 @@ public class BuildContext {
 
     public void setHasTerminalNodeMemory(boolean hasTerminalNodeMemory) {
         this.hasTerminalNodeMemory = hasTerminalNodeMemory;
-    }        
+    }     
+    
+    public void setAlphaMemoryAllowed(boolean alphaMemoryAllowed) {
+        this.alphaMemoryAllowed = alphaMemoryAllowed;
+    }
+    
+    public boolean isAlphaMemoryAllowed() {
+        return this.alphaMemoryAllowed;
+    }
         
 }

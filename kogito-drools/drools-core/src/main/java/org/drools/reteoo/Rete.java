@@ -28,6 +28,7 @@ import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.base.ShadowProxy;
 import org.drools.base.ShadowProxyFactory;
 import org.drools.common.BaseNode;
@@ -135,7 +136,7 @@ public class Rete extends ObjectSource
             ojectTypeConf = (ObjectTypeConf) memory.get( key );
             if ( ojectTypeConf == null ) {
                 ojectTypeConf = new FactTemplateTypeConf( ((Fact) object).getFactTemplate(),
-                                                                 this.ruleBase );
+                                                          this.ruleBase );
                 memory.put( key,
                             ojectTypeConf,
                             false );
@@ -203,7 +204,7 @@ public class Rete extends ObjectSource
             objectTypeConf = (ObjectTypeConf) memory.get( object.getClass() );
         }
 
-        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes( );
+        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {
             // it is  possible that there are no ObjectTypeNodes for an  object being retracted
@@ -233,7 +234,7 @@ public class Rete extends ObjectSource
     }
 
     protected void removeObjectSink(final ObjectSink objectSink) {
-        final ObjectTypeNode node = (ObjectTypeNode) objectSink;        
+        final ObjectTypeNode node = (ObjectTypeNode) objectSink;
         this.objectTypeNodes.remove( node.getObjectType() );
     }
 
@@ -291,12 +292,12 @@ public class Rete extends ObjectSource
         final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
         Iterator it = memory.iterator();
         final ObjectTypeNode node = (ObjectTypeNode) sink;
-        
+
         ObjectType newObjectType = node.getObjectType();
 
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             ObjectTypeConf objectTypeConf = (ObjectTypeConf) entry.getValue();
-            if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {                
+            if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
                 FactHashTable table = (FactHashTable) workingMemory.getNodeMemory( sourceNode );
@@ -342,25 +343,35 @@ public class Rete extends ObjectSource
         implements
         ObjectTypeConf,
         Serializable {
-        private InternalRuleBase               ruleBase;
-        private FactTemplate                   factTemplate;
-        private ObjectTypeNode                 concreteObjectTypeNode;
-        private ObjectTypeNode[]               cache;
-        
-        public FactTemplateTypeConf(FactTemplate  factTemplate,
+        private InternalRuleBase ruleBase;
+        private FactTemplate     factTemplate;
+        private ObjectTypeNode   concreteObjectTypeNode;
+        private ObjectTypeNode[] cache;
+
+        public FactTemplateTypeConf(FactTemplate factTemplate,
                                     InternalRuleBase ruleBase) {
             this.ruleBase = ruleBase;
             this.factTemplate = factTemplate;
-            ObjectType objectType = new FactTemplateObjectType(factTemplate);
+            ObjectType objectType = new FactTemplateObjectType( factTemplate );
             this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes().get( objectType );
             if ( this.concreteObjectTypeNode == null ) {
-                BuildContext context = new BuildContext(ruleBase, 
-                                                        ((ReteooRuleBase)ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator());                
+                BuildContext context = new BuildContext( ruleBase,
+                                                         ((ReteooRuleBase) ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator() );
+                if ( context.getRuleBase().getConfiguration().isSequential() ) {
+                    // We are in sequential mode, so no nodes should have memory
+                    context.setHasLeftMemory( false );
+                    context.setHasObjectTypeMemory( false );
+                    context.setHasTerminalNodeMemory( false );
+                } else {
+                    context.setHasLeftMemory( true );
+                    context.setHasObjectTypeMemory( true );
+                    context.setHasTerminalNodeMemory( true );
+                }
                 // there must exist an ObjectTypeNode for this concrete class                
                 this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( context,
                                                                                    objectType );
-            }           
-            this.cache = new ObjectTypeNode[] { this.concreteObjectTypeNode };
+            }
+            this.cache = new ObjectTypeNode[]{this.concreteObjectTypeNode};
         }
 
         public ObjectTypeNode getConcreteObjectTypeNode() {
@@ -369,7 +380,7 @@ public class Rete extends ObjectSource
 
         public ObjectTypeNode[] getObjectTypeNodes() {
             if ( this.cache == null ) {
-                this.cache = new ObjectTypeNode[] { this.concreteObjectTypeNode };
+                this.cache = new ObjectTypeNode[]{this.concreteObjectTypeNode};
             }
             return this.cache;
         }
@@ -380,7 +391,7 @@ public class Rete extends ObjectSource
 
         public boolean isShadowEnabled() {
             return false;
-        }        
+        }
 
         public boolean isAssignableFrom(Object object) {
             return this.factTemplate.equals( object );
@@ -414,11 +425,25 @@ public class Rete extends ObjectSource
             this.cls = clazz;
             this.ruleBase = ruleBase;
 
-            ObjectType objectType =  new ClassObjectType( clazz );
+            ObjectType objectType = new ClassObjectType( clazz );
             this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes().get( objectType );
             if ( this.concreteObjectTypeNode == null ) {
-                BuildContext context = new BuildContext(ruleBase, 
-                                                        ((ReteooRuleBase)ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator());
+                BuildContext context = new BuildContext( ruleBase,
+                                                         ((ReteooRuleBase) ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator() );
+                if ( DroolsQuery.class == clazz ) {
+                    context.setHasLeftMemory( false );
+                    context.setHasObjectTypeMemory( false );
+                    context.setHasTerminalNodeMemory( false );
+                } else if ( context.getRuleBase().getConfiguration().isSequential() ) {
+                    // We are in sequential mode, so no nodes should have memory
+                    context.setHasLeftMemory( false );
+                    context.setHasObjectTypeMemory( false );
+                    context.setHasTerminalNodeMemory( false );
+                } else {
+                    context.setHasLeftMemory( true );
+                    context.setHasObjectTypeMemory( true );
+                    context.setHasTerminalNodeMemory( true );
+                }
                 // there must exist an ObjectTypeNode for this concrete class
                 this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( context,
                                                                                    objectType );
@@ -429,7 +454,7 @@ public class Rete extends ObjectSource
 
         public boolean isAssignableFrom(Object object) {
             return this.cls.isAssignableFrom( (Class) object );
-        }       
+        }
 
         public ObjectTypeNode getConcreteObjectTypeNode() {
             return this.concreteObjectTypeNode;
@@ -483,7 +508,7 @@ public class Rete extends ObjectSource
          * work it out from the class name (this is in cases where funky classloading is used).
          */
         public static String getPackageName(Class clazz,
-                                             Package pkg) {
+                                            Package pkg) {
             String pkgName = "";
             if ( pkg == null ) {
                 int index = clazz.getName().lastIndexOf( '.' );

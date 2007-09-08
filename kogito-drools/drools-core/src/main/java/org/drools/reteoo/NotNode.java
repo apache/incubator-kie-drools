@@ -243,9 +243,4 @@ public class NotNode extends BetaNode {
 
         return "[NotNode - " + ((ObjectTypeNode) source).getObjectType() + "]";
     }
-
-    public void setIsMemoryAllowed(boolean memoryAllowed) {
-        // TODO Auto-generated method stub
-        
-    }
 }

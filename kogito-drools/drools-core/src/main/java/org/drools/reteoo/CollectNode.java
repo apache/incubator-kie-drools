@@ -374,9 +374,4 @@ public class CollectNode extends BetaNode
         public InternalFactHandle handle;
         public boolean            propagated;
     }
-
-    public void setIsMemoryAllowed(boolean memoryAllowed) {
-        // TODO Auto-generated method stub
-        
-    }
 }

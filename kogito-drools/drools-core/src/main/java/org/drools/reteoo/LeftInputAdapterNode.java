@@ -52,24 +52,6 @@ public class LeftInputAdapterNode extends TupleSource
     private ObjectSinkNode     previousObjectSinkNode;
     private ObjectSinkNode     nextObjectSinkNode;
 
-    //    private final AlphaNodeFieldConstraint    constraints;
-
-    //    /**
-    //     * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
-    //     * parent <code>ObjectSource</code> and adds it to a given pattern in the resulting Tuples.
-    //     * 
-    //     * @param id
-    //     *      The unique id of this node in the current Rete network
-    //     * @param source
-    //     *      The parent node, where Facts are propagated from
-    //     */
-    //    public LeftInputAdapterNode(final int id,
-    //                                final ObjectSource source) {
-    //        this( id,
-    //              source,
-    //              null );
-    //    }
-
     /**
      * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
      * parent <code>ObjectSource</code> and adds it to a given pattern in the resulting Tuples.
@@ -203,7 +185,7 @@ public class LeftInputAdapterNode extends TupleSource
         }
         this.objectSource.remove( this,
                                   workingMemories );
-    }
+    }    
 
     /**
      * Returns the next node
@@ -301,16 +283,6 @@ public class LeftInputAdapterNode extends TupleSource
                                   final InternalWorkingMemory workingMemory) {
             throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
         }
-
-        public void setIsMemoryAllowed(boolean memoryAllowed) {
-            // TODO Auto-generated method stub
-            
-        }
-    }
-
-    public void setIsMemoryAllowed(boolean memoryAllowed) {
-        // TODO Auto-generated method stub
-        
     }
 
 }
