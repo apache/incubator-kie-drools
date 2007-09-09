@@ -736,7 +736,8 @@ session.execute( new Cheese( "cheddar" ) );</programlisting>
 
       <programlisting>StatelessSession session = ruleBase.newStatelessSession();
 session.setGlobalExporter( new CopyIdentifiersGlobalExporter( new String[]{"list"} ) );
-StatelessSessionResult result = session.executeWithResults( new Cheese( "stilton" ) );</programlisting>
+StatelessSessionResult result = session.executeWithResults( new Cheese( "stilton" ) );
+List list = ( List ) result.getGlobal( "list" );</programlisting>
     </example>
   </section>
 
