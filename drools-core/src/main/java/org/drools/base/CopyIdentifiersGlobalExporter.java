@@ -37,7 +37,7 @@ public class CopyIdentifiersGlobalExporter implements GlobalExporter {
     }
     
     public GlobalResolver export(WorkingMemory workingMemory) {
-        if ( this.identifiers == null ) {
+        if ( this.identifiers == null || this.identifiers.length == 0 ) {
             // no identifiers, to get all the identifiers from that defined in
             // the rulebase
             Map map = ((InternalRuleBase)workingMemory.getRuleBase()).getGlobals();
