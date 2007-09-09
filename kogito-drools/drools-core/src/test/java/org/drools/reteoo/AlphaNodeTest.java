@@ -143,6 +143,68 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertTrue( "Should contain 'cheddar handle'",
                     memory.contains( f0 ) );
     }
+    
+    public void testIsMemoryAllowedOverride() throws Exception {
+        RuleBaseConfiguration config = new RuleBaseConfiguration();
+        config.setAlphaMemory( true );
+        ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase( config );
+        BuildContext buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );        
+        ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
+        
+        final Rule rule = new Rule( "test-rule" );
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null );
+
+        final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
+
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
+                                                                                     "type",
+                                                                                     getClass().getClassLoader() );
+
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
+
+        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                                    evaluator,
+                                                                    field );
+
+        // With Memory
+        buildContext.setAlphaNodeMemoryAllowed( false );        
+        final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
+                                                   constraint,
+                                                   source,
+                                                   buildContext ); // has memory
+
+        final MockObjectSink sink = new MockObjectSink();
+        alphaNode.addObjectSink( sink );
+
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           5 );
+        final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( cheddar );
+
+        // check sink is empty
+        assertLength( 0,
+                      sink.getAsserted() );
+
+        // check alpha memory is empty 
+        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
+
+        assertEquals( 0,
+                      memory.size() );
+
+        // object should assert as it passes text
+        alphaNode.assertObject( f0,
+                                context,
+                                workingMemory );
+
+        assertEquals( 1,
+                      sink.getAsserted().size() );
+        // memory should be one, as even though isAlphaMemory is on for the configuration, the build never allows memory
+        assertEquals( 0,
+                      memory.size() );
+    }    
 
     public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
