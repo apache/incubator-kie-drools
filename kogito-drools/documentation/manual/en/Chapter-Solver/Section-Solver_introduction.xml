@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Solver introduction</title>
+
+  <section>
+    <title>Status of drools-solver</title>
+
+    <para>Drools-solver is an experimental module of drools-solver. The API is
+    far from stable and backward incompatible changes occur now and then. A
+    recipe to upgrade and apply those API changes between versions will be
+    maintained soon.</para>
+  </section>
+
+  <section>
+    <title>What is a Solver?</title>
+
+    <para>A solver solves all kinds of planning problems. Good examples of
+    such planning problems include:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Employee shift rostering</para>
+      </listitem>
+
+      <listitem>
+        <para>Freight routing</para>
+      </listitem>
+
+      <listitem>
+        <para>Supply sorting</para>
+      </listitem>
+
+      <listitem>
+        <para>Lesson scheduling</para>
+      </listitem>
+
+      <listitem>
+        <para>Exam scheduling</para>
+      </listitem>
+
+      <listitem>
+        <para><ulink
+        url="http://en.wikipedia.org/wiki/Travelling_salesman_problem">The
+        traveling salesmen problem</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para><ulink url="http://mat.gsia.cmu.edu/TOURN/">The traveling
+        tournament problem</ulink></para>
+      </listitem>
+
+      <listitem>
+        <para>Miss manners too (although drools-solver would solve this
+        differently than the pure drools rule engine example)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Ussually a planning problem consists out of a number of constraints.
+    Generally, there are 3 types of constraints:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>A <emphasis role="bold">(negative) hard constraint</emphasis>
+        must not be broken. For example: <emphasis>1 teacher can not teach 2
+        different lessons at the same time</emphasis>.</para>
+      </listitem>
+
+      <listitem>
+        <para>A <emphasis role="bold">(negative) soft constraint</emphasis>
+        should not be broken if it can be avoided. For example:
+        <emphasis>Teacher A does not like to teach on Friday
+        afternoon</emphasis>.</para>
+      </listitem>
+
+      <listitem>
+        <para>A <emphasis role="bold">positive constraint (or
+        reward)</emphasis> should be fullfilled if possible. For example:
+        <emphasis>Teacher B likes to teach on Monday
+        morning</emphasis>.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>The constraints define the score function of a planning problem.
+    Ussually a planning problems has a very large number of possible
+    solutions. Each solution has a score. Ussually, most solutions are not
+    feasible, because they break a negative hard constraint. Ussually, of all
+    the feasible solutions (if any), there is only 1 or very few optimal
+    solutions.</para>
+
+    <para>The drools rule engine turns out to be a very good way to implement
+    a score function a number of rule constaints.</para>
+  </section>
+
+  <section>
+    <title>Types of solvers</title>
+
+    <para>Different solvers solve problems in different ways. Each type has
+    advantages and disadvantages. These are a few of the solver types.</para>
+
+    <section>
+      <title>Brute force</title>
+
+      <para>Brute force creates and evaluates every possible solution,
+      ussually by create a search tree.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It finds an optimal solution. If there is more then 1 optimal
+          solution, it finds all optimal solutions.</para>
+        </listitem>
+
+        <listitem>
+          <para>It is straightforward and simple to implement.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It has a horrible performance and scalability. Mostly unusable
+          for a real-world problem due to time constraints.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Brute force is currently not implemented in drools-solver. But we
+      have plans to implement in the future, as a reference for validating the
+      output of the other solver types.</para>
+    </section>
+
+    <section>
+      <title>Branch and bound</title>
+
+      <para>Branch and bound is an improvement over brute force, as it prunes
+      away subsets of solutions which cannot have a better solution than the
+      best solution found at that point.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It finds an optimal solution. If there is more then 1 optimal
+          solution, it can find all optimal solutions if needed.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It scales very badly.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Branch and bound is currently not implemented in
+      drools-solver.</para>
+    </section>
+
+    <section>
+      <title>Simplex</title>
+
+      <para>Brute force is</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It finds an optimal solution.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It's ussually rather complex and mathematical to implement
+          constraints.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Drools-solver does not currently implement simplex.</para>
+    </section>
+
+    <section>
+      <title>Local search (tabu search, simulated annealing, ...)</title>
+
+      <para>Local search starts from an initial solution and evolves that
+      single solution into a better and better solution. It uses a single
+      search path of solutions. At each solution in this path it evaluates a
+      number of possible moves on the solution and applies the most suitable
+      move to take the step to the next solution.</para>
+
+      <para>Local search works a lot like a human planner: it uses a single
+      search path and moves facts around to find a very good solution.</para>
+
+      <para>A vanilla local search can easily get stuck in a local optima, but
+      improvements (such as tabu search and simulated annealing) adress this
+      problem.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It's relatively simple and natural to implement constraints
+          (at least in drools-solver's implementation).</para>
+        </listitem>
+
+        <listitem>
+          <para>It's very scalable, even when adding extra constraints (at
+          least in drools-solver's implementation).</para>
+        </listitem>
+
+        <listitem>
+          <para>Generally needs less negative hard constraints, as the move
+          pattern fulfills a number of the negative hard constraints.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It does not know when it finds an optimal solution.</para>
+        </listitem>
+
+        <listitem>
+          <para>If the perfect score is unknown (which is ussually the case),
+          it must be told when to stop looking (for example based on time
+          spend, user imput, ...).</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Drools-solver implements local search, including tabu search and
+      simulated annealing.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>The 4 queens example</title>
+
+    <section>
+      <title>Problem statement</title>
+
+      <para>The n queens puzzle is a puzzle with the follow
+      constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Use a chessboard of n rows and n columns.</para>
+        </listitem>
+
+        <listitem>
+          <para>Place n queens on the chessboard.</para>
+        </listitem>
+
+        <listitem>
+          <para>No 2 queens can attack each other. Note that a queen can
+          attack any other queen on the same horizontal, vertical or diagonal
+          line.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The most common puzzle is the 8 queens puzzle, with <emphasis>n =
+      8</emphasis>. We 'll explain drools-solver using the 4 queens puzzle as
+      the primary example.</para>
+
+      <para>A proposed solution could be:</para>
+
+      <figure>
+        <title>A wrong solution for the 4 queens puzzle</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="partiallySolvedNQueens04Explained.svg"
+                       format="SVG" />
+          </imageobject>
+
+          <imageobject>
+            <imagedata align="center"
+                       fileref="partiallySolvedNQueens04Explained.png"
+                       format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above solution is wrong because queens A1 and B1 can attack
+      each other (as can queens B1 and D1). Removing queen B1 would respect
+      the "no 2 queens can attack each other" constraint, but would break the
+      "place n queens" constraint.</para>
+    </section>
+
+    <section>
+      <title>Solution(s)</title>
+
+      <para>Below is a correct solution:</para>
+
+      <figure>
+        <title>A correct solution for the 4 queens puzzle</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="solvedNQueens04.svg"
+                       format="SVG" />
+          </imageobject>
+
+          <imageobject>
+            <imagedata align="center" fileref="solvedNQueens04.png"
+                       format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>All the constraints have been met, so the solution is correct.
+      Note that most n queens puzzles have multiple correct solutions. We 'll
+      focus on finding a single correct solution for a given n, not on finding
+      the number of possible correct solutions for a given n.</para>
+    </section>
+
+    <section>
+      <title>Class diagram</title>
+
+      <para>Use a good domain model and it will be easier to understand and
+      solve your problem with drools-solver. We 'll use this domain model for
+      the n queens example:</para>
+
+      <figure>
+        <title>NQueens domain diagram</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="nQueensDomainDiagram.png"
+                       format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>A Queen instance has an x (its column, for example: 1 is column A,
+      2 is column B, ...) and a y (its row, for example: 1 is row 1, 2 is row
+      2, ...). Based on the x and y, the ascending diagonal line as well as
+      the descending diagonal line can be calculated. The x and y indexes
+      start from the upper left corner of the chessboard.</para>
+
+      <table>
+        <title>A solution for the 4 queens puzzle show in the domain
+        model</title>
+
+        <tgroup cols="6">
+          <thead>
+            <row>
+              <entry align="center">A solution</entry>
+
+              <entry align="center">Queen</entry>
+
+              <entry>x</entry>
+
+              <entry>y</entry>
+
+              <entry>ascendingD (x + y)</entry>
+
+              <entry>descendingD (x - y)</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry morerows="3"><mediaobject>
+                  <imageobject>
+                    <imagedata fileref="partiallySolvedNQueens04Explained.png" />
+                  </imageobject>
+                </mediaobject></entry>
+
+              <entry>A2</entry>
+
+              <entry>1</entry>
+
+              <entry>2</entry>
+
+              <entry>3 (**)</entry>
+
+              <entry>-1</entry>
+            </row>
+
+            <row>
+              <entry>B1</entry>
+
+              <entry>2</entry>
+
+              <entry>1 (*)</entry>
+
+              <entry>3 (**)</entry>
+
+              <entry>1</entry>
+            </row>
+
+            <row>
+              <entry>C3</entry>
+
+              <entry>3</entry>
+
+              <entry>3</entry>
+
+              <entry>6</entry>
+
+              <entry>0</entry>
+            </row>
+
+            <row>
+              <entry>D1</entry>
+
+              <entry>4</entry>
+
+              <entry>1 (*)</entry>
+
+              <entry>5</entry>
+
+              <entry>3</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para>A single NQueens instance contains a list of all Queens. It is
+      effectively the <emphasis>Solution</emphasis> object which will be
+      supplied to and retrieved from drools-solver. Notice that in the 4
+      queens example, NQueens's <literal>getN()</literal> method will always
+      return 4.</para>
+
+      <para>You can find the source code of this example (as well as well as
+      several other examples) in the drools-solver-examples src
+      distribution.</para>
+    </section>
+  </section>
+</section>
