@@ -53,7 +53,7 @@ public class QueryTerminalNodeTest extends TestCase {
     
     public void testQueryTerminalNode() {
         final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
-        final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( 1,
+        final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( this.buildContext.getNextId(),
                                                                        queryObjectType,
                                                                        buildContext );
         queryObjectTypeNode.attach();
@@ -69,18 +69,19 @@ public class QueryTerminalNodeTest extends TestCase {
                                                               evaluator,
                                                               field );
 
-        AlphaNode alphaNode = new AlphaNode( 2,
+        AlphaNode alphaNode = new AlphaNode( this.buildContext.getNextId(),
                                              constraint,
                                              queryObjectTypeNode,
                                              buildContext  );
         alphaNode.attach();
 
-        final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 3,
-                                                                       alphaNode );
+        final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( this.buildContext.getNextId(),
+                                                                       alphaNode,
+                                                                       this.buildContext );
         liaNode.attach();
 
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
-        final ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( 4,
+        final ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( this.buildContext.getNextId(),
                                                                         cheeseObjectType,
                                                                         buildContext );
         cheeseObjectTypeNode.attach();
@@ -95,16 +96,16 @@ public class QueryTerminalNodeTest extends TestCase {
                                             evaluator,
                                             field );
 
-        alphaNode = new AlphaNode( 5,
+        alphaNode = new AlphaNode( this.buildContext.getNextId(),
                                    constraint,
                                    cheeseObjectTypeNode,
                                    buildContext  );
         alphaNode.attach();
 
         BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
-        buildContext.setHasLeftMemory( false );
+        buildContext.setTupleMemoryEnabled( false );
         
-        final JoinNode joinNode = new JoinNode( 6,
+        final JoinNode joinNode = new JoinNode( this.buildContext.getNextId(),
                                                 liaNode,
                                                 alphaNode,
                                                 EmptyBetaConstraints.getInstance(),
@@ -113,7 +114,7 @@ public class QueryTerminalNodeTest extends TestCase {
 
         final Query query = new Query( "query-1" );
 
-        final QueryTerminalNode queryNode = new QueryTerminalNode( 7,
+        final QueryTerminalNode queryNode = new QueryTerminalNode( this.buildContext.getNextId(),
                                                                    joinNode,
                                                                    query,
                                                                    query.getLhs() );

@@ -32,6 +32,8 @@ public class FromNode extends TupleSource
 
     private TupleSinkNode              previousTupleSinkNode;
     private TupleSinkNode              nextTupleSinkNode;
+    
+    protected boolean                 tupleMemoryEnabled;      
 
     public FromNode(final int id,
                     final DataProvider dataProvider,
@@ -43,6 +45,7 @@ public class FromNode extends TupleSource
         this.tupleSource = tupleSource;
         this.alphaConstraints = constraints;
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
+        this.tupleMemoryEnabled = false;
     }
 
     /**
@@ -181,6 +184,14 @@ public class FromNode extends TupleSource
         return new BetaMemory( new TupleHashTable(),
                                null );
     }
+    
+    public boolean isTupleMemoryEnabled() {
+        return tupleMemoryEnabled;
+    }
+
+    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        this.tupleMemoryEnabled = tupleMemoryEnabled;
+    }    
 
     /**
      * Returns the next node

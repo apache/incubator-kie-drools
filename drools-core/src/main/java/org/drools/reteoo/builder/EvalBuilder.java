@@ -42,7 +42,8 @@ public class EvalBuilder
         context.setTupleSource( (TupleSource) utils.attachNode( context,
                                                                 new EvalConditionNode( context.getNextId(),
                                                                                        context.getTupleSource(),
-                                                                                       eval ) ) );
+                                                                                       eval,
+                                                                                       context ) ) );
 
     }
 

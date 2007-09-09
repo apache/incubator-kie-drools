@@ -87,4 +87,14 @@ public class MockObjectSink
     public void setPreviousObjectSinkNode(final ObjectSinkNode previous) {
         this.previousObjectSinkNode = previous;
     }
+
+    public boolean isObjectMemoryEnabled() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void setObjectMemoryEnabled(boolean objectMemoryOn) {
+        // TODO Auto-generated method stub
+        
+    }
 }

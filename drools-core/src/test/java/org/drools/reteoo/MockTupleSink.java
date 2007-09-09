@@ -76,10 +76,6 @@ public class MockTupleSink extends TupleSource
         // TODO Auto-generated method stub
     }
 
-    public void setHasMemory(final boolean hasMemory) {
-        this.hasMemory = hasMemory;
-    }
-
     public int getId() {
         return this.id;
     }
@@ -151,6 +147,16 @@ public class MockTupleSink extends TupleSource
      */
     public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
+    }
+
+    public boolean isTupleMemoryEnabled() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

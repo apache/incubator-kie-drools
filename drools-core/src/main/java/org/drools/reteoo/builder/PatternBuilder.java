@@ -172,16 +172,16 @@ public class PatternBuilder
         // Drools Query ObjectTypeNode never has memory, but other ObjectTypeNode/AlphaNoesNodes may (if not in sequential), 
         //so need to preserve, so we can resotre after this node is added. LeftMemory  and Terminal remain the same once set.
         
-        boolean objectMemory = context.hasObjectTypeMemory(); 
+        boolean objectMemory = context.isObjectTypeNodeMemoryEnabled(); 
         boolean alphaMemory = context.isAlphaMemoryAllowed();
                 
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
             // Is this the query node, if so we don't want any memory
             if ( DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
-                context.setHasLeftMemory( false );
-                context.setHasObjectTypeMemory( false );
-                context.setHasTerminalNodeMemory( false );
-                context.setAlphaMemoryAllowed( false );
+                context.setTupleMemoryEnabled( false );
+                context.setObjectTypeNodeMemoryEnabled( false );
+                context.setTerminalNodeMemoryEnabled( false );
+                context.setAlphaNodeMemoryAllowed( false );
             }
         }
 
@@ -201,8 +201,8 @@ public class PatternBuilder
         }
         
         // now restore back to original values
-        context.setHasObjectTypeMemory( objectMemory );
-        context.setAlphaMemoryAllowed( alphaMemory );
+        context.setObjectTypeNodeMemoryEnabled( objectMemory );
+        context.setAlphaNodeMemoryAllowed( alphaMemory );
 
     }
 

@@ -107,15 +107,15 @@ public class ReteooRuleBuilder {
                                                            idGenerator );
            
             if ( rulebase.getConfiguration().isSequential() ) {
-                context.setHasLeftMemory( false );
-                context.setHasObjectTypeMemory( false );
-                context.setHasTerminalNodeMemory( false );
-                context.setAlphaMemoryAllowed( false );
+                context.setTupleMemoryEnabled( false );
+                context.setObjectTypeNodeMemoryEnabled( false );
+                context.setTerminalNodeMemoryEnabled( false );
+                context.setAlphaNodeMemoryAllowed( false );
             } else {
-                context.setHasLeftMemory( true );
-                context.setHasObjectTypeMemory( true );
-                context.setHasTerminalNodeMemory( true );
-                context.setAlphaMemoryAllowed( true );                
+                context.setTupleMemoryEnabled( true );
+                context.setObjectTypeNodeMemoryEnabled( true );
+                context.setTerminalNodeMemoryEnabled( true );
+                context.setAlphaNodeMemoryAllowed( true );                
             }
             
             // adds subrule

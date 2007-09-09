@@ -22,6 +22,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
@@ -45,6 +46,8 @@ public class RightInputAdapterNode extends ObjectSource
     private static final long serialVersionUID = 400L;
 
     private final TupleSource tupleSource;
+    
+    protected boolean          tupleMemoryEnabled;      
 
     /**
      * Constructor specifying the unique id of the node in the Rete network, the position of the propagating <code>FactHandleImpl</code> in
@@ -56,10 +59,11 @@ public class RightInputAdapterNode extends ObjectSource
      *      The <code>TupleSource</code> which propagates the received <code>ReteTuple</code>
      */
     public RightInputAdapterNode(final int id,
-                                 final TupleSource source) {
+                                 final TupleSource source,
+                                 final BuildContext context) {
         super( id );
         this.tupleSource = source;
-        this.setHasMemory( true );
+        this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
     /**
@@ -87,7 +91,7 @@ public class RightInputAdapterNode extends ObjectSource
         // creating a dummy fact handle to wrap the tuple
         final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple );
         
-        if ( !workingMemory.isSequential() ) {
+        if ( this.tupleMemoryEnabled ) {
             final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
             // add it to a memory mapping
             memory.put( tuple,
@@ -167,5 +171,13 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource.remove( this,
                                  workingMemories );
     }
+    
+    public boolean isTupleMemoryEnabled() {
+        return tupleMemoryEnabled;
+    }
+
+    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        this.tupleMemoryEnabled = tupleMemoryEnabled;
+    }      
 
 }

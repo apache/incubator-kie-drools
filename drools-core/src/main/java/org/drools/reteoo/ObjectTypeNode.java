@@ -77,12 +77,10 @@ public class ObjectTypeNode extends ObjectSource
     /** The parent Rete node */
     private final Rete        rete;
 
-    protected boolean         skipOnModify     = false;
+    private boolean           skipOnModify     = false;
 
-    // ------------------------------------------------------------
-    // Constructors
-    // ------------------------------------------------------------
-    
+    private boolean           objectMemoryEnabled;
+
     /**
      * Construct given a semantic <code>ObjectType</code> and the provided
      * unique id. All <code>ObjectTypdeNode</code> have node memory.
@@ -100,12 +98,8 @@ public class ObjectTypeNode extends ObjectSource
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.rete = (Rete) this.objectSource;
         this.objectType = objectType;
-        setHasMemory( context.hasObjectTypeMemory() );
+        setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
     }
-
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
 
     /**
      * Retrieve the semantic <code>ObjectType</code> differentiator.
@@ -128,11 +122,11 @@ public class ObjectTypeNode extends ObjectSource
     public boolean matches(final Object object) {
         return this.objectType.matches( object );
     }
-    
+
     public boolean isAssignableFrom(final Object object) {
         return this.objectType.isAssignableFrom( object );
     }
-    
+
     /**
      * Propagate the <code>FactHandleimpl</code> through the <code>Rete</code> network. All
      * <code>FactHandleImpl</code> should be remembered in the node memory, so that later runtime rule attachmnents
@@ -153,7 +147,7 @@ public class ObjectTypeNode extends ObjectSource
             return;
         }
 
-        if ( !workingMemory.isSequential() ) {
+        if ( this.objectMemoryEnabled) {
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             memory.add( handle,
                         false );
@@ -209,7 +203,7 @@ public class ObjectTypeNode extends ObjectSource
      */
     public void attach() {
         this.rete.addObjectSink( this );
-    }    
+    }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
@@ -260,6 +254,14 @@ public class ObjectTypeNode extends ObjectSource
         return new FactHashTable();
     }
 
+    public boolean isObjectMemoryEnabled() {
+        return this.objectMemoryEnabled;
+    }
+
+    public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
+        this.objectMemoryEnabled = objectMemoryEnabled;
+    }
+
     public String toString() {
         return "[ObjectTypeNode(" + this.id + ") objectType=" + this.objectType + "]";
     }
@@ -292,8 +294,6 @@ public class ObjectTypeNode extends ObjectSource
         super.addObjectSink( objectSink );
         this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
     }
-    
-    
 
     /**
      * @inheritDoc

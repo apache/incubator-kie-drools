@@ -79,6 +79,8 @@ public final class RuleTerminalNode extends BaseNode
 
     private TupleSinkNode      previousTupleSinkNode;
     private TupleSinkNode      nextTupleSinkNode;
+    
+    protected boolean          tupleMemoryEnabled;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -101,7 +103,7 @@ public final class RuleTerminalNode extends BaseNode
         this.rule = rule;
         this.tupleSource = source;
         this.subrule = subrule;
-        this.hasMemory = buildContext.hasTerminalNodeMemory();
+        this.tupleMemoryEnabled = buildContext.isTerminalNodeMemoryEnabled();
     }
 
     // ------------------------------------------------------------
@@ -194,7 +196,7 @@ public final class RuleTerminalNode extends BaseNode
             agenda.scheduleItem( item );
             tuple.setActivation( item );
             
-            if ( this.hasMemory ) {
+            if ( this.tupleMemoryEnabled ) {
                 memory.getTupleMemory().add( tuple );
             }
 
@@ -235,7 +237,7 @@ public final class RuleTerminalNode extends BaseNode
                                                     this.rule,
                                                     this.subrule );
             
-            if ( this.hasMemory ) {
+            if ( this.tupleMemoryEnabled ) {
                 item.setSequenence( this.sequence );
             }
 
@@ -468,6 +470,14 @@ public final class RuleTerminalNode extends BaseNode
     public Object createMemory(final RuleBaseConfiguration config) {
         return new TerminalNodeMemory();
     }
+    
+    public boolean isTupleMemoryEnabled() {
+        return tupleMemoryEnabled;
+    }
+
+    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        this.tupleMemoryEnabled = tupleMemoryEnabled;
+    }     
 
     /**
      * Returns the next node

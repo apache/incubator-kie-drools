@@ -84,7 +84,7 @@ public class CollectNode extends BetaNode
         this.resultConstraints = resultConstraints;
         this.collect = collect;
         this.unwrapRightObject = unwrapRight;
-        this.hasLeftMemory = context.hasLeftMemory();
+        this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
     /**
@@ -113,7 +113,7 @@ public class CollectNode extends BetaNode
         colresult.propagated = false;
         
         // do not add tuple and result to the memory in sequential mode
-        if ( this.hasLeftMemory ) {
+        if ( this.tupleMemoryEnabled ) {
             memory.getTupleMemory().add( leftTuple );
             memory.getCreatedHandles().put( leftTuple,
                                             colresult,
@@ -198,7 +198,7 @@ public class CollectNode extends BetaNode
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getFactHandleMemory().add( handle );
         
-        if ( !this.hasLeftMemory ) {
+        if ( !this.tupleMemoryEnabled ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
             return;
         }        

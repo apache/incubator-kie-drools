@@ -56,8 +56,10 @@ public class AlphaNode extends ObjectSource
 
     private ObjectSinkNode                 previousObjectSinkNode;
     private ObjectSinkNode                 nextObjectSinkNode;
-    
-    private boolean                        memoryAllowed;
+
+    private boolean                        objectMemoryEnabled;
+
+    private boolean                        objectMemoryAllowed;
 
     /**
      * Construct an <code>AlphaNode</code> with a unique id using the provided
@@ -79,8 +81,13 @@ public class AlphaNode extends ObjectSource
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.constraint = constraint;
-        setHasMemory( context.getRuleBase().getConfiguration().isAlphaMemory() );
-        this.memoryAllowed = context.isAlphaMemoryAllowed();
+        this.objectMemoryAllowed = context.isAlphaMemoryAllowed();
+        if ( this.objectMemoryAllowed ) {
+            this.objectMemoryEnabled = context.getRuleBase().getConfiguration().isAlphaMemory();
+        } else {
+            this.objectMemoryEnabled = false;
+        }
+
     }
 
     /**
@@ -106,8 +113,8 @@ public class AlphaNode extends ObjectSource
 
         // we are attaching this node with existing working memories
         // indicating that we are in a dynamic environment, that might benefit from alpha node memory, if allowed
-        if ( this.memoryAllowed ) {
-            setHasMemory( true );
+        if ( this.objectMemoryAllowed ) {
+            setObjectMemoryEnabled( true );
         }
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
@@ -126,12 +133,12 @@ public class AlphaNode extends ObjectSource
                              final InternalWorkingMemory workingMemory) throws FactException {
         if ( this.constraint.isAllowed( handle.getObject(),
                                         workingMemory ) ) {
-            if ( hasMemory()  && !workingMemory.isSequential() ) {
+            if ( isObjectMemoryEnabled() ) {
                 final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
                 memory.add( handle,
                             false );
             }
-            
+
             this.sink.propagateAssertObject( handle,
                                              context,
                                              workingMemory );
@@ -142,7 +149,7 @@ public class AlphaNode extends ObjectSource
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
         boolean propagate = true;
-        if ( hasMemory() ) {
+        if ( isObjectMemoryEnabled() ) {
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             propagate = memory.remove( handle );
         } else {
@@ -162,7 +169,7 @@ public class AlphaNode extends ObjectSource
                            final InternalWorkingMemory workingMemory) {
         FactHashTable memory = null;
 
-        if ( !hasMemory() ) {
+        if ( !isObjectMemoryEnabled() ) {
             // get the objects from the parent
             this.objectSource.updateSink( sink,
                                           context,
@@ -194,9 +201,17 @@ public class AlphaNode extends ObjectSource
         this.objectSource.remove( this,
                                   workingMemories );
     }
-    
-    public void setMemoryAllowed(boolean memoryAllowed) {
-        this.memoryAllowed = memoryAllowed;
+
+    public void setObjectMemoryAllowed(boolean objectMemoryAllowed) {
+        this.objectMemoryAllowed = objectMemoryAllowed;
+    }
+
+    public boolean isObjectMemoryEnabled() {
+        return this.objectMemoryEnabled;
+    }
+
+    public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
+        this.objectMemoryEnabled = objectMemoryEnabled;
     }
 
     /**
@@ -205,13 +220,13 @@ public class AlphaNode extends ObjectSource
     public Object createMemory(final RuleBaseConfiguration config) {
         return new FactHashTable();
     }
-    
+
     /** 
      * @inheritDoc
      */
     protected void addObjectSink(final ObjectSink objectSink) {
         super.addObjectSink( objectSink );
-    }    
+    }
 
     public String toString() {
         return "[AlphaNode(" + this.id + ") constraint=" + this.constraint + "]";

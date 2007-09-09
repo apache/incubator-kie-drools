@@ -393,7 +393,7 @@ public class CollectNodeTest extends DroolsTestCase {
                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf ) );
         
         this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
-        this.node.hasLeftMemory = false;
+        this.node.setTupleMemoryEnabled( false );
 
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );

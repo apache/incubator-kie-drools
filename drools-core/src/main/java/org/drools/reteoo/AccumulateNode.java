@@ -69,7 +69,7 @@ public class AccumulateNode extends BetaNode {
         this.resultConstraints = resultConstraints;
         this.accumulate = accumulate;
         this.unwrapRightObject = unwrapRightObject;
-        this.hasLeftMemory = context.hasLeftMemory();
+        this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
     /**
@@ -99,7 +99,7 @@ public class AccumulateNode extends BetaNode {
 
         AccumulateResult accresult = new AccumulateResult();
 
-        if ( this.hasLeftMemory ) {
+        if ( this.tupleMemoryEnabled ) {
             memory.betaMemory.getTupleMemory().add( leftTuple );
             memory.betaMemory.getCreatedHandles().put( leftTuple,
                                             accresult,
@@ -210,7 +210,7 @@ public class AccumulateNode extends BetaNode {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
         memory.betaMemory.getFactHandleMemory().add( handle );
 
-        if ( ! this.hasLeftMemory ) {
+        if ( ! this.tupleMemoryEnabled ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
             return;
         }

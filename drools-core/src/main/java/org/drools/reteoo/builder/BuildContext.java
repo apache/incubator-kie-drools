@@ -68,14 +68,14 @@ public class BuildContext {
     // alpha constraints from the last pattern attached
     private List                      alphaConstraints;
     
-    private boolean                   hasLeftMemory;
+    private boolean                   tupleMemoryEnabled;
     
-    private boolean                   hasObjectTypeMemory;    
+    private boolean                   objectTypeNodeMemoryEnabled;    
     
-    private boolean                   hasTerminalNodeMemory;
+    private boolean                   terminalNodeMemoryEnabled;
     
     /** This one is slightly different as alphaMemory can be adaptive, only turning on for new rule attachments */
-    private boolean                   alphaMemoryAllowed;
+    private boolean                   alphaNodeMemoryAllowed;
 
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
@@ -93,9 +93,9 @@ public class BuildContext {
 
         this.currentPatternOffset = 0;
         
-        this.hasLeftMemory = true;
+        this.tupleMemoryEnabled = true;
         
-        this.hasObjectTypeMemory = true;
+        this.objectTypeNodeMemoryEnabled = true;
     }
 
     /**
@@ -297,36 +297,36 @@ public class BuildContext {
         this.alphaConstraints = alphaConstraints;
     }
 
-    public boolean hasLeftMemory() {
-        return this.hasLeftMemory;
+    public boolean isTupleMemoryEnabled() {
+        return this.tupleMemoryEnabled;
     }
 
-    public void setHasLeftMemory(boolean hasLeftMemory) {
-        this.hasLeftMemory = hasLeftMemory;
+    public void setTupleMemoryEnabled(boolean hasLeftMemory) {
+        this.tupleMemoryEnabled = hasLeftMemory;
     }
 
-    public boolean hasObjectTypeMemory() {
-        return hasObjectTypeMemory;
+    public boolean isObjectTypeNodeMemoryEnabled() {
+        return objectTypeNodeMemoryEnabled;
     }
 
-    public void setHasObjectTypeMemory(boolean hasObjectTypeMemory) {
-        this.hasObjectTypeMemory = hasObjectTypeMemory;
+    public void setObjectTypeNodeMemoryEnabled(boolean hasObjectTypeMemory) {
+        this.objectTypeNodeMemoryEnabled = hasObjectTypeMemory;
     }
 
-    public boolean hasTerminalNodeMemory() {
-        return hasTerminalNodeMemory;
+    public boolean isTerminalNodeMemoryEnabled() {
+        return terminalNodeMemoryEnabled;
     }
 
-    public void setHasTerminalNodeMemory(boolean hasTerminalNodeMemory) {
-        this.hasTerminalNodeMemory = hasTerminalNodeMemory;
+    public void setTerminalNodeMemoryEnabled(boolean hasTerminalNodeMemory) {
+        this.terminalNodeMemoryEnabled = hasTerminalNodeMemory;
     }     
     
-    public void setAlphaMemoryAllowed(boolean alphaMemoryAllowed) {
-        this.alphaMemoryAllowed = alphaMemoryAllowed;
+    public void setAlphaNodeMemoryAllowed(boolean alphaMemoryAllowed) {
+        this.alphaNodeMemoryAllowed = alphaMemoryAllowed;
     }
     
     public boolean isAlphaMemoryAllowed() {
-        return this.alphaMemoryAllowed;
+        return this.alphaNodeMemoryAllowed;
     }
         
 }
