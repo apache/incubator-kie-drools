@@ -665,7 +665,8 @@ public void setState(final String newState) {
     <example>
       <title>Createing a StatelessSession</title>
 
-      <programlisting>StatelessSession session = ruleBase.newStatelessSession();</programlisting>
+      <programlisting>StatelessSession session = ruleBase.newStatelessSession();
+session.execute( new Cheese( "cheddar" ) );</programlisting>
     </example>
 
     <para>The api is reduced for the problem domain and is thus much simpler;
@@ -729,6 +730,14 @@ public void setState(final String newState) {
     Global Resolver; the later should be used with care as identifier
     instances can be changed at any time by the StatelessSession and the
     GlobalResolver may not be serialisable freindly.</para>
+
+    <example>
+      <title>GlobalExporter with StatelessSessions</title>
+
+      <programlisting>StatelessSession session = ruleBase.newStatelessSession();
+session.setGlobalExporter( new CopyIdentifiersGlobalExporter( new String[]{"list"} ) );
+StatelessSessionResult result = session.executeWithResults( new Cheese( "stilton" ) );</programlisting>
+    </example>
   </section>
 
   <section>
