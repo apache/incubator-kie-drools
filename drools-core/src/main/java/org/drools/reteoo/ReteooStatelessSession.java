@@ -28,6 +28,7 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.ReteooRuleBase.InitialFactHandleDummyObject;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.spi.AgendaFilter;
+import org.drools.spi.GlobalExporter;
 import org.drools.spi.GlobalResolver;
 
 public class ReteooStatelessSession
@@ -38,6 +39,8 @@ public class ReteooStatelessSession
     private InternalRuleBase            ruleBase;
     private AgendaFilter                agendaFilter;
     private GlobalResolver              globalResolver            = new MapGlobalResolver();
+    
+    private GlobalExporter              globalExporter;
 
     /** The eventSupport */
     protected WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
@@ -120,6 +123,10 @@ public class ReteooStatelessSession
     public void setGlobalResolver(GlobalResolver globalResolver) {
         this.globalResolver = globalResolver;
     }
+    
+    public void setGlobalExporter(GlobalExporter globalExporter) {
+        this.globalExporter = globalExporter;
+    }
 
     public void execute(Object object) {
         InternalWorkingMemory wm = newWorkingMemory();
@@ -181,7 +188,13 @@ public class ReteooStatelessSession
 
         wm.insert( object );
         wm.fireAllRules( this.agendaFilter );
-        return new ReteStatelessSessionResult( wm );
+        
+        GlobalResolver globalResolver = null;
+        if ( this.globalExporter != null ) {
+            globalResolver = this.globalExporter.export( wm );
+        }
+        return new ReteStatelessSessionResult( wm,
+                                               globalResolver );
     }
 
     public StatelessSessionResult executeWithResults(Object[] array) {
@@ -191,7 +204,13 @@ public class ReteooStatelessSession
             wm.insert( array[i] );
         }
         wm.fireAllRules( this.agendaFilter );
-        return new ReteStatelessSessionResult( wm );
+        
+        GlobalResolver globalResolver = null;
+        if ( this.globalExporter != null ) {
+            globalResolver = this.globalExporter.export( wm );
+        }
+        return new ReteStatelessSessionResult( wm,
+                                               globalResolver );
     }
 
     public StatelessSessionResult executeWithResults(Collection collection) {
@@ -201,6 +220,12 @@ public class ReteooStatelessSession
             wm.insert( it.next() );
         }
         wm.fireAllRules( this.agendaFilter );
-        return new ReteStatelessSessionResult( wm );
+
+        GlobalResolver globalResolver = null;
+        if ( this.globalExporter != null ) {
+            globalResolver = this.globalExporter.export( wm );
+        }
+        return new ReteStatelessSessionResult( wm,
+                                               globalResolver );        
     }
 }
