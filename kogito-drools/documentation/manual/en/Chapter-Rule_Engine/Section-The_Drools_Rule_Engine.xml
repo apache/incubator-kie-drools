@@ -694,6 +694,41 @@ public void setState(final String newState) {
     <para>StatelessSessions also support sequential mode, which is a special
     optimised mode that uses less memory and executes faster; please see the
     Sequential section for more details.</para>
+
+    <figure>
+      <title>StatelessSessionResult</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="StatelessSessionResult.svg"
+                     format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata align="center" fileref="StatelessSessionResult.png"
+                     format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>StatelessSession.executeWithResults(....) returns a minimal api to
+    examine the sessions data. The inserted Objects can be iterated over,
+    querries can be executed and globals retrieved. Once the
+    StatelessSessionResult is serialised it loses the reference to the
+    underlying WorkingMemory and RuleBase, so querries can no longer be
+    executed, however globals can still be retrieved and objects iterated. To
+    retrieve globals they must be exported from the StatelessSession; the
+    GlobalExporter strategy is set with StatelessSession.setGlobalExporter(
+    GlobalExporter globalExporter ). Two implementations of GlobalExporter are
+    available and users may implement their own strategies.
+    CopyIdentifiersGlobalExporter copies named identifiers into a new
+    GlobalResovler that is passed to the StatelessSessionResult; the
+    constructor takes a String[] array of identifiers, if no identifiers are
+    specified it copies all identifiers declaredin the RuleBase.
+    ReferenceOriginalGlobalExporter just passes a reference to the original
+    Global Resolver; the later should be used with care as identifier
+    instances can be changed at any time by the StatelessSession and the
+    GlobalResolver may not be serialisable freindly.</para>
   </section>
 
   <section>
