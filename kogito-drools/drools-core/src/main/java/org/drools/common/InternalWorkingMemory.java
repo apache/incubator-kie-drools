@@ -22,6 +22,8 @@ public interface InternalWorkingMemory
     public long getId();    
     
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport);
+    
+    public ObjectHashMap getAssertMap();
 
     public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
 

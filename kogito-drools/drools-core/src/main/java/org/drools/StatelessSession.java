@@ -7,6 +7,7 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.spi.AgendaFilter;
+import org.drools.spi.GlobalExporter;
 import org.drools.spi.GlobalResolver;
 
 /**
@@ -15,6 +16,9 @@ import org.drools.spi.GlobalResolver;
  * This is typically used for "decision services" where the rules are
  * provided all the data in one hit, and a conclusion reached by the engine.
  * (there is no accumulation of facts/knowledge - each invocation is on a fresh session).
+ * 
+ * Each created StatelessSession can be call execute() any number of times, in a stateless manner
+ * however the GlobalResolver, unless set each time, is shared between each execute() method call.
  * 
  * Care should be used when using the async versions of the methods, consult the javadoc for 
  * the specific information.
@@ -29,7 +33,23 @@ public interface StatelessSession extends EventManager {
      */
     void setGlobalResolver(GlobalResolver globalResolver);
     
-    void setGlobal(String identifer, Object value);        
+    /**
+     * Sets a global value
+     * @param identifer
+     * @param value
+     */
+    void setGlobal(String identifer, Object value);   
+    
+    /**
+     * Used to specify a global exporting strategy
+     * so that global variables can be available to StatelessSessionResults.
+     * 
+     * If this is not set, then StatelessSessionResult will have no globals.
+     * @param globalExporter
+     *                     The GlobalExporter instance
+     */
+    public void setGlobalExporter(GlobalExporter globalExporter);    
+    
     
     /**
      * Insert a single fact, an fire the rules, returning when finished.

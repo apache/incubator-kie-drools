@@ -539,6 +539,10 @@ public abstract class AbstractWorkingMemory
         }
 
     }
+    
+    public ObjectHashMap getAssertMap() {
+        return this.assertMap;
+    }
 
     /**
      * @see WorkingMemory

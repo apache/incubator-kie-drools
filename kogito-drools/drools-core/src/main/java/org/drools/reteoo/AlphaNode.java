@@ -87,7 +87,6 @@ public class AlphaNode extends ObjectSource
         } else {
             this.objectMemoryEnabled = false;
         }
-
     }
 
     /**
