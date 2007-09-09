@@ -45,7 +45,7 @@
     <section>
       <title>Running the Example</title>
 
-      <para>Download and install drools-example as described above and then
+      <para>Download and install drools-examples as described above and then
       execute java org.drools.examples.sudoku.Main (this example requires Java
       5).</para>
 
@@ -65,8 +65,8 @@
       of the rules which are executing to solve the puzzle in a human readable
       form.</para>
 
-      <para><computeroutput> Rule #3 determined the value at (4,1) could not
-      be 4 as this value already exists in the same column at (8,1) Rule #3
+      <para><computeroutput>Rule #3 determined the value at (4,1) could not be
+      4 as this value already exists in the same column at (8,1) Rule #3
       determined the value at (5,5) could not be 2 as this value already
       exists in the same row at (5,6) Rule #7 determined (3,5) is 2 as this is
       the only possible cell in the column that can have this value Rule #1
@@ -141,12 +141,10 @@
               <imagedata fileref="sudoku6.png" />
             </imageobject>
           </mediaobject>
-        </screenshot>  
-      </para>
-      <para>
-      In addition, the validation rule set outputs all of the issues which 
-      are discovered to the console.
-      <programlisting>
+        </screenshot></para>
+
+      <para>In addition, the validation rule set outputs all of the issues
+      which are discovered to the console. <programlisting>
 There are two cells on the same column with the same value at (6,0) and (4,0)
 There are two cells on the same column with the same value at (4,0) and (6,0)
 There are two cells on the same row with the same value at (2,4) and (2,2)
@@ -163,14 +161,13 @@ There are two cells in the same zone with the same value at (6,3) and (7,3)
 There are two cells in the same zone with the same value at (7,3) and (6,3)
 There are two cells on the same column with the same value at (7,3) and (6,3)
 There are two cells on the same column with the same value at (6,3) and (7,3)   
-      </programlisting>      
-      </para>
-      <para>
-      We will look at the solving rule set later in this section, but for the 
-      moment we should note that some theoretically solvable solutions can 
-      not be solved by the engine as it stands.
-      Click on File->Samples->Hard 3 to load a sparsely populated Grid.
-       <screenshot>
+      </programlisting></para>
+
+      <para>We will look at the solving rule set later in this section, but
+      for the moment we should note that some theoretically solvable solutions
+      can not be solved by the engine as it stands. Click on
+      File-&gt;Samples-&gt;Hard 3 to load a sparsely populated Grid.
+      <screenshot>
           <screeninfo>New remote site</screeninfo>
 
           <mediaobject>
@@ -475,8 +472,9 @@ There are two cells on the same column with the same value at (6,3) and (7,3)
 <emphasis role="bold">Objective:</emphasis> demonstrate basic rules in use
 </programlisting>
 
-    <para>The "Hello World" example shows a simple example of rules usage.
-    Lets take a quick look at the rules.</para>
+    <para>The "Hello World" example shows a simple example of rules usage, and
+    both the MVEL dialect and Java dialect. Lets take a quick look at the
+    rules.</para>
 
     <example>
       <title>HelloWorld example: rule "Hello World"</title>
@@ -487,11 +485,9 @@ There are two cells on the same column with the same value at (6,3) and (7,3)
     m : Message( status == Message.HELLO, message : message )
   then
     System.out.println( message ); 
-    m.message = "Goodbyte cruel world";
-    m.status = 1;
-    update ( m );
-end
-</programlisting>
+    modify ( m ) { message = "Goodbyte cruel world",
+                   status = Message.GOODBYE };
+end</programlisting>
     </example>
 
     <para>The <emphasis role="bold">LHS (when)</emphasis> section of the rule
@@ -508,15 +504,15 @@ end
     content of the <emphasis>message</emphasis> bound variable to the default
     console, the rule changes the values of the <emphasis>message</emphasis>
     and <emphasis>status</emphasis> attributes of the <emphasis>m</emphasis>
-    bound variable. Finally, in order for the engine to "see" the new values
-    of the attributes, a call to the <emphasis role="bold">update()</emphasis>
-    memory action is made on the <emphasis>m</emphasis> fact.</para>
+    bound variable; using MVEL's 'modify' keyword which allows you to apply a
+    block of setters in one statement, with the engine being automatically
+    notified of the changes at the end of the block.</para>
 
     <example>
       <title>HelloWorld example: rule "Good Bye"</title>
 
       <programlisting>rule "Good Bye"
-    dialect "mvel"
+    dialect "java"
   when
     Message( status == Message.GOODBYE, message : message )
   then
