@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Local search solver</title>
+
+  <section>
+    <title>Overview</title>
+
+    <para>A local search algoritm and the drools rule engine turn out to be a
+    really nice combination, because:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>A rule engine such as Drools is great for <emphasis
+        role="bold">calculating the score</emphasis> of a solution of a
+        planning problem. It make it easy to add additional soft or hard
+        constraints such as "a teacher shouldn't teach more then 7 hours a
+        day". However it tends to be too complex to use to actually find new
+        solutions.</para>
+      </listitem>
+
+      <listitem>
+        <para>A local search algoritm is great at <emphasis
+        role="bold">finding new improving solutions</emphasis> for a planning
+        problem, without brute-forcing every possibility. However it needs to
+        know the score of a solution and normally offers no support in
+        calculating that score.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Drools-solver's local search implementation combines both and offers
+    additional support for benchmarking etc.</para>
+  </section>
+</section>
