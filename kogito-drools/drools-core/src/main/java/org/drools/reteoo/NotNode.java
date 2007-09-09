@@ -69,7 +69,7 @@ public class NotNode extends BetaNode {
                leftInput,
                rightInput,
                joinNodeBinder );
-        this.hasLeftMemory = context.hasLeftMemory();        
+        this.tupleMemoryEnabled = context.isTupleMemoryEnabled();        
     }
 
     /**
@@ -89,7 +89,7 @@ public class NotNode extends BetaNode {
                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         
-        if ( this.hasLeftMemory ) {
+        if ( this.tupleMemoryEnabled ) {
             memory.getTupleMemory().add( leftTuple );
         }
 
@@ -131,7 +131,7 @@ public class NotNode extends BetaNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         memory.getFactHandleMemory().add( handle );
         
-        if ( !this.hasLeftMemory ) {
+        if ( !this.tupleMemoryEnabled ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
             return;
         }        

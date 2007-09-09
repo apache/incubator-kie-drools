@@ -28,8 +28,6 @@ public abstract class BaseNode
     NetworkNode {
     protected final int id;
 
-    protected boolean   hasMemory   = false;
-
     protected int       sharedCount = 0;
 
     /**
@@ -48,24 +46,6 @@ public abstract class BaseNode
      */
     public int getId() {
         return this.id;
-    }
-
-    /**
-     * Specifies with the node has any memory.
-     * 
-     * @param hasMemory
-     */
-    protected void setHasMemory(final boolean hasMemory) {
-        this.hasMemory = hasMemory;
-    }
-
-    /**
-     * 
-     * Indicates whether the node has any memory.
-     * @return
-     */
-    public boolean hasMemory() {
-        return this.hasMemory;
     }
 
     /**

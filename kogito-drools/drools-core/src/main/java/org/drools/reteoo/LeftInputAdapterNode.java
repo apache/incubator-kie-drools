@@ -22,6 +22,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
@@ -51,6 +52,8 @@ public class LeftInputAdapterNode extends TupleSource
 
     private ObjectSinkNode     previousObjectSinkNode;
     private ObjectSinkNode     nextObjectSinkNode;
+    
+    private boolean           objectMemoryEnabled;    
 
     /**
      * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
@@ -65,11 +68,12 @@ public class LeftInputAdapterNode extends TupleSource
      *      a predicate is used in the first pattern, for instance
      */
     public LeftInputAdapterNode(final int id,
-                                final ObjectSource source) {
+                                final ObjectSource source,
+                                final BuildContext context) {
         super( id );
         this.objectSource = source;
         //this.constraints = constraints;
-        setHasMemory( false );
+        setObjectMemoryEnabled( false );
     }
 
     /* (non-Javadoc)
@@ -114,7 +118,7 @@ public class LeftInputAdapterNode extends TupleSource
                                                      context,
                                                      workingMemory );
 
-            if ( this.hasMemory ) {
+            if ( this.objectMemoryEnabled ) {
                 final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
                 memory.add( handle,
                             false );
@@ -139,7 +143,7 @@ public class LeftInputAdapterNode extends TupleSource
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
         boolean propagate = true;
-        if ( this.hasMemory ) {
+        if ( this.objectMemoryEnabled ) {
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             propagate = memory.remove( handle );
         }
@@ -154,7 +158,7 @@ public class LeftInputAdapterNode extends TupleSource
     public void updateSink(final TupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        if ( this.hasMemory ) {
+        if ( this.objectMemoryEnabled ) {
             // We have memory so iterate over all entries
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             final Iterator it = memory.iterator();
@@ -185,6 +189,14 @@ public class LeftInputAdapterNode extends TupleSource
         }
         this.objectSource.remove( this,
                                   workingMemories );
+    }    
+    
+    public boolean isObjectMemoryEnabled() {
+        return this.objectMemoryEnabled;
+    }
+
+    public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
+        this.objectMemoryEnabled = objectMemoryEnabled;
     }    
 
     /**
@@ -237,11 +249,8 @@ public class LeftInputAdapterNode extends TupleSource
         }
 
         final LeftInputAdapterNode other = (LeftInputAdapterNode) object;
-        //        if ( this.constraints == null ) {
-        //            return this.objectSource.equals( other.objectSource ) && other.constraints == null;
-        //        } else {
-        return this.objectSource.equals( other.objectSource ); //&& this.constraints.equals( other.constraints );
-        //        }
+
+        return this.objectSource.equals( other.objectSource );
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
@@ -283,6 +292,14 @@ public class LeftInputAdapterNode extends TupleSource
                                   final InternalWorkingMemory workingMemory) {
             throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
         }
+        
+        public boolean isObjectMemoryEnabled() {
+            throw new UnsupportedOperationException("ObjectSinkAdapters have no Object memory");
+        }
+
+        public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
+            throw new UnsupportedOperationException("ObjectSinkAdapters have no Object memory");
+        }        
     }
 
 }

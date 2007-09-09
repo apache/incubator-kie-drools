@@ -73,7 +73,8 @@ public class AccumulateBuilder
             // attach right input adapter node to convert tuple source into an object source
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                       new RightInputAdapterNode( context.getNextId(),
-                                                                                                 context.getTupleSource() ) ) );
+                                                                                                 context.getTupleSource(),
+                                                                                                 context ) ) );
 
             // restore tuple source from before the start of the sub network
             context.setTupleSource( tupleSource );

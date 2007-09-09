@@ -66,7 +66,8 @@ abstract class BetaNode extends TupleSource
     private ObjectSinkNode          previousObjectSinkNode;
     private ObjectSinkNode          nextObjectSinkNode;
     
-    protected boolean hasLeftMemory = true;
+    protected boolean               objectMemory = true; // hard coded to true
+    protected boolean               tupleMemoryEnabled;
 
     // ------------------------------------------------------------
     // Constructors
@@ -85,7 +86,6 @@ abstract class BetaNode extends TupleSource
              final ObjectSource rightInput,
              final BetaConstraints constraints) {
         super( id );
-        super.setHasMemory( true );
         this.leftInput = leftInput;
         this.rightInput = rightInput;
         this.constraints = constraints;
@@ -175,9 +175,21 @@ abstract class BetaNode extends TupleSource
 
     }
 
-    //public abstract TupleSink getTupleSink();
+    public boolean isObjectMemoryEnabled() {
+        return objectMemory;
+    }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    public void setObjectMemoryEnabled(boolean objectMemory) {
+        this.objectMemory = objectMemory;
+    }
+    
+    public boolean isTupleMemoryEnabled() {
+        return tupleMemoryEnabled;
+    }
+
+    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        this.tupleMemoryEnabled = tupleMemoryEnabled;
+    }       
 
     public String toString() {
         return "";
@@ -209,7 +221,7 @@ abstract class BetaNode extends TupleSource
 
         final BetaNode other = (BetaNode) object;
 
-        return this.getClass() == other.getClass() && this.hasLeftMemory == other.hasLeftMemory && this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.constraints.equals( other.constraints );
+        return this.getClass() == other.getClass() && this.leftInput.equals( other.leftInput ) && this.rightInput.equals( other.rightInput ) && this.constraints.equals( other.constraints );
     }
 
     /**

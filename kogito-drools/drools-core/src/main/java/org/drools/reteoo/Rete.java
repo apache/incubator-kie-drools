@@ -324,6 +324,14 @@ public class Rete extends ObjectSource
         //            }
         //        }
     }
+    
+    public boolean isObjectMemoryEnabled() {
+        throw new UnsupportedOperationException("Rete has no Object memory");
+    }
+
+    public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
+        throw new UnsupportedOperationException("ORete has no Object memory");
+    }     
 
     public static interface ObjectTypeConf {
         public ObjectTypeNode[] getObjectTypeNodes();
@@ -359,13 +367,13 @@ public class Rete extends ObjectSource
                                                          ((ReteooRuleBase) ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator() );
                 if ( context.getRuleBase().getConfiguration().isSequential() ) {
                     // We are in sequential mode, so no nodes should have memory
-                    context.setHasLeftMemory( false );
-                    context.setHasObjectTypeMemory( false );
-                    context.setHasTerminalNodeMemory( false );
+                    context.setTupleMemoryEnabled( false );
+                    context.setObjectTypeNodeMemoryEnabled( false );
+                    context.setTerminalNodeMemoryEnabled( false );
                 } else {
-                    context.setHasLeftMemory( true );
-                    context.setHasObjectTypeMemory( true );
-                    context.setHasTerminalNodeMemory( true );
+                    context.setTupleMemoryEnabled( true );
+                    context.setObjectTypeNodeMemoryEnabled( true );
+                    context.setTerminalNodeMemoryEnabled( true );
                 }
                 // there must exist an ObjectTypeNode for this concrete class                
                 this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( context,
@@ -431,18 +439,18 @@ public class Rete extends ObjectSource
                 BuildContext context = new BuildContext( ruleBase,
                                                          ((ReteooRuleBase) ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator() );
                 if ( DroolsQuery.class == clazz ) {
-                    context.setHasLeftMemory( false );
-                    context.setHasObjectTypeMemory( false );
-                    context.setHasTerminalNodeMemory( false );
+                    context.setTupleMemoryEnabled( false );
+                    context.setObjectTypeNodeMemoryEnabled( false );
+                    context.setTerminalNodeMemoryEnabled( false );
                 } else if ( context.getRuleBase().getConfiguration().isSequential() ) {
                     // We are in sequential mode, so no nodes should have memory
-                    context.setHasLeftMemory( false );
-                    context.setHasObjectTypeMemory( false );
-                    context.setHasTerminalNodeMemory( false );
+                    context.setTupleMemoryEnabled( false );
+                    context.setObjectTypeNodeMemoryEnabled( false );
+                    context.setTerminalNodeMemoryEnabled( false );
                 } else {
-                    context.setHasLeftMemory( true );
-                    context.setHasObjectTypeMemory( true );
-                    context.setHasTerminalNodeMemory( true );
+                    context.setTupleMemoryEnabled( true );
+                    context.setObjectTypeNodeMemoryEnabled( true );
+                    context.setTerminalNodeMemoryEnabled( true );
                 }
                 // there must exist an ObjectTypeNode for this concrete class
                 this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( context,

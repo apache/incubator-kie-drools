@@ -21,6 +21,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
 import org.drools.util.Iterator;
@@ -59,6 +60,8 @@ public class EvalConditionNode extends TupleSource
 
     /** The source of incoming <code>Tuples</code>. */
     private final TupleSource   tupleSource;
+    
+    protected boolean          tupleMemoryEnabled;        
 
     private TupleSinkNode       previousTupleSinkNode;
     private TupleSinkNode       nextTupleSinkNode;
@@ -78,11 +81,12 @@ public class EvalConditionNode extends TupleSource
      */
     public EvalConditionNode(final int id,
                              final TupleSource tupleSource,
-                             final EvalCondition eval) {
+                             final EvalCondition eval,
+                             final BuildContext context) {
         super( id );
         this.condition = eval;
         this.tupleSource = tupleSource;
-        this.hasMemory = true;
+        this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
     /**
@@ -142,7 +146,7 @@ public class EvalConditionNode extends TupleSource
                                                           workingMemory );
 
         if ( allowed ) {
-            if ( !workingMemory.isSequential() ) {
+            if ( this.tupleMemoryEnabled ) {
                 final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( this );
                 memory.add( tuple );
             }
@@ -230,6 +234,14 @@ public class EvalConditionNode extends TupleSource
                                  workingMemories );
 
     }
+    
+    public boolean isTupleMemoryEnabled() {
+        return tupleMemoryEnabled;
+    }
+
+    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        this.tupleMemoryEnabled = tupleMemoryEnabled;
+    }      
 
     /**
      * Returns the next node

@@ -21,25 +21,30 @@ import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.util.TupleHashTable;
 
 public class EvalConditionNodeTest extends DroolsTestCase {
     private PropagationContext  context;
     private ReteooWorkingMemory workingMemory;
+    private ReteooRuleBase ruleBase;
+    private BuildContext buildContext;    
 
     public EvalConditionNodeTest(final String name) {
         super( name );
     }
 
     public void setUp() {
+        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        
         this.context = new PropagationContextImpl( 0,
                                                    PropagationContext.ASSERTION,
                                                    null,
                                                    null );
 
-        this.workingMemory = new ReteooWorkingMemory( 1,
-                                                      (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        this.workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
     }
 
     public void testAttach() throws Exception {
@@ -47,7 +52,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
         final EvalConditionNode node = new EvalConditionNode( 18,
                                                               source,
-                                                              new MockEvalCondition( true ) );
+                                                              new MockEvalCondition( true ),
+                                                              buildContext );
 
         assertEquals( 18,
                       node.getId() );
@@ -70,7 +76,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
         final EvalConditionNode node = new EvalConditionNode( 18,
                                                               source,
-                                                              new MockEvalCondition( true ) );
+                                                              new MockEvalCondition( true ),
+                                                              buildContext );
 
         final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( node );
 
@@ -89,7 +96,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create a test node that always returns false 
         final EvalConditionNode node = new EvalConditionNode( 1,
                                                               new MockTupleSource( 15 ),
-                                                              eval );
+                                                              eval,
+                                                              buildContext );
 
         final MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
@@ -134,7 +142,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create a test node that always returns false 
         final EvalConditionNode node = new EvalConditionNode( 1,
                                                               new MockTupleSource( 15 ),
-                                                              eval );
+                                                              eval,
+                                                              buildContext );
 
         final MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
@@ -207,7 +216,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create a test node that always returns false 
         final EvalConditionNode node = new EvalConditionNode( 1,
                                                               new MockTupleSource( 15 ),
-                                                              eval );
+                                                              eval,
+                                                              buildContext );
 
         final MockTupleSink sink = new MockTupleSink();
         node.addTupleSink( sink );
@@ -259,7 +269,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         /* Create a test node that always returns true */
         final EvalConditionNode node = new EvalConditionNode( 1,
                                                               new MockTupleSource( 15 ),
-                                                              new MockEvalCondition( true ) );
+                                                              new MockEvalCondition( true ),
+                                                              buildContext );
 
         // Add the first tuple sink and assert a tuple and object
         // The sink has no memory

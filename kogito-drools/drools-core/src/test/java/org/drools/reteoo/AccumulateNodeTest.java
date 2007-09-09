@@ -412,7 +412,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ruleBase.getReteooBuilder().getIdGenerator() );
-        buildContext.setHasLeftMemory( false );
+        buildContext.setTupleMemoryEnabled( false );
         // overide the original node, so we an set the BuildContext
         this.node = new AccumulateNode( 15,
                                         this.tupleSource,

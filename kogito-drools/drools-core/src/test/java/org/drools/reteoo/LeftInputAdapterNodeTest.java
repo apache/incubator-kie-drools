@@ -26,16 +26,25 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.FactHashTable;
 
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
-
+    private ReteooRuleBase ruleBase;
+    private BuildContext buildContext;
+    
+    protected void setUp() throws Exception {
+        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+    }
+    
     public void testLeftInputAdapterNode() {
         final MockObjectSource source = new MockObjectSource( 15 );
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 23,
-                                                                       source );
+                                                                       source,
+                                                                       buildContext );
         assertEquals( 23,
                       liaNode.getId() );
 
@@ -54,7 +63,8 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( 15 );
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
-                                                                       source );
+                                                                       source,
+                                                                       buildContext );
         final Field field = ObjectSource.class.getDeclaredField( "sink" );
         field.setAccessible( true );
         ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( source );
@@ -89,7 +99,8 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
-                                                                       new MockObjectSource( 15 ) );
+                                                                       new MockObjectSource( 15 ),
+                                                                       buildContext );
         final MockTupleSink sink = new MockTupleSink();
         liaNode.addTupleSink( sink );
 
@@ -126,16 +137,13 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final InternalWorkingMemory workingMemory = ( InternalWorkingMemory ) ruleBase.newStatefulSession();                
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( idGenerator.getNextId(),
-                                                                       new MockObjectSource( idGenerator.getNextId() ));
+                                                                       new MockObjectSource( idGenerator.getNextId() ),
+                                                                       buildContext );
 
         final MockTupleSink sink = new MockTupleSink();
         liaNode.addTupleSink( sink );
 
-        //force liaNode to have memory
-        final Field field = BaseNode.class.getDeclaredField( "hasMemory" );
-        field.setAccessible( true );
-        field.set( liaNode,
-                   new Boolean( true ) );
+        liaNode.setObjectMemoryEnabled( true );
 
         final Object string1 = "cheese";
 
@@ -195,7 +203,8 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( 15 );
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
-                                                                       source );
+                                                                       source,
+                                                                       buildContext );
         final MockTupleSink sink = new MockTupleSink();
         liaNode.addTupleSink( sink );
 
@@ -230,12 +239,10 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         final InternalWorkingMemory workingMemory = ( InternalWorkingMemory ) ruleBase.newStatefulSession();                
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( idGenerator.getNextId(),
-                                                                       new MockObjectSource( idGenerator.getNextId() ));
+                                                                       new MockObjectSource( idGenerator.getNextId() ),
+                                                                       buildContext );
         //force liaNode to have memory
-        final Field field = BaseNode.class.getDeclaredField( "hasMemory" );
-        field.setAccessible( true );
-        field.set( liaNode,
-                   new Boolean( true ) );
+        liaNode.setObjectMemoryEnabled( true );
 
         final MockTupleSink sink = new MockTupleSink();
         liaNode.addTupleSink( sink );

@@ -133,6 +133,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         conf.setSequential( true );
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
         buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        buildContext.setObjectTypeNodeMemoryEnabled( false );
         
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            ruleBase );

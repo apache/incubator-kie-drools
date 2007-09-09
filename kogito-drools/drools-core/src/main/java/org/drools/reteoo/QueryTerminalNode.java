@@ -52,6 +52,7 @@ public final class QueryTerminalNode extends BaseNode
     private final Rule         rule;
     private final GroupElement subrule;
     private final TupleSource  tupleSource;
+    private boolean          tupleMemoryEnabled;    
     
     private TupleSinkNode      previousTupleSinkNode;
     private TupleSinkNode      nextTupleSinkNode;    
@@ -76,6 +77,7 @@ public final class QueryTerminalNode extends BaseNode
         this.rule = rule;
         this.subrule = subrule;
         this.tupleSource = source;
+        this.tupleMemoryEnabled = false; //hard coded to false
     }
 
     // ------------------------------------------------------------
@@ -166,10 +168,17 @@ public final class QueryTerminalNode extends BaseNode
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
-        //return new QueryTerminalNodeMemory();
         return new LinkedList();
     }
 
+    public boolean isTupleMemoryEnabled() {
+        return tupleMemoryEnabled;
+    }
+
+    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        this.tupleMemoryEnabled = tupleMemoryEnabled;
+    }
+    
     /**
      * @return the subrule
      */

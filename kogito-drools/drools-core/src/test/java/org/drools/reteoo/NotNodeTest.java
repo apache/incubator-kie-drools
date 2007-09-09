@@ -337,9 +337,9 @@ public class NotNodeTest extends DroolsTestCase {
         BuildContext buildContext = new BuildContext( ruleBase,
                                                       ruleBase.getReteooBuilder().getIdGenerator() );
         
-        buildContext.setHasLeftMemory( false );
-        buildContext.setHasObjectTypeMemory( false );
-        buildContext.setHasTerminalNodeMemory( false );
+        buildContext.setTupleMemoryEnabled( false );
+        buildContext.setObjectTypeNodeMemoryEnabled( false );
+        buildContext.setTerminalNodeMemoryEnabled( false );
 
         // override setup, so its working in sequential mode
         this.node = new NotNode( 15,

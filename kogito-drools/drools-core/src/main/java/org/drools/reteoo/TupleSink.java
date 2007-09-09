@@ -52,4 +52,8 @@ public interface TupleSink
     void retractTuple(ReteTuple tuple,
                       PropagationContext context,
                       InternalWorkingMemory workingMemory);
+    
+    public boolean isTupleMemoryEnabled();
+
+    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled);       
 }

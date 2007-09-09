@@ -192,8 +192,8 @@ public class JoinNodeTest extends DroolsTestCase {
 
         ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
-        buildContext.setHasLeftMemory( false );
-        buildContext.setHasObjectTypeMemory( false );
+        buildContext.setTupleMemoryEnabled( false );
+        buildContext.setObjectTypeNodeMemoryEnabled( false );
         
         // override setup, so its working in sequential mode
         this.node = new JoinNode( 15,
