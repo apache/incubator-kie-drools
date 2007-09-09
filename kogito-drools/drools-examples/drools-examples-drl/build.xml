@@ -1,5 +1,15 @@
-<project name="Drools" basedir="." xmlns:artifact="urn:maven-artifact-ant" default="help">
-    <property name="version"   value="3.0.3"/>                            
+<project name="Drools" basedir=".">
+	<!-- This ant build file is just for executing the various benchmarks used in drools-examples.
+	     People new to Drools should stick to importing the drools-examples-drl project into an 
+	     Eclipse workspace that already has the Eclipse plugin installed, and executing examples
+	     from there.
+	     
+	     Because this ant build file is compiled and executed from the command line you must copy in the 
+	     correct dependencies yourself, it is recommended that you just download the drools-4.0.2-bin.zip
+	     file and extract all it's jars to the lib directory.
+	 -->
+	
+    <property name="version"   value="4.0.2"/>                            
 
 		<target name="clean">
       <delete>        
@@ -87,7 +97,5 @@
         <jvmarg value="-Xms1024M" />
       </java>                          
     </target>            
-
-
         
 </project>
