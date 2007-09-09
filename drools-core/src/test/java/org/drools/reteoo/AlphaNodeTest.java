@@ -85,6 +85,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     field );
 
         // With Memory
+        buildContext.setAlphaNodeMemoryAllowed( true );        
         final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
@@ -409,6 +410,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     evaluator,
                                                                     field );
 
+        buildContext.setAlphaNodeMemoryAllowed( true );
         final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
@@ -577,6 +579,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                                     evaluator,
                                                                     field );
 
+        buildContext.setAlphaNodeMemoryAllowed( true );        
         final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
                                                    constraint,
                                                    source,
