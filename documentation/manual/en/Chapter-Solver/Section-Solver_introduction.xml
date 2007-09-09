@@ -5,10 +5,10 @@
   <section>
     <title>Status of drools-solver</title>
 
-    <para>Drools-solver is an experimental module of drools-solver. The API is
-    far from stable and backward incompatible changes occur now and then. A
-    recipe to upgrade and apply those API changes between versions will be
-    maintained soon.</para>
+    <para>Drools-solver is an <emphasis role="bold">experimental</emphasis>
+    module of drools-solver. The API is far from stable and backward
+    incompatible changes occur now and then. A recipe to upgrade and apply
+    those API changes between versions will be maintained soon.</para>
   </section>
 
   <section>
@@ -55,7 +55,7 @@
       </listitem>
     </itemizedlist>
 
-    <para>Ussually a planning problem consists out of a number of constraints.
+    <para>Usually a planning problem consists out of a number of constraints.
     Generally, there are 3 types of constraints:</para>
 
     <itemizedlist>
@@ -74,21 +74,21 @@
 
       <listitem>
         <para>A <emphasis role="bold">positive constraint (or
-        reward)</emphasis> should be fullfilled if possible. For example:
+        reward)</emphasis> should be fulfilled if possible. For example:
         <emphasis>Teacher B likes to teach on Monday
         morning</emphasis>.</para>
       </listitem>
     </itemizedlist>
 
     <para>The constraints define the score function of a planning problem.
-    Ussually a planning problems has a very large number of possible
-    solutions. Each solution has a score. Ussually, most solutions are not
-    feasible, because they break a negative hard constraint. Ussually, of all
-    the feasible solutions (if any), there is only 1 or very few optimal
+    Usually a planning problems has a very large number of possible solutions.
+    Each solution has a score. Usually, most solutions are not feasible,
+    because they break a negative hard constraint. Usually, of all the
+    feasible solutions (if any), there is only 1 or very few optimal
     solutions.</para>
 
     <para>The drools rule engine turns out to be a very good way to implement
-    a score function a number of rule constaints.</para>
+    a score function a number of rule constraints.</para>
   </section>
 
   <section>
@@ -100,8 +100,8 @@
     <section>
       <title>Brute force</title>
 
-      <para>Brute force creates and evaluates every possible solution,
-      ussually by create a search tree.</para>
+      <para>Brute force creates and evaluates every possible solution, usually
+      by create a search tree.</para>
 
       <para>Advantages:</para>
 
@@ -161,7 +161,10 @@
     <section>
       <title>Simplex</title>
 
-      <para>Brute force is</para>
+      <para>Simplex turns all constraints into a big equation, which it than
+      transmutes into a mathematical function without local optima. It then
+      finds an optimal solution by finding an optima of that mathematical
+      function.</para>
 
       <para>Advantages:</para>
 
@@ -175,7 +178,7 @@
 
       <itemizedlist>
         <listitem>
-          <para>It's ussually rather complex and mathematical to implement
+          <para>It's usually rather complex and mathematical to implement
           constraints.</para>
         </listitem>
       </itemizedlist>
@@ -196,7 +199,7 @@
       search path and moves facts around to find a very good solution.</para>
 
       <para>A vanilla local search can easily get stuck in a local optima, but
-      improvements (such as tabu search and simulated annealing) adress this
+      improvements (such as tabu search and simulated annealing) address this
       problem.</para>
 
       <para>Advantages:</para>
@@ -226,9 +229,9 @@
         </listitem>
 
         <listitem>
-          <para>If the perfect score is unknown (which is ussually the case),
+          <para>If the perfect score is unknown (which is usually the case),
           it must be told when to stop looking (for example based on time
-          spend, user imput, ...).</para>
+          spend, user input, ...).</para>
         </listitem>
       </itemizedlist>
 
