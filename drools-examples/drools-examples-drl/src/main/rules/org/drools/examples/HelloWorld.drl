@@ -8,13 +8,12 @@ rule "Hello World"
 		m : Message( status == Message.HELLO, message : message )
 	then
 	System.out.println( message ); 
-	m.message = "Goodbyte cruel world";
-	m.status = 1;
-	update ( m );    	               
+	modify ( m ) { message = "Goodbyte cruel world",
+	               status = Message.GOODBYE };
 end
 
 rule "Good Bye"
-    dialect "mvel"
+    dialect "java"
 	when
 		Message( status == Message.GOODBYE, message : message )
 	then
