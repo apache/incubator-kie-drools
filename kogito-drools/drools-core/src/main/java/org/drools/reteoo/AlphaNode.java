@@ -61,6 +61,9 @@ public class AlphaNode extends ObjectSource
 
     private boolean                        objectMemoryAllowed;
 
+    // a reference to the ObjectSink being currently updated
+    private ObjectSink                     sinkBeingUpdated;
+
     /**
      * Construct an <code>AlphaNode</code> with a unique id using the provided
      * <code>FieldConstraint</code> and the given <code>ObjectSource</code>.
@@ -138,9 +141,17 @@ public class AlphaNode extends ObjectSource
                             false );
             }
 
-            this.sink.propagateAssertObject( handle,
-                                             context,
-                                             workingMemory );
+            if ( this.sinkBeingUpdated == null ) {
+                // this is a regular assert
+                this.sink.propagateAssertObject( handle,
+                                                 context,
+                                                 workingMemory );
+            } else {
+                // this is an assert as a result of sink update
+                this.sinkBeingUpdated.assertObject( handle,
+                                                    context,
+                                                    workingMemory );
+            }
         }
     }
 
@@ -170,9 +181,11 @@ public class AlphaNode extends ObjectSource
 
         if ( !isObjectMemoryEnabled() ) {
             // get the objects from the parent
-            this.objectSource.updateSink( sink,
+            this.sinkBeingUpdated = sink;
+            this.objectSource.updateSink( this,
                                           context,
                                           workingMemory );
+            this.sinkBeingUpdated = null;
         } else {
             // if already has memory, just iterate and propagate
             memory = (FactHashTable) workingMemory.getNodeMemory( this );

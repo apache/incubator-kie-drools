@@ -19,8 +19,6 @@ package org.drools.reteoo;
 import java.io.Serializable;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -34,7 +32,6 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
-import org.drools.util.AbstractHashTable.FactEntryImpl;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
