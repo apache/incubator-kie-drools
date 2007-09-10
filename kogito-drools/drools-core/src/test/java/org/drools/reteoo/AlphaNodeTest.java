@@ -41,7 +41,7 @@ import org.drools.util.FactHashTable;
 
 public class AlphaNodeTest extends DroolsTestCase {
 
-    public void xxxtestMemory() {
+    public void testMemory() {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setAlphaMemory( false );
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( config );
@@ -59,7 +59,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertNotNull( memory );
     }
 
-    public void xxxtestLiteralConstraintAssertObjectWithMemory() throws Exception {
+    public void testLiteralConstraintAssertObjectWithMemory() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setAlphaMemory( true );
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( config );
@@ -146,7 +146,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                     memory.contains( f0 ) );
     }
 
-    public void xxxtestIsMemoryAllowedOverride() throws Exception {
+    public void testIsMemoryAllowedOverride() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setAlphaMemory( true );
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( config );
@@ -209,7 +209,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       memory.size() );
     }
 
-    public void xxxtestLiteralConstraintAssertObjectWithoutMemory() throws Exception {
+    public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setAlphaMemory( false );
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( config );
@@ -295,7 +295,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                      memory.contains( f0 ) );
     }
 
-    public void xxxtestLiteralConstraintAssertSequentialMode() throws Exception {
+    public void testLiteralConstraintAssertSequentialMode() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setSequential( true );
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( config );
@@ -383,7 +383,7 @@ public class AlphaNodeTest extends DroolsTestCase {
      * on the previous two tests. This just test AlphaNode With a different
      * Constraint type.
      */
-    public void xxxtestReturnValueConstraintAssertObject() throws Exception {
+    public void testReturnValueConstraintAssertObject() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setAlphaMemory( false );
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( config );
@@ -451,7 +451,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
     }
 
-    public void xxxtestRetractObjectWithMemory() throws Exception {
+    public void testRetractObjectWithMemory() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setAlphaMemory( true );
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( config );
@@ -535,7 +535,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
     }
 
-    public void xxxtestRetractObjectWithoutMemory() throws Exception {
+    public void testRetractObjectWithoutMemory() throws Exception {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setAlphaMemory( false );
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( config );
@@ -620,7 +620,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
     }
 
-    public void xxxtestUpdateSinkWithMemory() throws FactException,
+    public void testUpdateSinkWithMemory() throws FactException,
                                           IntrospectionException {
         // An AlphaNode with memory should not try and repropagate from its source
         // Also it should only update the latest tuple sinky
@@ -673,6 +673,17 @@ public class AlphaNodeTest extends DroolsTestCase {
                                 context,
                                 workingMemory );
 
+        // Create a fact that should not be propagated, since the alpha node restriction will filter it out
+        final Cheese stilton = new Cheese( "stilton",
+                                           10 );
+        final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
+                                                                 stilton );
+        // adding handle to the mock source
+        source.addFact( handle2 );
+
+        alphaNode.assertObject( handle2,
+                                context,
+                                workingMemory );
         assertLength( 1,
                       sink1.getAsserted() );
 
