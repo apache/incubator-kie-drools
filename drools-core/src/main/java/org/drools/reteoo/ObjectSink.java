@@ -60,9 +60,9 @@ public interface ObjectSink
      */
     void retractObject(InternalFactHandle handle,
                        PropagationContext context,
-                       InternalWorkingMemory workingMemory);   
-    
+                       InternalWorkingMemory workingMemory);
+
     public boolean isObjectMemoryEnabled();
 
-    public void setObjectMemoryEnabled(boolean objectMemoryOn);    
+    public void setObjectMemoryEnabled(boolean objectMemoryOn);
 }
