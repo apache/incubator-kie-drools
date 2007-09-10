@@ -28,7 +28,6 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
-import org.drools.util.AbstractHashTable.FactEntryImpl;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -60,9 +59,6 @@ public class AlphaNode extends ObjectSource
     private boolean                        objectMemoryEnabled;
 
     private boolean                        objectMemoryAllowed;
-
-    // a reference to the ObjectSink currently being updated
-    private transient ObjectSink           sinkBeingUpdated;
 
     /**
      * Construct an <code>AlphaNode</code> with a unique id using the provided
@@ -141,17 +137,9 @@ public class AlphaNode extends ObjectSource
                             false );
             }
 
-            if ( this.sinkBeingUpdated == null ) {
-                // this is a regular assert
-                this.sink.propagateAssertObject( handle,
-                                                 context,
-                                                 workingMemory );
-            } else {
-                // this is an assert as a result of sink update
-                this.sinkBeingUpdated.assertObject( handle,
-                                                    context,
-                                                    workingMemory );
-            }
+            this.sink.propagateAssertObject( handle,
+                                             context,
+                                             workingMemory );
         }
     }
 
@@ -181,11 +169,10 @@ public class AlphaNode extends ObjectSource
 
         if ( !isObjectMemoryEnabled() ) {
             // get the objects from the parent
-            this.sinkBeingUpdated = sink;
-            this.objectSource.updateSink( this,
+            ObjectSinkUpdateAdapter adapter = new ObjectSinkUpdateAdapter( sink, this.constraint );
+            this.objectSource.updateSink( adapter,
                                           context,
                                           workingMemory );
-            this.sinkBeingUpdated = null;
         } else {
             // if already has memory, just iterate and propagate
             memory = (FactHashTable) workingMemory.getNodeMemory( this );
@@ -303,4 +290,53 @@ public class AlphaNode extends ObjectSource
         this.previousObjectSinkNode = previous;
     }
 
+    /**
+     * Used with the updateSink method, so that the parent ObjectSource
+     * can  update the  TupleSink
+     * @author mproctor
+     *
+     */
+    private static class ObjectSinkUpdateAdapter
+        implements
+        ObjectSink {
+        private final ObjectSink sink;
+        private final AlphaNodeFieldConstraint constraint;
+
+        public ObjectSinkUpdateAdapter(final ObjectSink sink, 
+                                       final AlphaNodeFieldConstraint constraint ) {
+            this.sink = sink;
+            this.constraint = constraint;
+        }
+
+        public void assertObject(final InternalFactHandle handle,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
+            if ( this.constraint.isAllowed( handle.getObject(),
+                                            workingMemory ) ) {
+                this.sink.assertObject( handle,
+                                        context,
+                                        workingMemory );
+            }
+        }
+
+        public void modifyObject(final InternalFactHandle handle,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "ObjectSinkUpdateAdapter onlys supports assertObject method calls" );
+        }
+
+        public void retractObject(final InternalFactHandle handle,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "ObjectSinkUpdateAdapter onlys supports assertObject method calls" );
+        }
+
+        public boolean isObjectMemoryEnabled() {
+            throw new UnsupportedOperationException( "ObjectSinkUpdateAdapter have no Object memory" );
+        }
+
+        public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
+            throw new UnsupportedOperationException( "ObjectSinkUpdateAdapter have no Object memory" );
+        }
+    }
 }
