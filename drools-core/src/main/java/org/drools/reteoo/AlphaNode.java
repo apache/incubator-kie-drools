@@ -61,8 +61,8 @@ public class AlphaNode extends ObjectSource
 
     private boolean                        objectMemoryAllowed;
 
-    // a reference to the ObjectSink being currently updated
-    private ObjectSink                     sinkBeingUpdated;
+    // a reference to the ObjectSink currently being updated
+    private transient ObjectSink           sinkBeingUpdated;
 
     /**
      * Construct an <code>AlphaNode</code> with a unique id using the provided
