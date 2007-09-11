@@ -1,18 +1,22 @@
 package org.acme.insurance.web;
 
-import org.acme.insurance.base.*;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.agent.RuleAgent;
-import org.drools.compiler.PackageBuilder;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.acme.insurance.base.AccessoriesCoverage;
+import org.acme.insurance.base.Driver;
+import org.acme.insurance.base.DriverAdditionalInfo;
+import org.acme.insurance.base.Policy;
+import org.acme.insurance.base.SupplementalInfo;
+import org.drools.RuleBase;
+import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
+import org.drools.agent.RuleAgent;
 
 public class DroolsBusiness {
 
@@ -51,19 +55,19 @@ public class DroolsBusiness {
         return rulebase;
     }
 
-    private RuleBase loadRuleBaseFromDRL() throws Exception {
-
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl(getTechnicalRules("/approval/insurancefactor.drl"));
-        builder.addPackageFromDrl(getTechnicalRules("/approval/approval.drl"));
-        builder.addPackageFromDrl(getTechnicalRules("/approval/calculateInsurance.drl"));
-        builder.addPackageFromDrl(getTechnicalRules("/approval/marginalage.drl"));
-        builder.addRuleFlow(getTechnicalRules("/approval/insurance-process.rfm"));
-
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage(builder.getPackage());
-        return ruleBase;
-    }
+//    private RuleBase loadRuleBaseFromDRL() throws Exception {
+//
+//        PackageBuilder builder = new PackageBuilder();
+//        builder.addPackageFromDrl(getTechnicalRules("/approval/insurancefactor.drl"));
+//        builder.addPackageFromDrl(getTechnicalRules("/approval/approval.drl"));
+//        builder.addPackageFromDrl(getTechnicalRules("/approval/calculateInsurance.drl"));
+//        builder.addPackageFromDrl(getTechnicalRules("/approval/marginalage.drl"));
+//        builder.addRuleFlow(getTechnicalRules("/approval/insurance-process.rfm"));
+//
+//        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+//        ruleBase.addPackage(builder.getPackage());
+//        return ruleBase;
+//    }
 
     private Reader getTechnicalRules(String name) {
 

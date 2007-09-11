@@ -12,8 +12,6 @@ import org.acme.insurance.base.DriverAdditionalInfo;
 import org.acme.insurance.base.Policy;
 import org.acme.insurance.base.SupplementalInfo;
 import org.drools.StatefulSession;
-import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.compiler.DroolsParserException;
 
 public class InsuranceCalculateTest extends TestCase {
     private StatefulSession session;
@@ -35,7 +33,7 @@ public class InsuranceCalculateTest extends TestCase {
         session.dispose();
     }
 
-    public void testHasExtraCar() throws DroolsParserException,
+    public void testHasExtraCar() throws 
                                  IOException,
                                  Exception {
 
@@ -75,7 +73,7 @@ public class InsuranceCalculateTest extends TestCase {
                       policy.getInsurancePrice() );
     }
 
-    public void testDriveVehiclePlace() throws DroolsParserException,
+    public void testDriveVehiclePlace() throws 
                                        IOException,
                                        Exception {
 
@@ -110,7 +108,7 @@ public class InsuranceCalculateTest extends TestCase {
                       policy.getInsurancePrice() );
     }
 
-    public void testAccessoriesValue() throws DroolsParserException,
+    public void testAccessoriesValue() throws 
                                       IOException,
                                       Exception {
 
