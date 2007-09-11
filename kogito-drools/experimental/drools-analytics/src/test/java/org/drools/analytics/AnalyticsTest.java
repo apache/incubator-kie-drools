@@ -32,8 +32,9 @@ class AnalyticsTest {
 			// a.addPackageDescr(descr3);
 			// a.addPackageDescr(descr4);
 			a.fireAnalysis();
-			System.out.print(a.getResultAsPlainText());
+			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());
+			 System.out.print(a.getResultAsHTML());
 
 		} catch (Throwable t) {
 			t.printStackTrace();
