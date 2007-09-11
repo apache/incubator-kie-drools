@@ -74,6 +74,15 @@ public class Analyzer {
 	public String getResultAsXML() {
 		return ReportModeller.writeXML(result);
 	}
+	
+	/**
+	 * Returns the analysis results as HTML.
+	 * 
+	 * @return Analysis results as HTML
+	 */
+	public String getResultAsHTML() {
+		return ReportModeller.writeHTML(result);
+	}
 
 	/**
 	 * Returns the analysis results as <code>AnalysisResult</code> object.
