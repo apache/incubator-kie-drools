@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ModifyInterceptor;
 import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
@@ -92,7 +93,7 @@ public class MVELDialect
     private final JavaFunctionBuilder         function                = new JavaFunctionBuilder();
     private final CollectBuilder              collect                 = new CollectBuilder();
     private final ForallBuilder               forall                  = new ForallBuilder();
-    
+
     private Map                               interceptors;
 
     private List                              results;
@@ -105,7 +106,7 @@ public class MVELDialect
     private TypeResolver                      typeResolver;
     private ClassFieldExtractorCache          classFieldExtractorCache;
     private MVELExprAnalyzer                  analyzer;
-    
+
     private Map                               imports;
     private Map                               packageImports;
 
@@ -131,7 +132,7 @@ public class MVELDialect
         this.typeResolver = builder.getTypeResolver();
         this.classFieldExtractorCache = builder.getClassFieldExtractorCache();
         this.strictMode = this.configuration.isStrict();
-        
+
         // we currently default to reflective optimisation
         OptimizerFactory.setDefaultOptimizer("reflective");
 
@@ -187,7 +188,7 @@ public class MVELDialect
 
         this.builders.put( EvalDescr.class,
                            getEvalBuilder() );
-        
+
         this.builders.put( CollectDescr.class,
                            this.collect );
 
@@ -206,7 +207,7 @@ public class MVELDialect
 
     public void init(RuleDescr ruleDescr) {
         //MVEL:test null to Fix failing test on org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
-        
+
         // @todo: why is this here, MVEL doesn't compile anything? mdp
         String pkgName = this.pkg == null? "": this.pkg.getName();
         final String ruleClassName = JavaDialect.getUniqueLegalName( pkgName,
@@ -239,20 +240,20 @@ public class MVELDialect
         if ( importEntry.endsWith( "*" ) ) {
             importEntry = importEntry.substring( 0, importEntry.indexOf( '*' )  );
             this.packageImports.put( importEntry, importEntry );
-        } else {        
+        } else {
             try {
-                Class cls = this.typeResolver.resolveType( importEntry );                
+                Class cls = this.typeResolver.resolveType( importEntry );
                 this.imports.put( ParseTools.getSimpleClassName( cls ), cls );
             } catch ( ClassNotFoundException e ) {
                 this.results.add( new ImportError( importEntry, 1 ) );
             }
         }
     }
-    
+
     public Map getImports() {
         return this.imports;
     }
-    
+
     public Map getPackgeImports() {
         return this.packageImports;
     }
@@ -367,12 +368,12 @@ public class MVELDialect
         Serializable expr = compiler.compile( parserContext );
         return expr;
     }
-    
+
     public ParserContext getParserContext(final Dialect.AnalysisResult analysis, final Map outerDeclarations, final RuleBuildContext context) {
         final ParserContext parserContext = new ParserContext( this.imports,
                                                                null,
                                                                context.getPkg().getName()+"."+context.getRuleDescr().getClassName() );
-        
+
         for ( Iterator it = this.packageImports.values().iterator(); it.hasNext(); ) {
             String packageImport = ( String ) it.next();
             parserContext.addPackageImport( packageImport );
@@ -419,7 +420,7 @@ public class MVELDialect
 
         parserContext.addInput( "drools",
                                 KnowledgeHelper.class );
-        
+
         return parserContext;
     }
 
@@ -495,47 +496,6 @@ public class MVELDialect
         return ID;
     }
 
-    public static class AssertInterceptor
-        implements
-        Interceptor, Serializable {
-        private static final long serialVersionUID = 400L;
 
-        public int doBefore(ASTNode node,
-                            VariableResolverFactory factory) {
-            return 0;
-        }
 
-        public int doAfter(Object value,
-                           ASTNode node,
-                           VariableResolverFactory factory) {
-            ((DroolsMVELFactory) factory).getWorkingMemory().insert( value );
-            return 0;
-        }
-    }
-
-    public static class ModifyInterceptor
-        implements
-        Interceptor, Serializable {
-        private static final long serialVersionUID = 400L;
-
-        public int doBefore(ASTNode node,
-                            VariableResolverFactory factory) {
-            Object object = ((WithNode) node).getNestedStatement().getValue( null,
-                                                                             factory );
-
-            DroolsMVELKnowledgeHelper resolver = (DroolsMVELKnowledgeHelper) factory.getVariableResolver( "drools" );
-            KnowledgeHelper helper = (KnowledgeHelper) resolver.getValue();
-            helper.modifyRetract( object );
-            return 0;
-        }
-
-        public int doAfter(Object value,
-                           ASTNode node,
-                           VariableResolverFactory factory) {
-            DroolsMVELKnowledgeHelper resolver = (DroolsMVELKnowledgeHelper) factory.getVariableResolver( "drools" );
-            KnowledgeHelper helper = (KnowledgeHelper) resolver.getValue();
-            helper.modifyInsert( value );
-            return 0;
-        }
-    }
 }
