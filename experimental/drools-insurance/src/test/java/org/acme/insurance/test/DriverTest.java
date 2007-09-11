@@ -10,7 +10,6 @@ import junit.framework.TestCase;
 import org.acme.insurance.base.Driver;
 import org.acme.insurance.base.Policy;
 import org.drools.StatefulSession;
-import org.drools.compiler.DroolsParserException;
 
 public class DriverTest extends TestCase {
     private StatefulSession session;
@@ -32,7 +31,7 @@ public class DriverTest extends TestCase {
         session.dispose();
     }
 
-    public void testDriverGenreFactor() throws DroolsParserException,
+    public void testDriverGenreFactor() throws
                                        IOException,
                                        Exception {
         Driver driverMale = new Driver();
@@ -68,7 +67,7 @@ public class DriverTest extends TestCase {
 
     }
 
-    public void testMatureDriverWithChildFactor() throws DroolsParserException,
+    public void testMatureDriverWithChildFactor() throws
                                                  IOException,
                                                  Exception {
 

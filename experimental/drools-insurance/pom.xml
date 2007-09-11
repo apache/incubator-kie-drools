@@ -258,26 +258,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Lang -->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.3</version>
-        </dependency>
-
-        <!-- Logging -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.12</version>
-            <!--<scope>runtime</scope> for the examples -->
-        </dependency>
 
         <!-- Drools -->
         <dependency>
@@ -285,18 +265,13 @@
             <artifactId>drools-core</artifactId>
             <version>4.0.2.SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
             <version>4.0.2.SNAPSHOT</version>
         </dependency>
 
-        <!-- Xstream -->
-        <dependency>
-            <groupId>com.thoughtworks.xstream</groupId>
-            <artifactId>xstream</artifactId>
-            <version>1.2.2</version>
-        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies/>

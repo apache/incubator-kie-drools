@@ -10,7 +10,6 @@ import org.acme.insurance.base.Driver;
 import org.acme.insurance.base.Policy;
 import org.acme.insurance.base.SupplementalInfo;
 import org.drools.StatefulSession;
-import org.drools.compiler.DroolsParserException;
 
 public class SupplementalInfoTest extends TestCase {
     private StatefulSession session;
@@ -21,7 +20,7 @@ public class SupplementalInfoTest extends TestCase {
         super.setUp();
 
         session = (new InsuranceTestHelper()).getSession();
-        
+
         SimpleDateFormat df = new java.text.SimpleDateFormat( "dd/MM/yyyy" );
         defaultBirthday = df.parse( "18/09/1983" );
     }
@@ -32,8 +31,7 @@ public class SupplementalInfoTest extends TestCase {
         session.dispose();
     }
 
-    public void testHasExtraCar() throws DroolsParserException,
-                                 IOException,
+    public void testHasExtraCar() throws IOException,
                                  Exception {
 
         Driver driver = new Driver();
@@ -63,8 +61,7 @@ public class SupplementalInfoTest extends TestCase {
         assertTrue( policy.isApproved() );
     }
 
-    public void testeHasExtraAssistence() throws DroolsParserException,
-                                         IOException,
+    public void testeHasExtraAssistence() throws IOException,
                                          Exception {
 
         Driver driver = new Driver();
@@ -94,8 +91,7 @@ public class SupplementalInfoTest extends TestCase {
         assertTrue( policy.isApproved() );
     }
 
-    public void testeGlassCoverage() throws DroolsParserException,
-                                    IOException,
+    public void testeGlassCoverage() throws IOException,
                                     Exception {
 
         Driver driver = new Driver();
@@ -125,8 +121,7 @@ public class SupplementalInfoTest extends TestCase {
         assertTrue( policy.isApproved() );
     }
 
-    public void testeNonRelatedExpenses() throws DroolsParserException,
-                                         IOException,
+    public void testeNonRelatedExpenses() throws IOException,
                                          Exception {
 
         Driver driver = new Driver();
@@ -156,9 +151,8 @@ public class SupplementalInfoTest extends TestCase {
         assertTrue( policy.isApproved() );
     }
 
-    public void testeSupplementalInfoMix() throws DroolsParserException,
-                                         IOException,
-                                         Exception {
+    public void testeSupplementalInfoMix() throws IOException,
+                                          Exception {
 
         Driver driver = new Driver();
 
@@ -174,7 +168,7 @@ public class SupplementalInfoTest extends TestCase {
         suppinfo.setGlassCoverage( true );
         suppinfo.setExtraAssistence( true );
         suppinfo.setExtraCar( true );
-        
+
         suppinfo.setDriverId( driver.getId() );
 
         Policy policy = new Policy();
@@ -187,8 +181,7 @@ public class SupplementalInfoTest extends TestCase {
         session.fireAllRules();
 
         assertEquals( 1.2155062500000002,
-                      driver.getInsuranceFactor());
-        
+                      driver.getInsuranceFactor() );
 
         assertTrue( policy.isApproved() );
     }
