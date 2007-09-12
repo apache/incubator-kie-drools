@@ -14,7 +14,6 @@ import org.acme.insurance.base.DriverAdditionalInfo;
 import org.acme.insurance.base.Policy;
 import org.acme.insurance.base.SupplementalInfo;
 import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.agent.RuleAgent;
 
@@ -24,7 +23,7 @@ public class DroolsBusiness {
     private SupplementalInfo suppinfo = new SupplementalInfo();
     private AccessoriesCoverage accessCov = new AccessoriesCoverage();
     private Driver driverMale = new Driver();
-    private SimpleDateFormat df = new java.text.SimpleDateFormat("dd/MM/yyyy");
+    private SimpleDateFormat df = new java.text.SimpleDateFormat("MM/dd/yyyy");
     private Date defaultBirthday;
     private Policy policy = new Policy();
 
@@ -85,24 +84,13 @@ public class DroolsBusiness {
 
         session.startProcess("insuranceProcess");
 
-        SimpleDateFormat df = new java.text.SimpleDateFormat("dd/MM/yyyy");
-        defaultBirthday = df.parse("18/09/1983");
-
     }
 
     public void execute(HttpServletRequest request) throws Exception {
 
         setUp();
 
-        defaultBirthday = df
-                .parse(Integer.parseInt(request
-                        .getParameter("data_nascimento_dia"))
-                        + "/"
-                        + Integer.parseInt(request
-                        .getParameter("data_nascimento_mes"))
-                        + "/"
-                        + Integer.parseInt(request
-                        .getParameter("data_nascimento_ano")));
+        defaultBirthday = df.parse(request.getParameter("birthdate"));
 
         policy.setBasePrice(500.00);
 
@@ -164,5 +152,4 @@ public class DroolsBusiness {
         System.out.println("Insurance Price :" + policy.getInsurancePrice());
 
     }
-
 }
