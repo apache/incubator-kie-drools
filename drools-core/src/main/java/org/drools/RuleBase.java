@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 import org.drools.rule.Package;
-import org.drools.ruleflow.common.core.Process;
 
 /**
  * Active collection of <code>Rule</code>s.
@@ -36,7 +35,8 @@ import org.drools.ruleflow.common.core.Process;
  */
 public interface RuleBase
     extends
-    Serializable {
+    Serializable,
+    RuleBaseEventManager {
 
     public static final int RETEOO = 1;
 

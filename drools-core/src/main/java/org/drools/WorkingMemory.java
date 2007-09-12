@@ -16,17 +16,9 @@ package org.drools;
  * limitations under the License.
  */
 
-import java.io.Serializable;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
-import org.drools.event.AgendaEventListener;
-import org.drools.event.RuleFlowEventListener;
-import org.drools.event.WorkingMemoryEventListener;
-import org.drools.rule.Rule;
 import org.drools.ruleflow.common.instance.ProcessInstance;
-import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;

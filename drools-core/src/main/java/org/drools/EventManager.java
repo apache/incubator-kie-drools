@@ -20,11 +20,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.drools.event.AgendaEventListener;
-import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventListener;
-import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
-import org.drools.event.WorkingMemoryEventSupport;
 
 /**
  * The EventManager class is implemented by classes wishing to add,remove and get the various Drools EventListeners.
