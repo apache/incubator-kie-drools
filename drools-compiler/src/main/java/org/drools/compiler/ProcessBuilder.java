@@ -21,6 +21,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.ruleflow.common.core.Process;
 import org.drools.ruleflow.core.Connection;
@@ -43,8 +44,6 @@ import com.thoughtworks.xstream.XStream;
  */
 public class ProcessBuilder {
     
-    
-	
 	private PackageBuilder packageBuilder;
     private final List processes = new ArrayList();
 	private final List errors = new ArrayList(); 
@@ -114,6 +113,14 @@ public class ProcessBuilder {
     				result += "import " + iterator.next() + ";\n";
     			}
     		}
+    		Map globals = ruleFlow.getGlobals();
+    		if (globals != null) {
+    			for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext(); ) {
+    				Map.Entry entry = (Map.Entry) iterator.next();
+    				result += "global " + entry.getValue() + " " + entry.getKey() + ";\n";
+    			}
+    		}
+
     		Node[] nodes = ruleFlow.getNodes();
     		for (int i = 0; i < nodes.length; i++) {
     			 if (nodes[i] instanceof Split) {
