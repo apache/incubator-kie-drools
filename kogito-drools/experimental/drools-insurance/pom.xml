@@ -266,12 +266,6 @@
             <version>4.0.2.SNAPSHOT</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-compiler</artifactId>
-            <version>4.0.2.SNAPSHOT</version>
-        </dependency>
-
     </dependencies>
     <dependencyManagement>
         <dependencies/>
