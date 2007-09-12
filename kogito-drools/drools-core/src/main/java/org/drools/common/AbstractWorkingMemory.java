@@ -41,7 +41,6 @@ import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
-import org.drools.base.DroolsQuery;
 import org.drools.base.MapGlobalResolver;
 import org.drools.base.ShadowProxy;
 import org.drools.event.AgendaEventListener;

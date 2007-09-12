@@ -25,7 +25,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,6 +40,8 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleIntegrationException;
 import org.drools.StatefulSession;
+import org.drools.event.RuleBaseEventListener;
+import org.drools.event.RuleBaseEventSupport;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.MapBackedClassLoader;
@@ -88,6 +89,8 @@ abstract public class AbstractRuleBase
     protected Map                                   globals;
     
     private ReloadPackageCompilationData reloadPackageCompilationData = null;
+    
+    private RuleBaseEventSupport                    eventSupport = new RuleBaseEventSupport();
 
     /**
      * WeakHashMap to keep references of WorkingMemories but allow them to be
@@ -160,6 +163,7 @@ abstract public class AbstractRuleBase
         out.writeObject( this.factHandleFactory );
         out.writeObject( this.globals );
         out.writeObject( this.config );
+        out.writeObject( this.eventSupport );
 
         for ( int i = 0, length = objects.length; i < length; i++ ) {
             out.writeObject( objects[i] );
@@ -210,6 +214,7 @@ abstract public class AbstractRuleBase
         this.globals = (Map) childStream.readObject();
 
         this.config = (RuleBaseConfiguration) childStream.readObject();
+        this.eventSupport = (RuleBaseEventSupport) childStream.readObject();
 
         this.statefulSessions = new ObjectHashSet();
 
@@ -306,6 +311,8 @@ abstract public class AbstractRuleBase
                     wms[lastAquiredLock].getLock().lock();
                 }
 
+                this.eventSupport.fireBeforePackageAdded( newPkg );
+                
                 if ( pkg != null ) {
                     mergePackage( pkg,
                                   newPkg );
@@ -334,7 +341,7 @@ abstract public class AbstractRuleBase
                 final Rule[] rules = newPkg.getRules();
 
                 for ( int i = 0; i < rules.length; ++i ) {
-                    addRule( rules[i] );
+                    addRule( newPkg, rules[i] );
                 }
 
                 //and now the rule flows
@@ -348,6 +355,8 @@ abstract public class AbstractRuleBase
                 }
 
                 this.packageClassLoader.addClassLoader( newPkg.getPackageCompilationData().getClassLoader() );
+
+                this.eventSupport.fireAfterPackageAdded( newPkg );
 
             } finally {
                 // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
@@ -427,12 +436,17 @@ abstract public class AbstractRuleBase
             }
         }
     }
-
-    protected synchronized void addRule(final Rule rule) throws InvalidPatternException {
+    
+    private synchronized void addRule( final Package pkg, final Rule rule ) throws InvalidPatternException {
+        this.eventSupport.fireBeforeRuleAdded( pkg, rule );
         if ( !rule.isValid() ) {
             throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
         }
+        addRule( rule );
+        this.eventSupport.fireAfterRuleAdded( pkg, rule );
     }
+
+    protected abstract void addRule(final Rule rule) throws InvalidPatternException;
 
     public synchronized void removePackage(final String packageName) {
         synchronized ( this.pkgs ) {
@@ -453,11 +467,13 @@ abstract public class AbstractRuleBase
                 for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
                     wms[lastAquiredLock].getLock().lock();
                 }
+                
+                this.eventSupport.fireBeforePackageRemoved( pkg );
 
                 final Rule[] rules = pkg.getRules();
 
                 for ( int i = 0; i < rules.length; ++i ) {
-                    removeRule( rules[i] );
+                    removeRule( pkg, rules[i] );
                 }
 
                 this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
@@ -486,6 +502,9 @@ abstract public class AbstractRuleBase
                 }
                 // removing the package itself from the list
                 this.pkgs.remove( pkg.getName() );
+                
+                this.eventSupport.fireAfterPackageRemoved( pkg );
+                
             } finally {
                 // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
                 // of the new rule addition. Unlock after fireAllRules();
@@ -527,7 +546,7 @@ abstract public class AbstractRuleBase
                     wms[lastAquiredLock].getLock().lock();
                 }
 
-                removeRule( rule );
+                removeRule( pkg, rule );
                 compilationData = pkg.removeRule( rule );
                 if ( this.reloadPackageCompilationData == null ) {
                     this.reloadPackageCompilationData = new ReloadPackageCompilationData();
@@ -544,6 +563,12 @@ abstract public class AbstractRuleBase
                 }
             }                       
         }
+    }
+    
+    private void removeRule( final Package pkg, final Rule rule ) {
+        this.eventSupport.fireBeforeRuleRemoved( pkg, rule );
+        removeRule( rule );
+        this.eventSupport.fireAfterRuleRemoved( pkg, rule );
     }
 
     protected abstract void removeRule(Rule rule);
@@ -656,7 +681,23 @@ abstract public class AbstractRuleBase
         }
     }    
     
+    public void addEventListener(final RuleBaseEventListener listener) {
+        // since the event support is thread-safe, no need for locks... right?
+        this.eventSupport.addEventListener( listener );
+    }
+
+    public void removeEventListener(final RuleBaseEventListener listener) {
+        // since the event support is thread-safe, no need for locks... right?
+        this.eventSupport.removeEventListener( listener );
+    }
+
+    public List getRuleBaseEventListeners() {
+        // since the event support is thread-safe, no need for locks... right?
+        return this.eventSupport.getEventListeners();
+    }
+    
     public static class ReloadPackageCompilationData implements RuleBaseAction {
+        private static final long serialVersionUID = 1L;
         private Set set;
         
         public void addPackageCompilationData(PackageCompilationData packageCompilationData) {

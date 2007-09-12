@@ -262,8 +262,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
     }
 
     protected synchronized void addRule(final Rule rule) throws InvalidPatternException {
-        super.addRule( rule );
-
         // This adds the rule. ReteBuilder has a reference to the WorkingMemories and will propagate any existing facts.
         this.reteooBuilder.addRule( rule );
     }

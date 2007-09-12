@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.EventManager;
-import org.drools.WorkingMemory;
 import org.drools.audit.event.LogEvent;
+
 import com.thoughtworks.xstream.XStream;
 
 /**
