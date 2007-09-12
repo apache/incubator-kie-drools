@@ -20,13 +20,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.EventManager;
+import org.drools.WorkingMemoryEventManager;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.audit.event.ActivationLogEvent;
 import org.drools.audit.event.ILogEventFilter;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.ObjectLogEvent;
+import org.drools.audit.event.RuleBaseLogEvent;
 import org.drools.audit.event.RuleFlowGroupLogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.common.InternalFactHandle;
@@ -34,13 +35,22 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.AfterPackageAddedEvent;
+import org.drools.event.AfterPackageRemovedEvent;
+import org.drools.event.AfterRuleAddedEvent;
+import org.drools.event.AfterRuleRemovedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.BeforePackageAddedEvent;
+import org.drools.event.BeforePackageRemovedEvent;
+import org.drools.event.BeforeRuleAddedEvent;
+import org.drools.event.BeforeRuleRemovedEvent;
 import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.ObjectRetractedEvent;
+import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleFlowCompletedEvent;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowGroupActivatedEvent;
@@ -69,21 +79,23 @@ public abstract class WorkingMemoryLogger
     implements
     WorkingMemoryEventListener,
     AgendaEventListener,
-    RuleFlowEventListener {
+    RuleFlowEventListener,
+    RuleBaseEventListener {
 
     private final List    filters = new ArrayList();
-    private EventManager eventManager;
+    private WorkingMemoryEventManager workingMemoryEventManager;
 
     /**
      * Creates a new working memory logger for the given working memory.
      * 
      * @param workingMemory
      */
-    public WorkingMemoryLogger(final EventManager eventManager) {
-        this.eventManager = eventManager;
-        this.eventManager.addEventListener( (WorkingMemoryEventListener) this );
-        this.eventManager.addEventListener( (AgendaEventListener) this );
-        this.eventManager.addEventListener( (RuleFlowEventListener) this );
+    public WorkingMemoryLogger(final WorkingMemoryEventManager workingMemoryEventManager) {
+        this.workingMemoryEventManager = workingMemoryEventManager;
+        this.workingMemoryEventManager.addEventListener( (WorkingMemoryEventListener) this );
+        this.workingMemoryEventManager.addEventListener( (AgendaEventListener) this );
+        this.workingMemoryEventManager.addEventListener( (RuleFlowEventListener) this );
+        this.workingMemoryEventManager.addEventListener( (RuleBaseEventListener) this );
     }
 
     /**
@@ -327,5 +339,54 @@ public abstract class WorkingMemoryLogger
         		event.getRuleFlowGroup().getName(),
                 event.getRuleFlowGroup().size() ) );
     }
+    
+    public void afterPackageAdded(AfterPackageAddedEvent event) {
+        filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_ADDED,
+                                              event.getPackage().getName(),
+                                              null ) );
+    }
+
+    public void afterPackageRemoved(AfterPackageRemovedEvent event) {
+        filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_REMOVED,
+                                              event.getPackage().getName(),
+                                              null ) );
+    }
+
+    public void afterRuleAdded(AfterRuleAddedEvent event) {
+        filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_RULE_ADDED,
+                                              event.getPackage().getName(),
+                                              event.getRule().getName() ) );
+    }
+
+    public void afterRuleRemoved(AfterRuleRemovedEvent event) {
+        filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_RULE_REMOVED,
+                                              event.getPackage().getName(),
+                                              event.getRule().getName() ) );
+    }
+
+    public void beforePackageAdded(BeforePackageAddedEvent event) {
+        filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_PACKAGE_ADDED,
+                                              event.getPackage().getName(),
+                                              null ) );
+    }
+
+    public void beforePackageRemoved(BeforePackageRemovedEvent event) {
+        filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_PACKAGE_REMOVED,
+                                              event.getPackage().getName(),
+                                              null ) );
+    }
+
+    public void beforeRuleAdded(BeforeRuleAddedEvent event) {
+        filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_RULE_ADDED,
+                                              event.getPackage().getName(),
+                                              event.getRule().getName() ) );
+    }
+
+    public void beforeRuleRemoved(BeforeRuleRemovedEvent event) {
+        filterLogEvent( new RuleBaseLogEvent( LogEvent.BEFORE_RULE_REMOVED,
+                                              event.getPackage().getName(),
+                                              event.getRule().getName() ) );
+    }
+    
 
 }

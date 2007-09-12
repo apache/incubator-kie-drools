@@ -45,6 +45,7 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.base.ShadowProxy;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
+import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
@@ -303,6 +304,33 @@ public abstract class AbstractWorkingMemory
         try {
             this.lock.lock();
             return this.ruleFlowEventSupport.getEventListeners();
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    public void addEventListener(RuleBaseEventListener listener) {
+        try {
+            this.lock.lock();
+            this.ruleBase.addEventListener( listener );
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    public List getRuleBaseEventListeners() {
+        try {
+            this.lock.lock();
+            return this.ruleBase.getRuleBaseEventListeners();
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    public void removeEventListener(RuleBaseEventListener listener) {
+        try {
+            this.lock.lock();
+            this.ruleBase.removeEventListener( listener );
         } finally {
             this.lock.unlock();
         }

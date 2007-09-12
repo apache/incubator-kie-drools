@@ -31,6 +31,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.event.RuleBaseEventListener;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -181,4 +182,5 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                                             workingMemory );
         }
     }
+
 }

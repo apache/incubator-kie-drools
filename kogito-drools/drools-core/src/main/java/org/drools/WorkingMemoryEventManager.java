@@ -27,8 +27,9 @@ import org.drools.event.WorkingMemoryEventListener;
  * The EventManager class is implemented by classes wishing to add,remove and get the various Drools EventListeners.
  *
  */
-public interface EventManager
+public interface WorkingMemoryEventManager
     extends
+    RuleBaseEventManager,
     Serializable {
     /**
      * Add an event listener.
