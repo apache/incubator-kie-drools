@@ -45,6 +45,7 @@ public class RuleFlowProcessImpl extends ProcessImpl
     private List               variables;
     private long               lastNodeId;
     private List 			   imports;
+    private Map				   globals;
 
     public RuleFlowProcessImpl() {
         super();
@@ -108,8 +109,10 @@ public class RuleFlowProcessImpl extends ProcessImpl
 
     public String[] getVariableNames() {
         final String[] result = new String[this.variables.size()];
-        for ( int i = 0; i < this.variables.size(); i++ ) {
-            result[i] = ((Variable) this.variables.get( i )).getName();
+        if (this.variables != null) {
+	        for ( int i = 0; i < this.variables.size(); i++ ) {
+	            result[i] = ((Variable) this.variables.get( i )).getName();
+	        }
         }
         return result;
     }
@@ -139,4 +142,23 @@ public class RuleFlowProcessImpl extends ProcessImpl
 	public void setImports(List imports) {
 		this.imports = imports;
 	}
+	
+	public Map getGlobals() {
+		return globals;
+	}
+
+	public void setGlobals(Map globals) {
+		this.globals = globals;
+	}
+
+    public String[] getGlobalNames() {
+        final List result = new ArrayList();
+        if (this.globals != null) {
+	        for ( Iterator iterator = this.globals.keySet().iterator(); iterator.hasNext(); ) {
+	            result.add((String) iterator.next());
+	        }
+        }
+        return (String[]) result.toArray(new String[result.size()]);
+    }
+
 }

@@ -17,6 +17,7 @@ package org.drools.ruleflow.core;
  */
 
 import java.util.List;
+import java.util.Map;
 
 import org.drools.ruleflow.common.core.Process;
 
@@ -106,4 +107,26 @@ public interface RuleFlowProcess
      */
     void setImports(List imports);
 
+    /**
+     * Returns the globals of this RuleFlow process.
+     * They are defined as a Map with the name as key and the type as value.
+     * 
+     * @return	the imports of this RuleFlow process
+     */
+    Map getGlobals();
+    
+    /**
+     * Sets the imports of this RuleFlow process
+     * 
+     * @param imports	the globals as a Map with the name as key and the type as value
+     */
+    void setGlobals(Map globals);
+
+    /**
+     * Returns the names of the globals used in this RuleFlow process
+     * 
+     * @return	the names of the globals of this RuleFlow process
+     */
+    String[] getGlobalNames();
+    
 }
