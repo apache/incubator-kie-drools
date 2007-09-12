@@ -1,10 +1,60 @@
-a<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 
 <html>
 <head>
     <title>Drools Insurance Company</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link href="drools.css" media="screen" rel="Stylesheet" type="text/css">
+
+	<script language = "Javascript">	
+	function validateNumber(number){
+		var i;
+		var s = number.value;
+		
+	    for (i = 0; i < s.length; i++){   
+	        var c = s.charAt(i);
+	        if (((c < "0") || (c > "9"))) {
+			    alert("The "+ number.name +" field should be numeric");
+				return false;
+			}
+	    }
+	    return true;
+	}
+	
+
+	function validateMoney(money)
+	{
+		var format = /^\d+\.\d{2}$/; 
+	    if(money.value.length !=0 && format.test(money.value))
+	    {
+			return true;
+	    }
+        alert( money.name +  " should be a valid currency value");
+        return false;
+	}
+	
+	function validateDate(fld) {
+	    var RegExPattern = /^(?=\d)(?:(?:(?:(?:(?:0?[13578]|1[02])(\/|-|\.)31)\1|(?:(?:0?[1,3-9]|1[0-2])(\/|-|\.)(?:29|30)\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})|(?:0?2(\/|-|\.)29\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))|(?:(?:0?[1-9])|(?:1[0-2]))(\/|-|\.)(?:0?[1-9]|1\d|2[0-8])\4(?:(?:1[6-9]|[2-9]\d)?\d{2}))($|\ (?=\d)))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\ [AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/;
+	    var errorMessage = 'Please enter valid date as month, day, and four digit year.\nYou may use a slash, hyphen or period to separate the values.\nThe date must be a real date. 2-30-2000 would not be accepted.\nFormay mm/dd/yyyy.';
+	    if ((fld.value.match(RegExPattern)) && (fld.value!='')) {
+	        return true;
+	    } else {
+	        alert(errorMessage);
+			return false;
+	    } 
+	}
+	
+	function ValidateForm(){
+		var dt = document.frmSample.txtDate
+		if (validateDate(dt) == false){
+			dt.focus()
+			return false
+		}
+	    return true
+	 }
+
+	</script>
+
 </head>
 
 <body>
@@ -19,11 +69,8 @@ a<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
     </div>
 </div>
 
-<form action="InsuranceServlet" method="get" accept-charset="utf-8">
+<form action="InsuranceServlet" method="get" accept-charset="utf-8" >
 
-<table align="center">
-<tr>
-<td>
     <table width="600" height="236" border="0" align="center"
            cellpadding="0" cellspacing="2" bgcolor="#999999"
            class="seucorretor6">
@@ -58,24 +105,17 @@ a<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
                                 <tr>
                                     <td class="c1">Birth Date:</td>
 
-                                    <td><input size="2" name="data_nascimento_dia"
-                                               maxlength="2"
-                                               value="<% out.print(request.getParameter("data_nascimento_dia"));%>"
-                                               type="text" width="2"> / <input
-                                            size="2" name="data_nascimento_mes" maxlength="2"
-                                            value="<% out.print(request.getParameter("data_nascimento_mes"));%>"
-                                            type="text"> / <input size="4"
-                                                                  name="data_nascimento_ano" maxlength="4"
-                                                                  value="<% out.print(request.getParameter("data_nascimento_ano"));%>"
-                                                                  type="text"> <span class="c2">&nbsp; (dd/mm/aaaa
-								)</span></td>
+									 <td>
+
+									<input type="text" name="birthdate" onblur="validateDate(this);" value="<% out.print(request.getParameter("birthdate"));%>">> (mm/dd/yyyy)
+									</td>
                                 </tr>
 
                                 <tr>
                                     <td class="c1">License Age:</td>
 
-                                    <td><input name="habilitacao" size="2" maxlength="2"
-                                               value="<% out.print(request.getParameter("habilitacao"));%>" type="text">
+                                    <td><input name="habilitacao" size="2" maxlength="2" type="text" onblur="validateNumber(this);"
+                                               value="<% out.print(request.getParameter("habilitacao"));%>">
                                         <span class="c2">Years</span></td>
                                 </tr>
 
@@ -135,8 +175,7 @@ a<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
             </tr>
         </tbody>
     </table>
-</td>
-<td>
+<br/><br/>
     <table width="600" border="0" align="center" cellpadding="0"
            cellspacing="2" bgcolor="#999999" class="seucorretor6">
         <tbody>
@@ -305,12 +344,7 @@ a<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
             </tr>
         </tbody>
     </table>
-
-</td>
-</tr>
-
-<tr>
-<td>
+<br/><br/>
     <table width="600" border="0" align="center" cellpadding="0"
            cellspacing="2" bgcolor="#999999" class="seucorretor6">
         <tbody>
@@ -393,9 +427,7 @@ a<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
             </tr>
         </tbody>
     </table>
-</td>
-
-<td>
+<br/><br/>
     <table width="600" border="0" align="center" cellpadding="0"
            cellspacing="2" bgcolor="#999999" class="seucorretor6">
         <tbody>
@@ -421,7 +453,7 @@ a<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
                                 <tr>
                                     <td class="c1" width="50%">Alarm:</td>
 
-                                    <td width="50%"><input size="12" name="alarme"
+                                    <td width="50%"><input size="12" name="alarme" onblur="validateMoney(this);" 
                                                            value="<% out.print(request.getParameter("alarme"));%>"
                                                            type="text"> &nbsp;</td>
                                 </tr>
@@ -429,7 +461,7 @@ a<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
                                 <tr>
                                     <td class="c1" width="50%">Sound:</td>
 
-                                    <td width="50%"><input size="12" name="sistemaSom"
+                                    <td width="50%"><input size="12" name="sistemaSom" onblur="validateMoney(this);"
                                                            value="<% out.print(request.getParameter("sistemaSom"));%>"
                                                            type="text"> &nbsp;</td>
                                 </tr>
@@ -437,7 +469,7 @@ a<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
                                 <tr>
                                     <td class="c1" width="50%">Armor:</td>
 
-                                    <td width="50%"><input size="12" name="blindagem"
+                                    <td width="50%"><input size="12" name="blindagem" onblur="validateMoney(this);"
                                                            value="<% out.print(request.getParameter("blindagem"));%>"
                                                            type="text"> &nbsp;</td>
                                 </tr>
@@ -448,10 +480,7 @@ a<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
             </tr>
         </tbody>
     </table>
-</td>
-</tr>
 
-</table>
 
 
 <p>&nbsp;</p>

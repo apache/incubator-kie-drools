@@ -44,9 +44,7 @@ public class InsuranceServlet extends javax.servlet.http.HttpServlet implements
             redirectURL += "&alarme=" + request.getParameter("alarme");
             redirectURL += "&blindagem=" + request.getParameter("blindagem");
             redirectURL += "&sistemaSom=" + request.getParameter("sistemaSom");
-            redirectURL += "&data_nascimento_dia=" + request.getParameter("data_nascimento_dia");
-            redirectURL += "&data_nascimento_mes=" + request.getParameter("data_nascimento_mes");
-            redirectURL += "&data_nascimento_ano=" + request.getParameter("data_nascimento_ano");
+            redirectURL += "&birthdate=" + request.getParameter("birthdate");
 
             response.sendRedirect(redirectURL);
         } catch (Exception e) {
