@@ -19,6 +19,7 @@ package org.drools.audit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.WorkingMemoryEventManager;
 import org.drools.FactHandle;
@@ -247,9 +248,9 @@ public abstract class WorkingMemoryLogger
     private String extractDeclarations(final Activation activation,  final WorkingMemory workingMemory) {
         final StringBuffer result = new StringBuffer();
         final Tuple tuple = activation.getTuple();
-        final Declaration[] declarations = activation.getRule().getDeclarations();
-        for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            final Declaration declaration = declarations[i];
+        final Map declarations = activation.getSubRule().getOuterDeclarations();
+        for ( Iterator it = declarations.values().iterator(); it.hasNext(); ) {
+            final Declaration declaration = (Declaration) it.next();
             final FactHandle handle = tuple.get( declaration );
             if ( handle instanceof InternalFactHandle ) {
                 final InternalFactHandle handleImpl = (InternalFactHandle) handle;
@@ -271,7 +272,7 @@ public abstract class WorkingMemoryLogger
                     result.append( ")" );
                 }
             }
-            if ( i < declarations.length - 1 ) {
+            if ( it.hasNext() ) {
                 result.append( "; " );
             }
         }
