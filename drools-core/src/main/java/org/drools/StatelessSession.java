@@ -23,7 +23,7 @@ import org.drools.spi.GlobalResolver;
  * Care should be used when using the async versions of the methods, consult the javadoc for 
  * the specific information.
  */
-public interface StatelessSession extends EventManager {
+public interface StatelessSession extends WorkingMemoryEventManager {
         
     void setAgendaFilter(AgendaFilter agendaFilter);
     

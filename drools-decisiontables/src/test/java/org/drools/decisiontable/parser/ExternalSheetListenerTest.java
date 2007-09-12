@@ -18,6 +18,7 @@ import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.concurrent.Future;
 import org.drools.event.AgendaEventListener;
+import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.rule.Rule;
@@ -106,8 +107,9 @@ public class ExternalSheetListenerTest extends TestCase {
 
 		public StatefulSession newStatefulSession() {
 			return new StatefulSession() {
+                private static final long serialVersionUID = 1L;
 
-				public void addEventListener(WorkingMemoryEventListener arg0) {
+                public void addEventListener(WorkingMemoryEventListener arg0) {
 
 				}
 
@@ -364,6 +366,21 @@ public class ExternalSheetListenerTest extends TestCase {
                 public void clearRuleFlowGroup(String group) {
                     // TODO Auto-generated method stub
 
+                }
+
+                public void addEventListener(RuleBaseEventListener listener) {
+                    // TODO Auto-generated method stub
+                    
+                }
+
+                public List getRuleBaseEventListeners() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public void removeEventListener(RuleBaseEventListener listener) {
+                    // TODO Auto-generated method stub
+                    
                 }
 			};
 		}

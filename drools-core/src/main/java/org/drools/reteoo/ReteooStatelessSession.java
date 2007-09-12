@@ -1,15 +1,11 @@
 package org.drools.reteoo;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.drools.ObjectFilter;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
-import org.drools.WorkingMemory;
 import org.drools.base.MapGlobalResolver;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -18,9 +14,9 @@ import org.drools.concurrent.AssertObjects;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.FireAllRules;
-import org.drools.concurrent.Future;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
+import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
@@ -108,6 +104,18 @@ public class ReteooStatelessSession
 
     public List getRuleFlowEventListeners() {
         return this.ruleFlowEventSupport.getEventListeners();
+    }
+    
+    public void addEventListener(RuleBaseEventListener listener) {
+        this.ruleBase.addEventListener( listener );
+    }
+
+    public List getRuleBaseEventListeners() {
+        return this.ruleBase.getRuleBaseEventListeners();
+    }
+
+    public void removeEventListener(RuleBaseEventListener listener) {
+        this.ruleBase.removeEventListener( listener );
     }
 
     public void setAgendaFilter(AgendaFilter agendaFilter) {

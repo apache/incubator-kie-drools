@@ -38,6 +38,15 @@ public class LogEvent {
     public static final int RULEFLOW_GROUP_ACTIVATED   = 10;
     public static final int RULEFLOW_GROUP_DEACTIVATED = 11;
 
+    public static final int BEFORE_PACKAGE_ADDED       = 12;
+    public static final int AFTER_PACKAGE_ADDED        = 13;
+    public static final int BEFORE_PACKAGE_REMOVED     = 14;
+    public static final int AFTER_PACKAGE_REMOVED      = 15;
+    public static final int BEFORE_RULE_ADDED          = 16;
+    public static final int AFTER_RULE_ADDED           = 17;
+    public static final int BEFORE_RULE_REMOVED        = 18;
+    public static final int AFTER_RULE_REMOVED         = 19;
+
     private int             type;
 
     /**
