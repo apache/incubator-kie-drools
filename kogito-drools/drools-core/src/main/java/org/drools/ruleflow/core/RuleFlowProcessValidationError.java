@@ -50,6 +50,7 @@ public interface RuleFlowProcessValidationError {
     String ACTION_NODE_WITHOUT_INCOMING_CONNECTIONS     = "Action node has no incoming connection.";
     String ACTION_NODE_WITHOUT_OUTGOING_CONNECTIONS     = "Action node has no outgoing connection.";
     String ACTION_NODE_WITHOUT_ACTION                   = "An Action node has no action.";
+    String ACTION_NODE_WITH_INVALID_ACTION              = "An Action node has an invalid action.";
 
     String getType();
 }

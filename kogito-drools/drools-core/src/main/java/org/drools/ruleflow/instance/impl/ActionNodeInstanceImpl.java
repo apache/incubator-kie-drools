@@ -18,6 +18,9 @@ package org.drools.ruleflow.instance.impl;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.ruleflow.core.ActionNode;
@@ -45,7 +48,20 @@ public class ActionNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
     		ExpressionCompiler compiler = new ExpressionCompiler(actionString);
     		ParserContext parserContext = new ParserContext();
     		Serializable expression = compiler.compile(parserContext);
-    		DroolsMVELFactory factory = new DroolsMVELFactory(Collections.EMPTY_MAP, null, Collections.EMPTY_MAP);
+    		Map globalDefs = getProcessInstance().getRuleFlowProcess().getGlobals();
+    		Map globals = new HashMap();
+    		if (globalDefs != null) {
+    			for (Iterator iterator = globalDefs.entrySet().iterator(); iterator.hasNext(); ) {
+    				Map.Entry entry = (Map.Entry) iterator.next();
+    				try {
+    					globals.put(entry.getKey(), Class.forName((String) entry.getValue()));
+    				} catch (ClassNotFoundException exc) {
+    					throw new IllegalArgumentException("Could not find type " + entry.getValue() + " of global " + entry.getKey());
+    				}
+    			}
+    		}
+    		DroolsMVELFactory factory = new DroolsMVELFactory(Collections.EMPTY_MAP, null, globals);
+    		factory.setContext(null, null, null, getProcessInstance().getWorkingMemory(), null);
     		MVEL.executeExpression(expression, null, factory);
 		} else {
 			throw new RuntimeException("Unknown action: " + action);
