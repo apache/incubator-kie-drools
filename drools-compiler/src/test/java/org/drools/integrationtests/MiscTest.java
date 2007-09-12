@@ -70,6 +70,7 @@ import org.drools.StatelessSession;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.base.ClassObjectFilter;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.compiler.DrlParser;
@@ -4058,7 +4059,34 @@ public class MiscTest extends TestCase {
                     list.get( 0 ) );
         assertSame( item22,
                     list.get( 1 ) );
+    }
+
+    public void testWorkingMemoryLoggerWithUnbalancedBranches() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Logger.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
         
+        try {
+            final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( wm );
+            logger.setFileName( "testLogger" );
+
+            wm.fireAllRules();
+            
+            wm.insert( new Cheese( "a", 10 ) );
+            wm.insert( new Cheese( "b", 11 ) );
+            
+            wm.fireAllRules();
+            
+//            logger.writeToDisk();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail( "No exception should be raised ");
+        }
         
     }
 

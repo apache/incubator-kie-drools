@@ -1,0 +1,13 @@
+package org.drools;
+
+rule "test logger"
+when
+    ( or 
+        not Cheese( type == "a" )
+        (and $a : Cheese( type == "a" ) 
+             $b : Cheese( type == "b" )
+        )
+    )
+then
+    // rule fires
+end
