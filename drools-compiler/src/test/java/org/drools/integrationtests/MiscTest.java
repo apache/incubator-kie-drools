@@ -4090,4 +4090,36 @@ public class MiscTest extends TestCase {
         
     }
 
+    public void testFromNestedAccessors() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromNestedAccessors.drl" ) ) );
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        final Order order1 = new Order( 11, "Bob" );
+        final OrderItem item11 = new OrderItem( order1, 1 );
+        final OrderItem item12 = new OrderItem( order1, 2 );
+        order1.addItem( item11 );
+        order1.addItem( item12 );
+        
+        workingMemory.insert( order1 );
+        workingMemory.insert( item11 );
+        workingMemory.insert( item12 );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 1,
+                      list.size() );
+        
+        assertSame( order1.getStatus(),
+                    list.get( 0 ) );
+    }
+
 }

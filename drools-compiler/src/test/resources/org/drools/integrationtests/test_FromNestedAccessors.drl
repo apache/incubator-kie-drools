@@ -1,0 +1,11 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test from nested accessors"
+when
+    $oi : OrderItem( seq == 1 )
+    $os : Order.OrderStatus() from $oi.order.status
+then
+    results.add( $os );
+end
