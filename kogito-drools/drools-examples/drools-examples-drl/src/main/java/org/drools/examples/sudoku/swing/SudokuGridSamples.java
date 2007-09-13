@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class SudokuGridSamples
 {
-   private Map<String, Integer[][]> samples = new HashMap<String, Integer[][]>();
+   private Map samples = new HashMap();
    private static SudokuGridSamples INSTANCE;
    
    private SudokuGridSamples()
@@ -20,106 +20,106 @@ public class SudokuGridSamples
       samples.put
       (
         "Simple",
-        new Integer[][] 
-       {{null, 5, 6, 8, null, 1, 9, 4, null},
-        {9, null, null, 6, null, 5, null, null, 3},
-        {7, null, null, 4, 9, 3, null, null, 8},
-        {8, 9, 7, null, 4, null, 6, 3, 5},
-        {null, null, 3, 9, null, 6, 8, null, null},
-        {4, 6, 5, null, 8, null, 2, 9, 1},
-        {5, null, null, 2, 6, 9, null, null, 7},
-        {6, null, null, 5, null, 4, null, null, 9},
-        {null, 4, 9, 7, null, 8, 3, 5, null}}
+        new int[][] 
+       {{0, 5, 6, 8, 0, 1, 9, 4, 0},
+        {9, 0, 0, 6, 0, 5, 0, 0, 3},
+        {7, 0, 0, 4, 9, 3, 0, 0, 8},
+        {8, 9, 7, 0, 4, 0, 6, 3, 5},
+        {0, 0, 3, 9, 0, 6, 8, 0, 0},
+        {4, 6, 5, 0, 8, 0, 2, 9, 1},
+        {5, 0, 0, 2, 6, 9, 0, 0, 7},
+        {6, 0, 0, 5, 0, 4, 0, 0, 9},
+        {0, 4, 9, 7, 0, 8, 3, 5, 0}}
       );
       
       samples.put
       (
         "Medium",
-        new Integer[][] 
-       {{8, 4, 7, null, null, null, 2, 5, 6},
-               {5, null, null, null, 8, null, null, null, 4},
-               {2, null, null, null, 7, null, null, null, 8},
-               {null, null, null, 3, null, 8, null, null, null},
-               {null, 5, 1, null, null, null, 8, 7, 2},
-               {null, null, null, 5, null, 7, null, null, null},
-               {4, null, null, null, 5, null, null, null, 7},
-               {6, null, null, null, 3, null, null, null, 9},
-               {1, 3, 2, null, null, null, 4, 8, 5}}
+        new int[][] 
+       {{8, 4, 7, 0, 0, 0, 2, 5, 6},
+               {5, 0, 0, 0, 8, 0, 0, 0, 4},
+               {2, 0, 0, 0, 7, 0, 0, 0, 8},
+               {0, 0, 0, 3, 0, 8, 0, 0, 0},
+               {0, 5, 1, 0, 0, 0, 8, 7, 2},
+               {0, 0, 0, 5, 0, 7, 0, 0, 0},
+               {4, 0, 0, 0, 5, 0, 0, 0, 7},
+               {6, 0, 0, 0, 3, 0, 0, 0, 9},
+               {1, 3, 2, 0, 0, 0, 4, 8, 5}}
       );
       
       samples.put
       (
         "Hard 1",
-        new Integer[][] 
-       {{null, null, null, null, 5, 1, null, 8, null},
-               {null, 8, null, null, 4, null, null, null, 5},
-               {null, null, 3, null, null, null, 2, null, null},
-               {null, null, null, null, 6, null, null, null, 9},
-               {6, 7, null, 4, null, 9, null, 1, 3},
-               {8, null, null, null, 3, null, null, null, null},
-               {null, null, 2, null, null, null, 4, null, null},
-               {5, null, null, null, 9, null, null, 2, null},
-               {null, 9, null, 7, 1, null, null, null, null}}
+        new int[][] 
+       {{0, 0, 0, 0, 5, 1, 0, 8, 0},
+               {0, 8, 0, 0, 4, 0, 0, 0, 5},
+               {0, 0, 3, 0, 0, 0, 2, 0, 0},
+               {0, 0, 0, 0, 6, 0, 0, 0, 9},
+               {6, 7, 0, 4, 0, 9, 0, 1, 3},
+               {8, 0, 0, 0, 3, 0, 0, 0, 0},
+               {0, 0, 2, 0, 0, 0, 4, 0, 0},
+               {5, 0, 0, 0, 9, 0, 0, 2, 0},
+               {0, 9, 0, 7, 1, 0, 0, 0, 0}}
       );
       
       samples.put
       (
         "Hard 2",
-        new Integer[][] 
-       {{null,null,null,6,null,null,1,null,null},
-           {null,null,null,null,null,5,null,null,6},
-           {5,null,7,null,null,null,2,3,null},
-           {null,8,null,9,null,7,null,null,null},
-           {9,3,null,null,null,null,null,6,7},
-           {null,null,null,4,null,6,null,1,null},
-           {null,7,4,null,null,null,9,null,1},
-           {8,null,null,7,null,null,null,null,null},
-           {null,null,3,null,null,8,null,null,null}}
+        new int[][] 
+       {{0,0,0,6,0,0,1,0,0},
+           {0,0,0,0,0,5,0,0,6},
+           {5,0,7,0,0,0,2,3,0},
+           {0,8,0,9,0,7,0,0,0},
+           {9,3,0,0,0,0,0,6,7},
+           {0,0,0,4,0,6,0,1,0},
+           {0,7,4,0,0,0,9,0,1},
+           {8,0,0,7,0,0,0,0,0},
+           {0,0,3,0,0,8,0,0,0}}
       );
 
       samples.put
       (
         "Hard 3",
-        new Integer[][] 
-       {{null,8,null,null,null,6,null,null,5},
-               {2,null,null,null,null,null,4,8,null},
-               {null,null,9,null,null,8,null,1,null},
-               {null,null,null,null,8,null,1,null,2},
-               {null,null,null,3,null,1,null,null,null},
-               {6,null,1,null,9,null,null,null,null},
-               {null,9,null,4,null,null,8,null,null},
-               {null,7,6,null,null,null,null,null,3},
-               {1,null,null,7,null,null,null,5,null}}
+        new int[][] 
+       {{0,8,0,0,0,6,0,0,5},
+               {2,0,0,0,0,0,4,8,0},
+               {0,0,9,0,0,8,0,1,0},
+               {0,0,0,0,8,0,1,0,2},
+               {0,0,0,3,0,1,0,0,0},
+               {6,0,1,0,9,0,0,0,0},
+               {0,9,0,4,0,0,8,0,0},
+               {0,7,6,0,0,0,0,0,3},
+               {1,0,0,7,0,0,0,5,0}}
       );
       
       samples.put
       (
         "Hard 4",
-        new Integer[][] 
-       {{null,null,null,null,null,4,null,9,5},
-               {6,7,null,5,null,null,null,1,null},
-               {null,null,null,6,null,9,null,null,null},
-               {null,2,null,null,null,null,4,null,null},
-               {8,1,null,null,null,null,null,7,2},
-               {null,null,7,null,null,null,null,8,null},
-               {null,null,null,3,null,5,null,null,null},
-               {null,6,null,null,null,1,null,5,8},
-               {7,3,null,9,null,null,null,null,null}}
+        new int[][] 
+       {{0,0,0,0,0,4,0,9,5},
+               {6,7,0,5,0,0,0,1,0},
+               {0,0,0,6,0,9,0,0,0},
+               {0,2,0,0,0,0,4,0,0},
+               {8,1,0,0,0,0,0,7,2},
+               {0,0,7,0,0,0,0,8,0},
+               {0,0,0,3,0,5,0,0,0},
+               {0,6,0,0,0,1,0,5,8},
+               {7,3,0,9,0,0,0,0,0}}
       );    
       
       samples.put
       (
         "!DELIBERATELY BROKEN!",
-        new Integer[][] 
-       {{5,null,null,null,null,4,null,9,5},
-               {6,7,null,5,null,null,null,1,null},
-               {null,null,null,6,null,9,null,null,null},
-               {null,2,null,null,null,null,4,null,null},
-               {8,1,null,null,null,null,null,7,2},
-               {null,null,7,null,null,null,null,8,null},
-               {8,null,null,3,null,5,null,null,null},
-               {null,6,null,null,null,1,null,5,8},
-               {7,3,null,9,null,null,null,null,null}}
+        new int[][] 
+       {{5,0,0,0,0,4,0,9,5},
+               {6,7,0,5,0,0,0,1,0},
+               {0,0,0,6,0,9,0,0,0},
+               {0,2,0,0,0,0,4,0,0},
+               {8,1,0,0,0,0,0,7,2},
+               {0,0,7,0,0,0,0,8,0},
+               {8,0,0,3,0,5,0,0,0},
+               {0,6,0,0,0,1,0,5,8},
+               {7,3,0,9,0,0,0,0,0}}
       );   }
    
    public static SudokuGridSamples getInstance()
@@ -132,13 +132,13 @@ public class SudokuGridSamples
       return INSTANCE;
    }
    
-   public Set<String> getSampleNames()
+   public Set getSampleNames()
    {
       return samples.keySet();
    }
    
-   public Integer[][] getSample(String name)
+   public int[][] getSample(String name)
    {
-      return samples.get(name);
+      return (int[][]) samples.get(name);
    }
 }
