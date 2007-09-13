@@ -19,10 +19,10 @@ rule "mvel1"
 
         a = new java.math.BigInteger( "10" );
         b = new java.math.BigInteger( "10" );
-        c = a + b; 
+        c = a + b;
         list.add( c + $c.price);
-        
-        modify ( $c ) { price = c }      
+
+        modify ( $c ) { price = c }
 end
 
 
@@ -31,6 +31,7 @@ rule "mvel2"
     when
         $c : Cheese(type == "stilton", price == 20 )
     then
-        list.add( $c.price + 2);   
+        list.add( $c.price + 2);
         list2.add( someFunction() );
+        $c.usedBy = "10-Jul-1974"
 end
