@@ -5,6 +5,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +20,7 @@ import org.drools.rule.Package;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 import org.mvel.CompileException;
+import org.mvel.DataConversion;
 import org.mvel.integration.VariableResolver;
 import org.mvel.integration.impl.BaseVariableResolverFactory;
 import org.mvel.integration.impl.LocalVariableResolverFactory;
@@ -49,6 +52,12 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     private WorkingMemory     workingMemory;
 
     private Map               localVariables;
+
+    static {
+        //for handling dates as string literals
+        DataConversion.addConversionHandler( Date.class, new MVELDateCoercion() );
+        DataConversion.addConversionHandler( Calendar.class, new MVELCalendarCoercion() );
+    }
 
     public DroolsMVELFactory(final Map previousDeclarations,
                              final Map localDeclarations,
