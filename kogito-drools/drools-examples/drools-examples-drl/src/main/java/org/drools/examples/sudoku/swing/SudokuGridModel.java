@@ -54,13 +54,13 @@ public interface SudokuGridModel
      { 7 , 7 , 7 , 8 , 8 , 8 , 9 , 9 , 9},
      { 7 , 7 , 7 , 8 , 8 , 8 , 9 , 9 , 9} };  
    
-   public void setCellValues(Integer[][] cellValues);
+   public void setCellValues(int[][] cellValues);
    
    public boolean isCellEditable(int row, int col);
    
    public boolean isCellResolved(int row, int col);
    
-   public List<Integer> getPossibleCellValues(int row, int col);
+   public List getPossibleCellValues(int row, int col);
    
    public boolean solve();
    
