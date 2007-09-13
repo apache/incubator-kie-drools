@@ -38,7 +38,7 @@ public class DSLMappingFile {
     // the following pattern will be used to parse dsl mapping entries in the DSL file.
     // It is capable of parsing entries that follows the pattern:
     // [<section>][<metadata>]?<key>=<value>
-    private static final Pattern pattern     = Pattern.compile( "((\\[[^\\[]*\\])\\s*(\\[([^\\[]*)\\])?)?\\s*([^=]*)=(.*)" );
+    private static final Pattern pattern     = Pattern.compile( "((\\[[^\\[]*\\])\\s*(\\[([^\\[]*)\\])?)?\\s*((\\\\=|[^=])*)=(.*)" );
     private static final String  KEYWORD     = "[keyword]";
     private static final String  CONDITION   = "[condition]";
     private static final String  CONSEQUENCE = "[consequence]";
@@ -97,8 +97,8 @@ public class DSLMappingFile {
             if ( mat.matches() ) {
                 final String sectionStr = mat.group( 2 );
                 final String metadataStr = mat.group( 4 );
-                final String key = mat.group( 5 );
-                final String value = mat.group( 6 );
+                final String key = mat.group( 5 ).replaceAll( "\\\\=", "=" );
+                final String value = mat.group( 7 );
 
                 DSLMappingEntry.Section section = DSLMappingEntry.ANY;
                 if ( KEYWORD.equals( sectionStr ) ) {

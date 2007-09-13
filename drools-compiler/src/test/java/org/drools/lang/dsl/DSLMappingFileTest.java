@@ -107,4 +107,37 @@ public class DSLMappingFileTest extends TestCase {
 
     }
 
+    public void testParseFileWithEscaptedEquals() {
+        String file = "[when][]something:\\={value}=Attribute( something == \"{value}\" )";
+        try {
+            final Reader reader = new StringReader( file );
+            this.file = new DSLMappingFile();
+
+            final boolean parsingResult = this.file.parseAndLoad( reader );
+            reader.close();
+
+            assertTrue( this.file.getErrors().toString(),
+                        parsingResult );
+            assertTrue( this.file.getErrors().isEmpty() );
+
+            assertEquals( 1,
+                          this.file.getMapping().getEntries().size() );
+
+            DSLMappingEntry entry = (DSLMappingEntry) this.file.getMapping().getEntries().get( 0 );
+
+            assertEquals( DSLMappingEntry.CONDITION,
+                          entry.getSection() );
+            assertEquals( DSLMappingEntry.EMPTY_METADATA,
+                          entry.getMetaData() );
+            assertEquals( "something:={value}",
+                          entry.getMappingKey() );
+            assertEquals( "Attribute( something == \"{value}\" )",
+                          entry.getMappingValue() );
+
+        } catch ( final IOException e ) {
+            e.printStackTrace();
+            fail( "Should not raise exception " );
+        }
+
+    }
 }
