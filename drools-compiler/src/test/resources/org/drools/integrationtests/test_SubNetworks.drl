@@ -1,0 +1,21 @@
+package org.drools;
+
+import java.awt.*;
+
+rule "A"
+    when
+      exists(x : Dimension(x_height : height) and
+             y : Dimension(this!=x, height!=x_height))
+           
+    then
+      System.out.println("A");
+end
+
+rule "B"
+    when
+      not(exists(x : Dimension(x_height : height) and
+                 y : Dimension(this!=x, height!=x_height)))
+           
+    then
+      System.out.println("B");
+end

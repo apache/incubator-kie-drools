@@ -40,7 +40,7 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
  */
 public class RightInputAdapterNode extends ObjectSource
     implements
-    TupleSink,
+    TupleSinkNode,
     NodeMemory {
 
     private static final long serialVersionUID = 400L;
@@ -48,6 +48,9 @@ public class RightInputAdapterNode extends ObjectSource
     private final TupleSource tupleSource;
     
     protected boolean          tupleMemoryEnabled;      
+
+    private TupleSinkNode       previousTupleSinkNode;
+    private TupleSinkNode       nextTupleSinkNode;
 
     /**
      * Constructor specifying the unique id of the node in the Rete network, the position of the propagating <code>FactHandleImpl</code> in
@@ -178,6 +181,42 @@ public class RightInputAdapterNode extends ObjectSource
 
     public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
-    }      
+    }
+
+    /**
+     * Returns the next node
+     * @return
+     *      The next TupleSinkNode
+     */
+    public TupleSinkNode getNextTupleSinkNode() {
+        return this.nextTupleSinkNode;
+    }
+
+    /**
+     * Sets the next node 
+     * @param next
+     *      The next TupleSinkNode
+     */
+    public void setNextTupleSinkNode(final TupleSinkNode next) {
+        this.nextTupleSinkNode = next;
+    }
+
+    /**
+     * Returns the previous node
+     * @return
+     *      The previous TupleSinkNode
+     */
+    public TupleSinkNode getPreviousTupleSinkNode() {
+        return this.previousTupleSinkNode;
+    }
+
+    /**
+     * Sets the previous node 
+     * @param previous
+     *      The previous TupleSinkNode
+     */
+    public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
+        this.previousTupleSinkNode = previous;
+    }
 
 }
