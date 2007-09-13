@@ -631,7 +631,10 @@ public void setState(final String newState) {
     </figure>
 
     <para>The StatefulSession extends the WorkingMemory class. It simply adds
-    async methods and a dispose() method.</para>
+    async methods and a dispose() method. The ruleBase retains a reference to
+    each StatefulSession is creates, so that it can update them when new rules
+    are added, dispose() is needed to release the StatefulSession reference
+    from the RuleBase, without it you can get memory leaks.</para>
 
     <example>
       <title>Createing a StatefulSession</title>
