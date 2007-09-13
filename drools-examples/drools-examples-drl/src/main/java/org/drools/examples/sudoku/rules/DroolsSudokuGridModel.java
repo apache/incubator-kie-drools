@@ -8,6 +8,7 @@ package org.drools.examples.sudoku.rules;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.drools.RuleBase;
@@ -47,7 +48,7 @@ public class DroolsSudokuGridModel
    public final static String SUDOKU_VALIDATOR_DRL = "../sudokuValidator.drl";
    
    /** A set of AbtractCellValues capturing the current state of the grid */
-   private Set<AbstractCellValue> allCellValues = new HashSet<AbstractCellValue>();
+   private Set allCellValues = new HashSet();
 
    /** The solver rule base */
    private RuleBase solverRuleBase;
@@ -71,13 +72,13 @@ public class DroolsSudokuGridModel
     * 
     * @param cellValues a two dimensional grid of Integer values for cells, a null means the value is not yet resolved
     */
-   public DroolsSudokuGridModel(Integer[][] cellValues)
+   public DroolsSudokuGridModel(int[][] cellValues)
    {  
       this();
       setCellValues(cellValues);
    }
    
-   public void setCellValues(Integer[][] cellValues)
+   public void setCellValues(int[][] cellValues)
    {
       if (solverRuleBase == null)
       {
@@ -104,7 +105,7 @@ public class DroolsSudokuGridModel
       {
          for (int col=0; col<cellValues[row].length; col++)
          {
-            if(cellValues[row][col] == null)
+            if(cellValues[row][col] == 0)
             {
                for(int value=1; value<10; value++)
                {
@@ -168,8 +169,10 @@ public class DroolsSudokuGridModel
             else
             {
                solved = false;
-               for (Object issue : issues)
+               Iterator iter = issues.iterator();
+               while(iter.hasNext())
                {
+            	  Object issue = iter.next();
                   System.out.println(issue);
                }
             }
@@ -184,15 +187,17 @@ public class DroolsSudokuGridModel
       return solved;
    }
    
-   public List<Integer> getPossibleCellValues(int row, int col)
+   public List getPossibleCellValues(int row, int col)
    {
-      List<Integer> possibleCellValues = new ArrayList<Integer>();
+      List possibleCellValues = new ArrayList();
 
-      for (AbstractCellValue cellValue : allCellValues)
+      Iterator iter = allCellValues.iterator();
+      while(iter.hasNext())
       {
+    	 AbstractCellValue cellValue = (AbstractCellValue) iter.next();
          if (cellValue.getRow() == row && cellValue.getCol() == col)
          {
-            possibleCellValues.add(cellValue.getValue());
+            possibleCellValues.add(new Integer(cellValue.getValue()));
          }
       }
       
@@ -208,8 +213,10 @@ public class DroolsSudokuGridModel
    
    private void insertAllCellValues(StatefulSession statefulSession)
    {
-      for (AbstractCellValue cellValue : allCellValues)
-      {
+	  Iterator iter = allCellValues.iterator();
+	  while(iter.hasNext())
+	  {
+	     AbstractCellValue cellValue = (AbstractCellValue) iter.next();
          statefulSession.insert(cellValue);
       }
    }
