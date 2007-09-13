@@ -8,6 +8,10 @@ public class DefaultDSLMappingEntryTest extends TestCase {
 
     protected void setUp() throws Exception {
         super.setUp();
+        setupEntry();
+    }
+
+    private void setupEntry() {
         final String inputKey = "String is \"{value}\"";
         final String inputValue = "SomeFact(value==\"{value}\")";
 
@@ -91,6 +95,7 @@ public class DefaultDSLMappingEntryTest extends TestCase {
     }
 
     public void testExpandNoSpaces() {
+        this.setupEntry();
         final String result = this.entry.getKeyPattern().matcher( "String is \"blah\"" ).replaceAll( this.entry.getValuePattern() );
 
         assertEquals( "SomeFact(value==\"blah\")",
@@ -98,6 +103,7 @@ public class DefaultDSLMappingEntryTest extends TestCase {
     }
 
     public void testExpandWithLeadingSpace() {
+        this.setupEntry();
         final String result = this.entry.getKeyPattern().matcher( "String is \" blah\"" ).replaceAll( this.entry.getValuePattern() );
 
         assertEquals( "SomeFact(value==\" blah\")",
@@ -105,30 +111,35 @@ public class DefaultDSLMappingEntryTest extends TestCase {
     }
 
     public void testExpandWithMultipleLeadingSpaces() {
+        this.setupEntry();
         final String result = this.entry.getKeyPattern().matcher( "String is \"   blah\"" ).replaceAll( this.entry.getValuePattern() );
         assertEquals( "SomeFact(value==\"   blah\")",
                       result );
     }
 
     public void testExpandWithTrailingSpace() {
+        this.setupEntry();
         final String result = this.entry.getKeyPattern().matcher( "String is \"blah \"" ).replaceAll( this.entry.getValuePattern() );
         assertEquals( "SomeFact(value==\"blah \")",
                       result );
     }
 
     public void testExpandWithMultipleTrailingSpaces() {
+        this.setupEntry();
         final String result = this.entry.getKeyPattern().matcher( "String is \"blah  \"" ).replaceAll( this.entry.getValuePattern() );
         assertEquals( "SomeFact(value==\"blah  \")",
                       result );
     }
 
     public void testExpandWithInternalSpace() {
+        this.setupEntry();
         final String result = this.entry.getKeyPattern().matcher( "String is \"bl ah\"" ).replaceAll( this.entry.getValuePattern() );
         assertEquals( "SomeFact(value==\"bl ah\")",
                       result );
     }
 
     public void testExpandWithMultipleSpaces() {
+        this.setupEntry();
         final String result = this.entry.getKeyPattern().matcher( "String is \"  bl  ah  \"" ).replaceAll( this.entry.getValuePattern() );
         assertEquals( "SomeFact(value==\"  bl  ah  \")",
                       result );
