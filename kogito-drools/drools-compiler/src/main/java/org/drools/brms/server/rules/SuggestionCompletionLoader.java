@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -423,8 +424,15 @@ public class SuggestionCompletionLoader {
                 fieldType = SuggestionCompletionEngine.TYPE_STRING;
             } else if ( Collection.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_COLLECTION;
+            } else if ( Boolean.class.isAssignableFrom( type ) || boolean.class.isAssignableFrom( type )) {
+                fieldType = SuggestionCompletionEngine.TYPE_BOOLEAN;
             } else if ( Comparable.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_COMPARABLE;
+            } /*else if ( Date.class.isAssignableFrom( type )) {
+                fieldType = SuggestionCompletionEngine.TYPE_DATE; MN: wait until we support it.
+
+            }*/ else {
+                fieldType = SuggestionCompletionEngine.TYPE_OBJECT;
             }
         }
         return fieldType;

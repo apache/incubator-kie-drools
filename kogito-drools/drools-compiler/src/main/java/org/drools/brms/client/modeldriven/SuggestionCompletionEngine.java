@@ -23,6 +23,9 @@ public class SuggestionCompletionEngine
     public static final String    TYPE_COMPARABLE        = "Comparable";
     public static final String    TYPE_STRING            = "String";
     public static final String    TYPE_NUMERIC           = "Numeric";
+    public static final String    TYPE_BOOLEAN           = "Boolean";
+    //public static final String    TYPE_DATE              = "Date";
+    public static final String    TYPE_OBJECT            = "Object"; //for all other unknown types
 
     /**
      * The operators that are used at different times (based on type).
@@ -185,6 +188,14 @@ public class SuggestionCompletionEngine
 
     }
 
+
+    /**
+     * A map of the Fields to their types, needed for operator completions,
+     * as well as other things like rendering strings, dates etc.
+     * This is in the format of: { 'Type.field' => 'typename' }.
+     * Should not be the exact type, perhaps just a high level interface, eg "Comparable", "Numeric", "String".
+     *
+     */
     public String getFieldType(final String factType,
                                final String fieldName) {
         return (String) this.fieldTypes.get( factType + "." + fieldName );

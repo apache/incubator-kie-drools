@@ -15,6 +15,24 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+
+    public void testLoadDifferentFieldTypes() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.brms.server.rules.SomeFact", new ArrayList(), new ArrayList() );
+        assertNotNull(eng);
+
+        assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, eng.getFieldType( "SomeFact", "age" ));
+        assertEquals(SuggestionCompletionEngine.TYPE_STRING, eng.getFieldType( "SomeFact", "likes"));
+        assertEquals(SuggestionCompletionEngine.TYPE_STRING, eng.getFieldType( "SomeFact","name"));
+        assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, eng.getFieldType("SomeFact", "bigDecimal"));
+        assertEquals(SuggestionCompletionEngine.TYPE_COMPARABLE, eng.getFieldType( "SomeFact", "date"));
+        assertEquals(SuggestionCompletionEngine.TYPE_OBJECT, eng.getFieldType( "SomeFact", "cheese"));
+        assertEquals(SuggestionCompletionEngine.TYPE_BOOLEAN, eng.getFieldType( "SomeFact", "dead"));
+        assertEquals(SuggestionCompletionEngine.TYPE_BOOLEAN, eng.getFieldType( "SomeFact", "alive"));
+
+    }
+
+
     public void testLoaderWithExistingClassloader() throws Exception {
         MockClassLoader mcl = new MockClassLoader();
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader(mcl);
@@ -24,6 +42,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertTrue(mcl.called);
 
     }
+
 
     static class MockClassLoader extends ClassLoader {
 
