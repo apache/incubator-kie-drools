@@ -51,8 +51,12 @@ public class DefaultDSLMappingEntry
     // it will return variables:
     // This, pattern, easy, say
     //
-    static final Pattern varFinder = Pattern.compile( "(^|[^\\\\])\\{([(\\\\\\{)|[^\\{]]*?)\\}",
+    static final Pattern VAR_FINDER = Pattern.compile( "(^|[^\\\\])\\{([(\\\\\\{)|[^\\{]]*?)\\}",
                                                       Pattern.MULTILINE | Pattern.DOTALL );
+    
+    // following pattern is used to find all the non-escaped parenthesis in the input key
+    // to correctly calculate the variables offset
+    private static final Pattern PAREN_FINDER = Pattern.compile( "(^\\(|[^\\\\]\\(|\\G\\()" );
 
     public DefaultDSLMappingEntry() {
         this( DSLMappingEntry.ANY,
@@ -110,9 +114,10 @@ public class DefaultDSLMappingEntry
 
         if ( key != null ) {
             int substr = 0;
-            // escape '$' to avoid errors  
-            final Matcher m = varFinder.matcher( key.replaceAll( "\\$",
-                                                                 "\\\\\\$" ) );
+            // escape '$' to avoid errors
+            final String escapedKey = key.replaceAll( "\\$",
+                                                "\\\\\\$" );
+            final Matcher m = VAR_FINDER.matcher( escapedKey );
             // retrieving variables list and creating key pattern 
             final StringBuffer buf = new StringBuffer();
 
@@ -124,10 +129,21 @@ public class DefaultDSLMappingEntry
                 counter++;
             }
 
+            int lastMatch = 0;
             while ( m.find() ) {
                 if ( this.variables == Collections.EMPTY_MAP ) {
                     this.variables = new HashMap( 2 );
                 }
+                
+                // calculating and fixing variable offset 
+                String before = escapedKey.substring( lastMatch, m.start() );
+                lastMatch = m.end()+1;
+                Matcher m2 = PAREN_FINDER.matcher( before );
+                while( m2.find() ) {
+                    counter++;
+                }
+                
+                // creating capture group for variable
                 this.variables.put( m.group( 2 ),
                                     new Integer( counter++ ) );
                 m.appendReplacement( buf,

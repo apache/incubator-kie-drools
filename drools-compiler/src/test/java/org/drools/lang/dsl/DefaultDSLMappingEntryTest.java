@@ -208,4 +208,20 @@ public class DefaultDSLMappingEntryTest extends TestCase {
                       "name in ( 'Edson', 'Bob' )",
                       result );
     }
+    
+    public void testExpandWithParethesis() {
+        final String inputKey = "((H|h)e|(S|s)he) \\(is\\) (a|an) $xx {attribute} (man|woman)";
+        final String inputValue = "Person( attribute == \"{attribute}\" )";
+
+        this.entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                            null,
+                                            inputKey,
+                                            inputValue );
+
+        String result = this.entry.getKeyPattern().matcher( "he (is) a $xx handsome man" ).replaceAll( this.entry.getValuePattern() );
+        assertEquals( result,
+                      "Person( attribute == \"handsome\" )",
+                      result );
+    }
+    
 }
