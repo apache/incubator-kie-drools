@@ -80,7 +80,7 @@ public class TroubleTicketExampleWithDSL {
     }
 
     private static InputStreamReader getSource() {
-        return new InputStreamReader( TroubleTicketExampleWithDSL.class.getResourceAsStream( "TroubleTicketWithDSL.drl" ) );
+        return new InputStreamReader( TroubleTicketExampleWithDSL.class.getResourceAsStream( "TroubleTicketWithDSL.dslr" ) );
     }
 
     public static class Customer {
