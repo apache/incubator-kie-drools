@@ -1,12 +1,12 @@
 package org.drools.analytics.result;
 
-import org.drools.analytics.components.LiteralRestriction;
-
-import com.thoughtworks.xstream.XStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import org.drools.analytics.Analyzer;
+
+import org.drools.analytics.components.LiteralRestriction;
+
+import com.thoughtworks.xstream.XStream;
 
 /**
  * 
