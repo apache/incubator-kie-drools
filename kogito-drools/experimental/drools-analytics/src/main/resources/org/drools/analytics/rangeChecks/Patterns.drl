@@ -52,9 +52,9 @@ rule "Range check for number patterns"
 				)
 		)
 	then
-	List<Cause> list = new ArrayList<Cause>();
-	list.add(
-			new MissingNumberPattern( $f.getId(), "==", $validationResult.getValue().toString() ));
-	
-	result.add( new AnalysisWarning( $f.getRuleName(), $f + " is missing a number from pattern.", list ) );
+		List<Cause> list = new ArrayList<Cause>();
+		list.add(
+				new MissingNumberPattern( $f.getId(), "==", $validationResult.getValue().toString() ));
+		
+		result.add( new AnalysisWarning( $f.getRuleName(), $f + " is missing a number from pattern.", list ) );
 end

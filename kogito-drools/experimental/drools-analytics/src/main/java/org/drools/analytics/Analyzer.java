@@ -99,7 +99,6 @@ public class Analyzer {
 
 		Collection<Package> packages = RuleLoader.loadPackages();
 		for (Package pkg : packages) {
-
 			ruleBase.addPackage(pkg);
 		}
 

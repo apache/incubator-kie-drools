@@ -117,6 +117,7 @@ public class Solvers {
 			PatternPossibility possibility = new PatternPossibility();
 
 			possibility.setRuleId(ruleSolver.getRule().getId());
+			possibility.setRuleName(ruleSolver.getRule().getRuleName());
 			possibility.setPatternId(patternSolver.getPattern().getId());
 
 			for (AnalyticsComponent descr : list) {

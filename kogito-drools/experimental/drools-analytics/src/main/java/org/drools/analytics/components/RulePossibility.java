@@ -31,6 +31,10 @@ public class RulePossibility extends AnalyticsComponent implements
 		return AnalyticsComponentType.RULE_POSSIBILITY;
 	}
 
+	public CauseType getCauseType() {
+		return Cause.CauseType.POSSIBILITY;
+	}
+
 	public Set<Cause> getItems() {
 		return items;
 	}
@@ -53,7 +57,7 @@ public class RulePossibility extends AnalyticsComponent implements
 
 	@Override
 	public String toString() {
-		return "RulePossibility from rule: " + ruleName
-				+ ", amount of items:" + items.size();
+		return "RulePossibility from rule: " + ruleName + ", amount of items:"
+				+ items.size();
 	}
 }

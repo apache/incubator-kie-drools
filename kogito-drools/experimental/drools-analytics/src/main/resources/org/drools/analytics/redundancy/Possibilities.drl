@@ -3,39 +3,59 @@ package org.drools.analytics.redundancy.possibilities
 
 import org.drools.analytics.components.*;
 import org.drools.analytics.result.Redundancy;
+import org.drools.analytics.result.Redundancy.RedundancyType;
 import org.drools.analytics.result.PartialRedundancy;
 import org.drools.analytics.result.Subsumption;
+import org.drools.analytics.result.Cause;
+import org.drools.analytics.result.Cause.CauseType;
 
 import java.util.ArrayList;
 
-
 rule "Find part of redundant PatternPossibility combination"
 	when
-		# Restriction Redundancy.
-		$redundancy :Redundancy()
+		$patternRedundancy :Redundancy( 
+			type == Redundancy.RedundancyType.WEAK,
+			causeType == Cause.CauseType.PATTERN 
+		)
 		
-		# Check that patterns are redundant.
-		$p1 :Pattern()
-		$p2 :Pattern( id != $p1.id )
-		Redundancy( 
-			left == $p1, 
-			right == $p2 
+		$r1 :Restriction( eval( patternId == $patternRedundancy.getLeft().getId() ) )
+		$r2 :Restriction( eval( patternId == $patternRedundancy.getRight().getId() ) )
+
+		$restrictionRedundancy :Redundancy( 
+			(
+				left == $r1 
+					&&
+				right == $r2
+			) || (
+				left == $r2 
+					&&
+				right == $r1
+			)
 		)
 		
 		# Find two PatternPossibilities.
 		$pp1 :PatternPossibility( 
-			patternId == $p1.id, 
-			items contains $redundancy.left 
+			eval( patternId == $patternRedundancy.getLeft().getId() ),
+			items contains $r1 
 		)
 		$pp2 :PatternPossibility( 
-			patternId == $p2.id, 
-			items contains $redundancy.right 
+			eval( patternId == $patternRedundancy.getRight().getId() ),
+			items contains $r2 
+		)
+	
+		not PartialRedundancy(
+			left == $pp1,
+			right == $pp2
+		)
+		not PartialRedundancy(
+			left == $pp2, 
+			right == $pp1 
 		)
 	then
-		insert( new PartialRedundancy( $pp1, $pp2, $redundancy ) );
+		insert( new PartialRedundancy( $pp1, $pp2, $restrictionRedundancy ) );
 end
 
-
+/*
 rule "Find part of redundant RulePossibility combination"
 	when
 		# PatternPossibility Redundancy.
@@ -58,11 +78,29 @@ rule "Find part of redundant RulePossibility combination"
 			ruleId == $r2.id, 
 			items contains $redundancy.right 
 		)
-		# TODO: Not here.
+		
+		not PartialRedundancy(
+			left == $rp1,
+			right == $rp2
+		)
 	then
 		insert( new PartialRedundancy( $rp1, $rp2, $redundancy ) );
 end
+*/
 
+rule "new rule"
+	when
+		$pr :PartialRedundancy()
+		not PartialRedundancyCollection( 
+			items contains $pr 
+		)
+		
+		################################################
+		# XXX: Database!
+		################################################
+	then
+		insert( new PartialRedundancyCollection( $pr ) ); 
+end
 
 #
 # Handles both RulePossibilities and PatternPossibilities.
@@ -70,7 +108,10 @@ end
 rule "Find subsumptant Possibilities"
 	when
 		$p1 :Possibility()
-		$p2 :Possibility( id != $p1.id )
+		$p2 :Possibility( 
+			id != $p1.id,
+			amountOfItems >= $p1.amountOfItems
+		)
 		
 		not Subsumption( 
 				left == $p1, 
@@ -85,22 +126,26 @@ rule "Find subsumptant Possibilities"
 				) 
 		)
 		
+		# XXX: What if there is an earlier collection of these, so its only a == comparison.
+		
 		# Collect all the partial redundancies.
-		$list :ArrayList()
-			from collect(
-				PartialRedundancy( 
-					left == $p1, 
-					right == $p2 
-				)
-			)
+		#$list :ArrayList()
+		#	from collect(
+		#		PartialRedundancy( 
+		#			left == $p1, 
+		#			right == $p2 
+		#		)
+		#	)
 			
 		# If there as much partial redundancies as there is items in $p1,
 		# then $p1 is subsumptant to $p2.
-		eval( $list.size() == $p1.getAmountOfItems() )
+		#eval( $list.size() == $p1.getAmountOfItems() )
 	then
-		insert( new Subsumption( $p1, $p2 ) );
+		System.out.println( "Find subsumptant Possibilities" );
+		#insert( new Subsumption( $p1, $p2 ) );
 end
 
+/*
 #
 # If two possibilities are subsumptant to each others, then they are redundant.
 # Since this tests only one possibility, the entire rule or pattern might not be redundant.
@@ -132,3 +177,4 @@ rule "Find redundant Possibilities"
 	then
 		insert( new Redundancy( $p1, $p2 ) );
 end
+*/

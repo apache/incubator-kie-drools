@@ -1,5 +1,6 @@
 package org.drools.analytics.result;
 
+
 /**
  * 
  * @author Toni Rikkola
@@ -13,6 +14,10 @@ public class MissingNumberPattern implements RangeCheckCause {
 	private int fieldId;
 	private String evaluator;
 	private String value;
+
+	public CauseType getCauseType() {
+		return Cause.CauseType.RANGE_CHECK_CAUSE;
+	}
 
 	public MissingNumberPattern(int fieldId, String evaluator, String value) {
 		this.fieldId = fieldId;

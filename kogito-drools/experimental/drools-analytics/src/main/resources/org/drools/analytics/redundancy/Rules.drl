@@ -25,7 +25,7 @@ rule "Find redundant Rule shells"
 			right == $right 
 		)
 	then
-		insert( new Redundancy( Redundancy.Type.WEAK, $left, $right ) );
+		insert( new Redundancy( Redundancy.RedundancyType.WEAK, $left, $right ) );
 end
 
 /*
@@ -65,3 +65,4 @@ rule "Find redundant rule"
 		# Type is set to strong because all the rule possibilities are redundant.
 		insert( new Redundancy( Redundancy.Type.STRONG, $r1, $r2 ) );
 end
+*/
