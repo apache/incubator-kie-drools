@@ -1370,10 +1370,14 @@ public abstract class AbstractWorkingMemory
         final Object object = event.getSource();
 
         try {
-            update( getFactHandle( object ),
+            FactHandle handle = getFactHandle( object );
+            if ( handle == null ) {
+                throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
+            }
+            update( handle,
                     object );
         } catch ( final FactException e ) {
-            throw new RuntimeException( e.getMessage() );
+            throw new RuntimeDroolsException( e.getMessage() );
         }
     }
 
