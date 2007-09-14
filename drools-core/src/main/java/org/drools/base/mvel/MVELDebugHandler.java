@@ -21,7 +21,7 @@ public final class MVELDebugHandler {
     
     private static Boolean debugMode = null;
     
-    public static final boolean verbose = false;
+    public static final boolean verbose = true;
     
 	static {
 		MVELRuntime.setThreadDebugger(new MVELDebugger());
