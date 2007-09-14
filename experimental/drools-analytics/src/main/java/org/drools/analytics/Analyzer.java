@@ -8,6 +8,7 @@ import org.drools.WorkingMemory;
 import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.dao.AnalyticsDataMaps;
 import org.drools.analytics.result.AnalysisResultNormal;
+import org.drools.analytics.result.ComponentsReportModeller;
 import org.drools.analytics.result.ReportModeller;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
@@ -74,7 +75,16 @@ public class Analyzer {
 	public String getResultAsXML() {
 		return ReportModeller.writeXML(result);
 	}
-	
+
+	/**
+	 * Returns the analysis results as HTML.
+	 * 
+	 * @return Analysis results as HTML
+	 */
+	public String getComponentsHTML() {
+		return new ComponentsReportModeller().writeComponentsHTML();
+	}
+
 	/**
 	 * Returns the analysis results as HTML.
 	 * 

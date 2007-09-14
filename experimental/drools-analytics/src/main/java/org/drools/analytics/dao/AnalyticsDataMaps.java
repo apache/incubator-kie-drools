@@ -3,8 +3,10 @@ package org.drools.analytics.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.analytics.components.AnalyticsClass;
 import org.drools.analytics.components.AnalyticsRule;
@@ -26,12 +28,17 @@ public class AnalyticsDataMaps implements AnalyticsData {
 	private Map<Integer, AnalyticsClass> classesById = new HashMap<Integer, AnalyticsClass>();
 	private Map<String, AnalyticsClass> classesByName = new HashMap<String, AnalyticsClass>();
 	private Map<String, Field> fieldsByClassAndFieldName = new HashMap<String, Field>();
+	private Map<Integer, Field> fieldsById = new HashMap<Integer, Field>();
+	private Map<Integer, Set<Field>> fieldsByClassId = new HashMap<Integer, Set<Field>>();
 	private Map<String, FieldClassLink> fieldClassLinkByIds = new HashMap<String, FieldClassLink>();
 
 	private Map<Integer, AnalyticsRule> rulesById = new HashMap<Integer, AnalyticsRule>();
 	private Map<Integer, Pattern> patternsById = new HashMap<Integer, Pattern>();
+	private Map<Integer, Set<Pattern>> patternsByClassId = new HashMap<Integer, Set<Pattern>>();
+	private Map<String, Set<Pattern>> patternsByRuleName = new HashMap<String, Set<Pattern>>();
 	private Map<Integer, Constraint> constraintsById = new HashMap<Integer, Constraint>();
 	private Map<Integer, Restriction> restrictionsById = new HashMap<Integer, Restriction>();
+	private Map<Integer, Set<Restriction>> restrictionsByFieldId = new HashMap<Integer, Set<Restriction>>();
 
 	private Map<String, Variable> variablesByRuleAndVariableName = new HashMap<String, Variable>();
 
@@ -60,6 +67,18 @@ public class AnalyticsDataMaps implements AnalyticsData {
 				.getClassId()));
 		fieldsByClassAndFieldName.put(clazz.getName() + "." + field.getName(),
 				field);
+
+		fieldsById.put(field.getId(), field);
+
+		// Save by class id.
+		if (fieldsByClassId.containsKey(field.getClassId())) {
+			Set<Field> set = fieldsByClassId.get(field.getClassId());
+			set.add(field);
+		} else {
+			Set<Field> set = new HashSet<Field>();
+			set.add(field);
+			fieldsByClassId.put(field.getClassId(), set);
+		}
 	}
 
 	public void insert(Variable variable) {
@@ -75,6 +94,26 @@ public class AnalyticsDataMaps implements AnalyticsData {
 
 	public void insert(Pattern pattern) {
 		patternsById.put(Integer.valueOf(pattern.getId()), pattern);
+
+		// Save by class id.
+		if (patternsByClassId.containsKey(pattern.getClassId())) {
+			Set<Pattern> set = patternsByClassId.get(pattern.getClassId());
+			set.add(pattern);
+		} else {
+			Set<Pattern> set = new HashSet<Pattern>();
+			set.add(pattern);
+			patternsByClassId.put(pattern.getClassId(), set);
+		}
+
+		// Save by rule name.
+		if (patternsByRuleName.containsKey(pattern.getRuleName())) {
+			Set<Pattern> set = patternsByRuleName.get(pattern.getRuleName());
+			set.add(pattern);
+		} else {
+			Set<Pattern> set = new HashSet<Pattern>();
+			set.add(pattern);
+			patternsByRuleName.put(pattern.getRuleName(), set);
+		}
 	}
 
 	public void insert(Constraint constraint) {
@@ -83,6 +122,17 @@ public class AnalyticsDataMaps implements AnalyticsData {
 
 	public void insert(Restriction restriction) {
 		restrictionsById.put(restriction.getId(), restriction);
+
+		// Save by field id.
+		if (restrictionsByFieldId.containsKey(restriction.getFieldId())) {
+			Set<Restriction> set = restrictionsByFieldId.get(restriction
+					.getFieldId());
+			set.add(restriction);
+		} else {
+			Set<Restriction> set = new HashSet<Restriction>();
+			set.add(restriction);
+			restrictionsByFieldId.put(restriction.getFieldId(), set);
+		}
 	}
 
 	public void insert(FieldClassLink link) {
@@ -108,12 +158,31 @@ public class AnalyticsDataMaps implements AnalyticsData {
 		return fieldClassLinkByIds.get(id + "." + id2);
 	}
 
+	public Collection<AnalyticsRule> getAllRules() {
+		return rulesById.values();
+	}
+
 	public void insert(PatternPossibility possibility) {
 		patternPossibilitiesById.put(possibility.getId(), possibility);
 	}
 
 	public void insert(RulePossibility possibility) {
 		rulePossibilitiesById.put(possibility.getId(), possibility);
+	}
+
+	public Collection<AnalyticsClass> getClassesByRuleName(String ruleName) {
+		Set<AnalyticsClass> set = new HashSet<AnalyticsClass>();
+
+		for (Pattern pattern : patternsByRuleName.get(ruleName)) {
+			AnalyticsClass clazz = getClassById(pattern.getClassId());
+			set.add(clazz);
+		}
+
+		return set;
+	}
+
+	public AnalyticsClass getClassById(int id) {
+		return classesById.get(id);
 	}
 
 	public Collection<? extends Object> getAll() {
@@ -132,5 +201,38 @@ public class AnalyticsDataMaps implements AnalyticsData {
 		objects.addAll(variablesByRuleAndVariableName.values());
 
 		return objects;
+	}
+
+	public Collection<AnalyticsClass> getAllClasses() {
+		return classesById.values();
+	}
+
+	public Collection<Field> getFieldsByClassId(int id) {
+		return fieldsByClassId.get(id);
+	}
+
+	public Collection<AnalyticsRule> getRulesByClassId(int id) {
+		Set<AnalyticsRule> rules = new HashSet<AnalyticsRule>();
+
+		for (Pattern pattern : patternsByClassId.get(id)) {
+			rules.add(rulesById.get(pattern.getRuleId()));
+		}
+
+		return rules;
+	}
+
+	public Collection<Field> getAllFields() {
+		return fieldsById.values();
+	}
+
+	public Collection<AnalyticsRule> getRulesByFieldId(int id) {
+
+		Set<AnalyticsRule> rules = new HashSet<AnalyticsRule>();
+
+		for (Restriction restriction : restrictionsByFieldId.get(id)) {
+			rules.add(rulesById.get(restriction.getRuleId()));
+		}
+
+		return rules;
 	}
 }
