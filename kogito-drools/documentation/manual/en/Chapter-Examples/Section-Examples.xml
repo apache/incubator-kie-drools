@@ -422,8 +422,183 @@ recurse for 2
   <section>
     <title>Trouble Ticket</title>
 
-    <para></para>
+    <para>The trouble ticket example shows how to use the duration attribute
+    for temporal rules, and also includes an alternative version using a
+    dsl.</para>
+
+    <programlisting><emphasis role="bold">Name:</emphasis> TroubleTicket
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.TroubleTicketExample, org.drools.examples.TroubleTicketExampleWithDSL
+<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Rules file:</emphasis> TroubleTicket.drl, TroubleTicketWithDSL.dslr
+<emphasis role="bold">Objective:</emphasis> Show temporal rules in action
+</programlisting>
+
+    <para>The trouble ticket example is based around the idea of raising a
+    "ticket" (ie an issue) with a vendor (these are the vendors rules). Each
+    customer has a subscription class assigned to it (eg Gold, Silver etc) and
+    their class determines how the ticket is treated with respect to time, and
+    escalating the issue. The normal drl version will be discussed here, but
+    logically the DSL version is the same (it just uses a DSL defined language
+    instead of the normal DRL).</para>
+
+    <para>We have 2 types of facts, Customer and Ticket. A Ticket belongs to
+    one and only one customer. A Customer has a name and a "subscription" type
+    (Gold, Silver or Platinum). A ticket also has a "status" - which
+    determines (obviously) what state it is in. The state may be set
+    externally, or by the rules engine (eg it starts out "New", and then the
+    system user determines that it is "Done" at some later point). The rules
+    exist to ensure that the tickets are escalated appropriately based on the
+    customer subscription class.</para>
+
+    <para>Customers can choose Silver, Gold, or Platinum (in order of
+    increasing responsiveness). Platinum subscriptions also come with a set of
+    steak knives, and a personal butler to lodge the ticket for you (but
+    obviously it costs more).</para>
+
+    <section>
+      <title>Starting anew</title>
+
+      <para>We simply log the fact that a new ticket has arrived in the
+      system:</para>
+
+      <programlisting>
+rule "New Ticket"
+ salience 10
+ when
+  customer : Customer( )
+  ticket : Ticket( customer == customer, status == "New" )	
+  then
+ System.out.println( "New : " + ticket );		
+end
+    </programlisting>
+
+      <para>Note that we are "joining" the ticket fact with the customer fact.
+      Its not really needed in this case, as we don't do anything (yet) with
+      the customer fact. If you look in ghe TroubleTicketExample.java, you
+      will also see that the facts are being inserted into the engine - note
+      that we asset BOTH Customer and Ticket object (even though the ticket
+      belongs to a customer - this allows the engine to join the objects
+      together how it wants - this is what is meant by "relational"
+      programming - we let the rule engine define what the relationships are.
+      For instance, although the code is structured so that a ticket belongs
+      to a customer, we may be interested in looking at tickets from different
+      customers of the same type in the future).</para>
+
+      <para>Also, don't forget to use "fireAllRules()" - a common mistake !
+      (In this case we are using a statefull session, so this is
+      necessary).</para>
+    </section>
+
+    <section>
+      <title>Platinum gets the best service</title>
+
+      <para>All the wonderful platinum customers have to get great service, so
+      first thing to note is that as soon as a ticket arrives, we escalate if
+      it is for a platinum customer:</para>
+
+      <programlisting>
+rule "Platinum Priority"
+ when
+  customer : Customer( subscription == "Platinum" )
+  ticket : Ticket( customer == customer, status == "New" )
+ then;
+  ticket.setStatus( "Escalate" );
+  update( ticket );
+end
+      </programlisting>
+
+      <para>Here we are joining Ticket to customer again (customer ==
+      customer), but we are also checking that the customer is "Platinum".
+      When this is the case, we set the ticket status to "Escalate" and call
+      update (which tells the engine that the ticket has changed).</para>
+    </section>
+
+    <section>
+      <title>Silver and Gold</title>
+
+      <para>For silver and gold class, its a similar story to platinum:</para>
+
+      <programlisting>
+rule "Silver Priority"
+ duration 3000
+ when
+  customer : Customer( subscription == "Silver" )
+  ticket : Ticket( customer == customer, status == "New" )
+ then
+  ticket.setStatus( "Escalate" );
+  update( ticket );
+end
+
+rule "Gold Priority"
+ duration 1000
+ when
+  customer : Customer( subscription == "Gold" )
+  ticket : Ticket( customer == customer, status == "New" )
+ then
+  ticket.setStatus( "Escalate" );
+  update( ticket );
+end
+      </programlisting>
+
+      <para>In this case, note the use of "duration XXX" - XXX is the number
+      of milliseconds to wait to check that this rule holds true. Should it do
+      so, after XXX milliseconds, then the action takes effect. So in the
+      above case, after 3 seconds the "Silver" priority kicks in, but after 1
+      second "Gold" does. In both cases the tickets are escalated (just like
+      with platinum. This is what we mean by temporal rules (rules that take
+      effect over time).</para>
+    </section>
+
+    <section>
+      <title>Escalating</title>
+
+      <para>The actual escalation of a ticket happens in a rule:</para>
+
+      <programlisting>
+rule "Escalate"
+ when
+  customer : Customer( )
+  ticket : Ticket( customer == customer, status == "Escalate" )
+ then
+  sendEscalationEmail( customer, ticket );
+end
+      </programlisting>
+
+      <para>In this case, the action is to call a function which sends an
+      email (the function is defined down the bottom of the drl file). This
+      rule reacts to the rules which update the ticket and set its status to
+      escalate.</para>
+    </section>
+
+    <para>In the code that launches the example, we have a "sleep" to make
+    sure all this happens (and print out the results). Note also that after
+    the rules are fired, we modify the status of the Customer "C" to "Done" -
+    and then tell the engine. This causes it to evaluate and fire the rule
+    that looks for "tickets" that are "Done" (in which is just logs a
+    message).</para>
+
+    <section>
+      <title>Running it</title>
+
+      <para>Running the example (by launching the TroubleTicket.java class as
+      an application) should yield the output:</para>
+
+      <programlisting>
+New : [Ticket [Customer D : Silver] : New]
+New : [Ticket [Customer C : Silver] : New]
+New : [Ticket [Customer B : Platinum] : New]
+New : [Ticket [Customer A : Gold] : New]
+Email : [Ticket [Customer B : Platinum] : Escalate]
+[[ Sleeping 5 seconds ]]
+Email : [Ticket [Customer A : Gold] : Escalate]
+Done : [Ticket [Customer C : Silver] : Done]
+Email : [Ticket [Customer D : Silver] : Escalate]
+[[ awake ]]
+    </programlisting>
+    </section>
   </section>
+
+  <!-- Trouble Ticket example -->
 
   <section>
     <title>Pricing Rule DT Example</title>
