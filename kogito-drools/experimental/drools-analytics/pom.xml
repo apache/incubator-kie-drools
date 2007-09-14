@@ -5,11 +5,47 @@
   <parent>
     <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-	  <version>4.0.1.SNAPSHOT</version>
+	  <version>4.0.2.SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-analytics</artifactId>
   <packaging>jar</packaging>
   <name>Drools :: Analytics</name>
 
+  <build>
+    <finalName>drools-analytics</finalName>
+    <!-- Need Java 5 source enabled -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.0.1</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>    
+  </build>
+
+  <dependencies>
+    <!-- Internal dependencies -->
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>          
+    </dependency>    
+    
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+    </dependency>        
+
+    <dependency>
+     <groupId>com.thoughtworks.xstream</groupId>
+     <artifactId>xstream</artifactId>
+    </dependency>
+  </dependencies>
 </project>

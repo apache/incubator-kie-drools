@@ -8,7 +8,7 @@ import org.drools.lang.descr.PackageDescr;
 /**
  * This is a sample file to launch a rule package from a rule source file.
  */
-class AnalyticsTest {
+class AnalyticsTestStandalone {
 
 	public static final void main(String[] args) {
 		try {
