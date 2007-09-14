@@ -21,7 +21,7 @@ public class RangeCheckDoublesTest extends TestBase {
 
 	public void testSmallerAndGreaterThan() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/RangeCheckDoubles.drl"));
+				.getResourceAsStream("rangeChecks/Doubles.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, smaller and greater than"));
@@ -83,7 +83,7 @@ public class RangeCheckDoublesTest extends TestBase {
 
 	public void testEqualAndGreaterThan() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/RangeCheckDoubles.drl"));
+				.getResourceAsStream("rangeChecks/Doubles.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and greater than"));
@@ -119,7 +119,7 @@ public class RangeCheckDoublesTest extends TestBase {
 
 	public void testEqualAndSmallerThan() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/RangeCheckDoubles.drl"));
+				.getResourceAsStream("rangeChecks/Doubles.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and smaller than"));
