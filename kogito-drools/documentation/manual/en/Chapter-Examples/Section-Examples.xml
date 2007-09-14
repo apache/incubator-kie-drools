@@ -105,27 +105,92 @@ end</programlisting>
         </listitem>
       </itemizedlist>
 
-      <para>In the example we have four objects: A, B, C and D. Initially all
-      are set to state NOTRUN. A Bootstrap rule fires setting A to state
-      FINISHED which then causes B to change to state FINISHED. C and D are
-      both dependent on B - causing a conflict which is resolved by setting
-      salience values.</para>
+      <example>
+        <title>State Classs</title>
+
+        <programlisting>public class State {
+    public static final int       NOTRUN   = 0;
+    public static final int       FINISHED = 1;
+
+    private final PropertyChangeSupport changes  = new PropertyChangeSupport( this );
+
+    private String                name;
+    private int                   state;
+
+    ... setters and getters go here...
+}</programlisting>
+      </example>
+
+      <para>Ignore the PropertyChangeSupport for now, that will be explained
+      later. In the example we create four State objects with names: A, B, C
+      and D. Initially all are set to state NOTRUN, which is default for the
+      used constructor. Each instance is asserted in turn into the session and
+      then fireAllRules() is called.</para>
+
+      <example>
+        <title>State Example Execution</title>
+
+        <programlisting>State a = new State( "A" );
+State b = new State( "B" );
+State c = new State( "C" );
+final State d = new State( "D" );
+
+// By setting dynamic to TRUE, Drools will use JavaBean
+// PropertyChangeListeners so you don't have to call update().
+boolean dynamic = true;
+
+session.insert( a,
+                dynamic );
+session.insert( b,
+                dynamic );
+session.insert( c,
+                dynamic );
+session.insert( d,
+                dynamic );
+
+session.fireAllRules();
+session.dispose(); // Stateful rule session must always be disposed when finished</programlisting>
+      </example>
+
+      <para>To execute the application:</para>
+
+      <para><orderedlist>
+          <listitem>
+            <para>Open the class org.drools.examples.StateExampleUsingSalience
+            in your Eclipse IDE</para>
+          </listitem>
+
+          <listitem>
+            <para>Right-click the class an select "Run as..." -&gt; "Java
+            application"</para>
+          </listitem>
+        </orderedlist></para>
+
+      <para>And you wil see the following output in the Eclipse console
+      output:</para>
+
+      <example>
+        <title>State Example Console Output</title>
+
+        <programlisting>A finished
+B finished
+C finished
+D finished
+</programlisting>
+      </example>
+
+      <para>There are four rules in totoal, first a Bootstrap rule fires
+      setting A to state FINISHED which then causes B to change to state
+      FINISHED. C and D are both dependent on B - causing a conflict which is
+      resolved by setting salience values. First lets look at how this was
+      executed</para>
 
       <para>The best way to understand what is happening is to use the "Audit
-      Log" feature to graphically see the results of each operation. To do
-      that, follow the steps bellow:</para>
+      Log" feature to graphically see the results of each operation. The Audit
+      log was generated when the example was previously run. To view the Audit
+      log in Eclipse:</para>
 
       <orderedlist>
-        <listitem>
-          <para>Open the class org.drools.examples.StateExampleUsingSalience
-          in your Eclipse IDE</para>
-        </listitem>
-
-        <listitem>
-          <para>Right-click the class an select "Run as..." -&gt; "Java
-          application"</para>
-        </listitem>
-
         <listitem>
           <para>If the "Audit View" is not visible, click on:
           "Window"-&gt;"Show View"-&gt;"Other..."-&gt;"Drools"-&gt;"Audit
@@ -141,15 +206,15 @@ end</programlisting>
       <para>After that, the "Audit view" will look like the following
       screenshot.</para>
 
-      <para><screenshot>
-          <screeninfo>State Example Audit View</screeninfo>
+      <figure>
+        <title>State Example Audit View</title>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="state_example_audit1.png" />
-            </imageobject>
-          </mediaobject>
-        </screenshot></para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="state_example_audit1.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
       <para>Reading the log in the "Audit View", top to down, we see every
       action and the corresponding changes in the working memory. This way we
@@ -228,32 +293,122 @@ end</programlisting>
       <para>There are no more rules to execute and so the engine stops.</para>
 
       <para>Another notable concept in this example is the use of <emphasis
-      role="bold">dynamic facts</emphasis>. As mentioned previously in the
+      role="bold">dynamic facts</emphasis>, which is the
+      PropertyChangeListener part. As mentioned previously in the
       documentation, in order for the engine to see and react to fact's
       properties change, the application must tell the engine that changes
       occurred. This can be done explicitly in the rules, by calling the
-      <emphasis role="bold">update()</emphasis> memory action as seen in the
-      "Hello World" example, or implicitly by letting the engine know that the
-      facts implement PropertyChangeSupport as defined by the
-      <emphasis>Javabeans specification</emphasis>. This example demonstrates
-      how to use PropertyChangeSupport to avoid the need for explicit update()
-      calls in the rules. To make use of this feature, make sure your facts
-      implement the PropertyChangeSupport as the org.drools.example.State
-      class does and use the following code to insert the facts into the
-      working memory:</para>
+      <emphasis role="bold">update()</emphasis> memory action, or implicitly
+      by letting the engine know that the facts implement
+      PropertyChangeSupport as defined by the <emphasis>Javabeans
+      specification</emphasis>. This example demonstrates how to use
+      PropertyChangeSupport to avoid the need for explicit update() calls in
+      the rules. To make use of this feature, make sure your facts implement
+      the PropertyChangeSupport as the org.drools.example.State class does and
+      use the following code to insert the facts into the working
+      memory:</para>
 
-      <programlisting>        // By setting dynamic to TRUE, Drools will use JavaBean
+      <example>
+        <title>Inserting a Dynamic Fact</title>
+
+        <programlisting>        // By setting dynamic to TRUE, Drools will use JavaBean
         // PropertyChangeListeners so you don't have to call update().
         final boolean dynamic = true;
 
         session.insert( fact,
                         dynamic );
 </programlisting>
+      </example>
+
+      <para>When using PropertyChangeListeners each setter must implement a
+      little extra code to do the notification, here is the state setter for
+      thte org.drools.examples.State class:</para>
+
+      <example>
+        <title>Setter Example with PropertyChangeSupport</title>
+
+        <programlisting>public void setState(final int newState) {
+    int oldState = this.state;
+    this.state = newState;
+    this.changes.firePropertyChange( "state",
+                                     oldState,
+                                     newState );
+}</programlisting>
+      </example>
     </section>
   </section>
 
   <section>
     <title>Fibonacci Example</title>
+
+    <para>The Fibonacci Numbers, <ulink
+    url="http://en.wikipedia.org/wiki/Fibonacci_number">http://en.wikipedia.org/wiki/Fibonacci_number</ulink>,
+    invented by Leonardo of Pisa, <ulink
+    url="http://en.wikipedia.org/wiki/Fibonacci">http://en.wikipedia.org/wiki/Fibonacci</ulink>,
+    are obtained by starting with 0 and 1, and then produce the next Fibonacci
+    number by adding the two previous Fibonacci numbers. The first Fibonacci
+    numbers for n = 0, 1,... are: * 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89,
+    144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946... The Fibonacci
+    Example demonstrates recursion and conflict resolution with Salience
+    values.</para>
+
+    <para>A single fact Class is used in this example, Fibonacci. It has two
+    fields, sequence and value. The sequence field is used to indicate the
+    position of the object in the Fibonacci number sequence and the value
+    field shows the value of that Fibonacci object for that sequence
+    position.</para>
+
+    <example>
+      <title>Fibonacci Class</title>
+
+      <programlisting>public static class Fibonacci {
+    private int  sequence;
+    private long value;
+
+    ... setters and getters go here...
+}</programlisting>
+    </example>
+
+    <para>Execute the example:</para>
+
+    <para><orderedlist>
+        <listitem>
+          <para>Open the class org.drools.examples.FibonacciExample in your
+          Eclipse IDE</para>
+        </listitem>
+
+        <listitem>
+          <para>Right-click the class an select "Run as..." -&gt; "Java
+          application"</para>
+        </listitem>
+      </orderedlist>And the Eclipse show the following output in it's console,
+    "...snip..." shows repeated bits removed to save space:</para>
+
+    <example>
+      <title>Fibonacci Example Console Output</title>
+
+      <programlisting>recurse for 50
+recurse for 49
+recurse for 48
+recurse for 47
+...snip...
+recurse for 5
+recurse for 4
+recurse for 3
+recurse for 2
+1 == 1
+2 == 1
+3 == 2
+4 == 3
+5 == 5
+6 == 8
+...snip...
+47 == 2971215073
+48 == 4807526976
+49 == 7778742049
+50 == 12586269025
+</programlisting>
+    </example>
 
     <para></para>
   </section>
@@ -292,10 +447,10 @@ end</programlisting>
     <title>Sudoku Example</title>
 
     <programlisting><emphasis role="bold">Name:</emphasis> Sudoku
-<emphasis role="bold">Main class:</emphasis> org.drools.examples.HelloWorldExample
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.sudoku.Main
 <emphasis role="bold">Type:</emphasis> java application
-<emphasis role="bold">Rules file:</emphasis> HelloWorld.drl
-<emphasis role="bold">Objective:</emphasis> demonstrate basic rules in use
+<emphasis role="bold">Rules file:</emphasis> sudokuSolver.drl, sudokuValidator.drl
+<emphasis role="bold">Objective:</emphasis> Demonstrates the solving of logic problems, and complex pattern matching.e
 </programlisting>
 
     <para>This example demonstrates how Drools can be used to find a solution
