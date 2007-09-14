@@ -52,16 +52,18 @@ class RuleLoader {
 				.getResourceAsStream("rangeChecks/Patterns.drl")));
 		list.add(new InputStreamReader(RuleLoader.class
 				.getResourceAsStream("rangeChecks/Variables.drl")));
-		 list.add(new InputStreamReader(RuleLoader.class
-		 .getResourceAsStream("redundancy/Patterns.drl")));
-		 list.add(new InputStreamReader(RuleLoader.class
-		 .getResourceAsStream("redundancy/Possibilities.drl")));
-//		 list.add(new InputStreamReader(RuleLoader.class
-//		 .getResourceAsStream("redundancy/Restrictions.drl")));
-//		 list.add(new InputStreamReader(RuleLoader.class
-//		 .getResourceAsStream("redundancy/Rules.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("reports/RangeCheckReports.drl")));
+
+		// list.add(new InputStreamReader(RuleLoader.class
+		// .getResourceAsStream("redundancy/Possibilities.drl")));
+		//
+		// list.add(new InputStreamReader(RuleLoader.class
+		// .getResourceAsStream("redundancy/Patterns.drl")));
+		// list.add(new InputStreamReader(RuleLoader.class
+		// .getResourceAsStream("redundancy/Restrictions.drl")));
+		// list.add(new InputStreamReader(RuleLoader.class
+		// .getResourceAsStream("redundancy/Rules.drl")));
+		// list.add(new InputStreamReader(RuleLoader.class
+		// .getResourceAsStream("reports/RangeCheckReports.drl")));
 
 		return list;
 	}

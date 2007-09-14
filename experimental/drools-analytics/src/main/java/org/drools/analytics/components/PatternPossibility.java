@@ -31,6 +31,10 @@ public class PatternPossibility extends AnalyticsComponent implements
 		return AnalyticsComponentType.PATTERN_POSSIBILITY;
 	}
 
+	public CauseType getCauseType() {
+		return Cause.CauseType.POSSIBILITY;
+	}
+
 	public Set<Cause> getItems() {
 		return items;
 	}

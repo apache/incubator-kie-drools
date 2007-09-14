@@ -25,6 +25,10 @@ public class AnalyticsRule extends AnalyticsComponent implements Cloneable,
 		return AnalyticsComponentType.RULE;
 	}
 
+	public CauseType getCauseType() {
+		return Cause.CauseType.RULE;
+	}
+
 	public String getRuleAgendaGroup() {
 		return ruleAgendaGroup;
 	}

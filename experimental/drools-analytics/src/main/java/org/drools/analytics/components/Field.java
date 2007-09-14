@@ -30,6 +30,10 @@ public class Field extends AnalyticsComponent implements Cause {
 		return AnalyticsComponentType.FIELD;
 	}
 
+	public CauseType getCauseType() {
+		return Cause.CauseType.FIELD;
+	}
+
 	public String getName() {
 		return name;
 	}

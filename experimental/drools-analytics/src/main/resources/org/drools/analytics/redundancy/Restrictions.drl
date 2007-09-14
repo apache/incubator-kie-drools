@@ -47,6 +47,10 @@ rule "Find redundant VariableRestriction"
 			left == $left, 
 			right == $right 
 		)
+		not Redundancy(
+			left == $right, 
+			right == $left 
+		)
 		
 		# Check that these two variables point to the same object.
 		$v :Variable( id == $left.variableId )
@@ -56,7 +60,7 @@ rule "Find redundant VariableRestriction"
 			objectId == $v.objectId
 		)
 	then
-		insert( new Redundancy( Redundancy.Type.STRONG, $left, $right ) );
+		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
 end
 
 /*
@@ -158,6 +162,10 @@ rule "Find redundant LiteralRestriction"
 			left == $left, 
 			right == $right 
 		)
+		not Redundancy(
+			left == $right, 
+			right == $left 
+		)
 	then
-		insert( new Redundancy( Redundancy.Type.STRONG, $left, $right ) );
+		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
 end

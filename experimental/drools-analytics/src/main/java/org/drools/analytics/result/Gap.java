@@ -16,6 +16,11 @@ public class Gap implements Cause {
 	private RangeCheckCause cause;
 	private String firedRuleName;
 
+
+	public CauseType getCauseType() {
+		return Cause.CauseType.GAP;
+	}
+	
 	public Gap(Field field, RangeCheckCause cause, String firedRuleName) {
 		this.field = field;
 		this.cause = cause;

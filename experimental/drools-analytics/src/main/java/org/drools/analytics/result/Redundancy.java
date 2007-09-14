@@ -11,20 +11,23 @@ package org.drools.analytics.result;
  */
 public class Redundancy {
 
-	public enum Type {
+	public enum RedundancyType {
 		WEAK, STRONG
 	}
 
-	private Type type = Type.WEAK; // By default the redundancy is weak.
+	private RedundancyType type = RedundancyType.WEAK; // By default the redundancy is weak.
+	private Cause.CauseType causeType; // left and right Cause are of the same type.
 	private Cause left;
 	private Cause right;
 
 	public Redundancy(Cause left, Cause right) {
+		this.causeType=left.getCauseType();
 		this.left = left;
 		this.right = right;
 	}
 
-	public Redundancy(Type type, Cause left, Cause right) {
+	public Redundancy(RedundancyType type, Cause left, Cause right) {
+		this.causeType=left.getCauseType();
 		this.type = type;
 		this.left = left;
 		this.right = right;
@@ -46,16 +49,20 @@ public class Redundancy {
 		this.right = right;
 	}
 
-	public Type getType() {
+	public RedundancyType getType() {
 		return type;
 	}
 
-	public void setType(Type type) {
+	public void setType(RedundancyType type) {
 		this.type = type;
 	}
 
 	@Override
 	public String toString() {
 		return "Redundacy between: (" + left + ") and (" + right + ").";
+	}
+
+	public Cause.CauseType getCauseType() {
+		return causeType;
 	}
 }

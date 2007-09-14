@@ -1,6 +1,7 @@
 package org.drools.analytics.components;
 
 import org.drools.analytics.result.Cause;
+import org.drools.analytics.result.Cause.CauseType;
 
 /**
  * 
@@ -29,6 +30,10 @@ public abstract class Restriction extends AnalyticsComponent implements Cause {
 	@Override
 	public AnalyticsComponentType getComponentType() {
 		return AnalyticsComponentType.RESTRICTION;
+	}
+
+	public CauseType getCauseType() {
+		return Cause.CauseType.RESTRICTION;
 	}
 
 	public abstract RestrictionType getRestrictionType();
