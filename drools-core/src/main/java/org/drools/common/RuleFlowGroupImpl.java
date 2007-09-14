@@ -99,6 +99,9 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
                     activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
                 }
             }
+            if ( getProcessInstance() != null ) {
+                triggerCompleted();
+            }
             ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireRuleFlowGroupDeactivated( this,
                                                                                                         this.workingMemory );
         }

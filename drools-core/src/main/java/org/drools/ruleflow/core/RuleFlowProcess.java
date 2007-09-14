@@ -71,14 +71,14 @@ public interface RuleFlowProcess
     void removeNode(Node node);
 
     /**
-     * Returns the global variables used in this RuleFlow process
+     * Returns the variables used in this RuleFlow process
      * 
      * @return	a list of variables of this RuleFlow process
      */
     List getVariables();
 
     /**
-     * Sets the global variables used in this RuleFlow process
+     * Sets the variables used in this RuleFlow process
      * 
      * @param variables	the variables
      * @throws IllegalArugmentException if <code>variables</code> is null
@@ -86,7 +86,7 @@ public interface RuleFlowProcess
     void setVariables(List variables);
 
     /**
-     * Returns the names of the global variables used in this RuleFlow process
+     * Returns the names of the variables used in this RuleFlow process
      * 
      * @return	the variable names of this RuleFlow process
      */
