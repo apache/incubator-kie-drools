@@ -166,7 +166,7 @@ session.dispose(); // Stateful rule session must always be disposed when finishe
           </listitem>
         </orderedlist></para>
 
-      <para>And you wil see the following output in the Eclipse console
+      <para>And you will see the following output in the Eclipse console
       output:</para>
 
       <example>
@@ -179,7 +179,7 @@ D finished
 </programlisting>
       </example>
 
-      <para>There are four rules in totoal, first a Bootstrap rule fires
+      <para>There are four rules in total, first a Bootstrap rule fires
       setting A to state FINISHED which then causes B to change to state
       FINISHED. C and D are both dependent on B - causing a conflict which is
       resolved by setting salience values. First lets look at how this was
