@@ -4,18 +4,18 @@ expander ticketing.dsl
 
 rule "New Ticket"
 	salience 10
-	when		
-       
+	when
+       There is a customer ticket with status of "New"
 	then
-		Log "New"		
+	   Log "New ticket..."
 end
- 
+
 rule "Silver Priorty"
 	#if after a certain time, we still have an issue, then escalate
 	duration 3000
-	when			
-    	There is a "Silver" customer with a ticket status of "New"		
-    					
+	when
+    	There is a "Silver" customer with a ticket status of "New"
+
 	then
 		Escalate the ticket
 end
@@ -30,25 +30,25 @@ end
 
 rule "Platinum Priority"
 	#we don't want to make the high rollers wait !
-	when		
+	when
 		There is a "Platinum" customer with a ticket status of "New"
 	then
 		Escalate the ticket
 end
 
 
- 
+
 rule "Escalate"
 	when
-		There is a customer ticket with status of "Escalate" 
-	then 
+		There is a customer ticket with status of "Escalate"
+	then
 		Send escalation email
 end
 
 rule "Done"
 	when
-		There is a customer ticket with status of "Done" 
-	then 
+		There is a customer ticket with status of "Done"
+	then
 		Log "Done"
 end
 
