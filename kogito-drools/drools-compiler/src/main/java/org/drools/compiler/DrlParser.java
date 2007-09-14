@@ -73,7 +73,7 @@ public class DrlParser {
     //        //return parse( text.toString() );
     //    }
 
-    /** 
+	/** 
      * Parse and build a rule package from a DRL source with a 
      * domain specific language.
      */
@@ -94,13 +94,9 @@ public class DrlParser {
      */
     public PackageDescr parse(final String source,
                               final Reader dsl) throws DroolsParserException {
-        DefaultExpanderResolver resolver;
-        try {
-            resolver = new DefaultExpanderResolver( dsl );
-        } catch ( final IOException e ) {
-            throw new DroolsParserException( "Error parsing the DSL.",
-                                             e );
-        }
+    	
+    	DefaultExpanderResolver resolver = getDefaultResolver(dsl);
+    	
         final Expander expander = resolver.get( "*",
                                           null );
         final String expanded = expander.expand( source );
@@ -118,14 +114,20 @@ public class DrlParser {
      * @throws DroolsParserException If unable to expand in any way.
      */
     public String getExpandedDRL(final String source, final Reader dsl) throws DroolsParserException {
-        DefaultExpanderResolver resolver;
-        try {
-            resolver = new DefaultExpanderResolver( dsl );
-        } catch ( final IOException e ) {
-            throw new DroolsParserException( "Error parsing the DSL.",
-                                             e );
-        }
-        final Expander expander = resolver.get( "*",
+    	DefaultExpanderResolver resolver = getDefaultResolver(dsl);
+        return getExpandedDRL(source, resolver);
+    }
+    
+    /**
+     * This will expand the DRL using the given expander resolver.
+     * useful for debugging.
+     * @param source - the source which use a DSL
+     * @param resolver - the DSL expander resolver itself.
+     * @throws DroolsParserException If unable to expand in any way.
+     */
+    public String getExpandedDRL(final String source, final DefaultExpanderResolver resolver ) throws DroolsParserException {
+
+    	final Expander expander = resolver.get( "*",
                                           null );
         final String expanded = expander.expand( source );
         
@@ -140,6 +142,7 @@ public class DrlParser {
         }    
         return expanded;
     }
+    
     
     private StringBuffer getDRLText(final Reader reader) throws IOException {
         final StringBuffer text = new StringBuffer();
@@ -211,4 +214,15 @@ public class DrlParser {
     public Location getLocation() {
         return this.location; 
     }
+    
+    public DefaultExpanderResolver getDefaultResolver(final Reader dsl) throws DroolsParserException {
+        DefaultExpanderResolver resolver;
+        try {
+        		resolver = new DefaultExpanderResolver( dsl );
+        } catch ( final IOException e ) {
+            throw new DroolsParserException( "Error parsing the DSL.",
+                                             e );
+        }
+        return resolver;
+	}
 }
