@@ -1,0 +1,30 @@
+package com.sample
+
+import com.sample.DroolsTest.Message;
+
+rule "Rule with patterns"
+	when
+		    Foo1()
+		    Foo1()
+		    TestPattern1( a == 10, b == 10, c == 10, d == 10, e == 10)
+		    TestPattern2()
+		    TestPattern3()
+		    TestPattern4()
+	then
+		System.out.println( "Test" );
+end
+
+rule "Field rule"
+	when
+		PatThePattern( gg > 100 )
+	then
+		System.out.println( "Test" );
+end
+
+rule "Field rule 2"
+	when
+		PatThePattern()
+	then
+		System.out.println( "Test" );
+end
+

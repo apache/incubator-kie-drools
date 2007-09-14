@@ -41,6 +41,8 @@ public interface AnalyticsData {
 
 	public AnalyticsClass getClassByName(String name);
 
+	public AnalyticsClass getClassById(int id);
+
 	public Field getFieldByClassAndFieldName(String className, String fieldName);
 
 	public Variable getVariableByRuleAndVariableName(String ruleName,
@@ -49,4 +51,18 @@ public interface AnalyticsData {
 	public Collection<? extends Object> getAll();
 
 	public FieldClassLink getFieldClassLink(int id, int id2);
+
+	public Collection<AnalyticsRule> getAllRules();
+
+	public Collection<AnalyticsClass> getClassesByRuleName(String ruleName);
+
+	public Collection<AnalyticsClass> getAllClasses();
+
+	public Collection<Field> getFieldsByClassId(int id);
+
+	public Collection<AnalyticsRule> getRulesByClassId(int id);
+
+	public Collection<Field> getAllFields();
+
+	public Collection<AnalyticsRule> getRulesByFieldId(int id);
 }
