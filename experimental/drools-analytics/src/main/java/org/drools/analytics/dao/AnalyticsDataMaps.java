@@ -16,6 +16,7 @@ import org.drools.analytics.components.FieldClassLink;
 import org.drools.analytics.components.Pattern;
 import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.Restriction;
+import org.drools.analytics.components.RulePackage;
 import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.components.Variable;
 
@@ -24,6 +25,9 @@ import org.drools.analytics.components.Variable;
  * @author Toni Rikkola
  */
 public class AnalyticsDataMaps implements AnalyticsData {
+
+	private Map<Integer, RulePackage> packagesById = new HashMap<Integer, RulePackage>();
+	private Map<String, RulePackage> packagesByName = new HashMap<String, RulePackage>();
 
 	private Map<Integer, AnalyticsClass> classesById = new HashMap<Integer, AnalyticsClass>();
 	private Map<String, AnalyticsClass> classesByName = new HashMap<String, AnalyticsClass>();
@@ -188,6 +192,8 @@ public class AnalyticsDataMaps implements AnalyticsData {
 	public Collection<? extends Object> getAll() {
 		List<Object> objects = new ArrayList<Object>();
 
+		objects.addAll(packagesById.values());
+
 		objects.addAll(rulesById.values());
 		objects.addAll(patternsById.values());
 		objects.addAll(constraintsById.values());
@@ -234,5 +240,18 @@ public class AnalyticsDataMaps implements AnalyticsData {
 		}
 
 		return rules;
+	}
+
+	public Collection<RulePackage> getAllRulePackages() {
+		return packagesById.values();
+	}
+
+	public void insert(RulePackage rulePackage) {
+		packagesById.put(rulePackage.getId(), rulePackage);
+		packagesByName.put(rulePackage.getName(), rulePackage);
+	}
+
+	public RulePackage getRulePackageByName(String name) {
+		return packagesByName.get(name);
 	}
 }

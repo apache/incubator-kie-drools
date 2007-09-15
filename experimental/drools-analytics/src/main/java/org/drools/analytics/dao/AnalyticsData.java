@@ -10,6 +10,7 @@ import org.drools.analytics.components.FieldClassLink;
 import org.drools.analytics.components.Pattern;
 import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.Restriction;
+import org.drools.analytics.components.RulePackage;
 import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.components.Variable;
 
@@ -39,6 +40,8 @@ public interface AnalyticsData {
 
 	public void insert(RulePossibility possibility);
 
+	public void insert(RulePackage rulePackage);
+
 	public AnalyticsClass getClassByName(String name);
 
 	public AnalyticsClass getClassById(int id);
@@ -58,6 +61,8 @@ public interface AnalyticsData {
 
 	public Collection<AnalyticsClass> getAllClasses();
 
+	public Collection<RulePackage> getAllRulePackages();
+
 	public Collection<Field> getFieldsByClassId(int id);
 
 	public Collection<AnalyticsRule> getRulesByClassId(int id);
@@ -65,4 +70,6 @@ public interface AnalyticsData {
 	public Collection<Field> getAllFields();
 
 	public Collection<AnalyticsRule> getRulesByFieldId(int id);
+
+	public RulePackage getRulePackageByName(String name);
 }

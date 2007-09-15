@@ -1,5 +1,6 @@
 package org.drools.analytics;
 
+import java.io.File;
 import java.util.Collection;
 
 import org.drools.RuleBase;
@@ -81,8 +82,11 @@ public class Analyzer {
 	 * 
 	 * @return Analysis results as HTML
 	 */
-	public String getComponentsHTML() {
-		return new ComponentsReportModeller().writeComponentsHTML();
+	public void writeComponentsHTML(String path) {
+		
+		
+		
+		ComponentsReportModeller.writeHTML(path);
 	}
 
 	/**

@@ -9,7 +9,19 @@ import org.drools.analytics.result.Cause;
 public class Field extends AnalyticsComponent implements Cause {
 
 	public static enum FieldType {
-		BOOLEAN, STRING, INT, DOUBLE, DATE, VARIABLE, OBJECT
+		BOOLEAN("boolean"), STRING("String"), INT("int"), DOUBLE("double"), DATE(
+				"Date"), VARIABLE("Variable"), OBJECT("Object");
+
+		private String string;
+
+		private FieldType(String string) {
+			this.string = string;
+		}
+
+		@Override
+		public String toString() {
+			return string;
+		}
 	}
 
 	private static int index = 0;

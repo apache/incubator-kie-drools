@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+    <head>
+        <meta name="generator" content="HTML Tidy, see www.w3.org">
+        <meta http-equiv="Content-Type" content=
+        "text/html; charset=iso-8859-1">
+
+        <title>Rule Relations</title>
+		@{cssStyle}
+    </head>
+
+    <body>
+    	<div>@{header}</div>
+    	<div>
+        	<h1>Rules by Packages</h1>
+	        <table class="rulePackages">
+					@foreach{rulePackages as rulePackage}	
+			    	<tr>
+		                <th>@{rulePackage.name}</td>
+						<th>
+	            	</tr>
+	            	<tr>
+	            		<td>
+	            			<ul>
+							@foreach{rulePackage.rules as rule}
+								<li><a href="@{sourceFolder}/@{ruleFolder}/@{rule.id}.htm">@{rule.ruleName}</a></li>@end{}
+							</ul>
+						</td>
+	            	</tr>
+					@end{}
+	        </table>
+		</div>
+    </body>
+</html>
+

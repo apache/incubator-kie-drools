@@ -25,5 +25,6 @@ public enum AnalyticsComponentType {
 	METHOD_ACCESSOR, 
 	FIELD_ACCESSOR, 
 	FUNCTION_CALL, 
-	ACCESSOR
+	ACCESSOR, 
+	RULE_PACKAGE
 }
