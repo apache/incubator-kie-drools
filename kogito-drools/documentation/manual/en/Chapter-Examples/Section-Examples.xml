@@ -30,13 +30,13 @@
       <title>HelloWorld example: rule "Hello World"</title>
 
       <programlisting>rule "Hello World"
-    dialect "mvel"
+      dialect "mvel"
   when
-    m : Message( status == Message.HELLO, message : message )
+      m : Message( status == Message.HELLO, message : message )
   then
-    System.out.println( message ); 
-    modify ( m ) { message = "Goodbyte cruel world",
-                   status = Message.GOODBYE };
+      System.out.println( message ); 
+      modify ( m ) { message = "Goodbyte cruel world",
+                     status = Message.GOODBYE };
 end</programlisting>
     </example>
 
@@ -62,11 +62,11 @@ end</programlisting>
       <title>HelloWorld example: rule "Good Bye"</title>
 
       <programlisting>rule "Good Bye"
-    dialect "java"
+      dialect "java"
   when
-    Message( status == Message.GOODBYE, message : message )
+      Message( status == Message.GOODBYE, message : message )
   then
-    System.out.println( message ); 
+      System.out.println( message ); 
 end</programlisting>
     </example>
 
@@ -91,9 +91,10 @@ end</programlisting>
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.StateExampleUsingSalience
 <emphasis role="bold">Type:</emphasis> java application
 <emphasis role="bold">Rules file:</emphasis> StateExampleUsingSalience.drl
-</programlisting>Each State class has fields for its name and its current
-      state (see org.drools.examples.State class). The two possible states for
-      each objects are:</para>
+<emphasis role="bold">Objective:</emphasis> Demonstrates basic rule use and Conflict Resolution for rule firing priority.</programlisting>Each
+      State class has fields for its name and its current state (see
+      org.drools.examples.State class). The two possible states for each
+      objects are:</para>
 
       <itemizedlist>
         <listitem>
@@ -128,7 +129,7 @@ end</programlisting>
       then fireAllRules() is called.</para>
 
       <example>
-        <title>State Example Execution</title>
+        <title>Salience State Example Execution</title>
 
         <programlisting>State a = new State( "A" );
 State b = new State( "B" );
@@ -170,7 +171,7 @@ session.dispose(); // Stateful rule session must always be disposed when finishe
       output:</para>
 
       <example>
-        <title>State Example Console Output</title>
+        <title>Salience State Example Console Output</title>
 
         <programlisting>A finished
 B finished
@@ -207,7 +208,7 @@ D finished
       screenshot.</para>
 
       <figure>
-        <title>State Example Audit View</title>
+        <title>Salience State Example Audit View</title>
 
         <mediaobject>
           <imageobject>
@@ -223,7 +224,7 @@ D finished
       objects have no immediate effect.</para>
 
       <example>
-        <title>State Example: Rule "Bootstrap"</title>
+        <title>Salience State Example: Rule "Bootstrap"</title>
 
         <programlisting>rule Bootstrap
     when
@@ -238,7 +239,7 @@ end</programlisting>
       "FINISHED", that in turn activates the "A to B" rule.</para>
 
       <example>
-        <title>State Example: Rule "A to B"</title>
+        <title>Salience State Example: Rule "A to B"</title>
 
         <programlisting>rule "A to B"
     when
@@ -277,10 +278,10 @@ end
       </figure>
 
       <example>
-        <title>State Example: Rule "B to C"</title>
+        <title>Salience State Example: Rule "B to C"</title>
 
         <programlisting>rule "B to C"
-    salience 10
+        salience 10
     when
         State(name == "B", state == State.FINISHED )
         c : State(name == "C", state == State.NOTRUN )
@@ -295,7 +296,7 @@ end
       "FINISHED".</para>
 
       <example>
-        <title>State Example: Rule "B to D"</title>
+        <title>Salience State Example: Rule "B to D"</title>
 
         <programlisting>rule "B to D"
     when
@@ -352,11 +353,100 @@ end</programlisting>
                                      newState );
 }</programlisting>
       </example>
+
+      <para>There are two other State examples: StateExampleUsingAgendGroup
+      and StateExampleWithDynamicRules. Both execute from A to B to C to D, as
+      just shown, the StateExampleUsingAgendGroup uses agenda-groups to
+      control the rule conflict and which one fires first and
+      StateExampleWithDynamicRules shows how an additional rule can be added
+      to an already running WorkingMemory with all the existing data applying
+      to it at runtime.</para>
+
+      <para>Agenda groups are a way to partition the agenda into groups and
+      controlling which groups can execute. All rules by default are in the
+      "MAIN" agenda group, by simply using the "agenda-group" attribute you
+      specify a different agenda group for the rule. A working memory
+      initially only has focus on the "MAIN" agenda group, only when other
+      groups are given the focus can their rules fire; this can be achieved by
+      either using the method setFocus() or the rule attribute "auto-focus".
+      "auto-focus" means that the rule automatically sets the focus to it's
+      agenda group when the rule is matched and activated. It is this
+      "auto-focus" that enables "B to C" to fire before "B to D".</para>
+
+      <example>
+        <title>Agenda Group State Example: Rule "B to C"</title>
+
+        <programlisting>rule "B to C"
+      agenda-group "B to C"
+      auto-focus true       
+  when
+      State(name == "B", state == State.FINISHED )      
+      c : State(name == "C", state == State.NOTRUN )
+  then
+      System.out.println(c.getName() + " finished" );
+      c.setState( State.FINISHED );
+      drools.setFocus( "B to D" );
+end</programlisting>
+      </example>
+
+      <para>The rule "B to C" calls "drools.setFocus( "B to D" );" which gives
+      the agenda group "B to D" focus allowing its active rules to fire; which
+      allows the rule "B to D" to fire.</para>
+
+      <example>
+        <title>Agenda Group State Example: Rule "B to D"</title>
+
+        <programlisting>rule "B to D"
+      agenda-group "B to D"
+  when
+      State(name == "B", state == State.FINISHED )      
+      d : State(name == "D", state == State.NOTRUN )
+  then
+      System.out.println(d.getName() + " finished" );
+      d.setState( State.FINISHED );
+end</programlisting>
+      </example>
+
+      <para>The example StateExampleWithDynamicRules adds another rule to the
+      RuleBase after fireAllRules(), the rule it adds is just another State
+      transition.</para>
+
+      <example>
+        <title>Dynamic State Example: Rule "D to E"</title>
+
+        <programlisting>rule "D to E"
+  when
+      State(name == "D", state == State.FINISHED )      
+      e : State(name == "E", state == State.NOTRUN )
+  then
+      System.out.println(e.getName() + " finished" );
+      e.setState( State.FINISHED );
+end</programlisting>
+      </example>
+
+      <para>It gives the following expected output:</para>
+
+      <example>
+        <title>Dynamic Sate Example Output</title>
+
+        <programlisting>A finished
+B finished
+C finished
+D finished
+E finished
+</programlisting>
+      </example>
     </section>
   </section>
 
   <section>
     <title>Fibonacci Example</title>
+
+    <programlisting><emphasis role="bold">Name:</emphasis> Fibonacci 
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.FibonacciExample
+<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Rules file:</emphasis> Fibonacci.drl
+<emphasis role="bold">Objective:</emphasis> Demonsrates Recursion, 'not' CEs and Cross Product Matching</programlisting>
 
     <para>The Fibonacci Numbers, <ulink
     url="http://en.wikipedia.org/wiki/Fibonacci_number">http://en.wikipedia.org/wiki/Fibonacci_number</ulink>,
