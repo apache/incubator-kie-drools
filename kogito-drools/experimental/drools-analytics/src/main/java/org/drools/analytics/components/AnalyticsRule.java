@@ -16,6 +16,8 @@ public class AnalyticsRule extends AnalyticsComponent implements Cloneable,
 	private String consequence;
 	private int lineNumber;
 
+	private int packageId;
+
 	public AnalyticsRule() {
 		super(index++);
 	}
@@ -77,5 +79,13 @@ public class AnalyticsRule extends AnalyticsComponent implements Cloneable,
 	@Override
 	public String toString() {
 		return "Rule '" + ruleName + "'";
+	}
+
+	public int getPackageId() {
+		return packageId;
+	}
+
+	public void setPackageId(int packageId) {
+		this.packageId = packageId;
 	}
 }

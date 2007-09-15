@@ -1,6 +1,8 @@
 package org.drools.analytics.components;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Toni Rikkola
@@ -13,6 +15,8 @@ public class AnalyticsClass implements Serializable {
 
 	private int id = index++;
 	private String name;
+
+	private Set<Field> fields = new HashSet<Field>();
 
 	public String getName() {
 		return name;
@@ -28,5 +32,13 @@ public class AnalyticsClass implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Set<Field> getFields() {
+		return fields;
+	}
+
+	public void setFields(Set<Field> fields) {
+		this.fields = fields;
 	}
 }

@@ -23,6 +23,7 @@ import org.drools.analytics.components.Pattern;
 import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.QualifiedIdentifierRestriction;
 import org.drools.analytics.components.ReturnValueRestriction;
+import org.drools.analytics.components.RulePackage;
 import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.components.Variable;
 import org.drools.analytics.components.VariableRestriction;
@@ -65,6 +66,7 @@ public class PackageDescrFlattener {
 
 	private Solvers solvers = new Solvers();
 
+	private RulePackage currentPackage = null;
 	private AnalyticsRule currentRule = null;
 	private Pattern currentPattern = null;
 	private Constraint currentConstraint = null;
@@ -72,7 +74,21 @@ public class PackageDescrFlattener {
 	private Field currentField = null;
 
 	public void insert(PackageDescr packageDescr) {
+		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		RulePackage rulePackage = data.getRulePackageByName(packageDescr
+				.getName());
+
+		if (rulePackage == null) {
+			rulePackage = new RulePackage();
+
+			rulePackage.setName(packageDescr.getName());
+			data.insert(rulePackage);
+		}
+
+		currentPackage = rulePackage;
+
 		flatten(packageDescr.getRules());
+
 		formPossibilities();
 	}
 
@@ -308,8 +324,11 @@ public class PackageDescrFlattener {
 		rule.setRuleSalience(descr.getSalience());
 		rule.setConsequence(descr.getConsequence().toString());
 		rule.setLineNumber(descr.getLine());
+		rule.setPackageId(currentPackage.getId());
+
 		data.insert(rule);
 
+		currentPackage.getRules().add(rule);
 		currentRule = rule;
 
 		solvers.startRuleSolver(rule);
@@ -558,6 +577,7 @@ public class PackageDescrFlattener {
 		field.setName(fieldName);
 		field.setLineNumber(line);
 
+		currentClass.getFields().add(field);
 		return field;
 	}
 

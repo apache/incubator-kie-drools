@@ -41,7 +41,8 @@ class AnalyticsTestStandalone {
 			// System.out.print(a.getResultAsXML());
 			// System.out.print(a.getResultAsHTML());
 			// System.out.print(a.getComponentsHTML());
-			writeToFile("C:\\report.html", a.getComponentsHTML());
+			a.writeComponentsHTML("C:\\");
+			// writeToFile("C:\\report2.html", a.getResultAsHTML());
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
