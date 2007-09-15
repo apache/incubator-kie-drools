@@ -252,12 +252,29 @@ end
       </example>
 
       <para>The execution of "A to B" rule changes the state of "B" to
-      "FINISHED", what activates both rules "B to C" and "B to D". In this
-      moment, two rules may fire and the conflict resolution strategy is what
-      allows the engine to decide which rule to fire first. As the "B to C"
-      rule has a <emphasis role="bold">higher salience value</emphasis> (10
-      versus the default salience value of 0), it fires first, modifying the
-      "C" object to state "FINISHED".</para>
+      "FINISHED", which activates both rules "B to C" and "B to D", placing
+      both Activations onto the Agenda. In this moment the two rules may fire
+      and are said to be in conflict. The conflict resolution strategy allows
+      the engine's Agenda to decide which rule to fire. As the "B to C" rule
+      has a <emphasis role="bold">higher salience value</emphasis> (10 versus
+      the default salience value of 0), it fires first, modifying the "C"
+      object to state "FINISHED". The Audit view above shows the modification
+      of the State object in the rule "A to B" which results in two
+      highlighted activations being in conflict. The Agenda view can also be
+      used to investigate the state of the Agenda, debug points can be placed
+      in the rules themselves and the Agenda view opened; the screen shot
+      below shows the break point in the rule "A to B" and the state of the
+      Agenda with the two conflicting rules.</para>
+
+      <figure>
+        <title>State Example Agenda View</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="state_example_agenda1.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
       <example>
         <title>State Example: Rule "B to C"</title>
@@ -410,7 +427,126 @@ recurse for 2
 </programlisting>
     </example>
 
-    <para></para>
+    <para>To kick this off from java we only insert a single Fibonacci object,
+    with a sequence of 50, a recurse rule is then used to insert the other 49
+    Fibonacci objects. This example doesn't use PropertyChangeSupport and uses
+    the MVEL dialect, this means we can use the <emphasis
+    role="bold">modify</emphasis> keyword, which allows a block setter action
+    which also notifies the engine of changes.</para>
+
+    <example>
+      <title>Fibonacci Example Execution</title>
+
+      <programlisting>session.insert( new Fibonacci( 50 ) );
+session.fireAllRules();</programlisting>
+    </example>
+
+    <para>The recurse rule is very simple, it matches each asserted Fibonacci
+    object with a value of -1, it then creates and asserts a new Fibonacci
+    object with a sequence of one less than the currently matched object. Each
+    time a Fibonacci object is added, as long as one with a "sequence == 1"
+    does not exist, the rule re-matches again and fires; causing the
+    recursion. The 'not' conditional element is used to stop the rule matching
+    once we have all 50 Fibonacci objects in memory. The rule also has a
+    salience value, this is because we need to have all 50 Fibonacci objects
+    asserted before we execute the Bootstrap rule.</para>
+
+    <example>
+      <title>Fibonacci Example : Rule "Recurse"</title>
+
+      <programlisting>rule Recurse
+    salience 10
+    when
+        f : Fibonacci ( value == -1 )
+        not ( Fibonacci ( sequence == 1 ) )
+    then
+        insert( new Fibonacci( f.sequence - 1 ) );
+        System.out.println( "recurse for " + f.sequence );
+end</programlisting>
+    </example>
+
+    <para>The audit view shows the original assertion of the Fibonacci object
+    with a sequence of 50, this was done from Java land. From there the audit
+    view shows the continual recursion of the rule, each asserted Fibonacci
+    causes the "Recurse" rule to become activate again and which then
+    fires.</para>
+
+    <figure>
+      <title>Fibonacci Example "Recurse" Audit View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="fibonacci1.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <example>
+      <title>Fibonacci Example : Rule "Bootstrap"</title>
+
+      <programlisting>rule Bootstrap
+    when
+        f : Fibonacci( sequence == 1 || == 2, value == -1 ) // this is a multi-restriction || on a single field
+    then 
+        modify ( f ){ value = 1 };
+        System.out.println( f.sequence + " == " + f.value );
+end</programlisting>
+    </example>
+
+    <example>
+      <title>Fibonacci Example : Rule "Calculate"</title>
+
+      <programlisting>rule Calculate
+    when
+        f1 : Fibonacci( s1 : sequence, value != -1 ) // here we bind sequence
+        f2 : Fibonacci( sequence == (s1 + 1 ), value != -1 ) // here we don't, just to demonstrate the different way bindings can be used
+        f3 : Fibonacci( s3 : sequence == (f2.sequence + 1 ), value == -1 )              
+    then    
+        modify ( f3 ) { value = f1.value + f2.value };
+        System.out.println( s3 + " == " + f3.value ); // see how you can access pattern and field  bindings
+end 
+</programlisting>
+    </example>
+
+    <figure>
+      <title>Fibonacci Example "Bootstrap Audit View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="fibonacci2.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>Fibonacci Example "Boostrap" Audit View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="fibonacci3.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>Fibonacci Example "Bootstrap" Audit View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="fibonacci4.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>Fibonacci Example "Calculate" Audit View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="fibonacci5.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
   </section>
 
   <section>
