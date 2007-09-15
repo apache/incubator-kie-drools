@@ -468,11 +468,11 @@ end</programlisting>
     <para>The audit view shows the original assertion of the Fibonacci object
     with a sequence of 50, this was done from Java land. From there the audit
     view shows the continual recursion of the rule, each asserted Fibonacci
-    causes the "Recurse" rule to become activate again and which then
+    causes the "Recurse" rule to become activate again, which then
     fires.</para>
 
     <figure>
-      <title>Fibonacci Example "Recurse" Audit View</title>
+      <title>Fibonacci Example "Recurse" Audit View 1</title>
 
       <mediaobject>
         <imageobject>
@@ -480,6 +480,9 @@ end</programlisting>
         </imageobject>
       </mediaobject>
     </figure>
+
+    <para>When a Fibonacci with a sequence of 2 is asserted the "Bootstrap"
+    rule is matched and activated along with the "Recurse" rule.</para>
 
     <example>
       <title>Fibonacci Example : Rule "Bootstrap"</title>
@@ -492,6 +495,57 @@ end</programlisting>
         System.out.println( f.sequence + " == " + f.value );
 end</programlisting>
     </example>
+
+    <para>At this point the Agenda looks like the figure shown below. However
+    the "Bootstrap" rule does not fire as the "Recurse" rule has a higher
+    salience. </para>
+
+    <figure>
+      <title>Fibonacci Example "Recurse" Agenda View 1</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="fibonacci_agenda1.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>When a Fibonacci with a sequence of 1 is asserted the "Bootstrap"
+    rule is matched again, causing two activations for this rule; note that
+    the "Recurse" rule does not match and activate because the 'not
+    conditional element stops the rule matching when a Fibonacci with a
+    sequence of 1 exists.</para>
+
+    <figure>
+      <title>Fibonacci Example "Recurse" Agenda View 2</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="fibonacci_agenda2.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Once we have two Fibonacci objects both with values not equal to -1
+    the "calculate" rule is able to match; remember it was the "Bootstrap"
+    rule that set the Fibonacci's with sequences 1 and 2 to values of 1. At
+    this point we have 50 Fibonacci objects in the Working Memory and we some
+    how need to select the correct ones to calculate each of their values in
+    turn. With three Fibonacci patterns in a rule with no field constriants to
+    correctly constrain the available cross products we have 50x50x50 possible
+    permutations, thats 125K possible rule firings. The "Calculate" rule uses
+    the field constraints to correctly constraint the thee Fibonacci patterns
+    and in the correct order; this technique is called "cross product
+    matching". The first pattern finds any Fibonacci with a value != -1 and
+    binds both the pattern and the field. The second Fibonacci does too but it
+    adds an additional field constraint to make sure that its sequence is one
+    greater than the Fibonacci bound to f1. When this rule first fires we know
+    that only sequences 1 and 2 have values of 1 and the two constraints
+    ensure that f1 references sequence 1 and f2 references sequence2. The
+    final pattern finds the Fibonacci of a value == -1 with a sequence one
+    greater than f2. At this point we have three Fibonacci objects correctly
+    selected from the available cross products and we can do the maths
+    calculating the value for Fibonacci sequence = 3.</para>
 
     <example>
       <title>Fibonacci Example : Rule "Calculate"</title>
@@ -508,42 +562,21 @@ end
 </programlisting>
     </example>
 
-    <figure>
-      <title>Fibonacci Example "Bootstrap Audit View</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="fibonacci2.png" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <figure>
-      <title>Fibonacci Example "Boostrap" Audit View</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="fibonacci3.png" />
-        </imageobject>
-      </mediaobject>
-    </figure>
+    <para>The MVEL modify keyword updated the value of the Fibonacci object
+    bound to f3, this means we have a new Fibonacci object with a value != -1,
+    this allows the "Calculate" rule to rematch and calculate the next
+    Fibonacci number. The Audit view below shows the how the firing of the
+    last "Bootstrap" modifies the Fibonacci object enabling the "Calculate"
+    rule to match, which then modifies another Fibonacci object allowing the
+    "Calculate" rule to rematch. This continues till the value is set for all
+    Fibonacci objects.</para>
 
     <figure>
-      <title>Fibonacci Example "Bootstrap" Audit View</title>
+      <title>Fibonacci Example "Bootstrap" Audit View 1</title>
 
       <mediaobject>
         <imageobject>
           <imagedata fileref="fibonacci4.png" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <figure>
-      <title>Fibonacci Example "Calculate" Audit View</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="fibonacci5.png" />
         </imageobject>
       </mediaobject>
     </figure>
