@@ -183,6 +183,20 @@
         <xi:include href="Chapter-BRMS/Section-ExamplesAndTutorials.xml" />
       </chapter>
 
+	  <!--
+      <chapter>
+        <title>The Drools Solver (experimental)</title>
+
+        <xi:include href="Chapter-Solver/Section-Solver_introduction.xml" />
+
+        <xi:include href="Chapter-Solver/Section-Solver_configuration.xml" />
+
+        <xi:include href="Chapter-Solver/Section-Score_calculation.xml" />
+
+        <xi:include href="Chapter-Solver/Section-Local_Search_Solver.xml" />
+      </chapter>
+	  -->
+
 	<chapter>
       <title>Examples</title>
 
