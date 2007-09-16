@@ -9,6 +9,32 @@
     module of drools-solver. The API is far from stable and backward
     incompatible changes occur now and then. A recipe to upgrade and apply
     those API changes between versions will be maintained soon.</para>
+
+    <para>No releases have been made yet, but you can easily build it from
+    source yourself by checking out drools and building with the solver
+    profile:</para>
+
+    <programlisting>$ svn checkout http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/ drools
+...
+$ cd drools
+$ mvn -Psolver clean install
+...</programlisting>
+
+    <para>After that, you can run an example directly from the command line
+    like this:</para>
+
+    <programlisting>$ cd drools-solver/drools-solver-examples/
+$ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
+...</programlisting>
+
+    <para>Here's a screenshot of the NQueens example, which is the simplest of
+    all the examples:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="screenshotSolvedNQueens8.png" />
+      </imageobject>
+    </mediaobject>
   </section>
 
   <section>
@@ -55,7 +81,7 @@
       </listitem>
     </itemizedlist>
 
-    <para>Usually a planning problem consists out of a number of constraints.
+    <para>A planning problem consists out of a number of constraints.
     Generally, there are 3 types of constraints:</para>
 
     <itemizedlist>
@@ -81,27 +107,28 @@
     </itemizedlist>
 
     <para>The constraints define the score function of a planning problem.
-    Usually a planning problems has a very large number of possible solutions.
-    Each solution has a score. Usually, most solutions are not feasible,
+    Planning problems tend to have a very large number of possible solutions.
+    Each solution has a score. Most of those solutions are not feasible,
     because they break a negative hard constraint. Usually, of all the
-    feasible solutions (if any), there is only 1 or very few optimal
-    solutions.</para>
+    feasible solutions (if any), there is only 1 optimal solution, but
+    sometimes there are a few.</para>
 
     <para>The drools rule engine turns out to be a very good way to implement
-    a score function a number of rule constraints.</para>
+    a score function based on a number of rule constraints.</para>
   </section>
 
   <section>
     <title>Types of solvers</title>
 
     <para>Different solvers solve problems in different ways. Each type has
-    advantages and disadvantages. These are a few of the solver types.</para>
+    advantages and disadvantages. We 'll roughly discuss a few of the solver
+    types. You can safely skip this section.</para>
 
     <section>
       <title>Brute force</title>
 
       <para>Brute force creates and evaluates every possible solution, usually
-      by create a search tree.</para>
+      by creating a search tree.</para>
 
       <para>Advantages:</para>
 
@@ -150,7 +177,7 @@
 
       <itemizedlist>
         <listitem>
-          <para>It scales very badly.</para>
+          <para>It still scales very badly.</para>
         </listitem>
       </itemizedlist>
 
@@ -340,11 +367,12 @@
         </mediaobject>
       </figure>
 
-      <para>A Queen instance has an x (its column, for example: 1 is column A,
-      2 is column B, ...) and a y (its row, for example: 1 is row 1, 2 is row
-      2, ...). Based on the x and y, the ascending diagonal line as well as
-      the descending diagonal line can be calculated. The x and y indexes
-      start from the upper left corner of the chessboard.</para>
+      <para>A <literal>Queen</literal> instance has an x (its column, for
+      example: 0 is column A, 1 is column B, ...) and a y (its row, for
+      example: 0 is row 1, 1 is row 2, ...). Based on the x and y, the
+      ascending diagonal line as well as the descending diagonal line can be
+      calculated. The x and y indexes start from the upper left corner of the
+      chessboard.</para>
 
       <table>
         <title>A solution for the 4 queens puzzle show in the domain
@@ -377,11 +405,11 @@
 
               <entry>A2</entry>
 
+              <entry>0</entry>
+
               <entry>1</entry>
 
-              <entry>2</entry>
-
-              <entry>3 (**)</entry>
+              <entry>1 (**)</entry>
 
               <entry>-1</entry>
             </row>
@@ -389,11 +417,11 @@
             <row>
               <entry>B1</entry>
 
-              <entry>2</entry>
+              <entry>1</entry>
 
-              <entry>1 (*)</entry>
+              <entry>0 (*)</entry>
 
-              <entry>3 (**)</entry>
+              <entry>1 (**)</entry>
 
               <entry>1</entry>
             </row>
@@ -401,11 +429,11 @@
             <row>
               <entry>C3</entry>
 
-              <entry>3</entry>
+              <entry>2</entry>
 
-              <entry>3</entry>
+              <entry>2</entry>
 
-              <entry>6</entry>
+              <entry>4</entry>
 
               <entry>0</entry>
             </row>
@@ -413,11 +441,11 @@
             <row>
               <entry>D1</entry>
 
-              <entry>4</entry>
+              <entry>3</entry>
 
-              <entry>1 (*)</entry>
+              <entry>0 (*)</entry>
 
-              <entry>5</entry>
+              <entry>3</entry>
 
               <entry>3</entry>
             </row>
@@ -425,10 +453,10 @@
         </tgroup>
       </table>
 
-      <para>A single NQueens instance contains a list of all Queens. It is
-      effectively the <emphasis>Solution</emphasis> object which will be
-      supplied to and retrieved from drools-solver. Notice that in the 4
-      queens example, NQueens's <literal>getN()</literal> method will always
+      <para>A single <literal>NQueens</literal> instance contains a list of
+      all Queens. It is the <literal>Solution</literal> implementation which
+      will be supplied to and retrieved from drools-solver. Notice that in the
+      4 queens example, NQueens's <literal>getN()</literal> method will always
       return 4.</para>
 
       <para>You can find the source code of this example (as well as well as

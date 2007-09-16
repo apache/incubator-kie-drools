@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Score calculation with a rule engine</title>
+
+  <section>
+    <title>Rule based score calculation</title>
+
+    <para>Score calculation of a planning problem is based on constraints
+    (such as hard constraints, soft constraints, rewards, ...). A rules
+    engine, such as drools, make it easy to implement those constraints as
+    <emphasis>score rules</emphasis>.</para>
+
+    <para>Here's an example of a constraint implemented as a score rule in
+    drools:</para>
+
+    <example>
+      <title>Score rule for multiple queens on the same horizontal
+      line</title>
+
+      <programlisting>rule "multipleQueensHorizontal"
+  when
+    $q1 : Queen($id : id, $y : y);
+    $q2 : Queen(id &gt; $id, y == $y);
+  then
+    // trigger a change in the score
+end</programlisting>
+    </example>
+
+    <para>This score rule will fire once for each 2 queens with the same
+    <literal>y</literal>. The <literal>(id &gt; $id)</literal> condition is
+    needed to assure that for 2 queens a and b, it can only fire for (a,b) and
+    not for (b,a), (a,a) or (b,b).</para>
+
+    <para>It's recommended to use drools in forward-chaining mode (which is
+    the default), as for most solver implementations this will create the
+    effect of a <emphasis>delta based score calculation</emphasis> instead of
+    a full score calculation on each solution evaluation. For example, if
+    queen a moves from y <literal>0</literal> to <literal>3</literal>, it
+    won't bother to recalculate the "multiple queens on the same horizontal
+    line" constraint for queens with y <literal>1</literal> or
+    <literal>2</literal>. This is a huge performance gain. <emphasis
+    role="bold">Drools-solver gives you this huge performance gain without
+    forcing you to write very complicated delta based score calculation
+    algorithms.</emphasis> Just let the drools rule engine do the hard
+    work.</para>
+
+    <para><emphasis role="bold">Adding more constraints is scalable and
+    easy</emphasis> (if you understand the drools rule syntax). This allows
+    you to add it a bunch of soft constraint score rules on top of the hard
+    constraints score rules with few effort. For example, for a freight
+    routing problem you could add a soft constraint to avoid the certain
+    flagged highways at rush hour.</para>
+  </section>
+
+  <section>
+    <title>The ScoreCalculator interface</title>
+
+    <para>The <literal>ScoreCalculator</literal> interface allows the solver
+    to calculate the score of the currently evaluated solution. The score must
+    a <literal>Number</literal> instance and the instance type (for example
+    <literal>Double</literal> or <literal>Integer</literal>) must be stable
+    through the problem.</para>
+
+    <para>The solver aims to find the solution with the highest score. Most
+    planning problems tend to use negative scores (the amount of negative
+    constraints being broken) with an impossible perfect score of 0.</para>
+
+    <para>A <literal>ScoreCalculator</literal> instance is configured in the
+    solver configuration:</para>
+
+    <programlisting>    &lt;scoreCalculator&gt;
+        &lt;scoreCalculatorType&gt;SIMPLE&lt;/scoreCalculatorType&gt;
+    &lt;/scoreCalculator&gt;</programlisting>
+
+    <para>There are a couple of build-in <literal>ScoreCalculator</literal>
+    implementations:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>SIMPLE: A <literal>SimpleScoreCalculator</literal> instance
+        which has a <literal>setScore(Number)</literal> method for use in the
+        score rules.</para>
+      </listitem>
+
+      <listitem>
+        <para>HARD_AND_SOFT_CONSTRAINTS: A
+        <literal>HardAndSoftConstraintScoreCalculator</literal> instance,
+        which has a <literal>setHardConstraintsBroken(Number)</literal> and a
+        <literal>setSoftConstraintsBroken(Number)</literal> method for use in
+        the score rules.</para>
+      </listitem>
+
+      <listitem>
+        <para>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS: A special
+        <literal>HardAndSoftConstraintScoreCalculator</literal> instance, for
+        more information see the javadocs. </para>
+      </listitem>
+    </itemizedlist>
+
+    <para>You can plug in your own custom <literal>ScoreCalculator</literal>
+    too.</para>
+
+    <para>The <literal>ScoreCalculator</literal> instance is asserted into the
+    working memory as a global called <literal>scoreCalculator</literal>. Your
+    score rules will (indirectly) update that instance. Usually you 'll make a
+    single rule as an aggregation of the other rules to update the
+    score:</para>
+
+    <programlisting>global SimpleScoreCalculator scoreCalculator;
+
+// ...
+
+rule "multipleQueensHorizontal"
+  // ...
+end
+
+rule "multipleQueensAscendingDiagonal"
+  // ...
+end
+
+rule "multipleQueensDescendingDiagonal"
+  // ...
+end
+
+rule "constraintsBroken"
+  when
+    $hardCount : Number() from accumulate(
+       $w : ...,
+       count($w)
+    );
+  then
+    scoreCalculator.setScore(- $hardCount);
+end</programlisting>
+  </section>
+
+  <section>
+    <title>Tips and tricks</title>
+
+    <itemizedlist>
+      <listitem>
+        <para>If you know a certain constraint can never be broken, don't
+        bother writing a score rule for it. For example the NQueens example
+        doesn't have a "multipleQueensVertical" rule because a queen's
+        <literal>x</literal> never changes. </para>
+      </listitem>
+
+      <listitem>
+        <para>Verify that your score calculation happens in the correct Number
+        type. If you're making the sum of nothing but integer values, don't
+        let drools use Double's or your performance will hurt.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</section>
