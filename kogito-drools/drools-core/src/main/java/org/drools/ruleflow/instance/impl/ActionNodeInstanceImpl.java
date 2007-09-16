@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.base.mvel.DroolsMVELFactory;
@@ -47,7 +48,26 @@ public class ActionNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
 			String actionString = ((DroolsConsequenceAction) action).getConsequence();
     		ExpressionCompiler compiler = new ExpressionCompiler(actionString);
     		ParserContext parserContext = new ParserContext();
+    		// imports
+    		List imports = getProcessInstance().getRuleFlowProcess().getImports();
+    		if (imports != null) {
+    			for (Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
+    				String importClassName = (String) iterator.next();
+    				if ( importClassName.endsWith( ".*" ) ) {
+    					importClassName = importClassName.substring(0, importClassName.indexOf(".*"));
+    		            parserContext.addPackageImport(importClassName);
+    		        } else {
+	    				try {
+	    					parserContext.addImport(Class.forName(importClassName));
+	    				} catch (ClassNotFoundException e) {
+	    					// class not found, do nothing
+	    				}
+    		        }
+    			}
+    		}
+    		// compile expression
     		Serializable expression = compiler.compile(parserContext);
+    		// globals
     		Map globalDefs = getProcessInstance().getRuleFlowProcess().getGlobals();
     		Map globals = new HashMap();
     		if (globalDefs != null) {
@@ -60,6 +80,7 @@ public class ActionNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
     				}
     			}
     		}
+    		// execute
     		DroolsMVELFactory factory = new DroolsMVELFactory(Collections.EMPTY_MAP, null, globals);
     		factory.setContext(null, null, null, getProcessInstance().getWorkingMemory(), null);
     		MVEL.executeExpression(expression, null, factory);
