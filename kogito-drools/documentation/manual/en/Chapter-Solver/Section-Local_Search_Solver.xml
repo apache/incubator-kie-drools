@@ -32,8 +32,112 @@
   </section>
 
   <section>
-    <title>Getting started</title>
+    <title>A Move</title>
 
     <para></para>
+  </section>
+
+  <section>
+    <title>A step</title>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>Deciding the next step</title>
+
+    <para></para>
+
+    <section>
+      <title>Selector</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Accepter</title>
+
+      <para></para>
+    </section>
+
+    <section>
+      <title>Forager</title>
+
+      <para></para>
+    </section>
+  </section>
+
+  <section>
+    <title>Finish</title>
+
+    <para></para>
+  </section>
+
+  <section>
+    <title>ggg</title>
+
+    <para>ggg</para>
+
+    <figure>
+      <title>A single move (4 queens example)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="singleMoveNQueens04.svg" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="singleMoveNQueens04.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>ggg</para>
+
+    <figure>
+      <title>Possible moves at step 0 (4 queens example)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="possibleMovesNQueens04.svg" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="possibleMovesNQueens04.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>ggg</para>
+
+    <figure>
+      <title>Decide the next step at step 0 (4 queens example)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="decideNextStepNQueens04.svg" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="decideNextStepNQueens04.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>ggg</para>
+
+    <figure>
+      <title>All steps (4 queens example)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="allStepsNQueens04.svg" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="allStepsNQueens04.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
   </section>
 </section>
