@@ -26,26 +26,26 @@ end
 rule findSeating
    when 
        context : Context( state == Context.ASSIGN_SEATS )
-       $s:Seating( seatingId:id, seatingPid:pid, pathDone == true, seatingRightSeat:rightSeat, seatingRightGuestName:rightGuestName )
-       Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
-       Guest( leftGuestName:name , sex != rightGuestSex, hobby == rightGuestHobby )
+       $s      : Seating( pathDone == true )
+       $g1     : Guest( name == $s.rightGuestName )
+       $g2     : Guest( sex != $g1.sex, hobby == $g1.hobby )
 
-       count : Count()
+       count   : Count()
 
-       not ( Path( id == seatingId, guestName == leftGuestName) )
-       not ( Chosen( id == seatingId, guestName == leftGuestName, hobby == rightGuestHobby) )
+       not ( Path( id == $s.id, guestName == $g2.name) )
+       not ( Chosen( id == $s.id, guestName == $g2.name, hobby == $g1.hobby) )
    then
-       int rightSeat = seatingRightSeat;
-       int seatId = seatingId;
+       int rightSeat = $s.getRightSeat();
+       int seatId = $s.getId();
        int countValue = count.getValue();
        
-       Seating seating = new Seating( countValue, seatId, false, rightSeat, seatingRightGuestName, rightSeat + 1, leftGuestName );
+       Seating seating = new Seating( countValue, seatId, false, rightSeat, $s.getRightGuestName(), rightSeat + 1, $g2.getName() );
        insert( seating );     
                             
-       Path path = new Path( countValue, rightSeat + 1, leftGuestName  );
+       Path path = new Path( countValue, rightSeat + 1, $g2.getName()  );
        insert( path );
        
-       Chosen chosen = new Chosen( seatId, leftGuestName, rightGuestHobby );
+       Chosen chosen = new Chosen( seatId, $g2.getName(), $g1.getHobby() );
        insert( chosen  );
 
 	   System.err.println( "find seating : " + seating + " : " + path + " : " + chosen);
@@ -55,8 +55,6 @@ rule findSeating
 
        context.setState( Context.MAKE_PATH );
        update( context );
-       
-       retract ( $s );
 end
 
 rule makePath
