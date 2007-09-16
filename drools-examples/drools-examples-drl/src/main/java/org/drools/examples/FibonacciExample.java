@@ -10,9 +10,6 @@ import org.drools.compiler.PackageBuilder;
 
 public class FibonacciExample {
 
-    /**
-     * @param args
-     */
     public static void main(final String[] args) throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -26,18 +23,13 @@ public class FibonacciExample {
         final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
         logger.setFileName( "log/fibonacci" );
 
-        // By setting dynamic to TRUE, Drools will use JavaBean
-        // PropertyChangeListeners so you don't have to call modifyObject().
-        final boolean dynamic = false;
-
-        session.insert( new Fibonacci( 50 ),
-                                    dynamic );
+        session.insert( new Fibonacci( 10 ) );
 
         session.fireAllRules();
 
         logger.writeToDisk();
         
-        session.dispose();
+        session.dispose(); // Stateful rule session must always be disposed when finished
         
     }
 
