@@ -104,9 +104,26 @@
 
     <para>You need to present the problem as a starting
     <literal>Solution</literal> instance to the Solver. Usually you will make
-    that starting solution with a simple filler algorithm, for example: all
-    queens on a different x and all on y = 0. It will probably be far from
-    optimal, but that's ok, as it's the solver's job to find a much better
+    that starting solution with a simple filler algorithm. For example for 4
+    queens we use a starting solution with all queens on a different x and on
+    the same y (with y = 0).</para>
+
+    <figure>
+      <title>Starting solution for the 4 queens puzzle</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="unsolvedNQueens04.svg" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="unsolvedNQueens04.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The starting solution will probably be far from optimal (or even
+    feasible), but that's ok, as it's the solver's job to find a much better
     solution.</para>
 
     <para>Here is the <literal>Solution</literal> interface:</para>
@@ -167,8 +184,28 @@
     Solution bestSolution = solver.getBestSolution();</programlisting>
 
     <para>The <literal>solve()</literal> method will take a long time
-    (depending on the problem size and the solver configuration). After a
-    problem is solved, you can reuse the same solver to solve another problem
-    (of the same problem type).</para>
+    (depending on the problem size and the solver configuration). The solver
+    will remember (actually clone) the best solution it encounters during its
+    solving. Depending on a number factors (including problem size, how long
+    you allow the solver to work, which solver type you use, ...), that best
+    solution will be a feasible or even an optimal solution.</para>
+
+    <figure>
+      <title>Best solution for the 4 queens puzzle (also an optimal
+      solution)</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="solvedNQueens04.svg" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="solvedNQueens04.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>After a problem is solved, you can reuse the same solver instance to
+    solve another problem (of the same problem type).</para>
   </section>
 </section>

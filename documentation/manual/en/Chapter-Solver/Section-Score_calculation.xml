@@ -7,7 +7,7 @@
 
     <para>Score calculation of a planning problem is based on constraints
     (such as hard constraints, soft constraints, rewards, ...). A rules
-    engine, such as drools, make it easy to implement those constraints as
+    engine, such as drools, makes it easy to implement those constraints as
     <emphasis>score rules</emphasis>.</para>
 
     <para>Here's an example of a constraint implemented as a score rule in
@@ -26,28 +26,58 @@
 end</programlisting>
     </example>
 
-    <para>This score rule will fire once for each 2 queens with the same
+    <para>This score rule will fire once for every 2 queens with the same
     <literal>y</literal>. The <literal>(id &gt; $id)</literal> condition is
     needed to assure that for 2 queens a and b, it can only fire for (a,b) and
-    not for (b,a), (a,a) or (b,b).</para>
+    not for (b,a), (a,a) or (b,b). Let's take a closer look at this score rule
+    on the starting solution of 4 queens:</para>
+
+    <figure>
+      <title>Starting solution for the 4 queens puzzle</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="unsolvedNQueens04.svg" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="unsolvedNQueens04.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>In this starting solution the multipleQueensHorizontal score rule
+    will fire for 6 queen couples: (a, b), (a, c), (a, d), (b, c), (b, d) and
+    (c, d). Because none of the queens are on the same vertical or diagonal
+    line, this starting solution will have a score of <literal>-6</literal>.
+    An optimal solution of 4 queens has a score of <literal>0</literal>. More
+    on that later.</para>
+
+    <para>You need to add your score rules drl files in the solver
+    configuration, for example:</para>
+
+    <programlisting>    &lt;scoreDrl&gt;/org/drools/solver/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;</programlisting>
+
+    <para>You can add multiple <literal>&lt;scoreDrl&gt;</literal> entries if
+    needed.</para>
 
     <para>It's recommended to use drools in forward-chaining mode (which is
-    the default), as for most solver implementations this will create the
-    effect of a <emphasis>delta based score calculation</emphasis> instead of
-    a full score calculation on each solution evaluation. For example, if
-    queen a moves from y <literal>0</literal> to <literal>3</literal>, it
-    won't bother to recalculate the "multiple queens on the same horizontal
-    line" constraint for queens with y <literal>1</literal> or
-    <literal>2</literal>. This is a huge performance gain. <emphasis
-    role="bold">Drools-solver gives you this huge performance gain without
-    forcing you to write very complicated delta based score calculation
-    algorithms.</emphasis> Just let the drools rule engine do the hard
-    work.</para>
+    the default behaviour), as for most solver implementations this will
+    create the effect of a <emphasis>delta based score calculation</emphasis>
+    instead of a full score calculation on each solution evaluation. For
+    example, if a single queen moves from y <literal>0</literal> to
+    <literal>3</literal>, it won't bother to recalculate the "multiple queens
+    on the same horizontal line" constraint for queens with y
+    <literal>1</literal> or <literal>2</literal>. This is a huge performance
+    gain. <emphasis role="bold">Drools-solver gives you this huge performance
+    gain without forcing you to write a very complicated delta based score
+    calculation algorithm.</emphasis> Just let the drools rule engine do the
+    hard work.</para>
 
     <para><emphasis role="bold">Adding more constraints is scalable and
     easy</emphasis> (if you understand the drools rule syntax). This allows
     you to add it a bunch of soft constraint score rules on top of the hard
-    constraints score rules with few effort. For example, for a freight
+    constraints score rules with little effort. For example, for a freight
     routing problem you could add a soft constraint to avoid the certain
     flagged highways at rush hour.</para>
   </section>
@@ -61,9 +91,14 @@ end</programlisting>
     <literal>Double</literal> or <literal>Integer</literal>) must be stable
     through the problem.</para>
 
-    <para>The solver aims to find the solution with the highest score. Most
-    planning problems tend to use negative scores (the amount of negative
-    constraints being broken) with an impossible perfect score of 0.</para>
+    <para>The solver aims to find the solution with the highest score.
+    <emphasis>The best solution</emphasis> is the solution with the highest
+    score that it encounters during its solving.</para>
+
+    <para>Most planning problems tend to use negative scores (the amount of
+    negative constraints being broken) with an impossible perfect score of 0.
+    This is why the score of a solution of 4 queens is the negative of the
+    number of queen couples that can attack each other.</para>
 
     <para>A <literal>ScoreCalculator</literal> instance is configured in the
     solver configuration:</para>
@@ -93,7 +128,7 @@ end</programlisting>
       <listitem>
         <para>DYNAMIC_HARD_AND_SOFT_CONSTRAINTS: A special
         <literal>HardAndSoftConstraintScoreCalculator</literal> instance, for
-        more information see the javadocs. </para>
+        more information see the javadocs.</para>
       </listitem>
     </itemizedlist>
 
@@ -124,12 +159,12 @@ end
 
 rule "constraintsBroken"
   when
-    $hardCount : Number() from accumulate(
+    $hardConstraintCount : Number() from accumulate(
        $w : ...,
        count($w)
     );
   then
-    scoreCalculator.setScore(- $hardCount);
+    scoreCalculator.setScore(- $hardConstraintCount);
 end</programlisting>
   </section>
 
@@ -141,13 +176,25 @@ end</programlisting>
         <para>If you know a certain constraint can never be broken, don't
         bother writing a score rule for it. For example the NQueens example
         doesn't have a "multipleQueensVertical" rule because a queen's
-        <literal>x</literal> never changes. </para>
+        <literal>x</literal> never changes. This gives a performance gain,
+        because </para>
       </listitem>
 
       <listitem>
         <para>Verify that your score calculation happens in the correct Number
         type. If you're making the sum of nothing but integer values, don't
         let drools use Double's or your performance will hurt.</para>
+      </listitem>
+
+      <listitem>
+        <para>In case you haven't figured it out yet: performance (and
+        scalability) is very important for solving planning problems. What
+        good is a real-time freight routing solver that takes a day to find a
+        feasible solution? Even small and innocent looking problems can hide
+        an enormous problem size. For example, they probably still don't know
+        the optimal solution of the traveling tournament problem for as little
+        as 10 traveling teams. But always remember that premature optimization
+        is the root of all evil.</para>
       </listitem>
     </itemizedlist>
   </section>
