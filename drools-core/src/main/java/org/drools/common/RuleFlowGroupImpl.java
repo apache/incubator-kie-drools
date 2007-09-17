@@ -209,11 +209,6 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
             if ( this.ruleFlowGroup.isEmpty() ) {
                 // deactivate ruleflow group
                 this.ruleFlowGroup.setActive( false );
-                // only trigger next node if this RuleFlowGroup was
-                // triggered from inside a process instance
-                if ( this.ruleFlowGroup.getProcessInstance() != null ) {
-                    this.ruleFlowGroup.triggerCompleted();
-                }
             }
         }
     }
