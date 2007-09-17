@@ -887,14 +887,14 @@ public abstract class AbstractWorkingMemory
                   object,
                   propagationContext );
 
+        if ( !this.actionQueue.isEmpty() ) {
+            executeQueuedActions();
+        }
+
         this.workingMemoryEventSupport.fireObjectInserted( propagationContext,
                                                            handle,
                                                            object,
                                                            this );
-
-        if ( !this.actionQueue.isEmpty() ) {
-            executeQueuedActions();
-        }
     }
 
     protected void addPropertyChangeListener(final Object object) {
