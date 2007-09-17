@@ -41,17 +41,17 @@ public class TroubleTicketExample {
         final Ticket t3 = new Ticket( c );
         final Ticket t4 = new Ticket( d );
 
-        final FactHandle fa = session.insert( a );
-        final FactHandle fb = session.insert( b );
-        final FactHandle fc = session.insert( c );
-        final FactHandle fd = session.insert( d );
+        session.insert( a );
+        session.insert( b );
+        session.insert( c );
+        session.insert( d );
 
-        final FactHandle ft1 = session.insert( t1 );
-        final FactHandle ft2 = session.insert( t2 );
+        session.insert( t1 );
+        session.insert( t2 );
         final FactHandle ft3 = session.insert( t3 );
-        final FactHandle ft4 = session.insert( t4 );
+        session.insert( t4 );
 
-        session.fireAllRules();        
+        session.fireAllRules();
 
         t3.setStatus( "Done" );
 
