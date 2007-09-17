@@ -62,3 +62,16 @@ if premium == '245' :
 else :
 	print("FAILED: Premium was " + test_fact["Premium"])
 
+
+# Load a XLS into a decision table structure for processing
+def load_xls(file_name) :
+	import xlrd
+	book = xlrd.open_workbook(file_name)
+	sh = book.sheet_by_index(0)
+	print sh.name, sh.nrows, sh.ncols
+#	print "Cell D30 is", sh.cell_value(rowx=29, colx=3)
+	for rx in range(sh.nrows):
+		print sh.row(rx)
+
+
+load_xls("Example.xls")
