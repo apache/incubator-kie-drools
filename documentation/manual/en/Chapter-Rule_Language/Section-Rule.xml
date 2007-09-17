@@ -769,20 +769,20 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
             <simplesect>
               <title>soundslike</title>
 
-              <para><literal>Similar to 'matches', but checks if a word has almost the same sound as the given value. Uses the 'Soundex' algorithm (http://en.wikipedia.org/wiki/Soundex)</literal></para>
+              <para><literal>Similar to 'matches', but checks if a word has
+              almost the same sound as the given value. Uses the 'Soundex'
+              algorithm
+              (http://en.wikipedia.org/wiki/Soundex)</literal></para>
 
               <example>
                 <title>Text with soundslike (Sounds Like)</title>
 
                 <programlisting>Cheese( name soundslike 'foobar' )</programlisting>
-		<para>This will match a cheese with a name of "fubar"</para>
+
+                <para>This will match a cheese with a name of "fubar"</para>
               </example>
             </simplesect>
-
           </section>
-
-
-          
 
           <section>
             <title>Literal Restrictions</title>
@@ -1376,9 +1376,9 @@ eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a functio
       for the non existence of something in the Working Memory. Think of 'not'
       as meaning "there must be none of...".</para>
 
-      <para>A not statement must be followed by parentheses around the pattern
-      that it applies to. In the simples case of a single pattern (like below)
-      you can omit the parentheses.</para>
+      <para>A 'not' statement must be followed by parentheses around the CEs
+      that it applies to. In the simplest case of a single pattern (like
+      below) you may optionally omit the parentheses.</para>
 
       <example>
         <title>No Busses</title>
@@ -1420,6 +1420,10 @@ not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' inf
       exist with a Pattern, then the rule will only activate once regardless
       of how much data there is in working memory that matches that
       condition.</para>
+
+      <para>An 'exist' statement must be followed by parentheses around the
+      CEs that it applies to. In the simplest case of a single pattern (like
+      below) you may optionally omit the parentheses.</para>
 
       <example>
         <title>Atleast one Bus</title>
