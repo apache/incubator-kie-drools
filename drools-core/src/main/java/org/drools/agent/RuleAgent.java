@@ -24,45 +24,45 @@ import org.drools.rule.Package;
 /**
  * This manages a single rulebase, based on the properties given.
  * You should only have ONE instance of this agent per rulebase configuration.
- * You can get the rulebase from this agent repeatedly, as needed, or if you keep the rulebase, 
- * under most configurations it will be automatically updated. 
- * 
+ * You can get the rulebase from this agent repeatedly, as needed, or if you keep the rulebase,
+ * under most configurations it will be automatically updated.
+ *
  * How this behaves depends on the properties that you pass into it (documented below)
  *
  * CONFIG OPTIONS (to be passed in as properties):
  *  <code>newInstance</code>: setting this to "true" means that each time the rules are changed
  *   a new instance of the rulebase is created (as opposed to updated in place)
- *   the default is to update in place. DEFAULT: false. If you set this to true, 
- *   then you will need to call getRuleBase() each time you want to use it. If it is false, 
+ *   the default is to update in place. DEFAULT: false. If you set this to true,
+ *   then you will need to call getRuleBase() each time you want to use it. If it is false,
  *   then it means you can keep your reference to the rulebase and it will be updated automatically
- *   (as well as any stateful sessions). 
+ *   (as well as any stateful sessions).
  *
- *  <code>poll</code>The number of seconds to poll for changes. Polling 
+ *  <code>poll</code>The number of seconds to poll for changes. Polling
  *  happens in a background thread. eg: poll=30 #30 second polling.
  *
- *  <code>file</code>: a space seperated listing of files that make up the 
- *  packages of the rulebase. Each package can only be in one file. You can't have 
+ *  <code>file</code>: a space seperated listing of files that make up the
+ *  packages of the rulebase. Each package can only be in one file. You can't have
  *  packages spread across files. eg: file=/your/dir/file1.pkg file=/your/dir/file2.pkg
- *  
+ *
  *  <code>dir</code>: a single file system directory to monitor for packages.
  *  As with files, each package must be in its own file.
  *  eg: dir=/your/dir
- *  
+ *
  *  <code>url</code>: A space seperated URL to a binary rulebase in the BRMS.
  *  eg: url=http://server/drools-jbrms/packages/somePakage/VERSION_1
  *  For URL you will also want a local cache directory setup:
  *  eg: localCacheDir=/some/dir/that/exists
  *  This is needed so that the runtime can startup and load packages even if the BRMS
  *  is not available (or the network).
- *  
+ *
  *  <code>name</code>
  *  the Name is used in any logging, so each agent can be differentiated (you may have one agent per rulebase
  *  that you need in your application).
- *  
- *  There is also an AgentEventListener interface which you can provide which will call back when lifecycle 
+ *
+ *  There is also an AgentEventListener interface which you can provide which will call back when lifecycle
  *  events happen, or errors/warnings occur. As the updating happens in a background thread, this may be important.
  *  The default event listener logs to the System.err output stream.
- *  
+ *
  * @author Michael Neale
  */
 public class RuleAgent {
@@ -77,7 +77,7 @@ public class RuleAgent {
     public static final String URLS              = "url";
     public static final String POLL_INTERVAL     = "poll";
     public static final String CONFIG_NAME       = "name"; //name is optional
-    
+
     //this is needed for cold starting when BRMS is down (ie only for URL).
     public static final String LOCAL_URL_CACHE = "localCacheDir";
 
@@ -104,14 +104,14 @@ public class RuleAgent {
      * The rule base that is being managed.
      */
     private RuleBase           ruleBase;
-    
+
     /**
      * the configuration for the RuleBase
      */
     private RuleBaseConfiguration ruleBaseConf;
 
     /**
-     * The timer that is used to monitor for changes and deal with them. 
+     * The timer that is used to monitor for changes and deal with them.
      */
     private Timer              timer;
 
@@ -129,7 +129,7 @@ public class RuleAgent {
      * For logging events (important for stuff that happens in the background).
      */
     AgentEventListener          listener = getDefaultListener();
-    
+
     /**
      * Polling interval value, in seconds, used in the Timer.
      */
@@ -144,15 +144,15 @@ public class RuleAgent {
     public static RuleAgent newRuleAgent(Properties config) {
         return newRuleAgent(config, null, null);
     }
-    
+
     /**
      * Properties configured to load up packages into a rulebase with the provided
-     * configuration (and monitor them for changes). 
+     * configuration (and monitor them for changes).
      */
     public static RuleAgent newRuleAgent(Properties config, RuleBaseConfiguration ruleBaseConf) {
         return newRuleAgent(config, null, ruleBaseConf);
-    }    
-    
+    }
+
     /**
      * This allows an optional listener to be passed in.
      * The default one prints some stuff out to System.err only when really needed.
@@ -160,7 +160,7 @@ public class RuleAgent {
     public static RuleAgent newRuleAgent(Properties config, AgentEventListener listener) {
         return newRuleAgent(config, listener, null);
     }
-    
+
     /**
      * This allows an optional listener to be passed in.
      * The default one prints some stuff out to System.err only when really needed.
@@ -172,7 +172,7 @@ public class RuleAgent {
         }
         agent.init(config);
         return agent;
-    }    
+    }
 
 
 
@@ -183,12 +183,12 @@ public class RuleAgent {
         int secondsToRefresh = Integer.parseInt( config.getProperty( POLL_INTERVAL,
                                                                      "-1" ) );
         final String name = config.getProperty( CONFIG_NAME, "default" );
-        
+
         listener.setAgentName( name );
-        
-        listener.info( "Configuring with newInstance=" + newInstance + ", secondsToRefresh=" 
-                       + secondsToRefresh);        
-        
+
+        listener.info( "Configuring with newInstance=" + newInstance + ", secondsToRefresh="
+                       + secondsToRefresh);
+
         List provs = new ArrayList();
 
         for ( Iterator iter = config.keySet().iterator(); iter.hasNext(); ) {
@@ -202,37 +202,37 @@ public class RuleAgent {
         }
 
 
-        configure( newInstance,  provs,                
+        configure( newInstance,  provs,
                    secondsToRefresh );
     }
 
     /**
-     * Pass in the name and full path to a config file that is on the classpath. 
+     * Pass in the name and full path to a config file that is on the classpath.
      */
     public static RuleAgent newRuleAgent(String propsFileName) {
         return newRuleAgent( loadFromProperties( propsFileName ) );
     }
-    
+
     /**
-     * Pass in the name and full path to a config file that is on the classpath. 
-     */    
+     * Pass in the name and full path to a config file that is on the classpath.
+     */
     public static RuleAgent newRuleAgent(String propsFileName, RuleBaseConfiguration ruleBaseConfiguration) {
         return newRuleAgent( loadFromProperties( propsFileName ), ruleBaseConfiguration );
-    }    
-    
+    }
+
     /**
      * This takes in an optional listener. Listener must not be null in this case.
      */
     public static RuleAgent newRuleAgent(String propsFileName, AgentEventListener listener) {
         return newRuleAgent( loadFromProperties( propsFileName ), listener );
     }
-    
+
     /**
      * This takes in an optional listener and RuleBaseConfiguration. Listener must not be null in this case.
-     */    
+     */
     public static RuleAgent newRuleAgent(String propsFileName, AgentEventListener listener, RuleBaseConfiguration ruleBaseConfiguration) {
         return newRuleAgent( loadFromProperties( propsFileName ), listener, ruleBaseConfiguration );
-    }    
+    }
 
     static Properties loadFromProperties(String propsFileName) {
         InputStream in = RuleAgent.class.getResourceAsStream( propsFileName );
@@ -276,7 +276,7 @@ public class RuleAgent {
         this.newInstance = newInstance;
         this.providers = provs;
 
-        
+
         //run it the first time for each.
         refreshRuleBase();
 
@@ -289,7 +289,7 @@ public class RuleAgent {
     public void refreshRuleBase() {
 
         List changedPackages = new ArrayList();
-        
+
         for ( Iterator iter = providers.iterator(); iter.hasNext(); ) {
             PackageProvider prov = (PackageProvider) iter.next();
             Package[] changes = checkForChanges( prov );
@@ -297,7 +297,7 @@ public class RuleAgent {
                 changedPackages.addAll( Arrays.asList( changes ) );
             }
         }
-        
+
         if (changedPackages.size() > 0) {
             listener.info( "Applying changes to the rulebase." );
             //we have a change
@@ -305,7 +305,7 @@ public class RuleAgent {
                 listener.info( "Creating a new rulebase as per settings." );
                 //blow away old
                 this.ruleBase = RuleBaseFactory.newRuleBase( this.ruleBaseConf );
-                
+
                 //need to store ALL packages
                 for ( Iterator iter = changedPackages.iterator(); iter.hasNext(); ) {
                     Package element = (Package) iter.next();
@@ -317,7 +317,7 @@ public class RuleAgent {
                 PackageProvider.applyChanges( this.ruleBase, true, changedPackages, this.listener );
             }
         }
-        
+
 
     }
 
@@ -330,25 +330,52 @@ public class RuleAgent {
 
     /**
      * Convert a space seperated list into a List of stuff.
-     * @param property
-     * @return
+     * If a filename or whatnot has a space in it, you can put double quotes around it
+     * and it will read it in as one token.
      */
     static List list(String property) {
         if ( property == null ) return Collections.EMPTY_LIST;
-        StringTokenizer st = new StringTokenizer( property,
-                                                  "\n\r\t " );
-        List list = new ArrayList();
-        while ( st.hasMoreTokens() ) {
-            list.add( st.nextToken() );
+        char[] cs = property.toCharArray();
+        boolean inquotes = false;
+        List items = new ArrayList();
+        String current = "";
+        for ( int i = 0; i < cs.length; i++ ) {
+            char c = cs[i];
+            switch ( c ) {
+                case '\"' :
+                    if (inquotes) {
+                        items.add( current );
+                        current = "";
+                    }
+                    inquotes = !inquotes;
+                    break;
+
+
+                default :
+                    if (!inquotes &&
+                            (c == ' ' || c == '\n' || c == '\r' || c == '\t')) {
+                        if (current.trim() != "") {
+                            items.add( current );
+                            current = "";
+                        }
+                    } else {
+                        current = current + c;
+                    }
+                    break;
+            }
         }
-        return list;
+        if (current.trim() != "") {
+            items.add( current );
+        }
+
+        return items;
     }
 
     /**
      * Return a current rulebase.
      * Depending on the configuration, this may be a new object each time
      * the rules are updated.
-     *  
+     *
      */
     public synchronized RuleBase getRuleBase() {
         return this.ruleBase;
@@ -369,7 +396,7 @@ public class RuleAgent {
         if ( this.timer != null ) timer.cancel();
         timer = null;
     }
-    
+
     /**
      * Will start polling. If polling is already running it does nothing.
      *
@@ -379,7 +406,7 @@ public class RuleAgent {
             startPolling( this.secondsToRefresh );
         }
     }
-    
+
     /**
      * Will start polling. If polling is already happening and of the same interval
      * it will do nothing, if the interval is different it will stop the current Timer
@@ -395,7 +422,7 @@ public class RuleAgent {
                 return;
             }
         }
-        
+
         this.secondsToRefresh = secondsToRefresh;
         int interval = this.secondsToRefresh * 1000;
         //now schedule it for polling
@@ -403,18 +430,18 @@ public class RuleAgent {
         timer.schedule( new TimerTask() {
                             public void run() {
                                 try {
-                                    
+
                                     listener.debug( "Checking for updates." );
                                     refreshRuleBase();
-                                    
+
                                 } catch (Exception e) {
-                                    //don't want to stop execution here.                                        
+                                    //don't want to stop execution here.
                                     listener.exception( e );
                                 }
                             }
                         },
                         interval,
-                        interval );        
+                        interval );
     }
 
     boolean isNewInstance() {
@@ -439,30 +466,30 @@ public class RuleAgent {
                 Date d = new Date();
                 return d.toString();
             }
-            
+
             public void exception(Exception e) {
                 System.err.println("RuleAgent(" + name + ") EXCEPTION (" + time() + "): " + e.getMessage() + ". Stack trace should follow.");
                 e.printStackTrace( System.err );
             }
 
             public void info(String message) {
-                System.err.println("RuleAgent(" + name + ") INFO (" + time() + "): " + message);                
+                System.err.println("RuleAgent(" + name + ") INFO (" + time() + "): " + message);
             }
 
             public void warning(String message) {
-                System.err.println("RuleAgent(" + name + ") WARNING (" + time() + "): " + message);                
+                System.err.println("RuleAgent(" + name + ") WARNING (" + time() + "): " + message);
             }
 
             public void debug(String message) {
-                //do nothing...                
+                //do nothing...
             }
 
             public void setAgentName(String name) {
                 this.name = name;
-                
+
             }
-            
+
         };
     }
-    
+
 }
