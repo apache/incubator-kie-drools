@@ -21,7 +21,7 @@ global AnalysisResult result
 function String dateToString(Date date) {
 		String fmt = System.getProperty("drools.dateformat");
 		if (fmt == null) {
-			fmt = "dd-MMM-yyyy";
+			fmt = "dd-MM-yyyy";
 		}
 		
 		return new SimpleDateFormat(fmt, Locale.ENGLISH).format(date);
