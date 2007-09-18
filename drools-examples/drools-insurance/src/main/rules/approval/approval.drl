@@ -1,0 +1,25 @@
+package org.acme.insurance;
+
+import org.acme.insurance.base.Rejection;
+import org.acme.insurance.base.Policy;
+
+rule "approve"
+	ruleflow-group "risk assessment"
+	salience -1
+	when
+		not Rejection()
+		$policy : Policy( approved == false )
+	then
+		System.out.println("approve: " + $policy.getInsurancePrice() );	
+		$policy.setApproved(true);
+		update($policy);
+		System.out.println("Policy aproved focusing insurance calcule agenda-group");
+end
+
+rule "rejection"
+	ruleflow-group "rejection"
+	when
+		Rejection()
+	then
+		System.out.println("There's some rejection: halting drools ");
+end
