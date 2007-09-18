@@ -50,8 +50,8 @@ public class FileScanner extends PackageProvider {
 
     /**
      * Perform the scan.
-     * If there was an error reading the packages, this will not fail, it will 
-     * just do nothing (as there may be a temporary IO issue). 
+     * If there was an error reading the packages, this will not fail, it will
+     * just do nothing (as there may be a temporary IO issue).
      */
     Package[] loadPackageChanges() {
         Package[] changes = getChangeSet();
@@ -64,9 +64,9 @@ public class FileScanner extends PackageProvider {
     /**
      * Calculate a change set, based on last updated times.
      * (keep a map of files).
-     * @throws ClassNotFoundException 
-     * @throws IOException 
-     * @throws FileNotFoundException 
+     * @throws ClassNotFoundException
+     * @throws IOException
+     * @throws FileNotFoundException
      */
     private Package[] getChangeSet() {
         if ( this.files == null ) return new Package[0];
@@ -90,23 +90,36 @@ public class FileScanner extends PackageProvider {
      */
     private Package readPackage(File pkgFile) {
 
-        Package p1_ = null;
-        ObjectInputStream in;
-        try {
-            in = new DroolsObjectInputStream( new FileInputStream( pkgFile ) );
-            p1_ = (Package) in.readObject();
-            in.close();
+    	//use reflection to load if its DRL, the provider lives in drools compiler.
+    	if (pkgFile.getName().endsWith(".drl")) {
+    		try {
+				FileLoader fl = (FileLoader) Class.forName("org.drools.compiler.SourcePackageProvider").newInstance();
+				return fl.loadPackage(pkgFile);
+			} catch (Exception e) {
+				this.listener.exception(e);
+				return null;
+			}
 
-        } catch ( FileNotFoundException e ) {
-            this.listener.exception( e );
-            this.listener.warning( "Was unable to find the file " + pkgFile.getPath() );
-        } catch ( IOException e ) {
-            this.listener.exception( e );
-        } catch ( ClassNotFoundException e ) {
-            this.listener.exception( e );
-            this.listener.warning( "Was unable to load a class when loading a package. Perhaps it is missing from this application." );
-        }
-        return p1_;
+    	} else {
+
+	        Package p1_ = null;
+	        ObjectInputStream in;
+	        try {
+	            in = new DroolsObjectInputStream( new FileInputStream( pkgFile ) );
+	            p1_ = (Package) in.readObject();
+	            in.close();
+
+	        } catch ( FileNotFoundException e ) {
+	            this.listener.exception( e );
+	            this.listener.warning( "Was unable to find the file " + pkgFile.getPath() );
+	        } catch ( IOException e ) {
+	            this.listener.exception( e );
+	        } catch ( ClassNotFoundException e ) {
+	            this.listener.exception( e );
+	            this.listener.warning( "Was unable to load a class when loading a package. Perhaps it is missing from this application." );
+	        }
+	        return p1_;
+    	}
     }
 
     boolean hasChanged(String path,
