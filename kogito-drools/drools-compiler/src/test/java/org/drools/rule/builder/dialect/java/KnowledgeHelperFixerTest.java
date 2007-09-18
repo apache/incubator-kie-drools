@@ -147,7 +147,7 @@ public class KnowledgeHelperFixerTest extends TestCase {
     }
 
     // this one is an MVEL bug: http://jira.jboss.com/jira/browse/JBRULES-1191
-    public void FIXME_testRetract() {
+    public void testRetract() {
         final String raw = "System.out.println(\"some text\");retract(object);";
         assertEqualsIgnoreWhitespace( "System.out.println(\"some text\");drools.retract(object);",
                                       KnowledgeHelperFixerTest.fixer.fix( raw ) );
