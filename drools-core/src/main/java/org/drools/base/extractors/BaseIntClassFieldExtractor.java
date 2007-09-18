@@ -33,7 +33,7 @@ public abstract class BaseIntClassFieldExtractor extends BaseClassFieldExtractor
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Long( getIntValue( workingMemory, object ) );
+        return new Integer( getIntValue( workingMemory, object ) );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
