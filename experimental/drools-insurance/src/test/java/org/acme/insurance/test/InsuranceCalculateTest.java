@@ -11,6 +11,7 @@ import org.acme.insurance.base.Driver;
 import org.acme.insurance.base.DriverAdditionalInfo;
 import org.acme.insurance.base.Policy;
 import org.acme.insurance.base.SupplementalInfo;
+import org.acme.insurance.web.InsuranceSessionHelper;
 import org.drools.StatefulSession;
 
 public class InsuranceCalculateTest extends TestCase {
@@ -21,7 +22,7 @@ public class InsuranceCalculateTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        session = (new InsuranceTestHelper()).getSession();
+        session = InsuranceSessionHelper.getSession();
         
         SimpleDateFormat df = new java.text.SimpleDateFormat( "dd/MM/yyyy" );
         defaultBirthday = df.parse( "18/09/1983" );

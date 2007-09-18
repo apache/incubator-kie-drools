@@ -1,8 +1,5 @@
 package org.acme.insurance.web;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,143 +10,101 @@ import org.acme.insurance.base.Driver;
 import org.acme.insurance.base.DriverAdditionalInfo;
 import org.acme.insurance.base.Policy;
 import org.acme.insurance.base.SupplementalInfo;
-import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.agent.RuleAgent;
 
 public class DroolsBusiness {
 
-    private DriverAdditionalInfo driverAdit = new DriverAdditionalInfo();
-    private SupplementalInfo suppinfo = new SupplementalInfo();
-    private AccessoriesCoverage accessCov = new AccessoriesCoverage();
-    private Driver driverMale = new Driver();
-    private SimpleDateFormat df = new java.text.SimpleDateFormat("MM/dd/yyyy");
-    private Date defaultBirthday;
-    private Policy policy = new Policy();
+	private DriverAdditionalInfo driverAdit = new DriverAdditionalInfo();
+	private SupplementalInfo suppinfo = new SupplementalInfo();
+	private AccessoriesCoverage accessCov = new AccessoriesCoverage();
+	private Driver driverMale = new Driver();
+	private SimpleDateFormat df = new java.text.SimpleDateFormat("MM/dd/yyyy");
+	private Date defaultBirthday;
+	private Policy policy = new Policy();
 
-    private RuleBase rulebase;
-    private StatefulSession session;
+	private StatefulSession session;
 
-    public boolean isApproved() {
-        return policy.isApproved();
-    }
+	public boolean isApproved() {
+		return policy.isApproved();
+	}
 
-    public double getBasePrice() {
-        return policy.getBasePrice();
-    }
+	public double getBasePrice() {
+		return policy.getBasePrice();
+	}
 
-    public double getRiskFactor() {
-        return driverMale.getInsuranceFactor();
-    }
+	public double getRiskFactor() {
+		return driverMale.getInsuranceFactor();
+	}
 
-    public double getInsurancePrice() {
-        return policy.getInsurancePrice();
-    }
+	public double getInsurancePrice() {
+		return policy.getInsurancePrice();
+	}
 
-    public RuleBase loadRuleBaseFromRuleAgent() {
 
-        RuleAgent agent = RuleAgent
-                .newRuleAgent("/brmsdeployedrules.properties");
-        RuleBase rulebase = agent.getRuleBase();
-        return rulebase;
-    }
+	public void execute(HttpServletRequest request) throws Exception {
 
-//    private RuleBase loadRuleBaseFromDRL() throws Exception {
-//
-//        PackageBuilder builder = new PackageBuilder();
-//        builder.addPackageFromDrl(getTechnicalRules("/approval/insurancefactor.drl"));
-//        builder.addPackageFromDrl(getTechnicalRules("/approval/approval.drl"));
-//        builder.addPackageFromDrl(getTechnicalRules("/approval/calculateInsurance.drl"));
-//        builder.addPackageFromDrl(getTechnicalRules("/approval/marginalage.drl"));
-//        builder.addRuleFlow(getTechnicalRules("/approval/insurance-process.rfm"));
-//
-//        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-//        ruleBase.addPackage(builder.getPackage());
-//        return ruleBase;
-//    }
+		session = InsuranceSessionHelper.getSession();
 
-    private Reader getTechnicalRules(String name) {
+		defaultBirthday = df.parse(request.getParameter("birthdate"));
 
-        InputStream stream = this.getClass().getResourceAsStream(name);
+		policy.setBasePrice(500.00);
 
-        return new InputStreamReader(stream);
-    }
+		driverMale.setBirhDate(defaultBirthday);
 
-    protected void setUp() throws Exception {
+		driverMale.setId(400);
+		driverMale.setGenre(Integer.parseInt(request.getParameter("sexo")));
+		driverMale.setMaritalState(Integer.parseInt(request
+				.getParameter("estadoCivil")));
+		driverMale.setHasChildren(Boolean.parseBoolean(request
+				.getParameter("temFilhos")));
+		driverMale.setPriorClaims(Integer.parseInt(request
+				.getParameter("sinistros")));
+		driverMale.setLicenceYears(Integer.parseInt(request
+				.getParameter("habilitacao")));
 
-        rulebase = loadRuleBaseFromRuleAgent();
-        //rulebase = loadRuleBaseFromDRL();
+		driverAdit.setDriverId(driverMale.getId());
+		driverAdit.setDayVehiclePlace(Integer.parseInt(request
+				.getParameter("garagemDia")));
+		driverAdit.setNightVehiclePlace(Integer.parseInt(request
+				.getParameter("garagemNoite")));
+		driverAdit.setJobStatus(Integer.parseInt(request
+				.getParameter("profissao")));
+		driverAdit.setResidenceStatus(Integer.parseInt(request
+				.getParameter("condicaoImovel")));
 
-        session = rulebase.newStatefulSession();
+		suppinfo.setDriverId(driverMale.getId());
+		suppinfo.setExtraAssistence(Boolean.parseBoolean(request
+				.getParameter("assistencia24h")));
+		suppinfo.setExtraCar(Boolean.parseBoolean(request
+				.getParameter("carroReserva")));
+		suppinfo.setGlassCoverage(Boolean.parseBoolean(request
+				.getParameter("vidros")));
+		suppinfo.setNonRelatedExpenses(Boolean.parseBoolean(request
+				.getParameter("despExtra")));
 
-        session.startProcess("insuranceProcess");
+		accessCov.setDriverId(driverMale.getId());
 
-    }
+		accessCov.setAlarmSystemValue(Double.parseDouble(request
+				.getParameter("sistemaSom")));
+		accessCov.setArmorValue(Double.parseDouble(request
+				.getParameter("blindagem")));
+		accessCov.setSoundSystemValue(Double.parseDouble(request
+				.getParameter("sistemaSom")));
 
-    public void execute(HttpServletRequest request) throws Exception {
+		policy.setApproved(false);
 
-        setUp();
+		session.insert(policy);
+		session.insert(driverMale);
+		session.insert(driverAdit);
+		session.insert(suppinfo);
+		session.insert(accessCov);
 
-        defaultBirthday = df.parse(request.getParameter("birthdate"));
+		session.fireAllRules();
 
-        policy.setBasePrice(500.00);
+		System.out.println("Insurance Factor: "
+				+ driverMale.getInsuranceFactor());
+		System.out.println("Is Approved     : " + policy.isApproved());
+		System.out.println("Insurance Price :" + policy.getInsurancePrice());
 
-        driverMale.setBirhDate(defaultBirthday);
-
-        driverMale.setId(400);
-        driverMale.setGenre(Integer.parseInt(request.getParameter("sexo")));
-        driverMale.setMaritalState(Integer.parseInt(request
-                .getParameter("estadoCivil")));
-        driverMale.setHasChildren(Boolean.parseBoolean(request
-                .getParameter("temFilhos")));
-        driverMale.setPriorClaims(Integer.parseInt(request
-                .getParameter("sinistros")));
-        driverMale.setLicenceYears(Integer.parseInt(request
-                .getParameter("habilitacao")));
-
-        driverAdit.setDriverId(driverMale.getId());
-        driverAdit.setDayVehiclePlace(Integer.parseInt(request
-                .getParameter("garagemDia")));
-        driverAdit.setNightVehiclePlace(Integer.parseInt(request
-                .getParameter("garagemNoite")));
-        driverAdit.setJobStatus(Integer.parseInt(request
-                .getParameter("profissao")));
-        driverAdit.setResidenceStatus(Integer.parseInt(request
-                .getParameter("condicaoImovel")));
-
-        suppinfo.setDriverId(driverMale.getId());
-        suppinfo.setExtraAssistence(Boolean.parseBoolean(request
-                .getParameter("assistencia24h")));
-        suppinfo.setExtraCar(Boolean.parseBoolean(request
-                .getParameter("carroReserva")));
-        suppinfo.setGlassCoverage(Boolean.parseBoolean(request
-                .getParameter("vidros")));
-        suppinfo.setNonRelatedExpenses(Boolean.parseBoolean(request
-                .getParameter("despExtra")));
-
-        accessCov.setDriverId(driverMale.getId());
-
-        accessCov.setAlarmSystemValue(Double.parseDouble(request
-                .getParameter("sistemaSom")));
-        accessCov.setArmorValue(Double.parseDouble(request
-                .getParameter("blindagem")));
-        accessCov.setSoundSystemValue(Double.parseDouble(request
-                .getParameter("sistemaSom")));
-
-        policy.setApproved(false);
-
-        session.insert(policy);
-        session.insert(driverMale);
-        session.insert(driverAdit);
-        session.insert(suppinfo);
-        session.insert(accessCov);
-
-        session.fireAllRules();
-
-        System.out.println("Insurance Factor: "
-                + driverMale.getInsuranceFactor());
-        System.out.println("Is Approved     : " + policy.isApproved());
-        System.out.println("Insurance Price :" + policy.getInsurancePrice());
-
-    }
+	}
 }
