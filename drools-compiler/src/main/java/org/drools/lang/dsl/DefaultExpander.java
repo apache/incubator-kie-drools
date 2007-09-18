@@ -140,7 +140,7 @@ public class DefaultExpander
                 String thenFragment = m.group( 4 ); 
                 
                 expanded.append( thenFragment ); // adding "then" header
-                expanded.append( this.expandRHS( m.group( 5 ), countNewlines( headerFragment + lhsFragment + thenFragment ) + 2 ) ); // adding expanded RHS
+                expanded.append( this.expandRHS( m.group( 5 ), countNewlines( headerFragment + lhsFragment + thenFragment ) + 1 ) ); // adding expanded RHS
                 expanded.append( m.group( 6 ) ); // adding rule trailer
                 expanded.append( "\n" );
             } else if ( constr.startsWith( "query" ) ) {
