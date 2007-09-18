@@ -12,13 +12,13 @@ import junit.framework.TestCase;
 
 import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
-import org.drools.agent.RuleBaseAssemblerTest;
 
 public class SourcePackageProviderTest extends TestCase {
 
 	public void testSourceProvider() throws Exception {
 		new SourcePackageProvider();
-	    File dir = RuleBaseAssemblerTest.getTempDirectory();
+
+	    File dir = getTempDirectory();
 
 	    InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream("/org/drools/integrationtests/HelloWorld.drl"));
 	    assertNotNull(reader);
@@ -51,4 +51,41 @@ public class SourcePackageProviderTest extends TestCase {
 		RuleBase rb = ag.getRuleBase();
 		assertNotNull(rb);
 	}
+
+    public static File getTempDirectory() {
+        File f = tempDir();
+        if (f.exists()) {
+            if (f.isFile()) {
+                throw new IllegalStateException("The temp directory exists as a file. Nuke it now !");
+            }
+            deleteDir( f );
+            f.mkdir();
+        } else {
+            f.mkdir();
+        }
+        return f;
+    }
+
+    private static File tempDir() {
+        File tmp = new File(System.getProperty( "java.io.tmpdir" ));
+
+        return new File(tmp, "__temp_test_drools_packages");
+    }
+
+    public static boolean deleteDir(File dir) {
+
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i=0; i<children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    //throw new RuntimeException("Unable to delete !");
+                    return false;
+                }
+            }
+        }
+
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
 }
