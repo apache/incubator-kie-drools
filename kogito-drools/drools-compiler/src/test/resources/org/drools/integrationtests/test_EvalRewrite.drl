@@ -21,15 +21,15 @@ end
 rule "eval rewrite3"
 	when
 		$o1 : OrderItem( order.number == 12, seq == 1 )
-		$o : Order( items[(Long) 1] == $o1 ) 
+		$o : Order( items[(Integer) 1] == $o1 )
 	then
 		results.add( $o );
-end 
+end
 
 rule "eval rewrite4"
 	when
 		OrderItem( $nbr : order.number == 13, seq == 1 )
-		$o : Order( number == $nbr ) 
+		$o : Order( number == $nbr )
 	then
 		results.add( $o );
 end

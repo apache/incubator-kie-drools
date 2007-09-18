@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,11 +27,11 @@ import java.util.Map;
 public class Order {
 
     private int number;
-    
+
     private String customer;
-    
+
     private Map items;
-    
+
     private OrderStatus status;
 
     public Order() {
@@ -57,21 +57,21 @@ public class Order {
     public void setNumber(final int number) {
         this.number = number;
     }
-    
+
     public Map getItems() {
         return this.items;
     }
-    
+
     public Collection getItemsValues() {
         return this.items.values();
     }
-    
+
     public Collection getItemsKeys() {
         return this.items.keySet();
     }
-    
+
     public void addItem( OrderItem item ) {
-        this.items.put( new Long( item.getSeq() ), item );
+        this.items.put( new Integer( item.getSeq() ), item );
     }
 
     /* (non-Javadoc)
@@ -111,7 +111,7 @@ public class Order {
     public void setCustomer(String customer) {
         this.customer = customer;
     }
-    
+
     public String toString() {
         return "Order( number="+this.getNumber()+" customer=\""+this.getCustomer()+"\" )";
     }
@@ -126,7 +126,7 @@ public class Order {
     public void setStatus(OrderStatus status) {
         this.status = status;
     }
-    
+
     public static class OrderStatus {
         private boolean active;
 
