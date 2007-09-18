@@ -1110,7 +1110,7 @@ rb.newStatefulSession....
 
       <para>IMPORTANT: You should only have one instance of the RuleAgent per
       rulebase you are using. This means you should (for example) keep the
-      RuleBase in JNDI (or similar).</para>
+      agent in a singleton, JNDI (or similar). In practice most people are using frameworks like Seam or Spring - in which case they will take care of managing this for you (in fact in Seam - it is already integrated - you can inject rulebases into Seam components). Note that the RuleBase can be used multiple times by multiple threads if needed (no need to have multiple copies of it).</para>
 
       <para>This assumes that there is a MyRules.properties in the root of
       your classpath. You can also pass in a Properties object with the

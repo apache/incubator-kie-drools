@@ -14,8 +14,8 @@
   <para>The recommended way of deploying depends on how you are managing your
   rules. If you are using the BRMS, you should use the RuleAgent (the detailed
   documentation for this is in the chapter on the BRMS). You can still use the
-  RuleAgent even without the BRMS, in which case you will need to use ant (or
-  similar) to created serialized "Package" objects of your rules.</para>
+  RuleAgent even without the BRMS, in which case you will need to use ant (the drools-ant task or
+  something custom) to create serialized "Package" objects of your rules.</para>
 
   <para>As every organization is subtly different, and different deployment
   patterns will be needed. Many organizations have (or should have)
