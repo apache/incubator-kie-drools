@@ -1159,6 +1159,9 @@ name=MyConfig</programlisting>
           binary package as exported by the BRMS. You can have one or many.
           The name of the file is not important. Each package must be in its
           own file.</para>
+	  <para>
+	    NOTE: it is also possible to specify .drl files - and it will compile it into the package. However, note that for this to work, you will need the drools-compiler dependencies in your applications classpath (as opposed to just the runtime dependencies).
+	  </para>
         </listitem>
 
         <listitem>
