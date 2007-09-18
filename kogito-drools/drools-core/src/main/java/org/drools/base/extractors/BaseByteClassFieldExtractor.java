@@ -55,7 +55,7 @@ public abstract class BaseByteClassFieldExtractor extends BaseClassFieldExtracto
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Long( getByteValue( workingMemory, object ) );
+        return new Byte( getByteValue( workingMemory, object ) );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
