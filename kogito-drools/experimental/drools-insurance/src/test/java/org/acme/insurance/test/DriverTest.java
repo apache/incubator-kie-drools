@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 
 import org.acme.insurance.base.Driver;
 import org.acme.insurance.base.Policy;
+import org.acme.insurance.web.InsuranceSessionHelper;
 import org.drools.StatefulSession;
 
 public class DriverTest extends TestCase {
@@ -19,7 +20,7 @@ public class DriverTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        session = (new InsuranceTestHelper()).getSession();
+        session = InsuranceSessionHelper.getSession();
         
         SimpleDateFormat df = new java.text.SimpleDateFormat( "dd/MM/yyyy" );
         defaultBirthday = df.parse( "18/09/1983" );
@@ -28,7 +29,7 @@ public class DriverTest extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        session.dispose();
+        //session.dispose();
     }
 
     public void testDriverGenreFactor() throws
