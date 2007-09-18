@@ -7,6 +7,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
 import org.drools.event.DefaultRuleFlowEventListener;
 import org.drools.event.RuleFlowEventListener;
@@ -24,6 +25,9 @@ public class NumberGuessExample {
         ruleBase.addPackage( builder.getPackage() );
 
         final StatefulSession session = ruleBase.newStatefulSession();
+        
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        logger.setFileName( "log/numberguess" );        
 
         session.insert( new GameRules( 100,
                                        5 ) );
@@ -32,6 +36,8 @@ public class NumberGuessExample {
 
         session.startProcess( "Number Guess" );
         session.fireAllRules();
+        
+        logger.writeToDisk();        
 
         session.dispose();
     }
