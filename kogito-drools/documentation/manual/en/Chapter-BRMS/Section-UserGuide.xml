@@ -1090,10 +1090,13 @@ To check the enumeration is loaded - if you go to the Package configuration scre
       <para>The rule agent is a component which is embedded in the core
       runtime of the rules engine. To use this, you don't need any extra
       components. In fact, if you are using the BRMS, your application should
-      only need to include the drools-core.jar in its classpath, and no other
+      only need to include the drools-core dependencies in its classpath (drools and mvel jars only), and no other
       rules specific dependencies.</para>
+      <para>
+	Note that there is also a drools-ant ant task, so you can build rules as part of an ant script (for example in cases where the rules are edited in the IDE) without using the BRMS at all - the drools-ant task will generate .pkg files the same as the BRMS.
+      </para>
 
-      <para>Once you have "built" your rules in a package in the BRMS, you are
+      <para>Once you have "built" your rules in a package in the BRMS (or from the ant task), you are
       ready to use the agent in your target application.</para>
 
       <para>To use the rule agent, you will use a call in your applications
