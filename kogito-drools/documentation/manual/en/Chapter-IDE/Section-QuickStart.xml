@@ -7,7 +7,7 @@
   <para>
     The IDE provides developers (and very technical users) with an environment to edit and test rules in various formats, and integrate it deeply with their applications. In cases where you prefer business rules and web tooling, you will want to look at the BRMS (but using the BRMS and the IDE together is not uncommon).</para>
 
-  <para>The JBoss Drools IDE is delivered as an eclipse plugin, which
+  <para>The Drools IDE is delivered as an eclipse plugin, which
   allows you to author and manage rules from within Eclipse, as well as
   integrate rules with your application. This is an optional tool, and not all
   components are required to be used, you can use what components are relevant
@@ -38,11 +38,11 @@
 
     <para>The rules IDE has the following features</para>
 
-    <itemizedlist>
+    <orderedlist>
       <listitem>
         <para>Textual/graphical rule editor</para>
 
-        <itemizedlist>
+        <orderedlist>
           <listitem>
             <para>An editor that is aware of DRL syntax, and provides content
             assistance (including an outline view)</para>
@@ -50,7 +50,7 @@
 	  <listitem>
 	    <para>An editor that is aware of DSL (domain specific langauge) extensions, and provides content assistance.</para>
 	  </listitem>
-        </itemizedlist>
+        </orderedlist>
       </listitem>
 
       <listitem>
@@ -61,7 +61,7 @@
       <listitem>
         <para>Wizards to accelerate and ...</para>
 
-        <itemizedlist>
+        <orderedlist>
           <listitem>
             <para>Help you quickly create a new "rules" project</para>
           </listitem>
@@ -79,31 +79,31 @@
 	  </listitem>
 
 
-        </itemizedlist>
+        </orderedlist>
       </listitem>
 
       <listitem>
         <para>A domain specific language editor</para>
 
-        <itemizedlist>
+        <orderedlist>
           <listitem>
             <para>Create and manage mappings from your users language to the
             rule language</para>
           </listitem>
-        </itemizedlist>
+        </orderedlist>
       </listitem>
 
       <listitem>
         <para>Rule validation</para>
 
-        <itemizedlist>
+        <orderedlist>
           <listitem>
             <para>As rules are entered, the rule is "built" in the background
             and errors reported via the problem "view" where possible</para>
           </listitem>
-        </itemizedlist>
+        </orderedlist>
       </listitem>
-    </itemizedlist>
+    </orderedlist>
 
     <para>You can see the above features make use of Eclipse infrastructure
     and features. All of the power of eclipse is available.</para>
@@ -119,16 +119,14 @@
 
     <figure>
       <title>New rule project scaffolding</title>
-
-
-      <para>When you choose to create a new "rule project" - you will get a choice to add some default artifacts to it (like rules, decision tables, ruleflows etc). These can serve as a starting point, and will give you something executable to play with (which you can then modify and mould to your needs). The simplest case (a hello world rule) is shown below. Feel free to experiment with the plugin at this point.</para>
-
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="new_project1.jpg" format="JPG" />
         </imageobject>
       </mediaobject>
     </figure>
+
+      <para>When you choose to create a new "rule project" - you will get a choice to add some default artifacts to it (like rules, decision tables, ruleflows etc). These can serve as a starting point, and will give you something executable to play with (which you can then modify and mould to your needs). The simplest case (a hello world rule) is shown below. Feel free to experiment with the plugin at this point.</para>
 
     <figure>
       <title>New rule project result</title>
@@ -298,7 +296,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
     rules can then be used to show the details of the selected working
     memory:</para>
 
-    <itemizedlist>
+    <orderedlist>
       <listitem>
         <para>The Working Memory shows all elements in the working memory of
         the Drools working memory.</para>
@@ -313,7 +311,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
         <para>The Global Data View shows all global data currently defined in
         the Drools working memory.</para>
       </listitem>
-    </itemizedlist>
+    </orderedlist>
 
     <para>The Audit view can be used to show audit logs that contain events
     that were logged during the execution of a rules engine in a tree
@@ -334,14 +332,14 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       <para>An action is added to the right of the view, to customize what is
       shown:</para>
 
-      <itemizedlist>
+      <orderedlist>
         <listitem>
           <para>The Show Logical Structure toggles showing the logical
           structure of the elements in the working memory, or all their
           details. Logical structures allow for example visualizing sets of
           elements in a more obvious way.</para>
         </listitem>
-      </itemizedlist>
+      </orderedlist>
     </section>
 
     <section>
@@ -359,7 +357,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       <para>An action is added to the right of the view, to customize what is
       shown:</para>
 
-      <itemizedlist>
+      <orderedlist>
         <listitem>
           <para>The Show Logical Structure toggles showing the logical
           structure of the agenda item, or all their details. Logical
@@ -368,7 +366,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
           that is represented by the AgendaItem, and the values of all the
           parameters used in the rule.</para>
         </listitem>
-      </itemizedlist>
+      </orderedlist>
     </section>
 
     <section>
@@ -386,14 +384,14 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       <para>An action is added to the right of the view, to customize what is
       shown:</para>
 
-      <itemizedlist>
+      <orderedlist>
         <listitem>
           <para>The Show Logical Structure toggles showing the logical
           structure of the elements in the working memory, or all their
           details. Logical structures allow for example visualizing sets of
           elements in a more obvious way.</para>
         </listitem>
-      </itemizedlist>
+      </orderedlist>
     </section>
 
     <section>
@@ -424,20 +422,20 @@ String outputDRL = write.marshall(read.unmarshal(brl));
 
       <para>Open the log by clicking the Open Log action (first action in the
       Audit View) and select the file. The Audit view now shows all events
-      that where logged during the executing of the rules. There are five
+      that where logged during the executing of the rules. There are different
       types of events (each with a different icon):</para>
 
-      <itemizedlist>
+      <orderedlist>
         <listitem>
-          <para>Object asserted (green square)</para>
+          <para>Object inserted (green square)</para>
         </listitem>
 
         <listitem>
-          <para>Object modified (yellow square)</para>
+          <para>Object updated (yellow square)</para>
         </listitem>
 
         <listitem>
-          <para>Object retracted (red square)</para>
+          <para>Object removed (red square)</para>
         </listitem>
 
         <listitem>
@@ -451,7 +449,23 @@ String outputDRL = write.marshall(read.unmarshal(brl));
         <listitem>
           <para>Activation executed (blue diamond)</para>
         </listitem>
-      </itemizedlist>
+ 
+        <listitem>
+          <para>Ruleflow started / ended (process icon)</para>
+        </listitem>
+ 
+        <listitem>
+          <para>Ruleflow-group activated / deactivated (process icon)</para>
+        </listitem>
+   
+        <listitem>
+          <para>Rule package added / removed (Drools icon)</para>
+        </listitem>
+
+        <listitem>
+          <para>Rule added / removed (Drools icon)</para>
+        </listitem>
+   </orderedlist>
 
       <para>All these events show extra information concerning the event, like
       the id and toString representation of the object in case of working
@@ -461,7 +475,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       activation, it is shown as a child of the activation executed event. For
       some events, you can retrieve the "cause":</para>
 
-      <itemizedlist>
+      <orderedlist>
         <listitem>
           <para>The cause of an object modified or retracted event is the last
           object event for that object. This is either the object asserted
@@ -472,7 +486,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
           <para>The cause of an activation cancelled or executed event is the
           corresponding activation created event.</para>
         </listitem>
-      </itemizedlist>
+      </orderedlist>
 
       <para>When selecting an event, the cause of that event is shown in green
       in the audit view (if visible of course). You can also right click the
@@ -631,7 +645,16 @@ String outputDRL = write.marshall(read.unmarshal(brl));
 
       <title>Debugging rules</title>
 
-      <para>You can debug rules during the execution of your Drools application.
+           <figure>
+          <title>Debugging</title>
+           <mediaobject>
+             <imageobject>
+               <imagedata align="center" fileref="debug-overview.png" format="PNG"/>
+             </imageobject>
+           </mediaobject>
+        </figure>
+        
+     <para>You can debug rules during the execution of your Drools application.
       You can add breakpoints in the consequences of your rules, and whenever
       such a breakpoint is uncounted during the execution of the rules, the execution
       is halted.  You can then inspect the variables known at that point and use any
@@ -643,7 +666,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
      <title>Creating breakpoints</title>
      <para>You can add/remove rule breakpoints in drl files in two ways, similar to adding
      breakpoints to Java files:</para>
-      <itemizedlist>
+      <orderedlist>
         <listitem>
           <para>Double-click the ruler of the DRL editor at the line where you want to
           add a breakpoint.  Note that rule breakpoints can only be created in the
@@ -658,7 +681,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
           breakpoint is allowed at that line.  Clicking the action will add a breakpoint at the
           selected line, or remove it if there was one already.</para>
         </listitem>
-     </itemizedlist>
+     </orderedlist>
      <para>The Debug Perspective contains a Breakpoints view which can be used to see
      all defined breakpoints, get their properties, enable/disable or remove them, etc.</para>
 </section>
@@ -666,45 +689,56 @@ String outputDRL = write.marshall(read.unmarshal(brl));
      <title>Debugging rules</title>
      <para>Drools breakpoints are only enabled if you debug your application as
       a Drools Application.  You can do this like this:</para>
-      <itemizedlist>
+      
+         <figure>
+          <title>Debug as Drools Application</title>
+           <mediaobject>
+             <imageobject>
+               <imagedata align="center" fileref="debugAsDrools.png" format="PNG" role="" />
+             </imageobject>
+           </mediaobject>
+        </figure>
+
+      <orderedlist>
         <listitem>
           <para>Select the main class of your application. Right click it and select the
-          "Debug As >" sub-menu.  There, select the "Debug ..." menu item to open a
+          "Debug As >" sub-menu and select Drools Application. Alternatively, you can also select
+          the "Debug ..." menu item to open a
           new dialog for creating, managing and running debug configurations (see
           screenshot below)</para>
-        </listitem>
-        <listitem>
-          <para>Select the "JBoss Rules Application" item in the left tree and click the "New
+          <orderedlist>
+            <listitem>
+              <para>Select the "Drools Application" item in the left tree and click the "New
           launch configuration" button (leftmost icon in the toolbar above the tree).  This
           will create a new configuration and already fill in some of the properties
           (like the project and main class) based on main class you selected in the beginning.
           All properties shown here are the same as any standard Java program.</para>
-        </listitem>
-        <listitem>
-          <para>Change the name of your debug configuration to something meaningful.
+            </listitem>
+            <listitem>
+              <para>Change the name of your debug configuration to something meaningful.
           You can just accept the defaults for all other properties.  For more information
           about these properties, please check the eclipse jdt documentation.</para>
-        </listitem>
-        <listitem>
-          <para>Click the "Debug" button on the bottom to start debugging your application.
-          </para>
-        </listitem>
-     </itemizedlist>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="debug_rules_configuration.JPG" />
-        </imageobject>
-      </mediaobject>
-
-     <para>You only have to define your debug configuration once.  The next time you try to run your
-     JBoss Rules application, you don't have to create a new one but select the one you defined
-     previously by selecting it in the tree on the left, as a sub-element of the "JBoss Rules Application"
+            </listitem>
+            <listitem>
+              <para>Click the "Debug" button on the bottom to start debugging your application. You only have to define your debug configuration once.  The next time you try to run your Drools application, you don't have to create a new one but select the one you defined previously by selecting it in the tree on the left, as a sub-element of the "Drools Application"
      tree node, and then click the Debug button.  The eclipse toolbar also contains shortcut
      buttons to quickly re-execute the one of your previous configurations (at least when the
-     Java, Java Debug, or JBoss Rules perspective has been selected).
-     </para>
+     Java, Java Debug, or Drools perspective has been selected).
+              </para>
+            </listitem>
+          </orderedlist>
+        </listitem>
+     </orderedlist>
 
+          <figure>
+          <title>Debug as Drools Application Configuration</title>
+           <mediaobject>
+             <imageobject>
+               <imagedata align="center" fileref="debug_rules_configuration.png" format="PNG" role="" />
+             </imageobject>
+           </mediaobject>
+        </figure>
+        
      <para>After clicking the "Debug" button, the application starts executing and will halt if any
      breakpoint is encountered.  This can be a Drools rule breakpoint, or any other standard
      Java breakpoint.  Whenever a Drools rule breakpoint is encountered, the corresponding drl
@@ -716,12 +750,16 @@ String outputDRL = write.marshall(read.unmarshal(brl));
      is automatically shown).
      </para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="debug_rules_configuration.JPG" />
-        </imageobject>
-      </mediaobject>
-    </section>
+          <figure>
+          <title>Debugging</title>
+           <mediaobject>
+             <imageobject>
+               <imagedata align="center" fileref="debug.png" format="PNG"/>
+             </imageobject>
+           </mediaobject>
+        </figure>
+        
+   </section>
     </section>
 
 
