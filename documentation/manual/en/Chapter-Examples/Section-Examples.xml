@@ -958,6 +958,15 @@ end</programlisting>
 end</programlisting>
     </example>
 
+    <para>Now that hope exists and we have, at the start, four honest
+    politicians we have 4 activations for this rule all in conflict. This rule
+    iterates over those rules firing each one in turn, corrupting each
+    politician so that they are no longer honest. When all four politicians
+    have been corrupted we have no politicians with the property "honest ==
+    true" thus the rule "We hvae an honest Politician" is no longer true and
+    the object it logical inserts "new Hope()" is automatically
+    retracted.</para>
+
     <example>
       <title>Honest Politician Example : Rule "Corrupt the Honest"</title>
 
@@ -971,6 +980,10 @@ end</programlisting>
 end</programlisting>
     </example>
 
+    <para>With Hope being automatically retracted, via the truth maintenance
+    system, then Hope no longer exists in the system and this rule will match
+    and fire.</para>
+
     <example>
       <title>Honest Politician Example : Rule "Hope is Dead"</title>
 
@@ -981,6 +994,18 @@ end</programlisting>
         System.out.println( "We are all Doomed!!! Democracy is Dead" );
 end</programlisting>
     </example>
+
+    <para>lets take a look the audit trail for this application:</para>
+
+    <figure>
+      <title>Honest Politician Example Audit View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="fibonacci_agenda2.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
   </section>
 
   <section>
