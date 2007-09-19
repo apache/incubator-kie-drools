@@ -19,10 +19,14 @@ package org.drools.ruleflow.instance.impl;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.drools.base.ClassTypeResolver;
+import org.drools.base.TypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.ruleflow.core.ActionNode;
 import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
@@ -65,6 +69,9 @@ public class ActionNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
     		        }
     			}
     		}
+    		Set importSet = new HashSet();
+    		importSet.addAll(imports);
+    		TypeResolver typeResolver = new ClassTypeResolver(importSet, Thread.currentThread().getContextClassLoader());
     		// compile expression
     		Serializable expression = compiler.compile(parserContext);
     		// globals
@@ -74,7 +81,7 @@ public class ActionNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
     			for (Iterator iterator = globalDefs.entrySet().iterator(); iterator.hasNext(); ) {
     				Map.Entry entry = (Map.Entry) iterator.next();
     				try {
-    					globals.put(entry.getKey(), Class.forName((String) entry.getValue()));
+    					globals.put(entry.getKey(), typeResolver.resolveType((String) entry.getValue()));
     				} catch (ClassNotFoundException exc) {
     					throw new IllegalArgumentException("Could not find type " + entry.getValue() + " of global " + entry.getKey());
     				}
