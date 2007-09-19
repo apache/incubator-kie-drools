@@ -21,13 +21,13 @@ rule "Get user Guess"
 	then
 	    System.out.println( "You have " + ( rules.allowedGuesses - game.guessCount ) + " out of " + rules.allowedGuesses + " guesses left.\nPlease enter your guess from 0 to " + rules.maxRange );
         br = new BufferedReader( new InputStreamReader( System.in ) );
-        modify ( game ) { guessCount = game.guessCount + 1 }
+        modify ( game ) { guessCount += 1 }
         i = br.readLine();        
 	    insert( new Guess( i ) );
 end	 
 
-rule "Record the highest Guess"
-	ruleflow-group "Too High"
+rule "Record the biggest Guess"
+	ruleflow-group "Guess"
 	no-loop
 	when    
 	    game : Game( biggestGuess : biggest )
@@ -36,11 +36,11 @@ rule "Record the highest Guess"
         modify ( game ) { biggest = $value };
 end	 
 
-rule "Record the lowest Guess"
-	ruleflow-group "Too Low"
+rule "Record the smallest Guess"
+	ruleflow-group "Guess"
 	no-loop	
 	when    
-	    Game( smallestGuess : smallest )
+	    game : Game( smallestGuess : smallest )
 	    Guess( $value : value < smallestGuess )
 	then
         modify ( game ) { smallest = $value };
@@ -54,12 +54,12 @@ rule "Guess incorrect, retract Guess"
         retract( guess );
 end	
 
-
 rule "No more Guesses notification"
 	ruleflow-group "No more Guesses"
 	when
-        $r : RandomNumber()    
+        r : RandomNumber()    
+	    game : Game( )        
 	then	
-        System.out.println( "You have no more guesses\nThe correct guess was " + $r.value );
+        System.out.println( "\nYou have no more guesses\nThe correct guess was " + r.value );
+        System.out.println( "Your smallest guess  was " + game.smallest + "\nYour biggest guess  was " + game.biggest );
 end	
-
