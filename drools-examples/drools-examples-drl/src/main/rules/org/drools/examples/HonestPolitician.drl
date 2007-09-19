@@ -26,8 +26,7 @@ rule "Hope is Dead"
         System.out.println( "We are all Doomed!!! Democracy is Dead" );
 end
 
-rule "Currupt the Honest"
-   salience 5
+rule "Corrupt the Honest"
     when
         politician : Politician( honest == true )   
         exists( Hope() )
