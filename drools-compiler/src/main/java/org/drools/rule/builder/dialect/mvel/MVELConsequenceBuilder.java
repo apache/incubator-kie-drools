@@ -31,6 +31,13 @@ public class MVELConsequenceBuilder
                             return "drools.insert";
                         }
                     } );
+        
+        macros.put( "insertLogical",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.insertLogical";
+                        }
+                    } );        
 
         macros.put( "modify",
                     new Macro() {
