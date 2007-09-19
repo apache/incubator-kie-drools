@@ -159,6 +159,7 @@ abstract public class AbstractRuleBase
         final ByteArrayOutputStream bos = new ByteArrayOutputStream();
         final ObjectOutput out = new ObjectOutputStream( bos );
         out.writeObject( this.id );
+        out.writeObject( this.processes );
         out.writeObject( this.agendaGroupRuleTotals );
         out.writeObject( this.factHandleFactory );
         out.writeObject( this.globals );
@@ -209,6 +210,7 @@ abstract public class AbstractRuleBase
         childStream.setRuleBase( this );
 
         this.id = (String) childStream.readObject();
+        this.processes = ( Map ) childStream.readObject();
         this.agendaGroupRuleTotals = (Map) childStream.readObject();
         this.factHandleFactory = (FactHandleFactory) childStream.readObject();
         this.globals = (Map) childStream.readObject();
