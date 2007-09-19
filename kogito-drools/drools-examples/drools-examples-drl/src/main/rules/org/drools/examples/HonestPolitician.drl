@@ -4,35 +4,36 @@ import org.drools.examples.HonestPoliticianExample.Politician;
 import org.drools.examples.HonestPoliticianExample.Hope;
  
 rule "We have an honest Politician"
-	when
-		exists( Politician( honest == true ) )
-	then
-		insertLogical( new Hope() );
+    salience 10
+    when
+        exists( Politician( honest == true ) )
+    then
+        insertLogical( new Hope() );
 end
 
 rule "Hope Lives"
     salience 10
-	when
-		exists( Hope() )
-	then
-		System.out.println("Hurrah!!! Democracy Lives");
+    when
+        exists( Hope() )
+    then
+        System.out.println("Hurrah!!! Democracy Lives");
 end
 
 rule "Hope is Dead"
-	when
-		not( Hope() )
-	then
-		System.out.println( "We are all Doomed!!! Democracy is Dead" );
+    when
+        not( Hope() )
+    then
+        System.out.println( "We are all Doomed!!! Democracy is Dead" );
 end
 
 rule "Currupt the Honest"
    salience 5
-	when
-		politician : Politician( honest == true )	
-		exists( Hope() )
-	then
-	    System.out.println( "I'm an evil corporation and I have corrupted " + politician.getName() );
-		politician.setHonest( false );
-		update( politician );
+    when
+        politician : Politician( honest == true )   
+        exists( Hope() )
+    then
+        System.out.println( "I'm an evil corporation and I have corrupted " + politician.getName() );
+        politician.setHonest( false );
+        update( politician );
 end
 
