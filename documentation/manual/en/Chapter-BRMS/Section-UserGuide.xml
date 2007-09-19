@@ -54,6 +54,15 @@
       </listitem>
     </itemizedlist>
 
+    <section><title>Supported browser platforms</title>
+             <para>
+	       The supported server side platforms are mentioned in the installation guide. 
+	       For browsers - the major ones are supported, this includes Firefox (1.5 and up), IE6 and up, Opera, Safari etc. 
+	       The preferred browser for most platforms is firefox, it is widely available and free, if you have any choice at all, Firefox is the preferred platform, followed by safari on mac.
+             </para>
+
+    </section>
+
     <para>You can also consult the wiki:
     http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository for some
     tutorials and user tips (it IS a wiki, so you can even contribute your own
@@ -1165,6 +1174,8 @@ name=MyConfig</programlisting>
 	  <para>
 	    NOTE: it is also possible to specify .drl files - and it will compile it into the package. However, note that for this to work, you will need the drools-compiler dependencies in your applications classpath (as opposed to just the runtime dependencies).
 	  </para>
+
+	  <para>Please note that if the path has a space in it, you will need to put double quotes around it (as the space is used to separate different items, and it will not work otherwise). Generally spaces in a path name are best to avoid.</para>
         </listitem>
 
         <listitem>
@@ -1174,6 +1185,10 @@ name=MyConfig</programlisting>
           list of files you specify a directory, and it will pick up all the
           files in there (each one is a package) and add them to the rulebase.
           Each package must be in its own file.</para>
+
+	  <para>Please note that if the path has a space in it, you will need to put double quotes around it (as the space is used to separate different items, and it will not work otherwise). Generally spaces in a path name are best to avoid.</para>
+
+
         </listitem>
 
         <listitem>
