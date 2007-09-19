@@ -717,47 +717,23 @@ end
     <section>
       <title>Starting anew</title>
 
-      <para>Loading the initial ticket data:</para>
-
-      <figure>
-        <title>Trouble ticket setup</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="tt_initial.png" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>Referring to the above code, line 27 &amp; 28 refer to logging the
-      "audit trail" out to a file, which will we load up later. Lines 30
-      through 37 are the customers (with their name and subscription class).
-      Lines 39 through 42 are the tickets - note that the ticket takes the
-      customer in the constructor (that sets up the object relationship).
-      Lines 44 through 52 are asserting the data into the engine. Note that in
-      line 51 we keep a fact handle - which we will use to notify the engine
-      that that specific ticket changed later on. Line 54 has the all
-      important fireAllRules(), which tells the engine to take action on the
-      data it has.</para>
-
-      <para>We have the "New Ticket" rule which has the highest priority
-      (salience of 10 - the default is zero), The purpose of this is simply to
-      log the fact that a new ticket has arrived in the system:</para>
+      <para>We simply log the fact that a new ticket has arrived in the
+      system:</para>
 
       <programlisting>
 rule "New Ticket"
  salience 10
  when
   customer : Customer( )
-  ticket : Ticket( customer == customer, status == "New" )
+  ticket : Ticket( customer == customer, status == "New" )	
   then
- System.out.println( "New : " + ticket );
+ System.out.println( "New : " + ticket );		
 end
     </programlisting>
 
       <para>Note that we are "joining" the ticket fact with the customer fact.
       Its not really needed in this case, as we don't do anything (yet) with
-      the customer fact. If you look in the TroubleTicketExample.java, you
+      the customer fact. If you look in ghe TroubleTicketExample.java, you
       will also see that the facts are being inserted into the engine - note
       that we asset BOTH Customer and Ticket object (even though the ticket
       belongs to a customer - this allows the engine to join the objects
@@ -767,27 +743,9 @@ end
       to a customer, we may be interested in looking at tickets from different
       customers of the same type in the future).</para>
 
-      <para>If we run the rules, we should expect that the "New Ticket" rule
-      will be activated for all tickets, so looking at the audit log view (by
-      opening the file which was saved automatically when the rules were
-      run):</para>
-
-      <figure>
-        <title>Audit view</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="tt_audit_view.png" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>Referring to the above audit log, we can see each customer
-      asserted, but nothing happens. As soon as the first ticket gets
-      asserted, it joins it with the customer, and creates some activations:
-      one is the "new ticket" rule, the other is for the appropriate priority
-      (which we will show below). Note that items in the above view do not
-      mean the rule fired at that point.</para>
+      <para>Also, don't forget to use "fireAllRules()" - a common mistake !
+      (In this case we are using a statefull session, so this is
+      necessary).</para>
     </section>
 
     <section>
@@ -896,43 +854,6 @@ Done : [Ticket [Customer C : Silver] : Done]
 Email : [Ticket [Customer D : Silver] : Escalate]
 [[ awake ]]
     </programlisting>
-
-      <figure>
-        <title>Audit log</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="tt_audit_firing.png" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>Referring to the above audit log, we can see the events as they
-      happen. Once the rules start firing, the first items are the "Activation
-      Executed" for the new tickets, as expected (they do nothing, just log
-      the fact). Note the "Activation executed" item for the platinum ticket -
-      that is the next one to go (remember it has the default salience, so it
-      happens after the "New ticket" rule, but otherwise it is immediate -
-      there is no "duration" delay for it). The platinum activation results in
-      a Object modification (which is the escalation) - this in turn creates
-      an activation record for the "escalate ticket" rule - which is what we
-      wanted. Straight after that it executes the action to escalate the
-      ticket.</para>
-
-      <para>The next event to occur is due to the: <programlisting>
-          t3.setStatus( "Done" );
-
-        session.update( ft3,
-                        t3 );
-</programlisting> in the code (outside of rules) - this simulates a customer
-      service officer maarking a ticket as done (and of course, uses the fact
-      handle we kept from before). This results in a cancelled activation (as
-      we no longer have a New Silvert customer ticket - it is done) and a new
-      activation to log the fact it was done.</para>
-
-      <para>In all the excitement, in parallel the engine has been watching
-      the time pass, and it happens that the Gold tickets start to escalate,
-      and then silver (as expected).</para>
     </section>
   </section>
 
@@ -953,7 +874,113 @@ Email : [Ticket [Customer D : Silver] : Escalate]
   <section>
     <title>Honest Politician Example</title>
 
-    <para></para>
+    <para>The honest politician example demonstrates truth maintenance with
+    logical assertions, the basic premise is that an object can only exist
+    while a statement is true. A rule's consequence can logical insert an
+    object with the insertLogical method, this means the object will only
+    remain in the working memory as long as the rule that logically inserted
+    it remains true, when the rule is no longer true the object is
+    automatically retracted.</para>
+
+    <para>In this example there is Politician class with a name and a boolean
+    value for honest state, four politicians with honest state set to true are
+    inserted.</para>
+
+    <para><example>
+        <title>Politician Class</title>
+
+        <programlisting>public class Politician {
+    private String name;
+    private boolean honest;
+    ...
+}</programlisting>
+      </example><example>
+        <title>Honest Politician Example Execution</title>
+
+        <programlisting>Politician blair  = new Politician("blair", true);
+Politician bush  = new Politician("bush", true);
+Politician chirac  = new Politician("chirac", true);
+Politician schroder   = new Politician("schroder", true);
+        
+session.insert( blair );
+session.insert( bush );
+session.insert( chirac );
+session.insert( schroder );
+
+session.fireAllRules();</programlisting>
+      </example>The console out shows that while there is atleast one honest
+    polician democracy lives, however as each politician is in turn corrupted
+    by an evil corporation, when all politicians are dishonest democracy is
+    dead.<example>
+        <title>Honest Politician Example Console Output</title>
+
+        <programlisting>Hurrah!!! Democracy Lives
+I'm an evil corporation and I have corrupted schroder
+I'm an evil corporation and I have corrupted chirac
+I'm an evil corporation and I have corrupted bush
+I'm an evil corporation and I have corrupted blair
+We are all Doomed!!! Democracy is Dead
+</programlisting>
+      </example>As soon as there is one ore more honest politcians in the
+    working memory a new Hope object is logically asserted, this object will
+    only exist while there is atleast one or more honest politicians, the
+    moment all politicians are dishonest then the Hope object will be
+    automatically retracted. This rule is given a salience of 10 to make sure
+    it fires before any other rules, as at this stage the "Hope is Dead" rule
+    is actually true.</para>
+
+    <example>
+      <title>Honest Politician Example : Rule "We have an honest
+      politician"</title>
+
+      <programlisting>rule "We have an honest Politician"
+    salience 10
+    when
+        exists( Politician( honest == true ) )
+    then
+        insertLogical( new Hope() );
+end</programlisting>
+    </example>
+
+    <para>As soon as a Hope object exists the "Hope Lives" rule matches, and
+    fires, it has a salience of 10 so that it takes priority over "Corrupt the
+    Honest".</para>
+
+    <example>
+      <title>Honest Politician Example : Rule "Hope Lives"</title>
+
+      <programlisting>rule "Hope Lives"
+    salience 10
+    when
+        exists( Hope() )
+    then
+        System.out.println("Hurrah!!! Democracy Lives");
+end</programlisting>
+    </example>
+
+    <example>
+      <title>Honest Politician Example : Rule "Corrupt the Honest"</title>
+
+      <programlisting>rule "Corrupt the Honest"
+    when
+        politician : Politician( honest == true )   
+        exists( Hope() )
+    then
+        System.out.println( "I'm an evil corporation and I have corrupted " + politician.getName() );
+        modify ( politician ) { honest = false };
+end</programlisting>
+    </example>
+
+    <example>
+      <title>Honest Politician Example : Rule "Hope is Dead"</title>
+
+      <programlisting>rule "Hope is Dead"
+    when
+        not( Hope() )
+    then
+        System.out.println( "We are all Doomed!!! Democracy is Dead" );
+end</programlisting>
+    </example>
   </section>
 
   <section>
@@ -1424,7 +1451,7 @@ There are two cells on the same column with the same value at (6,3) and (7,3)
 <emphasis role="bold">Objective:</emphasis> Demonstrate use of Rule Flow to organise Rules
 </programlisting>
 
-      <para>The "Number Guess" example shows a the use of RuleFlow, a way of
+      <para>The "Number Guess" example shows the use of RuleFlow, a way of
       controlling the order in which rules are fired. It uses widely
       understood workflow diagrams to make clear the order that groups of
       rules will be executed.</para>
@@ -1487,7 +1514,7 @@ session.dispose();
       and the graphical RuleFlow editor below.</para>
 
       <para>Before we finish we our Java code , we note that In 'real life' we
-      would example the final state of the objects (e.g. how many guesses it
+      would examine the final state of the objects (e.g. how many guesses it
       took, so that we could add it to a high score table). For this example
       we are content to ensure the working memory session is cleared by
       calling the dispose() method.</para>
@@ -1502,13 +1529,14 @@ session.dispose();
         </mediaobject>
       </figure>
 
-      <para>If you open the NumberGuess.rf file open in the Drools IDE (or
+      <para>If you open the NumberGuess.rf file open in the Drools IDE (and
       have the JBoss Rules extensions installed correctly in Eclipse) you
-      should see the above digaram, similar to a standard flowchart. It's
-      icons are similar (but not exactly the same) as the JBoss jBPM workflow
+      should see the above diagram, similar to a standard flowchart. Its icons
+      are similar (but not exactly the same) as the JBoss jBPM workflow
       product. Should you wish to edit the diagram, a menu of available
-      components should be available to the left of the Diagram in the IDE.
-      This diagram is saved in a (almost human) readable xml format.</para>
+      components should be available to the left of the diagram in the IDE,
+      which is call the pallete. This diagram is saved in a (almost human)
+      readable xml format, using xstream.</para>
 
       <para>If it is not already open, ensure the properties view is visible
       in the IDE. It can opened by selecting Window -&gt; Show View -&gt;
@@ -1617,9 +1645,9 @@ end
       guess count, the actual guess and makes both available in the working
       memory.</para>
 
-      <para>The rest of the Rules file is fairly standard ; the package is
-      stated the dialect is set to MVEL, various Java classes are imported. In
-      total, there are five rules in this file:</para>
+      <para>The rest of the Rules file is fairly standard ; the package
+      declares the dialect is set to MVEL, various Java classes are imported.
+      In total, there are five rules in this file:</para>
 
       <para><orderedlist>
           <listitem>
