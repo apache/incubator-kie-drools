@@ -45,9 +45,10 @@ public class StateExampleUsingSalience {
                         dynamic );
 
         session.fireAllRules();
-        session.dispose();
 
         logger.writeToDisk();
+        
+        session.dispose(); // Stateful rule session must always be disposed when finished        
     }
 
 }

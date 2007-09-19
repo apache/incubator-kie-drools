@@ -5,9 +5,9 @@
 	<classpathentry excluding="**/*.java" kind="src" path="src/main/rules"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry excluding="**/*.java" kind="src" output="target/test-classes" path="src/test/resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="DROOLS/JBoss Rules"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.5.0_10"/>
 	<classpathentry kind="lib" path="lib/foxtrot-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/jgoodies-forms-1.0.4.jar"/>
+	<classpathentry kind="con" path="DROOLS/Drools"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

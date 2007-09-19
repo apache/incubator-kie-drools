@@ -2,42 +2,32 @@ package org.drools.examples
 
 import org.drools.examples.FibonacciExample.Fibonacci;
 
+dialect "mvel"
+
 rule Recurse
-	salience 10
-	when
-		f : Fibonacci ( value == -1 )
-	then
-		insert( new Fibonacci( f.getSequence() - 1 ) );
-		System.out.println( "recurse for " + f.getSequence() );
+    salience 10
+    when
+        not ( Fibonacci ( sequence == 1 ) )    
+        f : Fibonacci ( value == -1 )
+    then
+        insert( new Fibonacci( f.sequence - 1 ) );
+        System.out.println( "recurse for " + f.sequence );
 end
 
-rule Bootstrap1
-	salience 20
-	when
-		f : Fibonacci( sequence == 1, value == -1 )
-	then 
-		f.setValue( 1 );		
-		update( f );
-		System.out.println( f.getSequence() + " == " + f.getValue() );
-end
-
-rule Bootstrap2
-	when
-		f : Fibonacci( sequence == 2, value == -1 )
-	then 
-		f.setValue( 1 );		
-		update( f );
-		System.out.println( f.getSequence() + " == " + f.getValue() );		
+rule Bootstrap
+    when
+        f : Fibonacci( sequence == 1 || == 2, value == -1 ) // this is a multi-restriction || on a single field
+    then 
+        modify ( f ){ value = 1 };
+        System.out.println( f.sequence + " == " + f.value );
 end
 
 rule Calculate
-	when
-		f1 : Fibonacci( s1 : sequence, value != -1 )
-		f2 : Fibonacci( s2 : sequence == (s1 + 1 ), value != -1 )
- 		f3 : Fibonacci( sequence == (s2 + 1 ), value == -1 )				
-	then	
-		f3.setValue( f1.getValue() + f2.getValue() );
-		update( f3 );
-		retract( f1 );
-		System.out.println( f3.getSequence() + " == " + f3.getValue() );
-end	
+    when
+        f1 : Fibonacci( s1 : sequence, value != -1 ) // here we bind sequence
+        f2 : Fibonacci( sequence == (s1 + 1 ), value != -1 ) // here we don't, just to demonstrate the different way bindings can be used
+        f3 : Fibonacci( s3 : sequence == (f2.sequence + 1 ), value == -1 )              
+    then    
+        modify ( f3 ) { value = f1.value + f2.value };
+        System.out.println( s3 + " == " + f3.value ); // see how you can access pattern and field  bindings
+end 

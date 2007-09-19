@@ -95,7 +95,7 @@ public class NumberGuessExample {
         private int smallest;
         private int guessCount;
 
-        public void begin() {
+        public Game() {
             this.guessCount = 0;
             this.biggest = 0;
             this.smallest = 100;
