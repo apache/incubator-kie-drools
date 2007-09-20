@@ -732,10 +732,10 @@ end
     </programlisting>
 
       <para>Note that we are "joining" the ticket fact with the customer fact.
-      Its not really needed in this case, as we don't do anything (yet) with
-      the customer fact. If you look in ghe TroubleTicketExample.java, you
+      It's not really needed in this case, as we don't do anything (yet) with
+      the customer fact. If you look in the TroubleTicketExample.java, you
       will also see that the facts are being inserted into the engine - note
-      that we asset BOTH Customer and Ticket object (even though the ticket
+      that we assert BOTH Customer and Ticket object (even though the ticket
       belongs to a customer - this allows the engine to join the objects
       together how it wants - this is what is meant by "relational"
       programming - we let the rule engine define what the relationships are.
@@ -1002,10 +1002,30 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="fibonacci_agenda2.png" />
+          <imagedata fileref="honest_politician_audit.png" />
         </imageobject>
       </mediaobject>
     </figure>
+
+    <para>The moment we insert the first politician we have two activations,
+    the "We have an honest Politician" is activated only once for the first
+    inserted politician because it uses an existential 'exists' conditional
+    element which only matches. the rule "Hope is Dead" is also activated at
+    this stage, because as of yet we have not inserted the Hope object. "We
+    have an honest Politician" fires first, as it has a higher salience over
+    "Hope is Dead" which inserts the Hope object, that action is highlighted
+    green above. The insertion of the Hope object activates "Hope Lives" and
+    de-activates "Hope is Dead", it also actives "Corrupt the Honest" for each
+    inserted honested politician. "Rule Hope Lives" executes printing
+    "Hurrah!!! Democracy Lives". Then for each politician the rule "Corrupt
+    the Honest" fires printing "I'm an evil corporation and I have corrupted
+    X", where X is the name of the politician, and modifies the politicians
+    honest value to false. When the last honest polician is corrupted Hope is
+    automatically retracted, by the truth maintenance system, as shown by the
+    blue highlighted area. The green highlighted area shows the origin of the
+    currently selected blue highlighted area. Once Hope is retracted "Hope is
+    dead" activates and fires printing "We are all Doomed!!! Democracy is
+    Dead".</para>
   </section>
 
   <section>
@@ -1296,7 +1316,7 @@ There are two cells on the same column with the same value at (6,3) and (7,3)
       memory of any inserted PossibleCellValues at the same row and column
       with invalid values. This rule is therefore given a higher salience than
       the remaining rules to ensure that as soon as the LHS is true,
-      activations for the rule move to the top of the agenda and a fired. In
+      activations for the rule move to the top of the agenda and are fired. In
       turn this prevents the spurious firing of other rules due to the
       combination of a ResolvedCellValue and one or more PossibleCellValues
       being present in the same cell. This rule also calls update() on the
