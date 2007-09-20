@@ -131,7 +131,7 @@ public class Rete extends ObjectSource
         Object object = handle.getObject();
 
         ObjectTypeConf ojectTypeConf;
-        if ( object instanceof FactImpl ) {
+        if ( object instanceof Fact ) {
             String key = ((Fact) object).getFactTemplate().getName();
             ojectTypeConf = (ObjectTypeConf) memory.get( key );
             if ( ojectTypeConf == null ) {
