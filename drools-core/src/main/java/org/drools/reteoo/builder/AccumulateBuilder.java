@@ -17,7 +17,6 @@
 package org.drools.reteoo.builder;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.common.BetaConstraints;
@@ -27,9 +26,6 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.TupleSource;
 import org.drools.rule.Accumulate;
-import org.drools.rule.Pattern;
-import org.drools.rule.Declaration;
-import org.drools.rule.LiteralConstraint;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 
@@ -53,10 +49,10 @@ public class AccumulateBuilder
         final List resultBetaConstraints = context.getBetaconstraints();
         final List resultAlphaConstraints = context.getAlphaConstraints();
 
-        final Pattern sourcePattern = accumulate.getSourcePattern();
+        final RuleConditionElement source = accumulate.getSource();
 
         // get builder for the pattern
-        final ReteooComponentBuilder builder = utils.getBuilderFor( sourcePattern );
+        final ReteooComponentBuilder builder = utils.getBuilderFor( source );
 
         // save tuple source and current pattern offset for later if needed
         final TupleSource tupleSource = context.getTupleSource();
@@ -65,7 +61,7 @@ public class AccumulateBuilder
         // builds the source pattern
         builder.build( context,
                        utils,
-                       sourcePattern );
+                       source );
 
         // if object source is null, then we need to adapt tuple source into a subnetwork
         if ( context.getObjectSource() == null ) {

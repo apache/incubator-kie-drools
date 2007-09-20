@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.RuleBaseFactory;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
@@ -31,7 +30,6 @@ import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.TupleSource;
 import org.drools.rule.GroupElement;

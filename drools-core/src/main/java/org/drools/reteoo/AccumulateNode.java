@@ -21,7 +21,6 @@ import java.util.Arrays;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.BetaConstraints;
-import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.BuildContext;
@@ -123,13 +122,20 @@ public class AccumulateNode extends BetaNode {
             if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
                 if ( this.unwrapRightObject ) {
                     // if there is a subnetwork, handle must be unwrapped
-                    handle = ((ReteTuple) handle.getObject()).getLastHandle();
+                    ReteTuple tuple = (ReteTuple) handle.getObject(); 
+                    handle = tuple.getLastHandle();
+                    this.accumulate.accumulate( memory.workingMemoryContext,
+                                                accContext,
+                                                tuple,
+                                                handle,
+                                                workingMemory );
+                } else {
+                    this.accumulate.accumulate( memory.workingMemoryContext,
+                                                accContext,
+                                                leftTuple,
+                                                handle,
+                                                workingMemory );
                 }
-                this.accumulate.accumulate( memory.workingMemoryContext,
-                                            accContext,
-                                            leftTuple,
-                                            handle,
-                                            workingMemory );
             }
         }
 
@@ -302,9 +308,11 @@ public class AccumulateNode extends BetaNode {
             accresult.handle = null;
         }
 
+        ReteTuple tuple = leftTuple;
         if ( this.unwrapRightObject ) {
             // if there is a subnetwork, handle must be unwrapped
-            handle = ((ReteTuple) handle.getObject()).getLastHandle();
+            tuple = (ReteTuple) handle.getObject();
+            handle = tuple.getLastHandle();
         }
 
         if ( context.getType() == PropagationContext.ASSERTION ) {
@@ -322,7 +330,7 @@ public class AccumulateNode extends BetaNode {
 
             this.accumulate.accumulate( memory.workingMemoryContext,
                                         accresult.context,
-                                        leftTuple,
+                                        tuple,
                                         handle,
                                         workingMemory );
         } else if ( context.getType() == PropagationContext.MODIFICATION ) {
@@ -330,13 +338,13 @@ public class AccumulateNode extends BetaNode {
             if ( isAssert ) {
                 this.accumulate.accumulate( memory.workingMemoryContext,
                                             accresult.context,
-                                            leftTuple,
+                                            tuple,
                                             handle,
                                             workingMemory );
             } else {
                 this.accumulate.reverse( memory.workingMemoryContext,
                                          accresult.context,
-                                         leftTuple,
+                                         tuple,
                                          handle,
                                          workingMemory );
             }
@@ -344,7 +352,7 @@ public class AccumulateNode extends BetaNode {
             // retraction
             this.accumulate.reverse( memory.workingMemoryContext,
                                      accresult.context,
-                                     leftTuple,
+                                     tuple,
                                      handle,
                                      workingMemory );
         }

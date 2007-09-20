@@ -571,7 +571,7 @@ public class AccumulateTest extends TestCase {
         Assert.assertEquals( new Integer( 15 ),
                              results.get( 0 ) );
     }
-    
+
     public void testAccumulateReturningNull() throws Exception {
 
         // read in the source
@@ -584,19 +584,20 @@ public class AccumulateTest extends TestCase {
         wm.setGlobal( "results",
                       results );
 
-        try { 
-            wm.insert( new Cheese( "stilton", 10 ) );
-            
-            fail( "Should have raised an exception because accumulate is returning null");
-        } catch( RuntimeDroolsException rde ) {
+        try {
+            wm.insert( new Cheese( "stilton",
+                                   10 ) );
+
+            fail( "Should have raised an exception because accumulate is returning null" );
+        } catch ( RuntimeDroolsException rde ) {
             // success, working fine
-        } catch( Exception e ) {
+        } catch ( Exception e ) {
             e.printStackTrace();
-            fail( "Should have raised a DroolsRuntimeException instead of "+e);
+            fail( "Should have raised a DroolsRuntimeException instead of " + e );
         }
 
     }
-    
+
     public void testAccumulateReturningNullMVEL() throws Exception {
 
         // read in the source
@@ -609,59 +610,76 @@ public class AccumulateTest extends TestCase {
         wm.setGlobal( "results",
                       results );
 
-        try { 
-            wm.insert( new Cheese( "stilton", 10 ) );
-            
-            fail( "Should have raised an exception because accumulate is returning null");
-        } catch( RuntimeDroolsException rde ) {
+        try {
+            wm.insert( new Cheese( "stilton",
+                                   10 ) );
+
+            fail( "Should have raised an exception because accumulate is returning null" );
+        } catch ( RuntimeDroolsException rde ) {
             // success, working fine
-        } catch( Exception e ) {
+        } catch ( Exception e ) {
             e.printStackTrace();
-            fail( "Should have raised a DroolsRuntimeException instead of "+e);
+            fail( "Should have raised a DroolsRuntimeException instead of " + e );
         }
 
     }
-    
+
     public void testAccumulateSumJava() throws Exception {
         execTestAccumulateSum( "test_AccumulateSum.drl" );
     }
-     
+
     public void testAccumulateSumMVEL() throws Exception {
         execTestAccumulateSum( "test_AccumulateSumMVEL.drl" );
     }
-    
+
+    public void testAccumulateMultiPatternWithFunctionJava() throws Exception {
+        execTestAccumulateSum( "test_AccumulateMultiPatternFunctionJava.drl" );
+    }
+
+    public void testAccumulateMultiPatternWithFunctionMVEL() throws Exception {
+        execTestAccumulateSum( "test_AccumulateMultiPatternFunctionMVEL.drl" );
+    }
+
     public void testAccumulateCountJava() throws Exception {
         execTestAccumulateCount( "test_AccumulateCount.drl" );
     }
-    
+
     public void testAccumulateCountMVEL() throws Exception {
         execTestAccumulateCount( "test_AccumulateCountMVEL.drl" );
     }
-    
+
     public void testAccumulateAverageJava() throws Exception {
         execTestAccumulateAverage( "test_AccumulateAverage.drl" );
     }
-     
+
     public void testAccumulateAverageMVEL() throws Exception {
         execTestAccumulateAverage( "test_AccumulateAverageMVEL.drl" );
     }
-     
+
     public void testAccumulateMinJava() throws Exception {
         execTestAccumulateMin( "test_AccumulateMin.drl" );
     }
-     
+
     public void testAccumulateMinMVEL() throws Exception {
         execTestAccumulateMin( "test_AccumulateMinMVEL.drl" );
     }
-     
+
     public void testAccumulateMaxJava() throws Exception {
         execTestAccumulateMax( "test_AccumulateMax.drl" );
     }
-     
+
     public void testAccumulateMaxMVEL() throws Exception {
         execTestAccumulateMax( "test_AccumulateMaxMVEL.drl" );
     }
-     
+
+    public void testAccumulateMultiPatternJava() throws Exception {
+        execTestAccumulateReverseModifyMultiPattern( "test_AccumulateMultiPattern.drl" );
+    }
+
+    public void testAccumulateMultiPatternMVEL() throws Exception {
+        execTestAccumulateReverseModifyMultiPattern( "test_AccumulateMultiPatternMVEL.drl" );
+    }
+    
     public void execTestAccumulateSum(String fileName) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
@@ -678,8 +696,8 @@ public class AccumulateTest extends TestCase {
                                                                           10 ), new Cheese( "stilton",
                                                                                             9 ), new Cheese( "brie",
                                                                                                              11 ), new Cheese( "brie",
-                                                                                                                              4 ), new Cheese( "provolone",
-                                                                                                                                               8 )};
+                                                                                                                               4 ), new Cheese( "provolone",
+                                                                                                                                                8 )};
         final Person bob = new Person( "Bob",
                                        "stilton" );
 
@@ -729,7 +747,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void execTestAccumulateCount( String fileName ) throws Exception {
+    public void execTestAccumulateCount(String fileName) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -868,7 +886,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void execTestAccumulateMin( String fileName ) throws Exception {
+    public void execTestAccumulateMin(String fileName) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -937,7 +955,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void execTestAccumulateMax( String fileName ) throws Exception {
+    public void execTestAccumulateMax(String fileName) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -998,6 +1016,77 @@ public class AccumulateTest extends TestCase {
         // ---------------- 4th scenario
         wm.retract( cheeseHandles[3] );
         wm.retract( cheeseHandles[4] );
+        wm.fireAllRules();
+
+        // should not have fired as per constraint
+        Assert.assertEquals( 2,
+                             results.size() );
+
+    }
+
+    public void execTestAccumulateReverseModifyMultiPattern( String fileName ) throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+                                                         10 ), new Cheese( "stilton",
+                                                                           2 ), new Cheese( "stilton",
+                                                                                            5 ), new Cheese( "brie",
+                                                                                                             15 ), new Cheese( "brie",
+                                                                                                                               16 ), new Cheese( "provolone",
+                                                                                                                                                 8 )};
+        final Person bob = new Person( "Bob",
+                                       "stilton" );
+        final Person mark = new Person( "Mark",
+                                        "provolone" );
+
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        for ( int i = 0; i < cheese.length; i++ ) {
+            cheeseHandles[i] = wm.insert( cheese[i] );
+        }
+        final FactHandle bobHandle = wm.insert( bob );
+        final FactHandle markHandle = wm.insert( mark );
+
+        // ---------------- 1st scenario
+        wm.fireAllRules();
+        // no fire, as per rule constraints
+        Assert.assertEquals( 0,
+                             results.size() );
+
+        // ---------------- 2nd scenario
+        final int index = 1;
+        cheese[index].setPrice( 9 );
+        wm.update( cheeseHandles[index],
+                   cheese[index] );
+        wm.fireAllRules();
+
+        // 1 fire
+        Assert.assertEquals( 1,
+                             results.size() );
+        Assert.assertEquals( 32,
+                             ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
+
+        // ---------------- 3rd scenario
+        bob.setLikes( "brie" );
+        wm.update( bobHandle,
+                   bob );
+        wm.fireAllRules();
+
+        // 2 fires
+        Assert.assertEquals( 2,
+                             results.size() );
+        Assert.assertEquals( 39,
+                             ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
+
+        // ---------------- 4th scenario
+        wm.retract( cheeseHandles[3] );
         wm.fireAllRules();
 
         // should not have fired as per constraint

@@ -110,7 +110,7 @@ public class AccumulateTemplateTest extends TestCase {
         //System.out.println( method );
     }
 
-    public void testInvokerGeneration() {
+    public void testInvokerGenerationSinglePattern() {
         final String className = "accumulate0";
 
         final String[] declarationTypes = new String[]{"String", "int"};
@@ -185,6 +185,91 @@ public class AccumulateTemplateTest extends TestCase {
 
         map.put( "hashCode",
                  new Integer( 10 ) );
+        map.put( "isMultiPattern", Boolean.FALSE );
+
+        TemplateRegistry registry = getInvokerTemplateRegistry();
+        Object method = TemplateInterpreter.parse( registry.getTemplate( "accumulateInvoker" ),
+                                                   null,
+                                                   map,
+                                                   registry );
+
+        //System.out.println( method );
+    }
+
+    public void testInvokerGenerationMultiPattern() {
+        final String className = "accumulate0";
+
+        final String[] declarationTypes = new String[]{"String", "int"};
+        final Declaration[] declarations = new Declaration[]{new Declaration( "name",
+                                                                              ClassFieldExtractorCache.getExtractor( Person.class,
+                                                                                                                     "name",
+                                                                                                                     getClass().getClassLoader() ),
+                                                                              null ), new Declaration( "age",
+                                                                                                       ClassFieldExtractorCache.getExtractor( Person.class,
+                                                                                                                                              "age",
+                                                                                                                                              getClass().getClassLoader() ),
+                                                                                                       null )};
+        final Declaration[] inner = new Declaration[]{new Declaration( "$cheese",
+                                                                       new PatternExtractor( new ClassObjectType( Cheese.class ) ),
+                                                                       null ), new Declaration( "$person",
+                                                                                                new PatternExtractor( new ClassObjectType ( Person.class ) ),
+                                                                                                null ) };
+        final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
+        final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
+
+        final Map map = new HashMap();
+
+        map.put( "className",
+                 StringUtils.ucFirst( className ) );
+
+        map.put( "instanceName",
+                 className );
+
+        map.put( "package",
+                 "org.drools" );
+
+        map.put( "ruleClassName",
+                 "Rule0" );
+
+        map.put( "invokerClassName",
+                 "Rule0" + StringUtils.ucFirst( className ) + "Invoker" );
+
+        map.put( "declarations",
+                 declarations );
+
+        map.put( "declarationTypes",
+                 declarationTypes );
+
+        map.put( "globals",
+                 globals );
+
+        map.put( "globalTypes",
+                 globalTypes );
+
+        map.put( "innerDeclarations",
+                 inner );
+
+        map.put( "attributes",
+                 new Attribute[]{new Attribute( "int",
+                                                "x" )} );
+        map.put( "initCode",
+                 "x = 0;" );
+        map.put( "actionCode",
+                 "x += 1;" );
+        map.put( "reverseCode",
+                 "" );
+        map.put( "resultCode",
+                 "x + 10" );
+
+        map.put( "supportsReverse",
+                 "false" );
+
+        map.put( "resultType",
+                 Integer.class );
+
+        map.put( "hashCode",
+                 new Integer( 10 ) );
+        map.put( "isMultiPattern", Boolean.TRUE );
 
         TemplateRegistry registry = getInvokerTemplateRegistry();
         Object method = TemplateInterpreter.parse( registry.getTemplate( "accumulateInvoker" ),

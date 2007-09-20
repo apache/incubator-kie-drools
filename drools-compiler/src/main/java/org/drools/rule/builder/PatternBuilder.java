@@ -177,6 +177,7 @@ public class PatternBuilder
 
         // poping the pattern
         context.getBuildStack().pop();
+
         return pattern;
     }
 

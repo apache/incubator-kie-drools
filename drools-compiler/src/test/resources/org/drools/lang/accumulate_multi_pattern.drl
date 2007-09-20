@@ -1,0 +1,8 @@
+rule "AccumulateMultiPatternParserTest"
+when
+     $counter:Integer() from accumulate( $person : Person( age > 21 ) and Cheese( type == $person.likes ),
+                                         init( int x = 0; ),
+                                         action( x++; ),
+                                         result( new Integer(x) ) );
+then
+end

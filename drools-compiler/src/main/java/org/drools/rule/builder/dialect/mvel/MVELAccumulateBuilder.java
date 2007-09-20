@@ -27,16 +27,14 @@ import org.drools.base.mvel.MVELAccumulator;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.spi.Accumulator;
-import org.mvel.MVEL;
 
 /**
  * A builder for the java dialect accumulate version
@@ -60,22 +58,26 @@ public class MVELAccumulateBuilder
 
         final AccumulateDescr accumDescr = (AccumulateDescr) descr;
 
-        final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
+        if( ! accumDescr.hasValidInput() ) {
+            return null;
+        }
 
-        // create source pattern
-        final Pattern sourcePattern = (Pattern) patternBuilder.build( context,
-                                                                      accumDescr.getInputPattern() );
+        final RuleConditionBuilder builder = context.getDialect().getBuilder( accumDescr.getInput().getClass() );
 
-        if ( sourcePattern == null ) {
+        // create source CE
+        final RuleConditionElement source = builder.build( context,
+                                                           accumDescr.getInput() );
+
+        if ( source == null ) {
             return null;
         }
 
         MVELDialect dialect = (MVELDialect) context.getDialect();
 
-        final Declaration[] sourceDeclArr = (Declaration[]) sourcePattern.getOuterDeclarations().values().toArray( new Declaration[0] );
+        final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
 
         final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
-                                                                 sourcePattern.getOuterDeclarations(),
+                                                                 source.getOuterDeclarations(),
                                                                  context.getPkg().getGlobals() );
 
         Accumulator accumulator = null;
@@ -96,7 +98,7 @@ public class MVELAccumulateBuilder
             final Serializable expression = dialect.compile( (String) accumDescr.getExpression(),
                                                              analysis,
                                                              null,
-                                                             sourcePattern.getOuterDeclarations(),
+                                                             source.getOuterDeclarations(),
                                                              context );
 
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
@@ -141,12 +143,12 @@ public class MVELAccumulateBuilder
             final Serializable init = dialect.compile( (String) accumDescr.getInitCode(),
                                                        initCodeAnalysis,
                                                        null,
-                                                       sourcePattern.getOuterDeclarations(),
+                                                       source.getOuterDeclarations(),
                                                        context );
             final Serializable action = dialect.compile( (String) accumDescr.getActionCode(),
                                                          actionCodeAnalysis,
                                                          null,
-                                                         sourcePattern.getOuterDeclarations(),
+                                                         source.getOuterDeclarations(),
                                                          context );
 
             Serializable reverse = null;
@@ -154,14 +156,14 @@ public class MVELAccumulateBuilder
                 reverse = dialect.compile( (String) accumDescr.getReverseCode(),
                                            resultCodeAnalysis,
                                            null,
-                                           sourcePattern.getOuterDeclarations(),
+                                           source.getOuterDeclarations(),
                                            context );
             }
 
             final Serializable result = dialect.compile( (String) accumDescr.getResultCode(),
                                                          resultCodeAnalysis,
                                                          null,
-                                                         sourcePattern.getOuterDeclarations(),
+                                                         source.getOuterDeclarations(),
                                                          context );
 
             accumulator = new MVELAccumulator( factory,
@@ -172,7 +174,7 @@ public class MVELAccumulateBuilder
 
         }
 
-        final Accumulate accumulate = new Accumulate( sourcePattern,
+        final Accumulate accumulate = new Accumulate( source,
                                                       declarations,
                                                       sourceDeclArr,
                                                       accumulator );

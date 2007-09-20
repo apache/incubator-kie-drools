@@ -29,40 +29,40 @@ import org.drools.spi.Tuple;
  * A class to represent the Accumulate CE
  */
 public class Accumulate extends ConditionalElement
-    implements PatternSource  
-    {
+    implements
+    PatternSource {
 
-    private static final long serialVersionUID = 400L;
+    private static final long    serialVersionUID = 400L;
 
-    private Accumulator       accumulator;
-    private Pattern           sourcePattern;
-    private Declaration[]     requiredDeclarations;
-    private Declaration[]     innerDeclarations;
+    private Accumulator          accumulator;
+    private RuleConditionElement source;
+    private Declaration[]        requiredDeclarations;
+    private Declaration[]        innerDeclarations;
 
-    public Accumulate(final Pattern sourcePattern) {
+    public Accumulate(final RuleConditionElement source) {
 
-        this( sourcePattern,
+        this( source,
               new Declaration[0],
               new Declaration[0],
               null );
     }
 
-    public Accumulate(final Pattern sourcePattern,
+    public Accumulate(final RuleConditionElement source,
                       final Declaration[] requiredDeclarations,
                       final Declaration[] innerDeclarations) {
 
-        this( sourcePattern,
+        this( source,
               requiredDeclarations,
               innerDeclarations,
               null );
     }
 
-    public Accumulate(final Pattern sourcePattern,
+    public Accumulate(final RuleConditionElement source,
                       final Declaration[] requiredDeclarations,
                       final Declaration[] innerDeclarations,
                       final Accumulator accumulator) {
 
-        this.sourcePattern = sourcePattern;
+        this.source = source;
         this.requiredDeclarations = requiredDeclarations;
         this.innerDeclarations = innerDeclarations;
         this.accumulator = accumulator;
@@ -182,7 +182,7 @@ public class Accumulate extends ConditionalElement
             throw new RuntimeDroolsException( e );
         }
     }
-    
+
     /**
      * Returns true if this accumulate supports reverse
      * @return
@@ -192,18 +192,18 @@ public class Accumulate extends ConditionalElement
     }
 
     public Object clone() {
-        return new Accumulate( this.sourcePattern,
+        return new Accumulate( this.source,
                                this.requiredDeclarations,
                                this.innerDeclarations,
                                this.accumulator );
     }
 
-    public Pattern getSourcePattern() {
-        return this.sourcePattern;
+    public RuleConditionElement getSource() {
+        return this.source;
     }
 
     public Map getInnerDeclarations() {
-        return this.sourcePattern.getInnerDeclarations();
+        return this.source.getInnerDeclarations();
     }
 
     public Map getOuterDeclarations() {
@@ -214,9 +214,9 @@ public class Accumulate extends ConditionalElement
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {
-        return (Declaration) this.sourcePattern.getInnerDeclarations().get( identifier );
+        return (Declaration) this.source.getInnerDeclarations().get( identifier );
     }
-    
+
     public Object createWorkingMemoryContext() {
         return this.accumulator.createWorkingMemoryContext();
     }
