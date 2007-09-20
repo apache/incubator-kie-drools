@@ -23,7 +23,7 @@
 </programlisting>
 
     <para>The "Hello World" example shows a simple example of rules usage, and
-    both the MVEL dialect and Java dialect. </para>
+    both the MVEL dialect and Java dialect.</para>
 
     <para>In this example it will be shown how to build rulebases and sessions
     and how to add audit logging and debug outputs, this information is
@@ -834,8 +834,32 @@ end
     <section>
       <title>Starting anew</title>
 
-      <para>We simply log the fact that a new ticket has arrived in the
-      system:</para>
+      <para>Loading the initial ticket data:</para>
+
+      <figure>
+        <title>Trouble ticket setup</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="tt_initial.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Referring to the above code, line 27 &amp; 28 refer to logging the
+      "audit trail" out to a file, which will we load up later. Lines 30
+      through 37 are the customers (with their name and subscription class).
+      Lines 39 through 42 are the tickets - note that the ticket takes the
+      customer in the constructor (that sets up the object relationship).
+      Lines 44 through 52 are asserting the data into the engine. Note that in
+      line 51 we keep a fact handle - which we will use to notify the engine
+      that that specific ticket changed later on. Line 54 has the all
+      important fireAllRules(), which tells the engine to take action on the
+      data it has.</para>
+
+      <para>We have the "New Ticket" rule which has the highest priority
+      (salience of 10 - the default is zero), The purpose of this is simply to
+      log the fact that a new ticket has arrived in the system:</para>
 
       <programlisting>
 rule "New Ticket"
@@ -860,9 +884,53 @@ end
       to a customer, we may be interested in looking at tickets from different
       customers of the same type in the future).</para>
 
+      <para>If we run the rules, we should expect that the "New Ticket" rule
+      will be activated for all tickets, so looking at the audit log view (by
+      opening the file which was saved automatically when the rules were
+      run):</para>
+
+      <figure>
+        <title>Audit view</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="tt_audit_view.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Referring to the above audit log, we can see each customer
+      asserted, but nothing happens. As soon as the first ticket gets
+      asserted, it joins it with the customer, and creates some activations:
+      one is the "new ticket" rule, the other is for the appropriate priority
+      (which we will show below). Note that items in the above view do not
+      mean the rule fired at that point.</para>
+
       <para>Also, don't forget to use "fireAllRules()" - a common mistake !
       (In this case we are using a statefull session, so this is
       necessary).</para>
+
+      <para>If we run the rules, we should expect that the "New Ticket" rule
+      will be activated for all tickets, so looking at the audit log view (by
+      opening the file which was saved automatically when the rules were
+      run):</para>
+
+      <figure>
+        <title>Audit view</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="tt_audit_view.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Referring to the above audit log, we can see each customer
+      asserted, but nothing happens. As soon as the first ticket gets
+      asserted, it joins it with the customer, and creates some activations:
+      one is the "new ticket" rule, the other is for the appropriate priority
+      (which we will show below). Note that items in the above view do not
+      mean the rule fired at that point.</para>
     </section>
 
     <section>
@@ -971,6 +1039,42 @@ Done : [Ticket [Customer C : Silver] : Done]
 Email : [Ticket [Customer D : Silver] : Escalate]
 [[ awake ]]
     </programlisting>
+
+      <figure>
+        <title>Audit log</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="tt_audit_firing.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Referring to the above audit log, we can see the events as they
+      happen. Once the rules start firing, the first items are the "Activation
+      Executed" for the new tickets, as expected (they do nothing, just log
+      the fact). Note the "Activation executed" item for the platinum ticket -
+      that is the next one to go (remember it has the default salience, so it
+      happens after the "New ticket" rule, but otherwise it is immediate -
+      there is no "duration" delay for it). The platinum activation results in
+      a Object modification (which is the escalation) - this in turn creates
+      an activation record for the "escalate ticket" rule - which is what we
+      wanted. Straight after that it executes the action to escalate the
+      ticket.</para>
+
+      <para>The next event to occur is due to the: <programlisting>t3.setStatus( "Done" );
+
+session.update( ft3,
+                t3 );
+</programlisting> in the code (outside of rules) - this simulates a customer
+      service officer maarking a ticket as done (and of course, uses the fact
+      handle we kept from before). This results in a cancelled activation (as
+      we no longer have a New Silvert customer ticket - it is done) and a new
+      activation to log the fact it was done.</para>
+
+      <para>In all the excitement, in parallel the engine has been watching
+      the time pass, and it happens that the Gold tickets start to escalate,
+      and then silver (as expected).</para>
     </section>
   </section>
 
