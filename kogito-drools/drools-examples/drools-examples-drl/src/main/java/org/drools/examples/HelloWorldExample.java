@@ -6,7 +6,13 @@ import java.io.Reader;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.audit.WorkingMemoryFileLogger;
+import org.drools.common.DefaultAgenda;
 import org.drools.compiler.PackageBuilder;
+import org.drools.event.DebugAgendaEventListener;
+import org.drools.event.DebugWorkingMemoryEventListener;
+import org.drools.event.DefaultAgendaEventListener;
+import org.drools.event.DefaultWorkingMemoryEventListener;
 import org.drools.rule.Package;
 
 /**
@@ -15,40 +21,19 @@ import org.drools.rule.Package;
 public class HelloWorldExample {
 
     public static final void main(final String[] args) throws Exception {
-            //load up the rulebase
-            final RuleBase ruleBase = readRule();
-            final StatefulSession session = ruleBase.newStatefulSession();
-
-            //go !
-            final Message message = new Message();
-            message.setMessage( "Hello World" );
-            message.setStatus( Message.HELLO );
-            session.insert( message );
-            session.fireAllRules();
-            session.dispose();
-    }
-
-    /**
-     * Please note that this is the "low level" rule assembly API.
-     */
-    private static RuleBase readRule() throws Exception {
         //read in the source
         final Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
-
-        //optionally read in the DSL (if you are using it).
-        //Reader dsl = new InputStreamReader( DroolsTest.class.getResourceAsStream( "/mylang.dsl" ) );
-
-        //Use package builder to build up a rule package.
-        //An alternative lower level class called "DrlParser" can also be used...
 
         final PackageBuilder builder = new PackageBuilder();
 
         //this wil parse and compile in one step
-        //NOTE: There are 2 methods here, the one argument one is for normal DRL.
         builder.addPackageFromDrl( source );
-
-        //Use the following instead of above if you are using a DSL:
-        //builder.addPackageFromDrl( source, dsl );
+        
+        // Check the builder for errors
+        if ( builder.hasErrors() ) {
+            System.out.println( builder.getErrors().toString() );
+            throw new RuntimeException( "Unable to compile \"HelloWorld.drl\".");
+        }
 
         //get the compiled package (which is serializable)
         final Package pkg = builder.getPackage();
@@ -56,7 +41,25 @@ public class HelloWorldExample {
         //add the package to a rulebase (deploy the rule package).
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkg );
-        return ruleBase;
+
+        final StatefulSession session = ruleBase.newStatefulSession();
+        
+        session.addEventListener( new DebugAgendaEventListener() );
+        session.addEventListener( new DebugWorkingMemoryEventListener() );
+        
+        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        logger.setFileName( "log/helloworld" );        
+
+        final Message message = new Message();
+        message.setMessage( "Hello World" );
+        message.setStatus( Message.HELLO );
+        session.insert( message );
+        
+        session.fireAllRules();
+        
+        logger.writeToDisk();
+        
+        session.dispose();
     }
 
     public static class Message {
@@ -68,9 +71,9 @@ public class HelloWorldExample {
         private int             status;
 
         public Message() {
-        	
+
         }
-        
+
         public String getMessage() {
             return this.message;
         }
