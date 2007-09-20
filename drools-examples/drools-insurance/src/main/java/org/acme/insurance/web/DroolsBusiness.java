@@ -105,6 +105,7 @@ public class DroolsBusiness {
 				+ driverMale.getInsuranceFactor());
 		System.out.println("Is Approved     : " + policy.isApproved());
 		System.out.println("Insurance Price :" + policy.getInsurancePrice());
-
+		
+		session.dispose();
 	}
 }
