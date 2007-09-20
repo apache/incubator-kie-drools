@@ -9,18 +9,14 @@ public class InsuranceSessionHelper {
     private static StatefulSession session;
     
     private InsuranceSessionHelper(){
-        
     }
 
     public static StatefulSession getSession() {
     	
-    	if (rulebase == null ) { 
-	        try {
-	        	rulebase = loadRuleBaseFromRuleAgent();
-	        } catch ( Exception e ) {
-	            e.printStackTrace();
-	        }
+    	if ( rulebase == null ) { 
+    		rulebase = loadRuleBaseFromRuleAgent();
     	}
+    	
         session = rulebase.newStatefulSession();
         session.startProcess( "insuranceProcess" );
         return session;
@@ -31,33 +27,4 @@ public class InsuranceSessionHelper {
         RuleBase rulebase = agent.getRuleBase();
         return rulebase;
     }
-
-
-// Use the following methods to load the rulebase from the drl files    
-    
-//    private RuleBase loadRuleBaseFromDRL() throws Exception {
-//
-//        PackageBuilder builder = new PackageBuilder();
-//        builder.addPackageFromDrl( getTechnicalRules( "/approval/insurancefactor.drl" ) );
-//        builder.addPackageFromDrl( getTechnicalRules( "/approval/approval.drl" ) );
-//        builder.addPackageFromDrl( getTechnicalRules( "/approval/calculateInsurance.drl" ) );
-//        builder.addPackageFromDrl( getTechnicalRules( "/approval/marginalage.dslr" ),
-//                                   getTechnicalRules( "/approval/acme.dsl" ) );
-//        builder.addRuleFlow( getTechnicalRules( "/approval/insurance-process.rfm" ) );
-//
-//        
-//
-//        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-//        ruleBase.addPackage( builder.getPackage() );
-//        return ruleBase;
-//    }
-
-//    private Reader getTechnicalRules(String name) {
-//
-//        InputStream stream = this.getClass().getResourceAsStream( name );
-//
-//        return new InputStreamReader( stream );
-//
-//    }
-
 }

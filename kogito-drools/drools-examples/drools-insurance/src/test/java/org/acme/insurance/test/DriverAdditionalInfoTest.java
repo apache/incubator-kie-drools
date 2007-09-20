@@ -27,7 +27,7 @@ public class DriverAdditionalInfoTest extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-//        session.dispose();
+        session.dispose();
     }
 
     public void testDriveVehiclePlace() throws 

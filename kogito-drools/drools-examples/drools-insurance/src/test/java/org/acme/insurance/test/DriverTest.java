@@ -29,7 +29,7 @@ public class DriverTest extends TestCase {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        //session.dispose();
+        session.dispose();
     }
 
     public void testDriverGenreFactor() throws
