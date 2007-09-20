@@ -23,8 +23,125 @@
 </programlisting>
 
     <para>The "Hello World" example shows a simple example of rules usage, and
-    both the MVEL dialect and Java dialect. Lets take a quick look at the
-    rules.</para>
+    both the MVEL dialect and Java dialect. </para>
+
+    <para>In this example it will be shown how to build rulebases and sessions
+    and how to add audit logging and debug outputs, this information is
+    ommitted from other examples as it's all very similar. PackageBuilder is
+    used to turn a drl source file into something the RuleBase can consume,
+    addPackageFromDrl takes a Reader as the parameter. Reader can be used to
+    retrieve a source drl file from various locations, in this case the drl
+    file is being retrieved from the classpath; but it could come the disk or
+    a url. The use of the Reader interface means that Drools does not have to
+    care. In this case we only add a single drl source file, but multiple drl
+    files can be added and all are merged into a single Package. All drl files
+    added to the PackageBuilder must declare themselves in the same package
+    namespace, if you wish to build a Package in a different namespace a new
+    instalce of PackageBuilder must be created; multiple packages of
+    differerent namespaces can be added to the same RuleBase. When all the drl
+    files have been added we should check the builder for errors; while the
+    RuleBase will validate the packge it will only have access to the error
+    information as a String, so if you wish to debug the error information you
+    sould do it on the builder instance. Once we know the builder is error
+    free get the Package, instantiate a RuleBase from the RuleBaseFactory and
+    add the package.</para>
+
+    <example>
+      <title>HelloWorld example: Creating the RuleBase and Session</title>
+
+      <programlisting>//read in the source
+Reader source = new InputStreamReader( HelloWorldExample.class.getResourceAsStream( "HelloWorld.drl" ) );
+
+PackageBuilder builder = new PackageBuilder();
+
+//this wil parse and compile in one step
+builder.addPackageFromDrl( source );
+
+// Check the builder for errors
+if ( builder.hasErrors() ) {
+    System.out.println( builder.getErrors().toString() );
+    throw new RuntimeException( "Unable to compile \"HelloWorld.drl\".");
+}
+
+//get the compiled package (which is serializable)
+Package pkg = builder.getPackage();
+
+//add the package to a rulebase (deploy the rule package).
+RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+ruleBase.addPackage( pkg );
+
+StatefulSession session = ruleBase.newStatefulSession();</programlisting>
+    </example>
+
+    <para>Drools has an event model that exposes much of whats happening
+    internally, two default listeners are supplied DebugAgendaEventListener
+    and DebugWorkingMemoryEventListener which print out debug event
+    information to the err console, adding listeners to a session is trivial
+    and shown below. The WorkingMemoryFileLogger provides execution auditing
+    which can be viewed in a graphical viewer; it's actually a specialised
+    implementation built on the agenda and working memory event model, when
+    the engine has finished executing logger.writeToDisk() must be
+    called.</para>
+
+    <para>Most of the examples use the Audit logging features of drools to
+    record execution flow for later inspection.</para>
+
+    <example>
+      <title>HelloWorld example: Event logging and Auditing</title>
+
+      <programlisting>session.addEventListener( new DebugAgendaEventListener() );
+session.addEventListener( new DebugWorkingMemoryEventListener() );
+        
+WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+logger.setFileName( "log/helloworld" );     </programlisting>
+    </example>
+
+    <para>The single class used in this example is very simple, it has two
+    fields: the message, which is a String and the status which can be either
+    the int HELLO or the int GOODBYE.</para>
+
+    <example>
+      <title>HelloWorld example: Message Class</title>
+
+      <programlisting>public static class Message {
+    public static final int HELLO   = 0;
+    public static final int GOODBYE = 1;
+
+    private String          message;
+    private int             status; 
+    ...
+}</programlisting>
+    </example>
+
+    <para>A single Message object is created with the messgae "Hello World"
+    and status HELLO and then inserted into the engine, at which point
+    fireAllRules() is executed. Remember all the network evaluation is done
+    during the insert time, by the time the program execution reaches the
+    fireAllRules() method it already knows which rules are fully matches and
+    able to fire. In the case of the example below there is a single
+    activation for the rule "Hello World".</para>
+
+    <example>
+      <title>HelloWorld example: Execution</title>
+
+      <programlisting>        final Message message = new Message();
+        message.setMessage( "Hello World" );
+        message.setStatus( Message.HELLO );
+        session.insert( message );
+        
+        session.fireAllRules();
+        
+        logger.writeToDisk();
+        
+        session.dispose();    </programlisting>
+    </example>
+
+    <para>The "Hello World" rule is very simple it creates two variable
+    bindings, called declarations. One on the Pattern object itself, "m", and
+    the other on the field "message". The rule alos has a single literal field
+    constraint that restricts against the int style enum Message.HELLO. When
+    this rule fires it outputs the current objects message and sets a new
+    message and status.</para>
 
     <example>
       <title>HelloWorld example: rule "Hello World"</title>
