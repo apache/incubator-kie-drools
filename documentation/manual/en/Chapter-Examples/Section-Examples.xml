@@ -866,9 +866,9 @@ rule "New Ticket"
  salience 10
  when
   customer : Customer( )
-  ticket : Ticket( customer == customer, status == "New" )	
+  ticket : Ticket( customer == customer, status == "New" )
   then
- System.out.println( "New : " + ticket );		
+ System.out.println( "New : " + ticket );
 end
     </programlisting>
 
