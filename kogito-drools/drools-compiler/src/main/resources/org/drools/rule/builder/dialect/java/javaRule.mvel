@@ -40,10 +40,9 @@ public static class @{className} {
                            org.drools.rule.Declaration[] innerDeclarations, 
                            Object object @if{declarations != empty}, @end{}
                            @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
-                           @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}
+                           @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
+                           @foreach{innerDeclarations as declr}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                            ) throws Exception {
-        @foreach{innerDeclarations as declr} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, object );
-        @end{}
         @{actionCode}
     }
     
@@ -51,10 +50,9 @@ public static class @{className} {
                            org.drools.rule.Declaration[] innerDeclarations, 
                            Object object @if{declarations != empty}, @end{}
                            @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
-                           @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}
+                           @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
+                           @foreach{innerDeclarations as declr}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                            ) throws Exception {
-        @foreach{innerDeclarations as declr} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, object );
-        @end{}
         @{reverseCode}
     }
     

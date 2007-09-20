@@ -25,11 +25,12 @@ import java.util.List;
 public class AccumulateDescr extends PatternSourceDescr
     implements
     ConditionalElementDescr,
-    PatternDestinationDescr {
+    PatternDestinationDescr,
+    MultiPatternDestinationDescr {
 
     private static final long serialVersionUID = 400L;
 
-    private PatternDescr      inputPattern;
+    private BaseDescr         input;
     private String            initCode;
     private String            actionCode;
     private String            reverseCode;
@@ -39,9 +40,9 @@ public class AccumulateDescr extends PatternSourceDescr
     private boolean           externalFunction = false;
     private String            functionIdentifier;
     private String            expression;
-
+    
     public int getLine() {
-        return this.inputPattern.getLine();
+        return this.input.getLine();
     }
 
     public String getClassName() {
@@ -85,7 +86,7 @@ public class AccumulateDescr extends PatternSourceDescr
     }
 
     public String toString() {
-        return "[Accumulate: input=" + this.inputPattern.getIdentifier() + "; objectType=" + this.inputPattern.getObjectType() + "]";
+        return "[Accumulate: input=" + this.input.toString() + "]";
     }
 
     public void addDescr(final BaseDescr patternDescr) {
@@ -138,11 +139,34 @@ public class AccumulateDescr extends PatternSourceDescr
     }
 
     public PatternDescr getInputPattern() {
-        return this.inputPattern;
+        if( isSinglePattern() ) {
+            return (PatternDescr) this.input;
+        }
+        return null;
     }
 
     public void setInputPattern(final PatternDescr inputPattern) {
-        this.inputPattern = inputPattern;
+        this.input = inputPattern;
     }
 
+    public BaseDescr getInput() {
+        return input;
+    }
+
+    public void setInput(BaseDescr input) {
+        this.input = input; 
+    }
+    
+    public boolean isSinglePattern() {
+        return this.input instanceof PatternDescr; 
+    }
+
+    public boolean isMultiPattern() {
+        return ! ( this.input instanceof PatternDescr ); 
+    }
+
+    public boolean hasValidInput() {
+        // TODO: need to check that there are no OR occurences 
+        return this.input != null;
+    }
 }

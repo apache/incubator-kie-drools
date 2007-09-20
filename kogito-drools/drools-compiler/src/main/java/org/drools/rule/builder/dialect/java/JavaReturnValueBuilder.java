@@ -28,6 +28,8 @@ public class JavaReturnValueBuilder extends AbstractJavaBuilder
                                          localDeclarations,
                                          (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
 
+        map.put( "readLocalsFromTuple", Boolean.FALSE );
+
         generatTemplates( "returnValueMethod",
                           "returnValueInvoker",
                           context,

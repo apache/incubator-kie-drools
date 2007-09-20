@@ -13,8 +13,6 @@ import java.util.Map.Entry;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ModifyInterceptor;
 import org.drools.base.TypeResolver;
-import org.drools.base.mvel.DroolsMVELFactory;
-import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
 import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.Dialect;
@@ -57,17 +55,10 @@ import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.util.StringUtils;
-import org.mvel.ASTNode;
 import org.mvel.AbstractParser;
 import org.mvel.ExpressionCompiler;
 import org.mvel.ParserContext;
-import org.mvel.ast.WithNode;
-import org.mvel.integration.Interceptor;
-import org.mvel.integration.VariableResolverFactory;
-import org.mvel.integration.impl.ClassImportResolverFactory;
-import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 import org.mvel.optimizers.OptimizerFactory;
-import org.mvel.util.MethodStub;
 import org.mvel.util.ParseTools;
 
 public class MVELDialect
@@ -137,21 +128,20 @@ public class MVELDialect
         OptimizerFactory.setDefaultOptimizer("reflective");
 
         this.analyzer = new MVELExprAnalyzer();
-
-        if ( pkg != null ) {
-            init( pkg );
-        }
-
-        this.results = new ArrayList();
-
-        initBuilder();
+        this.imports = new HashMap();
+        this.packageImports = new HashMap();
 
         this.interceptors = new HashMap( 1 );
         this.interceptors.put( "Modify",
                                new ModifyInterceptor() );
 
-        this.imports = new HashMap();
-        this.packageImports = new HashMap();
+        this.results = new ArrayList();
+
+        if ( pkg != null ) {
+            init( pkg );
+        }
+
+        initBuilder();
     }
 
     public void initBuilder() {
@@ -203,6 +193,9 @@ public class MVELDialect
         this.pkg = pkg;
         this.results = new ArrayList();
         this.src = new MemoryResourceReader();
+        if( this.pkg != null ) {
+            this.addImport( this.pkg.getName()+".*" );
+        }
     }
 
     public void init(RuleDescr ruleDescr) {
@@ -237,8 +230,8 @@ public class MVELDialect
     }
 
     public void addImport(String importEntry) {
-        if ( importEntry.endsWith( "*" ) ) {
-            importEntry = importEntry.substring( 0, importEntry.indexOf( '*' )  );
+        if ( importEntry.endsWith( ".*" ) ) {
+            importEntry = importEntry.substring( 0, importEntry.length()-2  );
             this.packageImports.put( importEntry, importEntry );
         } else {
             try {

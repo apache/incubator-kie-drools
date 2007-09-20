@@ -1006,9 +1006,9 @@ accumulate_statement returns [AccumulateDescr d]
 			$d.setStartCharacter( ((CommonToken)$ACCUMULATE).getStartIndex() );
 			location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE );
 		}	
-		LEFT_PAREN pattern=pattern_source COMMA? 
+		LEFT_PAREN inputCE=lhs_or COMMA? 
 		{
-		        $d.setInputPattern( (PatternDescr) $pattern.d );
+		        $d.setInput( $inputCE.d );
 		}
 		( ( 
 			INIT 

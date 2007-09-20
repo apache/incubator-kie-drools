@@ -3464,6 +3464,41 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    public void testAccumulateMultiPattern() throws Exception {
+        final DRLParser parser = parseResource( "accumulate_multi_pattern.drl" );
+        parser.compilation_unit();
+
+        assertFalse( parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        final PackageDescr pack = parser.getPackageDescr();
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        final PatternDescr outPattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final AccumulateDescr accum = (AccumulateDescr) outPattern.getSource();
+        assertEqualsIgnoreWhitespace( "$counter",
+                                      outPattern.getIdentifier() );
+        assertEqualsIgnoreWhitespace( "int x = 0 ;",
+                                      accum.getInitCode() );
+        assertEqualsIgnoreWhitespace( "x++;",
+                                      accum.getActionCode() );
+        assertEqualsIgnoreWhitespace( "new Integer(x)",
+                                      accum.getResultCode() );
+
+        final AndDescr and = (AndDescr) accum.getInput();
+        assertEquals( 2, and.getDescrs().size() );
+        final PatternDescr person = (PatternDescr) and.getDescrs().get( 0 );
+        final PatternDescr cheese = (PatternDescr) and.getDescrs().get( 1 );
+        assertEquals( "Person",
+                      person.getObjectType() );
+        assertEquals( "Cheese",
+                      cheese.getObjectType() );
+    }
+
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;

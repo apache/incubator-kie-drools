@@ -28,14 +28,13 @@ import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 
 /**
@@ -60,12 +59,16 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
 
         final AccumulateDescr accumDescr = (AccumulateDescr) descr;
 
-        final PatternBuilder patternBuilder = (PatternBuilder) context.getDialect().getBuilder( PatternDescr.class );
+        if ( !accumDescr.hasValidInput() ) {
+            return null;
+        }
 
-        final Pattern sourcePattern = (Pattern) patternBuilder.build( context,
-                                                                      accumDescr.getInputPattern() );
+        final RuleConditionBuilder builder = context.getDialect().getBuilder( accumDescr.getInput().getClass() );
 
-        if ( sourcePattern == null ) {
+        final RuleConditionElement source = builder.build( context,
+                                                           accumDescr.getInput() );
+
+        if ( source == null ) {
             return null;
         }
 
@@ -87,7 +90,7 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
 
             final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
             final String[] requiredGlobals = (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] );
-            final Declaration[] sourceDeclArr = (Declaration[]) sourcePattern.getOuterDeclarations().values().toArray( new Declaration[0] );
+            final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
 
             final String className = "accumulateExpression" + context.getNextId();
 
@@ -97,12 +100,13 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
                                                    previousDeclarations,
                                                    sourceDeclArr,
                                                    requiredGlobals );
+            map.put( "readLocalsFromTuple", accumDescr.isMultiPattern() ? Boolean.TRUE : Boolean.FALSE );
 
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
 
             JavaAccumulatorFunctionExecutor accumulator = new JavaAccumulatorFunctionExecutor( function );
 
-            accumulate = new Accumulate( sourcePattern,
+            accumulate = new Accumulate( source,
                                          previousDeclarations,
                                          sourceDeclArr,
                                          accumulator );
@@ -120,14 +124,14 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
             accumDescr.setClassName( className );
 
             final JavaAnalysisResult initCodeAnalysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
-                                                                                                         accumDescr,
-                                                                                                         accumDescr.getInitCode() );
+                                                                                                                accumDescr,
+                                                                                                                accumDescr.getInitCode() );
             final Dialect.AnalysisResult actionCodeAnalysis = context.getDialect().analyzeBlock( context,
-                                                                                        accumDescr,
-                                                                                        accumDescr.getActionCode() );
+                                                                                                 accumDescr,
+                                                                                                 accumDescr.getActionCode() );
             final Dialect.AnalysisResult resultCodeAnalysis = context.getDialect().analyzeExpression( context,
-                                                                                             accumDescr,
-                                                                                             accumDescr.getResultCode() );
+                                                                                                      accumDescr,
+                                                                                                      accumDescr.getResultCode() );
 
             final List requiredDeclarations = new ArrayList( initCodeAnalysis.getBoundIdentifiers()[0] );
             requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers()[0] );
@@ -149,7 +153,7 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
             for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
                 declarations[i] = context.getDeclarationResolver().getDeclaration( (String) requiredDeclarations.get( i ) );
             }
-            final Declaration[] sourceDeclArr = (Declaration[]) sourcePattern.getOuterDeclarations().values().toArray( new Declaration[0] );
+            final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
 
             final String[] globals = (String[]) requiredGlobals.toArray( new String[requiredGlobals.size()] );
 
@@ -164,6 +168,8 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
                      accumDescr.getClassName() );
             map.put( "innerDeclarations",
                      sourceDeclArr );
+            map.put( "isMultiPattern",
+                     accumDescr.isMultiPattern() ? Boolean.TRUE : Boolean.FALSE );
 
             final String initCode = this.fixInitCode( initCodeAnalysis,
                                                       accumDescr.getInitCode() );
@@ -205,7 +211,7 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
             map.put( "hashCode",
                      new Integer( actionCode.hashCode() ) );
 
-            accumulate = new Accumulate( sourcePattern,
+            accumulate = new Accumulate( source,
                                          declarations,
                                          sourceDeclArr );
 
@@ -258,7 +264,7 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
         }
         initCode.append( originalCode.substring( lastAdded ) );
 
-        // TODO Auto-generated method stub
         return initCode.toString();
     }
+
 }
