@@ -2821,6 +2821,48 @@ end
 <emphasis role="bold">Objective:</emphasis> Demonstrates how to use, organize, deploy and execute a rulebase from BRMS</programlisting>
 
     <section>
+      <title>BRMS editors</title>
+
+      <para>The BRMS has many GUI editors, and textual editors. This discusses
+      a few example rules using some of the GUI features:</para>
+
+      <figure>
+        <title>Guided editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="BRMS_Guided.png" format="PNG"
+                       scalefit="2" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above example shows the guided editor in action. This is a
+      slightly more complex example, as a few bound variables are used. We are
+      binding "$driver" to the Driver fact, and also binding driverId to the
+      id field of the driver (which is then used in the SupplementalInfo fact
+      - to join the driverId with the actual driver id). Note the use of the
+      ruleflow-group to specify what step of the processing this rule applies
+      to.</para>
+
+      <figure>
+        <title>DSL Editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="BRMS_DSL.png" format="PNG"
+                       scalefit="2" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above shows the editor using a DSL. In this case the "guided
+      editor" was used - this is not a text area, but only provides text boxes
+      to "fill in the blanks" as specified in the DSL configuration. Note you
+      can also use text based DSLs where there is not this restriction.</para>
+    </section>
+
+    <section>
       <title>Introduction</title>
 
       <para>Insurance, in law and economics, is a form of risk management
