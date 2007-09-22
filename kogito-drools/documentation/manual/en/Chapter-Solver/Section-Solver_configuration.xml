@@ -119,11 +119,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="unsolvedNQueens04.svg" />
+          <imagedata fileref="unsolvedNQueens04.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="unsolvedNQueens04.png" />
+          <imagedata fileref="unsolvedNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -202,11 +202,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="solvedNQueens04.svg" />
+          <imagedata fileref="solvedNQueens04.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="solvedNQueens04.png" />
+          <imagedata fileref="solvedNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>

@@ -37,11 +37,11 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="unsolvedNQueens04.svg" />
+          <imagedata fileref="unsolvedNQueens04.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="unsolvedNQueens04.png" />
+          <imagedata fileref="unsolvedNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
