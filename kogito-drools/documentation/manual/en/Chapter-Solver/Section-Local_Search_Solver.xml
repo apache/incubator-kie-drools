@@ -31,11 +31,11 @@
     </itemizedlist>
 
     <para>An algorithm that checks every possible solution (even with pruning)
-    can easily run for a couple of years on real-life planning problem. Most
-    of the time, we 're happy with a feasible solution found in a limited
-    amount of time. Local search is an algorithm that finds a feasible
-    solution relatively fast. Because it acts very much like a human, it's
-    also pretty natural to program.</para>
+    can easily run for a couple of years on a single real-life planning
+    problem. Most of the time, we 're happy with a feasible solution found in
+    a limited amount of time. Local search tends to find a feasible solution
+    relatively fast. Because it acts very much like a human, it's also pretty
+    natural to program.</para>
 
     <para>Local search solves a problem making a move on the current solution
     to change it into a better solution. It than does that number of times
