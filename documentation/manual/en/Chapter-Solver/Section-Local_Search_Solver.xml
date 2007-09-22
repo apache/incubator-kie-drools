@@ -79,11 +79,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="singleMoveNQueens04.svg" />
+          <imagedata fileref="singleMoveNQueens04.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="singleMoveNQueens04.png" />
+          <imagedata fileref="singleMoveNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -254,11 +254,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="possibleMovesNQueens04.svg" />
+          <imagedata fileref="possibleMovesNQueens04.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="possibleMovesNQueens04.png" />
+          <imagedata fileref="possibleMovesNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -320,11 +320,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="decideNextStepNQueens04.svg" />
+          <imagedata fileref="decideNextStepNQueens04.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="decideNextStepNQueens04.png" />
+          <imagedata fileref="decideNextStepNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -345,11 +345,11 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="allStepsNQueens04.svg" />
+          <imagedata fileref="allStepsNQueens04.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="allStepsNQueens04.png" />
+          <imagedata fileref="allStepsNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -453,11 +453,11 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="decideNextStepNQueens04.svg" />
+          <imagedata fileref="decideNextStepNQueens04.svg" format="SVG" />
         </imageobject>
 
         <imageobject>
-          <imagedata fileref="decideNextStepNQueens04.png" />
+          <imagedata fileref="decideNextStepNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -734,8 +734,7 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
     &lt;/finish&gt;</programlisting>
 
       <para>Alternatively you can use AND, for example: finish after reaching
-      a feasible score of at least -100 and no improvements in 5 steps:
-      </para>
+      a feasible score of at least -100 and no improvements in 5 steps:</para>
 
       <programlisting>    &lt;finish&gt;
         &lt;finishCompositionStyle&gt;AND&lt;/finishCompositionStyle&gt;

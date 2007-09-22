@@ -35,7 +35,7 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="screenshotSolvedNQueens8.png" />
+        <imagedata fileref="screenshotSolvedNQueens8.png" format="PNG" />
       </imageobject>
     </mediaobject>
   </section>
@@ -402,7 +402,8 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
             <row>
               <entry morerows="3"><mediaobject>
                   <imageobject>
-                    <imagedata fileref="partiallySolvedNQueens04Explained.png" />
+                    <imagedata fileref="partiallySolvedNQueens04Explained.png"
+                               format="PNG" />
                   </imageobject>
                 </mediaobject></entry>
 
