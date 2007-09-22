@@ -17,13 +17,15 @@
  */
 package org.drools.base.accumulators;
 
+import java.io.Serializable;
+
 /**
  * An interface for accumulate external function implementations
  * 
  * @author etirelli
  *
  */
-public interface AccumulateFunction {
+public interface AccumulateFunction extends Serializable {
 
     /**
      * Creates and returns a new context object
