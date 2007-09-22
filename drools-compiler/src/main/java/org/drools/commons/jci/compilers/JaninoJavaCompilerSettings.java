@@ -19,4 +19,13 @@ package org.drools.commons.jci.compilers;
 
 public final class JaninoJavaCompilerSettings extends JavaCompilerSettings {
     // TODO: implement the native janino compiler settings
+
+	public JaninoJavaCompilerSettings() {
+		
+	}
+
+	public JaninoJavaCompilerSettings( final JaninoJavaCompilerSettings pSettings ) {
+		super(pSettings);		
+	}
+
 }

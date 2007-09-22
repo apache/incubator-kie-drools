@@ -17,155 +17,178 @@
 
 package org.drools.commons.jci.compilers;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.codehaus.janino.ClassLoaderIClassLoader;
 import org.codehaus.janino.CompileException;
+import org.codehaus.janino.Compiler;
 import org.codehaus.janino.DebuggingInformation;
-import org.codehaus.janino.Descriptor;
-import org.codehaus.janino.IClass;
-import org.codehaus.janino.IClassLoader;
-import org.codehaus.janino.Java;
+import org.codehaus.janino.FilterWarningHandler;
 import org.codehaus.janino.Location;
-import org.codehaus.janino.Parser;
-import org.codehaus.janino.Scanner;
-import org.codehaus.janino.UnitCompiler;
 import org.codehaus.janino.WarningHandler;
-import org.codehaus.janino.Scanner.LocatedException;
+import org.codehaus.janino.Parser.ParseException;
+import org.codehaus.janino.Scanner.ScanException;
 import org.codehaus.janino.UnitCompiler.ErrorHandler;
-import org.codehaus.janino.util.ClassFile;
+import org.codehaus.janino.util.StringPattern;
+import org.codehaus.janino.util.resource.Resource;
+import org.codehaus.janino.util.resource.ResourceCreator;
+import org.codehaus.janino.util.resource.ResourceFinder;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.commons.jci.stores.ResourceStore;
-import org.drools.util.ClassUtils;
 
 /**
- * @author art@gramlich-net.com
+ * @author tcurdt
  */
 public final class JaninoJavaCompiler extends AbstractJavaCompiler {
 
-    private class CompilingIClassLoader extends IClassLoader {
+    private final JaninoJavaCompilerSettings defaultSettings;
 
-        private final Map types = new HashMap();
-        private final ResourceReader resourceReader;
-        private final Map classes;
-        private final Collection problems = new ArrayList();
+    public JaninoJavaCompiler() {
+    	this(new JaninoJavaCompilerSettings());
+    }
+    
+    public JaninoJavaCompiler( final JaninoJavaCompilerSettings pSettings ) {
+    	defaultSettings = pSettings;
+    }
+    
+    private final static class JciResource implements Resource {
 
-        private CompilingIClassLoader(final ResourceReader pResourceReader, final Map pClasses, final ClassLoader classLoader) {
-            super( new ClassLoaderIClassLoader( classLoader ) );
-            resourceReader = pResourceReader;
-            classes = pClasses;
-            super.postConstruct();
-        }
+    	private final String name;
+    	private final byte[] bytes;
+    	
+    	public JciResource( final String pName, final byte[] pBytes ) {
+    		name = pName;
+    		bytes = pBytes;
+    	}
+    	
+		public String getFileName() {
+			return name;
+		}
 
-        protected Collection getProblems() {
-            return problems;
-        }
-        
-        protected IClass findIClass(final String pType) {
-            final String className = Descriptor.toClassName(pType);
-            if (types.containsKey(pType)) {
-                return (IClass) types.get(pType);
-            }
-            
-            // FIXME: should not be tied to the extension            
-            final String resourceNameFromClass = className.replace('.', '/') + ".java";
+		public long lastModified() {
+			return 0;
+		}
 
-            final byte[] content = resourceReader.getBytes(resourceNameFromClass);
-            if (content == null) {
-                return null;
-            }
-            final Reader reader = new BufferedReader(new StringReader(new String(content)));
-            Scanner scanner = null;
-            try {
-                scanner = new Scanner(resourceNameFromClass, reader);
-                final Java.CompilationUnit unit = new Parser(scanner).parseCompilationUnit();
-                final UnitCompiler uc = new UnitCompiler(unit, this);
-                uc.setCompileErrorHandler(new ErrorHandler() {
-                    public void handleError(final String pMessage, final Location pOptionalLocation) throws CompileException {
-                        final CompilationProblem problem = new JaninoCompilationProblem(pOptionalLocation, pMessage, true);
-                        if (problemHandler != null) {
-                            problemHandler.handle(problem);
-                        }
-                        problems.add(problem);
-                    }
-                });
-                uc.setWarningHandler(new WarningHandler() {
-                    public void handleWarning(final String pHandle, final String pMessage, final Location pOptionalLocation) {
-                        final CompilationProblem problem = new JaninoCompilationProblem(pOptionalLocation, pMessage, false);
-                        if (problemHandler != null) {
-                            problemHandler.handle(problem);
-                        }
-                        problems.add(problem);
-                    }
-                });
-                
-                final ClassFile[] classFiles = uc.compileUnit(DebuggingInformation.ALL);
-                for (int i = 0; i < classFiles.length; i++) {
-                    classes.put(classFiles[i].getThisClassName(), classFiles[i].toByteArray());
-                }
-                final IClass ic = uc.findClass(className);
-                if (null != ic) {
-                    types.put(pType, ic);
-                }
-                return ic;
-            } catch (final LocatedException e) {
-                problems.add(new JaninoCompilationProblem(e));
-            } catch (final IOException e) {
-                problems.add(new JaninoCompilationProblem(resourceNameFromClass, "IOException:" + e.getMessage(), true));
-            } catch (final Exception e) {
-                problems.add(new JaninoCompilationProblem(resourceNameFromClass, "Exception:" + e.getMessage(), true));
-            } finally {
-                if (scanner != null) {
-                    try {
-                        scanner.close();
-                    } catch (IOException e) {
-                    	throw new RuntimeException( "IOException occured while compiling " + className, e );
-                    }
-                }
-            }
-            return null;
-        }
+		public InputStream open() throws IOException {
+			return new ByteArrayInputStream(bytes);
+		}
     }
 
+    private final class JciOutputStream extends ByteArrayOutputStream {
+
+    	private final String name;
+    	private final ResourceStore store;
+
+    	public JciOutputStream( final String pName, final ResourceStore pStore ) {
+    		name = pName;
+    		store = pStore;
+    	}
+
+		public void close() throws IOException {
+			super.close();
+
+			final byte[] bytes = toByteArray();		
+
+			store.write(name, bytes);
+		}
+    }
+    
     public CompilationResult compile( final String[] pSourceNames, final ResourceReader pResourceReader, final ResourceStore pStore, final ClassLoader pClassLoader, final JavaCompilerSettings pSettings ) {
 
-        final Map classFilesByName = new HashMap();       
-        
-        final CompilingIClassLoader icl = new CompilingIClassLoader(pResourceReader, classFilesByName, pClassLoader);
+    	final Collection problems = new ArrayList();
+    	
+    	final StringPattern[] pattern = StringPattern.PATTERNS_NONE;
+
+    	final Compiler compiler = new Compiler(
+    			new ResourceFinder() {
+					public Resource findResource( final String pSourceName ) {
+						final byte[] bytes = pResourceReader.getBytes(pSourceName);
+						
+						if (bytes == null) {
+							return null;
+						}						
+						
+						return new JciResource(pSourceName, bytes);
+					}    		
+    			},
+    			new ClassLoaderIClassLoader(pClassLoader),
+    			new ResourceFinder() {
+					public Resource findResource( final String pResourceName ) {
+						final byte[] bytes = pStore.read(pResourceName);
+						
+						if (bytes == null) {
+							return null;
+						}
+						
+						return new JciResource(pResourceName, bytes);
+					}    		
+    			},
+    			new ResourceCreator() {
+					public OutputStream createResource( final String pResourceName ) throws IOException {
+						return new JciOutputStream(pResourceName, pStore);
+					}
+
+					public boolean deleteResource( final String pResourceName ) {
+						pStore.remove(pResourceName);
+						return true;
+					}    				
+    			},
+    			pSettings.getSourceEncoding(),
+    			false,
+    			pSettings.isDebug()?DebuggingInformation.ALL:DebuggingInformation.NONE,
+    			new FilterWarningHandler(pattern, new WarningHandler() {
+						public void handleWarning( final String pHandle, final String pMessage, final Location pLocation ) {
+							final CompilationProblem problem = new JaninoCompilationProblem(pLocation.getFileName(), pLocation, pMessage, false);
+							if (problemHandler != null) {
+								problemHandler.handle(problem);
+							}
+							problems.add(problem);
+						}    		
+			    	})    			
+    			);            	
+    	
+    	compiler.setCompileErrorHandler(new ErrorHandler() {
+			public void handleError( final String pMessage, final Location pLocation ) throws CompileException {
+				final CompilationProblem problem = new JaninoCompilationProblem(pLocation.getFileName(), pLocation, pMessage, true);
+				if (problemHandler != null) {
+					problemHandler.handle(problem);
+				}
+				problems.add(problem);
+			}
+    	});
+    	
+
+    	final Resource[] resources = new Resource[pSourceNames.length];
         for (int i = 0; i < pSourceNames.length; i++) {
-        	try {
-        		icl.loadIClass(Descriptor.fromClassName(ClassUtils.convertResourceToClassName(pSourceNames[i])));
-            } catch ( final ClassNotFoundException e ) {
-                // @TODO: if an exception is thrown here, how do we handle it?
-                e.printStackTrace();
-            }        		
+            final byte[] source = pResourceReader.getBytes(pSourceNames[i]);
+            resources[i] = new JciResource(pSourceNames[i], source);
+        }
+        try {
+            compiler.compile(resources);
+        } catch ( ScanException e ) {
+            problems.add(new JaninoCompilationProblem(e));
+        } catch ( ParseException e ) {
+            problems.add(new JaninoCompilationProblem(e));
+        } catch ( IOException e ) {
+            // I'm hoping the existing compiler problems handler catches these            
+        } catch ( CompileException e ) {
+            // I'm hoping the existing compiler problems handler catches these
         }
         
-        // Store all fully compiled classes
-        for (Iterator i = classFilesByName.entrySet().iterator(); i.hasNext();) {
-            final Map.Entry entry = (Map.Entry)i.next();
-            final String clazzName = (String)entry.getKey(); 
-            pStore.write(ClassUtils.convertClassToResourcePath(clazzName), (byte[])entry.getValue());
-        }
-        
-        final Collection problems = icl.getProblems();
         final CompilationProblem[] result = new CompilationProblem[problems.size()];
         problems.toArray(result);
         return new CompilationResult(result);
     }
 
     public JavaCompilerSettings createDefaultSettings() {
-        // FIXME
-        return null;
+        return this.defaultSettings;
     }
     
 }

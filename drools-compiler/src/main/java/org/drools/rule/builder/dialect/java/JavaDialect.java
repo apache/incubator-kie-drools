@@ -429,6 +429,7 @@ public class JavaDialect
     public void addFunction(final FunctionDescr functionDescr,
                             final TypeResolver typeResolver) {
 
+        //System.out.println( functionDescr + " : " + typeResolver );
         final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
         this.pkg.addFunction( functionDescr.getName() );
 
