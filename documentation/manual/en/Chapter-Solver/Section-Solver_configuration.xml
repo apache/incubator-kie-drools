@@ -83,9 +83,8 @@
     &lt;/forager&gt;
 &lt;/localSearchSolver&gt;</programlisting>
 
-    <para>This is a tabu search configuration (which is a form of local
-    search) for NQueens. We 'll explain the various parts of a configuration
-    later in this manual.</para>
+    <para>This is a tabu search configuration for NQueens. We 'll explain the
+    various parts of a configuration later in this manual.</para>
 
     <para><emphasis role="bold">Drools-solver makes it relatively easy to
     switch a solver type just by changing the configuration.</emphasis>
@@ -94,6 +93,13 @@
     configuration for your problem. You could for example play out tabu search
     versus simulated annealing, on a set of instances of your planning
     problem.</para>
+
+    <para>A solver has a single <literal>Random</literal> instance. Some
+    solver configuration use that instance a lot more than others. For example
+    simulated annealing depends highly on random numbers, while tabu search
+    only depends on it to deal with score ties. In any case, during your
+    testing it's advisable to see that <literal>Random</literal> instance, so
+    your tests are reproducible.</para>
   </section>
 
   <section>
@@ -123,7 +129,7 @@
     </figure>
 
     <para>The starting solution will probably be far from optimal (or even
-    feasible), but that's ok, as it's the solver's job to find a much better
+    feasible), but that's OK, as it's the solver's job to find a much better
     solution.</para>
 
     <para>Here is the <literal>Solution</literal> interface:</para>

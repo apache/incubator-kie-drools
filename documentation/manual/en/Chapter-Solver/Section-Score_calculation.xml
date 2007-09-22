@@ -47,8 +47,8 @@ end</programlisting>
     </figure>
 
     <para>In this starting solution the multipleQueensHorizontal score rule
-    will fire for 6 queen couples: (a, b), (a, c), (a, d), (b, c), (b, d) and
-    (c, d). Because none of the queens are on the same vertical or diagonal
+    will fire for 6 queen couples: (A, B), (A, C), (A, D), (B, C), (B, D) and
+    (C, D). Because none of the queens are on the same vertical or diagonal
     line, this starting solution will have a score of <literal>-6</literal>.
     An optimal solution of 4 queens has a score of <literal>0</literal>. More
     on that later.</para>
@@ -74,12 +74,13 @@ end</programlisting>
     calculation algorithm.</emphasis> Just let the drools rule engine do the
     hard work.</para>
 
-    <para><emphasis role="bold">Adding more constraints is scalable and
-    easy</emphasis> (if you understand the drools rule syntax). This allows
-    you to add it a bunch of soft constraint score rules on top of the hard
-    constraints score rules with little effort. For example, for a freight
-    routing problem you could add a soft constraint to avoid the certain
-    flagged highways at rush hour.</para>
+    <para><emphasis role="bold">Adding more constraints is <emphasis
+    role="bold">easy and </emphasis>scalable</emphasis> (if you understand the
+    drools rule syntax). This allows you to add it a bunch of soft constraint
+    score rules on top of the hard constraints score rules with little effort
+    and a reasonable performance cost. For example, for a freight routing
+    problem you could add a soft constraint to avoid the certain flagged
+    highways at rush hour.</para>
   </section>
 
   <section>
@@ -89,7 +90,7 @@ end</programlisting>
     to calculate the score of the currently evaluated solution. The score must
     a <literal>Number</literal> instance and the instance type (for example
     <literal>Double</literal> or <literal>Integer</literal>) must be stable
-    through the problem.</para>
+    throughout the problem.</para>
 
     <para>The solver aims to find the solution with the highest score.
     <emphasis>The best solution</emphasis> is the solution with the highest
@@ -143,10 +144,12 @@ end</programlisting>
 
     <programlisting>global SimpleScoreCalculator scoreCalculator;
 
-// ...
-
 rule "multipleQueensHorizontal"
-  // ...
+  when
+    $q1 : Queen($id : id, $y : y);
+    $q2 : Queen(id &gt; $id, y == $y);
+  then
+    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleQueensHorizontal", $q1, $q2));
 end
 
 rule "multipleQueensAscendingDiagonal"
@@ -160,11 +163,45 @@ end
 rule "constraintsBroken"
   when
     $hardConstraintCount : Number() from accumulate(
-       $w : ...,
+       $w : WorkaroundMultiplePatternAccumulate(),
        count($w)
     );
   then
     scoreCalculator.setScore(- $hardConstraintCount);
+end</programlisting>
+
+    <para>You can also weigh your constraints differently, by multiplying the
+    count of each score rule with its weight. For example in freight routing,
+    you can make 5 broken "avoid crossroads" soft constraints count as much as
+    1 broken "avoid highways at rush hour" soft constraint.</para>
+
+    <para>Here's an example of all the NQueens constraints written as a single
+    rule, using multi pattern accumulates and making multipleQueensHorizontal
+    constraint outweigh the other constraints 5 times:</para>
+
+    <programlisting>// Warning: This currently triggers backwards chaining instead of forward chaining and seriously hurts performance and scalability.
+rule "constraintsBroken"
+  when
+    $multipleQueensHorizontal : Long()
+    from accumulate(
+        $q1 : Queen($id : id, $y : y)
+        and Queen(id &gt; $id, y == $y),
+       count($q1)
+    );
+    $multipleQueensAscendingDiagonal : Long()
+    from accumulate(
+        $q2 : Queen($id : id, $ascendingD : ascendingD)
+        and Queen(id &gt; $id, ascendingD == $ascendingD),
+       count($q2)
+    );
+    $multipleQueensDescendingDiagonal : Long()
+    from accumulate(
+        $q3 : Queen($id : id, $descendingD : descendingD)
+        and Queen(id &gt; $id, descendingD == $descendingD),
+       count($q3)
+    );
+  then
+    scoreCalculator.setScore(- (5 * $multipleQueensHorizontal) - $multipleQueensAscendingDiagonal - $multipleQueensDescendingDiagonal);
 end</programlisting>
   </section>
 
@@ -177,7 +214,7 @@ end</programlisting>
         bother writing a score rule for it. For example the NQueens example
         doesn't have a "multipleQueensVertical" rule because a queen's
         <literal>x</literal> never changes. This gives a performance gain,
-        because </para>
+        because</para>
       </listitem>
 
       <listitem>
@@ -195,6 +232,31 @@ end</programlisting>
         the optimal solution of the traveling tournament problem for as little
         as 10 traveling teams. But always remember that premature optimization
         is the root of all evil.</para>
+      </listitem>
+
+      <listitem>
+        <para>Currently, don't allow drools to switch to MVEL mode, for
+        performance. You can avoid this by using <literal>eval</literal>, for
+        example: <literal>eval(day.getIndex() == $day1.getIndex() +
+        3)</literal>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Currently, don't allow drools to backward chain instead of
+        forward chain, so avoid query's.</para>
+      </listitem>
+
+      <listitem>
+        <para>If performance is important (and it will), use at least java 1.6
+        and always use server mode (<literal>java -server</literal>). We have
+        seen performance increases of 30% by switching from java 1.5 to 1.6
+        and 50% by turning on server mode.</para>
+      </listitem>
+
+      <listitem>
+        <para>If you're doing performance tests, always remember that the JVM
+        needs to warm up. First load your solver and do a short run, before
+        you start benchmarking it.</para>
       </listitem>
     </itemizedlist>
   </section>
