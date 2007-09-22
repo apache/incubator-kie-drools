@@ -26,6 +26,7 @@ $ mvn -Psolver clean install
     <programlisting>$ cd drools-solver/drools-solver-examples/
 $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
 $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.lessonschedule.app.LessonScheduleApp"
+$ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
 $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
 ...</programlisting>
 
@@ -318,8 +319,8 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
         </mediaobject>
       </figure>
 
-      <para>The above solution is wrong because queens A1 and B1 can attack
-      each other (as can queens B1 and D1). Removing queen B1 would respect
+      <para>The above solution is wrong because queens A1 and B0 can attack
+      each other (as can queens B0 and D0). Removing queen B0 would respect
       the "no 2 queens can attack each other" constraint, but would break the
       "place n queens" constraint.</para>
     </section>
@@ -371,7 +372,7 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
       <para>A <literal>Queen</literal> instance has an x (its column, for
       example: 0 is column A, 1 is column B, ...) and a y (its row, for
-      example: 0 is row 1, 1 is row 2, ...). Based on the x and y, the
+      example: 0 is row 0, 1 is row 1, ...). Based on the x and y, the
       ascending diagonal line as well as the descending diagonal line can be
       calculated. The x and y indexes start from the upper left corner of the
       chessboard.</para>
