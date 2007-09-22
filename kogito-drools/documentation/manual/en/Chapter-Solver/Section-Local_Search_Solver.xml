@@ -724,8 +724,8 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
     <section>
       <title>Combining finishes</title>
 
-      <para>Finishes can be combined, for example: finish after 100 step or if
-      a score of 0.0 has been reached:</para>
+      <para>Finishes can be combined, for example: finish after 100 steps or
+      if a score of 0.0 has been reached:</para>
 
       <programlisting>    &lt;finish&gt;
         &lt;finishCompositionStyle&gt;OR&lt;/finishCompositionStyle&gt;
