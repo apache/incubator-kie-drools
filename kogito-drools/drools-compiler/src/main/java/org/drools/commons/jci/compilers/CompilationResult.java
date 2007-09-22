@@ -56,10 +56,14 @@ public final class CompilationResult {
     }
     
     public CompilationProblem[] getErrors() {
-        return errors;
+    	final CompilationProblem[] res = new CompilationProblem[errors.length];
+    	System.arraycopy(errors, 0, res, 0, res.length);
+        return res;
     }
 
     public CompilationProblem[] getWarnings() {
-        return warnings;
+    	final CompilationProblem[] res = new CompilationProblem[warnings.length];
+    	System.arraycopy(warnings, 0, res, 0, res.length);
+        return res;
     }
 }

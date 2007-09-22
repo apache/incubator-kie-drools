@@ -17,8 +17,8 @@
 
 package org.drools.commons.jci.readers;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * A memory based reader to compile from memory
@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class MemoryResourceReader implements ResourceReader {
     
-    private Map resources;
+    private Map resources = null;
 
     public boolean isAvailable( final String pResourceName ) {
         if (resources == null) {

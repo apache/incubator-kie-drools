@@ -3306,8 +3306,12 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void testFunctionCallingFunction() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
+    public void testFunctionCallingFunctionWithEclipse() throws Exception {
+        PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
+        ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( JavaDialectConfiguration.ECLIPSE );
+        
+        final PackageBuilder builder = new PackageBuilder( packageBuilderConfig );
+        
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_functionCallingFunction.drl" ) ) );
         final Package pkg = builder.getPackage();
 
@@ -3323,7 +3327,33 @@ public class MiscTest extends TestCase {
 
         assertEquals( 1,
                       list.size() );
+        
+        assertEquals( 10, ( (Integer)list.get( 0 ) ).intValue() );        
     }
+    
+    public void testFunctionCallingFunctionWithJanino() throws Exception {
+        PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
+        ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( JavaDialectConfiguration.JANINO );
+        
+        final PackageBuilder builder = new PackageBuilder( packageBuilderConfig );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_functionCallingFunction.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+        
+        assertEquals( 10, ( (Integer)list.get( 0 ) ).intValue() );
+    }    
 
     public void testSelfReference2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
