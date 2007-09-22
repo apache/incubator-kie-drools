@@ -739,30 +739,30 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
             </simplesect>
 
             <simplesect>
-              <title>memberof</title>
+              <title>memberOf</title>
 
-              <para><literal>'memberof' is used to check if a field is a
+              <para><literal>'memberOf' is used to check if a field is a
               member of a collection or array; that collection must be be a
               variable.</literal></para>
 
               <example>
                 <title>Literal Constraints with Collections</title>
 
-                <programlisting>CheeseCounter( cheese memberof $matureCheeses )</programlisting>
+                <programlisting>CheeseCounter( cheese memberOf $matureCheeses )</programlisting>
               </example>
             </simplesect>
 
             <simplesect>
-              <title>not memberof</title>
+              <title>not memberOf</title>
 
-              <para><literal>'not memberof' is used to check if a field is not
+              <para><literal>'not memberOf' is used to check if a field is not
               a member of a collection or array; that collection must be be a
               variable.</literal></para>
 
               <example>
                 <title>Literal Constraints with Collections</title>
 
-                <programlisting>CheeseCounter( cheese not memberof $matureCheeses )</programlisting>
+                <programlisting>CheeseCounter( cheese not memberOf $matureCheeses )</programlisting>
               </example>
             </simplesect>
 
