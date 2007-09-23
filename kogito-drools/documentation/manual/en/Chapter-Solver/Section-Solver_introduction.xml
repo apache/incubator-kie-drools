@@ -11,8 +11,8 @@
     those API changes between versions will be maintained soon.</para>
 
     <para>No releases have been made yet, but you can easily build it from
-    source yourself by checking out drools and building with the solver
-    profile:</para>
+    source yourself by checking out drools and doing a maven 2 build with the
+    solver profile:</para>
 
     <programlisting>$ svn checkout http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/ drools
 ...
@@ -20,7 +20,7 @@ $ cd drools
 $ mvn -Psolver clean install
 ...</programlisting>
 
-    <para>After that, you can run an example directly from the command line
+    <para>After that, you can run any example directly from the command line
     like this:</para>
 
     <programlisting>$ cd drools-solver/drools-solver-examples/
@@ -89,35 +89,56 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
     <itemizedlist>
       <listitem>
-        <para>A <emphasis role="bold">(negative) hard constraint</emphasis>
-        must not be broken. For example: <emphasis>1 teacher can not teach 2
-        different lessons at the same time</emphasis>.</para>
+        <para>A <emphasis>(negative) hard constraint</emphasis> must not be
+        broken. For example: <emphasis>1 teacher can not teach 2 different
+        lessons at the same time</emphasis>.</para>
       </listitem>
 
       <listitem>
-        <para>A <emphasis role="bold">(negative) soft constraint</emphasis>
-        should not be broken if it can be avoided. For example:
-        <emphasis>Teacher A does not like to teach on Friday
-        afternoon</emphasis>.</para>
+        <para>A <emphasis>(negative) soft constraint</emphasis> should not be
+        broken if it can be avoided. For example: <emphasis>Teacher A does not
+        like to teach on Friday afternoon</emphasis>.</para>
       </listitem>
 
       <listitem>
-        <para>A <emphasis role="bold">positive constraint (or
-        reward)</emphasis> should be fulfilled if possible. For example:
-        <emphasis>Teacher B likes to teach on Monday
-        morning</emphasis>.</para>
+        <para>A <emphasis>positive constraint (or reward)</emphasis> should be
+        fulfilled if possible. For example: <emphasis>Teacher B likes to teach
+        on Monday morning</emphasis>.</para>
       </listitem>
     </itemizedlist>
 
-    <para>The constraints define the score function of a planning problem.
-    Planning problems tend to have a very large number of possible solutions.
-    Each solution has a score. Most of those solutions are not feasible,
-    because they break a negative hard constraint. Usually, of all the
-    feasible solutions (if any), there is only 1 optimal solution, but
-    sometimes there are a few.</para>
+    <para>These constraints define the <emphasis>score function</emphasis> of
+    a planning problem. A planning problem has a number of
+    <emphasis>solutions</emphasis>. Each possible solution has a score. We can
+    break down the solutions to a planning problem into 3 categories:</para>
 
-    <para>The drools rule engine turns out to be a very good way to implement
-    a score function based on a number of rule constraints.</para>
+    <itemizedlist>
+      <listitem>
+        <para>A <emphasis>possible solution</emphasis> is a solution that does
+        or does not break any number of constraints. Planning problems tend to
+        have a incredibly large number of possible solutions. Most of those
+        solutions are worthless.</para>
+      </listitem>
+
+      <listitem>
+        <para>A <emphasis>feasible solution</emphasis> is a solution that does
+        not break any (negative) hard constraints. The number of feasible
+        solutions tends to be relative to the number of possible solutions.
+        Sometimes there are no feasible solutions.</para>
+      </listitem>
+
+      <listitem>
+        <para>An <emphasis>optimal solution</emphasis> is a solution with the
+        highest score. Planning problems tend to have 1 or a few optimal
+        solutions. There is always at least 1 optimal solution, even in the
+        remote case that it's not a feasible solution because there are no
+        feasible solutions.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>As we'll see later, <emphasis role="bold">the drools rule engine
+    turns out to be a very good way to implement a score
+    function</emphasis>.</para>
   </section>
 
   <section>
@@ -125,7 +146,7 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
     <para>Different solvers solve problems in different ways. Each type has
     advantages and disadvantages. We 'll roughly discuss a few of the solver
-    types. You can safely skip this section.</para>
+    types here. You can safely skip this section.</para>
 
     <section>
       <title>Brute force</title>
@@ -165,7 +186,7 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
       <para>Branch and bound is an improvement over brute force, as it prunes
       away subsets of solutions which cannot have a better solution than the
-      best solution found at that point.</para>
+      best solution already found at that point.</para>
 
       <para>Advantages:</para>
 
@@ -191,10 +212,10 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
     <section>
       <title>Simplex</title>
 
-      <para>Simplex turns all constraints into a big equation, which it than
+      <para>Simplex turns all constraints into a big equation, which it
       transmutes into a mathematical function without local optima. It then
-      finds an optimal solution by finding an optima of that mathematical
-      function.</para>
+      finds an optimal solution to the planning problem by finding an optima
+      of that mathematical function.</para>
 
       <para>Advantages:</para>
 
@@ -226,7 +247,8 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       move to take the step to the next solution.</para>
 
       <para>Local search works a lot like a human planner: it uses a single
-      search path and moves facts around to find a very good solution.</para>
+      search path and moves facts around to find a good feasible
+      solution.</para>
 
       <para>A vanilla local search can easily get stuck in a local optima, but
       improvements (such as tabu search and simulated annealing) address this
@@ -246,8 +268,9 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
         </listitem>
 
         <listitem>
-          <para>Generally needs less negative hard constraints, as the move
-          pattern fulfills a number of the negative hard constraints.</para>
+          <para>It generally needs to worry about less negative hard
+          constraints, because the move pattern can fulfill a number of the
+          negative hard constraints.</para>
         </listitem>
       </itemizedlist>
 
@@ -259,7 +282,7 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
         </listitem>
 
         <listitem>
-          <para>If the perfect score is unknown (which is usually the case),
+          <para>If the optimal score is unknown (which is usually the case),
           it must be told when to stop looking (for example based on time
           spend, user input, ...).</para>
         </listitem>
@@ -276,8 +299,8 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
     <section>
       <title>Problem statement</title>
 
-      <para>The n queens puzzle is a puzzle with the follow
-      constraints:</para>
+      <para>The <emphasis>n queens puzzle</emphasis> is a puzzle with the
+      follow constraints:</para>
 
       <itemizedlist>
         <listitem>
@@ -295,9 +318,9 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
         </listitem>
       </itemizedlist>
 
-      <para>The most common puzzle is the 8 queens puzzle, with <emphasis>n =
-      8</emphasis>. We 'll explain drools-solver using the 4 queens puzzle as
-      the primary example.</para>
+      <para>The most common n queens puzzle is the 8 queens puzzle, with
+      <emphasis>n = 8</emphasis>. We 'll explain drools-solver using the 4
+      queens puzzle as the primary example.</para>
 
       <para>A proposed solution could be:</para>
 
@@ -378,7 +401,7 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       chessboard.</para>
 
       <table>
-        <title>A solution for the 4 queens puzzle show in the domain
+        <title>A solution for the 4 queens puzzle shown in the domain
         model</title>
 
         <tgroup cols="6">
@@ -407,7 +430,7 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
                   </imageobject>
                 </mediaobject></entry>
 
-              <entry>A2</entry>
+              <entry>A1</entry>
 
               <entry>0</entry>
 
@@ -419,7 +442,7 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
             </row>
 
             <row>
-              <entry>B1</entry>
+              <entry>B0</entry>
 
               <entry>1</entry>
 
@@ -431,7 +454,7 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
             </row>
 
             <row>
-              <entry>C3</entry>
+              <entry>C2</entry>
 
               <entry>2</entry>
 
@@ -443,7 +466,7 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
             </row>
 
             <row>
-              <entry>D1</entry>
+              <entry>D0</entry>
 
               <entry>3</entry>
 
@@ -458,10 +481,10 @@ $ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       </table>
 
       <para>A single <literal>NQueens</literal> instance contains a list of
-      all Queens. It is the <literal>Solution</literal> implementation which
-      will be supplied to and retrieved from drools-solver. Notice that in the
-      4 queens example, NQueens's <literal>getN()</literal> method will always
-      return 4.</para>
+      all <literal>Queen</literal> instances. It is the
+      <literal>Solution</literal> implementation which will be supplied to and
+      retrieved from drools-solver. Notice that in the 4 queens example,
+      NQueens's <literal>getN()</literal> method will always return 4.</para>
 
       <para>You can find the source code of this example (as well as well as
       several other examples) in the drools-solver-examples src

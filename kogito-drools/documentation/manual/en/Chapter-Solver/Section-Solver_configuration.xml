@@ -31,7 +31,7 @@
       </listitem>
 
       <listitem>
-        <para>Set a starting solution on the solver, for example an 4 Queens
+        <para>Set a starting solution on the solver, for example a 4 Queens
         puzzle instance.</para>
       </listitem>
 
@@ -54,7 +54,7 @@
     <title>Building a solver</title>
 
     <para>You can build a <literal>Solver</literal> instance with the
-    <literal>XmlSolverConfigurer</literal> by configuring it with a solver
+    <literal>XmlSolverConfigurer</literal>. Configure it with a solver
     configuration xml file:</para>
 
     <programlisting>    XmlSolverConfigurer configurer = new XmlSolverConfigurer();
@@ -83,7 +83,7 @@
     &lt;/forager&gt;
 &lt;/localSearchSolver&gt;</programlisting>
 
-    <para>This is a tabu search configuration for NQueens. We 'll explain the
+    <para>This is a tabu search configuration for n queens. We 'll explain the
     various parts of a configuration later in this manual.</para>
 
     <para><emphasis role="bold">Drools-solver makes it relatively easy to
@@ -91,25 +91,23 @@
     There's even a benchmark utility which allows you to play out different
     configurations against each other and report the most appropriate
     configuration for your problem. You could for example play out tabu search
-    versus simulated annealing, on a set of instances of your planning
-    problem.</para>
+    versus simulated annealing, on 4 queens and 64 queens.</para>
 
     <para>A solver has a single <literal>Random</literal> instance. Some
-    solver configuration use that instance a lot more than others. For example
-    simulated annealing depends highly on random numbers, while tabu search
-    only depends on it to deal with score ties. In any case, during your
-    testing it's advisable to see that <literal>Random</literal> instance, so
-    your tests are reproducible.</para>
+    solver configurations use that instance a lot more than others. For
+    example simulated annealing depends highly on random numbers, while tabu
+    search only depends on it to deal with score ties. In any case, during
+    your testing it's advisable to set that <literal>Random</literal>
+    instance, so your tests are reproducible.</para>
   </section>
 
   <section>
     <title>The Solution interface</title>
 
-    <para>A Solver can only solve 1 problem at a time. One problem has a lot
-    of solutions, but few optimal solutions.</para>
+    <para>A Solver can only solve 1 problem at a time.</para>
 
     <para>You need to present the problem as a starting
-    <literal>Solution</literal> instance to the Solver. Usually you will make
+    <literal>Solution</literal> instance to the solver. Usually you will make
     that starting solution with a simple filler algorithm. For example for 4
     queens we use a starting solution with all queens on a different x and on
     the same y (with y = 0).</para>
@@ -132,7 +130,8 @@
     feasible), but that's OK, as it's the solver's job to find a much better
     solution.</para>
 
-    <para>Here is the <literal>Solution</literal> interface:</para>
+    <para>You need to implement the <literal>Solution</literal>
+    interface:</para>
 
     <programlisting>public interface Solution {
 
@@ -142,13 +141,36 @@
 
 }</programlisting>
 
+    <para>For example:</para>
+
+    <programlisting>public class NQueens implements Solution {
+
+    private List&lt;Queen&gt; queenList;
+
+    // ...
+
+}</programlisting>
+
     <para>Most solvers use the <literal>cloneSolution()</literal> method to
     clone the solution each time they encounter a new best solution. The
-    <literal>cloneSolution()</literal> method should clone no more and no less
-    than the parts of the <literal>Solution</literal> that can change during
-    solving. For example, in the lesson schedule example the lessons are
-    cloned, but teachers, groups and timeslots are not cloned because only a
-    lesson's appointed timeslot changes during solving:</para>
+    <literal>NQueens</literal> implementation just clones all
+    <literal>Queen</literal> instances:</para>
+
+    <programlisting>    public NQueens cloneSolution() {
+        NQueens clone = new NQueens();
+        List&lt;Queen&gt; clonedQueenList = new ArrayList&lt;Queen&gt;(queenList.size());
+        for (Queen queen : queenList) {
+            clonedQueenList.add(queen.clone());
+        }
+        clone.queenList = clonedQueenList;
+        return clone;
+    }</programlisting>
+
+    <para>The <literal>cloneSolution()</literal> method should clone no more
+    and no less than the parts of the <literal>Solution</literal> that can
+    change during solving. For example, in the lesson schedule example the
+    lessons are cloned, but teachers, groups and timeslots are not cloned
+    because only a lesson's appointed timeslot changes during solving:</para>
 
     <programlisting>    /**
      * Clone will only deep copy the lessons
@@ -166,13 +188,10 @@
         return clone;
     }</programlisting>
 
-    <para>The <literal>NQueens</literal> implementation just clones all
-    <literal>Queen</literal> instances.</para>
-
     <para>All Objects returned by the <literal>getFacts()</literal> method
     will be asserted into the drools working memory. Those facts can be used
-    by the score calculation rules. For example, <literal>NQueens</literal>
-    just returns all <literal>Queen</literal> instances.</para>
+    by the score rules. For example, <literal>NQueens</literal> just returns
+    all <literal>Queen</literal> instances.</para>
 
     <programlisting>    public Collection&lt;? extends Object&gt; getFacts() {
         return queenList;
