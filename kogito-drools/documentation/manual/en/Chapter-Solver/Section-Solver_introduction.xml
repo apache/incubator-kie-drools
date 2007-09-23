@@ -6,13 +6,13 @@
     <title>Status of drools-solver</title>
 
     <para>Drools-solver is an <emphasis role="bold">experimental</emphasis>
-    module of drools-solver. The API is far from stable and backward
-    incompatible changes occur now and then. A recipe to upgrade and apply
-    those API changes between versions will be maintained soon.</para>
+    module of Drools. The API is far from stable and backward incompatible
+    changes occur now and then. A recipe to upgrade and apply those API
+    changes between versions will be maintained soon.</para>
 
     <para>No releases have been made yet, but you can easily build it from
-    source yourself by checking out drools and doing a maven 2 build with the
-    solver profile:</para>
+    source yourself by checking out drools from subversion and doing a maven 2
+    build with the solver profile:</para>
 
     <programlisting>$ svn checkout http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/ drools
 ...
