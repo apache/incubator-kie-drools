@@ -1,0 +1,24 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test final class 1"
+    dialect "mvel"
+    salience 10
+	when
+		$p : Person( name == "bob", status == null )
+	then
+		$p.status = "OK";
+		results.add("OK");
+		update( $p );
+end
+
+rule "test final class 2"
+    dialect "mvel"
+    when
+        $p : Person( name == "bob", status == null )
+    then
+        # this rule should not fire
+        $p.status = "NOT OK";
+        results.add("NOT OK");
+end

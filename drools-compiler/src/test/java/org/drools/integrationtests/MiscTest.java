@@ -52,6 +52,7 @@ import org.drools.InsertedObject;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
+import org.drools.PersonFinal;
 import org.drools.PersonInterface;
 import org.drools.PersonWithEquals;
 import org.drools.Primitives;
@@ -4166,4 +4167,40 @@ public class MiscTest extends TestCase {
         }
 
     }
+    
+    public void testFinalClass() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FinalClass.drl" ) ) );
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+        
+        final PersonFinal bob = new PersonFinal();
+        bob.setName( "bob" );
+        bob.setStatus( null );
+
+        workingMemory.insert( bob );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 1,
+                      list.size() );
+
+        // Dynamic addition of rules which use the final class are not supported yet
+//        final PackageBuilder builder2 = new PackageBuilder();
+//        builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FinalClass2.drl" ) ) );
+//        ruleBase.addPackage( builder2.getPackage() );
+//        
+//        // it will automatically fire the rule
+//        assertEquals( 2,
+//                      list.size() );
+    }
+
+    
 }

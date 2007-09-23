@@ -8,6 +8,8 @@ public class SingleObjectSinkAdapter
     implements
     ObjectSinkPropagator {
 
+    private static final long serialVersionUID = 873985743021L;
+    
     private ObjectSink sink;
 
     public SingleObjectSinkAdapter(final ObjectSink sink) {
@@ -35,6 +37,10 @@ public class SingleObjectSinkAdapter
 
     public ObjectSink[] getSinks() {
         return new ObjectSink[]{this.sink};
+    }
+    
+    public int size() {
+        return 1;
     }
 
 }

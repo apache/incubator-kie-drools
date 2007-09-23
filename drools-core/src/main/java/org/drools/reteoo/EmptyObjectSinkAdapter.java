@@ -7,7 +7,12 @@ import org.drools.spi.PropagationContext;
 public class EmptyObjectSinkAdapter
     implements
     ObjectSinkPropagator {
+
+    private static final long serialVersionUID = -631743913176779720L;
+
     private static final EmptyObjectSinkAdapter instance = new EmptyObjectSinkAdapter();
+    
+    private static final ObjectSink[] SINK_LIST = new ObjectSink[0];
 
     public static EmptyObjectSinkAdapter getInstance() {
         return instance;
@@ -29,7 +34,11 @@ public class EmptyObjectSinkAdapter
     }
 
     public ObjectSink[] getSinks() {
-        return new ObjectSink[]{};
+        return SINK_LIST;
+    }
+    
+    public int size() {
+        return 0;
     }
 
 }

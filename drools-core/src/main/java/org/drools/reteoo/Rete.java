@@ -38,7 +38,6 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.facttemplates.Fact;
-import org.drools.facttemplates.FactImpl;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.objenesis.Objenesis;
@@ -345,6 +344,8 @@ public class Rete extends ObjectSource
         public void resetCache();
 
         public boolean isAssignableFrom(Object object);
+        
+        public boolean isActive();
     }
 
     public static class FactTemplateTypeConf
@@ -407,6 +408,10 @@ public class Rete extends ObjectSource
 
         public void resetCache() {
             this.cache = null;
+        }
+
+        public boolean isActive() {
+            return true;
         }
 
     }
@@ -561,7 +566,7 @@ public class Rete extends ObjectSource
             boolean isOk = ret != null && ret != Object.class; // we don't want to shadow java.lang.Object
             if ( isOk ) {
                 for ( int i = 0; isOk && ret != null && i < nodes.length; i++ ) {
-                    isOk = nodes[i].isAssignableFrom( ret );
+                    isOk = nodes[i].getSinkPropagator().size() == 0 || nodes[i].isAssignableFrom( ret );
                 }
             }
 
@@ -574,7 +579,7 @@ public class Rete extends ObjectSource
                     ret = interfaces[i];
                     isOk = interfaces[i] != Serializable.class && interfaces[i] != Cloneable.class && interfaces[i] != Comparable.class;
                     for ( int j = 0; isOk && j < nodes.length; j++ ) {
-                        isOk = nodes[j].isAssignableFrom( ret );
+                        isOk = nodes[j].getSinkPropagator().size() == 0 || nodes[j].isAssignableFrom( ret );
                     }
                     notFound = !isOk;
                 }
@@ -655,6 +660,10 @@ public class Rete extends ObjectSource
             }
 
             return (ObjectTypeNode[]) cache.toArray( new ObjectTypeNode[cache.size()] );
+        }
+
+        public boolean isActive() {
+            return getConcreteObjectTypeNode().getSinkPropagator().getSinks().length > 0;
         }
     }
 
