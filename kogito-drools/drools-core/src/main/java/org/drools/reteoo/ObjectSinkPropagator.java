@@ -19,4 +19,6 @@ public interface ObjectSinkPropagator
                                        boolean useHash);
 
     public ObjectSink[] getSinks();
+    
+    public int size();
 }
