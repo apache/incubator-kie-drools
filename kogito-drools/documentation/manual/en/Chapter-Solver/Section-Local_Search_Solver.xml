@@ -11,7 +11,7 @@
     <itemizedlist>
       <listitem>
         <para>4 queens has 256 possible solutions (<literal>n ^ n</literal>)
-        and 4 optimal solutions.</para>
+        and 2 optimal solutions.</para>
       </listitem>
 
       <listitem>
