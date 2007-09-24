@@ -39,6 +39,10 @@ public class InstanceNotEqualsConstraint
     public Declaration[] getRequiredDeclarations() {
         return InstanceNotEqualsConstraint.declarations;
     }
+    
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+    }
 
     public Pattern getOtherPattern() {
         return this.otherPattern;

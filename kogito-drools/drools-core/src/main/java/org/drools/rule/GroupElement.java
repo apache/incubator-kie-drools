@@ -294,6 +294,10 @@ public class GroupElement extends ConditionalElement {
     public String toString() {
         return this.type.toString() + this.children.toString();
     }
+    
+    public List getNestedElements() {
+        return this.children;
+    }
 
     /**
      * A public interface for CE types

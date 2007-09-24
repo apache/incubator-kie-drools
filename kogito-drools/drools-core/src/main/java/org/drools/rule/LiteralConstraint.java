@@ -29,13 +29,11 @@ public class LiteralConstraint
     /**
      * 
      */
-    private static final long          serialVersionUID = 400L;
+    private static final long        serialVersionUID = 400L;
 
-    private final FieldExtractor       extractor;
+    private final FieldExtractor     extractor;
 
-    private final LiteralRestriction   restriction;
-
-    private final static Declaration[] emptyDeclarations = new Declaration[]{};
+    private final LiteralRestriction restriction;
 
     public LiteralConstraint(final FieldExtractor extractor,
                              final Evaluator evaluator,
@@ -64,10 +62,6 @@ public class LiteralConstraint
         return this.extractor;
     }
 
-    public Declaration[] getRDeclarations() {
-        return LiteralConstraint.emptyDeclarations;
-    }
-
     /**
      * Literal constraints cannot have required declarations, so always return an empty array.
      * @return
@@ -75,6 +69,12 @@ public class LiteralConstraint
      */
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();
+    }
+
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+        this.restriction.replaceDeclaration( oldDecl,
+                                             newDecl );
     }
 
     public boolean isAllowed(final Object object,

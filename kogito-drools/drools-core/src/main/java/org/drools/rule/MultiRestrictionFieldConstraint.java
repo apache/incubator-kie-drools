@@ -35,6 +35,12 @@ public class MultiRestrictionFieldConstraint
         return this.restrictions.getRequiredDeclarations();
     }
 
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+        this.restrictions.replaceDeclaration( oldDecl,
+                                              newDecl );
+    }
+
     public String toString() {
         return "[MultiRestrictionConstraint fieldExtractor=" + this.extractor + " restrictions =" + this.restrictions + "]";
     }

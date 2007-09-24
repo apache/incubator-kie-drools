@@ -64,6 +64,10 @@ public class TupleStartEqualsConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.declarations;
     }
+    
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+    }
 
     public ContextEntry getContextEntry() {
         return new TupleStartEqualsConstraintContextEntry();

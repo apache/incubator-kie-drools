@@ -726,23 +726,57 @@ public class FirstOrderLogicTest extends TestCase {
         final Cheese provolone = new Cheese( "provolone",
                                              5 );
         final Cheesery cheesery = new Cheesery();
-        
+
         cheesery.addCheese( cheddar );
         cheesery.addCheese( provolone );
-        
+
         FactHandle handle = workingMemory.insert( cheesery );
         workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
 
-        cheesery.addCheese( new Cheese( "stilton", 10 ) );
+        cheesery.addCheese( new Cheese( "stilton",
+                                        10 ) );
         cheesery.removeCheese( cheddar );
-        workingMemory.update( handle, cheesery );
+        workingMemory.update( handle,
+                              cheesery );
         workingMemory.fireAllRules();
         assertEquals( 2,
                       list.size() );
 
     }
 
+    public void testOr() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrNesting.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        final Cheese cheddar = new Cheese( "cheddar",
+                                           7 );
+        final Cheese provolone = new Cheese( "provolone",
+                                             5 );
+        final Cheese brie = new Cheese( "brie",
+                                        15 );
+        final Person mark = new Person( "mark",
+                                        "stilton" );
+
+        FactHandle ch = workingMemory.insert( cheddar );
+        FactHandle ph = workingMemory.insert( provolone );
+        FactHandle bh = workingMemory.insert( brie );
+        FactHandle markh = workingMemory.insert( mark );
+        
+        workingMemory.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+
+    }
 
 }

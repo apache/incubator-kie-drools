@@ -123,4 +123,11 @@ public class Forall extends ConditionalElement {
         this.remainingPatterns.add( pattern );
     }
 
+    public List getNestedElements() {
+        List elements = new ArrayList( 1 + this.remainingPatterns.size() );
+        elements.add( this.basePattern );
+        elements.addAll( this.remainingPatterns );
+        return elements;
+    }
+
 }
