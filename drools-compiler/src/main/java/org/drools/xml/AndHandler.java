@@ -20,11 +20,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ForallDescr;
+import org.drools.lang.descr.MultiPatternDestinationDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -51,6 +53,7 @@ class AndHandler extends BaseAbstractHandler
             this.validParents.add( RuleDescr.class );
             this.validParents.add( OrDescr.class );
             this.validParents.add( LiteralRestrictionHandler.class );
+            this.validParents.add( AccumulateDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );
@@ -90,6 +93,9 @@ class AndHandler extends BaseAbstractHandler
         if ( parent instanceof RuleDescr || parent instanceof QueryDescr ) {
             final RuleDescr ruleDescr = (RuleDescr) parent;
             ruleDescr.setLhs( andDescr );
+        } else if ( parent instanceof MultiPatternDestinationDescr) {
+        	final MultiPatternDestinationDescr mpDescr = (MultiPatternDestinationDescr) parent;
+        	mpDescr.setInput(andDescr);        	
         } else if ( parent instanceof ConditionalElementDescr ) {
             final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
             ceDescr.addDescr( andDescr );

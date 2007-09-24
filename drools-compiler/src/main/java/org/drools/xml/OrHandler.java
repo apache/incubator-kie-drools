@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
@@ -44,6 +45,7 @@ class OrHandler extends BaseAbstractHandler
             this.validParents = new HashSet();
             this.validParents.add( AndDescr.class );
             this.validParents.add( PatternDescr.class );
+            this.validParents.add( AccumulateDescr.class );
 
             this.validPeers = new HashSet();
             this.validPeers.add( null );

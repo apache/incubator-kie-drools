@@ -153,7 +153,11 @@ public class DrlDumper extends ReflectiveVisitor
     public void visitAccumulateDescr(final AccumulateDescr descr) {
         String tmpstr = new String();
         tmpstr += " accumulate (";
-        visitPatternDescr( descr.getInputPattern() );
+        if ( descr.isSinglePattern() ) { 
+        	visitPatternDescr( descr.getInputPattern() );
+        } else {
+        	visit(descr.getInput());
+        }
         tmpstr += this.template.substring( 2 );
 
         if ( descr.isExternalFunction() ) {

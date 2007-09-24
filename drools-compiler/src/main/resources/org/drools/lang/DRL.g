@@ -947,53 +947,6 @@ from_statement returns [FromDescr d]
 	}
 	;
 	
-from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
-	@init {
-		$ds = null;
-		AccessorDescr ad = null;
-		FunctionCallDescr fc = null;
-	}
-	:	ident=identifier
-		{
-			ad = new AccessorDescr(ident.start.getText());	
-			ad.setLocation( offset(ident.start.getLine()), ident.start.getCharPositionInLine() );
-			ad.setStartCharacter( ((CommonToken)ident.start).getStartIndex() );
-			ad.setEndCharacter( ((CommonToken)ident.start).getStopIndex() );
-			$ds = ad;
-			location.setProperty(Location.LOCATION_FROM_CONTENT, ident.start.getText());
-		}
-		(	/* WARNING: $o : O() from x(y) could be also $o : O() from x followed
-			   by (y).  Resolve by always forcing (...) to be paren_chunk if
-			   after a from.  Setting k=1 will force this to happen.  No backtracking
-			   but you'll get a warning from ANTLR.  ANTLR resolves by choosing first
-			   alternative to win, which is the paren_chunk case not the loop exit.
-			*/
-			options {k=1;}
-		:	args=paren_chunk
-		{
-			if( $args.text != null ) {
-				ad.setVariableName( null );
-				fc = new FunctionCallDescr($ident.start.getText());
-				fc.setLocation( offset($ident.start.getLine()), $ident.start.getCharPositionInLine() );			
-				fc.setArguments($args.text);
-				fc.setStartCharacter( ((CommonToken)$ident.start).getStartIndex() );
-				fc.setEndCharacter( ((CommonToken)$ident.start).getStopIndex() );
-				location.setProperty(Location.LOCATION_FROM_CONTENT, $args.text);
-				$from.setEndCharacter( ((CommonToken)$args.stop).getStopIndex() );
-			}
-		}
-		)?
-		expression_chain[$from, ad]?
-	;	
-	finally {
-		if( ad != null ) {
-			if( fc != null ) {
-				ad.addFirstInvoker( fc );
-			}
-			location.setProperty(Location.LOCATION_FROM_CONTENT, ad.toString() );
-		}
-	}
-	
 
 accumulate_statement returns [AccumulateDescr d]
 	@init {
@@ -1068,7 +1021,55 @@ accumulate_statement returns [AccumulateDescr d]
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 			d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
 		} 
-	; 
+	; from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
+	@init {
+		$ds = null;
+		AccessorDescr ad = null;
+		FunctionCallDescr fc = null;
+	}
+	:	ident=identifier
+		{
+			ad = new AccessorDescr(ident.start.getText());	
+			ad.setLocation( offset(ident.start.getLine()), ident.start.getCharPositionInLine() );
+			ad.setStartCharacter( ((CommonToken)ident.start).getStartIndex() );
+			ad.setEndCharacter( ((CommonToken)ident.start).getStopIndex() );
+			$ds = ad;
+			location.setProperty(Location.LOCATION_FROM_CONTENT, ident.start.getText());
+		}
+		(	/* WARNING: $o : O() from x(y) could be also $o : O() from x followed
+			   by (y).  Resolve by always forcing (...) to be paren_chunk if
+			   after a from.  Setting k=1 will force this to happen.  No backtracking
+			   but you'll get a warning from ANTLR.  ANTLR resolves by choosing first
+			   alternative to win, which is the paren_chunk case not the loop exit.
+			*/
+			options {k=1;}
+		:	args=paren_chunk
+		{
+			if( $args.text != null ) {
+				ad.setVariableName( null );
+				fc = new FunctionCallDescr($ident.start.getText());
+				fc.setLocation( offset($ident.start.getLine()), $ident.start.getCharPositionInLine() );			
+				fc.setArguments($args.text);
+				fc.setStartCharacter( ((CommonToken)$ident.start).getStartIndex() );
+				fc.setEndCharacter( ((CommonToken)$ident.start).getStopIndex() );
+				location.setProperty(Location.LOCATION_FROM_CONTENT, $args.text);
+				$from.setEndCharacter( ((CommonToken)$args.stop).getStopIndex() );
+			}
+		}
+		)?
+		expression_chain[$from, ad]?
+	;	
+	finally {
+		if( ad != null ) {
+			if( fc != null ) {
+				ad.addFirstInvoker( fc );
+			}
+			location.setProperty(Location.LOCATION_FROM_CONTENT, ad.toString() );
+		}
+	}
+	
+
+
 	
 expression_chain[FromDescr from, AccessorDescr as] 
 	@init {
