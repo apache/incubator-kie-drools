@@ -2,15 +2,14 @@
 <section>
   <title>Getting the examples</title>
 
-  <para>Download the drools-examples zip; which is a self contained Eclipse
-  project. The example project in eclipse requires that you have the plugin
-  instilled: import the drools-examples project (it has an eclipse project
-  already setup). The rules all have example classes that execute the rules.
-  If you want to try the examples in another project (or another IDE) then you
-  will need to setup the dependencies by hand of course.</para>
-
-  <para>Future documentation will include walk throughs for each of the
-  examples.</para>
+  <para>Make sure the Drools Eclipse plugin is installed, which needs GEF
+  dependency installed first. Then download and extract the drools-examples
+  zip file, which includes an already created Eclipse project. Import that
+  project into a new Eclipse workspace. The rules all have example classes
+  that execute the rules. If you want to try the examples in another project
+  (or another IDE) then you will need to setup the dependencies by hand of
+  course. Many, but not all of the examples are documented below, enjoy
+  :)</para>
 
   <section>
     <title>Hello World</title>
@@ -23,28 +22,30 @@
 </programlisting>
 
     <para>The "Hello World" example shows a simple example of rules usage, and
-    both the MVEL dialect and Java dialect.</para>
+    both the MVEL and Java dialects.</para>
 
     <para>In this example it will be shown how to build rulebases and sessions
     and how to add audit logging and debug outputs, this information is
     ommitted from other examples as it's all very similar. PackageBuilder is
-    used to turn a drl source file into something the RuleBase can consume,
-    addPackageFromDrl takes a Reader as the parameter. Reader can be used to
-    retrieve a source drl file from various locations, in this case the drl
-    file is being retrieved from the classpath; but it could come the disk or
-    a url. The use of the Reader interface means that Drools does not have to
-    care. In this case we only add a single drl source file, but multiple drl
-    files can be added and all are merged into a single Package. All drl files
-    added to the PackageBuilder must declare themselves in the same package
-    namespace, if you wish to build a Package in a different namespace a new
-    instalce of PackageBuilder must be created; multiple packages of
-    differerent namespaces can be added to the same RuleBase. When all the drl
-    files have been added we should check the builder for errors; while the
-    RuleBase will validate the packge it will only have access to the error
-    information as a String, so if you wish to debug the error information you
-    sould do it on the builder instance. Once we know the builder is error
-    free get the Package, instantiate a RuleBase from the RuleBaseFactory and
-    add the package.</para>
+    used to turn a drl source file into Package objects which the RuleBase can
+    consume, addPackageFromDrl takes a Reader interface as the parameter.
+    Reader can be used to retrieve a source drl file from various locations,
+    in this case the drl file is being retrieved from the classpath as an
+    InputStream which we turn into a Reader by wrapping it with
+    InputStreamReader; but it could come the disk or a url. The use of the
+    Reader interface means that Drools does not have to care. In this case we
+    only add a single drl source file, but multiple drl files can be added and
+    all are merged into a single Package. All drl files added to the
+    PackageBuilder must declare themselves in the same package namespace, if
+    you wish to build a Package in a different namespace a new instance of
+    PackageBuilder must be created; multiple packages of differerent
+    namespaces can be added to the same RuleBase. When all the drl files have
+    been added we should check the builder for errors; while the RuleBase will
+    validate the packge it will only have access to the error information as a
+    String, so if you wish to debug the error information you should do it on
+    the builder instance. Once we know the builder is error free get the
+    Package, instantiate a RuleBase from the RuleBaseFactory and add the
+    package.</para>
 
     <example>
       <title>HelloWorld example: Creating the RuleBase and Session</title>
@@ -74,24 +75,26 @@ StatefulSession session = ruleBase.newStatefulSession();</programlisting>
     </example>
 
     <para>Drools has an event model that exposes much of whats happening
-    internally, two default listeners are supplied DebugAgendaEventListener
-    and DebugWorkingMemoryEventListener which print out debug event
-    information to the err console, adding listeners to a session is trivial
-    and shown below. The WorkingMemoryFileLogger provides execution auditing
-    which can be viewed in a graphical viewer; it's actually a specialised
-    implementation built on the agenda and working memory event model, when
-    the engine has finished executing logger.writeToDisk() must be
-    called.</para>
+    internally, two default debug listeners are supplied
+    DebugAgendaEventListener and DebugWorkingMemoryEventListener which print
+    out debug event information to the err console, adding listeners to a
+    session is trivial and shown below. The WorkingMemoryFileLogger provides
+    execution auditing which can be viewed in a graphical viewer; it's
+    actually a specialised implementation built on the agenda and working
+    memory listeners, when the engine has finished executing
+    logger.writeToDisk() must be called.</para>
 
-    <para>Most of the examples use the Audit logging features of drools to
+    <para>Most of the examples use the Audit logging features of Drools to
     record execution flow for later inspection.</para>
 
     <example>
       <title>HelloWorld example: Event logging and Auditing</title>
 
-      <programlisting>session.addEventListener( new DebugAgendaEventListener() );
+      <programlisting>// setup the debug listeners
+session.addEventListener( new DebugAgendaEventListener() );
 session.addEventListener( new DebugWorkingMemoryEventListener() );
         
+// setup the audit logging
 WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
 logger.setFileName( "log/helloworld" );     </programlisting>
     </example>
@@ -113,35 +116,105 @@ logger.setFileName( "log/helloworld" );     </programlisting>
 }</programlisting>
     </example>
 
-    <para>A single Message object is created with the messgae "Hello World"
+    <para>A single Message object is created with the message "Hello World"
     and status HELLO and then inserted into the engine, at which point
     fireAllRules() is executed. Remember all the network evaluation is done
     during the insert time, by the time the program execution reaches the
     fireAllRules() method it already knows which rules are fully matches and
-    able to fire. In the case of the example below there is a single
-    activation for the rule "Hello World".</para>
+    able to fire.</para>
 
     <example>
       <title>HelloWorld example: Execution</title>
 
-      <programlisting>        final Message message = new Message();
-        message.setMessage( "Hello World" );
-        message.setStatus( Message.HELLO );
-        session.insert( message );
+      <programlisting>Message message = new Message();
+message.setMessage( "Hello World" );
+message.setStatus( Message.HELLO );
+session.insert( message );
         
-        session.fireAllRules();
+session.fireAllRules();
         
-        logger.writeToDisk();
-        
-        session.dispose();    </programlisting>
+logger.writeToDisk();
+      
+session.dispose();    </programlisting>
     </example>
 
-    <para>The "Hello World" rule is very simple it creates two variable
-    bindings, called declarations. One on the Pattern object itself, "m", and
-    the other on the field "message". The rule alos has a single literal field
-    constraint that restricts against the int style enum Message.HELLO. When
-    this rule fires it outputs the current objects message and sets a new
-    message and status.</para>
+    <para>To execute the example from Java.</para>
+
+    <para><orderedlist>
+        <listitem>
+          <para>Open the class org.drools.examples.FibonacciExample in your
+          Eclipse IDE</para>
+        </listitem>
+
+        <listitem>
+          <para>Right-click the class an select "Run as..." -&gt; "Java
+          application"</para>
+        </listitem>
+      </orderedlist></para>
+
+    <para>If we put a breakpoint on the fireAllRules() method and select the
+    session variable we can see that the "Hello World" view is already
+    activated and on the Agenda, showing that all the pattern matching work
+    was already done during the insert.</para>
+
+    <figure>
+      <title>Hello World : fireAllRules Agenda View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="helloworld_agenda1.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The may application print outs go to to System.out while the debug
+    listener print outs go to System.err.</para>
+
+    <example>
+      <title>HelloWorld example: Console.out</title>
+
+      <programlisting>Hello World
+Goodbyte cruel world</programlisting>
+    </example>
+
+    <example>
+      <title>HelloWorld example: Console.err</title>
+
+      <programlisting>==&gt;[ActivationCreated(0): rule=Hello World; 
+                          tuple=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]]
+[ObjectInserted: handle=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]; 
+                 object=org.drools.examples.HelloWorldExample$Message@17cec96]
+[BeforeActivationFired: rule=Hello World; 
+                        tuple=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]]
+==&gt;[ActivationCreated(4): rule=Good Bye; 
+                          tuple=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]]
+[ObjectUpdated: handle=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]; 
+                old_object=org.drools.examples.HelloWorldExample$Message@17cec96; 
+                new_object=org.drools.examples.HelloWorldExample$Message@17cec96]
+[AfterActivationFired(0): rule=Hello World]
+[BeforeActivationFired: rule=Good Bye; 
+                        tuple=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]]
+[AfterActivationFired(4): rule=Good Bye]  </programlisting>
+    </example>
+
+    <para>The <emphasis role="bold">LHS (when)</emphasis> section of the rule
+    states that it will be activated for each <emphasis>Message</emphasis>
+    object inserted into the working memory whose <emphasis>status</emphasis>
+    is <emphasis>Message.HELLO</emphasis>. Besides that, two variable binds
+    are created: "<emphasis>message</emphasis>" variable is bound to the
+    <emphasis>message</emphasis> attribute and "<emphasis>m</emphasis>"
+    variable is bound to the <emphasis>object matched pattern</emphasis>
+    itself.</para>
+
+    <para>The <emphasis role="bold">RHS (consequence, then)</emphasis> section
+    of the rule is written using the MVEL expression language, as declared by
+    the rule's attribute <emphasis>dialect</emphasis>. After printing the
+    content of the <emphasis>message</emphasis> bound variable to the default
+    console, the rule changes the values of the <emphasis>message</emphasis>
+    and <emphasis>status</emphasis> attributes of the <emphasis>m</emphasis>
+    bound variable; using MVEL's 'modify' keyword which allows you to apply a
+    block of setters in one statement, with the engine being automatically
+    notified of the changes at the end of the block.</para>
 
     <example>
       <title>HelloWorld example: rule "Hello World"</title>
@@ -157,23 +230,37 @@ logger.setFileName( "log/helloworld" );     </programlisting>
 end</programlisting>
     </example>
 
-    <para>The <emphasis role="bold">LHS (when)</emphasis> section of the rule
-    states that it will be activated for each <emphasis>Message</emphasis>
-    object inserted into the working memory whose <emphasis>status</emphasis>
-    is <emphasis>Message.HELLO</emphasis>. Besides that, two variable binds
-    are created: "<emphasis>message</emphasis>" variable is bound to the
-    <emphasis>message</emphasis> attribute and "<emphasis>m</emphasis>"
-    variable is bound to the <emphasis>pattern</emphasis> itself.</para>
+    <para>We can add a break point into the DRL for when modify is called
+    during the execution of the "Hello World" consequence and inspect the
+    Agenda view again. Notice this time we "Debug As" a "Drools application"
+    and not a "Java application".</para>
 
-    <para>The <emphasis role="bold">RHS (consequence, then)</emphasis> section
-    of the rule is written using the MVEL expression language, as declared by
-    the rule's attribute <emphasis>dialect</emphasis>. After printing the
-    content of the <emphasis>message</emphasis> bound variable to the default
-    console, the rule changes the values of the <emphasis>message</emphasis>
-    and <emphasis>status</emphasis> attributes of the <emphasis>m</emphasis>
-    bound variable; using MVEL's 'modify' keyword which allows you to apply a
-    block of setters in one statement, with the engine being automatically
-    notified of the changes at the end of the block.</para>
+    <para><orderedlist>
+        <listitem>
+          <para>Open the class org.drools.examples.FibonacciExample in your
+          Eclipse IDE</para>
+        </listitem>
+
+        <listitem>
+          <para>Right-click the class an select "Debug as..." -&gt; "Drools
+          application"</para>
+        </listitem>
+      </orderedlist>Now we can see that the other rule "Good Bye" which uses
+    the java dialect is activated and placed on the agenda.</para>
+
+    <figure>
+      <title>Hello World : rule "Hello World" Agenda View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="helloworld_agenda2.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The "Good Bye" rule is similar to the "Hello World" rule but matches
+    Message objects whose status is Message.GOODBYE instead, printing its
+    message to the default console, it specifies the "java" dialect.</para>
 
     <example>
       <title>HelloWorld example: rule "Good Bye"</title>
@@ -187,9 +274,27 @@ end</programlisting>
 end</programlisting>
     </example>
 
-    <para>The "Good Bye" rule is similar to the "Hello World" but matches
-    Message objects whose status is Message.GOODBYE instead, printing its
-    message to the default console.</para>
+    <para>If you remember at the start of this example in the java code we
+    created a WorkingMemoryFileLogger and called logger.writeToDisk() at the
+    end, this created an audit log file that can be shown in the Audit view.
+    We use the audit view in many of the examples to try and understand the
+    example execution flow. In the view below we can see the object is
+    inserted which creates an activation for the "Hello World" rule, the
+    activation is then executed which updated the Message object causing the
+    "Good Bye" rule to activate, the "Good Bye" rule then also executes. When
+    an event in the Audit view is select it highlights the origin event in
+    green, so below the Activation created event is highlighted in greed as
+    the origin of the Activation executed event.</para>
+
+    <figure>
+      <title>Hello World : Audit View</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="helloworld_auditview1.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
   </section>
 
   <section>
@@ -792,6 +897,13 @@ end
   <section>
     <title>Golfing Example</title>
 
+    <programlisting><emphasis role="bold">Name:</emphasis> Golfing
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.GolfingExample
+<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Rules file:</emphasis> golfing.drl
+<emphasis role="bold">Objective:</emphasis> Configuration example that finds the solution from a large number of available cross products
+</programlisting>
+
     <para></para>
   </section>
 
@@ -832,30 +944,46 @@ end
     obviously it costs more).</para>
 
     <section>
-      <title>Starting anew</title>
+      <title>Executing the Example</title>
 
-      <para>Loading the initial ticket data:</para>
+      <para>The example creates 4 customers, with their name and subscription
+      class, it then creates 4 tickets for each of the customers, note that
+      the ticket takes the customer in the constructor (that sets up the
+      object relationship. The tickets and the customers are then inserted.
+      Notice that we keep a fact handle - which we will use to notify the
+      engine that that specific ticket changed later on. The last line has the
+      all important fireAllRules(), which tells the engine to take action on
+      the data it has.</para>
 
-      <figure>
-        <title>Trouble ticket setup</title>
+      <example>
+        <title>Trouble Ticket Example : Creating and Inserting Facts</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="tt_initial.png" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+        <programlisting>Customer a = new Customer( "A",
+                           "Gold" );
+Customer b = new Customer( "B",
+                           "Platinum" );
+Customer c = new Customer( "C",
+                           "Silver" );
+Customer d = new Customer( "D",
+                           "Silver" );
 
-      <para>Referring to the above code, line 27 &amp; 28 refer to logging the
-      "audit trail" out to a file, which will we load up later. Lines 30
-      through 37 are the customers (with their name and subscription class).
-      Lines 39 through 42 are the tickets - note that the ticket takes the
-      customer in the constructor (that sets up the object relationship).
-      Lines 44 through 52 are asserting the data into the engine. Note that in
-      line 51 we keep a fact handle - which we will use to notify the engine
-      that that specific ticket changed later on. Line 54 has the all
-      important fireAllRules(), which tells the engine to take action on the
-      data it has.</para>
+Ticket t1 = new Ticket( a );
+Ticket t2 = new Ticket( b );
+Ticket t3 = new Ticket( c );
+Ticket t4 = new Ticket( d );
+
+session.insert( a );
+session.insert( b );
+session.insert( c );
+session.insert( d );
+
+session.insert( t1 );
+session.insert( t2 );
+FactHandle ft3 = session.insert( t3 );
+session.insert( t4 );
+
+session.fireAllRules();</programlisting>
+      </example>
 
       <para>We have the "New Ticket" rule which has the highest priority
       (salience of 10 - the default is zero), The purpose of this is simply to
@@ -1348,6 +1476,18 @@ end
       apply, hence the logical fact of "Discount" is automatically
       retracted.</para>
     </section>
+  </section>
+
+  <section>
+    <title>PetStore Example</title>
+
+    <programlisting><emphasis role="bold">Name:</emphasis> PetStore
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.PetStoreExample
+<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Rules file:</emphasis> PetStore.drl
+<emphasis role="bold">Objective:</emphasis> Demonstrates 'accumulate', 'collect' and 'from'</programlisting>
+
+    <para></para>
   </section>
 
   <section>
@@ -1965,25 +2105,26 @@ There are two cells on the same column with the same value at (6,3) and (7,3)
   </section>
 
   <section>
-    <title>Number Guess</title>
+    <section>
+      <title>Number Guess</title>
 
-    <programlisting><emphasis role="bold">Name:</emphasis> Number Guess 
+      <programlisting><emphasis role="bold">Name:</emphasis> Number Guess 
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.NumberGuessExample
 <emphasis role="bold">Type:</emphasis> java application
 <emphasis role="bold">Rules file:</emphasis> NumberGuess.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrate use of Rule Flow to organise Rules
 </programlisting>
 
-    <para>The "Number Guess" example shows the use of RuleFlow, a way of
-    controlling the order in which rules are fired. It uses widely understood
-    workflow diagrams to make clear the order that groups of rules will be
-    executed.</para>
+      <para>The "Number Guess" example shows the use of RuleFlow, a way of
+      controlling the order in which rules are fired. It uses widely
+      understood workflow diagrams to make clear the order that groups of
+      rules will be executed.</para>
 
-    <example>
-      <title>Creating the Number Guess RuleBase - extract 1 from
-      NumberGuessExample.java main() method</title>
+      <example>
+        <title>Creating the Number Guess RuleBase - extract 1 from
+        NumberGuessExample.java main() method</title>
 
-      <programlisting>final PackageBuilder builder = new PackageBuilder();
+        <programlisting>final PackageBuilder builder = new PackageBuilder();
 
 builder.addPackageFromDrl( new InputStreamReader( 
          ShoppingExample.class.getResourceAsStream( "NumberGuess.drl" ) ) );
@@ -1994,19 +2135,19 @@ final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 ruleBase.addPackage( builder.getPackage() );
 
 </programlisting>
-    </example>
+      </example>
 
-    <para>The creation of the package, and the loading of the rules (using the
-    addPackageFromDrl() method ) is the same as the previous examples. There
-    is a additional line to add the RuleFlow (NumberGuess.rfm) as you have the
-    option of specifying different ruleflows for the same RuleBase. Otherwise
-    the RuleBase is created in the same manner as before .</para>
+      <para>The creation of the package, and the loading of the rules (using
+      the addPackageFromDrl() method ) is the same as the previous examples.
+      There is a additional line to add the RuleFlow (NumberGuess.rfm) as you
+      have the option of specifying different ruleflows for the same RuleBase.
+      Otherwise the RuleBase is created in the same manner as before .</para>
 
-    <example>
-      <title>Starting the RuleFlow - extract 2 from NumberGuessExample.java
-      main() method</title>
+      <example>
+        <title>Starting the RuleFlow - extract 2 from NumberGuessExample.java
+        main() method</title>
 
-      <programlisting>final StatefulSession session = ruleBase.newStatefulSession();
+        <programlisting>final StatefulSession session = ruleBase.newStatefulSession();
 
 session.insert( new GameRules( 100,  5 ) );
 session.insert( new RandomNumber() );
@@ -2018,119 +2159,121 @@ session.fireAllRules();
 session.dispose();
 
 </programlisting>
-    </example>
+      </example>
 
-    <para>Once we have a RuleBase we can use it to obtain a stateful session.
-    Into our session we insert our facts (standard Java Objects). For
-    simplicity in this sample, these classes are all contained within our
-    NumberGuessExample.java file. The GameRules class provides the maximum
-    range and the number of guesses allowed. The RandomNumber class
-    automatically generates a number between 0 and 100 and makes it available
-    to our rules after insertion (via the getValue() method). The Game class
-    keeps track of the guesses we have made before, and the number of guesses
-    we have made.</para>
+      <para>Once we have a RuleBase we can use it to obtain a stateful
+      session. Into our session we insert our facts (standard Java Objects).
+      For simplicity in this sample, these classes are all contained within
+      our NumberGuessExample.java file. The GameRules class provides the
+      maximum range and the number of guesses allowed. The RandomNumber class
+      automatically generates a number between 0 and 100 and makes it
+      available to our rules after insertion (via the getValue() method). The
+      Game class keeps track of the guesses we have made before, and the
+      number of guesses we have made.</para>
 
-    <para>Note that before we call the standard fireAllRules() method, we also
-    start the process that we loaded earlier (via the startProcess() method).
-    We explain where to obtain the parameter we pass ("Number Guess" - the id
-    of the ruleflow) when we talk about the RuleFlow file and the graphical
-    RuleFlow editor below.</para>
+      <para>Note that before we call the standard fireAllRules() method, we
+      also start the process that we loaded earlier (via the startProcess()
+      method). We explain where to obtain the parameter we pass ("Number
+      Guess" - the id of the ruleflow) when we talk about the RuleFlow file
+      and the graphical RuleFlow editor below.</para>
 
-    <para>Before we finish we our Java code , we note that In 'real life' we
-    would examine the final state of the objects (e.g. how many guesses it
-    took, so that we could add it to a high score table). For this example we
-    are content to ensure the working memory session is cleared by calling the
-    dispose() method.</para>
+      <para>Before we finish we our Java code , we note that In 'real life' we
+      would examine the final state of the objects (e.g. how many guesses it
+      took, so that we could add it to a high score table). For this example
+      we are content to ensure the working memory session is cleared by
+      calling the dispose() method.</para>
 
-    <figure>
-      <title>RuleFlow for the NumberGuess Example</title>
+      <figure>
+        <title>RuleFlow for the NumberGuess Example</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="numberguess-ruleflow.png" />
-        </imageobject>
-      </mediaobject>
-    </figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="numberguess-ruleflow.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-    <para>If you open the NumberGuess.rf file open in the Drools IDE (and have
-    the JBoss Rules extensions installed correctly in Eclipse) you should see
-    the above diagram, similar to a standard flowchart. Its icons are similar
-    (but not exactly the same) as the JBoss jBPM workflow product. Should you
-    wish to edit the diagram, a menu of available components should be
-    available to the left of the diagram in the IDE, which is call the
-    pallete. This diagram is saved in a (almost human) readable xml format,
-    using xstream.</para>
+      <para>If you open the NumberGuess.rf file open in the Drools IDE (and
+      have the JBoss Rules extensions installed correctly in Eclipse) you
+      should see the above diagram, similar to a standard flowchart. Its icons
+      are similar (but not exactly the same) as the JBoss jBPM workflow
+      product. Should you wish to edit the diagram, a menu of available
+      components should be available to the left of the diagram in the IDE,
+      which is call the pallete. This diagram is saved in a (almost human)
+      readable xml format, using xstream.</para>
 
-    <para>If it is not already open, ensure the properties view is visible in
-    the IDE. It can opened by selecting Window -&gt; Show View -&gt; Other and
-    then select the Properties view. If you do this <emphasis
-    role="bold">before</emphasis> you select any item on the RuleFlow (or
-    click on blank space in the RuleFlow) you should be presented with the
-    following set of properties.</para>
+      <para>If it is not already open, ensure the properties view is visible
+      in the IDE. It can opened by selecting Window -&gt; Show View -&gt;
+      Other and then select the Properties view. If you do this <emphasis
+      role="bold">before</emphasis> you select any item on the RuleFlow (or
+      click on blank space in the RuleFlow) you should be presented with the
+      following set of properties.</para>
 
-    <figure>
-      <title>Properties for the Number Guess RuleFlow</title>
+      <figure>
+        <title>Properties for the Number Guess RuleFlow</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="numberguess-ruleflow-properties.png" />
-        </imageobject>
-      </mediaobject>
-    </figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="numberguess-ruleflow-properties.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-    <para>Keep an eye on the properties view as we progress through the
-    example RuleFlow as it gives valuable information. In this case it
-    provides us with the ID of the RuleFlow process that we used in our
-    earlier code example when we called session.startprocess().</para>
+      <para>Keep an eye on the properties view as we progress through the
+      example RuleFlow as it gives valuable information. In this case it
+      provides us with the ID of the RuleFlow process that we used in our
+      earlier code example when we called session.startprocess().</para>
 
-    <para>To give an overview of each of the node types (boxes) in the
-    NumberGuess RuleFlow.</para>
+      <para>To give an overview of each of the node types (boxes) in the
+      NumberGuess RuleFlow.</para>
 
-    <para><itemizedlist>
-        <listitem>
-          <para>The Start and End nodes (green arrow and red box) are where
-          the RuleFlow starts and ends.</para>
-        </listitem>
+      <para>
+        <itemizedlist>
+          <listitem>
+            <para>The Start and End nodes (green arrow and red box) are where
+            the RuleFlow starts and ends.</para>
+          </listitem>
 
-        <listitem>
-          <para>RuleFlowGroup (simple yellow box). These map to the
-          RuleFlowGroups in our rules (DRL) file that we will look at later.
-          For example when the flow reaches the 'Too High' RuleFlowGroup, only
-          those rules marked with an attribute of <emphasis
-          role="bold">ruleflow-group "Too High" </emphasis> can potentially
-          fire.</para>
-        </listitem>
+          <listitem>
+            <para>RuleFlowGroup (simple yellow box). These map to the
+            RuleFlowGroups in our rules (DRL) file that we will look at later.
+            For example when the flow reaches the 'Too High' RuleFlowGroup,
+            only those rules marked with an attribute of <emphasis
+            role="bold">ruleflow-group "Too High" </emphasis> can potentially
+            fire.</para>
+          </listitem>
 
-        <listitem>
-          <para>Action Nodes (yellow box with cog like icon). These can
-          perform standard Java method calls. Most action nodes in this
-          example call System.out.println to give an indication to the user of
-          what is going on.</para>
-        </listitem>
+          <listitem>
+            <para>Action Nodes (yellow box with cog like icon). These can
+            perform standard Java method calls. Most action nodes in this
+            example call System.out.println to give an indication to the user
+            of what is going on.</para>
+          </listitem>
 
-        <listitem>
-          <para>Split and Join Nodes (Blue Ovals) such as "Guess Correct" and
-          "More Guesses Join" where the flow of control can split (according
-          to various conditions) and / or rejoin.</para>
-        </listitem>
+          <listitem>
+            <para>Split and Join Nodes (Blue Ovals) such as "Guess Correct"
+            and "More Guesses Join" where the flow of control can split
+            (according to various conditions) and / or rejoin.</para>
+          </listitem>
 
-        <listitem>
-          <para>Arrows that indicate the flow between the various
-          nodes.</para>
-        </listitem>
-      </itemizedlist></para>
+          <listitem>
+            <para>Arrows that indicate the flow between the various
+            nodes.</para>
+          </listitem>
+        </itemizedlist>
+      </para>
 
-    <para>These various nodes work together with the Rules to make the Number
-    Guess game work. For example, the "Guess" RuleFlowGroup allows only the
-    rule "Get user Guess" to fire (details below) as only that Rule has a
-    matching attribute of <emphasis role="bold">ruleflow-group
-    "Guess"</emphasis></para>
+      <para>These various nodes work together with the Rules to make the
+      Number Guess game work. For example, the "Guess" RuleFlowGroup allows
+      only the rule "Get user Guess" to fire (details below) as only that Rule
+      has a matching attribute of <emphasis role="bold">ruleflow-group
+      "Guess"</emphasis></para>
 
-    <example>
-      <title>A Rule that will fire only a specific point in the RuleFlow -
-      extract from NumberGuess.drl</title>
+      <example>
+        <title>A Rule that will fire only a specific point in the RuleFlow -
+        extract from NumberGuess.drl</title>
 
-      <programlisting>rule "Get user Guess"
+        <programlisting>rule "Get user Guess"
  ruleflow-group "Guess"
  no-loop
  when    
@@ -2149,95 +2292,97 @@ session.dispose();
 end  
 
 </programlisting>
-    </example>
+      </example>
 
-    <para>The rest of this rule is fairly standard : The <emphasis
-    role="bold">LHS (when)</emphasis> section of the rule states that it will
-    be activated for each <emphasis>RandomNumber</emphasis> object inserted
-    into the working memory where <emphasis>guessCount</emphasis> is less than
-    the <emphasis>allowedGuesses</emphasis> ( read from the GameRules Class)
-    and where the user has not guessed the correct number.</para>
+      <para>The rest of this rule is fairly standard : The <emphasis
+      role="bold">LHS (when)</emphasis> section of the rule states that it
+      will be activated for each <emphasis>RandomNumber</emphasis> object
+      inserted into the working memory where <emphasis>guessCount</emphasis>
+      is less than the <emphasis>allowedGuesses</emphasis> ( read from the
+      GameRules Class) and where the user has not guessed the correct
+      number.</para>
 
-    <para>The <emphasis role="bold">RHS (consequence, then)</emphasis> prints
-    a message to the user, then awaits user input from <emphasis>System.in.
-    </emphasis> After getting this input (as System.in blocks until the
-    &lt;return&gt; key is pressed) it updates/modifes the guess count, the
-    actual guess and makes both available in the working memory.</para>
+      <para>The <emphasis role="bold">RHS (consequence, then)</emphasis>
+      prints a message to the user, then awaits user input from
+      <emphasis>System.in. </emphasis> After getting this input (as System.in
+      blocks until the &lt;return&gt; key is pressed) it updates/modifes the
+      guess count, the actual guess and makes both available in the working
+      memory.</para>
 
-    <para>The rest of the Rules file is fairly standard ; the package declares
-    the dialect is set to MVEL, various Java classes are imported. In total,
-    there are five rules in this file:</para>
+      <para>The rest of the Rules file is fairly standard ; the package
+      declares the dialect is set to MVEL, various Java classes are imported.
+      In total, there are five rules in this file:</para>
 
-    <para><orderedlist>
-        <listitem>
-          <para>Get User Guess, the Rule we examined above.</para>
-        </listitem>
+      <para><orderedlist>
+          <listitem>
+            <para>Get User Guess, the Rule we examined above.</para>
+          </listitem>
 
-        <listitem>
-          <para>A Rule to record the highest guess.</para>
-        </listitem>
+          <listitem>
+            <para>A Rule to record the highest guess.</para>
+          </listitem>
 
-        <listitem>
-          <para>A Rule to record the lowest guess.</para>
-        </listitem>
+          <listitem>
+            <para>A Rule to record the lowest guess.</para>
+          </listitem>
 
-        <listitem>
-          <para>A Rule to inspect the guess and retract it from memory if
-          incorrect.</para>
-        </listitem>
+          <listitem>
+            <para>A Rule to inspect the guess and retract it from memory if
+            incorrect.</para>
+          </listitem>
 
-        <listitem>
-          <para>A Rule that notifies the user that all guesses have been used
-          up.</para>
-        </listitem>
-      </orderedlist>One point of integration between the standard Rules and
-    the RuleFlow is via the 'ruleflow-group' attribute on the rules (as
-    dicussed above). A <emphasis role="bold">second point of integration
-    between the Rules File (drl) and the Rules Flow .rf files </emphasis>is
-    that the Split Nodes (the blue ovals) can use values in working memory (as
-    updated by the Rules) to decide which flow of action to take. To see how
-    this works click on the "Guess Correct Node" ; then within the properties
-    view, open the constraints editor (the button at the right that appears
-    once you click on the 'Constraints' property line). You should see
-    something similar to the Diagram below.</para>
+          <listitem>
+            <para>A Rule that notifies the user that all guesses have been
+            used up.</para>
+          </listitem>
+        </orderedlist>One point of integration between the standard Rules and
+      the RuleFlow is via the 'ruleflow-group' attribute on the rules (as
+      dicussed above). A <emphasis role="bold">second point of integration
+      between the Rules File (drl) and the Rules Flow .rf files </emphasis>is
+      that the Split Nodes (the blue ovals) can use values in working memory
+      (as updated by the Rules) to decide which flow of action to take. To see
+      how this works click on the "Guess Correct Node" ; then within the
+      properties view, open the constraints editor (the button at the right
+      that appears once you click on the 'Constraints' property line). You
+      should see something similar to the Diagram below.</para>
 
-    <figure>
-      <title>Edit Constraints for the GuessCorrect Node</title>
+      <figure>
+        <title>Edit Constraints for the GuessCorrect Node</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="numberguess-editconstraints.png" />
-        </imageobject>
-      </mediaobject>
-    </figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="numberguess-editconstraints.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-    <para>Click on 'Edit' beside 'To node Too High' and you see a dialog like
-    the one below. The values in the 'Textual Editor' follow the standard Rule
-    Format (LHS) and can refer to objects in working memory. The consequence
-    (RHS) is that the flow of control follows this node (i.e. To node Too
-    high') if the LHS expression evaluates to true.</para>
+      <para>Click on 'Edit' beside 'To node Too High' and you see a dialog
+      like the one below. The values in the 'Textual Editor' follow the
+      standard Rule Format (LHS) and can refer to objects in working memory.
+      The consequence (RHS) is that the flow of control follows this node
+      (i.e. To node Too high') if the LHS expression evaluates to true.</para>
 
-    <figure>
-      <title>Constraints Editor for the GuessCorrect Node / value too
-      high</title>
+      <figure>
+        <title>Constraints Editor for the GuessCorrect Node / value too
+        high</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="numberguess-constraint-toohigh.png" />
-        </imageobject>
-      </mediaobject>
-    </figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="numberguess-constraint-toohigh.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-    <para>Since the NumberGuess.java example contains a main() method, it can
-    be run as a standard Java application (either from the command line or via
-    the IDE). A typical game might result in the interaction below (the
-    numbers in bold are typed in by the user).</para>
+      <para>Since the NumberGuess.java example contains a main() method, it
+      can be run as a standard Java application (either from the command line
+      or via the IDE). A typical game might result in the interaction below
+      (the numbers in bold are typed in by the user).</para>
 
-    <example>
-      <title>Example Console output where the Number Guess Example beat the
-      human!</title>
+      <example>
+        <title>Example Console output where the Number Guess Example beat the
+        human!</title>
 
-      <programlisting>You have 5 out of 5 guesses left.
+        <programlisting>You have 5 out of 5 guesses left.
 Please enter your guess from 0 to 100
 <emphasis role="bold">50</emphasis>
 Your guess was too high
@@ -2261,74 +2406,77 @@ You have no more guesses
 The correct guess was 48 
 
 </programlisting>
-    </example>
+      </example>
 
-    <para>A summary of what is happening in this sample is:</para>
+      <para>A summary of what is happening in this sample is:</para>
 
-    <para><orderedlist>
-        <listitem>
-          <para>Main() method of NumberGuessExample.java loads RuleBase, gets
-          a StatefulSession and inserts Game, GameRules and RandomNumber
-          (containing the target number) objects into it. This method sets the
-          process flow we are going to use, and fires all rules. Control
-          passes to the RuleFlow.</para>
-        </listitem>
+      <para>
+        <orderedlist>
+          <listitem>
+            <para>Main() method of NumberGuessExample.java loads RuleBase,
+            gets a StatefulSession and inserts Game, GameRules and
+            RandomNumber (containing the target number) objects into it. This
+            method sets the process flow we are going to use, and fires all
+            rules. Control passes to the RuleFlow.</para>
+          </listitem>
 
-        <listitem>
-          <para>The NumberGuess.rf RuleFlow begins at the Start node.</para>
-        </listitem>
+          <listitem>
+            <para>The NumberGuess.rf RuleFlow begins at the Start node.</para>
+          </listitem>
 
-        <listitem>
-          <para>Control passes (via the "more guesses" join node) to the Guess
-          Node..</para>
-        </listitem>
+          <listitem>
+            <para>Control passes (via the "more guesses" join node) to the
+            Guess Node..</para>
+          </listitem>
 
-        <listitem>
-          <para>At the Guess node, the appropriate RuleFlowGroup ("Get user
-          Guess") is enabled. In this case the Rule "Guess" (in the
-          NumberGuess.drl file) is triggered. This rule displays a message to
-          the user, takes the response, and puts it into memory. Flow passes
-          to the next Rule Flow Node.</para>
-        </listitem>
+          <listitem>
+            <para>At the Guess node, the appropriate RuleFlowGroup ("Get user
+            Guess") is enabled. In this case the Rule "Guess" (in the
+            NumberGuess.drl file) is triggered. This rule displays a message
+            to the user, takes the response, and puts it into memory. Flow
+            passes to the next Rule Flow Node.</para>
+          </listitem>
 
-        <listitem>
-          <para>At the next node , "Guess Correct", constraints inspect the
-          current session and decide which path we take next.</para>
+          <listitem>
+            <para>At the next node , "Guess Correct", constraints inspect the
+            current session and decide which path we take next.</para>
 
-          <para>If the guess in step 4 was too high / too low flow procees
-          along a path which has (i) An action node with normal Java code
-          prints a too high / too low statement and (ii) a RuleFlowGroup
-          causes a highest guess / lowest guess Rule to be triggered in the
-          Rules file. Flow passes from these nodes to step 6.</para>
+            <para>If the guess in step 4 was too high / too low flow procees
+            along a path which has (i) An action node with normal Java code
+            prints a too high / too low statement and (ii) a RuleFlowGroup
+            causes a highest guess / lowest guess Rule to be triggered in the
+            Rules file. Flow passes from these nodes to step 6.</para>
 
-          <para>If the guess in step 4 just right we proceed along the path
-          towards the end of the Rule Flow. Before we get there, an action
-          node with normal Java code prints a statement "you guessed
-          correctly". There is a join node here (just before the Rule Flow
-          End) so that our no-more-guesses path (step 7) can also terminate
-          the RuleFlow.</para>
-        </listitem>
+            <para>If the guess in step 4 just right we proceed along the path
+            towards the end of the Rule Flow. Before we get there, an action
+            node with normal Java code prints a statement "you guessed
+            correctly". There is a join node here (just before the Rule Flow
+            End) so that our no-more-guesses path (step 7) can also terminate
+            the RuleFlow.</para>
+          </listitem>
 
-        <listitem>
-          <para>Control passes as per the RuleFlow via a join node, a guess
-          incorrect RuleFlowGroup (triggers a rule to retract a guess from
-          working memory) onto the "more guesses" decision node.</para>
-        </listitem>
+          <listitem>
+            <para>Control passes as per the RuleFlow via a join node, a guess
+            incorrect RuleFlowGroup (triggers a rule to retract a guess from
+            working memory) onto the "more guesses" decision node.</para>
+          </listitem>
 
-        <listitem>
-          <para>The "more guesses" decision node (right hand side of ruleflow)
-          uses constraints (again looking at values that the Rules have put
-          into the working memory) to decide if we have more guesses and if
-          so, goto step 3. If not we proceed to the end of the workflow, via a
-          RuleFlowGroup that triggers a rule stating "you have no more
-          guesses".</para>
-        </listitem>
+          <listitem>
+            <para>The "more guesses" decision node (right hand side of
+            ruleflow) uses constraints (again looking at values that the Rules
+            have put into the working memory) to decide if we have more
+            guesses and if so, goto step 3. If not we proceed to the end of
+            the workflow, via a RuleFlowGroup that triggers a rule stating
+            "you have no more guesses".</para>
+          </listitem>
 
-        <listitem>
-          <para>The Loop 3-7 continues until the number is guessed correctly,
-          or we run out of guesses.</para>
-        </listitem>
-      </orderedlist></para>
+          <listitem>
+            <para>The Loop 3-7 continues until the number is guessed
+            correctly, or we run out of guesses.</para>
+          </listitem>
+        </orderedlist>
+      </para>
+    </section>
   </section>
 
   <section>
@@ -2948,6 +3096,224 @@ end
 =&gt;[fid:32:49]:[Chosen id=4, name=n1, hobbies=h1]
 </literallayout>
     </section>
+  </section>
+
+  <section>
+    <title>Conways Game Of Life Example</title>
+
+    <programlisting><emphasis role="bold">Name:</emphasis> Conways Game Of Life
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.conway.ConwayAgendaGroupRun org.drools.examples.conway.ConwayRuleFlowGroupRun
+<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Rules file:</emphasis> PetStore.drl
+<emphasis role="bold">Objective:</emphasis> Demonstrates 'accumulate', 'collect' and 'from'</programlisting>
+
+    <para>Conway's Game Of Life is a famous cellular automaton conceived in
+    the early 1970's by mathematician John Conway. While the system is well
+    known as "Conway's Game Of Life", it really isn't a game at all. Conway's
+    system is more like a life simulation. Don't be intimidated. The system is
+    terribly simple and terribly interesting. Math and Computer Science
+    students alike have marvelled over Conway's system for more than 30 years
+    now. The application represented here is a Swing based implementation of
+    Conway's Game of Life. The rules that govern the system are implemented as
+    business rules using Drools. This document will explain the rules that
+    drive the simulation and discuss the Drools specific parts of the
+    implementation.</para>
+
+    <para>http://en.wikipedia.org/wiki/Conway's_Game_of_Life
+    http://www.math.com/students/wonders/life/life.html</para>
+
+    <figure>
+      <title>Conways Example : Starting a new game</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="conway1.jpg" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>Conways Example : A running game</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="conway2.jpg" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>There are two formeds</para>
+
+    <para>All the Cells are inserted into the session</para>
+
+    <example>
+      <title>Conways Example : Register all Cell Neighbour relations</title>
+
+      <programlisting>rule "register north east"
+    ruleflow-group "register neighbor"
+when
+    CellGrid( $numberOfColumns : numberOfColumns )
+    $cell: Cell( $row : row &gt; 0, $col : col &lt; ( $numberOfColumns - 1 ) )            
+    $northEast : Cell( row  == ($row - 1), col == ( $col + 1 ) )    
+then                    
+    insert( new Neighbor( $cell, $northEast ) );
+    insert( new Neighbor( $northEast, $cell ) );        
+end
+
+rule "register north"
+    ruleflow-group "register neighbor"  
+when
+    $cell: Cell( $row : row &gt; 0, $col : col )   
+    $north : Cell( row  == ($row - 1), col == $col )    
+then        
+    insert( new Neighbor( $cell, $north ) );
+    insert( new Neighbor( $north, $cell ) );        
+end
+
+rule "register north west"
+    ruleflow-group "register neighbor"
+when
+    $cell: Cell( $row : row &gt; 0, $col : col &gt; 0 )           
+    $northWest : Cell( row  == ($row - 1), col == ( $col - 1 ) )                        
+then        
+    insert( new Neighbor( $cell, $northWest ) );
+    insert( new Neighbor( $northWest, $cell ) );        
+end
+
+rule "register west"
+    ruleflow-group "register neighbor"
+when
+    $cell: Cell( $row : row &gt;= 0, $col : col &gt; 0 )          
+    $west : Cell( row  == $row, col == ( $col - 1 ) )                       
+then        
+    insert( new Neighbor( $cell, $west ) );
+    insert( new Neighbor( $west, $cell ) );         
+end</programlisting>
+    </example>
+
+    <figure>
+      <title></title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="conway_ruleflow_generation.png" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <example>
+      <title>Conways Example : Evaluate Cells with state changes</title>
+
+      <programlisting>rule "Kill The Lonely"
+    ruleflow-group "evaluate"
+    no-loop
+when
+#   A live cell has fewer than 2 live neighbors
+    theCell: Cell(liveNeighbors &lt; 2, cellState == CellState.LIVE, phase == Phase.EVALUATE)
+then
+    theCell.setPhase(Phase.KILL);
+    update( theCell );
+end
+
+rule "Kill The Overcrowded"
+    ruleflow-group "evaluate"
+    no-loop
+when
+#   A live cell has more than 3 live neighbors
+    theCell: Cell(liveNeighbors &gt; 3, cellState == CellState.LIVE, phase == Phase.EVALUATE)
+then
+    theCell.setPhase(Phase.KILL);
+    update( theCell );
+end
+
+rule "Give Birth"
+    ruleflow-group "evaluate"
+    no-loop
+when
+#   A dead cell has 3 live neighbors
+    theCell: Cell(liveNeighbors == 3, cellState == CellState.DEAD, phase == Phase.EVALUATE)
+then
+    theCell.setPhase(Phase.BIRTH);
+    update( theCell );
+end
+</programlisting>
+    </example>
+
+    <example>
+      <title>Conways Example : Evaluate Cells with state changes</title>
+
+      <programlisting>rule "reset calculate"
+    ruleflow-group "reset calculate"
+when
+then
+    WorkingMemory wm = drools.getWorkingMemory();
+    wm.clearRuleFlowGroup( "calculate" );
+end
+
+rule "kill"
+    ruleflow-group "kill"
+    no-loop
+when
+    theCell: Cell(phase == Phase.KILL)
+then
+    theCell.setCellState(CellState.DEAD);
+    theCell.setPhase(Phase.DONE);   
+    update( theCell );
+end 
+ 
+rule "birth"
+    ruleflow-group "birth"
+    no-loop
+when
+    theCell: Cell(phase == Phase.BIRTH)
+then
+    theCell.setCellState(CellState.LIVE);
+    theCell.setPhase(Phase.DONE);
+    update( theCell );  
+end </programlisting>
+    </example>
+
+    <example>
+      <title>Conways Example : Evaluate Cells with state changes</title>
+
+      <programlisting>rule "Calculate Live"
+    ruleflow-group "calculate"
+    lock-on-active  
+when
+    theCell: Cell(cellState == CellState.LIVE)
+    Neighbor(cell == theCell, $neighbor : neighbor) 
+then
+    $neighbor.setLiveNeighbors( $neighbor.getLiveNeighbors() + 1 );
+    $neighbor.setPhase( Phase.EVALUATE );   
+    update( $neighbor );
+end 
+
+rule "Calculate Dead"
+    ruleflow-group "calculate"
+    lock-on-active  
+when
+    theCell: Cell(cellState == CellState.DEAD)
+    Neighbor(cell == theCell, $neighbor : neighbor )
+then
+    $neighbor.setLiveNeighbors( $neighbor.getLiveNeighbors() - 1 );
+    $neighbor.setPhase( Phase.EVALUATE );
+    update( $neighbor );    
+end </programlisting>
+    </example>
+
+    <example>
+      <title>Conways Example : Evaluate Cells with state changes</title>
+
+      <programlisting>rule "Kill All"
+    ruleflow-group "kill all"   
+    no-loop
+when
+    theCell: Cell(cellState == CellState.LIVE)
+then
+    theCell.setCellState(CellState.DEAD);
+    update( theCell );
+end</programlisting>
+    </example>
   </section>
 
   <section>
