@@ -122,7 +122,7 @@
     <title>Getting started with the examples</title>
 
     <para>No releases have been made yet, but you can easily build it from
-    source yourself. Check out drools from subversion and doa maven 2 build
+    source yourself. Check out drools from subversion and do a maven 2 build
     with the solver profile:</para>
 
     <programlisting>$ svn checkout http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/ drools
