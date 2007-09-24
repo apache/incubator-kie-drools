@@ -57,6 +57,7 @@ import org.drools.spi.KnowledgeHelper;
 import org.drools.util.StringUtils;
 import org.mvel.AbstractParser;
 import org.mvel.ExpressionCompiler;
+import org.mvel.MVEL;
 import org.mvel.ParserContext;
 import org.mvel.optimizers.OptimizerFactory;
 import org.mvel.util.ParseTools;
@@ -126,6 +127,8 @@ public class MVELDialect
 
         // we currently default to reflective optimisation
         OptimizerFactory.setDefaultOptimizer("reflective");
+        
+        MVEL.setThreadSafe( true );
 
         this.analyzer = new MVELExprAnalyzer();
         this.imports = new HashMap();
