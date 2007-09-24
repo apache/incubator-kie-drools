@@ -49,6 +49,12 @@ public class ReturnValueConstraint
         return this.restriction.getRequiredDeclarations();
     }
 
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+        this.restriction.replaceDeclaration( oldDecl,
+                                             newDecl );
+    }
+    
     public void setReturnValueExpression(final ReturnValueExpression expression) {
         this.restriction.setReturnValueExpression( expression );
     }

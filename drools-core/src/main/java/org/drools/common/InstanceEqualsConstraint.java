@@ -48,6 +48,10 @@ public class InstanceEqualsConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.declarations;
     }
+    
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+    }
 
     public Pattern getOtherPattern() {
         return this.otherPattern;

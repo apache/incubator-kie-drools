@@ -37,6 +37,14 @@ public abstract class AbstractCompositeRestriction
         return (Declaration[]) set.toArray( new Declaration[set.size()] );
     }
 
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+        for ( int i = 0; i < this.restrictions.length; i++ ) {
+            this.restrictions[i].replaceDeclaration( oldDecl,
+                                                     newDecl );
+        }
+    }
+
     private static int hashCode(final Object[] array) {
         final int PRIME = 31;
         if ( array == null ) {
@@ -80,6 +88,9 @@ public abstract class AbstractCompositeRestriction
     public static class CompositeContextEntry
         implements
         ContextEntry {
+
+        private static final long serialVersionUID = -1773986268630111227L;
+
         public ContextEntry[] contextEntries;
 
         private ContextEntry  entry;
@@ -103,7 +114,7 @@ public abstract class AbstractCompositeRestriction
                                          final InternalFactHandle handle) {
             for ( int i = 0, length = this.contextEntries.length; i < length; i++ ) {
                 this.contextEntries[i].updateFromFactHandle( workingMemory,
-                                                        handle );
+                                                             handle );
             }
         }
 
@@ -111,7 +122,7 @@ public abstract class AbstractCompositeRestriction
                                     final ReteTuple tuple) {
             for ( int i = 0, length = this.contextEntries.length; i < length; i++ ) {
                 this.contextEntries[i].updateFromTuple( workingMemory,
-                                                   tuple );
+                                                        tuple );
             }
         }
 

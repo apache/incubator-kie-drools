@@ -45,6 +45,10 @@ public class MockConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.declarations;
     }
+    
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+    }
 
     public ContextEntry getContextEntry() {
         return new ContextEntry() {

@@ -23,5 +23,16 @@ public interface Restriction
                                         ContextEntry context);
 
     public ContextEntry getContextEntry();
+    
+    /**
+     * A restriction may be required to replace an old
+     * declaration object by a new updated one
+     * 
+     * @param oldDecl
+     * @param newDecl
+     */
+    void replaceDeclaration(Declaration oldDecl,
+                            Declaration newDecl);
+    
 
 }

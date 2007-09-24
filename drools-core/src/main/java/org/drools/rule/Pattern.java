@@ -98,8 +98,13 @@ public class Pattern
     public Object clone() {
         final String identifier = (this.declaration != null) ? this.declaration.getIdentifier() : null;
         final Pattern clone = new Pattern( this.index,
+                                           this.offset,
                                            this.objectType,
-                                           identifier );
+                                           identifier,
+                                           this.declaration != null ? this.declaration.isInternalFact() : false );
+        if( this.getSource() != null ) {
+            clone.setSource( (PatternSource) this.getSource().clone() );
+        }
 
         for ( final Iterator it = this.constraints.iterator(); it.hasNext(); ) {
             final Object constr = it.next();
@@ -244,6 +249,10 @@ public class Pattern
             return false;
         }
         return (this.source == null) ? other.source == null : this.source.equals( other.source );
+    }
+
+    public List getNestedElements() {
+        return this.source != null ? Collections.singletonList( this.source ) : Collections.EMPTY_LIST;
     }
 
 }

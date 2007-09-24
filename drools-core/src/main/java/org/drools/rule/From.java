@@ -2,6 +2,7 @@ package org.drools.rule;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.spi.DataProvider;
@@ -41,6 +42,10 @@ public class From extends ConditionalElement
      */
     public Declaration resolveDeclaration(final String identifier) {
         return null;
+    }
+    
+    public List getNestedElements() {
+        return Collections.EMPTY_LIST;
     }
 
 }

@@ -17,6 +17,7 @@ package org.drools.rule;
  */
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
@@ -127,6 +128,10 @@ public class EvalCondition extends ConditionalElement {
      */
     public Declaration resolveDeclaration(final String identifier) {
         return null;
+    }
+
+    public List getNestedElements() {
+        return Collections.EMPTY_LIST;
     }
 
 };

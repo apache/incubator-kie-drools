@@ -85,6 +85,10 @@ public class LiteralRestriction
     public Declaration[] getRequiredDeclarations() {
         return LiteralRestriction.requiredDeclarations;
     }
+    
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+    }
 
     public String toString() {
         return "[LiteralRestriction evaluator=" + this.evaluator + " value=" + this.field + "]";
@@ -117,6 +121,8 @@ public class LiteralRestriction
     private static class LiteralContextEntry
         implements
         ContextEntry {
+
+        private static final long serialVersionUID = 2621864784428098347L;
         public FieldExtractor extractor;
         public Object         object;
         public ContextEntry   next;

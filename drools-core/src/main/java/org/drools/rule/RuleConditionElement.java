@@ -16,6 +16,7 @@
 
 package org.drools.rule;
 
+import java.util.List;
 import java.util.Map;
 
 import org.drools.spi.RuleComponent;
@@ -60,5 +61,12 @@ public interface RuleConditionElement
      * @return
      */
     public Object clone();
+    
+    /**
+     * Returs a list of RuleConditionElement's that are nested
+     * inside the current element
+     * @return
+     */
+    public List getNestedElements();
 
 }

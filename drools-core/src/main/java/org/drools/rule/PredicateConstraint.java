@@ -113,6 +113,25 @@ public class PredicateConstraint
     public Declaration[] getLocalDeclarations() {
         return this.localDeclarations;
     }
+    
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+        for( int i = 0; i < this.requiredDeclarations.length; i++) {
+            if( this.requiredDeclarations[i] == oldDecl ) {
+                this.requiredDeclarations[i] = newDecl;
+            }
+        }
+        for( int i = 0; i < this.previousDeclarations.length; i++) {
+            if( this.previousDeclarations[i] == oldDecl ) {
+                this.previousDeclarations[i] = newDecl;
+            }
+        }
+        for( int i = 0; i < this.localDeclarations.length; i++) {
+            if( this.localDeclarations[i] == oldDecl ) {
+                this.localDeclarations[i] = newDecl;
+            }
+        }
+    }
 
     public void setPredicateExpression(final PredicateExpression expression) {
         this.expression = expression;

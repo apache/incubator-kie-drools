@@ -51,6 +51,12 @@ public class VariableConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();
     }
+    
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+        this.restriction.replaceDeclaration( oldDecl,
+                                             newDecl ); 
+    }
 
     public FieldExtractor getFieldExtractor() {
         return this.fieldExtractor;

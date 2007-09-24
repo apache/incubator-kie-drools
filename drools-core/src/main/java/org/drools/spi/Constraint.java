@@ -22,5 +22,21 @@ public interface Constraint
     extends
     RuleComponent {
 
+    /**
+     * Returns all the declarations required by the given 
+     * constraint implementation.
+     * 
+     * @return
+     */
     Declaration[] getRequiredDeclarations();
+
+    /**
+     * A constraint may be required to replace an old
+     * declaration object by a new updated one
+     * 
+     * @param oldDecl
+     * @param newDecl
+     */
+    void replaceDeclaration(Declaration oldDecl,
+                            Declaration newDecl);
 }

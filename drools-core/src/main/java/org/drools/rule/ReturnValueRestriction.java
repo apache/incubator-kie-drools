@@ -95,10 +95,10 @@ public class ReturnValueRestriction
 
         this.evaluator = evaluator;
         this.contextEntry = new ReturnValueContextEntry( fieldExtractor,
-                                                         previousDeclarations,
-                                                         localDeclarations );
+                                                         this.previousDeclarations,
+                                                         this.localDeclarations );
 
-        this.requiredDeclarations = new Declaration[previousDeclarations.length + localDeclarations.length];
+        this.requiredDeclarations = new Declaration[this.previousDeclarations.length + this.localDeclarations.length];
         System.arraycopy( this.previousDeclarations,
                           0,
                           this.requiredDeclarations,
@@ -121,6 +121,25 @@ public class ReturnValueRestriction
 
     public Declaration[] getLocalDeclarations() {
         return this.localDeclarations;
+    }
+    
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+        for( int i = 0; i < this.requiredDeclarations.length; i++) {
+            if( this.requiredDeclarations[i] == oldDecl ) {
+                this.requiredDeclarations[i] = newDecl;
+            }
+        }
+        for( int i = 0; i < this.previousDeclarations.length; i++) {
+            if( this.previousDeclarations[i] == oldDecl ) {
+                this.previousDeclarations[i] = newDecl;
+            }
+        }
+        for( int i = 0; i < this.localDeclarations.length; i++) {
+            if( this.localDeclarations[i] == oldDecl ) {
+                this.localDeclarations[i] = newDecl;
+            }
+        }
     }
 
     public void setReturnValueExpression(final ReturnValueExpression expression) {

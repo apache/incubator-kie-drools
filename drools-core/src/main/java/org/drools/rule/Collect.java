@@ -18,6 +18,7 @@ package org.drools.rule;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
@@ -86,5 +87,9 @@ public class Collect extends ConditionalElement
      */
     public Declaration resolveDeclaration(final String identifier) {
         return (Declaration) this.sourcePattern.getInnerDeclarations().get( identifier );
+    }
+
+    public List getNestedElements() {
+        return Collections.singletonList( this.sourcePattern );
     }
 }

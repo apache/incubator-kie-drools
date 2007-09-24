@@ -126,6 +126,24 @@ public abstract class AbstractCompositeConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void replaceDeclaration(Declaration oldDecl,
+                                   Declaration newDecl) {
+        for( int i = 0; i < this.alphaConstraints.length; i++ ) {
+            this.alphaConstraints[i].replaceDeclaration( oldDecl, newDecl );
+        }
+        for( int i = 0; i < this.betaConstraints.length; i++ ) {
+            this.betaConstraints[i].replaceDeclaration( oldDecl, newDecl );
+        }
+        for( int i = 0; i < this.requiredDeclarations.length; i++ ) {
+            if( this.requiredDeclarations[i] == oldDecl ) {
+                this.requiredDeclarations[i] = newDecl;
+            }
+        }
+    }
 
     /**
      * {@inheritDoc}

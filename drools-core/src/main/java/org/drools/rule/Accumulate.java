@@ -17,6 +17,7 @@
 package org.drools.rule;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
@@ -219,6 +220,10 @@ public class Accumulate extends ConditionalElement
 
     public Object createWorkingMemoryContext() {
         return this.accumulator.createWorkingMemoryContext();
+    }
+
+    public List getNestedElements() {
+        return Collections.singletonList( this.source );
     }
 
 }
