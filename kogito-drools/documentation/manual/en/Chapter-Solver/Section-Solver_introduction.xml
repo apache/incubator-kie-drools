@@ -24,10 +24,10 @@ $ mvn -Psolver clean install
     like this:</para>
 
     <programlisting>$ cd drools-solver/drools-solver-examples/
-$ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
-$ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.lessonschedule.app.LessonScheduleApp"
-$ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
-$ mvn exec:java -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
+$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
+$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.lessonschedule.app.LessonScheduleApp"
+$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
+$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
 ...</programlisting>
 
     <para>Here's a screenshot of the NQueens example, which is a simple
