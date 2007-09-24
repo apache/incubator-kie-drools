@@ -3,48 +3,11 @@
   <title>Solver introduction</title>
 
   <section>
-    <title>Status of drools-solver</title>
-
-    <para>Drools-solver is an <emphasis role="bold">experimental</emphasis>
-    module of Drools. The API is far from stable and backward incompatible
-    changes occur now and then. A recipe to upgrade and apply those API
-    changes between versions will be maintained soon.</para>
-
-    <para>No releases have been made yet, but you can easily build it from
-    source yourself by checking out drools from subversion and doing a maven 2
-    build with the solver profile:</para>
-
-    <programlisting>$ svn checkout http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/ drools
-...
-$ cd drools
-$ mvn -Psolver clean install
-...</programlisting>
-
-    <para>After that, you can run any example directly from the command line
-    like this:</para>
-
-    <programlisting>$ cd drools-solver/drools-solver-examples/
-$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
-$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.lessonschedule.app.LessonScheduleApp"
-$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
-$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
-...</programlisting>
-
-    <para>Here's a screenshot of the NQueens example, which is a simple
-    example:</para>
-
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="screenshotSolvedNQueens8.png" format="PNG" />
-      </imageobject>
-    </mediaobject>
-  </section>
-
-  <section>
     <title>What is a Solver?</title>
 
-    <para>A solver solves all kinds of planning problems. Good examples of
-    such planning problems include:</para>
+    <para>Drools-solver combines a search algorithm with the power of the
+    drools rule engine to solve planning problems. Good examples of such
+    planning problems include:</para>
 
     <itemizedlist>
       <listitem>
@@ -108,9 +71,13 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
     </itemizedlist>
 
     <para>These constraints define the <emphasis>score function</emphasis> of
-    a planning problem. A planning problem has a number of
-    <emphasis>solutions</emphasis>. Each possible solution has a score. We can
-    break down the solutions to a planning problem into 3 categories:</para>
+    a planning problem. This is where the drools rule engine comes into play:
+    <emphasis role="bold">adding constraints with score rules is easy and
+    scalable</emphasis>.</para>
+
+    <para>A planning problem has a number of <emphasis>solutions</emphasis>.
+    Each possible solution has a score. We can break down the solutions to a
+    planning problem into 3 categories:</para>
 
     <itemizedlist>
       <listitem>
@@ -136,161 +103,55 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       </listitem>
     </itemizedlist>
 
-    <para>As we'll see later, <emphasis role="bold">the drools rule engine
-    turns out to be a very good way to implement a score
-    function</emphasis>.</para>
+    <para>Drools-solver supports several search algorithms to efficiently wade
+    through the incredbly large number of possible solutions. <emphasis
+    role="bold">It makes it easy to switch the search algorithm</emphasis>, by
+    simply changing the solver configuration.</para>
   </section>
 
   <section>
-    <title>Types of solvers</title>
+    <title>Status of drools-solver</title>
 
-    <para>Different solvers solve problems in different ways. Each type has
-    advantages and disadvantages. We 'll roughly discuss a few of the solver
-    types here. You can safely skip this section.</para>
+    <para>Drools-solver is an <emphasis role="bold">experimental</emphasis>
+    module of Drools. The API is far from stable and backward incompatible
+    changes occur now and then. A recipe to upgrade and apply those API
+    changes between versions will be maintained soon.</para>
+  </section>
 
-    <section>
-      <title>Brute force</title>
+  <section>
+    <title>Getting started with the examples</title>
 
-      <para>Brute force creates and evaluates every possible solution, usually
-      by creating a search tree.</para>
+    <para>No releases have been made yet, but you can easily build it from
+    source yourself. Check out drools from subversion and doa maven 2 build
+    with the solver profile:</para>
 
-      <para>Advantages:</para>
+    <programlisting>$ svn checkout http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/ drools
+...
+$ cd drools
+$ mvn -Psolver clean install
+...</programlisting>
 
-      <itemizedlist>
-        <listitem>
-          <para>It finds an optimal solution. If there is more then 1 optimal
-          solution, it finds all optimal solutions.</para>
-        </listitem>
+    <para>After that, you can run any example directly from the command line
+    like this:</para>
 
-        <listitem>
-          <para>It is straightforward and simple to implement.</para>
-        </listitem>
-      </itemizedlist>
+    <programlisting>$ cd drools-solver/drools-solver-examples/
+$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
+...
+$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.lessonschedule.app.LessonScheduleApp"
+...
+$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
+...
+$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
+...</programlisting>
 
-      <para>Disadvantages:</para>
+    <para>Here's a screenshot of the NQueens example, which is a simple
+    example:</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>It has a horrible performance and scalability. Mostly unusable
-          for a real-world problem due to time constraints.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Brute force is currently not implemented in drools-solver. But we
-      have plans to implement in the future, as a reference for validating the
-      output of the other solver types.</para>
-    </section>
-
-    <section>
-      <title>Branch and bound</title>
-
-      <para>Branch and bound is an improvement over brute force, as it prunes
-      away subsets of solutions which cannot have a better solution than the
-      best solution already found at that point.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It finds an optimal solution. If there is more then 1 optimal
-          solution, it can find all optimal solutions if needed.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It still scales very badly.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Branch and bound is currently not implemented in
-      drools-solver.</para>
-    </section>
-
-    <section>
-      <title>Simplex</title>
-
-      <para>Simplex turns all constraints into a big equation, which it
-      transmutes into a mathematical function without local optima. It then
-      finds an optimal solution to the planning problem by finding an optima
-      of that mathematical function.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It finds an optimal solution.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It's usually rather complex and mathematical to implement
-          constraints.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Drools-solver does not currently implement simplex.</para>
-    </section>
-
-    <section>
-      <title>Local search (tabu search, simulated annealing, ...)</title>
-
-      <para>Local search starts from an initial solution and evolves that
-      single solution into a better and better solution. It uses a single
-      search path of solutions. At each solution in this path it evaluates a
-      number of possible moves on the solution and applies the most suitable
-      move to take the step to the next solution.</para>
-
-      <para>Local search works a lot like a human planner: it uses a single
-      search path and moves facts around to find a good feasible
-      solution.</para>
-
-      <para>A vanilla local search can easily get stuck in a local optima, but
-      improvements (such as tabu search and simulated annealing) address this
-      problem.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It's relatively simple and natural to implement constraints
-          (at least in drools-solver's implementation).</para>
-        </listitem>
-
-        <listitem>
-          <para>It's very scalable, even when adding extra constraints (at
-          least in drools-solver's implementation).</para>
-        </listitem>
-
-        <listitem>
-          <para>It generally needs to worry about less negative hard
-          constraints, because the move pattern can fulfill a number of the
-          negative hard constraints.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It does not know when it finds an optimal solution.</para>
-        </listitem>
-
-        <listitem>
-          <para>If the optimal score is unknown (which is usually the case),
-          it must be told when to stop looking (for example based on time
-          spend, user input, ...).</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Drools-solver implements local search, including tabu search and
-      simulated annealing.</para>
-    </section>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="screenshotSolvedNQueens8.png" format="PNG" />
+      </imageobject>
+    </mediaobject>
   </section>
 
   <section>
@@ -489,6 +350,158 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       <para>You can find the source code of this example (as well as well as
       several other examples) in the drools-solver-examples src
       distribution.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Types of solvers</title>
+
+    <para>Different solvers solve problems in different ways. Each type has
+    advantages and disadvantages. We 'll roughly discuss a few of the solver
+    types here. You can safely skip this section.</para>
+
+    <section>
+      <title>Brute force</title>
+
+      <para>Brute force creates and evaluates every possible solution, usually
+      by creating a search tree.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It finds an optimal solution. If there is more then 1 optimal
+          solution, it finds all optimal solutions.</para>
+        </listitem>
+
+        <listitem>
+          <para>It is straightforward and simple to implement.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It has a horrible performance and scalability. Mostly unusable
+          for a real-world problem due to time constraints.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Brute force is currently not implemented in drools-solver. But we
+      have plans to implement in the future, as a reference for validating the
+      output of the other solver types.</para>
+    </section>
+
+    <section>
+      <title>Branch and bound</title>
+
+      <para>Branch and bound is an improvement over brute force, as it prunes
+      away subsets of solutions which cannot have a better solution than the
+      best solution already found at that point.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It finds an optimal solution. If there is more then 1 optimal
+          solution, it can find all optimal solutions if needed.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It still scales very badly.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Branch and bound is currently not implemented in
+      drools-solver.</para>
+    </section>
+
+    <section>
+      <title>Simplex</title>
+
+      <para>Simplex turns all constraints into a big equation, which it
+      transmutes into a mathematical function without local optima. It then
+      finds an optimal solution to the planning problem by finding an optima
+      of that mathematical function.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It finds an optimal solution.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It's usually rather complex and mathematical to implement
+          constraints.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Drools-solver does not currently implement simplex.</para>
+    </section>
+
+    <section>
+      <title>Local search (tabu search, simulated annealing, ...)</title>
+
+      <para>Local search starts from an initial solution and evolves that
+      single solution into a better and better solution. It uses a single
+      search path of solutions. At each solution in this path it evaluates a
+      number of possible moves on the solution and applies the most suitable
+      move to take the step to the next solution.</para>
+
+      <para>Local search works a lot like a human planner: it uses a single
+      search path and moves facts around to find a good feasible
+      solution.</para>
+
+      <para>A vanilla local search can easily get stuck in a local optima, but
+      improvements (such as tabu search and simulated annealing) address this
+      problem.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It's relatively simple and natural to implement constraints
+          (at least in drools-solver's implementation).</para>
+        </listitem>
+
+        <listitem>
+          <para>It's very scalable, even when adding extra constraints (at
+          least in drools-solver's implementation).</para>
+        </listitem>
+
+        <listitem>
+          <para>It generally needs to worry about less negative hard
+          constraints, because the move pattern can fulfill a number of the
+          negative hard constraints.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It does not know when it finds an optimal solution.</para>
+        </listitem>
+
+        <listitem>
+          <para>If the optimal score is unknown (which is usually the case),
+          it must be told when to stop looking (for example based on time
+          spend, user input, ...).</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Drools-solver implements local search, including tabu search and
+      simulated annealing.</para>
     </section>
   </section>
 </section>
