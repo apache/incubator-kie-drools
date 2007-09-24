@@ -5,7 +5,8 @@
          xs:schemaLocation="http://drools.org/drools-4.0 drools-4.0.xsd">
 
 	<import name="import java.util.List"/>
-	<import name="org.drools.Cheese" />
+    <import name="org.drools.Person" />
+    <import name="org.drools.Cheese" />
 	<import name="org.drools.Cheesery" />
 
 	<global identifier="cheesery" type="Cheesery" />
@@ -48,4 +49,36 @@
             list1.add( $cheese );
         </rhs>
     </rule>
+
+    <rule name="multipatternaccumulate_rule">
+        <rule-attribute name="salience" value="10" />
+        <lhs>
+            <pattern identifier="cheese" object-type="Cheese">
+                <from>
+                    <accumulate>
+                        <and-conditional-element>
+                            <pattern object-type="Milk"></pattern>
+                            <pattern object-type="Cup"></pattern>
+                        </and-conditional-element>
+
+                        <init>
+                            int total = 0;
+                        </init>
+                        <action>
+                            total += $cheese.getPrice();
+                        </action>
+                        <result>
+                            new Integer( total ) );
+                        </result>
+                    </accumulate>
+                </from>
+            </pattern>
+        </lhs>
+        <rhs>
+            list1.add( $cheese );
+        </rhs>
+    </rule>
+
+
+
 </package>

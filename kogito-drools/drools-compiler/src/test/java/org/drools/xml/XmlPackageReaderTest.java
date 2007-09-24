@@ -12,6 +12,7 @@ import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -106,7 +107,39 @@ public class XmlPackageReaderTest extends TestCase {
         assertNull( accumulatedescr.getReverseCode());
         
     }
+    
+    
+    public void testAccumulateMultiPattern() throws Exception {
+        final XmlPackageReader xmlPackageReader = new XmlPackageReader();
+        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseAccumulate.xml" ) ) );
+        final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
+        assertNotNull( packageDescr );
+        RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 1 );
 
+        Object patternobj = obj.getLhs().getDescrs().get( 0 );
+        assertTrue( patternobj instanceof PatternDescr );
+        final PatternDescr patterncheese = (PatternDescr) patternobj;
+        assertEquals( patterncheese.getIdentifier(), "cheese" );
+        assertEquals( patterncheese.getObjectType(), "Cheese" );
+        
+        AccumulateDescr accumulatedescr = (AccumulateDescr) patterncheese.getSource();
+        assertEquals( "total += $cheese.getPrice();",
+                      accumulatedescr.getActionCode() );
+        assertEquals( "int total = 0;",
+                      accumulatedescr.getInitCode() );
+        assertEquals( "new Integer( total ) );",
+                      accumulatedescr.getResultCode() );
+        
+        AndDescr anddescr = (AndDescr) accumulatedescr.getInput();
+        
+        List descrlist = anddescr.getDescrs(); 
+        
+        PatternDescr[] listpattern = (PatternDescr[]) descrlist.toArray(new PatternDescr[descrlist.size()]);
+        
+        assertEquals(listpattern[0].getObjectType(), "Milk");
+        assertEquals(listpattern[1].getObjectType(), "Cup");
+    }
+    
     public void testParseForall() throws Exception {
         final XmlPackageReader xmlPackageReader = new XmlPackageReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseForall.xml" ) ) );
