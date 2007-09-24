@@ -1,0 +1,12 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test or nesting"
+when
+    exists Person( name == "mark" )
+    $mark : Person( name == "mark", $likes : likes )
+    ( Cheese( type == $likes ) or not Cheese( price > 20 ) )
+then
+    results.add( $mark );
+end
