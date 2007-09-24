@@ -58,9 +58,9 @@ if not test_fact.has_key("Premium") :
 	print("ERROR: no premium was calculated")
 premium = test_fact["Premium"]
 if premium == '245' :
-	print("PASSED")
+	print("PASSED STEP 1")
 else :
-	print("FAILED: Premium was " + test_fact["Premium"])
+	print("FAILED STEP 1: Premium was " + test_fact["Premium"])
 
 
 # Load a XLS into a decision table structure for processing
@@ -69,9 +69,51 @@ def load_xls(file_name) :
 	book = xlrd.open_workbook(file_name)
 	sh = book.sheet_by_index(0)
 	print sh.name, sh.nrows, sh.ncols
-#	print "Cell D30 is", sh.cell_value(rowx=29, colx=3)
+        condition_headers, action_headers, data = [],[],[]
 	for rx in range(sh.nrows):
-		print sh.row(rx)
+		if rx == 0 :		
+			divider = 0
+			for cx in range(sh.ncols):
+				cv = sh.cell_value(rowx=rx, colx=cx)				
+				if cv == "" : 
+					continue
+				if cv == "*" or cv == 'actions:' :
+					divider = cx
+				else:
+					if divider == 0 : #we are in conditions
+						condition_headers.append([cx, cv])
+					else: #we are in actions
+						action_headers.append([cx, cv])
+		else:	
+			data_row = {}
+			#print condition_headers
+			for cx in range(sh.ncols):
+				cv = sh.cell_value(rowx=rx, colx=cx)
+				if cv != "":
+					data_row[cx] = cv
+			if len(data_row) > 0 :
+				data.append(data_row)
+	return {
+		"condition_headers" : condition_headers,
+		"action_headers" : action_headers,
+		"data" : data
+		}
+
+#some simple test
+tbl = load_xls("Example.xls")
+if tbl['condition_headers'][0][1] == "Age" :
+	print "PASSED STEP 2"
+else:
+	print "FAILED STEP 2"
 
 
-load_xls("Example.xls")
+test_fact = { "Age" : 42, "Risk" : "'HIGH'", "PolicyType" : "'COMPREHENSIVE'" }
+
+process_dt(test_fact, tbl)
+if not test_fact.has_key("Premium") :
+	print("ERROR: no premium was calculated")
+premium = test_fact["Premium"]
+if premium == 245 :
+	print("PASSED STEP 3")
+else :
+	print("FAILED STEP 3: Premium was " + test_fact["Premium"])
