@@ -7,7 +7,8 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
-import org.drools.analytics.result.AnalysisResultNormal;
+import org.drools.analytics.dao.AnalyticsData;
+import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.analytics.result.Gap;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
@@ -26,13 +27,13 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, smaller and greater than"));
 
-		Collection<? extends Object> data = getTestData(this.getClass()
+		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"));
 
-		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
-		session.setGlobal("result", analysisResult);
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+		session.setGlobal("data", data);
 
-		StatelessSessionResult sessionResult = session.executeWithResults(data);
+		StatelessSessionResult sessionResult = session.executeWithResults(testData);
 
 		Iterator iter = sessionResult.iterateObjects();
 
@@ -88,13 +89,13 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and greater than"));
 
-		Collection<? extends Object> data = getTestData(this.getClass()
+		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"));
 
-		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
-		session.setGlobal("result", analysisResult);
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+		session.setGlobal("data", data);
 
-		StatelessSessionResult sessionResult = session.executeWithResults(data);
+		StatelessSessionResult sessionResult = session.executeWithResults(testData);
 
 		Iterator iter = sessionResult.iterateObjects();
 
@@ -124,13 +125,13 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and smaller than"));
 
-		Collection<? extends Object> data = getTestData(this.getClass()
+		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"));
 
-		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
-		session.setGlobal("result", analysisResult);
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+		session.setGlobal("data", data);
 
-		StatelessSessionResult sessionResult = session.executeWithResults(data);
+		StatelessSessionResult sessionResult = session.executeWithResults(testData);
 
 		Iterator iter = sessionResult.iterateObjects();
 

@@ -1,13 +1,13 @@
 package org.drools.analytics;
 
-import java.io.File;
 import java.util.Collection;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.analytics.dao.AnalyticsData;
-import org.drools.analytics.dao.AnalyticsDataMaps;
+import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.result.AnalysisResult;
 import org.drools.analytics.result.AnalysisResultNormal;
 import org.drools.analytics.result.ComponentsReportModeller;
 import org.drools.analytics.result.ReportModeller;
@@ -20,7 +20,7 @@ import org.drools.rule.Package;
  */
 public class Analyzer {
 
-	private AnalysisResultNormal result = new AnalysisResultNormal();
+	private AnalysisResult result = new AnalysisResultNormal();
 
 	public void addPackageDescr(PackageDescr descr) {
 		try {
@@ -36,7 +36,7 @@ public class Analyzer {
 
 	public void fireAnalysis() {
 		try {
-			AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+			AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 			System.setProperty("drools.accumulate.function.validatePattern",
 					"org.drools.analytics.accumulateFunction.ValidatePattern");
@@ -51,6 +51,7 @@ public class Analyzer {
 			}
 
 			// Object that returns the results.
+			workingMemory.setGlobal("data", data);
 			workingMemory.setGlobal("result", result);
 			workingMemory.fireAllRules();
 
@@ -83,10 +84,7 @@ public class Analyzer {
 	 * @return Analysis results as HTML
 	 */
 	public void writeComponentsHTML(String path) {
-		
-		
-		
-		ComponentsReportModeller.writeHTML(path);
+		ComponentsReportModeller.writeHTML(path, result);
 	}
 
 	/**
@@ -103,7 +101,7 @@ public class Analyzer {
 	 * 
 	 * @return Analysis result
 	 */
-	public AnalysisResultNormal getResult() {
+	public AnalysisResult getResult() {
 		return result;
 	}
 

@@ -327,21 +327,7 @@ rule "Double range 25c, no gap"
 	then
 		System.out.println( "Test" );
 end
-/* TODO: Rules to cover these kind of situations.
-rule "Double range 26a, no gap"
-	when
-		    Foo26( value > 40.0 )
-	then
-		System.out.println( "Test" );
-end
 
-rule "Double range 26b, no gap"
-	when
-		    Foo26( value < 42.0 )
-	then
-		System.out.println( "Test" );
-end
-*/
 rule "Double range 27a, no gap"
 	when
 		    Foo27( value > 0.0 )

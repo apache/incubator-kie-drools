@@ -1,40 +1,28 @@
 package org.drools.analytics.result;
 
+import org.drools.analytics.components.Field;
 
 /**
  * 
  * @author Toni Rikkola
  */
-public class MissingNumberPattern implements RangeCheckCause {
+public class MissingNumberPattern extends MissingRange implements
+		RangeCheckCause, Comparable {
 
-	private static int index = 0;
-
-	private int id = index++;
-
-	private int fieldId;
-	private String evaluator;
 	private String value;
+
+	public int compareTo(Object another) {
+		return super.compareTo(another);
+	}
 
 	public CauseType getCauseType() {
 		return Cause.CauseType.RANGE_CHECK_CAUSE;
 	}
 
-	public MissingNumberPattern(int fieldId, String evaluator, String value) {
-		this.fieldId = fieldId;
+	public MissingNumberPattern(Field field, String evaluator, String value) {
+		this.field = field;
 		this.evaluator = evaluator;
 		this.value = value;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public int getFieldId() {
-		return fieldId;
-	}
-
-	public void setFieldId(int fieldId) {
-		this.fieldId = fieldId;
 	}
 
 	/**
@@ -42,10 +30,6 @@ public class MissingNumberPattern implements RangeCheckCause {
 	 */
 	public String getRuleName() {
 		return null;
-	}
-
-	public String getEvaluator() {
-		return evaluator;
 	}
 
 	public String getValueAsString() {

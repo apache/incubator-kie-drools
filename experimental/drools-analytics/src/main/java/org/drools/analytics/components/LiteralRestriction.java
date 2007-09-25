@@ -4,13 +4,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.drools.analytics.result.RangeCheckCause;
+import org.drools.analytics.result.Cause;
 
 /**
  * 
  * @author Toni Rikkola
  */
-public class LiteralRestriction extends Restriction implements RangeCheckCause {
+public class LiteralRestriction extends Restriction implements Cause {
 
 	private Field.FieldType valueType;
 
@@ -25,10 +25,6 @@ public class LiteralRestriction extends Restriction implements RangeCheckCause {
 	}
 
 	public String getValueAsString() {
-		return stringValue;
-	}
-
-	public String getStringValue() {
 		return stringValue;
 	}
 

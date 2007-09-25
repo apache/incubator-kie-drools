@@ -1,0 +1,37 @@
+#created on: 24.9.2007
+package org.drools.analytics.rangeChecks.cleanUp
+
+import org.drools.analytics.result.Gap;
+import org.drools.analytics.result.MissingNumberPattern;
+
+import org.drools.analytics.dao.AnalyticsData;
+
+#declare any global variables here
+global AnalyticsData data;
+
+#
+# Removes useless gaps.
+# Type: None
+# Example: missing ( x >= 10 ) and ( x <= 10 ). This is the same as ( x == 10 )
+rule "Clean up gaps"
+	when
+		$g1 :Gap(
+			evaluator == ">="
+		)
+		$g2 :Gap( 
+			id != $g1.id,
+			field == $g1.field,
+			evaluator == "<=",
+			valueAsString == $g1.valueAsString
+		)		
+	then	
+		data.remove( $g1 );
+		data.remove( $g2 );
+		retract( $g1 );
+		retract( $g2 );
+		
+		MissingNumberPattern mnp = new MissingNumberPattern( $g1.getField(), "==", $g1.getValueAsString() );
+		mnp.setFiredRuleName( drools.getRule().getName() );
+		data.save( mnp );
+		insert( mnp );
+end

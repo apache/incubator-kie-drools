@@ -3,6 +3,8 @@ package org.drools.analytics.result;
 import java.io.Serializable;
 import java.util.List;
 
+import org.drools.analytics.components.AnalyticsComponent;
+
 /**
  * 
  * @author Toni Rikkola
@@ -12,8 +14,9 @@ public class AnalysisNote extends AnalysisMessage implements Serializable {
 
 	private static int noteIndex = 0;
 
-	public AnalysisNote(String ruleName, String message, List<Cause> reasons) {
-		super(ruleName, message, reasons);
+	public AnalysisNote(AnalyticsComponent faulty, String message,
+			List<Cause> reasons) {
+		super(faulty, message, reasons);
 		id = noteIndex++;
 	}
 }
