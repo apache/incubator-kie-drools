@@ -12,6 +12,7 @@ import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
+import org.drools.util.ShadowProxyUtils;
 
 /**
  * This is a base class for MemberOf Evaluators
@@ -36,7 +37,7 @@ public abstract class BaseMemberOfEvaluator extends BaseEvaluator {
         }
         final Collection col = (Collection) object2.getValue();
         final Object value = extractor.getValue( workingMemory, object1 ); 
-        return col.contains( value );
+        return ShadowProxyUtils.contains( col, value );
     }
 
     public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -49,7 +50,7 @@ public abstract class BaseMemberOfEvaluator extends BaseEvaluator {
         }
         final Collection col = (Collection) object;
         final Object value = ((ObjectVariableContextEntry) context).right;
-        return col.contains( value );
+        return ShadowProxyUtils.contains( col, value );
     }
 
     public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -62,7 +63,7 @@ public abstract class BaseMemberOfEvaluator extends BaseEvaluator {
         }
         final Collection col = (Collection) object;
         final Object value = context.extractor.getValue( workingMemory, right ); 
-        return col.contains( value );
+        return ShadowProxyUtils.contains( col, value );
     }
 
     public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -77,9 +78,9 @@ public abstract class BaseMemberOfEvaluator extends BaseEvaluator {
         }
         final Collection col = (Collection) object;
         final Object value = extractor1.getValue( workingMemory, object1 );
-        return col.contains( value );
+        return ShadowProxyUtils.contains( col, value );
     }
     
     public abstract String toString();
-
+    
 }

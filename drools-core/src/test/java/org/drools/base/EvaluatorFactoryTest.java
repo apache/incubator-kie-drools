@@ -113,7 +113,7 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {field, "excludes", "foo", Boolean.FALSE},
                                  {field, "excludes", "xyz", Boolean.TRUE},
                                  {field, "excludes", null, Boolean.TRUE},
-                                 {null, "excludes", "foo", Boolean.FALSE},
+                                 {null, "excludes", "foo", Boolean.TRUE},
                                  {field, "!=", null, Boolean.TRUE},
                                  {field, "==", null, Boolean.FALSE},
                                  {null, "==", field, Boolean.FALSE},
@@ -127,7 +127,7 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {"foo", "not memberOf", field, Boolean.FALSE},
                                  {"xyz", "not memberOf", field, Boolean.TRUE},
                                  {null, "not memberOf", field, Boolean.TRUE},
-                                 {"foo", "not memberOf", null, Boolean.FALSE}
+                                 {"foo", "not memberOf", null, Boolean.TRUE}
                                  };
 
         runEvaluatorTest( data,

@@ -21,7 +21,10 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
+
+import org.drools.base.ShadowProxy;
 
 /**
  * A class with simple utility methods for shadowing
@@ -123,6 +126,76 @@ public class ShadowProxyUtils {
             }
         }
         return result;
+    }
+    
+    /**
+     * Checks if a collection contains a given object taking
+     * appropriate care with the presence or not of shadow proxies
+     * 
+     * @param col
+     * @param obj
+     * @return
+     */
+    public static boolean contains( Collection col, Object obj ) {
+        if( col == null )
+            return false;
+        if( obj instanceof ShadowProxy ) {
+            // if obj is a shadow proxy, its equals() method
+            // implementation will take appropriate care when
+            // the collection is checked.
+            return col.contains( obj );
+        } else {
+            // otherwise, iterate over the collection 
+            // comparing each element. If the element
+            // is a shadow proxy, there is no problem, since
+            // its equals() method implementation handles 
+            // comparisons with non shadowed objects appropriately
+            for( Iterator it = col.iterator(); it.hasNext(); ) {
+                Object next = it.next();
+                if( next == null && obj == null ||
+                    next != null && next.equals( obj ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if an array contains a given object taking
+     * appropriate care with the presence or not of shadow proxies
+     * 
+     * @param col
+     * @param obj
+     * @return
+     */
+    public static boolean contains( Object[] array, Object obj ) {
+        if( array == null )
+            return false;
+        if( obj instanceof ShadowProxy ) {
+            // if obj is a shadow proxy, its equals() method
+            // implementation will take appropriate care when
+            // the array is checked.
+            for( int i = 0; i < array.length; i++ ) {
+                if( array[i] == null && obj == null ||
+                    obj != null && obj.equals( array[i] )) {
+                    return true;
+                }
+            }
+        } else {
+            // otherwise, iterate over the array 
+            // comparing each element. If the element
+            // is a shadow proxy, there is no problem, since
+            // its equals() method implementation handles 
+            // comparisons with non shadowed objects appropriately
+            for( int i = 0; i < array.length; i++ ) {
+                if( array[i] == null && obj == null ||
+                    array[i] != null && array[i].equals( obj )) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
