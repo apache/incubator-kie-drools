@@ -103,6 +103,8 @@ public class MVELDialect
     private Map                               packageImports;
 
     private boolean                           strictMode;
+    
+    private static Boolean                           languageSet = new Boolean( false );
 
     public void addFunction(FunctionDescr functionDescr,
                             TypeResolver typeResolver) {
@@ -115,10 +117,21 @@ public class MVELDialect
 
     public MVELDialect() {
     }
+    
+    public static void setLanguageLevel(int level) {
+        synchronized ( languageSet ) {
+            // this synchronisation is needed as setLanguageLevel is now thread safe
+            // and we do not want ot be calling this while something else is being parsed.
+            // the flag ensures it is just called once and no more.
+            if ( languageSet.booleanValue() == false ) {
+                languageSet = new Boolean( true );
+                AbstractParser.setLanguageLevel( level );
+            }
+        }
+    }
 
     public void init(PackageBuilder builder) {
-        AbstractParser.setLanguageLevel( 4 );
-
+        setLanguageLevel( 4 );
         this.pkg = builder.getPackage();
         this.configuration = (MVELDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "mvel" );
         this.typeResolver = builder.getTypeResolver();

@@ -9,6 +9,7 @@ import java.util.Map;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.util.StringUtils;
 import org.mvel.MVELTemplateRegistry;
 import org.mvel.TemplateInterpreter;
@@ -22,6 +23,8 @@ public class AbstractJavaBuilder {
     static {
         RULE_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaBuilder.class.getResourceAsStream( "javaRule.mvel" ) ) );
         INVOKER_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaBuilder.class.getResourceAsStream( "javaInvokers.mvel" ) ) );
+        MVELDialect.setLanguageLevel( 4 );
+        
     }
 
     public TemplateRegistry getRuleTemplateRegistry() {
