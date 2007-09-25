@@ -13,6 +13,8 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
+import org.drools.Order;
+import org.drools.OrderItem;
 import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.RuleBase;
@@ -772,10 +774,123 @@ public class FirstOrderLogicTest extends TestCase {
         FactHandle ph = workingMemory.insert( provolone );
         FactHandle bh = workingMemory.insert( brie );
         FactHandle markh = workingMemory.insert( mark );
-        
+
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
+    }
+
+    public void testCollectWithMemberOfOperators() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectMemberOfOperator.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        final Order order1 = new Order( 1,
+                                        "bob" );
+        final OrderItem item11 = new OrderItem( order1,
+                                                1 );
+        final OrderItem item12 = new OrderItem( order1,
+                                                2 );
+        final Order order2 = new Order( 2,
+                                        "mark" );
+        final OrderItem item21 = new OrderItem( order2,
+                                                1 );
+        final OrderItem item22 = new OrderItem( order2,
+                                                2 );
+
+        workingMemory.insert( order1 );
+        workingMemory.insert( item11 );
+        workingMemory.insert( item12 );
+        workingMemory.insert( order2 );
+        workingMemory.insert( item21 );
+        workingMemory.insert( item22 );
+
+        workingMemory.fireAllRules();
+
+        int index = 0;
+        assertEquals( 8,
+                      list.size() );
+        assertSame( order1,
+                    list.get( index++ ) );
+        assertSame( item11,
+                    list.get( index++ ) );
+        assertSame( order2,
+                    list.get( index++ ) );
+        assertSame( item21,
+                    list.get( index++ ) );
+        assertSame( order1,
+                    list.get( index++ ) );
+        assertSame( item11,
+                    list.get( index++ ) );
+        assertSame( order2,
+                    list.get( index++ ) );
+        assertSame( item21,
+                    list.get( index++ ) );
+
+    }
+
+    public void testCollectWithContainsOperators() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectContainsOperator.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        final Order order1 = new Order( 1,
+                                        "bob" );
+        final OrderItem item11 = new OrderItem( order1,
+                                                1 );
+        final OrderItem item12 = new OrderItem( order1,
+                                                2 );
+        final Order order2 = new Order( 2,
+                                        "mark" );
+        final OrderItem item21 = new OrderItem( order2,
+                                                1 );
+        final OrderItem item22 = new OrderItem( order2,
+                                                2 );
+
+        workingMemory.insert( order1 );
+        workingMemory.insert( item11 );
+        workingMemory.insert( item12 );
+        workingMemory.insert( order2 );
+        workingMemory.insert( item21 );
+        workingMemory.insert( item22 );
+
+        workingMemory.fireAllRules();
+
+        int index = 0;
+        assertEquals( 8,
+                      list.size() );
+        assertSame( order1,
+                    list.get( index++ ) );
+        assertSame( item11,
+                    list.get( index++ ) );
+        assertSame( order2,
+                    list.get( index++ ) );
+        assertSame( item21,
+                    list.get( index++ ) );
+        assertSame( order1,
+                    list.get( index++ ) );
+        assertSame( item11,
+                    list.get( index++ ) );
+        assertSame( order2,
+                    list.get( index++ ) );
+        assertSame( item21,
+                    list.get( index++ ) );
 
     }
 

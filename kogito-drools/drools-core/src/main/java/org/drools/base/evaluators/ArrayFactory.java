@@ -24,6 +24,7 @@ import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
+import org.drools.util.ShadowProxyUtils;
 
 /**
  * For handling simple (non collection) array types.
@@ -66,7 +67,7 @@ public class ArrayFactory
             throw new RuntimeException( "Operator '" + operator + "' does not exist for ArrayEvaluator" );
         }
     }
-    
+
     static class ArrayEqualEvaluator extends BaseEvaluator {
         /**
          * 
@@ -81,8 +82,10 @@ public class ArrayFactory
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
-                                final Object object1, final FieldValue object2) {
-            final Object value1 = extractor.getValue( workingMemory, object1 );
+                                final Object object1,
+                                final FieldValue object2) {
+            final Object value1 = extractor.getValue( workingMemory,
+                                                      object1 );
             final Object value2 = object2.getValue();
             if ( value1 == null ) {
                 return value2 == null;
@@ -91,8 +94,10 @@ public class ArrayFactory
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context, final Object left) {
-            final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
+                                           final VariableContextEntry context,
+                                           final Object left) {
+            final Object value = context.declaration.getExtractor().getValue( workingMemory,
+                                                                              left );
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right == null;
             }
@@ -100,8 +105,10 @@ public class ArrayFactory
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context, final Object right) {
-            final Object value = context.extractor.getValue( workingMemory, right );
+                                          final VariableContextEntry context,
+                                          final Object right) {
+            final Object value = context.extractor.getValue( workingMemory,
+                                                             right );
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value == null;
             }
@@ -111,9 +118,12 @@ public class ArrayFactory
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2, final Object object2) {
-            final Object value1 = extractor1.getValue( workingMemory, object1 );
-            final Object value2 = extractor2.getValue( workingMemory, object2 );
+                                final Extractor extractor2,
+                                final Object object2) {
+            final Object value1 = extractor1.getValue( workingMemory,
+                                                       object1 );
+            final Object value2 = extractor2.getValue( workingMemory,
+                                                       object2 );
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -140,8 +150,10 @@ public class ArrayFactory
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
-                                final Object object1, final FieldValue object2) {
-            final Object value1 = extractor.getValue( workingMemory, object1 );
+                                final Object object1,
+                                final FieldValue object2) {
+            final Object value1 = extractor.getValue( workingMemory,
+                                                      object1 );
             final Object value2 = object2.getValue();
             if ( value1 == null ) {
                 return value2 != null;
@@ -150,8 +162,10 @@ public class ArrayFactory
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context, final Object left) {
-            final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
+                                           final VariableContextEntry context,
+                                           final Object left) {
+            final Object value = context.declaration.getExtractor().getValue( workingMemory,
+                                                                              left );
             if ( value == null ) {
                 return ((ObjectVariableContextEntry) context).right != null;
             }
@@ -159,8 +173,10 @@ public class ArrayFactory
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context, final Object right) {
-            final Object value = context.extractor.getValue( workingMemory, right );
+                                          final VariableContextEntry context,
+                                          final Object right) {
+            final Object value = context.extractor.getValue( workingMemory,
+                                                             right );
             if ( ((ObjectVariableContextEntry) context).left == null ) {
                 return value != null;
             }
@@ -170,9 +186,12 @@ public class ArrayFactory
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2, final Object object2) {
-            final Object value1 = extractor1.getValue( workingMemory, object1 );
-            final Object value2 = extractor2.getValue( workingMemory, object2 );
+                                final Extractor extractor2,
+                                final Object object2) {
+            final Object value1 = extractor1.getValue( workingMemory,
+                                                       object1 );
+            final Object value2 = extractor2.getValue( workingMemory,
+                                                       object2 );
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -198,46 +217,51 @@ public class ArrayFactory
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
-                                final Object object1, final FieldValue object2) {
+                                final Object object1,
+                                final FieldValue object2) {
             final Object value = object2.getValue();
-            final Object[] array = (Object[]) extractor.getValue( workingMemory, object1 );
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) >= 0;
+            final Object[] array = (Object[]) extractor.getValue( workingMemory,
+                                                                  object1 );
+            if ( array == null ) return false;
+            return ShadowProxyUtils.contains( array,
+                                              value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context, final Object left) {
-            final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
+                                           final VariableContextEntry context,
+                                           final Object left) {
+            final Object value = context.declaration.getExtractor().getValue( workingMemory,
+                                                                              left );
             final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).right;
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) >= 0;
+            if ( array == null ) return false;
+            return ShadowProxyUtils.contains( array,
+                                              value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context, final Object right) {
+                                          final VariableContextEntry context,
+                                          final Object right) {
             final Object value = ((ObjectVariableContextEntry) context).left;
-            final Object[] array = (Object[]) context.extractor.getValue( workingMemory, right );
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) >= 0;
+            final Object[] array = (Object[]) context.extractor.getValue( workingMemory,
+                                                                          right );
+            if ( array == null ) return false;
+            return ShadowProxyUtils.contains( array,
+                                              value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2, final Object object2) {
-            final Object value = extractor2.getValue( workingMemory, object2 );
-            final Object[] array = (Object[]) extractor1.getValue( workingMemory, object1 );
+                                final Extractor extractor2,
+                                final Object object2) {
+            final Object value = extractor2.getValue( workingMemory,
+                                                      object2 );
+            final Object[] array = (Object[]) extractor1.getValue( workingMemory,
+                                                                   object1 );
 
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) >= 0;
+            if ( array == null ) return false;
+            return ShadowProxyUtils.contains( array,
+                                              value );
         }
 
         public String toString() {
@@ -259,46 +283,51 @@ public class ArrayFactory
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
-                                final Object object1, final FieldValue object2) {
+                                final Object object1,
+                                final FieldValue object2) {
             final Object value = object2.getValue();
-            final Object[] array = (Object[]) extractor.getValue( workingMemory, object1 );
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) < 0;
+            final Object[] array = (Object[]) extractor.getValue( workingMemory,
+                                                                  object1 );
+            if ( array == null ) return true;
+            return !ShadowProxyUtils.contains( array,
+                                               value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context, final Object left) {
-            final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
+                                           final VariableContextEntry context,
+                                           final Object left) {
+            final Object value = context.declaration.getExtractor().getValue( workingMemory,
+                                                                              left );
             final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).right;
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) < 0;
+            if ( array == null ) return true;
+            return !ShadowProxyUtils.contains( array,
+                                               value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context, final Object right) {
+                                          final VariableContextEntry context,
+                                          final Object right) {
             final Object value = ((ObjectVariableContextEntry) context).left;
-            final Object[] array = (Object[]) context.extractor.getValue( workingMemory, right );
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) < 0;
+            final Object[] array = (Object[]) context.extractor.getValue( workingMemory,
+                                                                          right );
+            if ( array == null ) return true;
+            return !ShadowProxyUtils.contains( array,
+                                               value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2, final Object object2) {
-            final Object value = extractor2.getValue( workingMemory, object2 );
-            final Object[] array = (Object[]) extractor1.getValue( workingMemory, object1 );
+                                final Extractor extractor2,
+                                final Object object2) {
+            final Object value = extractor2.getValue( workingMemory,
+                                                      object2 );
+            final Object[] array = (Object[]) extractor1.getValue( workingMemory,
+                                                                   object1 );
 
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) < 0;
+            if ( array == null ) return true;
+            return !ShadowProxyUtils.contains( array,
+                                               value );
         }
 
         public String toString() {
@@ -320,46 +349,51 @@ public class ArrayFactory
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
-                                final Object object1, final FieldValue object2) {
+                                final Object object1,
+                                final FieldValue object2) {
             final Object[] array = (Object[]) object2.getValue();
-            final Object value = extractor.getValue( workingMemory, object1 );
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) >= 0;
+            final Object value = extractor.getValue( workingMemory,
+                                                     object1 );
+            if ( array == null ) return false;
+            return ShadowProxyUtils.contains( array,
+                                              value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context, final Object left) {
-            final Object[] array = (Object[]) context.declaration.getExtractor().getValue( workingMemory, left );
+                                           final VariableContextEntry context,
+                                           final Object left) {
+            final Object[] array = (Object[]) context.declaration.getExtractor().getValue( workingMemory,
+                                                                                           left );
             final Object value = ((ObjectVariableContextEntry) context).right;
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) >= 0;
+            if ( array == null ) return false;
+            return ShadowProxyUtils.contains( array,
+                                              value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context, final Object right) {
+                                          final VariableContextEntry context,
+                                          final Object right) {
             final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).left;
-            final Object value = context.extractor.getValue( workingMemory, right );
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) >= 0;
+            final Object value = context.extractor.getValue( workingMemory,
+                                                             right );
+            if ( array == null ) return false;
+            return ShadowProxyUtils.contains( array,
+                                              value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2, final Object object2) {
-            final Object[] array = (Object[]) extractor2.getValue( workingMemory, object2 );
-            final Object value = extractor1.getValue( workingMemory, object1 );
+                                final Extractor extractor2,
+                                final Object object2) {
+            final Object[] array = (Object[]) extractor2.getValue( workingMemory,
+                                                                   object2 );
+            final Object value = extractor1.getValue( workingMemory,
+                                                      object1 );
 
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) >= 0;
+            if ( array == null ) return false;
+            return ShadowProxyUtils.contains( array,
+                                              value );
         }
 
         public String toString() {
@@ -381,160 +415,57 @@ public class ArrayFactory
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
-                                final Object object1, final FieldValue object2) {
+                                final Object object1,
+                                final FieldValue object2) {
             final Object[] array = (Object[]) object2.getValue();
-            final Object value = extractor.getValue( workingMemory, object1 );
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) < 0;
+            final Object value = extractor.getValue( workingMemory,
+                                                     object1 );
+            if ( array == null ) return true;
+            return !ShadowProxyUtils.contains( array,
+                                               value );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context, final Object left) {
-            final Object[] array = (Object[]) context.declaration.getExtractor().getValue( workingMemory, left );
+                                           final VariableContextEntry context,
+                                           final Object left) {
+            final Object[] array = (Object[]) context.declaration.getExtractor().getValue( workingMemory,
+                                                                                           left );
             final Object value = ((ObjectVariableContextEntry) context).right;
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) < 0;
+            if ( array == null ) return true;
+            return !ShadowProxyUtils.contains( array,
+                                               value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context, final Object right) {
+                                          final VariableContextEntry context,
+                                          final Object right) {
             final Object[] array = (Object[]) ((ObjectVariableContextEntry) context).left;
-            final Object value = context.extractor.getValue( workingMemory, right );
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) < 0;
+            final Object value = context.extractor.getValue( workingMemory,
+                                                             right );
+            if ( array == null ) return true;
+            return !ShadowProxyUtils.contains( array,
+                                               value );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2, final Object object2) {
-            final Object[] array = (Object[]) extractor2.getValue( workingMemory, object2 );
-            final Object value = extractor1.getValue( workingMemory, object1 );
+                                final Extractor extractor2,
+                                final Object object2) {
+            final Object[] array = (Object[]) extractor2.getValue( workingMemory,
+                                                                   object2 );
+            final Object value = extractor1.getValue( workingMemory,
+                                                      object1 );
 
-            if( array == null )
-                return false;
-            return ArrayUtils.search( array,
-                                        value ) < 0;
+            if ( array == null ) return true;
+            return !ShadowProxyUtils.contains( array,
+                                               value );
         }
 
         public String toString() {
             return "Array not memberOf";
         }
     }
-    
-    /**
-     * Utility functions for arrays
-     * 
-     * @author etirelli
-     */
-    static final class ArrayUtils {
-        
-        public static final int search( Object[] array, Object value ) {
-            int index = -1;
-            for( int i = 0; i < array.length; i++ ) {
-                if(( array[i] == null && value == null ) ||
-                   ( array[i] != null && array[i].equals( value ) ) ) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
 
-        public static final int search( boolean[] array, boolean value ) {
-            int index = -1;
-            for( int i = 0; i < array.length; i++ ) {
-                if( array[i] == value ) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
 
-        public static final int search( byte[] array, byte value ) {
-            int index = -1;
-            for( int i = 0; i < array.length; i++ ) {
-                if( array[i] == value ) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
-
-        public static final int search( short[] array, short value ) {
-            int index = -1;
-            for( int i = 0; i < array.length; i++ ) {
-                if( array[i] == value ) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
-
-        public static final int search( int[] array, int value ) {
-            int index = -1;
-            for( int i = 0; i < array.length; i++ ) {
-                if( array[i] == value ) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
-
-        public static final int search( long[] array, long value ) {
-            int index = -1;
-            for( int i = 0; i < array.length; i++ ) {
-                if( array[i] == value ) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
-
-        public static final int search( float[] array, float value ) {
-            int index = -1;
-            for( int i = 0; i < array.length; i++ ) {
-                if( array[i] == value ) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
-
-        public static final int search( double[] array, double value ) {
-            int index = -1;
-            for( int i = 0; i < array.length; i++ ) {
-                if( array[i] == value ) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
-
-        public static final int search( char[] array, char value ) {
-            int index = -1;
-            for( int i = 0; i < array.length; i++ ) {
-                if( array[i] == value ) {
-                    index = i;
-                    break;
-                }
-            }
-            return index;
-        }
-
-    }
-    
 }
