@@ -76,8 +76,8 @@
     scalable</emphasis>.</para>
 
     <para>A planning problem has a number of <emphasis>solutions</emphasis>.
-    Each possible solution has a score. We can break down the solutions to a
-    planning problem into 3 categories:</para>
+    Each solution has a score. We can break down the solutions of a planning
+    problem into 3 categories:</para>
 
     <itemizedlist>
       <listitem>
@@ -144,7 +144,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
 ...</programlisting>
 
-    <para>Here's a screenshot of the NQueens example, which is a simple
+    <para>Here's a screenshot of the n queens example, which is a simple
     example:</para>
 
     <mediaobject>
@@ -389,8 +389,8 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       </itemizedlist>
 
       <para>Brute force is currently not implemented in drools-solver. But we
-      have plans to implement in the future, as a reference for validating the
-      output of the other solver types.</para>
+      have plans to implement it in the future, as a reference for validating
+      the output of the other solver types.</para>
     </section>
 
     <section>
@@ -462,7 +462,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       search path and moves facts around to find a good feasible
       solution.</para>
 
-      <para>A vanilla local search can easily get stuck in a local optima, but
+      <para>A simple local search can easily get stuck in a local optima, but
       improvements (such as tabu search and simulated annealing) address this
       problem.</para>
 
@@ -490,7 +490,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
       <itemizedlist>
         <listitem>
-          <para>It does not know when it finds an optimal solution.</para>
+          <para>It does not know when it has found an optimal solution.</para>
         </listitem>
 
         <listitem>

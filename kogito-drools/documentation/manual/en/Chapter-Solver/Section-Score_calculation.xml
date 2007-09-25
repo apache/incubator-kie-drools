@@ -171,10 +171,12 @@ rule "constraintsBroken"
     scoreCalculator.setScore(- $hardConstraintCount);
 end</programlisting>
 
-    <para>You can also weigh your constraints differently, by multiplying the
-    count of each score rule with its weight. For example in freight routing,
-    you can make 5 broken "avoid crossroads" soft constraints count as much as
-    1 broken "avoid highways at rush hour" soft constraint.</para>
+    <para>Optionally, you can also weigh your constraints differently, by
+    multiplying the count of each score rule with its weight. For example in
+    freight routing, you can make 5 broken "avoid crossroads" soft constraints
+    count as much as 1 broken "avoid highways at rush hour" soft constraint.
+    This allows your business analysts to easily tweak the score function as
+    they see fit.</para>
 
     <para>Here's an example of all the NQueens constraints written as a single
     rule, using multi pattern accumulates and making multipleQueensHorizontal
@@ -258,10 +260,10 @@ end</programlisting>
       </listitem>
 
       <listitem>
-        <para>If performance is important (and it will be), use at least java
-        1.6 and always use server mode (<literal>java -server</literal>). We
-        have seen performance increases of 30% by switching from java 1.5 to
-        1.6 and 50% by turning on server mode.</para>
+        <para>For optimal performance, use at least java 1.6 and always use
+        server mode (<literal>java -server</literal>). We have seen
+        performance increases of 30% by switching from java 1.5 to 1.6 and 50%
+        by turning on server mode.</para>
       </listitem>
 
       <listitem>
