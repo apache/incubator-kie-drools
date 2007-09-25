@@ -1441,7 +1441,7 @@ end
       higher order logic of "accumulate".</para>
 
       <programlisting>
-rule "Apply 10% discount if total purcahses is over 100"			
+rule "Apply 10% discount if total purcahses is over 100"
  no-loop true
  dialect "java"
     when
@@ -1851,7 +1851,6 @@ when
 then
    textArea.append( $p.product + "\n");
 end
-
 </programlisting>
         </example></para>
 
@@ -1903,7 +1902,6 @@ when
 then
     requireTank(frame, drools.getWorkingMemory(), $order, $fishTank, $total); 
 end
-
 </programlisting>
         </example>
       </para>
@@ -1967,9 +1965,7 @@ end
     when
     then
         doCheckout(frame, drools.getWorkingMemory());
-end   
-
-</programlisting>
+end</programlisting>
         </example></para>
 
       <para>The <emphasis role="italic">do checkout</emphasis> rule has
@@ -2026,9 +2022,6 @@ then
    $order.discountedTotal = $order.grossTotal * 0.90;
    textArea.append( "discountedTotal total=" + $order.discountedTotal + "\n" );
 end
-
-
-
 </programlisting>
         </example>
       </para>
@@ -3839,20 +3832,59 @@ end
 <emphasis role="bold">Rules file:</emphasis> PetStore.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrates 'accumulate', 'collect' and 'from'</programlisting>
 
-    <para>Conway's Game Of Life is a famous cellular automaton conceived in
-    the early 1970's by mathematician John Conway. While the system is well
-    known as "Conway's Game Of Life", it really isn't a game at all. Conway's
-    system is more like a life simulation. Don't be intimidated. The system is
-    terribly simple and terribly interesting. Math and Computer Science
-    students alike have marvelled over Conway's system for more than 30 years
-    now. The application represented here is a Swing based implementation of
-    Conway's Game of Life. The rules that govern the system are implemented as
-    business rules using Drools. This document will explain the rules that
-    drive the simulation and discuss the Drools specific parts of the
-    implementation.</para>
+    <para>Conway's Game Of Life, <ulink
+    url="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">http://en.wikipedia.org/wiki/Conway's_Game_of_Life</ulink>
+    <ulink
+    url="http://www.math.com/students/wonders/life/life.html">http://www.math.com/students/wonders/life/life.html</ulink>,
+    is a famous cellular automaton conceived in the early 1970's by
+    mathematician John Conway. While the system is well known as "Conway's
+    Game Of Life", it really isn't a game at all. Conway's system is more like
+    a life simulation. Don't be intimidated. The system is terribly simple and
+    terribly interesting. Math and Computer Science students alike have
+    marvelled over Conway's system for more than 30 years now. The application
+    represented here is a Swing based implementation of Conway's Game of Life.
+    The rules that govern the system are implemented as business rules using
+    Drools. This document will explain the rules that drive the simulation and
+    discuss the Drools specific parts of the implementation.</para>
 
-    <para>http://en.wikipedia.org/wiki/Conway's_Game_of_Life
-    http://www.math.com/students/wonders/life/life.html</para>
+    <para>So what are the basic rules that govern this game? Each time the
+    system evolves there are a very simple set of rules that govern what the
+    next evolution will look like.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>If a live cell has fewer than 2 live neighbors, it dies of
+        loneliness</para>
+      </listitem>
+
+      <listitem>
+        <para>If a live cell has more than 3 live neighbors, it dies from
+        overcrowding</para>
+      </listitem>
+
+      <listitem>
+        <para>If a dead cell has exactly 3 live neighbors, it comes to
+        life</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>That is all there is to it. Any cell that doesn't meet any of those
+    criteria is left as is for the next generation. With those simple rules in
+    mind, go back and play with the system a little bit more and step through
+    some generations one at a time and notice these rules taking their
+    effect.</para>
+
+    <para>Neighbors include not only cells to the left, right, top and bottom
+    but also cells that are connected diagonally. Each cell has a total of 8
+    neighbors except the 4 corner cells and all of the other cells along the 4
+    edges. Corner cells have 3 neighbors and other edge cells have 5
+    neighbors.</para>
+
+    <para>The below grid represents the area where the life simulation takes
+    place. Initially the grid is empty, meaning that there are no live cells
+    in the system. Use the mouse to click on cells to bring them to life. Live
+    cells are represented with green balls. Add several clusters of live cells
+    to the grid like this.</para>
 
     <figure>
       <title>Conways Example : Starting a new game</title>
@@ -3864,6 +3896,19 @@ end
       </mediaobject>
     </figure>
 
+    <para>Don't worry about matching the exact patterns represented in the
+    screen shot. Just get some groups of cells added to the grid. Once you
+    have groups of live cells in the grid click the "Next Generation" button
+    and notice what happens. Some of the live cells are killed (the green ball
+    disappears) and some dead cells come to life (a green ball appears). Cycle
+    through several generations and see if you notice any patterns. If you
+    click on the "Start" button, the system will evolve itself so you don't
+    need to click the "Next Generation" button over and over. Play with the
+    system a little and then come back here for more details. After playing
+    with some free form patterns that you create interactively, notice that
+    there are several predefined patterns in the system that you may activate
+    by selecting them in the drop down list labelled "Pattern:".</para>
+
     <figure>
       <title>Conways Example : A running game</title>
 
@@ -3874,9 +3919,22 @@ end
       </mediaobject>
     </figure>
 
-    <para>There are two formeds</para>
+    <para>The example has two ways to execute, one way uses AgendaGroups to
+    manage execution flow the other uses RuleFlowGroups to manage execution
+    flow - so it's a great way to see the differences. - thats
+    ConwayAgendaGroupRun and ConwayRuleFlowGroupRun respectively. For this
+    example I'll cover the ruleflow version, as its what most people will
+    use.</para>
 
-    <para>All the Cells are inserted into the session</para>
+    <para>All the Cells are inserted into the session and the rules in the
+    ruleflow-group "register neighbor" are allowed to execute by the ruleflow
+    process. What this group of rules does is for each cell it registers the
+    north east, north, north west and west cells using a Neighbor relation
+    class, notice this relation is bi-drectional which is why we don't have to
+    do any rules for southern facing cells. Note that the constraints make
+    sure we stay one column back from the end and 1 row back from the top. By
+    the time all activations have fired for these rules all cells are related
+    to all their neighboring cells.</para>
 
     <example>
       <title>Conways Example : Register all Cell Neighbour relations</title>
@@ -3923,8 +3981,14 @@ then
 end</programlisting>
     </example>
 
+    <para>Once all the cells are inserted some java code applies the pattern
+    to the grid setting certain cells to Live. Then when the user clicks
+    "start" or "next generation" it executes the "Generation" ruleflow. This
+    ruleflow is responsible for the management of all changes of cells in each
+    generation cycle.</para>
+
     <figure>
-      <title></title>
+      <title>Conways Example : ruleflow "Generation"</title>
 
       <mediaobject>
         <imageobject>
@@ -3932,6 +3996,19 @@ end</programlisting>
         </imageobject>
       </mediaobject>
     </figure>
+
+    <para>The ruleflow process first enters the "evaluate" group, this means
+    any active rule in that group can fire. The rules in this group apply the
+    main game of life rules discussed in the beginning of the example, where
+    it determines what cells will be killed and which ones given life. We use
+    the "phase" attribute to drives the reasoning of the Cell by specific
+    groups of rules; typical the phase is tied to a RuleFlowGroup. in the
+    ruleflow process definition. Notice that it doesn't actually change the
+    state of any Cells at this point; this is because it's evaluating the Grid
+    in turn and it must complete the full evaluation until those changes can
+    be applied. To achieve this it sets the cell to a "phase" which is either
+    Phase.KILL or Phase.BIRTH, which is used later to control actions applied
+    to the Cell and when.</para>
 
     <example>
       <title>Conways Example : Evaluate Cells with state changes</title>
@@ -3971,8 +4048,15 @@ end
 </programlisting>
     </example>
 
+    <para>Once all Cells in the grid have been evaluated we first clear any
+    calculation activations, that occured from any previous data changes, via
+    the "reset calculate" rule, which clears any activations in the
+    "calculate" group. We then enter a split which allows any activations in
+    the "kill" groups and "birth" groups to fire, these rules are responsible
+    for applying the state change.</para>
+
     <example>
-      <title>Conways Example : Evaluate Cells with state changes</title>
+      <title>Conways Example : Apply the state changes</title>
 
       <programlisting>rule "reset calculate"
     ruleflow-group "reset calculate"
@@ -4005,6 +4089,21 @@ then
 end </programlisting>
     </example>
 
+    <para>At this stage a number of Cells have been modified with the state
+    changed to either LIVE or DEAD, this is where we get to see the power of
+    the Neighbour cell and relational programming. When a cell becomes LIVE or
+    DEAD we use the Neigbor relation drive the iteration over all surrounding
+    Cells increasing or decreasing the LIVE neighbour count, any cell who has
+    their count changed is also set to to the EVALUATE phase, to make sure
+    they are reasoned over duing the evaluate stage of the ruleflow process.
+    Notice that we don't have to do any iteration ourselves, by simpy applying
+    the relations in the rules we can get the rule engine to do all the hard
+    work for us in a minimal amount of code - very nice :) Once the live count
+    for all Cells has been determiend and set the ruleflow process comes to
+    and end; the user can either tell it to evaluate another generation, of if
+    "start" was clicked the engine will start the ruleflow process
+    again.</para>
+
     <example>
       <title>Conways Example : Evaluate Cells with state changes</title>
 
@@ -4031,20 +4130,6 @@ then
     $neighbor.setPhase( Phase.EVALUATE );
     update( $neighbor );    
 end </programlisting>
-    </example>
-
-    <example>
-      <title>Conways Example : Evaluate Cells with state changes</title>
-
-      <programlisting>rule "Kill All"
-    ruleflow-group "kill all"   
-    no-loop
-when
-    theCell: Cell(cellState == CellState.LIVE)
-then
-    theCell.setCellState(CellState.DEAD);
-    update( theCell );
-end</programlisting>
     </example>
   </section>
 
