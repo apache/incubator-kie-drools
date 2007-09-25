@@ -107,6 +107,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceExceptionHandler;
+import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
 
 /** Run all the tests with the ReteOO engine implementation */
@@ -150,6 +151,83 @@ public class MiscTest extends TestCase {
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
     }
+    
+    public void testGlobals2() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalsAsConstraints.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 results );
+
+        final List cheeseTypes = new ArrayList();
+        workingMemory.setGlobal( "cheeseTypes",
+                                 cheeseTypes );
+        cheeseTypes.add( "stilton" );
+        cheeseTypes.add( "muzzarela" );
+
+        final Cheese stilton = new Cheese( "stilton",
+                                           5 );
+        workingMemory.insert( stilton );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( "memberOf",
+                      results.get( 0 ) );
+
+        final Cheese brie = new Cheese( "brie",
+                                        5 );
+        workingMemory.insert( brie );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( "not memberOf",
+                      results.get( 1 ) );
+    }
+    
+    public void testCustomGlobalResolver() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final Map map = new HashMap();
+        List list = new ArrayList();
+        String string = "stilton";
+        
+        map.put("list", list);
+        map.put("string", string);
+        
+        workingMemory.setGlobalResolver( new GlobalResolver() {
+            public Object resolveGlobal(String identifier) {
+                return map.get( identifier );
+            }
+
+            public void setGlobal(String identifier,
+                                  Object value) {
+                map.put( identifier, value );
+            }
+            
+        } );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( new Integer( 5 ),
+                      list.get( 0 ) );        
+    }    
 
     public void testFieldBiningsAndEvalSharing() throws Exception {
         final String drl = "test_FieldBindingsAndEvalSharing.drl";
@@ -3164,49 +3242,6 @@ public class MiscTest extends TestCase {
         }
         results.clear();
 
-    }
-
-    public void testGlobals2() throws Exception {
-
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalsAsConstraints.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final List results = new ArrayList();
-        workingMemory.setGlobal( "results",
-                                 results );
-
-        final List cheeseTypes = new ArrayList();
-        workingMemory.setGlobal( "cheeseTypes",
-                                 cheeseTypes );
-        cheeseTypes.add( "stilton" );
-        cheeseTypes.add( "muzzarela" );
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-        workingMemory.insert( stilton );
-
-        workingMemory.fireAllRules();
-
-        assertEquals( 1,
-                      results.size() );
-        assertEquals( "memberOf",
-                      results.get( 0 ) );
-
-        final Cheese brie = new Cheese( "brie",
-                                        5 );
-        workingMemory.insert( brie );
-
-        workingMemory.fireAllRules();
-
-        assertEquals( 2,
-                      results.size() );
-        assertEquals( "not memberOf",
-                      results.get( 1 ) );
     }
 
     public void testEqualitySupport() throws Exception {
