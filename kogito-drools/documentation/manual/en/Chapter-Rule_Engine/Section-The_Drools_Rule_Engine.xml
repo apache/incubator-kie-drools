@@ -1220,7 +1220,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
     know an Object type has a low number of instances then indexing is
     probably not of an advantage and an Object list can be used.</para>
 
-    <para>Sequential mode can only be used with a StatefulSession and is off
+    <para>Sequential mode can only be used with a StatelessSession and is off
     by default. To turn on either set the RuleBaseConfiguration.setSequentail
     to true or set the rulebase.conf property drools.sequential to true.
     Sequential mode can fallback to a dynamic agenda with setSequentialAgenda
