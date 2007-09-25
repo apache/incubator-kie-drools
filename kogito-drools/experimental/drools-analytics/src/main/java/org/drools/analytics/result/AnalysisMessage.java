@@ -1,7 +1,9 @@
 package org.drools.analytics.result;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
+
+import org.drools.analytics.components.AnalyticsComponent;
 
 /**
  * 
@@ -11,14 +13,14 @@ abstract class AnalysisMessage implements Serializable {
 
 	protected int id;
 
-	protected String ruleName;
+	protected AnalyticsComponent faulty;
 	protected String message;
-	protected List<Cause> causes;
+	protected Collection<Cause> causes;
 
-	public AnalysisMessage(String ruleName, String message, List<Cause> reasons) {
-		this.ruleName = ruleName;
+	public AnalysisMessage(AnalyticsComponent  faulty, String message, Collection<Cause> causes) {
+		this.faulty= faulty;
 		this.message = message;
-		this.causes = reasons;
+		this.causes = causes;
 	}
 
 	public int getId() {
@@ -37,19 +39,19 @@ abstract class AnalysisMessage implements Serializable {
 		this.message = message;
 	}
 
-	public String getRuleName() {
-		return ruleName;
+	public AnalyticsComponent getFaulty() {
+		return faulty;
 	}
 
-	public void setRuleName(String ruleName) {
-		this.ruleName = ruleName;
+	public void setFaulty(AnalyticsComponent faulty) {
+		this.faulty = faulty;
 	}
 
-	public List<Cause> getCauses() {
+	public Collection<Cause> getCauses() {
 		return causes;
 	}
 
-	public void setCauses(List<Cause> reasons) {
+	public void setCauses(Collection<Cause> reasons) {
 		this.causes = reasons;
 	}
 }

@@ -16,7 +16,7 @@ public class ReportModeller {
 
 	private static String cssFile = "basic.css";
 
-	public static String writeXML(AnalysisResultNormal result) {
+	public static String writeXML(AnalysisResult result) {
 		XStream xstream = new XStream();
 
 		xstream.alias("result", AnalysisResultNormal.class);
@@ -25,6 +25,7 @@ public class ReportModeller {
 		xstream.alias("warning", AnalysisWarning.class);
 
 		xstream.alias("Gap", Gap.class);
+		xstream.alias("MissingNumber", MissingNumberPattern.class);
 
 		xstream.alias("Field", org.drools.analytics.components.Field.class);
 
@@ -33,7 +34,7 @@ public class ReportModeller {
 		return "<?xml version=\"1.0\"?>\n" + xstream.toXML(result);
 	}
 
-	public static String writePlainText(AnalysisResultNormal result) {
+	public static String writePlainText(AnalysisResult result) {
 
 		StringBuffer str = new StringBuffer();
 
@@ -66,7 +67,7 @@ public class ReportModeller {
 		return str.toString();
 	}
 
-	public static String writeHTML(AnalysisResultNormal result) {
+	public static String writeHTML(AnalysisResult result) {
 		StringBuffer str = new StringBuffer("");
 		str.append("<html>\n");
 		str.append("<head>\n");
@@ -140,9 +141,9 @@ public class ReportModeller {
 				str.append(warning.getId());
 				str.append(":<BR>\n");
 
-				if (warning.getRuleName() != null) {
+				if (warning.getFaulty().getRuleName() != null) {
 					str.append("in rule ");
-					str.append(warning.getRuleName());
+					str.append(warning.getFaulty().getRuleName());
 					str.append(": ");
 				}
 

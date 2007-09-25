@@ -1,7 +1,9 @@
 package org.drools.analytics.result;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
+
+import org.drools.analytics.components.AnalyticsComponent;
 
 /**
  * 
@@ -12,8 +14,9 @@ public class AnalysisWarning extends AnalysisMessage implements Serializable {
 
 	private static int warningIndex = 0;
 
-	public AnalysisWarning(String ruleName, String message, List<Cause> reasons) {
-		super(ruleName, message, reasons);
+	public AnalysisWarning(AnalyticsComponent faulty, String message,
+			Collection<Cause> causes) {
+		super(faulty, message, causes);
 		id = warningIndex++;
 	}
 
@@ -22,9 +25,9 @@ public class AnalysisWarning extends AnalysisMessage implements Serializable {
 		str.append(id);
 		str.append(":\n");
 
-		if (ruleName != null) {
+		if (faulty.getRuleName() != null) {
 			str.append("in rule ");
-			str.append(ruleName);
+			str.append(faulty.getRuleName());
 			str.append(": ");
 		}
 

@@ -3,38 +3,36 @@ package org.drools.analytics.result;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Collection;
 
 import org.drools.analytics.components.AnalyticsClass;
 import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.components.Field;
 import org.drools.analytics.dao.AnalyticsData;
-import org.drools.analytics.dao.AnalyticsDataMaps;
+import org.drools.analytics.dao.AnalyticsDataFactory;
 
 public class ComponentsReportModeller {
 
-	public static void writeHTML(String path) {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+	public static void writeHTML(String path, AnalysisResult result) {
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		// Source folder
-		File sourceFolder = new File(path
-				+ ComponentsReportVisitor.SOURCE_FOLDER);
+		File sourceFolder = new File(path + UrlFactory.SOURCE_FOLDER);
 		sourceFolder.mkdir();
 
 		// Base files
 		// index.htm
-		writeToFile(path + ComponentsReportVisitor.SOURCE_FOLDER
-				+ File.separator + ComponentsReportVisitor.HTML_FILE_INDEX,
-				ComponentsReportVisitor.visitObjectTypeCollection(data
-						.getAllClasses()));
+		writeToFile(path + UrlFactory.SOURCE_FOLDER + File.separator
+				+ UrlFactory.HTML_FILE_INDEX, ComponentsReportVisitor
+				.visitObjectTypeCollection(data.getAllClasses()));
 		// packages.htm
-		writeToFile(path + ComponentsReportVisitor.SOURCE_FOLDER
-				+ File.separator + ComponentsReportVisitor.HTML_FILE_PACKAGES,
-				ComponentsReportVisitor.visitRulePackageCollection(data
-						.getAllRulePackages()));
+		writeToFile(path + UrlFactory.SOURCE_FOLDER + File.separator
+				+ UrlFactory.HTML_FILE_PACKAGES, ComponentsReportVisitor
+				.visitRulePackageCollection(data.getAllRulePackages()));
 
 		// rules
-		String ruleFolder = path + ComponentsReportVisitor.SOURCE_FOLDER
-				+ File.separator + ComponentsReportVisitor.RULE_FOLDER;
+		String ruleFolder = path + UrlFactory.SOURCE_FOLDER + File.separator
+				+ UrlFactory.RULE_FOLDER;
 		File rulesFolder = new File(ruleFolder);
 		rulesFolder.mkdir();
 		for (AnalyticsRule rule : data.getAllRules()) {
@@ -43,8 +41,8 @@ public class ComponentsReportModeller {
 		}
 
 		// ObjectTypes
-		String objectTypeFolder = path + ComponentsReportVisitor.SOURCE_FOLDER
-				+ File.separator + ComponentsReportVisitor.OBJECT_TYPE_FOLDER;
+		String objectTypeFolder = path + UrlFactory.SOURCE_FOLDER
+				+ File.separator + UrlFactory.OBJECT_TYPE_FOLDER;
 		File objectTypesFolder = new File(objectTypeFolder);
 		objectTypesFolder.mkdir();
 		for (AnalyticsClass objectType : data.getAllClasses()) {
@@ -54,8 +52,8 @@ public class ComponentsReportModeller {
 		}
 
 		// Fields
-		String fieldFolder = path + ComponentsReportVisitor.SOURCE_FOLDER
-				+ File.separator + ComponentsReportVisitor.FIELD_FOLDER;
+		String fieldFolder = path + UrlFactory.SOURCE_FOLDER + File.separator
+				+ UrlFactory.FIELD_FOLDER;
 		File fieldsFolder = new File(fieldFolder);
 		fieldsFolder.mkdir();
 		for (Field field : data.getAllFields()) {
@@ -63,19 +61,22 @@ public class ComponentsReportModeller {
 					ComponentsReportVisitor.visitField(field));
 		}
 
+		// Gap warnings
+		Collection<RangeCheckCause> rangeCheckCauses = data
+				.getRangeCheckCauses();
+		writeToFile(path + UrlFactory.SOURCE_FOLDER + File.separator
+				+ UrlFactory.HTML_FILE_GAPS, MissingRangesReportVisitor
+				.visitRangeCheckCauseCollection(rangeCheckCauses));
+
 		// css files
-		String cssFolder = path + ComponentsReportVisitor.SOURCE_FOLDER
-				+ File.separator + ComponentsReportVisitor.CSS_FOLDER;
+		String cssFolder = path + UrlFactory.SOURCE_FOLDER + File.separator
+				+ UrlFactory.CSS_FOLDER;
 		File cssesFolder = new File(cssFolder);
 		cssesFolder.mkdir();
-		writeToFile(cssFolder + File.separator
-				+ ComponentsReportVisitor.CSS_FILE_DETAILS,
-				ComponentsReportVisitor
-						.getCss(ComponentsReportVisitor.CSS_FILE_DETAILS));
-		writeToFile(cssFolder + File.separator
-				+ ComponentsReportVisitor.CSS_FILE_LIST,
-				ComponentsReportVisitor
-						.getCss(ComponentsReportVisitor.CSS_FILE_LIST));
+		writeToFile(cssFolder + File.separator + UrlFactory.CSS_FILE_DETAILS,
+				ComponentsReportVisitor.getCss(UrlFactory.CSS_FILE_DETAILS));
+		writeToFile(cssFolder + File.separator + UrlFactory.CSS_FILE_LIST,
+				ComponentsReportVisitor.getCss(UrlFactory.CSS_FILE_LIST));
 	}
 
 	private static void writeToFile(String fileName, String text) {

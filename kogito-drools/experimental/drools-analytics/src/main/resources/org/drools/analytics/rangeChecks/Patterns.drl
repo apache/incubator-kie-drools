@@ -9,12 +9,15 @@ import org.drools.analytics.result.AnalysisResult;
 import org.drools.analytics.result.MissingNumberPattern;
 import org.drools.analytics.result.Cause;
 import org.drools.analytics.result.AnalysisWarning;
+import org.drools.analytics.accumulateFunction.FindMissingNumber;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.analytics.dao.AnalyticsData;
+
 #declare any global variables here
-global AnalysisResult result
+global AnalyticsData data;
 
 #
 # If all pattern ranges are not checked for a field.
@@ -24,37 +27,74 @@ global AnalysisResult result
 # 					then Foo( bar == 30 ) is missing.
 rule "Range check for number patterns"
 	when
-		$f :Field( ( fieldType == Field.FieldType.INT || == Field.FieldType.DOUBLE ), 
-					$fieldId :id, $fieldName :name, $classId :classId )
+		$f :Field(
+			( fieldType == Field.FieldType.INT || == Field.FieldType.DOUBLE )
+		)
 		(
 			# Where pattern is false.
-			$validationResult :ValidatePatternResult( value != null)
-				from accumulate(
-					$r :LiteralRestriction( 
-						fieldId == $fieldId, 
+			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
+				from collect(
+					LiteralRestriction( 
+						fieldId == $f.id, 
 						patternIsNot == false, 
-						( evaluator == "==" || == "!=" ),
-						$evaluator :evaluator
-					),
-					validatePattern( $r )
+						evaluator == "=="
+					)
 				)
 		) or (
 			# Where pattern is true.
-			$validationResult :ValidatePatternResult( value != null)
-				from accumulate(
-					$r :LiteralRestriction( 
-						fieldId == $fieldId, 
+			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
+				from collect(
+					LiteralRestriction( 
+						fieldId == $f.id, 
 						patternIsNot == true, 
-						( evaluator == "==" || == "!=" ),
-						$evaluator :evaluator
-					),
-					validatePattern( $r )
+						evaluator == "=="
+					)
 				)
 		)
 	then
-		List<Cause> list = new ArrayList<Cause>();
-		list.add(
-				new MissingNumberPattern( $f.getId(), "==", $validationResult.getValue().toString() ));
-		
-		result.add( new AnalysisWarning( $f.getRuleName(), $f + " is missing a number from pattern.", list ) );
+		Number number = FindMissingNumber.testForPattern( $list );
+		if( number != null ){
+			MissingNumberPattern mnp = new MissingNumberPattern( $f, "==", number.toString() );
+			data.save( mnp );
+		}
+end
+
+#
+# If all pattern ranges are not checked for a field.
+# 
+# Type: Warning
+# Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
+# 					then Foo( bar == 30 ) is missing.
+rule "Range check for number patterns, !="
+	when
+		$f :Field( 
+			( fieldType == Field.FieldType.INT || == Field.FieldType.DOUBLE ) 
+		)
+		(
+			# Where pattern is false.
+			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
+				from collect(
+					LiteralRestriction( 
+						fieldId == $f.id, 
+						patternIsNot == false, 
+						evaluator == "!="
+					)
+				)
+		) or (
+			# Where pattern is false.
+			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
+				from collect(
+					LiteralRestriction( 
+						fieldId == $f.id, 
+						patternIsNot == true, 
+						evaluator == "!="
+					)
+				)
+		)
+	then
+		Number number = FindMissingNumber.testForPattern( $list );
+		if( number != null ){
+			MissingNumberPattern mnp = new MissingNumberPattern( $f, "!=", number.toString() );
+			data.save( mnp );
+		}
 end

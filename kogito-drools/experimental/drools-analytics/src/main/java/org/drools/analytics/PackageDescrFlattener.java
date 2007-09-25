@@ -28,7 +28,7 @@ import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.components.Variable;
 import org.drools.analytics.components.VariableRestriction;
 import org.drools.analytics.dao.AnalyticsData;
-import org.drools.analytics.dao.AnalyticsDataMaps;
+import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -74,7 +74,7 @@ public class PackageDescrFlattener {
 	private Field currentField = null;
 
 	public void insert(PackageDescr packageDescr) {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 		RulePackage rulePackage = data.getRulePackageByName(packageDescr
 				.getName());
 
@@ -82,7 +82,7 @@ public class PackageDescrFlattener {
 			rulePackage = new RulePackage();
 
 			rulePackage.setName(packageDescr.getName());
-			data.insert(rulePackage);
+			data.save(rulePackage);
 		}
 
 		currentPackage = rulePackage;
@@ -317,7 +317,7 @@ public class PackageDescrFlattener {
 	}
 
 	private void flatten(RuleDescr descr) {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		AnalyticsRule rule = new AnalyticsRule();
 		rule.setRuleName(descr.getName());
@@ -326,7 +326,7 @@ public class PackageDescrFlattener {
 		rule.setLineNumber(descr.getLine());
 		rule.setPackageId(currentPackage.getId());
 
-		data.insert(rule);
+		data.save(rule);
 
 		currentPackage.getRules().add(rule);
 		currentRule = rule;
@@ -353,13 +353,13 @@ public class PackageDescrFlattener {
 	}
 
 	private int flatten(PatternDescr descr) {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		AnalyticsClass clazz = data.getClassByName(descr.getObjectType());
 		if (clazz == null) {
 			clazz = new AnalyticsClass();
 			clazz.setName(descr.getObjectType());
-			data.insert(clazz);
+			data.save(clazz);
 		}
 		currentClass = clazz;
 
@@ -371,7 +371,7 @@ public class PackageDescrFlattener {
 		pattern.setPatternExists(solvers.getRuleSolver().isExists());
 		pattern.setPatternForall(solvers.getRuleSolver().isForall());
 
-		data.insert(pattern);
+		data.save(pattern);
 		currentPattern = pattern;
 
 		if (descr.getIdentifier() != null) {
@@ -383,7 +383,7 @@ public class PackageDescrFlattener {
 			variable.setObjectId(clazz.getId());
 			variable.setObjectName(descr.getObjectType());
 
-			data.insert(variable);
+			data.save(variable);
 		}
 
 		// flatten source.
@@ -403,14 +403,14 @@ public class PackageDescrFlattener {
 	}
 
 	private void flatten(FieldConstraintDescr descr) {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		Field field = data.getFieldByClassAndFieldName(currentClass.getName(),
 				descr.getFieldName());
 		if (field == null) {
 			field = createField(descr.getFieldName(), descr.getLine(),
 					currentClass.getId(), currentClass.getName());
-			data.insert(field);
+			data.save(field);
 		}
 		currentField = field;
 
@@ -422,7 +422,7 @@ public class PackageDescrFlattener {
 		constraint.setPatternIsNot(currentPattern.isPatternNot());
 		constraint.setFieldId(field.getId());
 
-		data.insert(constraint);
+		data.save(constraint);
 
 		currentConstraint = constraint;
 
@@ -440,7 +440,7 @@ public class PackageDescrFlattener {
 	 * @param descr
 	 */
 	private void flatten(FieldBindingDescr descr) {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		Variable variable = new Variable();
 		variable.setRuleId(currentRule.getId());
@@ -448,7 +448,7 @@ public class PackageDescrFlattener {
 
 		variable.setObjectType(AnalyticsComponentType.FIELD);
 
-		data.insert(variable);
+		data.save(variable);
 	}
 
 	/**
@@ -460,7 +460,7 @@ public class PackageDescrFlattener {
 	 * @param descr
 	 */
 	private void flatten(VariableRestrictionDescr descr) {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		Variable variable = data.getVariableByRuleAndVariableName(currentRule
 				.getRuleName(), descr.getIdentifier());
@@ -479,7 +479,7 @@ public class PackageDescrFlattener {
 		// Set field value, if it is unset.
 		currentField.setFieldType(Field.FieldType.VARIABLE);
 
-		data.insert(restriction);
+		data.save(restriction);
 		solvers.addRestriction(restriction);
 	}
 
@@ -489,7 +489,7 @@ public class PackageDescrFlattener {
 	 * @param descr
 	 */
 	private void flatten(ReturnValueRestrictionDescr descr) {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		ReturnValueRestriction restriction = new ReturnValueRestriction();
 
@@ -504,7 +504,7 @@ public class PackageDescrFlattener {
 		restriction.setContent(descr.getContent());
 		restriction.setDeclarations(descr.getDeclarations());
 
-		data.insert(restriction);
+		data.save(restriction);
 		solvers.addRestriction(restriction);
 
 	}
@@ -515,7 +515,7 @@ public class PackageDescrFlattener {
 	 * @param descr
 	 */
 	private void flatten(LiteralRestrictionDescr descr) {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		LiteralRestriction restriction = new LiteralRestriction();
 
@@ -532,7 +532,7 @@ public class PackageDescrFlattener {
 		// Set field value, if it is unset.
 		currentField.setFieldType(restriction.getValueType());
 
-		data.insert(restriction);
+		data.save(restriction);
 		solvers.addRestriction(restriction);
 	}
 
@@ -542,7 +542,7 @@ public class PackageDescrFlattener {
 	 * @param descr
 	 */
 	private void flatten(QualifiedIdentifierRestrictionDescr descr) {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		String text = descr.getText();
 		Variable variable = data.getVariableByRuleAndVariableName(currentRule
@@ -565,7 +565,7 @@ public class PackageDescrFlattener {
 
 		variable.setObjectType(AnalyticsComponentType.FIELD);
 
-		data.insert(restriction);
+		data.save(restriction);
 		solvers.addRestriction(restriction);
 	}
 
@@ -582,13 +582,13 @@ public class PackageDescrFlattener {
 	}
 
 	private void formPossibilities() {
-		AnalyticsData data = AnalyticsDataMaps.getAnalyticsDataMaps();
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		for (PatternPossibility possibility : solvers.getPatternPossibilities()) {
-			data.insert(possibility);
+			data.save(possibility);
 		}
 		for (RulePossibility possibility : solvers.getRulePossibilities()) {
-			data.insert(possibility);
+			data.save(possibility);
 		}
 	}
 }

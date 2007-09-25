@@ -13,6 +13,10 @@ import java.util.TreeSet;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import org.drools.analytics.dao.AnalyticsData;
+
+global AnalyticsData data;
+
 # If all ranges are not checked for a field.
 # 
 # Type: Warning
@@ -22,38 +26,81 @@ rule "Range check for integers, smaller and greater than"
 	when
 		$f :Field( fieldType == Field.FieldType.INT, $fieldId :id, $fieldName :name, $classId :classId )
 		(
-				$r :LiteralRestriction( fieldId == $fieldId, evaluator == ">", 
-											$patternIsNot :patternIsNot, $value :intValue )
+				$r :LiteralRestriction( 
+					fieldId == $fieldId, 
+					evaluator == ">", 
+					$patternIsNot :patternIsNot, 
+					$value :intValue 
+				)
 			and
-				not LiteralRestriction( fieldId == $fieldId, ( evaluator == "==" || == "<=" ), 
-											patternIsNot == $patternIsNot, intValue == $value )
+				not LiteralRestriction( 
+					fieldId == $fieldId, 
+					( evaluator == "==" || == "<=" ), 
+					patternIsNot == $patternIsNot, 
+					intValue == $value 
+				)
 		) or (
-				$r :LiteralRestriction( fieldId == $fieldId, evaluator == "<", 
-											$patternIsNot :patternIsNot, $value :intValue )
+				$r :LiteralRestriction( 
+					fieldId == $fieldId, 
+					evaluator == "<", 
+					$patternIsNot :patternIsNot, 
+					$value :intValue 
+				)
 			and
-				not LiteralRestriction( fieldId == $fieldId, ( evaluator == "==" || == ">=" ), 
-											patternIsNot == $patternIsNot, intValue == $value )
+				not LiteralRestriction( 
+					fieldId == $fieldId, 
+					( evaluator == "==" || == ">=" ), 
+					patternIsNot == $patternIsNot, 
+					intValue == $value 
+				)
 		) or (
-				$r :LiteralRestriction( fieldId == $fieldId, evaluator == "<=", 
-											$patternIsNot :patternIsNot, $value :intValue )
+				$r :LiteralRestriction( 
+					fieldId == $fieldId, 
+					evaluator == "<=", 
+					$patternIsNot :patternIsNot, 
+					$value :intValue 
+				)
 			and
-				not LiteralRestriction( fieldId == $fieldId, evaluator  == ">", 
-											patternIsNot == $patternIsNot, intValue == $value )
+				not LiteralRestriction( 
+					fieldId == $fieldId, 
+					evaluator  == ">", 
+					patternIsNot == $patternIsNot, 
+					intValue == $value 
+				)
 			and
-				not LiteralRestriction( fieldId == $fieldId, evaluator  == ">=", 
-											patternIsNot == $patternIsNot, eval( intValue == $value + 1 ) )
+				not LiteralRestriction( 
+					fieldId == $fieldId, 
+					evaluator  == ">=", 
+					patternIsNot == $patternIsNot, 
+					eval( intValue == $value + 1 ) 
+				)
 		) or (
-				$r :LiteralRestriction( fieldId == $fieldId, evaluator == ">=", 
-											$patternIsNot :patternIsNot, $value :intValue )
+				$r :LiteralRestriction( 
+					fieldId == $fieldId, 
+					evaluator == ">=", 
+					$patternIsNot :patternIsNot, 
+					$value :intValue 
+				)
 			and
-				not LiteralRestriction( fieldId == $fieldId, evaluator  == "<", 
-											patternIsNot == $patternIsNot, intValue == $value )
+				not LiteralRestriction( 
+					fieldId == $fieldId, 
+					evaluator  == "<", 
+					patternIsNot == $patternIsNot, 
+					intValue == $value 
+				)
 			and
-				not LiteralRestriction( fieldId == $fieldId, evaluator  == "<=", 
-											patternIsNot == $patternIsNot, eval( intValue == $value - 1 ) )
+				not LiteralRestriction( 
+					fieldId == $fieldId, 
+					evaluator  == "<=", 
+					patternIsNot == $patternIsNot, 
+					eval( intValue == $value - 1 ) 
+				)
 		)
 	then
-		insert( new Gap( $f, $r, drools.getRule().getName()) );
+		Gap gap = new Gap( $f, Gap.getReversedEvaluator($r.getEvaluator()), $r );
+		gap.setFiredRuleName( drools.getRule().getName() );
+		data.save( gap );
+		insert( gap );
 end
 
 # If all ranges are not checked for a field.
@@ -68,35 +115,52 @@ rule "Range check for integers, equal and greater than"
 		# Case Foo( bar == 42 ) Foo( bar >= 43 || == 43 ).
 				$f :Field( fieldType == Field.FieldType.INT )
 			and
-				$r :LiteralRestriction( fieldId == $f.id, evaluator == "==" )
+				$r :LiteralRestriction( 
+					fieldId == $f.id, 
+					evaluator == "==" 
+				)
 			and
-				LiteralRestriction( fieldId == $f.id, 
-										( evaluator == "==" || == ">=" ),
-										patternIsNot == $r.patternIsNot, 
-										eval( intValue == $r.getIntValue() + 1 ) )
+				LiteralRestriction( 
+					fieldId == $f.id, 
+					( evaluator == "==" || == ">=" ),
+					patternIsNot == $r.patternIsNot, 
+					eval( intValue == $r.getIntValue() + 1 ) 
+				)
 		) or (
 		# Case Foo( bar == 42 ) Foo( bar >= 42 || > 42 ).
 				$f :Field( fieldType == Field.FieldType.INT )
 			and
-				$r :LiteralRestriction( fieldId == $f.id, evaluator == "==" )
+				$r :LiteralRestriction( 
+					fieldId == $f.id, 
+					evaluator == "==" 
+				)
 			and
-				LiteralRestriction( fieldId == $f.id, 
-										( evaluator == ">" || == ">=" ), 
-										patternIsNot == $r.patternIsNot, 
-										intValue == $r.intValue )
+				LiteralRestriction( 
+					fieldId == $f.id, 
+					( evaluator == ">" || == ">=" ), 
+					patternIsNot == $r.patternIsNot, 
+					intValue == $r.intValue 
+				)
 		)
 		# Check if Foo( bar < 42 || <= 42 ) is missing.
-		not	LiteralRestriction( fieldId == $f.id, 
-								( evaluator == "<" || == "<=" ), 
-								patternIsNot == $r.patternIsNot, 
-								intValue == $r.intValue )
+		not	LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == "<" || == "<=" ), 
+			patternIsNot == $r.patternIsNot, 
+			intValue == $r.intValue 
+		)
 		# Check if Foo( bar == 41 || <= 41 ) is missing.
-		not	LiteralRestriction( fieldId == $f.id, 
-								( evaluator == "==" || == "<=" ), 
-								patternIsNot == $r.patternIsNot, 
-								eval( intValue == $r.getIntValue() - 1 ) )
+		not	LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == "==" || == "<=" ), 
+			patternIsNot == $r.patternIsNot, 
+			eval( intValue == $r.getIntValue() - 1 ) 
+		)
 	then
-		insert( new Gap( $f, $r, drools.getRule().getName()) );
+		Gap gap =  new Gap( $f, "<", $r );
+		gap.setFiredRuleName( drools.getRule().getName() );
+		data.save( gap );
+		insert( gap );
 end
 
 # If all ranges are not checked for a field.
@@ -111,33 +175,50 @@ rule "Range check for integers, equal and smaller than"
 		# Case Foo( bar == 42 ) Foo( bar <= 43 || == 43 ).
 				$f :Field( fieldType == Field.FieldType.INT )
 			and
-				$r :LiteralRestriction( fieldId == $f.id, evaluator == "==" )
+				$r :LiteralRestriction( 
+					fieldId == $f.id, 
+					evaluator == "==" 
+				)
 			and
-				LiteralRestriction( fieldId == $f.id, 
-										( evaluator == "==" || == "<=" ),
-										patternIsNot == $r.patternIsNot, 
-										eval( intValue == $r.getIntValue() - 1 ) )
+				LiteralRestriction( 
+					fieldId == $f.id, 
+					( evaluator == "==" || == "<=" ),
+					patternIsNot == $r.patternIsNot, 
+					eval( intValue == $r.getIntValue() - 1 ) 
+				)
 		) or (
 		# Case Foo( bar == 42 ) Foo( bar <= 42 || < 42 ).
 				$f :Field( fieldType == Field.FieldType.INT )
 			and
-				$r :LiteralRestriction( fieldId == $f.id, evaluator == "==" )
+				$r :LiteralRestriction( 
+					fieldId == $f.id, 
+					evaluator == "==" 
+				)
 			and
-				LiteralRestriction( fieldId == $f.id, 
-										( evaluator == "<" || == "<=" ), 
-										patternIsNot == $r.patternIsNot, 
-										intValue == $r.intValue )
+				LiteralRestriction( 
+					fieldId == $f.id, 
+					( evaluator == "<" || == "<=" ), 
+					patternIsNot == $r.patternIsNot, 
+					intValue == $r.intValue 
+				)
 		)
 		# Check if Foo( bar > 42 || >= 42 ) is missing.
-		not	LiteralRestriction( fieldId == $f.id, 
-								( evaluator == ">" || == ">=" ), 
-								patternIsNot == $r.patternIsNot, 
-								intValue == $r.intValue )
+		not	LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == ">" || == ">=" ), 
+			patternIsNot == $r.patternIsNot, 
+			intValue == $r.intValue 
+		)
 		# Check if Foo( bar == 41 || >= 41 ) is missing.
-		not	LiteralRestriction( fieldId == $f.id, 
-								( evaluator == "==" || == ">=" ), 
-								patternIsNot == $r.patternIsNot, 
-								eval( intValue == $r.getIntValue() + 1 ) )
+		not	LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == "==" || == ">=" ), 
+			patternIsNot == $r.patternIsNot, 
+			eval( intValue == $r.getIntValue() + 1 ) 
+		)
 	then
-		insert( new Gap( $f, $r, drools.getRule().getName()) );
+		Gap gap = new Gap( $f, ">", $r );
+		gap.setFiredRuleName( drools.getRule().getName() );
+		data.save( gap );
+		insert( gap );
 end

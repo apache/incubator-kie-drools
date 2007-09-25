@@ -2,11 +2,11 @@ package org.drools.analytics.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.drools.analytics.components.AnalyticsClass;
 import org.drools.analytics.components.AnalyticsRule;
@@ -19,54 +19,50 @@ import org.drools.analytics.components.Restriction;
 import org.drools.analytics.components.RulePackage;
 import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.components.Variable;
+import org.drools.analytics.result.Gap;
+import org.drools.analytics.result.MissingNumberPattern;
+import org.drools.analytics.result.RangeCheckCause;
 
 /**
  * 
  * @author Toni Rikkola
  */
-public class AnalyticsDataMaps implements AnalyticsData {
+class AnalyticsDataMaps implements AnalyticsData {
 
-	private Map<Integer, RulePackage> packagesById = new HashMap<Integer, RulePackage>();
-	private Map<String, RulePackage> packagesByName = new HashMap<String, RulePackage>();
+	private Map<Integer, RulePackage> packagesById = new TreeMap<Integer, RulePackage>();
+	private Map<String, RulePackage> packagesByName = new TreeMap<String, RulePackage>();
 
-	private Map<Integer, AnalyticsClass> classesById = new HashMap<Integer, AnalyticsClass>();
-	private Map<String, AnalyticsClass> classesByName = new HashMap<String, AnalyticsClass>();
-	private Map<String, Field> fieldsByClassAndFieldName = new HashMap<String, Field>();
-	private Map<Integer, Field> fieldsById = new HashMap<Integer, Field>();
-	private Map<Integer, Set<Field>> fieldsByClassId = new HashMap<Integer, Set<Field>>();
-	private Map<String, FieldClassLink> fieldClassLinkByIds = new HashMap<String, FieldClassLink>();
+	private Map<Integer, AnalyticsClass> classesById = new TreeMap<Integer, AnalyticsClass>();
+	private Map<String, AnalyticsClass> classesByName = new TreeMap<String, AnalyticsClass>();
+	private Map<String, Field> fieldsByClassAndFieldName = new TreeMap<String, Field>();
+	private Map<Integer, Field> fieldsById = new TreeMap<Integer, Field>();
+	private Map<Integer, Set<Field>> fieldsByClassId = new TreeMap<Integer, Set<Field>>();
+	private Map<String, FieldClassLink> fieldClassLinkByIds = new TreeMap<String, FieldClassLink>();
 
-	private Map<Integer, AnalyticsRule> rulesById = new HashMap<Integer, AnalyticsRule>();
-	private Map<Integer, Pattern> patternsById = new HashMap<Integer, Pattern>();
-	private Map<Integer, Set<Pattern>> patternsByClassId = new HashMap<Integer, Set<Pattern>>();
-	private Map<String, Set<Pattern>> patternsByRuleName = new HashMap<String, Set<Pattern>>();
-	private Map<Integer, Constraint> constraintsById = new HashMap<Integer, Constraint>();
-	private Map<Integer, Restriction> restrictionsById = new HashMap<Integer, Restriction>();
-	private Map<Integer, Set<Restriction>> restrictionsByFieldId = new HashMap<Integer, Set<Restriction>>();
+	private Map<Integer, AnalyticsRule> rulesById = new TreeMap<Integer, AnalyticsRule>();
+	private Map<Integer, Pattern> patternsById = new TreeMap<Integer, Pattern>();
+	private Map<Integer, Set<Pattern>> patternsByClassId = new TreeMap<Integer, Set<Pattern>>();
+	private Map<String, Set<Pattern>> patternsByRuleName = new TreeMap<String, Set<Pattern>>();
+	private Map<Integer, Constraint> constraintsById = new TreeMap<Integer, Constraint>();
+	private Map<Integer, Restriction> restrictionsById = new TreeMap<Integer, Restriction>();
+	private Map<Integer, Set<Restriction>> restrictionsByFieldId = new TreeMap<Integer, Set<Restriction>>();
 
-	private Map<String, Variable> variablesByRuleAndVariableName = new HashMap<String, Variable>();
+	private Map<String, Variable> variablesByRuleAndVariableName = new TreeMap<String, Variable>();
 
-	private Map<Integer, PatternPossibility> patternPossibilitiesById = new HashMap<Integer, PatternPossibility>();
-	private Map<Integer, RulePossibility> rulePossibilitiesById = new HashMap<Integer, RulePossibility>();
+	private Map<Integer, PatternPossibility> patternPossibilitiesById = new TreeMap<Integer, PatternPossibility>();
+	private Map<Integer, RulePossibility> rulePossibilitiesById = new TreeMap<Integer, RulePossibility>();
 
-	private static AnalyticsDataMaps map;
+	private Map<Integer, Gap> gapsById = new TreeMap<Integer, Gap>();
+	private Map<Integer, Set<Gap>> gapsByFieldId = new TreeMap<Integer, Set<Gap>>();
+	private Map<Integer, MissingNumberPattern> missingNumberPatternsById = new TreeMap<Integer, MissingNumberPattern>();
+	private Map<Integer, Set<MissingNumberPattern>> missingNumberPatternsByFieldId = new TreeMap<Integer, Set<MissingNumberPattern>>();
 
-	private AnalyticsDataMaps() {
-	}
-
-	public static AnalyticsDataMaps getAnalyticsDataMaps() {
-		if (map == null) {
-			map = new AnalyticsDataMaps();
-		}
-		return map;
-	}
-
-	public void insert(AnalyticsClass clazz) {
+	public void save(AnalyticsClass clazz) {
 		classesById.put(Integer.valueOf(clazz.getId()), clazz);
 		classesByName.put(clazz.getName(), clazz);
 	}
 
-	public void insert(Field field) {
+	public void save(Field field) {
 		AnalyticsClass clazz = classesById.get(Integer.valueOf(field
 				.getClassId()));
 		fieldsByClassAndFieldName.put(clazz.getName() + "." + field.getName(),
@@ -85,18 +81,18 @@ public class AnalyticsDataMaps implements AnalyticsData {
 		}
 	}
 
-	public void insert(Variable variable) {
+	public void save(Variable variable) {
 		AnalyticsRule rule = rulesById.get(Integer
 				.valueOf(variable.getRuleId()));
 		variablesByRuleAndVariableName.put(rule.getRuleName() + "."
 				+ variable.getName(), variable);
 	}
 
-	public void insert(AnalyticsRule rule) {
+	public void save(AnalyticsRule rule) {
 		rulesById.put(Integer.valueOf(rule.getId()), rule);
 	}
 
-	public void insert(Pattern pattern) {
+	public void save(Pattern pattern) {
 		patternsById.put(Integer.valueOf(pattern.getId()), pattern);
 
 		// Save by class id.
@@ -120,11 +116,11 @@ public class AnalyticsDataMaps implements AnalyticsData {
 		}
 	}
 
-	public void insert(Constraint constraint) {
+	public void save(Constraint constraint) {
 		constraintsById.put(Integer.valueOf(constraint.getId()), constraint);
 	}
 
-	public void insert(Restriction restriction) {
+	public void save(Restriction restriction) {
 		restrictionsById.put(restriction.getId(), restriction);
 
 		// Save by field id.
@@ -139,7 +135,7 @@ public class AnalyticsDataMaps implements AnalyticsData {
 		}
 	}
 
-	public void insert(FieldClassLink link) {
+	public void save(FieldClassLink link) {
 		fieldClassLinkByIds.put(link.getFieldId() + "." + link.getClassId(),
 				link);
 	}
@@ -166,11 +162,11 @@ public class AnalyticsDataMaps implements AnalyticsData {
 		return rulesById.values();
 	}
 
-	public void insert(PatternPossibility possibility) {
+	public void save(PatternPossibility possibility) {
 		patternPossibilitiesById.put(possibility.getId(), possibility);
 	}
 
-	public void insert(RulePossibility possibility) {
+	public void save(RulePossibility possibility) {
 		rulePossibilitiesById.put(possibility.getId(), possibility);
 	}
 
@@ -246,12 +242,98 @@ public class AnalyticsDataMaps implements AnalyticsData {
 		return packagesById.values();
 	}
 
-	public void insert(RulePackage rulePackage) {
+	public void save(RulePackage rulePackage) {
 		packagesById.put(rulePackage.getId(), rulePackage);
 		packagesByName.put(rulePackage.getName(), rulePackage);
 	}
 
 	public RulePackage getRulePackageByName(String name) {
 		return packagesByName.get(name);
+	}
+
+	public void save(Gap gap) {
+		gapsById.put(gap.getId(), gap);
+
+		// Save by field id.
+		if (gapsByFieldId.containsKey(gap.getField().getId())) {
+			Set<Gap> set = gapsByFieldId.get(gap.getField().getId());
+			set.add(gap);
+		} else {
+			Set<Gap> set = new HashSet<Gap>();
+			set.add(gap);
+			gapsByFieldId.put(gap.getField().getId(), set);
+		}
+	}
+
+	public void remove(Gap gap) {
+		gapsById.remove(gap.getId());
+
+		if (gapsByFieldId.containsKey(gap.getField().getId())) {
+			Set<Gap> set = gapsByFieldId.get(gap.getField().getId());
+			set.add(gap);
+
+			if (set.isEmpty()) {
+				gapsByFieldId.remove(gap.getField().getId());
+			}
+		}
+	}
+
+	public Collection<Field> getFieldsWithGaps() {
+		Set<Integer> set = gapsByFieldId.keySet();
+		Collection<Field> fields = new ArrayList<Field>();
+
+		for (Integer i : set) {
+			fields.add(fieldsById.get(i));
+		}
+
+		return fields;
+	}
+
+	public Collection<Gap> getGapsByFieldId(int fieldId) {
+		return gapsByFieldId.get(fieldId);
+	}
+
+	public Collection<Restriction> getRestrictionsByFieldId(int id) {
+		return restrictionsByFieldId.get(id);
+	}
+
+	public Collection<RangeCheckCause> getRangeCheckCauses() {
+		Collection<RangeCheckCause> result = new ArrayList<RangeCheckCause>();
+
+		result.addAll(gapsById.values());
+		result.addAll(missingNumberPatternsById.values());
+
+		return result;
+	}
+
+	public void save(MissingNumberPattern missingNumberPattern) {
+		missingNumberPatternsById.put(missingNumberPattern.getId(),
+				missingNumberPattern);
+
+		// Save by field id.
+		if (missingNumberPatternsByFieldId.containsKey(missingNumberPattern
+				.getField().getId())) {
+			Set<MissingNumberPattern> set = missingNumberPatternsByFieldId
+					.get(missingNumberPattern.getField().getId());
+			set.add(missingNumberPattern);
+		} else {
+			Set<MissingNumberPattern> set = new HashSet<MissingNumberPattern>();
+			set.add(missingNumberPattern);
+			missingNumberPatternsByFieldId.put(missingNumberPattern.getField()
+					.getId(), set);
+		}
+	}
+
+	public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(int id) {
+		Collection<RangeCheckCause> result = new ArrayList<RangeCheckCause>();
+
+		if (gapsByFieldId.containsKey(id)) {
+			result.addAll(gapsByFieldId.get(id));
+		}
+		if (missingNumberPatternsByFieldId.containsKey(id)) {
+			result.addAll(missingNumberPatternsByFieldId.get(id));
+		}
+
+		return result;
 	}
 }

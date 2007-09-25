@@ -8,13 +8,10 @@ import org.drools.analytics.accumulateFunction.ValidatePatternResult;
 import org.drools.analytics.result.AnalysisResult;
 import org.drools.analytics.result.Gap;
 
-import java.util.ArrayList;
-import java.util.TreeSet;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+import org.drools.analytics.dao.AnalyticsData;
 
 #declare any global variables here
-global AnalysisResult result
+global AnalyticsData data;
 
 # If all ranges are not checked for a field.
 # 
@@ -25,32 +22,59 @@ rule "Range check for doubles, smaller and greater than"
 	when
 		$f :Field( fieldType == Field.FieldType.DOUBLE )
 		(
-				$r :LiteralRestriction( fieldId == $f.id, evaluator == ">" )
+				$r :LiteralRestriction( 
+					fieldId == $f.id, 
+					evaluator == ">" 
+				)
 			and
-				not LiteralRestriction( fieldId == $f.id, ( evaluator == "==" || == "<=" ), 
-											patternIsNot == $r.patternIsNot, 
-											doubleValue == $r.doubleValue )
+				not LiteralRestriction( 
+					fieldId == $f.id, 
+					( evaluator == "==" || == "<=" ), 
+					patternIsNot == $r.patternIsNot, 
+					doubleValue == $r.doubleValue 
+			)
 		) or (
-				$r :LiteralRestriction( fieldId == $f.id, evaluator == "<" )
+				$r :LiteralRestriction( 
+					fieldId == $f.id, 
+					evaluator == "<" 
+				)
 			and
-				not LiteralRestriction( fieldId == $f.id, ( evaluator == "==" || == ">=" ), 
-											patternIsNot == $r.patternIsNot, 
-											doubleValue == $r.doubleValue )
+				not LiteralRestriction( 
+					fieldId == $f.id, 
+					( evaluator == "==" || == ">=" ), 
+					patternIsNot == $r.patternIsNot, 
+					doubleValue == $r.doubleValue 
+				)
 		) or (
-				$r :LiteralRestriction( fieldId == $f.id, evaluator == "<=" )
+				$r :LiteralRestriction( 
+					fieldId == $f.id, 
+					evaluator == "<=" 
+				)
 			and
-				not LiteralRestriction( fieldId == $f.id, evaluator  == ">", 
-											patternIsNot == $r.patternIsNot, 
-											doubleValue == $r.doubleValue )
+				not LiteralRestriction( 
+					fieldId == $f.id, 
+					evaluator  == ">", 
+					patternIsNot == $r.patternIsNot, 
+					doubleValue == $r.doubleValue 
+				)
 		) or (
-				$r :LiteralRestriction( fieldId == $f.id, evaluator == ">=" )
+				$r :LiteralRestriction( 
+					fieldId == $f.id, 
+					evaluator == ">=" 
+				)
 			and
-				not LiteralRestriction( fieldId == $f.id, evaluator  == "<", 
-											patternIsNot == $r.patternIsNot, 
-											doubleValue == $r.doubleValue )
+				not LiteralRestriction( 
+					fieldId == $f.id, 
+					evaluator  == "<", 
+					patternIsNot == $r.patternIsNot, 
+					doubleValue == $r.doubleValue 
+				)
 		)
 	then
-		insert( new Gap( $f, $r, drools.getRule().getName()) );
+		Gap gap = new Gap( $f, Gap.getReversedEvaluator($r.getEvaluator()), $r );
+		gap.setFiredRuleName( drools.getRule().getName() );
+		data.save( gap );
+		insert( gap );
 end
 
 # If all ranges are not checked for a field.
@@ -63,18 +87,28 @@ rule "Range check for doubles, equal and greater than"
 	when
 		# Case Foo( bar == 42 ) Foo( bar >= 42 || > 42 ).
 		$f :Field( fieldType == Field.FieldType.DOUBLE )
-		$r :LiteralRestriction( fieldId == $f.id, evaluator == "==" )
-		LiteralRestriction( fieldId == $f.id, 
-								( evaluator == ">" || == ">=" ), 
-								patternIsNot == $r.patternIsNot, 
-								doubleValue == $r.doubleValue )
+		$r :LiteralRestriction( 
+			fieldId == $f.id, 
+			evaluator == "=="
+		)
+		LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == ">" || == ">=" ), 
+			patternIsNot == $r.patternIsNot, 
+			doubleValue == $r.doubleValue  
+		)
 		# Check if Foo( bar < 42 || <= 42 ) is missing.
-		not	LiteralRestriction( fieldId == $f.id, 
-								( evaluator == "<" || == "<=" ), 
-								patternIsNot == $r.patternIsNot, 
-								doubleValue == $r.doubleValue )
+		not	LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == "<" || == "<=" ), 
+			patternIsNot == $r.patternIsNot, 
+			doubleValue == $r.doubleValue 
+		)
 	then
-		insert( new Gap( $f, $r, drools.getRule().getName()) );
+		Gap gap = new Gap( $f, "<", $r );
+		gap.setFiredRuleName( drools.getRule().getName() );
+		data.save( gap );
+		insert( gap );
 end
 
 # If all ranges are not checked for a field.
@@ -87,17 +121,27 @@ rule "Range check for doubles, equal and smaller than"
 	when
 		# Case Foo( bar == 42 ) Foo( bar <= 42 || < 42 ).
 		$f :Field( fieldType == Field.FieldType.DOUBLE )
-		$r :LiteralRestriction( fieldId == $f.id, evaluator == "==" )
-		LiteralRestriction( fieldId == $f.id, 
-								( evaluator == "<" || == "<=" ), 
-								patternIsNot == $r.patternIsNot, 
-								doubleValue == $r.doubleValue )
+		$r :LiteralRestriction( 
+			fieldId == $f.id, 
+			evaluator == "==" 
+		)
+		LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == "<" || == "<=" ), 
+			patternIsNot == $r.patternIsNot, 
+			doubleValue == $r.doubleValue 
+		)
 		# Check if Foo( bar > 42 || >= 42 ) is missing.
-		not	LiteralRestriction( fieldId == $f.id, 
-								( evaluator == ">" || == ">=" ), 
-								patternIsNot == $r.patternIsNot, 
-								doubleValue == $r.doubleValue )
+		not	LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == ">" || == ">=" ), 
+			patternIsNot == $r.patternIsNot, 
+			doubleValue == $r.doubleValue 
+		)
 	then
-		insert( new Gap( $f, $r, drools.getRule().getName()) );
+		Gap gap = new Gap( $f, ">", $r );
+		gap.setFiredRuleName( drools.getRule().getName() );
+		data.save( gap );
+		insert( gap );
 end
 

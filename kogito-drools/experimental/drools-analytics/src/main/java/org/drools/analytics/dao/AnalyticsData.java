@@ -13,6 +13,9 @@ import org.drools.analytics.components.Restriction;
 import org.drools.analytics.components.RulePackage;
 import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.components.Variable;
+import org.drools.analytics.result.Gap;
+import org.drools.analytics.result.MissingNumberPattern;
+import org.drools.analytics.result.RangeCheckCause;
 
 /**
  * 
@@ -20,27 +23,33 @@ import org.drools.analytics.components.Variable;
  */
 public interface AnalyticsData {
 
-	public void insert(AnalyticsClass clazz);
+	public void save(AnalyticsClass clazz);
 
-	public void insert(Field field);
+	public void save(Field field);
 
-	public void insert(Variable variable);
+	public void save(Variable variable);
 
-	public void insert(AnalyticsRule rule);
+	public void save(AnalyticsRule rule);
 
-	public void insert(Pattern pattern);
+	public void save(Pattern pattern);
 
-	public void insert(Constraint constraint);
+	public void save(Constraint constraint);
 
-	public void insert(Restriction restriction);
+	public void save(Restriction restriction);
 
-	public void insert(FieldClassLink link);
+	public void save(FieldClassLink link);
 
-	public void insert(PatternPossibility possibility);
+	public void save(PatternPossibility possibility);
 
-	public void insert(RulePossibility possibility);
+	public void save(RulePossibility possibility);
 
-	public void insert(RulePackage rulePackage);
+	public void save(RulePackage rulePackage);
+
+	public void save(Gap gap);
+
+	public void remove(Gap gap);
+
+	public void save(MissingNumberPattern missingNumberPattern);
 
 	public AnalyticsClass getClassByName(String name);
 
@@ -71,5 +80,15 @@ public interface AnalyticsData {
 
 	public Collection<AnalyticsRule> getRulesByFieldId(int id);
 
+	public Collection<Field> getFieldsWithGaps();
+
+	public Collection<Gap> getGapsByFieldId(int fieldId);
+
 	public RulePackage getRulePackageByName(String name);
+
+	public Collection<Restriction> getRestrictionsByFieldId(int id);
+
+	public Collection<RangeCheckCause> getRangeCheckCauses();
+	
+	public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(int id);
 }

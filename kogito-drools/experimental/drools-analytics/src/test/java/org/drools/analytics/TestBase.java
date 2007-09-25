@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
-import org.drools.analytics.dao.AnalyticsDataMaps;
+import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
@@ -85,6 +85,6 @@ abstract class TestBase extends TestCase {
 		ruleFlattener.insert(descr);
 
 		// Rules with relations
-		return AnalyticsDataMaps.getAnalyticsDataMaps().getAll();
+		return AnalyticsDataFactory.getAnalyticsData().getAll();
 	}
 }
