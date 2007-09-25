@@ -304,7 +304,8 @@
     can win performance and scalability. Try it yourself: run both the simple
     (small moves) and the smart (big moves) version of the traveling
     tournament example. The smart version evaluates a lot less unfeasible
-    solutions and exponentially outperformces the simple version.</para>
+    solutions, which enables it to outperform and outscale the simple
+    version.</para>
 
     <para>Move generation currently happens with a
     <literal>MoveFactory</literal>:</para>
@@ -418,9 +419,9 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
   <section>
     <title>Getting stuck in local optima</title>
 
-    <para>A simple local search always takes improving moves. This may seem
-    like a good thing, but it's not. It suffers from a number of
-    problems:</para>
+    <para>A <emphasis>simple local search</emphasis> always takes improving
+    moves. This may seem like a good thing, but it's not. It suffers from a
+    number of problems:</para>
 
     <itemizedlist>
       <listitem>
@@ -438,9 +439,9 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
       </listitem>
     </itemizedlist>
 
-    <para>Luckily drools-solver implements better local searches, such
+    <para>Of course drools-solver implements better local searches, such
     <emphasis>tabu search</emphasis> and <emphasis>simulated
-    annealing</emphasis> which don't have these problems. It's recommended to
+    annealing</emphasis> which can avoid these problems. It's recommended to
     never use a simple local search, unless you're absolutely sure there are
     no local optima in your planning problem.</para>
   </section>
@@ -541,7 +542,9 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
           <listitem>
             <para><emphasis>Solution tabu</emphasis> makes recently visited
             solutions tabu. It does not accept a move that leads to one of
-            those solutions. We recommend this type of tabu.</para>
+            those solutions. If you can spare the memory, don't be cheap on
+            the tabu size. We recommend this type of tabu because it tends to
+            give the best results and requires little or no tweaking.</para>
 
             <programlisting>    &lt;accepter&gt;
         &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
@@ -600,6 +603,12 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
         &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
         &lt;completeUndoMoveTabuSize&gt;10&lt;/completeUndoMoveTabuSize&gt;
     &lt;/accepter&gt;</programlisting>
+
+        <para>If you pick a too small tabu size, your solver can still get
+        stuck in a local optimum. On the other hand, with the exception of
+        solution tabu, if you pick a too large tabu size, your solver can get
+        stuck by bouncing of the walls. Use the benchmarker to fine tweak your
+        configuration.</para>
 
         <para>A tabu search accepter should be used with a
         <literal>MaxScoreOfAllForager</literal> (recommended) or a
