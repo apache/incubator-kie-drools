@@ -1,52 +1,52 @@
 package org.drools.examples;
 
+dialect "mvel"
+
 import org.drools.examples.GolfingExample.Golfer;
 
 rule "find solution"
     when
-        // There is a golfer named Fred, 
+        // There is a golfer named Fred,
         // Whose positions is $p1
-        $fred : Golfer( $fredsName : name == "Fred", 
-                $fredsPosition : position, 
-                $fredsColor : color  )
+        $fred : Golfer( name == "Fred" )
 
-        // Joe is in position 2  		          
-        $joe : Golfer( $joesName : name == "Joe", 
-                $joesPosition  : position == 2, 
-                position != $fredsPosition,
-                $joesColor : color != $fredsColor )
+        // Joe is in position 2
+        $joe : Golfer( name == "Joe",
+                position == 2,
+                position != $fred.position,
+                color != $fred.color )
 
- 		// Bob is wearing plaid pants        
-        $bob : Golfer( $bobsName : name == "Bob", 
-                $bobsPosition : position != $fredsPosition,
-                position != $joesPosition,                                                  
-                $bobsColor : color == "plaid",
-                color != $fredsColor,
-                color != $joesColor )
- 		  		
+ 		// Bob is wearing plaid pants
+        $bob : Golfer( name == "Bob",
+                position != $fred.position,
+                position != $joe.position,
+                color == "plaid",
+                color != $fred.color,
+                color != $joe.color )
+
         // Tom isn't in position 1 or 4
-        // and isn't wearing orange	
-        $tom : Golfer( $tomsName : name == "Tom", 
-                $tomsPosition : position != 1,
+        // and isn't wearing orange
+        $tom : Golfer( name == "Tom",
+                position != 1,
                 position != 4,
-                position != $fredsPosition,
-                position != $joesPosition, 
-                position != $bobsPosition,                                
-                $tomsColor : color != "orange",
-                color != "blue",
-                color != $fredsColor,
-                color != $joesColor,
-                color != $bobsColor )           
-                
+                position != $fred.position,
+                position != $joe.position,
+                position != $bob.position,
+                color != "orange",
+                //color != "blue",
+                color != $fred.color,
+                color != $joe.color,
+                color != $bob.color )
+
   		// The golfer to Fred's immediate right
   		// is wearing blue pants
-        $fn : Golfer( position == ( $fredsPosition + 1 ),
+        Golfer( position == ( $fred.position + 1 ),
                       color == "blue",
                       this in ( $joe, $bob, $tom ) )
 
 	then
-        System.out.println( "Fred " + $fredsPosition + " " + $fredsColor );
-        System.out.println( "Joe " + $joesPosition + " " + $joesColor );
-        System.out.println( "Bob " + $bobsPosition + " " + $bobsColor );
-        System.out.println( "Tom " + $tomsPosition + " " + $tomsColor );   
-end    
+        System.out.println( "Fred " + $fred.getPosition() + " " + $fred.getColor() );
+        System.out.println( "Joe " + $joe.getPosition() + " " + $joe.getColor() );
+        System.out.println( "Bob " + $bob.getPosition() + " " + $bob.getColor() );
+        System.out.println( "Tom " + $tom.getPosition() + " " + $tom.getColor() );
+end
