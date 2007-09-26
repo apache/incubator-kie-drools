@@ -87,6 +87,7 @@ public class ReportModeller {
 				str.append(cssLine);
 				str.append("\n");
 			}
+			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
