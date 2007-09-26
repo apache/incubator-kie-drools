@@ -13,7 +13,7 @@ import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 
 public class PackageBuilderThreadSafetyTest extends TestCase {
 
-    private static final int _NUMBER_OF_THREADS = 20;
+    private static final int _NUMBER_OF_THREADS = 100;
     private static final int _SLEEP_TIME_MS     = 100;
 
     protected void setUp() throws Exception {
@@ -23,23 +23,21 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
     public void testDummy() {
     }
 
-    public void FIXME_testThreadSafetyEclipse() {
-        PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
-        ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( JavaDialectConfiguration.ECLIPSE );
-        execute( packageBuilderConfig );        
+    public void testThreadSafetyEclipse() {
+        execute( JavaDialectConfiguration.ECLIPSE );        
     }
 
-    public void FIXME_testThreadSafetyJanino() {
-        PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
-        ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( JavaDialectConfiguration.JANINO );
-        execute( packageBuilderConfig );
+    public void testThreadSafetyJanino() {
+        execute( JavaDialectConfiguration.JANINO  );
     }
 
-    public void execute(final PackageBuilderConfiguration packageBuilderConfig) {
+    public void execute(int compiler) {
         final List errors = new ArrayList();
         final List exceptions = new ArrayList();
         Thread[] threads = new Thread[_NUMBER_OF_THREADS];
         for ( int i = 0; i < _NUMBER_OF_THREADS; i++ ) {
+            final PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
+            ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( compiler );        	
             final int ID = i;
             Thread testThread = new Thread() {
                 public void run() {
@@ -64,6 +62,7 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
                         sleep( _SLEEP_TIME_MS );
                         if ( builder.hasErrors() ) {
                             System.out.println( "ERROR in thread: " + ID );
+                            System.out.println( builder.getErrors().toString() );
                             errors.add( builder.getErrors() );
                         }
                     } catch ( Exception e ) {
