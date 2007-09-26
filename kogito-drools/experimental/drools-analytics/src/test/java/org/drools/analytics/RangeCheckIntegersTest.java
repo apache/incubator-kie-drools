@@ -19,12 +19,13 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
  */
 public class RangeCheckIntegersTest extends TestBase {
 
-	public void testSmallerAndGreaterThan() throws Exception {
+	public void testSmallerOrEqual() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Integers.drl"));
 
-		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Range check for integers, smaller and greater than"));
+		session
+				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+						"Range check for integers, if smaller than or equal is missing"));
 
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForInts.drl"));
@@ -32,7 +33,8 @@ public class RangeCheckIntegersTest extends TestBase {
 		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 		session.setGlobal("data", data);
 
-		StatelessSessionResult sessionResult = session.executeWithResults(testData);
+		StatelessSessionResult sessionResult = session
+				.executeWithResults(testData);
 
 		Iterator iter = sessionResult.iterateObjects();
 
@@ -42,33 +44,49 @@ public class RangeCheckIntegersTest extends TestBase {
 			if (o instanceof Gap) {
 				rulesThatHadErrors.add(((Gap) o).getRuleName());
 			}
-//			System.out.println(o);
+			// System.out.println(o);
 		}
 
-		assertTrue(rulesThatHadErrors.remove("Missing int range 1a, warning"));
-		assertTrue(rulesThatHadErrors.remove("Missing int range 1b, warning"));
-		assertTrue(rulesThatHadErrors.remove("Missing int range 2a, warning"));
-		assertTrue(rulesThatHadErrors.remove("Missing int range 2b, warning"));
-		assertTrue(rulesThatHadErrors.remove("Missing int range 3a, warning"));
-		assertTrue(rulesThatHadErrors.remove("Missing int range 3b, warning"));
-		assertTrue(rulesThatHadErrors.remove("Missing int range 4a, warning"));
-		assertTrue(rulesThatHadErrors.remove("Missing int range 4b, warning"));
-		assertTrue(rulesThatHadErrors
-				.remove("Missing not int range 7a, warning"));
-		assertTrue(rulesThatHadErrors
-				.remove("Missing not int range 7b, warning"));
-		assertTrue(rulesThatHadErrors
-				.remove("Missing not int range 8a, warning"));
-		assertTrue(rulesThatHadErrors
-				.remove("Missing not int range 8b, warning"));
-		assertTrue(rulesThatHadErrors
-				.remove("Missing not int range 9a, warning"));
-		assertTrue(rulesThatHadErrors
-				.remove("Missing not int range 9b, warning"));
-		assertTrue(rulesThatHadErrors
-				.remove("Missing not int range 10a, warning"));
-		assertTrue(rulesThatHadErrors
-				.remove("Missing not int range 10b, warning"));
+		assertTrue(rulesThatHadErrors.remove("Integer gap rule 4a"));
+		assertTrue(rulesThatHadErrors.remove("Integer gap rule 5a"));
+
+		if (!rulesThatHadErrors.isEmpty()) {
+			for (String string : rulesThatHadErrors) {
+				fail("Rule " + string + " caused an error.");
+			}
+		}
+	}
+
+	public void testGreaterOrEqual() throws Exception {
+		StatelessSession session = getStatelessSession(this.getClass()
+				.getResourceAsStream("rangeChecks/Integers.drl"));
+
+		session
+				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+						"Range check for integers, if greater than or equal is missing"));
+
+		Collection<? extends Object> testData = getTestData(this.getClass()
+				.getResourceAsStream("MissingRangesForInts.drl"));
+
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+		session.setGlobal("data", data);
+
+		StatelessSessionResult sessionResult = session
+				.executeWithResults(testData);
+
+		Iterator iter = sessionResult.iterateObjects();
+
+		Set<String> rulesThatHadErrors = new HashSet<String>();
+		while (iter.hasNext()) {
+			Object o = (Object) iter.next();
+			if (o instanceof Gap) {
+				rulesThatHadErrors.add(((Gap) o).getRuleName());
+			}
+			// System.out.println(o);
+		}
+
+		assertTrue(rulesThatHadErrors.remove("Integer gap rule 4b"));
+		assertTrue(rulesThatHadErrors.remove("Integer gap rule 5b"));
 
 		if (!rulesThatHadErrors.isEmpty()) {
 			for (String string : rulesThatHadErrors) {
@@ -90,7 +108,8 @@ public class RangeCheckIntegersTest extends TestBase {
 		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 		session.setGlobal("data", data);
 
-		StatelessSessionResult sessionResult = session.executeWithResults(testData);
+		StatelessSessionResult sessionResult = session
+				.executeWithResults(testData);
 
 		Iterator iter = sessionResult.iterateObjects();
 
@@ -103,13 +122,13 @@ public class RangeCheckIntegersTest extends TestBase {
 			// System.out.println(o);
 		}
 
-		assertTrue(rulesThatHadErrors.remove("Missing int range 5b, warning"));
-		assertTrue(rulesThatHadErrors
-				.remove("Missing not int range 11b, warning"));
+		assertTrue(rulesThatHadErrors.remove("Integer gap rule 1"));
+		assertTrue(rulesThatHadErrors.remove("Integer gap rule 7b"));
+		assertTrue(rulesThatHadErrors.remove("Integer gap rule 3"));
 
 		if (!rulesThatHadErrors.isEmpty()) {
 			for (String string : rulesThatHadErrors) {
-				fail("Rule " + string + " fired.");
+				fail("Rule " + string + " caused an error.");
 			}
 		}
 	}
@@ -127,7 +146,8 @@ public class RangeCheckIntegersTest extends TestBase {
 		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 		session.setGlobal("data", data);
 
-		StatelessSessionResult sessionResult = session.executeWithResults(testData);
+		StatelessSessionResult sessionResult = session
+				.executeWithResults(testData);
 
 		Iterator iter = sessionResult.iterateObjects();
 
@@ -139,13 +159,14 @@ public class RangeCheckIntegersTest extends TestBase {
 			}
 			// System.out.println(o);
 		}
-		assertTrue(rulesThatHadErrors.remove("Missing int range 6b, warning"));
-		assertTrue(rulesThatHadErrors
-				.remove("Missing not int range 12b, warning"));
+
+		assertTrue(rulesThatHadErrors.remove("Integer gap rule 1"));
+		assertTrue(rulesThatHadErrors.remove("Integer gap rule 6b"));
+		assertTrue(rulesThatHadErrors.remove("Integer gap rule 2"));
 
 		if (!rulesThatHadErrors.isEmpty()) {
 			for (String string : rulesThatHadErrors) {
-				fail("Rule " + string + " fired.");
+				fail("Rule " + string + " caused an error.");
 			}
 		}
 	}

@@ -140,7 +140,7 @@ class AnalyticsDataMaps implements AnalyticsData {
 				link);
 	}
 
-	public AnalyticsClass getClassByName(String name) {
+	public AnalyticsClass getClassByPackageAndName(String name) {
 		return classesByName.get(name);
 	}
 
@@ -270,7 +270,7 @@ class AnalyticsDataMaps implements AnalyticsData {
 
 		if (gapsByFieldId.containsKey(gap.getField().getId())) {
 			Set<Gap> set = gapsByFieldId.get(gap.getField().getId());
-			set.add(gap);
+			set.remove(gap);
 
 			if (set.isEmpty()) {
 				gapsByFieldId.remove(gap.getField().getId());

@@ -3,161 +3,171 @@ package org.drools.analytics.rangeChecks.dates;
 
 #list any import classes here.
 import org.drools.analytics.components.*;
-import org.drools.analytics.accumulateFunction.ValidatePattern;
-import org.drools.analytics.accumulateFunction.ValidatePatternResult;
 import org.drools.analytics.result.AnalysisResult;
 import org.drools.analytics.result.Gap;
 
-import java.util.ArrayList;
-import java.util.TreeSet;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.drools.analytics.dao.AnalyticsData;
 
 #declare any global variables here
 global AnalyticsData data;
 
-function String dateToString(Date date) {
-		String fmt = System.getProperty("drools.dateformat");
-		if (fmt == null) {
-			fmt = "dd-MM-yyyy";
-		}
+function boolean checkDates(Date d1, Date d2, boolean up) {
+		Calendar c1 = new GregorianCalendar();
+		c1.setTime(d1);
+		Calendar c2 = new GregorianCalendar();
+		c2.setTime(d2);		
 		
-		return new SimpleDateFormat(fmt, Locale.ENGLISH).format(date);
+		c2.roll( Calendar.DATE, up );
+		
+		return ( 0 == c1.compareTo( c2 ) );
 }
 
-
-#
-# If all ranges are not checked for a date field.
+# If all ranges are not checked for a field.
 # 
 # Type: Warning
-# Example: in "Rule 1" Foo( bar < "27-Oct-2007" ) and in "Rule 2" Foo( bar > "27-Oct-2007" )
-# 					then Foo( bar == "27-Oct-2007" ) is missing.
-rule "Range check for dates, smaller and greater than"
-	when
-		$f :Field( fieldType == Field.FieldType.DATE )
-		(
-				$r :LiteralRestriction( 
-					fieldId == $f.id, 
-					evaluator == ">" 
-				)
-			and
-				not LiteralRestriction( 
-					fieldId == $f.id, 
-					( evaluator == "==" || == "<=" ), 
-					patternIsNot == $r.patternIsNot, 
-					eval( dateValue.equals($r.getDateValue()) ) 
-				)
-		) or (
-				$r :LiteralRestriction( 
-					fieldId == $f.id, 
-					evaluator == "<" 
-				)
-			and
-				not LiteralRestriction( 
-					fieldId == $f.id, 
-					( evaluator == "==" || == ">=" ), 
-					patternIsNot == $r.patternIsNot, 
-					eval( dateValue.equals($r.getDateValue()) ) 
-				)
-		) or (
-				$r :LiteralRestriction( 
-					fieldId == $f.id, 
-					evaluator == "<=" 
-				)
-			and
-				not LiteralRestriction( 
-					fieldId == $f.id, 
-					evaluator == ">", 
-					patternIsNot == $r.patternIsNot, 
-					eval( dateValue.equals($r.getDateValue()) ) 
-				)
-		) or (
-				$r :LiteralRestriction( 
-					fieldId == $f.id, 
-					evaluator == ">=" 
-				)
-			and
-				not LiteralRestriction( 
-					fieldId == $f.id, 
-					evaluator == "<", 
-					patternIsNot == $r.patternIsNot, 
-					eval( dateValue.equals($r.getDateValue()) ) 
-				)
-		)
-	then
-		Gap gap = new Gap( $f, Gap.getReversedEvaluator($r.getEvaluator()), $r);
-		gap.setFiredRuleName( drools.getRule().getName() );
-		data.save( gap );
-		insert( gap );
-end
-
-# If all ranges are not checked for a field.
-# If equality and smaller than exist check that greater than exists too.
+# Example: in "Rule 1" Foo( bar > "27-Oct-2007" ) 
+#						and in Foo( <= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
 #
-# Type: Warning
-# Example: in "Rule 1" Foo(bar == "27-Oct-2007" ) and in "Rule 2" Foo( bar < "27-Oct-2007" )
-# 					then Foo( bar > "27-Oct-2007" ) is missing.
-rule "Range check for dates, equal and greater than"
+rule "Range check for dates, if smaller than or equal is missing"
 	when
-		# Case Foo( bar == "27-Oct-2007" ) Foo( bar >= "27-Oct-2007" || > "27-Oct-2007" ).
 		$f :Field( fieldType == Field.FieldType.DATE )
+		
+		# Foo( bar > "27-Oct-2007" )
 		$r :LiteralRestriction( 
 			fieldId == $f.id, 
-			evaluator == "==" 
+			evaluator == ">"
 		)
-		LiteralRestriction( 
-			fieldId == $f.id, 
-			( evaluator == ">" || == ">=" ), 
-			patternIsNot == $r.patternIsNot, 
-			eval( dateValue.equals($r.getDateValue())) 
-		)
-		# Check if Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
+		
+		# Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
 		not	LiteralRestriction( 
 			fieldId == $f.id, 
-			( evaluator == "<" || == "<=" ), 
+			( evaluator  == "==" || == "<=" ), 
 			patternIsNot == $r.patternIsNot, 
-			eval( dateValue.equals($r.getDateValue())) 
+			eval( dateValue.equals($r.getDateValue()) ) 
 		)
 	then
-		Gap gap = new Gap( $f, "<", $r );
+		Gap gap = new Gap( $f, "<=", $r );
+		
 		gap.setFiredRuleName( drools.getRule().getName() );
+		
 		data.save( gap );
 		insert( gap );
 end
 
 # If all ranges are not checked for a field.
-# If equality and smaller than exist check that greater than exists too.
-#
+# 
 # Type: Warning
-# Example: in "Rule 1" Foo(bar == "27-Oct-2007" ) and in "Rule 2" Foo( bar > "27-Oct-2007" )
-# 					then Foo( bar < "27-Oct-2007" ) is missing.
-rule "Range check for dates, equal and smaller than"
+# Example: in "Rule 1" Foo( bar < "27-Oct-2007" ) 
+#						and in Foo( >= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
+#
+rule "Range check for dates, if greater than or equal is missing"
 	when
-		# Case Foo( bar == "27-Oct-2007" ) Foo( bar <= "27-Oct-2007" || < "27-Oct-2007" ).
 		$f :Field( fieldType == Field.FieldType.DATE )
+		
+		# Foo( bar > "27-Oct-2007" )
 		$r :LiteralRestriction( 
 			fieldId == $f.id, 
-			evaluator == "==" 
+			evaluator == "<"
 		)
-		LiteralRestriction( 
+		
+		# Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
+		not	LiteralRestriction( 
 			fieldId == $f.id, 
-			( evaluator == "<" || == "<=" ), 
+			( evaluator  == "==" || == ">=" ), 
 			patternIsNot == $r.patternIsNot, 
-			eval( dateValue.equals($r.getDateValue())) 
+			eval( dateValue.equals($r.getDateValue()) ) 
 		)
+	then
+		Gap gap = new Gap( $f, ">=", $r );
+		
+		gap.setFiredRuleName( drools.getRule().getName() );
+		
+		data.save( gap );
+		insert( gap );
+end
+
+# If all ranges are not checked for a field.
+#
+# Type: Warning
+# Example: in "Rule 1" Foo( bar == "27-Oct-2007" || bar <= "27-Oct-2007" ) 
+# 					and no Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" || >= "28-Oct-2007" || == "28-Oct-2007" ) 
+#						then Foo( bar > "27-Oct-2007" ) is missing.
+#
+rule "Range check for dates, equal and greater than"
+	when
+		$f :Field( fieldType == Field.FieldType.DATE )
+
+		# Foo( bar == "27-Oct-2007" ) 
+		$r :LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == "==" || == "<=" )
+		)
+
 		# Check if Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" ) is missing.
 		not	LiteralRestriction( 
 			fieldId == $f.id, 
 			( evaluator == ">" || == ">=" ), 
 			patternIsNot == $r.patternIsNot, 
-			eval( dateValue.equals($r.getDateValue())) 
+			eval( dateValue.equals($r.getDateValue()) ) 
+		)
+		
+		# Check if Foo( bar == "28-Oct-2007" || >= "28-Oct-2007" ) is missing.
+		not	LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == "==" || == ">=" ), 
+			patternIsNot == $r.patternIsNot, 
+			eval( checkDates( dateValue, $r.getDateValue(), true ) ) 
 		)
 	then
-		Gap gap = new Gap( $f, ">", $r );
+		Gap gap =  new Gap( $f, ">", $r );
+		
 		gap.setFiredRuleName( drools.getRule().getName() );
+		
+		data.save( gap );
+		insert( gap );
+end
+
+# If all ranges are not checked for a field.
+#
+# Type: Warning
+# Example: in "Rule 1" Foo( bar == "27-Oct-2007" || bar >= "27-Oct-2007" ) 
+# 					and no Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" || <= "26-Oct-2007" || == "26-Oct-2007" ) 
+#						then Foo( bar < "27-Oct-2007" ) is missing.
+#
+rule "Range check for dates, equal and smaller than"
+	when
+		$f :Field( fieldType == Field.FieldType.DATE )
+
+		# Foo( bar == "27-Oct-2007" ) 
+		$r :LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == "==" || == ">=" )
+		)
+
+		# Check if Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
+		not	LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == "<" || == "<=" ), 
+			patternIsNot == $r.patternIsNot, 
+			eval( dateValue.equals($r.getDateValue()) ) 
+		)
+		
+		# Check if Foo( bar == "26-Oct-2007" || <= "26-Oct-2007" ) is missing.
+		not	LiteralRestriction( 
+			fieldId == $f.id, 
+			( evaluator == "==" || == "<=" ), 
+			patternIsNot == $r.patternIsNot, 
+			eval( checkDates( dateValue, $r.getDateValue(), false ) )
+		)
+	then
+		Gap gap =  new Gap( $f, "<", $r );
+		
+		gap.setFiredRuleName( drools.getRule().getName() );
+		
 		data.save( gap );
 		insert( gap );
 end

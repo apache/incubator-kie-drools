@@ -29,13 +29,19 @@ class AnalyticsTestStandalone {
 									.getResourceAsStream("MissingRangesForVariables.drl")));
 			PackageDescr descr5 = new DrlParser().parse(new InputStreamReader(
 					Analyzer.class.getResourceAsStream("Misc.drl")));
+			PackageDescr descr6 = new DrlParser().parse(new InputStreamReader(
+					Analyzer.class.getResourceAsStream("Misc2.drl")));
+			PackageDescr descr7 = new DrlParser().parse(new InputStreamReader(
+					Analyzer.class.getResourceAsStream("Misc3.drl")));
 
 			Analyzer a = new Analyzer();
-			a.addPackageDescr(descr);
+//			a.addPackageDescr(descr);
 			// a.addPackageDescr(descr2);
-			// a.addPackageDescr(descr3);
+//			 a.addPackageDescr(descr3);
 			// a.addPackageDescr(descr4);
 			a.addPackageDescr(descr5);
+			a.addPackageDescr(descr6);
+			a.addPackageDescr(descr7);
 			a.fireAnalysis();
 			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());

@@ -19,12 +19,13 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
  */
 public class RangeCheckDatesTest extends TestBase {
 
-	public void testSmallerAndGreaterThan() throws Exception {
+	public void testSmallerOrEqual() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Dates.drl"));
 
-		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Range check for dates, smaller and greater than"));
+		session
+				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+						"Range check for dates, if smaller than or equal is missing"));
 
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"));
@@ -46,34 +47,46 @@ public class RangeCheckDatesTest extends TestBase {
 			// System.out.println(o);
 		}
 
-		assertTrue(rulesThatHadErrors.remove("Date range 1a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 2a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 3a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 4a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 7a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 7b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 8a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 8b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 9a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 9b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 10a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 10b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 11a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 11b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 12a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 13a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 14a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 15a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 18a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 18b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 19a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 19b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 20a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 20b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 21a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 21b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 22a, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 22b, has gap"));
+		assertTrue(rulesThatHadErrors.remove("Date gap rule 4a"));
+		assertTrue(rulesThatHadErrors.remove("Date gap rule 5a"));
+
+		if (!rulesThatHadErrors.isEmpty()) {
+			for (String string : rulesThatHadErrors) {
+				fail("Rule " + string + " caused an error.");
+			}
+		}
+	}
+
+	public void testGreaterOrEqual() throws Exception {
+		StatelessSession session = getStatelessSession(this.getClass()
+				.getResourceAsStream("rangeChecks/Dates.drl"));
+
+		session
+				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+						"Range check for dates, if greater than or equal is missing"));
+
+		Collection<? extends Object> testData = getTestData(this.getClass()
+				.getResourceAsStream("MissingRangesForDates.drl"));
+
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+		session.setGlobal("data", data);
+
+		StatelessSessionResult sessionResult = session
+				.executeWithResults(testData);
+
+		Iterator iter = sessionResult.iterateObjects();
+
+		Set<String> rulesThatHadErrors = new HashSet<String>();
+		while (iter.hasNext()) {
+			Object o = (Object) iter.next();
+			if (o instanceof Gap) {
+				rulesThatHadErrors.add(((Gap) o).getRuleName());
+			}
+			// System.out.println(o);
+		}
+
+		assertTrue(rulesThatHadErrors.remove("Date gap rule 4b"));
+		assertTrue(rulesThatHadErrors.remove("Date gap rule 5b"));
 
 		if (!rulesThatHadErrors.isEmpty()) {
 			for (String string : rulesThatHadErrors) {
@@ -109,12 +122,13 @@ public class RangeCheckDatesTest extends TestBase {
 			// System.out.println(o);
 		}
 
-		assertTrue(rulesThatHadErrors.remove("Date range 5b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 16b, has gap"));
+		assertTrue(rulesThatHadErrors.remove("Date gap rule 1"));
+		assertTrue(rulesThatHadErrors.remove("Date gap rule 7b"));
+		assertTrue(rulesThatHadErrors.remove("Date gap rule 3"));
 
 		if (!rulesThatHadErrors.isEmpty()) {
 			for (String string : rulesThatHadErrors) {
-				fail("Rule " + string + " fired.");
+				fail("Rule " + string + " caused an error.");
 			}
 		}
 	}
@@ -146,12 +160,13 @@ public class RangeCheckDatesTest extends TestBase {
 			// System.out.println(o);
 		}
 
-		assertTrue(rulesThatHadErrors.remove("Date range 6b, has gap"));
-		assertTrue(rulesThatHadErrors.remove("Date range 17b, has gap"));
+		assertTrue(rulesThatHadErrors.remove("Date gap rule 1"));
+		assertTrue(rulesThatHadErrors.remove("Date gap rule 6b"));
+		assertTrue(rulesThatHadErrors.remove("Date gap rule 2"));
 
 		if (!rulesThatHadErrors.isEmpty()) {
 			for (String string : rulesThatHadErrors) {
-				fail("Rule " + string + " fired.");
+				fail("Rule " + string + " caused an error.");
 			}
 		}
 	}

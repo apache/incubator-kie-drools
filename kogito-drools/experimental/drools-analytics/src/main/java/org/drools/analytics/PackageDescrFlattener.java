@@ -355,7 +355,7 @@ public class PackageDescrFlattener {
 	private int flatten(PatternDescr descr) {
 		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
-		AnalyticsClass clazz = data.getClassByName(descr.getObjectType());
+		AnalyticsClass clazz = data.getClassByPackageAndName(descr.getObjectType());
 		if (clazz == null) {
 			clazz = new AnalyticsClass();
 			clazz.setName(descr.getObjectType());
