@@ -2,359 +2,121 @@ package com.sample
 
 import com.sample.DroolsTest.Message;
 
-#
-# These rules have gaps
-#
-rule "Missing int range 1a, warning"
+rule "Integer gap rule 1"
 	when
-		    Foo1warning( value > 42 )
+		IntegerPattern1( value == 10 )
 	then
-		System.out.println( "Test" );
+		# gap > 10 <.
 end
 
-rule "Missing int range 1b, warning"
+rule "Integer gap rule 2"
 	when
-		    Foo1warning( value < 42 )
+		IntegerPattern2( value >= 15 )
 	then
-		System.out.println( "Test" );
+		# gap < 15.
 end
 
-rule "Missing int range 2a, warning"
+rule "Integer gap rule 3"
 	when
-		    Foo2warning( value > 42 )
+		IntegerPattern3( value <= 15 )
 	then
-		System.out.println( "Test" );
+		# gap > 15.
 end
 
-rule "Missing int range 2b, warning"
+rule "Integer gap rule 4a"
 	when
-		    Foo2warning( value < 40 )
+		IntegerPattern4( value > 25 )
 	then
-		System.out.println( "Test" );
+		# gap == 25.
 end
 
-rule "Missing int range 3a, warning"
+rule "Integer gap rule 4b"
 	when
-		    Foo3warning( value >= 42 )
+		IntegerPattern4( value < 25 )
 	then
-		System.out.println( "Test" );
+		# gap == 25.
 end
 
-rule "Missing int range 3b, warning"
+rule "Integer gap rule 5a"
 	when
-		    Foo3warning( value < 40 )
+		IntegerPattern5( value > 100 )
 	then
-		System.out.println( "Test" );
+		# gap 100 > x > 50.
 end
 
-rule "Missing int range 4a, warning"
+rule "Integer gap rule 5b"
 	when
-		    Foo4warning( value > 42 )
+		IntegerPattern5( value < 50 )
 	then
-		System.out.println( "Test" );
+		# gap 100 > x > 50.
 end
 
-rule "Missing int range 4b, warning"
+rule "Integer gap rule 6a"
 	when
-		    Foo4warning( value <= 40 )
+		IntegerPattern6( value > 350 )
 	then
-		System.out.println( "Test" );
+		# gap < 350.
 end
 
-rule "Missing int range 5a, warning"
+rule "Integer gap rule 6b"
 	when
-		    Foo5warning( value > 40 )
+		IntegerPattern6( value == 350 )
 	then
-		System.out.println( "Test" );
+		# gap < 350.
 end
 
-rule "Missing int range 5b, warning"
+rule "Integer gap rule 7a"
 	when
-		    Foo5warning( value == 40 )
+		IntegerPattern7( value < 55 )
 	then
-		System.out.println( "Test" );
+		# gap > 55.
 end
 
-rule "Missing int range 6a, warning"
+rule "Integer gap rule 7b"
 	when
-		    Foo6warning( value < 40 )
+		IntegerPattern7( value == 55 )
 	then
-		System.out.println( "Test" );
+		# gap > 55.
 end
 
-rule "Missing int range 6b, warning"
+rule "Integer gap rule 8a"
 	when
-		    Foo6warning( value == 40 )
+		IntegerPattern8( value < 333 )
 	then
-		System.out.println( "Test" );
+		# No gap
 end
 
-#
-# These rules have gaps
-#
-rule "Missing not int range 7a, warning"
+rule "Integer gap rule 8b"
 	when
-		    not Foo7warning( value > 42 )
+		IntegerPattern8( value == 333 )
 	then
-		System.out.println( "Test" );
+		# No gap
 end
 
-rule "Missing not int range 7b, warning"
+rule "Integer gap rule 8c"
 	when
-		    not Foo7warning( value < 42 )
+		IntegerPattern8( value > 333 )
 	then
-		System.out.println( "Test" );
+		# No gap
 end
 
-rule "Missing not int range 8a, warning"
+rule "Integer gap rule 9a"
 	when
-		    not Foo8warning( value > 42 )
+		IntegerPattern9( value <= 122 )
 	then
-		System.out.println( "Test" );
+		# No gap
 end
 
-rule "Missing not int range 8b, warning"
+rule "Integer gap rule 9b"
 	when
-		    not Foo8warning( value < 40 )
+		IntegerPattern9( value == 123 )
 	then
-		System.out.println( "Test" );
+		# No gap
 end
 
-rule "Missing not int range 9a, warning"
+rule "Integer gap rule 9c"
 	when
-		    not Foo9warning( value >= 42 )
+		IntegerPattern9( value >= 124 )
 	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 9b, warning"
-	when
-		    not Foo9warning( value < 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 10a, warning"
-	when
-		    not Foo10warning( value > 42 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 10b, warning"
-	when
-		    not Foo10warning( value <= 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 11a, warning"
-	when
-		    not Foo11warning( value > 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 11b, warning"
-	when
-		    not Foo11warning( value == 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 12a, warning"
-	when
-		    not Foo12warning( value < 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 12b, warning"
-	when
-		    not Foo12warning( value == 40 )
-	then
-		System.out.println( "Test" );
-end
-
-#
-# These rules do not have gaps
-#
-rule "Missing int range 1a, ok"
-	when
-		    Foo1ok( value >= 42 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 1b, ok"
-	when
-		    Foo1ok( value < 42 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 2a, ok"
-	when
-		    Foo2ok( value > 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 2b, ok"
-	when
-		    Foo2ok( value <= 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 3a, ok"
-	when
-		    Foo3ok( value > 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 3b, ok"
-	when
-		    Foo3ok( value == 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 3c, ok"
-	when
-		    Foo3ok( value < 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 4a, ok"
-	when
-		    Foo4ok( value == 40 )
-	then
-		System.out.println( "Test" );
-end
-rule "Missing int range 4b, ok"
-	when
-		    Foo4ok( value == 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 5a, ok"
-	when
-		    Foo5ok( value > 41 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 5b, ok"
-	when
-		    Foo5ok( value == 41 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 5c, ok"
-	when
-		    Foo5ok( value == 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing int range 5d, ok"
-	when
-		    Foo5ok( value < 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 6a, ok"
-	when
-		    not Foo6ok( value >= 42 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 6b, ok"
-	when
-		    not Foo6ok( value < 42 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 7a, ok"
-	when
-		    not Foo7ok( value > 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 7b, ok"
-	when
-		    not Foo7ok( value <= 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 8a, ok"
-	when
-		    not Foo8ok( value > 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 8b, ok"
-	when
-		    not Foo8ok( value == 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 8c, ok"
-	when
-		    not Foo8ok( value < 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 9a, ok"
-	when
-		    not Foo4ok( value == 40 )
-	then
-		System.out.println( "Test" );
-end
-rule "Missing not int range 9b, ok"
-	when
-		    not Foo4ok( value == 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 10a, ok"
-	when
-		    not Foo10ok( value > 41 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 10b, ok"
-	when
-		    not Foo10ok( value == 41 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 10c, ok"
-	when
-		    not Foo10ok( value == 40 )
-	then
-		System.out.println( "Test" );
-end
-
-rule "Missing not int range 10d, ok"
-	when
-		    not Foo10ok( value < 40 )
-	then
-		System.out.println( "Test" );
+		# No gap
 end

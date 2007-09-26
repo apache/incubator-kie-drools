@@ -1,0 +1,36 @@
+package com.misc.missingRanges
+
+import com.sample.DroolsTest.Message;
+
+
+rule "Some rule 1"
+	when
+		    SuperPattern( temp > 1, bar <= 10.0, a == "first string", b == "second string" )
+	then
+		System.out.println( "Test" );
+end
+
+rule "Some rule 2"
+	when
+		    SuperPattern( temp == 1, a == "first string", b == "second string" )
+	then
+		System.out.println( "Test" );
+end
+
+rule "Some rule 3"
+	when
+		    sp: SuperPattern( temp < 1, bar == 10.0, a == "first string" )
+		    LesserPattern(  group contains sp )
+	then
+		System.out.println( "Test" );
+end
+
+rule "Some rule 4"
+	when
+		    SuperPattern( temp < 10, bar >= -1.0, a == "first string", b == "second string" )
+		    SuperPattern( temp < 10 a == "first string", b == "second string" )
+		    SuperPattern( temp < 10, a == "first string", b == "second string" )
+		    SuperPattern( temp < 10, a == "first string", b == "second string" )
+	then
+		System.out.println( "Test" );
+end

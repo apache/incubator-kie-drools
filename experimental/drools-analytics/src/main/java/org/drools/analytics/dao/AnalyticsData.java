@@ -51,7 +51,7 @@ public interface AnalyticsData {
 
 	public void save(MissingNumberPattern missingNumberPattern);
 
-	public AnalyticsClass getClassByName(String name);
+	public AnalyticsClass getClassByPackageAndName(String name);
 
 	public AnalyticsClass getClassById(int id);
 

@@ -10,10 +10,9 @@ import org.drools.analytics.dao.AnalyticsData;
 global AnalyticsData data;
 
 #
-# Removes useless gaps.
-# Type: None
 # Example: missing ( x >= 10 ) and ( x <= 10 ). This is the same as ( x == 10 )
-rule "Clean up gaps"
+#
+rule "Merge gaps"
 	when
 		$g1 :Gap(
 			evaluator == ">="
@@ -35,3 +34,56 @@ rule "Clean up gaps"
 		data.save( mnp );
 		insert( mnp );
 end
+/*
+#
+# Example: covered ( x > 10 ) and ( x < 100 ) ( x == 50 )
+# reports that ( x > 50 ) and ( x < 50 ) are missing.
+#
+rule "Remove useless gaps"
+	when
+		$r1 :LiteralRestriction( fieldType == Field.FieldType.INT )
+		
+		# gap ( x > 50 )
+		$g :Gap(
+			evaluator == ">",
+			restriction == $r1
+		)
+		
+		# covered ( x > 50 )
+		$r2 :LiteralRestriction( 
+			fieldId = $r1.fieldId,
+			patternIsNot == $r1.patternIsNot, 
+			( evaluator == ">" || == ">=" )
+			intValue < $r1.intValue()
+		)
+
+		not LiteralRestriction( 
+			fieldId = $r.fieldId,
+			patternIsNot == $r.patternIsNot, 
+			intValue < $r1.intValue(),
+			intValue < $r2.intValue()
+		)
+	then
+		#
+		#
+		#
+		#
+		#
+		#
+		#
+		#
+end
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
