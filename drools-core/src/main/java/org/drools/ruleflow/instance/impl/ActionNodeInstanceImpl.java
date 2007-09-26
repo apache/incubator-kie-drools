@@ -54,7 +54,9 @@ public class ActionNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
     		ParserContext parserContext = new ParserContext();
     		// imports
     		List imports = getProcessInstance().getRuleFlowProcess().getImports();
+    		Set importSet = new HashSet();
     		if (imports != null) {
+        		importSet.addAll(imports);
     			for (Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
     				String importClassName = (String) iterator.next();
     				if ( importClassName.endsWith( ".*" ) ) {
@@ -69,8 +71,6 @@ public class ActionNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
     		        }
     			}
     		}
-    		Set importSet = new HashSet();
-    		importSet.addAll(imports);
     		TypeResolver typeResolver = new ClassTypeResolver(importSet, Thread.currentThread().getContextClassLoader());
     		// compile expression
     		Serializable expression = compiler.compile(parserContext);
