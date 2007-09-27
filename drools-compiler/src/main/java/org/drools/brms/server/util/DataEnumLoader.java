@@ -31,10 +31,13 @@ public class DataEnumLoader {
         if (mvelSource == null || (mvelSource.trim().equals( "" ))) {
             return Collections.EMPTY_MAP;
         }
-        mvelSource = addCommasForNewLines(mvelSource);
+        if (mvelSource.startsWith("=")) {
+        	mvelSource = mvelSource.substring(1);
+        } else {
+        	mvelSource = "[ " + addCommasForNewLines(mvelSource) + " ]";
+        }
 		final Object mvelData;
 		try {
-		    mvelSource = "[ " + mvelSource + " ]";
 			mvelData = MVEL.eval(mvelSource, new HashMap());
 		} catch (RuntimeException e) {
 			addError("Unable to load enumeration data.");

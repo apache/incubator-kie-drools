@@ -6,7 +6,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.brms.client.modeldriven.brl.DSLSentence;
+import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.FieldConstraint;
 import org.drools.brms.client.modeldriven.brl.PortableObject;
+import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 
 /**
  * An suggestion completion processor. This should be usable in both GWT/Web and the IDE.
@@ -97,6 +100,11 @@ public class SuggestionCompletionEngine
      */
     public DSLSentence[]          conditionDSLSentences  = new DSLSentence[0];
     public DSLSentence[]          actionDSLSentences     = new DSLSentence[0];
+
+    /**
+     * This is used to calculate what fields an enum list may depend on. Optional.
+     */
+	private transient Map dataEnumLookupFields;
 
     //    /**
     //     * For bulk loading up the data (from a previous rule save)
@@ -223,5 +231,54 @@ public class SuggestionCompletionEngine
     public String[] getGlobalVariables() {
         return toStringArray( this.globalTypes.keySet() );
     }
+
+    /**
+     * This returns a list of enums options (values) that can be used
+     * for the given field of the given FactPattern.
+     *
+     * This also takes into account enums that depend on other fields.
+     *
+     */
+	public String[] getEnums(FactPattern pat, String field) {
+
+		Map dataEnumLookupFields = loadDataEnumLookupFields();
+		String typeField = (String) dataEnumLookupFields.get(pat.factType + "." + field );
+
+		if (pat.constraintList != null && pat.constraintList.constraints != null) {
+			FieldConstraint[] cons = pat.constraintList.constraints;
+			for (int i = 0; i < cons.length; i++) {
+				FieldConstraint con = cons[i];
+				if (con instanceof SingleFieldConstraint) {
+					SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+					if ( sfc.fieldName.equals(typeField)) {
+						String key = pat.factType + "." + field + "[" + typeField + "=" + sfc.value + "]";
+						return (String[]) this.dataEnumLists.get(key);
+					}
+				}
+			}
+		}
+
+
+		return (String[]) this.dataEnumLists.get(pat.factType + "." + field);
+	}
+
+	private Map loadDataEnumLookupFields() {
+		if (this.dataEnumLookupFields == null) {
+			this.dataEnumLookupFields = new HashMap();
+		}
+
+		Set keys = this.dataEnumLists.keySet();
+		for (Iterator iter = keys.iterator(); iter.hasNext();) {
+			String key = (String) iter.next();
+			if (key.indexOf('[') != -1) {
+				int ix = key.indexOf('[');
+				String factField = key.substring(0, ix);
+				String predicate = key.substring(ix + 1, key.indexOf(']'));
+				String typeField = predicate.substring(0, predicate.indexOf('='));
+				dataEnumLookupFields.put(factField, typeField);
+			}
+		}
+		return dataEnumLookupFields;
+	}
 
 }
