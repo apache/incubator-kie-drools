@@ -70,6 +70,20 @@ public class DataEnumLoaderTest extends TestCase {
 
     }
 
+    public void testLiteralHelperUtilityClass() {
+    	//this shows how you can load it up with a class (which should return a map of keys to List.
+    	DataEnumLoader loader = new DataEnumLoader("=(new org.drools.brms.modeldriven.SampleDataSource2()).loadData()");
+
+    	assertFalse(loader.hasErrors());
+
+        assertEquals(1, loader.getData().size());
+        String[] res = (String[]) loader.getData().get("whee");
+    	assertEquals(2, res.length);
+    	assertEquals("hey", res[0]);
+    	assertEquals("ho", res[1]);
+
+    }
+
 
     public void testNewLines() {
         String s = "yeah yeah, \nyeah \nyeah";
