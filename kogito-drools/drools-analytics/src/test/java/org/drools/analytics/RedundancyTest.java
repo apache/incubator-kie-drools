@@ -27,6 +27,10 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
  * 
  */
 public class RedundancyTest extends TestBase {
+	
+	public void testFake ( ) {
+		assertTrue(true);
+	}
 
 	public void fixmetestPartOfRulePossibilityRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
