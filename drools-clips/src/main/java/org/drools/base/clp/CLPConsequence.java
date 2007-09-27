@@ -4,7 +4,6 @@ import org.drools.WorkingMemory;
 import org.drools.clp.BlockExecutionEngine;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.ExecutionContextImpl;
-import org.drools.clp.ExecutionEngine;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Consequence;
