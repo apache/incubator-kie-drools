@@ -128,7 +128,7 @@
     <programlisting>$ svn checkout http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/ drools
 ...
 $ cd drools
-$ mvn -Psolver clean install
+$ mvn -Psolver -Dmaven.test.skip clean install
 ...</programlisting>
 
     <para>After that, you can run any example directly from the command line
