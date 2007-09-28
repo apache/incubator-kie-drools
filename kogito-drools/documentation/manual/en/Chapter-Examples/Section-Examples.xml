@@ -1090,8 +1090,8 @@ Tom 3 red
       <para>This simple example shows how you can express a problem
       declaratively, and let the engine solve the problem for you, by making
       use of combinations. This is an often useful technique, as it allows you
-      to express rules as a statement of the problem you are trying to solve.
-      </para>
+      to express rules as a statement of the problem you are trying to
+      solve.</para>
 
       <para>Of course, care must be taken. Using combinatorics like this can
       cause performance problems when there are large numbers of facts (eg in
@@ -1187,16 +1187,14 @@ session.fireAllRules();</programlisting>
       (salience of 10 - the default is zero), The purpose of this is simply to
       log the fact that a new ticket has arrived in the system:</para>
 
-      <programlisting>
-rule "New Ticket"
+      <programlisting>rule "New Ticket"
  salience 10
  when
   customer : Customer( )
   ticket : Ticket( customer == customer, status == "New" )
   then
  System.out.println( "New : " + ticket );
-end
-    </programlisting>
+end    </programlisting>
 
       <para>Note that we are "joining" the ticket fact with the customer fact.
       It's not really needed in this case, as we don't do anything (yet) with
@@ -1266,16 +1264,14 @@ end
       first thing to note is that as soon as a ticket arrives, we escalate if
       it is for a platinum customer:</para>
 
-      <programlisting>
-rule "Platinum Priority"
+      <programlisting>rule "Platinum Priority"
  when
   customer : Customer( subscription == "Platinum" )
   ticket : Ticket( customer == customer, status == "New" )
  then;
   ticket.setStatus( "Escalate" );
   update( ticket );
-end
-      </programlisting>
+end      </programlisting>
 
       <para>Here we are joining Ticket to customer again (customer ==
       customer), but we are also checking that the customer is "Platinum".
@@ -1288,8 +1284,7 @@ end
 
       <para>For silver and gold class, its a similar story to platinum:</para>
 
-      <programlisting>
-rule "Silver Priority"
+      <programlisting>rule "Silver Priority"
  duration 3000
  when
   customer : Customer( subscription == "Silver" )
@@ -1307,8 +1302,7 @@ rule "Gold Priority"
  then
   ticket.setStatus( "Escalate" );
   update( ticket );
-end
-      </programlisting>
+end   </programlisting>
 
       <para>In this case, note the use of "duration XXX" - XXX is the number
       of milliseconds to wait to check that this rule holds true. Should it do
@@ -1324,15 +1318,13 @@ end
 
       <para>The actual escalation of a ticket happens in a rule:</para>
 
-      <programlisting>
-rule "Escalate"
+      <programlisting>rule "Escalate"
  when
   customer : Customer( )
   ticket : Ticket( customer == customer, status == "Escalate" )
  then
   sendEscalationEmail( customer, ticket );
-end
-      </programlisting>
+end     </programlisting>
 
       <para>In this case, the action is to call a function which sends an
       email (the function is defined down the bottom of the drl file). This
@@ -1353,8 +1345,7 @@ end
       <para>Running the example (by launching the TroubleTicket.java class as
       an application) should yield the output:</para>
 
-      <programlisting>
-New : [Ticket [Customer D : Silver] : New]
+      <programlisting>New : [Ticket [Customer D : Silver] : New]
 New : [Ticket [Customer C : Silver] : New]
 New : [Ticket [Customer B : Platinum] : New]
 New : [Ticket [Customer A : Gold] : New]
@@ -1363,8 +1354,7 @@ Email : [Ticket [Customer B : Platinum] : Escalate]
 Email : [Ticket [Customer A : Gold] : Escalate]
 Done : [Ticket [Customer C : Silver] : Done]
 Email : [Ticket [Customer D : Silver] : Escalate]
-[[ awake ]]
-    </programlisting>
+[[ awake ]]    </programlisting>
 
       <figure>
         <title>Audit log</title>
@@ -1421,8 +1411,7 @@ session.update( ft3,
        <emphasis role="bold">Main class:</emphasis> org.drools.examples.PricingRuleDTExample
        <emphasis role="bold">Type:</emphasis> java application
        <emphasis role="bold">Rules file:</emphasis> ExamplePolicyPricing.xls
-       <emphasis role="bold">Objective:</emphasis> demonstrate spreadsheet based decision tables.
-    </programlisting>
+       <emphasis role="bold">Objective:</emphasis> demonstrate spreadsheet based decision tables.    </programlisting>
 
     <section>
       <title>Executing the example</title>
@@ -1596,8 +1585,7 @@ Customer mark now has a discount of 0
       enough value. This discount could also be removed should the customer
       decide not to purchase enough to fall within the threshold.</para>
 
-      <programlisting>
-rule "Purchase notification"
+      <programlisting>rule "Purchase notification"
     salience 10
 
  when
@@ -1622,8 +1610,7 @@ rule "Discount awarded notification"
      $d : Discount( customer == $c )
  then
   System.out.println( "Customer " + $c.name + " now has a discount of " + $d.amount );
-end
-      </programlisting>
+end      </programlisting>
 
       <para>The "Purchase notification" rule simply makes note of the purchase
       event for a given customer. The "Discount removed notification" rule
@@ -1638,8 +1625,7 @@ end
       <para>Calculating the discount is done with a single rule, using the
       higher order logic of "accumulate".</para>
 
-      <programlisting>
-rule "Apply 10% discount if total purcahses is over 100"
+      <programlisting>rule "Apply 10% discount if total purcahses is over 100"
  no-loop true
  dialect "java"
     when
@@ -1648,10 +1634,9 @@ rule "Apply 10% discount if total purcahses is over 100"
                                                             sum( $price ) )
     then
       $c.setDiscount( 10 );
-      insertLogical( new Discount($c, 10) );	
+      insertLogical( new Discount($c, 10) );
       System.out.println( "Customer " + $c.getName() + " now has a shopping total of " + $i );
-end
-      </programlisting>
+end      </programlisting>
 
       <para>An interesting part of this rule is the "accumulate": this is
       saying to accumulate a total (sum) of the $price of a product
@@ -3212,9 +3197,7 @@ session.dispose();
         modify ( game ) { guessCount = game.guessCount + 1 }
         i = br.readLine();        
     insert( new Guess( i ) );
-end  
-
-</programlisting>
+end</programlisting>
       </example>
 
       <para>The rest of this rule is fairly standard : The <emphasis
@@ -4045,9 +4028,34 @@ end
     Drools. This document will explain the rules that drive the simulation and
     discuss the Drools specific parts of the implementation.</para>
 
-    <para>So what are the basic rules that govern this game? Each time the
-    system evolves there are a very simple set of rules that govern what the
-    next evolution will look like.</para>
+    <para>We'll first introduce the grid view, shown below, to help
+    visualisation of the problem; this is where the life simuation takes
+    place. Initially the grid is empty, meaning that there are no live cells
+    in the system; ech cell can be considered "LIVE" or "DEAD", live cells
+    have a green ball in them. Pre-selected patterns of live cells can be
+    selected from the "Pattern" drop down or cells can be doubled-clicked to
+    toggle them between LIVE and DEAD. It's important to understand that each
+    cell is related to it's neighbour cells, which is a core part of the
+    game's rules and will be explained in a moment. Neighbors include not only
+    cells to the left, right, top and bottom but also cells that are connected
+    diagonally. Each cell has a total of 8 neighbors except the 4 corner cells
+    and all of the other cells along the 4 edges. Corner cells have 3
+    neighbors and other edge cells have 5 neighbors.</para>
+
+    <figure>
+      <title>Conways Example : Starting a new game</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="conway1.jpg" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>So what are the basic rules that govern this game? Each generation,
+    i.e. completion iteration and evalution of all cells, the system evolves
+    and cells may be born or killed, there are a very simple set of rules that
+    govern what the next generation will look like.</para>
 
     <itemizedlist>
       <listitem>
@@ -4069,43 +4077,23 @@ end
     <para>That is all there is to it. Any cell that doesn't meet any of those
     criteria is left as is for the next generation. With those simple rules in
     mind, go back and play with the system a little bit more and step through
-    some generations one at a time and notice these rules taking their
-    effect.</para>
+    some generations one at a time and notice these rules taking their effect.
+    </para>
 
-    <para>Neighbors include not only cells to the left, right, top and bottom
-    but also cells that are connected diagonally. Each cell has a total of 8
-    neighbors except the 4 corner cells and all of the other cells along the 4
-    edges. Corner cells have 3 neighbors and other edge cells have 5
-    neighbors.</para>
-
-    <para>The below grid represents the area where the life simulation takes
-    place. Initially the grid is empty, meaning that there are no live cells
-    in the system. Use the mouse to click on cells to bring them to life. Live
-    cells are represented with green balls. Add several clusters of live cells
-    to the grid like this.</para>
-
-    <figure>
-      <title>Conways Example : Starting a new game</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="conway1.jpg" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>Don't worry about matching the exact patterns represented in the
-    screen shot. Just get some groups of cells added to the grid. Once you
-    have groups of live cells in the grid click the "Next Generation" button
-    and notice what happens. Some of the live cells are killed (the green ball
-    disappears) and some dead cells come to life (a green ball appears). Cycle
-    through several generations and see if you notice any patterns. If you
-    click on the "Start" button, the system will evolve itself so you don't
-    need to click the "Next Generation" button over and over. Play with the
-    system a little and then come back here for more details. After playing
-    with some free form patterns that you create interactively, notice that
-    there are several predefined patterns in the system that you may activate
-    by selecting them in the drop down list labelled "Pattern:".</para>
+    <para>The screnshot below shows an example generation, with a number of
+    live cells. Don't worry about matching the exact patterns represented in
+    the screen shot. Just get some groups of cells added to the grid. Once you
+    have groups of live cells in the grid, or select a pre-designed pattern,
+    click the "Next Generation" button and notice what happens. Some of the
+    live cells are killed (the green ball disappears) and some dead cells come
+    to life (a green ball appears). Cycle through several generations and see
+    if you notice any patterns. If you click on the "Start" button, the system
+    will evolve itself so you don't need to click the "Next Generation" button
+    over and over. Play with the system a little and then come back here for
+    more details. After playing with some free form patterns that you create
+    interactively, notice that there are several predefined patterns in the
+    system that you may activate by selecting them in the drop down list
+    labelled "Pattern:".</para>
 
     <figure>
       <title>Conways Example : A running game</title>
@@ -4117,9 +4105,12 @@ end
       </mediaobject>
     </figure>
 
-    <para>The example has two ways to execute, one way uses AgendaGroups to
+    <para>Now lets delve into the code, as this is an advanced example we'll
+    assume that by now you know your way around the Drools framework and able
+    to connect many of the dots, so we'll just focus at a hgh level
+    overview.The example has two ways to execute, one way uses AgendaGroups to
     manage execution flow the other uses RuleFlowGroups to manage execution
-    flow - so it's a great way to see the differences. - thats
+    flow - so it's a great way to see the differences. - that's
     ConwayAgendaGroupRun and ConwayRuleFlowGroupRun respectively. For this
     example I'll cover the ruleflow version, as its what most people will
     use.</para>
