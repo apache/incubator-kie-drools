@@ -43,6 +43,9 @@ import org.drools.rule.Package;
  *  <code>file</code>: a space seperated listing of files that make up the
  *  packages of the rulebase. Each package can only be in one file. You can't have
  *  packages spread across files. eg: file=/your/dir/file1.pkg file=/your/dir/file2.pkg
+ *  If the file has a .pkg extension, then it will be loaded as a binary Package (eg from the BRMS). If its a
+ *  DRL file (ie a file with a .drl extension with rule source in it), then it will attempt to compile it (of course, you will need the drools-compiler and its dependencies
+ *  available on your classpath).
  *
  *  <code>dir</code>: a single file system directory to monitor for packages.
  *  As with files, each package must be in its own file.
