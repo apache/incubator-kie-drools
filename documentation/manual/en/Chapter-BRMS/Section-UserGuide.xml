@@ -52,13 +52,15 @@
       </listitem>
     </itemizedlist>
 
-    <section><title>Supported browser platforms</title>
-             <para>
-	       The supported server side platforms are mentioned in the installation guide. 
-	       For browsers - the major ones are supported, this includes Firefox (1.5 and up), IE6 and up, Opera, Safari etc. 
-	       The preferred browser for most platforms is firefox, it is widely available and free, if you have any choice at all, Firefox is the preferred platform, followed by safari on mac.
-             </para>
+    <section>
+      <title>Supported browser platforms</title>
 
+      <para>The supported server side platforms are mentioned in the
+      installation guide. For browsers - the major ones are supported, this
+      includes Firefox (1.5 and up), IE6 and up, Opera, Safari etc. The
+      preferred browser for most platforms is firefox, it is widely available
+      and free, if you have any choice at all, Firefox is the preferred
+      platform, followed by safari on mac.</para>
     </section>
 
     <para>You can also consult the wiki:
@@ -139,9 +141,9 @@
         </listitem>
 
         <listitem>
-          <para>You will also have to choose one category. Categories provide a
-          way of viewing rules that is separate to packages (and you can make
-          rules appear in multiple packages) - think of it like
+          <para>You will also have to choose one category. Categories provide
+          a way of viewing rules that is separate to packages (and you can
+          make rules appear in multiple packages) - think of it like
           tagging.</para>
         </listitem>
 
@@ -241,10 +243,10 @@
         </mediaobject>
       </figure>
 
-      <para>Categories allow rules (assets) to be labeled (or tagged) with
-      any number of categories that you define. This means that you can then
-      view a list of rules that match a specific category. Rules can belong to
-      any number of categories. In the above diagram, you can see this can in
+      <para>Categories allow rules (assets) to be labeled (or tagged) with any
+      number of categories that you define. This means that you can then view
+      a list of rules that match a specific category. Rules can belong to any
+      number of categories. In the above diagram, you can see this can in
       effect create a folder/explorer like view of assets. The names can be
       anything you want, and are defined by the BRMS administrator (you can
       also remove/add new categories - you can only remove them if they are
@@ -509,24 +511,31 @@
         "priority". This would probably be the most common option to
         use.</para>
 
-	<section><title>User driven drop down lists</title>
+        <section>
+          <title>User driven drop down lists</title>
 
-      <figure>
-        <title>Data enumeration showing as a drop down list</title>
+          <figure>
+            <title>Data enumeration showing as a drop down list</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="EnumDropDown.png" format="PNG"
-                       scalefit="1" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-	<para>
-	  Note that is it possible to limit field values to items in a pre configured list. This list is configured as part of the package (using a data enumeration to provide values for the drop down list). These values can be a fixed list, or (for example) loaded from a database. This is useful for codes, and other fields where there are set values. It is also possible to have what is displayed on screen, in a drop down, be different to the value (or code) used in a rule. See the section on data enumerations for how these are configured.
-	</para>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="EnumDropDown.png"
+                           format="PNG" scalefit="1" />
+              </imageobject>
+            </mediaobject>
+          </figure>
 
-	</section>
-	
+          <para>Note that is it possible to limit field values to items in a
+          pre configured list. This list is configured as part of the package
+          (using a data enumeration to provide values for the drop down list).
+          These values can be a fixed list, or (for example) loaded from a
+          database. This is useful for codes, and other fields where there are
+          set values. It is also possible to have what is displayed on screen,
+          in a drop down, be different to the value (or code) used in a rule.
+          See the section on data enumerations for how these are
+          configured.</para>
+        </section>
+
         <para>Augmenting with DSL sentences: If the package the rule is part
         of has a dsl configuration, when when you add conditions or actions,
         then it will provide a list of "DSL Sentences" which you can choose
@@ -665,8 +674,8 @@
         <para>Rule flows: Rule flows allow you to visually describe the steps
         taken - so not all rules are evaluated at once, but there is a flow of
         logic. Rule flows are not covered in this chapter on the BRMS, but you
-        can use the IDE to graphically draw ruleflows, and upload the .rfm file
-        to the BRMS.</para>
+        can use the IDE to graphically draw ruleflows, and upload the .rfm
+        file to the BRMS.</para>
 
         <para>Similar to spreadsheets, you upload/download ruleflow files (the
         eclipse IDE has a graphical editor for them). The details of Rule
@@ -722,13 +731,18 @@
       <section>
         <title>Data enumerations (drop down list configurations)</title>
 
-        <para>Data enumerations are an optional asset type that technical folk can configure to provide drop down lists for the guided editor. These are stored and edited just like any other asset, and apply to the package that they belong to.</para>
+        <para>Data enumerations are an optional asset type that technical folk
+        can configure to provide drop down lists for the guided editor. These
+        are stored and edited just like any other asset, and apply to the
+        package that they belong to.</para>
 
-	<para>
-	  The contents of an enum config are a mapping of Fact.field to a list of values to be used in a drop down. That list can either be literal, or use a utility class (which you put on the classpath) to load a list of strings. The strings are either a value to be shown on a drop down, or a mapping from the code value (what ends up used in the rule) and a display value (see the example below, using the '=').
-	</para>
-
-	
+        <para>The contents of an enum config are a mapping of Fact.field to a
+        list of values to be used in a drop down. That list can either be
+        literal, or use a utility class (which you put on the classpath) to
+        load a list of strings. The strings are either a value to be shown on
+        a drop down, or a mapping from the code value (what ends up used in
+        the rule) and a display value (see the example below, using the
+        '=').</para>
 
         <figure>
           <title>Data enumeration</title>
@@ -742,26 +756,90 @@
         </figure>
       </section>
 
-      <para>
-	In the above diagram - the "MM" indicates a value that will be used in the rule, yet "Mini Mal" will be displayed in the GUI. 
-      </para>
+      <para>In the above diagram - the "MM" indicates a value that will be
+      used in the rule, yet "Mini Mal" will be displayed in the GUI.</para>
 
-      <para>
-	Getting data lists from external data sources: It is possible to have the BRMS call a piece of code which will load a list of Strings. To do this, you will need a bit of code that returns a java.util.List (of String's) to be on the classpath of the BRMS. Instead of specifying a list of values in the BRMS itself - the code can return the list of Strings (you can use the "=" inside the strings if you want to use a different display value to the rule value, as normal). 
-For example, in the 'Person.age' line above, you could change it to:
-<programlisting>
+      <para>Getting data lists from external data sources: It is possible to
+      have the BRMS call a piece of code which will load a list of Strings. To
+      do this, you will need a bit of code that returns a java.util.List (of
+      String's) to be on the classpath of the BRMS. Instead of specifying a
+      list of values in the BRMS itself - the code can return the list of
+      Strings (you can use the "=" inside the strings if you want to use a
+      different display value to the rule value, as normal). For example, in
+      the 'Person.age' line above, you could change it to: <programlisting>
   'Person.age' : (new com.yourco.DataHelper()).getListOfAges()
-</programlisting>
-This assumes you have a class called "DataHelper" which has a method "getListOfAges()" which returns a List of strings (and is on the classpath). You can of course mix these "dynamic" enumerations with fixed lists. You could for example load from a database using JDBC.
-The data enumerations are loaded the first time you use the guided editor in a session. If you have any guided editor sessions open - you will need to close and then open the rule to see the change. 
-To check the enumeration is loaded - if you go to the Package configuration screen, you can "save and validate" the package - this will check it and provide any error feedback.
-      </para>
+</programlisting> This assumes you have a class called "DataHelper" which has
+      a method "getListOfAges()" which returns a List of strings (and is on
+      the classpath). You can of course mix these "dynamic" enumerations with
+      fixed lists. You could for example load from a database using JDBC. The
+      data enumerations are loaded the first time you use the guided editor in
+      a session. If you have any guided editor sessions open - you will need
+      to close and then open the rule to see the change. To check the
+      enumeration is loaded - if you go to the Package configuration screen,
+      you can "save and validate" the package - this will check it and provide
+      any error feedback.</para>
 
+      <section>
+        <title>Advanced enumaration concepts</title>
+
+        <para>There are a few other advanced things you can do with data
+        enumerations.</para>
+
+        <para>Drop down lists that depend on field values: Lets imagine a
+        simple fact model, we have a class called Vehicle, which has 2 fields:
+        "engineType" and "fuelType". We want to have a choice for the
+        "engineType" of "Petrol" or "Diesel". Now, obviously the choice type
+        for fuel must be dependent on the engine type (so for Petrol we have
+        ULP and PULP, and for Diesel we have BIO and NORMAL). We can express
+        this dependency in an enumeration as:</para>
+
+        <programlisting>
+ 'Vehicle.engineType' : ['Petrol', 'Diesel']
+ 'Vehicle.fuelType[engineType=Petrol]' : ['ULP', 'PULP' ]
+ 'Vehicle.fuelType[engineType=Diesel]' : ['BIO', 'NORMAL' ]	  
+</programlisting>
+
+        <para>This shows how it is possible to make the choices dependent on
+        other field values. Note that once you pick the engineType, the choice
+        list for the fuelType will be determined.</para>
+
+        <para>Loading enums programmatically: In some cases, people may want
+        to load their enumeration data entirely from external data source
+        (such as a relational database). To do this, you can implement a class
+        that returns a Map. The key of the map is a string (which is the
+        Fact.field name as shown above), and the value is a java.util.List of
+        Strings.</para>
+
+        <programlisting>
+public class SampleDataSource2 {
+
+  public Map&lt;String&gt;, List&lt;String&gt;&gt; loadData() {
+    Map data = new HashMap();
+
+    List d = new ArrayList();
+    d.add("value1");
+    d.add("value2");
+    data.put("Fact.field", d);
+
+    return data;
+ }
+
+}
+</programlisting>
+
+        <para>And in the enumeration in the brms, you put:</para>
+
+        <programlisting>=(new SampleDataSource2()).loadData()
+</programlisting>
+
+        <para>The "=" tells it to load the data by executing your code.</para>
+      </section>
     </section>
 
-    <section><title>Templates of assets/rules</title>
+    <section>
+      <title>Templates of assets/rules</title>
 
-          <para>Tip: As you may have many similar rules, you can create rule
+      <para>Tip: As you may have many similar rules, you can create rule
       templates, which are simply rules which are kept in an inactive package
       - you can then categories templates accordingly, and copy them as needed
       (choosing a live package as the target package).</para>
@@ -862,7 +940,8 @@ To check the enumeration is loaded - if you go to the Package configuration scre
 
           <listitem>
             <para>Technical assets: this is a list of items that would be
-            considered technical (eg DRL rules, data enumerations and rule flows).</para>
+            considered technical (eg DRL rules, data enumerations and rule
+            flows).</para>
           </listitem>
 
           <listitem>
@@ -929,7 +1008,11 @@ To check the enumeration is loaded - if you go to the Package configuration scre
       the "drl" that this package results in. WARNING: in cases of large
       numbers of rules, all these operations can take some time.</para>
 
-      <para>It is optional at this stage to enter the name of a "selector" - see the admin section for details on how to configure custom selectors for your system (if you need them - selecters allow you to filter down what you build into a package - if you don't know what they are for, you probably don't need to use them).</para>
+      <para>It is optional at this stage to enter the name of a "selector" -
+      see the admin section for details on how to configure custom selectors
+      for your system (if you need them - selecters allow you to filter down
+      what you build into a package - if you don't know what they are for, you
+      probably don't need to use them).</para>
 
       <section>
         <title>Importing drl packages</title>
@@ -1003,9 +1086,9 @@ To check the enumeration is loaded - if you go to the Package configuration scre
       </figure>
 
       <para>The above shows deployment snapshots view. On the left there is a
-      list of packages. Clicking on a specific package will show you a list
-      of snapshots for that package (if any). From there you can copy, remove
-      or view an asset snapshot. Each snapshot is available for download or
+      list of packages. Clicking on a specific package will show you a list of
+      snapshots for that package (if any). From there you can copy, remove or
+      view an asset snapshot. Each snapshot is available for download or
       access via a URL for deployment.</para>
     </section>
 
@@ -1097,14 +1180,18 @@ To check the enumeration is loaded - if you go to the Package configuration scre
       <para>The rule agent is a component which is embedded in the core
       runtime of the rules engine. To use this, you don't need any extra
       components. In fact, if you are using the BRMS, your application should
-      only need to include the drools-core dependencies in its classpath (drools and mvel jars only), and no other
-      rules specific dependencies.</para>
-      <para>
-	Note that there is also a drools-ant ant task, so you can build rules as part of an ant script (for example in cases where the rules are edited in the IDE) without using the BRMS at all - the drools-ant task will generate .pkg files the same as the BRMS.
-      </para>
+      only need to include the drools-core dependencies in its classpath
+      (drools and mvel jars only), and no other rules specific
+      dependencies.</para>
 
-      <para>Once you have "built" your rules in a package in the BRMS (or from the ant task), you are
-      ready to use the agent in your target application.</para>
+      <para>Note that there is also a drools-ant ant task, so you can build
+      rules as part of an ant script (for example in cases where the rules are
+      edited in the IDE) without using the BRMS at all - the drools-ant task
+      will generate .pkg files the same as the BRMS.</para>
+
+      <para>Once you have "built" your rules in a package in the BRMS (or from
+      the ant task), you are ready to use the agent in your target
+      application.</para>
 
       <para>To use the rule agent, you will use a call in your applications
       code like:</para>
@@ -1117,7 +1204,12 @@ rb.newStatefulSession....
 
       <para>IMPORTANT: You should only have one instance of the RuleAgent per
       rulebase you are using. This means you should (for example) keep the
-      agent in a singleton, JNDI (or similar). In practice most people are using frameworks like Seam or Spring - in which case they will take care of managing this for you (in fact in Seam - it is already integrated - you can inject rulebases into Seam components). Note that the RuleBase can be used multiple times by multiple threads if needed (no need to have multiple copies of it).</para>
+      agent in a singleton, JNDI (or similar). In practice most people are
+      using frameworks like Seam or Spring - in which case they will take care
+      of managing this for you (in fact in Seam - it is already integrated -
+      you can inject rulebases into Seam components). Note that the RuleBase
+      can be used multiple times by multiple threads if needed (no need to
+      have multiple copies of it).</para>
 
       <para>This assumes that there is a MyRules.properties in the root of
       your classpath. You can also pass in a Properties object with the
@@ -1169,11 +1261,16 @@ name=MyConfig</programlisting>
           binary package as exported by the BRMS. You can have one or many.
           The name of the file is not important. Each package must be in its
           own file.</para>
-	  <para>
-	    NOTE: it is also possible to specify .drl files - and it will compile it into the package. However, note that for this to work, you will need the drools-compiler dependencies in your applications classpath (as opposed to just the runtime dependencies).
-	  </para>
 
-	  <para>Please note that if the path has a space in it, you will need to put double quotes around it (as the space is used to separate different items, and it will not work otherwise). Generally spaces in a path name are best to avoid.</para>
+          <para>NOTE: it is also possible to specify .drl files - and it will
+          compile it into the package. However, note that for this to work,
+          you will need the drools-compiler dependencies in your applications
+          classpath (as opposed to just the runtime dependencies).</para>
+
+          <para>Please note that if the path has a space in it, you will need
+          to put double quotes around it (as the space is used to separate
+          different items, and it will not work otherwise). Generally spaces
+          in a path name are best to avoid.</para>
         </listitem>
 
         <listitem>
@@ -1184,9 +1281,10 @@ name=MyConfig</programlisting>
           files in there (each one is a package) and add them to the rulebase.
           Each package must be in its own file.</para>
 
-	  <para>Please note that if the path has a space in it, you will need to put double quotes around it (as the space is used to separate different items, and it will not work otherwise). Generally spaces in a path name are best to avoid.</para>
-
-
+          <para>Please note that if the path has a space in it, you will need
+          to put double quotes around it (as the space is used to separate
+          different items, and it will not work otherwise). Generally spaces
+          in a path name are best to avoid.</para>
         </listitem>
 
         <listitem>
