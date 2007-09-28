@@ -4090,10 +4090,7 @@ end
     if you notice any patterns. If you click on the "Start" button, the system
     will evolve itself so you don't need to click the "Next Generation" button
     over and over. Play with the system a little and then come back here for
-    more details. After playing with some free form patterns that you create
-    interactively, notice that there are several predefined patterns in the
-    system that you may activate by selecting them in the drop down list
-    labelled "Pattern:".</para>
+    more details of how the application works.</para>
 
     <figure>
       <title>Conways Example : A running game</title>
