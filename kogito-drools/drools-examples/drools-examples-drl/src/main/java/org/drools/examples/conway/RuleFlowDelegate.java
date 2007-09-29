@@ -13,7 +13,6 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
     
     public RuleFlowDelegate() {
         final Reader drl = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/conway-ruleflow.drl" ) );
-        final Reader calculateRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/calculate.rfm" ) );
         final Reader generationRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/generation.rfm" ) );
         final Reader killAllRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/killAll.rfm" ) );
         final Reader registerNeighborRf = new InputStreamReader( CellGridImpl.class.getResourceAsStream( "/org/drools/examples/conway/registerNeighbor.rfm" ) );
@@ -21,7 +20,6 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
         try {
             PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( drl );
-            builder.addRuleFlow( calculateRf );
             builder.addRuleFlow( generationRf );
             builder.addRuleFlow( killAllRf );
             builder.addRuleFlow( registerNeighborRf );
@@ -48,7 +46,8 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
      */
     public void init() {
         this.session.startProcess( "register neighbor" );
-        this.session.fireAllRules();        
+        this.session.fireAllRules();
+        session.clearRuleFlowGroup( "calculate" );
     }
     
     /* (non-Javadoc)
@@ -59,9 +58,10 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
      */
     public boolean nextGeneration() {
         // System.out.println( "next generation" );
+        
         session.startProcess( "generation" );
         session.fireAllRules();
-        return session.getAgenda().getRuleFlowGroup( "evaluate" ).size() != 0;
+        return session.getAgenda().getRuleFlowGroup( "calculate" ).size() != 0;
     }
 
     /* (non-Javadoc)
@@ -75,11 +75,4 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
         this.session.fireAllRules();
     }
     
-    /* (non-Javadoc)
-     * @see org.drools.examples.conway.ConwayRuleDelegate#setPattern()
-     */
-    public void setPattern() {
-        session.startProcess( "calculate" );
-        session.fireAllRules();        
-    }
 }

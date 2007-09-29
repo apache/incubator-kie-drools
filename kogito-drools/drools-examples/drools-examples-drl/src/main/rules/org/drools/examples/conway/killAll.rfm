@@ -3,9 +3,9 @@
     <entry>
       <long>4</long>
       <org.drools.ruleflow.core.impl.RuleSetNodeImpl id="3">
-        <ruleFlowGroup>reset calculate</ruleFlowGroup>
+        <ruleFlowGroup>calculate</ruleFlowGroup>
         <id>4</id>
-        <name>reset calculate</name>
+        <name> calculate before</name>
         <incomingConnections id="4">
           <org.drools.ruleflow.core.impl.ConnectionImpl id="5">
             <type>1</type>
@@ -38,7 +38,7 @@
                   <to class="org.drools.ruleflow.core.impl.RuleSetNodeImpl" id="15">
                     <ruleFlowGroup>calculate</ruleFlowGroup>
                     <id>7</id>
-                    <name>calculate</name>
+                    <name>calculate after</name>
                     <incomingConnections id="16">
                       <org.drools.ruleflow.core.impl.ConnectionImpl reference="14"/>
                     </incomingConnections>
@@ -65,12 +65,12 @@
       </org.drools.ruleflow.core.impl.RuleSetNodeImpl>
     </entry>
     <entry>
-      <long>6</long>
-      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="11"/>
-    </entry>
-    <entry>
       <long>11</long>
       <org.drools.ruleflow.core.impl.EndNodeImpl reference="19"/>
+    </entry>
+    <entry>
+      <long>6</long>
+      <org.drools.ruleflow.core.impl.RuleSetNodeImpl reference="11"/>
     </entry>
     <entry>
       <long>1</long>

@@ -54,9 +54,9 @@ public class CellGridCanvas extends Canvas {
 
             public void mouseDragged(final MouseEvent e) {
                 final Cell cell = getCellAtPoint( e.getX(),
-                                            e.getY() );
+                                                  e.getY() );
                 if ( cell != null ) {
-                    cell.setCellState( CellState.LIVE );
+                    cellGrid.updateCell( cell, CellState.LIVE  );
                     repaint();
                 }
             }
@@ -67,11 +67,12 @@ public class CellGridCanvas extends Canvas {
                               final int y) {
         final Cell cell = getCellAtPoint( x,
                                     y );
+        
         if ( cell != null ) {
             if ( cell.getCellState() == CellState.LIVE ) {
-                cell.setCellState( CellState.DEAD );
+                this.cellGrid.updateCell( cell, CellState.DEAD );
             } else {
-                cell.setCellState( CellState.LIVE );
+                this.cellGrid.updateCell( cell, CellState.LIVE );
             }
             repaint();
         }

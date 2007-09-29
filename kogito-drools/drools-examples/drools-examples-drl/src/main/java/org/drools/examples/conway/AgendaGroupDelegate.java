@@ -41,6 +41,7 @@ public class AgendaGroupDelegate implements ConwayRuleDelegate {
     public void init() {
         this.session.setFocus( "register neighbor" );
         this.session.fireAllRules();     
+        session.clearAgendaGroup( "calculate" );
     }
     
     /* (non-Javadoc)
@@ -51,14 +52,14 @@ public class AgendaGroupDelegate implements ConwayRuleDelegate {
      */
     public boolean nextGeneration() {
         // System.out.println( "next generation" );
-        session.setFocus( "calculate" );
         session.setFocus( "kill" );
         session.setFocus( "birth" );
         session.setFocus( "reset calculate" );
         session.setFocus( "rest" );
         session.setFocus( "evaluate" );
+        session.setFocus( "calculate" );        
         session.fireAllRules();
-        return session.getAgenda().getAgendaGroup( "evaluate" ).size() != 0;
+        return session.getAgenda().getAgendaGroup( "calculate" ).size() != 0;
     }
 
     /* (non-Javadoc)
@@ -70,15 +71,8 @@ public class AgendaGroupDelegate implements ConwayRuleDelegate {
     public void killAll() {
         this.session.setFocus( "calculate" );
         this.session.setFocus( "kill all" );
-        this.session.setFocus( "reset calculate" );
+        this.session.setFocus( "calculate" );
         this.session.fireAllRules();
     }
     
-    /* (non-Javadoc)
-     * @see org.drools.examples.conway.ConwayRuleDelegate#setPattern()
-     */
-    public void setPattern() {
-        session.setFocus( "calculate" );
-        session.fireAllRules();     
-    }
 }
