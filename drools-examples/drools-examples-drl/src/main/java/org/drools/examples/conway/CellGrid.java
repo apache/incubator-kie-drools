@@ -38,6 +38,8 @@ public interface CellGrid {
 	 * @see org.drools.examples.conway.CellGrid#dispose()
 	 */
 	public abstract void dispose();
+    
+    public void updateCell(Cell cell, CellState state);    
 
 	public abstract String toString();
 

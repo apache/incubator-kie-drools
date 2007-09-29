@@ -50,18 +50,6 @@ public class CellGridImpl implements CellGrid {
         
         this.session = delegate.getSession();
 
-        DefaultAgendaEventListener listener = new DefaultAgendaEventListener() {
-            public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-                                          WorkingMemory workingMemory) {
-                // System.out.println( "popped AgendaGroup = '" +
-                // event.getAgendaGroup().getName() + "'" );
-                // System.out.println( CellGrid.this.toString() );
-                // System.out.println( "" );
-            }
-        };
-
-        this.session.addEventListener( listener );
-
         this.session.insert( this );
 
         // populate the array of Cells and hook each
@@ -75,7 +63,8 @@ public class CellGridImpl implements CellGrid {
             }
         }
 
-        delegate.init();
+        delegate.init();        
+        //delegate.killAll();        
     }
 
     /* (non-Javadoc)
@@ -162,14 +151,18 @@ public class CellGridImpl implements CellGrid {
                 if ( gridData[row][column] ) {
                     final Cell cell = getCellAt( row + rowOffset,
                                                  column + columnOffset );
-                    cell.setCellState( CellState.LIVE );
-                    this.session.update( this.session.getFactHandle( cell ),
-                                         cell );
+                    updateCell( cell, CellState.LIVE );
                 }
             }
         }
 
-        this.delegate.setPattern();
+        //this.delegate.setPattern();
+    }
+    
+    public void updateCell(Cell cell, CellState state) {
+        cell.setCellState( state );
+        this.session.update( this.session.getFactHandle( cell ),
+                             cell );                
     }
 
     /* (non-Javadoc)

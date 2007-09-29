@@ -18,6 +18,4 @@ public interface ConwayRuleDelegate {
      */
     public abstract void killAll();
 
-    public abstract void setPattern();
-
 }
