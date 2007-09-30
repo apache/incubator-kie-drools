@@ -131,6 +131,9 @@ $ cd drools
 $ mvn -Psolver -Dmaven.test.skip clean install
 ...</programlisting>
 
+    <para>Now you will If you want to use a stable version of drools, add this
+    /drools-solver/pom.xml </para>
+
     <para>After that, you can run any example directly from the command line
     like this:</para>
 
@@ -143,6 +146,27 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 ...
 $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
 ...</programlisting>
+
+    <para>You will use the latest, unstable revision of drools. If you would
+    rather use a stable version of drools, edit
+    <literal>/drools-solver/drools-solver-examples/pom.xml</literal> and
+    overwrite the drools jar versions, before runing the example:</para>
+
+    <programlisting>    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.drools&lt;/groupId&gt;
+            &lt;artifactId&gt;drools-core&lt;/artifactId&gt;
+            &lt;version&gt;4.0.2&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.drools&lt;/groupId&gt;
+            &lt;artifactId&gt;drools-compiler&lt;/artifactId&gt;
+            &lt;version&gt;4.0.2&lt;/version&gt;
+        &lt;/dependency&gt;
+
+        ...
+
+     &lt;/dependencies&gt;</programlisting>
 
     <para>Here's a screenshot of the n queens example, which is a simple
     example:</para>
