@@ -7,7 +7,6 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
-import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
 
@@ -24,9 +23,33 @@ public class MVELDumperTest extends TestCase {
         super.tearDown();
     }
 
-    public void testDump() throws Exception {
+    public void xxxtestDump() throws Exception {
         String input = "Cheese( price > 10 && < 20 || == $val || == 30 )";
         String expected = "( ( price > 10 && price < 20 ) || price == $val || price == 30 )" ;
+        DRLParser parser = parse( input );
+        PatternDescr pattern = (PatternDescr) parser.fact( null );
+        
+        FieldConstraintDescr fieldDescr = (FieldConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        String result = dumper.dump( fieldDescr );
+        
+        assertEquals( expected, result );
+    }
+    
+    public void testDumpMatches() throws Exception {
+        String input = "Cheese( type.toString matches \"something\\swith\\tsingle escapes\" )";
+        String expected = "type.toString ~= \"something\\\\swith\\\\tsingle escapes\"" ;
+        DRLParser parser = parse( input );
+        PatternDescr pattern = (PatternDescr) parser.fact( null );
+        
+        FieldConstraintDescr fieldDescr = (FieldConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        String result = dumper.dump( fieldDescr );
+        
+        assertEquals( expected, result );
+    }
+
+    public void testDumpMatches2() throws Exception {
+        String input = "Cheese( type.toString matches 'something\\swith\\tsingle escapes' )";
+        String expected = "type.toString ~= \"something\\\\swith\\\\tsingle escapes\"" ;
         DRLParser parser = parse( input );
         PatternDescr pattern = (PatternDescr) parser.fact( null );
         

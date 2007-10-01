@@ -4237,5 +4237,38 @@ public class MiscTest extends TestCase {
 //                      list.size() );
     }
 
+    public void testEvalRewriteMatches() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewriteMatches.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        final Order order1 = new Order( 14, "Mark" );
+        final OrderItem item11 = new OrderItem( order1,
+                                                1 );
+        final OrderItem item12 = new OrderItem( order1,
+                                                2 );
+        order1.addItem( item11 );
+        order1.addItem( item12 );
+
+        workingMemory.insert( order1 );
+        workingMemory.insert( item11 );
+        workingMemory.insert( item12 );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( 2,
+                      list.size() );
+        assertTrue( list.contains( item11 ) );
+        assertTrue( list.contains( item12 ) );
+    }
+
     
 }
