@@ -2,13 +2,13 @@ package org.drools.decisiontable.parser;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ import org.drools.decisiontable.model.DRLOutput;
 
 /**
  * SheetListener for creating rules from a template
- * 
+ *
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
  */
 public class ExternalSheetListener implements RuleSheetListener {
@@ -45,7 +45,7 @@ public class ExternalSheetListener implements RuleSheetListener {
 
 	private Generator generator;
 
-	private WorkingMemoryFileLogger logger;
+	//private WorkingMemoryFileLogger logger;
 
 	public ExternalSheetListener(final int startRow, final int startCol,
 			final String template) {
@@ -71,8 +71,8 @@ public class ExternalSheetListener implements RuleSheetListener {
 		columns = tc.getColumns();
 		this.templateContainer = tc;
 		session = ruleBase.newStatefulSession();
-		logger = new WorkingMemoryFileLogger(session);
-		logger.setFileName("log/event");
+//		logger = new WorkingMemoryFileLogger(session);
+//		logger.setFileName("log/event");
 		this.generator = generator;
 		session.setGlobal("generator", generator);
 		assertColumns();
@@ -80,7 +80,7 @@ public class ExternalSheetListener implements RuleSheetListener {
 
 	private void assertColumns() {
 		for (int i = 0; i < columns.length; i++) {
-			session.insert(columns[i]);			
+			session.insert(columns[i]);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class ExternalSheetListener implements RuleSheetListener {
 			session.insert(currentRow);
 		}
 		session.fireAllRules();
-		logger.writeToDisk();
+//		logger.writeToDisk();
 		session.dispose();
 	}
 
