@@ -132,8 +132,8 @@ abstract public class AbstractRuleBase
             this.agendaGroupRuleTotals = new HashMap();
         }
 
-        this.packageClassLoader = new CompositePackageClassLoader( Thread.currentThread().getContextClassLoader() );
-        this.classLoader = new MapBackedClassLoader( Thread.currentThread().getContextClassLoader() );
+        this.packageClassLoader = new CompositePackageClassLoader( this.config.getClassLoader() );
+        this.classLoader = new MapBackedClassLoader( this.config.getClassLoader() );
         this.packageClassLoader.addClassLoader( this.classLoader );
         this.pkgs = new HashMap();
         this.processes = new HashMap();
@@ -216,6 +216,7 @@ abstract public class AbstractRuleBase
         this.globals = (Map) childStream.readObject();
 
         this.config = (RuleBaseConfiguration) childStream.readObject();
+        this.config.setClassLoader( childStream.getClassLoader() );
         this.eventSupport = (RuleBaseEventSupport) childStream.readObject();
 
         this.statefulSessions = new ObjectHashSet();

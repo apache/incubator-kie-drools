@@ -20,6 +20,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
@@ -32,16 +34,14 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
-import org.drools.rule.Pattern;
 import org.drools.rule.LiteralConstraint;
-import org.drools.rule.Rule;
 import org.drools.rule.Package;
+import org.drools.rule.Pattern;
+import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
-
-import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
@@ -60,19 +60,19 @@ public class AgendaEventSupportTest extends TestCase {
         rule.setAgendaGroup( "test group" );
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
         final Pattern pattern = new Pattern( 0,
-                                    cheeseObjectType );
+                                             cheeseObjectType );
 
-        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type",
-                                                                                     getClass().getClassLoader() );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
+                                                                                                   "type",
+                                                                                                   getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
         final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                              evaluator,
-                                                              field );
+                                                                    evaluator,
+                                                                    field );
         pattern.addConstraint( constraint );
         rule.addPattern( pattern );
 
@@ -124,7 +124,7 @@ public class AgendaEventSupportTest extends TestCase {
 
         // assert the cheese fact
         final Cheese cheddar = new Cheese( "cheddar",
-                                     15 );
+                                           15 );
         FactHandle cheddarHandle = wm.insert( cheddar );
 
         // should be one ActivationCreatedEvent
@@ -138,7 +138,7 @@ public class AgendaEventSupportTest extends TestCase {
         // update results in a ActivationCancelledEvent and an ActivationCreatedEvent, note the object is always resolvable        
         cheddar.setPrice( 14 );
         wm.update( cheddarHandle,
-                         cheddar );
+                   cheddar );
         assertEquals( 2,
                       agendaList.size() );
         ActivationCancelledEvent cancelledEvent = (ActivationCancelledEvent) agendaList.get( 0 );
@@ -184,7 +184,7 @@ public class AgendaEventSupportTest extends TestCase {
         assertEquals( "test group",
                       poppedEvent.getAgendaGroup().getName() );
     }
-    
+
     private Object unwrapShadow(Object object) {
         if ( object instanceof ShadowProxy ) {
             return ((ShadowProxy) object).getShadowedObject();

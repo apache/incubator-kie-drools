@@ -238,7 +238,7 @@ public abstract class BaseMannersTest extends TestCase {
                     drools.modifyRetract( context );;
                     context.setState( Context.ASSIGN_SEATS );
                     drools.modifyInsert( context );
-                    
+
                     System.err.println( "assign first seat :  " + seating + " : " + path );
 
                 } catch ( Exception e ) {
@@ -478,8 +478,10 @@ public abstract class BaseMannersTest extends TestCase {
 
                     Context context = (Context) drools.get( contextDeclaration );
                     Count count = (Count) drools.get( countDeclaration );
-                    int seatId = seatingIdDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory, tuple.get( seatingIdDeclaration ).getObject() );
-                    int seatingRightSeat = seatingRightSeatDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory, tuple.get( seatingRightSeatDeclaration ).getObject() );
+                    int seatId = seatingIdDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory,
+                                                                                  tuple.get( seatingIdDeclaration ).getObject() );
+                    int seatingRightSeat = seatingRightSeatDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory,
+                                                                                                   tuple.get( seatingRightSeatDeclaration ).getObject() );
 
                     String leftGuestName = (String) drools.get( leftGuestNameDeclaration );
                     String rightGuestName = (String) drools.get( seatingRightGuestNameDeclaration );
@@ -654,8 +656,10 @@ public abstract class BaseMannersTest extends TestCase {
                     Rule rule = drools.getRule();
                     Tuple tuple = drools.getTuple();
 
-                    int id = seatingIdDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory, tuple.get( seatingIdDeclaration ).getObject() );
-                    int seat = pathSeatDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory, tuple.get( pathSeatDeclaration ).getObject() );
+                    int id = seatingIdDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory,
+                                                                              tuple.get( seatingIdDeclaration ).getObject() );
+                    int seat = pathSeatDeclaration.getExtractor().getIntValue( (InternalWorkingMemory) workingMemory,
+                                                                               tuple.get( pathSeatDeclaration ).getObject() );
                     String guestName = (String) drools.get( pathGuestNameDeclaration );
 
                     Path path = new Path( id,
@@ -1110,9 +1114,9 @@ public abstract class BaseMannersTest extends TestCase {
                                                           final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
-                                                                                fieldName,
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( clazz,
+                                                                                              fieldName,
+                                                                                              getClass().getClassLoader() );
 
         final FieldValue field = new LongFieldImpl( fieldValue );
 
@@ -1127,9 +1131,9 @@ public abstract class BaseMannersTest extends TestCase {
                                                           final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
-                                                                                fieldName,
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( clazz,
+                                                                                              fieldName,
+                                                                                              getClass().getClassLoader() );
 
         final FieldValue field = new BooleanFieldImpl( fieldValue );
 
@@ -1143,9 +1147,9 @@ public abstract class BaseMannersTest extends TestCase {
                                      final String identifier) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
-                                                                                fieldName,
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( clazz,
+                                                                                              fieldName,
+                                                                                              getClass().getClassLoader() );
 
         pattern.addDeclaration( identifier,
                                 extractor );
@@ -1157,9 +1161,9 @@ public abstract class BaseMannersTest extends TestCase {
                                                                final Evaluator evaluator) throws IntrospectionException {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
-                                                                                fieldName,
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( clazz,
+                                                                                              fieldName,
+                                                                                              getClass().getClassLoader() );
 
         return new VariableConstraint( extractor,
                                        declaration,

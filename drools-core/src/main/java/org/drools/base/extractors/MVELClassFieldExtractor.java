@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.ClassFieldExtractorCache;
-import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Extractor;
@@ -62,7 +61,7 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
         for( Iterator it = inputs.iterator(); it.hasNext(); ) {
             String basefield = (String) it.next();
                         
-            Extractor extr = ClassFieldExtractorCache.getExtractor(  clazz, basefield, classLoader );
+            Extractor extr = ClassFieldExtractorCache.getInstance().getExtractor(  clazz, basefield, classLoader );
             this.extractors.put( basefield, extr );
         }
     }

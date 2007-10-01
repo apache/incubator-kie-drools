@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.rule.PackageCompilationData.PackageClassLoader;
-
 public class CompositePackageClassLoader extends ClassLoader {
 
     private final List classLoaders = new ArrayList();

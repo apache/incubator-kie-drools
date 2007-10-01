@@ -29,12 +29,12 @@ import junit.framework.TestCase;
 public abstract class BaseBetaConstraintsTest extends TestCase {
 
     protected BetaNodeFieldConstraint getConstraint(String identifier,
-                                                  Operator operator,
-                                                  String fieldName,
-                                                  Class clazz) {
-        FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( clazz,
-                                                                          fieldName,
-                                                                          getClass().getClassLoader() );
+                                                    Operator operator,
+                                                    String fieldName,
+                                                    Class clazz) {
+        FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( clazz,
+                                                                                        fieldName,
+                                                                                        getClass().getClassLoader() );
         Declaration declaration = new Declaration( identifier,
                                                    extractor,
                                                    new Pattern( 0,
@@ -43,82 +43,89 @@ public abstract class BaseBetaConstraintsTest extends TestCase {
         return new VariableConstraint( extractor,
                                        declaration,
                                        evaluator );
-    }    
-    
-    
-    protected void checkBetaConstraints(VariableConstraint[] constraints, Class cls) {
+    }
+
+    protected void checkBetaConstraints(VariableConstraint[] constraints,
+                                        Class cls) {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         int depth = config.getCompositeKeyDepth();
-        
+
         BetaConstraints betaConstraints = null;
-        
+
         try {
-            betaConstraints = ( BetaConstraints ) cls.getConstructor( new Class[] { BetaNodeFieldConstraint[].class, RuleBaseConfiguration.class } ).newInstance( new Object[] { constraints, config } );
+            betaConstraints = (BetaConstraints) cls.getConstructor( new Class[]{BetaNodeFieldConstraint[].class, RuleBaseConfiguration.class} ).newInstance( new Object[]{constraints, config} );
         } catch ( Exception e ) {
             throw new RuntimeException( "could not invoke constructor for " + cls.getName() );
         }
-        
+
         //BetaConstraints betaConstraints = new DefaultBetaConstraints(constraints, config );
-        
-        constraints = convertToConstraints( betaConstraints.getConstraints() );        
-        
+
+        constraints = convertToConstraints( betaConstraints.getConstraints() );
+
         List list = new ArrayList();
 
         // get indexed positions
         for ( int i = 0; i < constraints.length && list.size() < depth; i++ ) {
             if ( constraints[i].getEvaluator().getOperator() == Operator.EQUAL ) {
-                list.add( new Integer(i) );
+                list.add( new Integer( i ) );
             }
         }
-        
+
         // convert to array
-        int[] indexedPositions = new int[ list.size() ];
+        int[] indexedPositions = new int[list.size()];
         for ( int i = 0; i < list.size(); i++ ) {
             indexedPositions[i] = i;
-        }                              
-        
-        assertEquals( ( indexedPositions.length > 0 ), betaConstraints.isIndexed() );
-        assertEquals(indexedPositions.length,  betaConstraints.getIndexCount() );
-        BetaMemory betaMemory = betaConstraints.createBetaMemory( config );        
-        
+        }
+
+        assertEquals( (indexedPositions.length > 0),
+                      betaConstraints.isIndexed() );
+        assertEquals( indexedPositions.length,
+                      betaConstraints.getIndexCount() );
+        BetaMemory betaMemory = betaConstraints.createBetaMemory( config );
+
         if ( indexedPositions.length > 0 ) {
-            TupleIndexHashTable tupleHashTable =  ( TupleIndexHashTable ) betaMemory.getTupleMemory();
+            TupleIndexHashTable tupleHashTable = (TupleIndexHashTable) betaMemory.getTupleMemory();
             assertTrue( tupleHashTable.isIndexed() );
             Index index = tupleHashTable.getIndex();
-            
+
             for ( int i = 0; i < indexedPositions.length; i++ ) {
-                checkSameConstraintForIndex(  constraints[indexedPositions[i]], index.getFieldIndex(i) );
+                checkSameConstraintForIndex( constraints[indexedPositions[i]],
+                                             index.getFieldIndex( i ) );
             }
-            
-            FactHandleIndexHashTable factHashTable =  ( FactHandleIndexHashTable ) betaMemory.getFactHandleMemory();
+
+            FactHandleIndexHashTable factHashTable = (FactHandleIndexHashTable) betaMemory.getFactHandleMemory();
             assertTrue( factHashTable.isIndexed() );
-            index = factHashTable.getIndex();   
-            
+            index = factHashTable.getIndex();
+
             for ( int i = 0; i < indexedPositions.length; i++ ) {
-                checkSameConstraintForIndex(  constraints[indexedPositions[i]], index.getFieldIndex(i) );
-            }           
+                checkSameConstraintForIndex( constraints[indexedPositions[i]],
+                                             index.getFieldIndex( i ) );
+            }
         } else {
-            TupleHashTable tupleHashTable =  ( TupleHashTable ) betaMemory.getTupleMemory();
+            TupleHashTable tupleHashTable = (TupleHashTable) betaMemory.getTupleMemory();
             assertFalse( tupleHashTable.isIndexed() );
-            
-            FactHashTable factHashTable =  ( FactHashTable ) betaMemory.getFactHandleMemory();
-            assertFalse( factHashTable.isIndexed() );            
-        }        
+
+            FactHashTable factHashTable = (FactHashTable) betaMemory.getFactHandleMemory();
+            assertFalse( factHashTable.isIndexed() );
+        }
     }
-    
-    
-    protected void  checkSameConstraintForIndex(VariableConstraint constraint, FieldIndex fieldIndex) {
-        assertSame( constraint.getRequiredDeclarations()[0], fieldIndex.getDeclaration() );
-        assertSame( constraint.getEvaluator(), fieldIndex.getEvaluator() );
-        assertSame( constraint.getFieldExtractor(), fieldIndex.getExtractor() );            
-    }     
-    
+
+    protected void checkSameConstraintForIndex(VariableConstraint constraint,
+                                               FieldIndex fieldIndex) {
+        assertSame( constraint.getRequiredDeclarations()[0],
+                    fieldIndex.getDeclaration() );
+        assertSame( constraint.getEvaluator(),
+                    fieldIndex.getEvaluator() );
+        assertSame( constraint.getFieldExtractor(),
+                    fieldIndex.getExtractor() );
+    }
+
     protected VariableConstraint[] convertToConstraints(LinkedList list) {
         final VariableConstraint[] array = new VariableConstraint[list.size()];
         int i = 0;
         for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
             array[i++] = (VariableConstraint) entry.getObject();
-        }        
+        }
         return array;
     }
 }

@@ -21,8 +21,11 @@ import org.mvel.TemplateRegistry;
 
 public class AccumulateTemplateTest extends TestCase {
 
+    private ClassFieldExtractorCache cache;
+
     protected void setUp() throws Exception {
         super.setUp();
+        cache = ClassFieldExtractorCache.getInstance();
     }
 
     protected void tearDown() throws Exception {
@@ -41,9 +44,9 @@ public class AccumulateTemplateTest extends TestCase {
         final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
-                                                                                                ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                                                                       "price",
-                                                                                                                                       getClass().getClassLoader() ),
+                                                                                                cache.getExtractor( Cheese.class,
+                                                                                                                    "price",
+                                                                                                                    getClass().getClassLoader() ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
@@ -115,20 +118,20 @@ public class AccumulateTemplateTest extends TestCase {
 
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
-                                                                              ClassFieldExtractorCache.getExtractor( Person.class,
-                                                                                                                     "name",
-                                                                                                                     getClass().getClassLoader() ),
+                                                                              cache.getExtractor( Person.class,
+                                                                                                  "name",
+                                                                                                  getClass().getClassLoader() ),
                                                                               null ), new Declaration( "age",
-                                                                                                       ClassFieldExtractorCache.getExtractor( Person.class,
-                                                                                                                                              "age",
-                                                                                                                                              getClass().getClassLoader() ),
+                                                                                                       cache.getExtractor( Person.class,
+                                                                                                                           "age",
+                                                                                                                           getClass().getClassLoader() ),
                                                                                                        null )};
         final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
-                                                                                                ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                                                                       "price",
-                                                                                                                                       getClass().getClassLoader() ),
+                                                                                                cache.getExtractor( Cheese.class,
+                                                                                                                    "price",
+                                                                                                                    getClass().getClassLoader() ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
@@ -185,7 +188,8 @@ public class AccumulateTemplateTest extends TestCase {
 
         map.put( "hashCode",
                  new Integer( 10 ) );
-        map.put( "isMultiPattern", Boolean.FALSE );
+        map.put( "isMultiPattern",
+                 Boolean.FALSE );
 
         TemplateRegistry registry = getInvokerTemplateRegistry();
         Object method = TemplateInterpreter.parse( registry.getTemplate( "accumulateInvoker" ),
@@ -201,19 +205,19 @@ public class AccumulateTemplateTest extends TestCase {
 
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
-                                                                              ClassFieldExtractorCache.getExtractor( Person.class,
-                                                                                                                     "name",
-                                                                                                                     getClass().getClassLoader() ),
+                                                                              cache.getExtractor( Person.class,
+                                                                                                  "name",
+                                                                                                  getClass().getClassLoader() ),
                                                                               null ), new Declaration( "age",
-                                                                                                       ClassFieldExtractorCache.getExtractor( Person.class,
-                                                                                                                                              "age",
-                                                                                                                                              getClass().getClassLoader() ),
+                                                                                                       cache.getExtractor( Person.class,
+                                                                                                                           "age",
+                                                                                                                           getClass().getClassLoader() ),
                                                                                                        null )};
         final Declaration[] inner = new Declaration[]{new Declaration( "$cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "$person",
-                                                                                                new PatternExtractor( new ClassObjectType ( Person.class ) ),
-                                                                                                null ) };
+                                                                                                new PatternExtractor( new ClassObjectType( Person.class ) ),
+                                                                                                null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
 
@@ -269,7 +273,8 @@ public class AccumulateTemplateTest extends TestCase {
 
         map.put( "hashCode",
                  new Integer( 10 ) );
-        map.put( "isMultiPattern", Boolean.TRUE );
+        map.put( "isMultiPattern",
+                 Boolean.TRUE );
 
         TemplateRegistry registry = getInvokerTemplateRegistry();
         Object method = TemplateInterpreter.parse( registry.getTemplate( "accumulateInvoker" ),

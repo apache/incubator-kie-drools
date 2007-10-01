@@ -8,17 +8,20 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.HashMap;
+
+import org.drools.base.ClassFieldExtractorCache;
 import org.drools.rule.Package;
 
 public class DroolsObjectInputStream extends ObjectInputStream {
-    private final ClassLoader      classLoader;
-    private InternalRuleBase ruleBase;
-    private InternalWorkingMemory  workingMemory;
-    private Package                pkg;
+    private final ClassLoader        classLoader;
+    private InternalRuleBase         ruleBase;
+    private InternalWorkingMemory    workingMemory;
+    private Package                  pkg;
+    private ClassFieldExtractorCache extractorFactory;
 
     /** table mapping primitive type names to corresponding class objects */
-    private static final HashMap   primClasses = new HashMap( 8,
-                                                              1.0F );
+    private static final HashMap     primClasses = new HashMap( 8,
+                                                                1.0F );
     static {
         primClasses.put( "boolean",
                          boolean.class );
@@ -39,10 +42,11 @@ public class DroolsObjectInputStream extends ObjectInputStream {
         primClasses.put( "void",
                          void.class );
     }
-    
+
     public DroolsObjectInputStream(final InputStream in) throws IOException {
-        this( in, null );
-    }    
+        this( in,
+              null );
+    }
 
     public DroolsObjectInputStream(final InputStream in,
                                    ClassLoader classLoader) throws IOException {
@@ -52,9 +56,10 @@ public class DroolsObjectInputStream extends ObjectInputStream {
             if ( classLoader == null ) {
                 classLoader = this.getClass().getClassLoader();
             }
-        }  
-        
+        }
+
         this.classLoader = classLoader;
+        this.extractorFactory = ClassFieldExtractorCache.getInstance();
         enableResolveObject( true );
     }
 
@@ -82,7 +87,7 @@ public class DroolsObjectInputStream extends ObjectInputStream {
 
     public InternalRuleBase getRuleBase() {
         return ruleBase;
-    }        
+    }
 
     public void setRuleBase(InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
@@ -96,14 +101,20 @@ public class DroolsObjectInputStream extends ObjectInputStream {
         return workingMemory;
     }
 
-	public Package getPackage() {
-		return pkg;
-	}
+    public Package getPackage() {
+        return pkg;
+    }
 
-	public void setPackage(Package pkg) {
-		this.pkg = pkg;
-	}
-    
-    
+    public void setPackage(Package pkg) {
+        this.pkg = pkg;
+    }
+
+    public ClassFieldExtractorCache getExtractorFactory() {
+        return extractorFactory;
+    }
+
+    public void setExtractorFactory(ClassFieldExtractorCache extractorFactory) {
+        this.extractorFactory = extractorFactory;
+    }
 
 }

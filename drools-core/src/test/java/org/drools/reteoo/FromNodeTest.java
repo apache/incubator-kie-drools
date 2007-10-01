@@ -23,9 +23,9 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.SingleBetaConstraints;
-import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
+import org.drools.rule.Pattern;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
@@ -36,6 +36,7 @@ import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 
 public class FromNodeTest extends TestCase {
+    ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
 
     public void testAlphaNode() {
         final PropagationContext context = new PropagationContextImpl( 0,
@@ -44,9 +45,9 @@ public class FromNodeTest extends TestCase {
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type",
-                                                                                     getClass().getClassLoader() );
+        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                                  "type",
+                                                                  getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
@@ -136,13 +137,13 @@ public class FromNodeTest extends TestCase {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
-        final ClassFieldExtractor priceExtractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                          "price",
-                                                                                          getClass().getClassLoader() );
+        final ClassFieldExtractor priceExtractor = cache.getExtractor( Cheese.class,
+                                                                       "price",
+                                                                       getClass().getClassLoader() );
 
-        final ClassFieldExtractor ageExtractor = ClassFieldExtractorCache.getExtractor( Person.class,
-                                                                                        "age",
-                                                                                        getClass().getClassLoader() );
+        final ClassFieldExtractor ageExtractor = cache.getExtractor( Person.class,
+                                                                     "age",
+                                                                     getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Person.class ) );
@@ -241,9 +242,9 @@ public class FromNodeTest extends TestCase {
                                                                        null );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
-        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type",
-                                                                                     getClass().getClassLoader() );
+        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                                  "type",
+                                                                  getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,

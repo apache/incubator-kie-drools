@@ -23,20 +23,21 @@ import java.beans.PropertyDescriptor;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
-import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.spi.FieldExtractor;
 
 public class DeclarationTest extends TestCase {
 
+    ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+
     public void testDeclaration() throws IntrospectionException {
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type",
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "type",
+                                                             getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 5,
-                                          new ClassObjectType( Cheese.class ) );
+                                             new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration
         // Declarations know the pattern they derive their value from
@@ -59,12 +60,12 @@ public class DeclarationTest extends TestCase {
     }
 
     public void testGetFieldValue() throws IntrospectionException {
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type",
-                                                                                getClass().getClassLoader()  );
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "type",
+                                                             getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 5,
-                                          new ClassObjectType( Cheese.class ) );
+                                             new ClassObjectType( Cheese.class ) );
 
         // Bind the extractor to a decleration 
         // Declarations know the pattern they derive their value from 
@@ -78,7 +79,8 @@ public class DeclarationTest extends TestCase {
 
         // Check we can extract Declarations correctly
         assertEquals( "cheddar",
-                      declaration.getValue( null, cheddar ) );
+                      declaration.getValue( null,
+                                            cheddar ) );
     }
 
     public static int getIndex(final Class clazz,

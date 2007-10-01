@@ -15,7 +15,6 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DialectConfiguration;
-import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PredicateDescr;
@@ -30,6 +29,8 @@ import org.drools.spi.FieldExtractor;
 
 public class MVELPredicateBuilderTest extends TestCase {
 
+    private ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+
     public void setUp() {
     }
 
@@ -39,23 +40,24 @@ public class MVELPredicateBuilderTest extends TestCase {
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        MVELDialect mvelDialect = ( MVELDialect ) ( (DialectConfiguration) conf.getDialectConfiguration( "mvel" ) ).getDialect();
+        MVELDialect mvelDialect = (MVELDialect) ((DialectConfiguration) conf.getDialectConfiguration( "mvel" )).getDialect();
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
                                                                                pkg,
                                                                                ruleDescr,
                                                                                conf.getDialectRegistry(),
                                                                                mvelDialect );
-        
+
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class, "price",
-                                                                                getClass().getClassLoader() );
-        
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "price",
+                                                             getClass().getClassLoader() );
+
         final Pattern patternA = new Pattern( 0,
-                                              new ClassObjectType( int.class ) );
+                                              new ClassObjectType( Cheese.class ) );
 
         final Pattern patternB = new Pattern( 1,
-                                              new ClassObjectType( int.class ) );
+                                              new ClassObjectType( Cheese.class ) );
 
         final Declaration a = new Declaration( "a",
                                                extractor,
@@ -113,7 +115,7 @@ public class MVELPredicateBuilderTest extends TestCase {
 
         cheddar.setPrice( 9 );
         wm.update( f0,
-                         cheddar );
+                   cheddar );
 
         assertFalse( predicate.isAllowedCachedLeft( predicateContext,
                                                     stilton ) );

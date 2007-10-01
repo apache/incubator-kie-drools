@@ -2,6 +2,8 @@ package org.drools.integrationtests;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +19,10 @@ import org.drools.Precondition;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.rule.Package;
 
 public class DynamicRulesTest extends TestCase {
@@ -184,15 +188,15 @@ public class DynamicRulesTest extends TestCase {
 
         reteooRuleBase.removeRule( "org.drools.test",
                                    "like cheese" );
-        
-//        reteooRuleBase.removeRule( "org.drools.test",
-//                                   "like cheese2" );        
+
+        //        reteooRuleBase.removeRule( "org.drools.test",
+        //                                   "like cheese2" );        
 
         final Cheese muzzarela = new Cheese( "muzzarela",
                                              5 );
         assertEquals( 8,
                       workingMemory.getAgenda().getActivations().length );
-        
+
         workingMemory.insert( muzzarela );
 
         assertEquals( 9,
@@ -214,10 +218,10 @@ public class DynamicRulesTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
-        
+
         final RuleBase ruleBase = getRuleBase();
         reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
-        
+
         ruleBase.addPackage( pkg );
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -265,10 +269,11 @@ public class DynamicRulesTest extends TestCase {
 
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
-        
+
         // Check a function can be removed from a package.
         // Once removed any efforts to use it should throw an Exception
-        ruleBase.removeFunction( "org.drools.test", "addFive" );
+        ruleBase.removeFunction( "org.drools.test",
+                                 "addFive" );
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
@@ -321,7 +326,7 @@ public class DynamicRulesTest extends TestCase {
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.insert( new Precondition( "genericcode",
-                                                      "genericvalue" ) );
+                                                "genericvalue" ) );
         workingMemory.fireAllRules();
 
         final RuleBase ruleBaseWM = workingMemory.getRuleBase();
@@ -397,6 +402,120 @@ public class DynamicRulesTest extends TestCase {
         pkg = builder.getPackage();
         ruleBase.addPackage( pkg );
         ruleBase.removePackage( pkg.getName() );
+    }
+
+    public void testClassLoaderSwitchsUsingConf() throws Exception {
+        try {
+            // Creates first class loader and use it to load fact classes
+            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" ).toURI().toURL()},
+                                                      this.getClass().getClassLoader() );
+            Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
+
+            PackageBuilderConfiguration conf = new PackageBuilderConfiguration( loader1 );
+            PackageBuilder builder = new PackageBuilder( conf );
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+
+            // must set the classloader for rulebase conf too
+            RuleBaseConfiguration rbconf = new RuleBaseConfiguration( loader1 );
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase( rbconf );
+            Package pkg = builder.getPackage();
+            ruleBase.addPackage( pkg );
+
+            StatefulSession wm = ruleBase.newStatefulSession();
+            wm.insert( cheeseClass.newInstance() );
+            wm.fireAllRules();
+
+            // Creates second class loader and use it to load fact classes
+            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" ).toURI().toURL()},
+                                                            this.getClass().getClassLoader() );
+            cheeseClass = loader2.loadClass( "org.drools.Cheese" );
+
+            conf = new PackageBuilderConfiguration( loader2 );
+            builder = new PackageBuilder( conf );
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+
+            rbconf = new RuleBaseConfiguration( loader2 );
+            ruleBase = RuleBaseFactory.newRuleBase( rbconf );
+            pkg = builder.getPackage();
+            ruleBase.addPackage( pkg );
+
+            wm = ruleBase.newStatefulSession();
+            wm.insert( cheeseClass.newInstance() );
+            wm.fireAllRules();
+        } catch ( ClassCastException cce ) {
+            cce.printStackTrace();
+            fail( "No ClassCastException should be raised." );
+        }
+
+    }
+
+    public void testClassLoaderSwitchsUsingContext() throws Exception {
+        try {
+            // Creates first class loader and use it to load fact classes
+            ClassLoader original = Thread.currentThread().getContextClassLoader();
+            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" ).toURI().toURL()},
+                                                      this.getClass().getClassLoader() );
+            Thread.currentThread().setContextClassLoader( loader1 );
+            Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
+
+            PackageBuilder builder = new PackageBuilder( );
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            Package pkg = builder.getPackage();
+            ruleBase.addPackage( pkg );
+
+            StatefulSession wm = ruleBase.newStatefulSession();
+            wm.insert( cheeseClass.newInstance() );
+            wm.fireAllRules();
+
+            // Creates second class loader and use it to load fact classes
+            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" ).toURI().toURL()},
+                                                            this.getClass().getClassLoader() );
+            Thread.currentThread().setContextClassLoader( loader2 );
+            cheeseClass = loader2.loadClass( "org.drools.Cheese" );
+
+            builder = new PackageBuilder( );
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+
+            ruleBase = RuleBaseFactory.newRuleBase();
+            pkg = builder.getPackage();
+            ruleBase.addPackage( pkg );
+
+            wm = ruleBase.newStatefulSession();
+            wm.insert( cheeseClass.newInstance() );
+            wm.fireAllRules();
+
+            Thread.currentThread().setContextClassLoader( original );
+        } catch ( ClassCastException cce ) {
+            cce.printStackTrace();
+            fail( "No ClassCastException should be raised." );
+        }
+    }
+
+    public class SubvertedClassLoader extends URLClassLoader {
+
+        private static final long serialVersionUID = 400L;
+
+        public SubvertedClassLoader(final URL[] urls,
+                                    final ClassLoader parentClassLoader) {
+            super( urls,
+                   parentClassLoader );
+        }
+
+        protected synchronized Class loadClass(String name,
+                                               boolean resolve) throws ClassNotFoundException {
+            // First, check if the class has already been loaded
+            Class c = findLoadedClass( name );
+            if ( c == null ) {
+                try {
+                    c = findClass( name );
+                } catch( ClassNotFoundException e ) {
+                    c = super.loadClass( name, resolve );
+                }
+            }
+            return c;
+        }
     }
 
 }
