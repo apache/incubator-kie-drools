@@ -7,7 +7,6 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
-import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.ObjectFactory;
@@ -16,8 +15,8 @@ import org.drools.base.evaluators.StringFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
+import org.drools.rule.Pattern;
 import org.drools.spi.FieldExtractor;
 import org.drools.util.AbstractHashTable.FactEntryImpl;
 import org.drools.util.AbstractHashTable.FieldIndex;
@@ -25,11 +24,12 @@ import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class FieldIndexHashTableTest extends TestCase {
+    ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
 
     public void testSingleEntry() throws Exception {
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type",
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "type",
+                                                             getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -76,9 +76,9 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testTwoDifferentEntries() throws Exception {
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type",
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "type",
+                                                             getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -133,9 +133,9 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testTwoEqualEntries() throws Exception {
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type",
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "type",
+                                                             getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -190,9 +190,9 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testTwoDifferentEntriesSameHashCode() throws Exception {
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor(  TestClass.class,
-                                                                                 "object",
-                                                                                 getClass().getClassLoader() );
+        final FieldExtractor extractor = cache.getExtractor( TestClass.class,
+                                                             "object",
+                                                             getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( TestClass.class ) );
@@ -237,9 +237,9 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testRemove() throws Exception {
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type",
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "type",
+                                                             getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -304,9 +304,9 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testResize() throws Exception {
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type",
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "type",
+                                                             getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -521,9 +521,9 @@ public class FieldIndexHashTableTest extends TestCase {
     }
 
     public void testEmptyIterator() {
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                "type",
-                                                                                getClass().getClassLoader() );
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "type",
+                                                             getClass().getClassLoader() );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );

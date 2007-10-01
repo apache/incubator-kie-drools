@@ -29,6 +29,13 @@ import org.drools.util.asm.TestInterfaceImpl;
 
 public class ClassFieldExtractorTest extends TestCase {
 
+    private ClassFieldExtractorCache cache;
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        cache = ClassFieldExtractorCache.getInstance();
+    }
+
     public void testBasic() throws Exception {
         final Object[] objArray = new Object[1];
 
@@ -37,75 +44,83 @@ public class ClassFieldExtractorTest extends TestCase {
         obj.setSomething( "no" );
         obj.setObjArray( objArray );
 
-        final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                               "blah",
-                                                                               getClass().getClassLoader() );
+        final ClassFieldExtractor ext = cache.getExtractor( TestBean.class,
+                                                            "blah",
+                                                            getClass().getClassLoader() );
         assertEquals( false,
-                      ((Boolean) ext.getValue( null, obj )).booleanValue() );
+                      ((Boolean) ext.getValue( null,
+                                               obj )).booleanValue() );
 
-        final ClassFieldExtractor ext2 = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                                "fooBar",
-                                                                                getClass().getClassLoader() );
+        final ClassFieldExtractor ext2 = cache.getExtractor( TestBean.class,
+                                                             "fooBar",
+                                                             getClass().getClassLoader() );
         assertEquals( "fooBar",
-                      ext2.getValue( null, obj ) );
+                      ext2.getValue( null,
+                                     obj ) );
 
-        final ClassFieldExtractor ext3 = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                                "objArray",
-                                                                                getClass().getClassLoader() );
+        final ClassFieldExtractor ext3 = cache.getExtractor( TestBean.class,
+                                                             "objArray",
+                                                             getClass().getClassLoader() );
         assertEquals( objArray,
-                      ext3.getValue( null, obj ) );
+                      ext3.getValue( null,
+                                     obj ) );
 
     }
 
     public void testInterface() throws Exception {
 
         final TestInterface obj = new TestInterfaceImpl();
-        final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( TestInterface.class,
-                                                                               "something",
-                                                                               getClass().getClassLoader() );
+        final ClassFieldExtractor ext = cache.getExtractor( TestInterface.class,
+                                                            "something",
+                                                            getClass().getClassLoader() );
 
         assertEquals( "foo",
-                      (String) ext.getValue( null, obj ) );
+                      (String) ext.getValue( null,
+                                             obj ) );
 
     }
 
     public void testAbstract() throws Exception {
 
-        final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( TestAbstract.class,
-                                                                               "something",
-                                                                               getClass().getClassLoader() );
+        final ClassFieldExtractor ext = cache.getExtractor( TestAbstract.class,
+                                                            "something",
+                                                            getClass().getClassLoader() );
         final TestAbstract obj = new TestAbstractImpl();
         assertEquals( "foo",
-                      (String) ext.getValue( null, obj ) );
+                      (String) ext.getValue( null,
+                                             obj ) );
 
     }
 
     public void testInherited() throws Exception {
-        final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( BeanInherit.class,
-                                                                               "text",
-                                                                               getClass().getClassLoader() );
+        final ClassFieldExtractor ext = cache.getExtractor( BeanInherit.class,
+                                                            "text",
+                                                            getClass().getClassLoader() );
         final BeanInherit obj = new BeanInherit();
         assertEquals( "hola",
-                      (String) ext.getValue( null, obj ) );
+                      (String) ext.getValue( null,
+                                             obj ) );
 
     }
 
     public void testMultipleInterfaces() throws Exception {
         final ConcreteChild obj = new ConcreteChild();
-        final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( InterfaceChild.class,
-                                                                               "foo",
-                                                                               getClass().getClassLoader() );
+        final ClassFieldExtractor ext = cache.getExtractor( InterfaceChild.class,
+                                                            "foo",
+                                                            getClass().getClassLoader() );
         assertEquals( 42,
-                      ((Number) ext.getValue( null, obj )).intValue() );
+                      ((Number) ext.getValue( null,
+                                              obj )).intValue() );
     }
 
     public void testLong() throws Exception {
-        final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                               "longField",
-                                                                               getClass().getClassLoader() );
+        final ClassFieldExtractor ext = cache.getExtractor( TestBean.class,
+                                                            "longField",
+                                                            getClass().getClassLoader() );
         final TestBean bean = new TestBean();
         assertEquals( 424242,
-                      ((Number) ext.getValue( null, bean )).longValue() );
+                      ((Number) ext.getValue( null,
+                                              bean )).longValue() );
     }
 
     public void testNonExistentField() throws Exception {
@@ -117,15 +132,15 @@ public class ClassFieldExtractorTest extends TestCase {
         obj.setObjArray( objArray );
 
         try {
-            final ClassFieldExtractor ext = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                                   "xyz",
-                                                                                   getClass().getClassLoader() );
-            fail( "A RuntimeDroolsException should have been raised");
+            final ClassFieldExtractor ext = cache.getExtractor( TestBean.class,
+                                                                "xyz",
+                                                                getClass().getClassLoader() );
+            fail( "A RuntimeDroolsException should have been raised" );
         } catch ( RuntimeDroolsException e ) {
             e.printStackTrace();
             // everything is fine, since field does not exist
         } catch ( Exception e ) {
-            fail( "A RuntimeDroolsException should have been raised");
+            fail( "A RuntimeDroolsException should have been raised" );
         }
 
     }

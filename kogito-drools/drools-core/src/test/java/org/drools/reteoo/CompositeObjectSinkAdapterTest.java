@@ -22,12 +22,13 @@ import org.drools.spi.PropagationContext;
 
 public class CompositeObjectSinkAdapterTest extends TestCase {
     private ReteooRuleBase ruleBase;
-    private BuildContext buildContext;
-    
+    private BuildContext   buildContext;
+
     protected void setUp() throws Exception {
-        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
-        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
-    }    
+        this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        this.buildContext = new BuildContext( ruleBase,
+                                              ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
+    }
 
     public int    la;
     public int    blah;
@@ -225,9 +226,9 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     public void testPropagationWithNullValue() {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                          "type",
-                                                                          this.getClass().getClassLoader() );
+        FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
+                                                                                        "type",
+                                                                                        this.getClass().getClassLoader() );
         final LiteralConstraint lit1 = new LiteralConstraint( extractor,
                                                               StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
                                                               new ObjectFieldImpl( "stilton" ) );
@@ -262,7 +263,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                                       null,
                                       null );
         } catch ( RuntimeException e ) {
-            fail( "Not supposed to throw any exception: "+e.getMessage());
+            fail( "Not supposed to throw any exception: " + e.getMessage() );
         }
 
     }

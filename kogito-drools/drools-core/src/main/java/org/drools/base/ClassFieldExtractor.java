@@ -18,9 +18,11 @@ package org.drools.base;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.FieldExtractor;
 import org.drools.util.ClassUtils;
@@ -44,18 +46,36 @@ public class ClassFieldExtractor
     private String                   fieldName;
     private Class                    clazz;
     private transient FieldExtractor extractor;
-    
+
     public ClassFieldExtractor(final Class clazz,
                                final String fieldName) {
-        this( clazz, fieldName, null );
+        this( clazz,
+              fieldName,
+              clazz.getClassLoader() );
     }
 
     public ClassFieldExtractor(final Class clazz,
                                final String fieldName,
                                final ClassLoader classLoader) {
+        this( clazz,
+              fieldName,
+              classLoader == null ? clazz.getClassLoader() : classLoader,
+              new ClassFieldExtractorFactory() );
+    }
+
+    public ClassFieldExtractor(final Class clazz,
+                               final String fieldName,
+                               final ClassLoader classLoader,
+                               final ClassFieldExtractorFactory factory) {
         this.clazz = clazz;
         this.fieldName = fieldName;
-        init(classLoader);
+        init( classLoader,
+              factory );
+    }
+
+    private void writeObject(ObjectOutputStream s) throws IOException {
+        // Call even if there is no default serializable fields.
+        s.defaultWriteObject();
     }
 
     private void readObject(final ObjectInputStream is) throws ClassNotFoundException,
@@ -63,21 +83,32 @@ public class ClassFieldExtractor
                                                        Exception {
         //always perform the default de-serialization first
         is.defaultReadObject();
-        
-        // do not create the extractor yet, readResolver will do this, as it stops duplicate bytecode generation.
-    }
-    
-    
-    private Object readResolve() {
-        // always return the value from the cache
-        return ClassFieldExtractorCache.getExtractor( this.clazz, this.fieldName, this.clazz.getClassLoader() );
-    }    
+        if ( is instanceof DroolsObjectInputStream ) {
+            DroolsObjectInputStream dois = (DroolsObjectInputStream) is;
+            this.extractor = dois.getExtractorFactory().getExtractor( this.clazz,
+                                                                      this.fieldName,
+                                                                      dois.getClassLoader() );
+        } else {
+            this.extractor = ClassFieldExtractorCache.getInstance().getExtractor( this.clazz,
+                                                                                  this.fieldName,
+                                                                                  this.clazz.getClassLoader() );
 
-    public void init(final ClassLoader classLoader) {
+        }
+    }
+
+//    private Object readResolve() {
+//        // always return the value from the cache
+//        return ClassFieldExtractorCache.getInstance().getExtractor( this.clazz,
+//                                                                    this.fieldName,
+//                                                                    this.clazz.getClassLoader() );
+//    }
+
+    private void init(final ClassLoader classLoader,
+                      final ClassFieldExtractorFactory factory) {
         try {
-            this.extractor = ClassFieldExtractorFactory.getClassFieldExtractor( this.clazz,
-                                                                                this.fieldName,
-                                                                                classLoader );
+            this.extractor = factory.getClassFieldExtractor( this.clazz,
+                                                             this.fieldName,
+                                                             classLoader );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
@@ -91,8 +122,10 @@ public class ClassFieldExtractor
         return this.fieldName;
     }
 
-    public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getValue( workingMemory, object );
+    public Object getValue(InternalWorkingMemory workingMemory,
+                           final Object object) {
+        return this.extractor.getValue( workingMemory,
+                                        object );
     }
 
     public ValueType getValueType() {
@@ -129,48 +162,68 @@ public class ClassFieldExtractor
         return this.extractor.getValueType() == other.getValueType() && this.extractor.getIndex() == other.getIndex();
     }
 
-    public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getBooleanValue( workingMemory, object );
+    public boolean getBooleanValue(InternalWorkingMemory workingMemory,
+                                   final Object object) {
+        return this.extractor.getBooleanValue( workingMemory,
+                                               object );
     }
 
-    public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getByteValue( workingMemory, object );
+    public byte getByteValue(InternalWorkingMemory workingMemory,
+                             final Object object) {
+        return this.extractor.getByteValue( workingMemory,
+                                            object );
     }
 
-    public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getCharValue( workingMemory, object );
+    public char getCharValue(InternalWorkingMemory workingMemory,
+                             final Object object) {
+        return this.extractor.getCharValue( workingMemory,
+                                            object );
     }
 
-    public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getDoubleValue( workingMemory, object );
+    public double getDoubleValue(InternalWorkingMemory workingMemory,
+                                 final Object object) {
+        return this.extractor.getDoubleValue( workingMemory,
+                                              object );
     }
 
-    public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getFloatValue( workingMemory, object );
+    public float getFloatValue(InternalWorkingMemory workingMemory,
+                               final Object object) {
+        return this.extractor.getFloatValue( workingMemory,
+                                             object );
     }
 
-    public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getIntValue( workingMemory, object );
+    public int getIntValue(InternalWorkingMemory workingMemory,
+                           final Object object) {
+        return this.extractor.getIntValue( workingMemory,
+                                           object );
     }
 
-    public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getLongValue( workingMemory, object );
+    public long getLongValue(InternalWorkingMemory workingMemory,
+                             final Object object) {
+        return this.extractor.getLongValue( workingMemory,
+                                            object );
     }
 
-    public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getShortValue( workingMemory, object );
+    public short getShortValue(InternalWorkingMemory workingMemory,
+                               final Object object) {
+        return this.extractor.getShortValue( workingMemory,
+                                             object );
     }
-    
-    public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.isNullValue( workingMemory, object );
+
+    public boolean isNullValue(InternalWorkingMemory workingMemory,
+                               final Object object) {
+        return this.extractor.isNullValue( workingMemory,
+                                           object );
     }
-   
+
     public Method getNativeReadMethod() {
         return this.extractor.getNativeReadMethod();
     }
 
-    public int getHashCode(InternalWorkingMemory workingMemory, final Object object) {
-        return this.extractor.getHashCode( workingMemory, object );
+    public int getHashCode(InternalWorkingMemory workingMemory,
+                           final Object object) {
+        return this.extractor.getHashCode( workingMemory,
+                                           object );
     }
 
     public boolean isGlobal() {

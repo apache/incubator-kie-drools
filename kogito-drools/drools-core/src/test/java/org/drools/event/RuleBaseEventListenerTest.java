@@ -44,40 +44,39 @@ import org.drools.spi.KnowledgeHelper;
  */
 public class RuleBaseEventListenerTest extends TestCase {
 
-    private RuleBase ruleBase;
+    private RuleBase             ruleBase;
     private TestRuleBaseListener listener1;
     private TestRuleBaseListener listener2;
-    private Package pkg;
+    private Package              pkg;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        
+
         ruleBase = RuleBaseFactory.newRuleBase();
-        listener1 = new TestRuleBaseListener("(listener-1) ");
-        listener2 = new TestRuleBaseListener("(listener-2) ");
+        listener1 = new TestRuleBaseListener( "(listener-1) " );
+        listener2 = new TestRuleBaseListener( "(listener-2) " );
         ruleBase.addEventListener( listener1 );
         ruleBase.addEventListener( listener2 );
-        
-        
+
         final Rule rule1 = new Rule( "test1" );
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
         final Pattern pattern = new Pattern( 0,
-                                    cheeseObjectType );
+                                             cheeseObjectType );
 
-        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type",
-                                                                                     getClass().getClassLoader() );
+        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
+                                                                                                   "type",
+                                                                                                   getClass().getClassLoader() );
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
         final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                              evaluator,
-                                                              field );
+                                                                    evaluator,
+                                                                    field );
         pattern.addConstraint( constraint );
         rule1.addPattern( pattern );
 
@@ -88,17 +87,17 @@ public class RuleBaseEventListenerTest extends TestCase {
                                  final WorkingMemory workingMemory) throws Exception {
             }
         } );
-        
+
         final Rule rule2 = new Rule( "test2" );
         final ClassObjectType cheeseObjectType2 = new ClassObjectType( Cheese.class );
         final Pattern pattern2 = new Pattern( 0,
-                                    cheeseObjectType2 );
+                                              cheeseObjectType2 );
 
         final FieldValue field2 = FieldFactory.getFieldValue( "stilton" );
 
         final LiteralConstraint constraint2 = new LiteralConstraint( extractor,
-                                                              evaluator,
-                                                              field2 );
+                                                                     evaluator,
+                                                                     field2 );
         pattern2.addConstraint( constraint2 );
         rule2.addPattern( pattern2 );
 
@@ -109,11 +108,11 @@ public class RuleBaseEventListenerTest extends TestCase {
                                  final WorkingMemory workingMemory) throws Exception {
             }
         } );
-        
-        pkg = new Package("org.drools.test1");
+
+        pkg = new Package( "org.drools.test1" );
         pkg.addRule( rule1 );
         pkg.addRule( rule2 );
-        
+
     }
 
     /* (non-Javadoc)
@@ -142,7 +141,7 @@ public class RuleBaseEventListenerTest extends TestCase {
                       listener2.getAfterRuleAdded() );
 
         this.ruleBase.addPackage( pkg );
-        
+
         assertEquals( 1,
                       listener1.getBeforePackageAdded() );
         assertEquals( 1,
@@ -160,7 +159,7 @@ public class RuleBaseEventListenerTest extends TestCase {
         assertEquals( 2,
                       listener2.getAfterRuleAdded() );
     }
-    
+
     public void testRemovePackageEvents() throws Exception {
         this.ruleBase.addPackage( pkg );
 
@@ -183,7 +182,7 @@ public class RuleBaseEventListenerTest extends TestCase {
                       listener2.getAfterRuleRemoved() );
 
         this.ruleBase.removePackage( "org.drools.test1" );
-        
+
         assertEquals( 1,
                       listener1.getBeforePackageRemoved() );
         assertEquals( 1,
@@ -202,18 +201,19 @@ public class RuleBaseEventListenerTest extends TestCase {
                       listener2.getAfterRuleRemoved() );
 
     }
-    
-    public static class TestRuleBaseListener implements RuleBaseEventListener {
+
+    public static class TestRuleBaseListener
+        implements
+        RuleBaseEventListener {
         private String id;
-        private int beforePackageAdded = 0;
-        private int afterPackageAdded = 0;
-        private int beforePackageRemoved = 0;
-        private int afterPackageRemoved = 0;
-        private int beforeRuleAdded = 0;
-        private int afterRuleAdded = 0;
-        private int beforeRuleRemoved = 0;
-        private int afterRuleRemoved = 0;
-        
+        private int    beforePackageAdded   = 0;
+        private int    afterPackageAdded    = 0;
+        private int    beforePackageRemoved = 0;
+        private int    afterPackageRemoved  = 0;
+        private int    beforeRuleAdded      = 0;
+        private int    afterRuleAdded       = 0;
+        private int    beforeRuleRemoved    = 0;
+        private int    afterRuleRemoved     = 0;
 
         public TestRuleBaseListener(String id) {
             super();
@@ -221,12 +221,12 @@ public class RuleBaseEventListenerTest extends TestCase {
         }
 
         public void afterPackageAdded(AfterPackageAddedEvent event) {
-//            System.out.println( this.id + event );
+            //            System.out.println( this.id + event );
             this.afterPackageAdded++;
         }
 
         public void beforePackageAdded(BeforePackageAddedEvent event) {
-//            System.out.println( this.id + event );
+            //            System.out.println( this.id + event );
             this.beforePackageAdded++;
         }
 
@@ -243,12 +243,12 @@ public class RuleBaseEventListenerTest extends TestCase {
         }
 
         public void afterPackageRemoved(AfterPackageRemovedEvent event) {
-//            System.out.println( this.id + event );
+            //            System.out.println( this.id + event );
             this.afterPackageRemoved++;
         }
 
         public void beforePackageRemoved(BeforePackageRemovedEvent event) {
-//            System.out.println( this.id + event );
+            //            System.out.println( this.id + event );
             this.beforePackageRemoved++;
         }
 
@@ -269,12 +269,12 @@ public class RuleBaseEventListenerTest extends TestCase {
         }
 
         public void afterRuleAdded(AfterRuleAddedEvent event) {
-//            System.out.println( this.id + event );
+            //            System.out.println( this.id + event );
             this.afterRuleAdded++;
         }
 
         public void beforeRuleAdded(BeforeRuleAddedEvent event) {
-//            System.out.println( this.id + event );
+            //            System.out.println( this.id + event );
             this.beforeRuleAdded++;
         }
 
@@ -287,15 +287,15 @@ public class RuleBaseEventListenerTest extends TestCase {
         }
 
         public void afterRuleRemoved(AfterRuleRemovedEvent event) {
-//            System.out.println( this.id + event );
+            //            System.out.println( this.id + event );
             this.afterRuleRemoved++;
         }
 
         public void beforeRuleRemoved(BeforeRuleRemovedEvent event) {
-//            System.out.println( this.id + event );
+            //            System.out.println( this.id + event );
             this.beforeRuleRemoved++;
         }
-        
+
     }
-    
+
 }

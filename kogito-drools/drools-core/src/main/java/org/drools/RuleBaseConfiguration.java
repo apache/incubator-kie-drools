@@ -98,16 +98,73 @@ public class RuleBaseConfiguration
     private Map                         shadowProxyExcludes;
     private static final String         STAR             = "*";
 
+    private transient ClassLoader       classLoader;
+
+    /**
+     * Creates a new rulebase configuration using the provided properties
+     * as configuration options. Also, if a Thread.currentThread().getContextClassLoader()
+     * returns a non-null class loader, it will be used as the parent classloader
+     * for this rulebase class loaders, otherwise, the RuleBaseConfiguration.class.getClassLoader()
+     * class loader will be used.
+     *  
+     * @param properties
+     */
     public RuleBaseConfiguration(Properties properties) {
-        init( properties );
+        init( null,
+              properties );
     }
 
+    /**
+     * Creates a new rulebase with a default parent class loader set according
+     * to the following algorithm:
+     * 
+     * If a Thread.currentThread().getContextClassLoader() returns a non-null class loader, 
+     * it will be used as the parent class loader for this rulebase class loaders, otherwise, 
+     * the RuleBaseConfiguration.class.getClassLoader() class loader will be used.
+     *  
+     * @param properties
+     */
     public RuleBaseConfiguration() {
-        init( null );
+        init( null,
+              null );
     }
 
-    private void init(Properties properties) {
+    /**
+     * A constructor that sets the parent classloader to be used
+     * while dealing with this rule base
+     * 
+     * @param classLoader
+     */
+    public RuleBaseConfiguration(ClassLoader classLoader) {
+        init( classLoader,
+              null );
+    }
+
+    /**
+     * A constructor that sets the classloader to be used as the parent classloader
+     * of this rule base classloaders, and the properties to be used
+     * as base configuration options
+     * 
+     * @param classLoder
+     * @param properties
+     */
+    public RuleBaseConfiguration(ClassLoader classLoder,
+                                 Properties properties) {
+        init( classLoader,
+              properties );
+    }
+
+    private void init(ClassLoader classLoader,
+                      Properties properties) {
         this.immutable = false;
+
+        if ( classLoader != null ) {
+            this.classLoader = classLoader;
+        } else if ( Thread.currentThread().getContextClassLoader() != null ) {
+            this.classLoader = Thread.currentThread().getContextClassLoader();
+        } else {
+            this.classLoader = this.getClass().getClassLoader();
+        }
 
         this.chainedProperties = new ChainedProperties( "rulebase.conf" );
 
@@ -160,7 +217,6 @@ public class RuleBaseConfiguration
 
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
                                                                                                                   "org.drools.conflict.DepthConflictResolver" ) ) );
-
 
         setShadowProxy( determineShadowProxy( this.chainedProperties.getProperty( "drools.shadowproxy",
                                                                                   null ) ) );
@@ -401,6 +457,14 @@ public class RuleBaseConfiguration
         return this.shadowProxy;
     }
 
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
     public void setShadowProxyExcludes(String excludes) {
         checkCanChange(); // throws an exception if a change isn't possible;
         if ( excludes == null || "".equals( excludes.trim() ) ) {
@@ -616,4 +680,5 @@ public class RuleBaseConfiguration
             return "SequentialAgenda : " + ((this.value == 0) ? "sequential" : "dynamic");
         }
     }
+
 }

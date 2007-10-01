@@ -17,7 +17,6 @@ import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DialectConfiguration;
-import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -27,12 +26,14 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.ReturnValueRestriction;
-import org.drools.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.spi.FieldExtractor;
 
 public class MVELReturnValueBuilderTest extends TestCase {
+    
+    private ClassFieldExtractorCache cache;
 
     public void setUp() {
+        cache = ClassFieldExtractorCache.getInstance();
     }
 
     public void testSimpleExpression() {
@@ -50,7 +51,7 @@ public class MVELReturnValueBuilderTest extends TestCase {
                                                                                mvelDialect );
         
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class, "price",
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class, "price",
                                                                                 getClass().getClassLoader() );
         
         final Pattern patternA = new Pattern( 0,

@@ -15,11 +15,12 @@ import org.drools.util.AbstractHashTable.SingleIndex;
 import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
 
 public class FieldIndexEntryTest extends TestCase {
+    ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
 
     public void testSingleEntry() {
-        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type",
-                                                                                     getClass().getClassLoader() );
+        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                                  "type",
+                                                                  getClass().getClassLoader() );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
@@ -61,9 +62,9 @@ public class FieldIndexEntryTest extends TestCase {
     }
 
     public void testTwoEntries() {
-        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor(  Cheese.class,
-                                                                                      "type",
-                                                                                      getClass().getClassLoader() );
+        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                                  "type",
+                                                                  getClass().getClassLoader() );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
                                                       StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
@@ -113,9 +114,9 @@ public class FieldIndexEntryTest extends TestCase {
     }
 
     public void testThreeEntries() {
-        final ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                                                     "type",
-                                                                                     getClass().getClassLoader() );
+        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                                  "type",
+                                                                  getClass().getClassLoader() );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
                                                       StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );

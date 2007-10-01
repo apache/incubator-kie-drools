@@ -13,7 +13,6 @@ import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DialectConfiguration;
-import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.EvalDescr;
@@ -27,16 +26,19 @@ import org.drools.spi.FieldExtractor;
 
 public class MVELEvalBuilderTest extends TestCase {
 
+    private ClassFieldExtractorCache cache;
+
     public void setUp() {
+        cache = ClassFieldExtractorCache.getInstance();
     }
 
     public void testSimpleExpression() {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
-               
+
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        MVELDialect mvelDialect = ( MVELDialect ) ( (DialectConfiguration) conf.getDialectConfiguration( "mvel" ) ).getDialect();
+        MVELDialect mvelDialect = (MVELDialect) ((DialectConfiguration) conf.getDialectConfiguration( "mvel" )).getDialect();
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
                                                                                pkg,
@@ -45,10 +47,11 @@ public class MVELEvalBuilderTest extends TestCase {
                                                                                mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
-        
-        final FieldExtractor extractor = ClassFieldExtractorCache.getExtractor( Cheese.class, "price",
-                                                                                getClass().getClassLoader() );
-        
+
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "price",
+                                                             getClass().getClassLoader() );
+
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( int.class ) );
         final Declaration declaration = new Declaration( "a",
@@ -80,7 +83,7 @@ public class MVELEvalBuilderTest extends TestCase {
 
         cheddar.setPrice( 9 );
         wm.update( f0,
-                         cheddar );
+                   cheddar );
         assertFalse( eval.isAllowed( tuple,
                                      wm ) );
     }

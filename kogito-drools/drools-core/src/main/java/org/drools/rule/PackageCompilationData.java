@@ -28,7 +28,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +36,6 @@ import java.util.Map.Entry;
 
 import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
-import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.spi.Accumulator;

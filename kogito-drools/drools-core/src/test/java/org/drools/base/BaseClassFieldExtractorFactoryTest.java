@@ -27,59 +27,74 @@ import org.drools.util.asm.TestInterfaceImpl;
 
 public class BaseClassFieldExtractorFactoryTest extends TestCase {
 
+    private ClassFieldExtractorCache cache;
+
+    protected void setUp() throws Exception {
+        super.setUp();
+        cache = ClassFieldExtractorCache.getInstance();
+    }
+
     public void testIt() throws Exception {
-        FieldExtractor ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
-                                                                               "name",
-                                                                               Thread.currentThread().getContextClassLoader() );
+        ClassFieldExtractorFactory factory = new ClassFieldExtractorFactory();
+
+        FieldExtractor ex = factory.getClassFieldExtractor( TestBean.class,
+                                                            "name",
+                                                            Thread.currentThread().getContextClassLoader() );
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "michael",
-                      ex.getValue( null, new TestBean() ) );
-        ex = ClassFieldExtractorFactory.getClassFieldExtractor( TestBean.class,
-                                                                "age",
-                                                                Thread.currentThread().getContextClassLoader() );
+                      ex.getValue( null,
+                                   new TestBean() ) );
+        ex = factory.getClassFieldExtractor( TestBean.class,
+                                             "age",
+                                             Thread.currentThread().getContextClassLoader() );
         assertEquals( 1,
                       ex.getIndex() );
         assertEquals( 42,
-                      ((Number) ex.getValue( null, new TestBean() )).intValue() );
+                      ((Number) ex.getValue( null,
+                                             new TestBean() )).intValue() );
 
     }
 
     public void testInterface() throws Exception {
-        final FieldExtractor ex = ClassFieldExtractorCache.getExtractor( TestInterface.class,
-                                                                         "something",
-                                                                         getClass().getClassLoader() );
+        final FieldExtractor ex = cache.getExtractor( TestInterface.class,
+                                                      "something",
+                                                      getClass().getClassLoader() );
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "foo",
-                      ex.getValue( null, new TestInterfaceImpl() ) );
+                      ex.getValue( null,
+                                   new TestInterfaceImpl() ) );
     }
 
     public void testAbstract() throws Exception {
-        final FieldExtractor ex = ClassFieldExtractorCache.getExtractor( TestAbstract.class,
-                                                                         "something",
-                                                                         getClass().getClassLoader() );
+        final FieldExtractor ex = cache.getExtractor( TestAbstract.class,
+                                                      "something",
+                                                      getClass().getClassLoader() );
         assertEquals( 0,
                       ex.getIndex() );
         assertEquals( "foo",
-                      ex.getValue( null, new TestAbstractImpl() ) );
+                      ex.getValue( null,
+                                   new TestAbstractImpl() ) );
     }
 
     public void testInherited() throws Exception {
-        final FieldExtractor ex = ClassFieldExtractorCache.getExtractor( BeanInherit.class,
-                                                                         "text",
-                                                                         getClass().getClassLoader() );
+        final FieldExtractor ex = cache.getExtractor( BeanInherit.class,
+                                                      "text",
+                                                      getClass().getClassLoader() );
         assertEquals( "hola",
-                      ex.getValue( null, new BeanInherit() ) );
+                      ex.getValue( null,
+                                   new BeanInherit() ) );
     }
 
     public void testSelfReference() throws Exception {
-        final FieldExtractor ex = ClassFieldExtractorCache.getExtractor( BeanInherit.class,
-                                                                         "this",
-                                                                         getClass().getClassLoader() );
+        final FieldExtractor ex = cache.getExtractor( BeanInherit.class,
+                                                      "this",
+                                                      getClass().getClassLoader() );
         final TestBean bean = new TestBean();
         assertEquals( bean,
-                      ex.getValue( null, bean ) );
+                      ex.getValue( null,
+                                   bean ) );
     }
 
 }

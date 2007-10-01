@@ -60,6 +60,15 @@ public class PackageBuilderConfiguration {
     private Map                 accumulateFunctions;
 
     /**
+     * Constructor that sets the parent class loader for the package being built/compiled
+     * @param classLoader
+     */
+    public PackageBuilderConfiguration(ClassLoader classLoader ) {
+        init( classLoader,
+              null );
+    }
+
+    /**
      * Programmatic properties file, added with lease precedence
      * @param properties
      */

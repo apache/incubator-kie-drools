@@ -60,9 +60,9 @@ public class ClassFieldExtractorFactory {
 
     private static final ProtectionDomain PROTECTION_DOMAIN;
 
-    private static final Map              inspectors           = new HashMap();
-    
-    private static ByteArrayClassLoader   byteArrayClassLoader;
+    private final Map                     inspectors           = new HashMap();
+
+    private ByteArrayClassLoader          byteArrayClassLoader;
 
     static {
         PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
@@ -72,14 +72,14 @@ public class ClassFieldExtractorFactory {
         } );
     }
 
-    public static BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
-                                                                 final String fieldName,
-                                                                 final ClassLoader classLoader) {
-        if ( byteArrayClassLoader == null ) {
-            if (classLoader == null ) {
-                throw new RuntimeDroolsException("ClassFieldExtractorFactory cannot have a null parent ClassLoader" );
-            }            
-            byteArrayClassLoader = new ByteArrayClassLoader( classLoader );            
+    public BaseClassFieldExtractor getClassFieldExtractor(final Class clazz,
+                                                          final String fieldName,
+                                                          final ClassLoader classLoader) {
+        if ( byteArrayClassLoader == null || byteArrayClassLoader.getParent() != classLoader ) {
+            if ( classLoader == null ) {
+                throw new RuntimeDroolsException( "ClassFieldExtractorFactory cannot have a null parent ClassLoader" );
+            }
+            byteArrayClassLoader = new ByteArrayClassLoader( classLoader );
         }
         try {
             // if it is a self reference
@@ -87,7 +87,7 @@ public class ClassFieldExtractorFactory {
                 // then just create an instance of the special class field extractor
                 return new SelfReferenceClassFieldExtractor( clazz,
                                                              fieldName );
-            } else if( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 ) {
+            } else if ( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 ) {
                 // we need MVEL extractor for expressions
                 return new MVELClassFieldExtractor( clazz,
                                                     fieldName,
@@ -102,8 +102,8 @@ public class ClassFieldExtractorFactory {
                 }
                 final Class fieldType = (Class) inspector.getFieldTypes().get( fieldName );
                 final Method getterMethod = (Method) inspector.getGetterMethods().get( fieldName );
-                if( fieldType != null && getterMethod != null ) {
-                    final String className = ClassFieldExtractorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + "$" + getterMethod.getName();
+                if ( fieldType != null && getterMethod != null ) {
+                    final String className = ClassFieldExtractorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + Math.abs( System.identityHashCode( clazz ) ) + "$" + getterMethod.getName();
 
                     // generating byte array to create target class
                     final byte[] bytes = dump( clazz,
@@ -123,7 +123,7 @@ public class ClassFieldExtractorFactory {
                     final Object[] params = {index, fieldType, valueType};
                     return (BaseClassFieldExtractor) newClass.getConstructors()[0].newInstance( params );
                 } else {
-                    throw new RuntimeDroolsException("Field/method '"+fieldName+"' not found for class '"+clazz.getName()+"'" );
+                    throw new RuntimeDroolsException( "Field/method '" + fieldName + "' not found for class '" + clazz.getName() + "'" );
                 }
             }
         } catch ( final RuntimeDroolsException e ) {
@@ -133,11 +133,11 @@ public class ClassFieldExtractorFactory {
         }
     }
 
-    private static byte[] dump(final Class originalClass,
-                               final String className,
-                               final Method getterMethod,
-                               final Class fieldType,
-                               final boolean isInterface) throws Exception {
+    private byte[] dump(final Class originalClass,
+                        final String className,
+                        final Method getterMethod,
+                        final Class fieldType,
+                        final boolean isInterface) throws Exception {
 
         final ClassWriter cw = new ClassWriter( true );
 
@@ -172,9 +172,9 @@ public class ClassFieldExtractorFactory {
      * @param className The extractor class name
      * @param cw
      */
-    protected static void buildClassHeader(final Class superClass,
-                                           final String className,
-                                           final ClassWriter cw) {
+    protected void buildClassHeader(final Class superClass,
+                                    final String className,
+                                    final ClassWriter cw) {
         cw.visit( Opcodes.V1_2,
                   Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
                   className,
@@ -256,9 +256,9 @@ public class ClassFieldExtractorFactory {
      * @param className
      * @param cw
      */
-    private static void build3ArgConstructor(final Class superClazz,
-                                             final String className,
-                                             final ClassWriter cw) {
+    private void build3ArgConstructor(final Class superClazz,
+                                      final String className,
+                                      final ClassWriter cw) {
         MethodVisitor mv;
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
@@ -326,11 +326,11 @@ public class ClassFieldExtractorFactory {
      * @param method
      * @param cw
      */
-    protected static void buildGetMethod(final Class originalClass,
-                                         final String className,
-                                         final Class superClass,
-                                         final Method getterMethod,
-                                         final ClassWriter cw) {
+    protected void buildGetMethod(final Class originalClass,
+                                  final String className,
+                                  final Class superClass,
+                                  final Method getterMethod,
+                                  final ClassWriter cw) {
 
         final Class fieldType = getterMethod.getReturnType();
         Method overridingMethod;
@@ -393,7 +393,7 @@ public class ClassFieldExtractorFactory {
         mv.visitEnd();
     }
 
-    private static String getOverridingMethodName(final Class fieldType) {
+    private String getOverridingMethodName(final Class fieldType) {
         String ret = null;
         if ( fieldType.isPrimitive() ) {
             if ( fieldType == char.class ) {
@@ -426,7 +426,7 @@ public class ClassFieldExtractorFactory {
      * @param fieldType
      * @return
      */
-    private static Class getSuperClassFor(final Class fieldType) {
+    private Class getSuperClassFor(final Class fieldType) {
         Class ret = null;
         if ( fieldType.isPrimitive() ) {
             if ( fieldType == char.class ) {

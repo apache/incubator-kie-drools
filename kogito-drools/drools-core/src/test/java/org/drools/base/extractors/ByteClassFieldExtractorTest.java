@@ -3,14 +3,13 @@ package org.drools.base.extractors;
 import junit.framework.Assert;
 
 import org.drools.base.ClassFieldExtractorCache;
-import org.drools.base.ClassFieldExtractorFactory;
 import org.drools.base.TestBean;
 import org.drools.spi.Extractor;
 
 public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
-    Extractor extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                 "byteAttr",
-                                                                 getClass().getClassLoader() );
+    Extractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( TestBean.class,
+                                                                               "byteAttr",
+                                                                               getClass().getClassLoader() );
     TestBean  bean      = new TestBean();
 
     protected void setUp() throws Exception {
@@ -19,7 +18,8 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     public void testGetBooleanValue() {
         try {
-            this.extractor.getBooleanValue( null, this.bean );
+            this.extractor.getBooleanValue( null,
+                                            this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -29,7 +29,8 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetByteValue() {
         try {
             Assert.assertEquals( 1,
-                                 this.extractor.getByteValue( null, this.bean ) );
+                                 this.extractor.getByteValue( null,
+                                                              this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -37,7 +38,8 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     public void testGetCharValue() {
         try {
-            this.extractor.getCharValue( null, this.bean );
+            this.extractor.getCharValue( null,
+                                         this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -47,7 +49,8 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetDoubleValue() {
         try {
             Assert.assertEquals( 1.0,
-                                 this.extractor.getDoubleValue( null, this.bean ),
+                                 this.extractor.getDoubleValue( null,
+                                                                this.bean ),
                                  0.01 );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
@@ -57,7 +60,8 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetFloatValue() {
         try {
             Assert.assertEquals( 1.0f,
-                                 this.extractor.getFloatValue( null, this.bean ),
+                                 this.extractor.getFloatValue( null,
+                                                               this.bean ),
                                  0.01 );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
@@ -67,7 +71,8 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetIntValue() {
         try {
             Assert.assertEquals( 1,
-                                 this.extractor.getIntValue( null, this.bean ) );
+                                 this.extractor.getIntValue( null,
+                                                             this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -76,7 +81,8 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetLongValue() {
         try {
             Assert.assertEquals( 1,
-                                 this.extractor.getLongValue( null, this.bean ) );
+                                 this.extractor.getLongValue( null,
+                                                              this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -85,7 +91,8 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetShortValue() {
         try {
             Assert.assertEquals( 1,
-                                 this.extractor.getShortValue( null, this.bean ) );
+                                 this.extractor.getShortValue( null,
+                                                               this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -94,15 +101,17 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     public void testGetValue() {
         try {
             Assert.assertEquals( 1,
-                                 ((Number) this.extractor.getValue( null, this.bean )).byteValue() );
+                                 ((Number) this.extractor.getValue( null,
+                                                                    this.bean )).byteValue() );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
     }
-    
+
     public void testIsNullValue() {
         try {
-            Assert.assertFalse( this.extractor.isNullValue( null, this.bean ) );
+            Assert.assertFalse( this.extractor.isNullValue( null,
+                                                            this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }

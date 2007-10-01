@@ -11,9 +11,9 @@ import org.drools.spi.Extractor;
 
 public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
-    Extractor extractor = ClassFieldExtractorCache.getExtractor( TestBean.class,
-                                                                 "listAttr",
-                                                                 getClass().getClassLoader() );
+    Extractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( TestBean.class,
+                                                                               "listAttr",
+                                                                               getClass().getClassLoader() );
     TestBean  bean      = new TestBean();
 
     protected void setUp() throws Exception {
@@ -22,7 +22,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetBooleanValue() {
         try {
-            this.extractor.getBooleanValue( null, this.bean );
+            this.extractor.getBooleanValue( null,
+                                            this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -31,7 +32,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetByteValue() {
         try {
-            this.extractor.getByteValue( null, this.bean );
+            this.extractor.getByteValue( null,
+                                         this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -40,7 +42,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetCharValue() {
         try {
-            this.extractor.getCharValue( null, this.bean );
+            this.extractor.getCharValue( null,
+                                         this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -49,7 +52,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetDoubleValue() {
         try {
-            this.extractor.getDoubleValue( null, this.bean );
+            this.extractor.getDoubleValue( null,
+                                           this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -58,7 +62,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetFloatValue() {
         try {
-            this.extractor.getFloatValue( null, this.bean );
+            this.extractor.getFloatValue( null,
+                                          this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -67,7 +72,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetIntValue() {
         try {
-            this.extractor.getIntValue( null, this.bean );
+            this.extractor.getIntValue( null,
+                                        this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -76,7 +82,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetLongValue() {
         try {
-            this.extractor.getLongValue( null, this.bean );
+            this.extractor.getLongValue( null,
+                                         this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -85,7 +92,8 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testGetShortValue() {
         try {
-            this.extractor.getShortValue( null, this.bean );
+            this.extractor.getShortValue( null,
+                                          this.bean );
             fail( "Should have throw an exception" );
         } catch ( final Exception e ) {
             // success
@@ -95,8 +103,10 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
     public void testGetValue() {
         try {
             Assert.assertEquals( Collections.EMPTY_LIST,
-                                 this.extractor.getValue( null, this.bean ) );
-            Assert.assertTrue( this.extractor.getValue( null, this.bean ) instanceof List );
+                                 this.extractor.getValue( null,
+                                                          this.bean ) );
+            Assert.assertTrue( this.extractor.getValue( null,
+                                                        this.bean ) instanceof List );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
@@ -104,12 +114,14 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
 
     public void testIsNullValue() {
         try {
-            Assert.assertFalse( this.extractor.isNullValue( null, this.bean ) );
+            Assert.assertFalse( this.extractor.isNullValue( null,
+                                                            this.bean ) );
 
-            Extractor nullExtractor = ClassFieldExtractorCache.getExtractor(  TestBean.class,
-                                                                              "nullAttr",
-                                                                              getClass().getClassLoader() );
-            Assert.assertTrue( nullExtractor.isNullValue( null, this.bean ) );
+            Extractor nullExtractor = ClassFieldExtractorCache.getInstance().getExtractor( TestBean.class,
+                                                                                           "nullAttr",
+                                                                                           getClass().getClassLoader() );
+            Assert.assertTrue( nullExtractor.isNullValue( null,
+                                                          this.bean ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }

@@ -43,14 +43,17 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 
 public class QueryTerminalNodeTest extends TestCase {
-    private ReteooRuleBase ruleBase;
-    private BuildContext buildContext;
-    
+    private ReteooRuleBase   ruleBase;
+    private BuildContext     buildContext;
+
+    ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+
     protected void setUp() throws Exception {
-        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
-        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        this.buildContext = new BuildContext( ruleBase,
+                                              ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
     }
-    
+
     public void testQueryTerminalNode() {
         final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
         final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( this.buildContext.getNextId(),
@@ -58,9 +61,9 @@ public class QueryTerminalNodeTest extends TestCase {
                                                                        buildContext );
         queryObjectTypeNode.attach();
 
-        ClassFieldExtractor extractor = ClassFieldExtractorCache.getExtractor( DroolsQuery.class,
-                                                                               "name",
-                                                                               DroolsQuery.class.getClassLoader() );
+        ClassFieldExtractor extractor = cache.getExtractor( DroolsQuery.class,
+                                                            "name",
+                                                            DroolsQuery.class.getClassLoader() );
 
         FieldValue field = FieldFactory.getFieldValue( "query-1" );
 
@@ -72,7 +75,7 @@ public class QueryTerminalNodeTest extends TestCase {
         AlphaNode alphaNode = new AlphaNode( this.buildContext.getNextId(),
                                              constraint,
                                              queryObjectTypeNode,
-                                             buildContext  );
+                                             buildContext );
         alphaNode.attach();
 
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( this.buildContext.getNextId(),
@@ -86,9 +89,9 @@ public class QueryTerminalNodeTest extends TestCase {
                                                                         buildContext );
         cheeseObjectTypeNode.attach();
 
-        extractor = ClassFieldExtractorCache.getExtractor( Cheese.class,
-                                                           "type",
-                                                           getClass().getClassLoader() );
+        extractor = cache.getExtractor( Cheese.class,
+                                        "type",
+                                        getClass().getClassLoader() );
 
         field = FieldFactory.getFieldValue( "stilton" );
 
@@ -99,12 +102,13 @@ public class QueryTerminalNodeTest extends TestCase {
         alphaNode = new AlphaNode( this.buildContext.getNextId(),
                                    constraint,
                                    cheeseObjectTypeNode,
-                                   buildContext  );
+                                   buildContext );
         alphaNode.attach();
 
-        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( ruleBase,
+                                                      ruleBase.getReteooBuilder().getIdGenerator() );
         buildContext.setTupleMemoryEnabled( false );
-        
+
         final JoinNode joinNode = new JoinNode( this.buildContext.getNextId(),
                                                 liaNode,
                                                 alphaNode,
