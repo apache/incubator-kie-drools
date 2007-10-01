@@ -1,5 +1,7 @@
 package org.drools.decisiontable.parser;
 
+import org.drools.util.StringUtils;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -19,15 +21,31 @@ package org.drools.decisiontable.parser;
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
  * 
- * A column in a decision table
+ * Base column of in a decision table
  */
-public interface Column {
-	String getName();
+public abstract class AbstractColumn implements Column {
+	private String name;
 
-	Cell createCell(Row row);
+	public AbstractColumn(String n) {
+		this.name = n;
+	}
 
-	String getCellType();
+	public String getName() {
+		return name;
+	}
 
-	String getCondition(String condition, int index);
-
+	public String getCondition(String condition, int index) {
+		StringBuffer conditionString = new StringBuffer(getCellType());
+		conditionString.append("(row == r, column == $param");
+		if (index != -1) {
+			conditionString.append(", index == ").append(index);
+		}
+		if (!StringUtils.isEmpty(condition)) {
+			conditionString.append(", value ").append(condition);
+		}
+		conditionString.append(")");
+		return conditionString.toString();
+	}
+	
+	
 }

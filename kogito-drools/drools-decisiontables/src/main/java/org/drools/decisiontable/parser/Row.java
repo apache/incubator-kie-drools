@@ -34,7 +34,7 @@ public class Row {
     Row(int r, Column[] columns) {
         rowNum = r;
         for (int i = 0; i < columns.length; i++) {
-			cells.add(new Cell(this, columns[i]));
+			cells.add(columns[i].createCell(this));
 		}
     }
     
@@ -50,7 +50,7 @@ public class Row {
     boolean isEmpty() {
     	for (Iterator it = cells.iterator(); it.hasNext();) {
 			Cell cell = (Cell) it.next();
-			if (cell.getValue() != null)
+			if (!cell.isEmpty())
 			{
 				return false;
 			}

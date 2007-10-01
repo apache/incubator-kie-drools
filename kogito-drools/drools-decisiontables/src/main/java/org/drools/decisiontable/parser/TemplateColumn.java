@@ -1,5 +1,4 @@
 package org.drools.decisiontable.parser;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,19 +14,19 @@ package org.drools.decisiontable.parser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import org.drools.decisiontable.model.Rule;
 /**
+ * 
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
  * 
- * A column in a decision table
+ * A column condition for a rule template to be generated.
  */
-public interface Column {
+interface TemplateColumn {
+	void addCondition(final Rule rule);
+
 	String getName();
 
-	Cell createCell(Row row);
+	boolean isNotCondition();
 
-	String getCellType();
-
-	String getCondition(String condition, int index);
-
+	String getCondition();
 }

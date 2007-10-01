@@ -28,12 +28,14 @@ import java.util.Map;
  * 
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
  * 
- * Container for a set of templates (residing in one file).
- * This class will parse the template file. 
- *
+ * Container for a set of templates (residing in one file). This class will
+ * parse the template file.
+ * 
  */
 public class DefaultTemplateContainer implements TemplateContainer {
 	private String header;
+
+	private Map columnMap = new HashMap();
 
 	private List columns = new ArrayList();
 
@@ -55,7 +57,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
 		if (templates.size() == 0) {
 			throw new DecisionTableParseException("Missing templates");
 		}
-		
+
 	}
 
 	private void parseTemplate(final InputStream templateStream) {
@@ -79,7 +81,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
 						String quotedName = line.substring(8).trim();
 						quotedName = quotedName.substring(1, quotedName
 								.length() - 1);
-						template = new RuleTemplate(quotedName);
+						template = new RuleTemplate(quotedName, this);
 						addTemplate(template);
 
 					} else if (line.startsWith("package")) {
@@ -137,6 +139,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
 
 	private void addColumn(Column c) {
 		columns.add(c);
+		columnMap.put(c.getName(), c);
 	}
 
 	/*
@@ -165,5 +168,9 @@ public class DefaultTemplateContainer implements TemplateContainer {
 					+ "correctly close stream for decision table. "
 					+ e.getMessage());
 		}
+	}
+
+	public Column getColumn(final String name) {
+		return (Column) columnMap.get(name);
 	}
 }

@@ -19,6 +19,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,67 +30,53 @@ import org.drools.util.StringUtils;
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
  * 
- * A rule template made up of a name, the decision table columns required, 
- * the decision table columns that must be empty and the contents of the
- * rule.
+ * A rule template made up of a name, the decision table columns required, the
+ * decision table columns that must be empty and the contents of the rule.
  */
-public class RuleTemplate
-{
-    private String name;
-    private String contents;
-    private List columns;
-    private List notColumns;
+public class RuleTemplate {
+	private String name;
 
-    public RuleTemplate(final String n)
-    {
-        name = n;
-        columns = new ArrayList();
-        notColumns = new ArrayList();
-    }
+	private String contents;
 
-    public String getName()
-    {
-        return name;
-    }
+	private List columns;
 
-    public List getColumns()
-    {
-        return columns;
-    }
+	private TemplateContainer templateContainer;
 
-    public String[] getNotColumns()
-    {
-        return (String[]) notColumns.toArray(new String[notColumns.size()]);
-    }
-    
-    public String getContents()
-    {
-        return contents;
-    }
+	public RuleTemplate(final String n, final TemplateContainer tc) {
+		name = n;
+		columns = new ArrayList();
+		templateContainer = tc;
+	}
 
-    public void addColumn(String column)
-    {
-        if (column.startsWith("!"))
-        {
-            this.notColumns.add(column.substring(1));
-        }
-        else
-        {
-            this.columns.add(column);
-        }
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setContents(String contents)
-    {
-        this.contents = replaceOptionals(contents);
-    }
+	public List getColumns() {
+		return columns;
+	}
+
+	public String getContents() {
+		return contents;
+	}
+
+	public void addColumn(String columnString) {
+		TemplateColumn column = new DefaultTemplateColumn(templateContainer, columnString);
+		this.columns.add(column);
+	}
+
+	public void setContents(String contents) {
+		this.contents = replaceOptionals(contents);
+	}
 
 	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-	       return "RuleTemplate[name,"+this.name+"notColumns,"+this.notColumns+"contents,"+this.columns+"columns";
+		return "RuleTemplate[name," + this.name + "contents," + this.columns
+				+ "columns";
 	}
+
 	/*
 	 * Replace the optional columns in the rule contents with an if statement.
 	 * if (column is empty) do not show the line.
@@ -96,7 +84,7 @@ public class RuleTemplate
 	private String replaceOptionals(String contents) {
 		try {
 			final Pattern pattern = Pattern.compile("@\\{(.[^}]*)\\}");
-			final List columns = new ArrayList(getColumns());
+			final Collection columns = getColumnNames();
 			columns.add("row.rowNumber");
 			final BufferedReader reader = new BufferedReader(new StringReader(
 					contents));
@@ -109,12 +97,12 @@ public class RuleTemplate
 					final String c = matcher.group(1);
 					if (!columns.contains(c)) {
 						newLine.append("@if{").append(matcher.group(1)).append(
-								" != null} ");
+								" != null}");
 						optCols++;
 					}
 				}
 				newLine.append(line);
-				newLine.append(StringUtils.repeat(" @end{}", optCols));
+				newLine.append(StringUtils.repeat("@end{}", optCols));
 				newLine.append("\n");
 			}
 //			System.out.println("newLine: " + newLine);
@@ -124,5 +112,14 @@ public class RuleTemplate
 			throw new RuntimeException(e);
 		}
 	}
-    
+
+	private Collection getColumnNames() {
+		Collection columnNames = new ArrayList();
+		for (Iterator it = getColumns().iterator(); it.hasNext();) {
+			TemplateColumn column = (TemplateColumn) it.next();
+			columnNames.add(column.getName());
+		}
+		return columnNames;
+	}
+
 }

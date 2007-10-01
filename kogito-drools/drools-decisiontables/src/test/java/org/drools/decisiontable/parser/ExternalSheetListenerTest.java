@@ -70,9 +70,9 @@ public class ExternalSheetListenerTest extends TestCase {
 			// first column is not part of the decision table
 			int i = 1;
 			for (Iterator it2 = cells.iterator(); it2.hasNext(); i++) {
-				Cell cell = (Cell) it2.next();
+				StringCell cell = (StringCell) it2.next();
 				assertEquals("row" + row.getRowNumber() + "col" + i, cell.getValue());
-				assertEquals("Pattern " + i, cell.getColumn());
+				assertEquals("Pattern " + i, cell.getColumn().getName());
 			}
 		}
 	}
@@ -126,7 +126,7 @@ public class ExternalSheetListenerTest extends TestCase {
 					if (fact instanceof Row) {
 						assertedRows.put(fact, currentRow);
 						currentRow = new ArrayList();
-					} else {
+					} else if (fact instanceof Cell) {
 						currentRow.add(fact);
 					}
 					return null;
@@ -406,8 +406,8 @@ public class ExternalSheetListenerTest extends TestCase {
 		}
 
 		public Column[] getColumns() {
-			return new Column[] { new Column("Pattern 1"),
-					new Column("Pattern 2"), new Column("Pattern 3") };
+			return new Column[] { new StringColumn("Pattern 1"),
+					new StringColumn("Pattern 2"), new StringColumn("Pattern 3") };
 		}
 
 		public String getHeader() {
@@ -423,6 +423,10 @@ public class ExternalSheetListenerTest extends TestCase {
 
 		public void setTemplates(Map templates) {
 
+		}
+
+		public Column getColumn(String name) {
+			return null;
 		}
 	}
 

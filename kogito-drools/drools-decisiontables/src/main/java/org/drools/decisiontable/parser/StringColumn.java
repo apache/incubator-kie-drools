@@ -15,19 +15,29 @@ package org.drools.decisiontable.parser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.util.Map;
 
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
  * 
- * A column in a decision table
+ * A column of type String in a decision table
  */
-public interface Column {
-	String getName();
+public class StringColumn extends AbstractColumn {
 
-	Cell createCell(Row row);
+	public StringColumn(String n) {
+		super(n);
+	}
 
-	String getCellType();
+	public void addValue(Map vars, Object value) {
+		vars.put(getName(), value);
+	}
 
-	String getCondition(String condition, int index);
+	public Cell createCell(Row row) {
+		return new StringCell(row, this);
+	}
+
+	public String getCellType() {
+		return "StringCell";
+	}
 
 }
