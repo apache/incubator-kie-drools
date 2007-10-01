@@ -140,13 +140,13 @@ public class MVELDumper extends ReflectiveVisitor {
             return evaluatorPrefix( evaluator ) + 
                    this.fieldName + " " + 
                    evaluator( evaluator ) + " " + 
-                   value + evaluatorSufix( evaluator );
+                   value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
         } else if(op == Operator.NOT_MATCHES) {
             evaluator = "not ~=";
             return evaluatorPrefix( evaluator ) + 
                    this.fieldName + " " + 
                    evaluator( evaluator ) + " " + 
-                   value + evaluatorSufix( evaluator );
+                   value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
         }
         return evaluatorPrefix( evaluator ) + 
                this.fieldName + " " + 

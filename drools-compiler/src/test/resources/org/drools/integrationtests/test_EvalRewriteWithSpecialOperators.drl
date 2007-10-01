@@ -14,7 +14,6 @@ rule "eval rewrite with 'in'"
 	    Order( $id : number == 10 )
 		$o : OrderItem( order.number in ( 1, (1+1), $id ), seq == 1 )
 	then
-		System.err.println("r1");
 	    results.add( $o );
 end
 
@@ -24,7 +23,6 @@ rule "eval rewrite with 'not in'"
 	    Order( $id : number == 10 )
 		$o : OrderItem( order.number not in ( 1, (1+1), ( $id + 1 ) ), order.number == $id, seq == 2 )
 	then
-			System.err.println("r2");
 	    results.add( $o );
 end
 
@@ -34,7 +32,6 @@ rule "eval rewrite with 'contains'"
 		$o : OrderItem( order.number == 11, seq == 1 )
 	    Order( this.itemsValues contains $o )
 	then
-			System.err.println("r3");
 	    results.add( $o );
 end
 
@@ -44,7 +41,6 @@ rule "eval rewrite with 'not contains'"
 		$o : OrderItem( order.number == 11, seq == 2 )
 	    Order( number == 12, this.itemsValues not contains $o )
 	then
-			System.err.println("r4");
 	    results.add( $o );
 end
 
@@ -54,9 +50,6 @@ rule "eval rewrite with 'memberOf'"
 	    $order : Order( number == 12 )
 		$o : OrderItem( seq == 1, order.number==12, this.seq memberOf $order.itemsKeys )
 	then
-			System.err.println("r5");
-
-			System.out.println($order.getItemsKeys());
 	    results.add( $o );
 end
 
@@ -66,7 +59,6 @@ rule "eval rewrite with 'not memberOf'"
 	    $order : Order( number == 11 )
 		$o : OrderItem( seq == 3, order.number==12, this.seq not memberOf $order.itemsKeys )
 	then
-			System.err.println("r6");
 	    results.add( $o );
 end
 
@@ -76,7 +68,6 @@ rule "eval rewrite with 'excludes'"
 		$o : OrderItem( order.number == 13, seq == 1 )
 	    Order( number == 12, this.itemsValues excludes $o )
 	then
-			System.err.println("r7");
 	    results.add( $o );
 end
 
@@ -85,7 +76,6 @@ rule "eval rewrite with 'matches'"
 	when
 	    $o : Order( number == 14, this.customer matches "Mark" )
 	then
-				System.err.println("r8");
 	    results.add( $o );
 end
 
@@ -94,6 +84,5 @@ rule "eval rewrite with 'not matches'"
 	when
 	    $o : Order( number == 14, this.customer not matches "Bob" )
 	then
-			System.err.println("r9");
 	    results.add( $o );
 end
