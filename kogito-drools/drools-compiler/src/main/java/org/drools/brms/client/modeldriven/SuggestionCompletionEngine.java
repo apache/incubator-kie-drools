@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.brms.client.modeldriven.brl.ActionFieldList;
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brl.DSLSentence;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
 import org.drools.brms.client.modeldriven.brl.FieldConstraint;
@@ -258,26 +260,46 @@ public class SuggestionCompletionEngine
 			}
 		}
 
-
 		return (String[]) this.dataEnumLists.get(pat.factType + "." + field);
 	}
+
+	public String[] getEnums(String type, ActionFieldValue[] currentValues, String field) {
+		Map dataEnumLookupFields = loadDataEnumLookupFields();
+		String typeField = (String) dataEnumLookupFields.get(type + "." + field );
+
+		if (currentValues != null) {
+			for (int i = 0; i < currentValues.length; i++) {
+				ActionFieldValue val = currentValues[i];
+				if (val.field.equals(typeField)) {
+					String key = type + "." + field + "[" + typeField + "=" + val.value + "]";
+					return (String[]) this.dataEnumLists.get(key);
+				}
+			}
+		}
+
+		return (String[]) this.dataEnumLists.get(type + "." + field);
+
+
+	}
+
 
 	private Map loadDataEnumLookupFields() {
 		if (this.dataEnumLookupFields == null) {
 			this.dataEnumLookupFields = new HashMap();
-		}
-
-		Set keys = this.dataEnumLists.keySet();
-		for (Iterator iter = keys.iterator(); iter.hasNext();) {
-			String key = (String) iter.next();
-			if (key.indexOf('[') != -1) {
-				int ix = key.indexOf('[');
-				String factField = key.substring(0, ix);
-				String predicate = key.substring(ix + 1, key.indexOf(']'));
-				String typeField = predicate.substring(0, predicate.indexOf('='));
-				dataEnumLookupFields.put(factField, typeField);
+			Set keys = this.dataEnumLists.keySet();
+			for (Iterator iter = keys.iterator(); iter.hasNext();) {
+				String key = (String) iter.next();
+				if (key.indexOf('[') != -1) {
+					int ix = key.indexOf('[');
+					String factField = key.substring(0, ix);
+					String predicate = key.substring(ix + 1, key.indexOf(']'));
+					String typeField = predicate.substring(0, predicate.indexOf('='));
+					dataEnumLookupFields.put(factField, typeField);
+				}
 			}
 		}
+
+
 		return dataEnumLookupFields;
 	}
 

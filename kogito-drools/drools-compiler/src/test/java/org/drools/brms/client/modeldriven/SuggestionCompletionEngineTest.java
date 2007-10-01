@@ -6,6 +6,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
 import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.brms.server.rules.SuggestionCompletionLoader;
@@ -258,6 +259,16 @@ public class SuggestionCompletionEngineTest extends TestCase {
     	assertEquals(2, result.length);
     	assertEquals("sex", result[0]);
     	assertEquals("colour", result[1]);
+
+
+    	ActionFieldValue[] vals = new ActionFieldValue[2];
+    	vals[0] = new ActionFieldValue("type", "sex", "blah");
+    	vals[1] = new ActionFieldValue("value", null, "blah");
+    	result = sce.getEnums("Fact", vals, "value");
+    	assertNotNull(result);
+    	assertEquals(2, result.length);
+    	assertEquals("M", result[0]);
+    	assertEquals("F", result[1]);
 
 
     }
