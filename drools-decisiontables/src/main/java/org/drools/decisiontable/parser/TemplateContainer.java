@@ -22,6 +22,8 @@ public interface TemplateContainer {
 	Map getTemplates();
 
 	Column[] getColumns();
+	
+	Column getColumn(String name);
 
 	String getHeader();
 

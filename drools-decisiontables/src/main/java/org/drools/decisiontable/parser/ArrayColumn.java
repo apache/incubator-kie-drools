@@ -16,8 +16,6 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
-import java.util.Map;
-
 import org.drools.util.StringUtils;
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
@@ -25,22 +23,41 @@ import org.drools.util.StringUtils;
  * A column in a decision table that represents an array (comma-delimited)
  * of values.
  */
-public class ArrayColumn extends Column {
+public class ArrayColumn extends AbstractColumn {
 
-	public void addValue(Map vars, Object value) {
+	private Column type;
 
-		String[] values = ((String[]) value);
-		for (int i = 0; i < values.length; i++) {
-			vars.put(getName() + i, values[i]);
-		}
-	}
-
-	public ArrayColumn(String n) {
+	public ArrayColumn(String n, Column typeColumn) {
 		super(n);
+		this.type = typeColumn;
 	}
 
-	public Object getValue(String cellValue) {
-		return StringUtils.splitPreserveAllTokens(cellValue, ",");
+	public Cell createCell(Row row) {
+		return new ArrayCell(row, this);
+	}
+
+	public String getCellType() {
+		return type.getCellType();
+	}
+	
+	public Column getType() {
+		return type;
+	}
+
+	public String getCondition(String condition, int index) {
+		if (index == -1) {
+			StringBuffer conditionString = new StringBuffer("ArrayCell(row == r, column == $param");
+			if (!StringUtils.isEmpty(condition)) {
+				conditionString.append(", value ").append(condition);
+			}
+			conditionString.append(")");
+			return conditionString.toString();
+		}
+		else
+		{
+			return type.getCondition(condition, index);
+		}
+		
 	}
 
 }

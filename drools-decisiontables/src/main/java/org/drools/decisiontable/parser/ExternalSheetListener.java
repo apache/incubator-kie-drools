@@ -19,6 +19,7 @@ package org.drools.decisiontable.parser;
 import java.util.Properties;
 
 import org.drools.StatefulSession;
+import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.decisiontable.model.DRLOutput;
 
 /**
@@ -44,6 +45,8 @@ public class ExternalSheetListener implements RuleSheetListener {
 
 	private Generator generator;
 
+	private WorkingMemoryFileLogger logger;
+
 	public ExternalSheetListener(final int startRow, final int startCol,
 			final String template) {
 		this(startRow, startCol, new DefaultTemplateContainer(template));
@@ -68,8 +71,17 @@ public class ExternalSheetListener implements RuleSheetListener {
 		columns = tc.getColumns();
 		this.templateContainer = tc;
 		session = ruleBase.newStatefulSession();
+		logger = new WorkingMemoryFileLogger(session);
+		logger.setFileName("log/event");
 		this.generator = generator;
 		session.setGlobal("generator", generator);
+		assertColumns();
+	}
+
+	private void assertColumns() {
+		for (int i = 0; i < columns.length; i++) {
+			session.insert(columns[i]);			
+		}
 	}
 
 	public Properties getProperties() {
@@ -85,6 +97,7 @@ public class ExternalSheetListener implements RuleSheetListener {
 			session.insert(currentRow);
 		}
 		session.fireAllRules();
+		logger.writeToDisk();
 		session.dispose();
 	}
 
@@ -95,13 +108,9 @@ public class ExternalSheetListener implements RuleSheetListener {
 			int columnIndex = column - startCol;
 			// System.out.println("asserting cell " + row + ", " + column + ": "
 			// + value);
-			//Column col = columns[columnIndex];
-			//Cell cell = new Cell(currentRow, col, value);
-			//currentRow.addCell(cell);
 			Cell cell = currentRow.getCell(columnIndex);
 			cell.setValue(value);
-			session.insert(cell);
-
+			cell.insert(session);
 		}
 	}
 

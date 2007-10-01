@@ -2,6 +2,8 @@ package org.drools.decisiontable.parser;
 
 import java.util.Map;
 
+import org.drools.StatefulSession;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -23,42 +25,20 @@ import java.util.Map;
  * 
  * A cell in a decision table
  */
-public class Cell {
-	Row row;
+public interface Cell {
+	public Row getRow();
 
-	Object value;
-
-	Column column;
-
-	public Cell() {
-		
-	}
-	Cell(Row r, Column c) {
-		row = r;
-		column = c;
-	}
+	public Column getColumn();
 	
-	public void setValue(String v) {
-		value = column.getValue(v);
-	}
+	public void setValue(String value);
 
-	public String toString() {
-		return "Cell[" + column + ": " + value + "]";
-	}
+	public void addValue(Map vars);
+	
+	public void insert(StatefulSession session);
 
-	public Row getRow() {
-		return row;
-	}
+	public void setIndex(int i);
+	
+	public int getIndex();
 
-	public String getColumn() {
-		return column.getName();
-	}
-
-	public Object getValue() {
-		return value;
-	}
-
-	public void addValue(Map vars) {
-		column.addValue(vars, value);
-	}
+	public boolean isEmpty();
 }

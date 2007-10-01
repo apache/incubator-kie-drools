@@ -74,7 +74,7 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
                                               InputType.CSV );
         assertNotNull( drl );
 
-        System.out.println( drl );
+//        System.out.println( drl );
 
         assertTrue( drl.indexOf( "myObject.setIsValid(1, 2)" ) > 0 );
         assertTrue( drl.indexOf( "myObject.size () > 50" ) > 0 );

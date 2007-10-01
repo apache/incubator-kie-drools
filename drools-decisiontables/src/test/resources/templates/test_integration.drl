@@ -1,5 +1,5 @@
 template header
-age
+age: Long
 type
 log
 
@@ -10,7 +10,7 @@ import org.drools.decisiontable.Person;
 global java.util.List list;
 
 template "cheesefans"
-age
+age > 21 && < 43
 type
 log
 

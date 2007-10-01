@@ -1,5 +1,10 @@
 package org.drools.decisiontable.parser;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -22,11 +27,51 @@ package org.drools.decisiontable.parser;
  * [] indicates a column that represents an array (comma-delimited) of values.
  */
 public class ColumnFactory {
+    private final static Pattern PATTERN = Pattern.compile( "([a-zA-Z0-9_]*)(\\[\\])?(:\\s*([a-zA-Z]*)(\\[\\])?)?" );
 
-	public Column getColumn(String value) {
-		if (value.endsWith("[]")) {
-			return new ArrayColumn(value.substring(0, value.length() - 2));
-		}
-		return new Column(value);
-	}
+    public Column getColumn(String value) {
+        Matcher m = PATTERN.matcher( value );
+        if ( !m.matches() ) throw new IllegalArgumentException( "value " + value + " is not a valid column definition" );
+        String name = m.group( 1 );
+        String type = m.group( 4 );
+        type = type == null ? "String" : type;
+        boolean array = (m.group( 2 ) != null) || (m.group( 5 ) != null);
+        if ( array ) {
+            return new ArrayColumn( name,
+                                    createColumn( name,
+                                                  type ) );
+        }
+        return createColumn( name,
+                             type );
+    }
+
+    private Column createColumn(String name,
+                                String type) {
+        try {
+            Class klass = Class.forName( this.getClass().getPackage().getName() + "." + type + "Column" );
+            Constructor constructor = klass.getConstructor( new Class[]{String.class} );
+            return (Column) constructor.newInstance( new Object[]{name} );
+        } catch ( SecurityException e ) {
+            e.printStackTrace();
+            throw new RuntimeException( e );
+        } catch ( NoSuchMethodException e ) {
+            e.printStackTrace();
+            throw new RuntimeException( e );
+        } catch ( ClassNotFoundException e ) {
+            e.printStackTrace();
+            throw new RuntimeException( e );
+        } catch ( IllegalArgumentException e ) {
+            e.printStackTrace();
+            throw new RuntimeException( e );
+        } catch ( InstantiationException e ) {
+            e.printStackTrace();
+            throw new RuntimeException( e );
+        } catch ( IllegalAccessException e ) {
+            e.printStackTrace();
+            throw new RuntimeException( e );
+        } catch ( InvocationTargetException e ) {
+            e.printStackTrace();
+            throw new RuntimeException( e );
+        }
+    }
 }

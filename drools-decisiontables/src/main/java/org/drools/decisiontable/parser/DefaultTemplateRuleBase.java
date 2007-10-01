@@ -32,7 +32,6 @@ import org.drools.decisiontable.model.DRLOutput;
 import org.drools.decisiontable.model.Global;
 import org.drools.decisiontable.model.Import;
 import org.drools.decisiontable.model.Rule;
-import org.drools.decisiontable.model.SnippetBuilder;
 import org.drools.rule.Package;
 
 /**
@@ -51,8 +50,10 @@ import org.drools.rule.Package;
  * rule "template1"
  *   when
  *     r : Row()
- *     Cell(row == r, column == "column1")
- *     Cell(row == r, column == "column2")
+ *     column1 : Column(name == "column1")
+ *     Cell(row == r, column == column1)
+ *     column2 : Column(name == "column2")
+ *     Cell(row == r, column == column2, value == "xyz")
  *   then
  *     generator.generate( "template1", r);
  *   end
@@ -99,23 +100,15 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
 		condition.setSnippet("r : Row()");
 		rule.addCondition(condition);
 		createColumnConditions(template, rule);
-		createNotColumnConditions(template, rule);
 		rule.addConsequence(createConsequence(template));
 		p.addRule(rule);
 	}
 
-	private void createNotColumnConditions(RuleTemplate template, Rule rule) {
-		String[] templateNotColumns = template.getNotColumns();
-		for (int j = 0; j < templateNotColumns.length; j++) {
-			rule.addCondition(createNotCondition(templateNotColumns[j]));
-		}
-	}
-
 	private void createColumnConditions(RuleTemplate template, Rule rule) {
 		List templateColumns = template.getColumns();
-		for (Iterator it1 = templateColumns.iterator(); it1.hasNext();) {
-			String column = (String) it1.next();
-			rule.addCondition(createCondition(column));
+		for (Iterator it = templateColumns.iterator(); it.hasNext();) {
+			TemplateColumn column = (TemplateColumn) it.next();
+			column.addCondition(rule);
 		}
 	}
 
@@ -145,26 +138,9 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
 		return consequence;
 	}
 
-	private Condition createCondition(final String value) {
-		SnippetBuilder snip = new SnippetBuilder(
-				"Cell(row == r, column == \"$param\")");
-		String result = snip.build(value);
-		Condition condition = new Condition();
-		condition.setSnippet(result);
-		return condition;
-	}
-
-	private Condition createNotCondition(final String value) {
-		SnippetBuilder snip = new SnippetBuilder(
-				"not Cell(row == r, column == \"$param\")");
-		String result = snip.build(value);
-		Condition condition = new Condition();
-		condition.setSnippet(result);
-		return condition;
-	}
 	private RuleBase readRule(String drl) {
 		try {
-			System.out.println(drl);
+//			System.out.println(drl);
 			// read in the source
 			Reader source = new StringReader(drl);
 			PackageBuilder builder = new PackageBuilder();
