@@ -32,6 +32,18 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+    public void testGlobal() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n global org.drools.Person p", new ArrayList(), new ArrayList() );
+        assertNotNull(eng);
+        assertFalse(loader.hasErrors());
+
+        assertEquals(1, eng.getGlobalVariables().length);
+        assertEquals("p", eng.getGlobalVariables()[0]);
+        assertEquals("Person", eng.globalTypes.get("p"));
+
+    }
+
     public void testSortOrderOfFields() throws Exception {
 
 	    SuggestionCompletionLoader loader = new SuggestionCompletionLoader();

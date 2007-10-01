@@ -243,7 +243,7 @@ public class SuggestionCompletionLoader {
         for ( final Iterator it = pkgDescr.getGlobals().iterator(); it.hasNext(); ) {
             final GlobalDescr global = (GlobalDescr) it.next();
             try {
-                final String shortTypeName = global.getType();
+                final String shortTypeName = getShortNameOfClass(global.getType());
                 if ( !this.builder.hasFieldsForType( shortTypeName ) ) {
                     final Class clazz = loadClass( global.getType(),
                                                    jars );
