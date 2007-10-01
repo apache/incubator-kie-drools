@@ -32,6 +32,33 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+    public void testSortOrderOfFields() throws Exception {
+
+	    SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+	    SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.brms.server.rules.SomeFact", new ArrayList(), new ArrayList() );
+	    assertNotNull(eng);
+
+	    String[] fields = eng.getFieldCompletions("SomeFact");
+
+	    assertEquals("age", fields[0]);
+	    assertEquals("alive", fields[1]);
+	    assertEquals("bigDecimal", fields[2]);
+
+    }
+
+    public void testSortOrderOfFacts() throws Exception {
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.brms.server.rules.SomeFact\n import org.drools.Person", new ArrayList(), new ArrayList() );
+        assertNotNull(eng);
+        String[] facts  = eng.getFactTypes();
+        assertEquals(2, facts.length);
+
+        assertEquals("Person", facts[0]);
+        assertEquals("SomeFact", facts[1]);
+
+
+    }
+
 
     public void testLoaderWithExistingClassloader() throws Exception {
         MockClassLoader mcl = new MockClassLoader();

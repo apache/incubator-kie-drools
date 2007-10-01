@@ -3,6 +3,7 @@ package org.drools.brms.server.rules;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -139,6 +140,7 @@ public class SuggestionCompletionLoader {
 
         populateDateEnums( dataEnums, sce );
 
+        Arrays.sort(sce.factTypes);
 
         return sce;
     }
@@ -304,6 +306,7 @@ public class SuggestionCompletionLoader {
             this.builder.addFactType( factType );
 
             final String[] fields = new String[templ.getFields().size()];
+            Arrays.sort(fields);
             this.builder.addFieldsForType( factType,
                                            fields );
 
@@ -348,6 +351,7 @@ public class SuggestionCompletionLoader {
         }
         final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
         String[] fields = (String[]) inspector.getFieldNames().keySet().toArray( new String[inspector.getFieldNames().size()] );
+        Arrays.sort(fields);
 
         fields = removeIrrelevantFields( fields );
 
