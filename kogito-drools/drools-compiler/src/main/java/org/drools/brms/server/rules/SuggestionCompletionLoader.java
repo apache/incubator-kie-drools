@@ -306,9 +306,7 @@ public class SuggestionCompletionLoader {
             this.builder.addFactType( factType );
 
             final String[] fields = new String[templ.getFields().size()];
-            Arrays.sort(fields);
-            this.builder.addFieldsForType( factType,
-                                           fields );
+
 
             int index = 0;
             for ( final Iterator fieldsIt = templ.getFields().iterator(); fieldsIt.hasNext(); ) {
@@ -325,6 +323,11 @@ public class SuggestionCompletionLoader {
                 this.builder.addFieldType( factType + "." + fieldDescr.getName(),
                                            getFieldType( fieldTypeClass ) );
             }
+
+            Arrays.sort(fields);
+            this.builder.addFieldsForType( factType,
+                    fields );
+
         }
     }
 
