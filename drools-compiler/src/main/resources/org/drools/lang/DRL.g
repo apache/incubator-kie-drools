@@ -62,7 +62,7 @@ grammar DRL;
 	}
 	
 	private String getString(String token) {
-		return token.substring( 1, token.length() -1 );
+		return safeSubstring( token, 1, token.length() -1 );
 	}
 	
 	private String cleanupSpaces( String input ) {
@@ -180,6 +180,10 @@ grammar DRL;
         
         public Location getLocation() {
                 return this.location;
+        }
+        
+        private String safeSubstring( String text, int start, int end ) {
+        	return text.substring( start, Math.max( start, end ) );
         }
       
 }
@@ -353,7 +357,7 @@ function
 		body=curly_chunk
 		{
 			//strip out '{','}'
-			f.setText( $body.text.substring( 1, $body.text.length()-1 ) );
+			f.setText( safeSubstring( $body.text, 1, $body.text.length()-1 ) );
 			f.setEndCharacter( ((CommonToken)$body.stop).getStopIndex() );
 			f.setEndLocation(offset($body.stop.getLine()), $body.stop.getCharPositionInLine());
 		}
@@ -891,7 +895,7 @@ lhs_eval returns [BaseDescr d]
 			$d.setStartCharacter( ((CommonToken)$EVAL).getStartIndex() );
 		        if( $c.text != null ) {
 	  		    this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-		            String body = $c.text.length() > 1 ? $c.text.substring(1, $c.text.length()-1) : "";
+		            String body = safeSubstring( $c.text, 1, $c.text.length()-1 );
 			    checkTrailingSemicolon( body, offset($EVAL.line) );
 			    ((EvalDescr) $d).setContent( body );
 			    location.setProperty(Location.LOCATION_EVAL_CONTENT, body);
@@ -971,7 +975,7 @@ accumulate_statement returns [AccumulateDescr d]
 			text=paren_chunk COMMA?
 			{
 				if( $text.text != null ) {
-				        $d.setInitCode( $text.text.substring(1, $text.text.length()-1) );
+				        $d.setInitCode( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
 					location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_INIT_CONTENT, $d.getInitCode());
 					location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION );
 				}
@@ -979,7 +983,7 @@ accumulate_statement returns [AccumulateDescr d]
 			ACTION text=paren_chunk COMMA?
 			{
 				if( $text.text != null ) {
-				        $d.setActionCode( $text.text.substring(1, $text.text.length()-1) );
+				        $d.setActionCode( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
 	       				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_ACTION_CONTENT, $d.getActionCode());
 					location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_REVERSE );
 				}
@@ -987,7 +991,7 @@ accumulate_statement returns [AccumulateDescr d]
 			( REVERSE text=paren_chunk COMMA?
 			{
 				if( $text.text != null ) {
-				        $d.setReverseCode( $text.text.substring(1, $text.text.length()-1) );
+				        $d.setReverseCode( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
 	       				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_REVERSE_CONTENT, $d.getReverseCode());
 					location.setType( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT );
 				}
@@ -996,7 +1000,7 @@ accumulate_statement returns [AccumulateDescr d]
 			RESULT text=paren_chunk 
 			{
 				if( $text.text != null ) {
-				        $d.setResultCode( $text.text.substring(1, $text.text.length()-1) );
+				        $d.setResultCode( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
 					location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_RESULT_CONTENT, $d.getResultCode());
 				}
 			}
@@ -1010,7 +1014,7 @@ accumulate_statement returns [AccumulateDescr d]
 					$d.setFunctionIdentifier( $id.text );
 				}
 				if( $text.text != null ) {
-				        $d.setExpression( $text.text.substring(1, $text.text.length()-1) );
+				        $d.setExpression( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
 	       				location.setProperty(Location.LOCATION_PROPERTY_FROM_ACCUMULATE_EXPRESSION_CONTENT, $d.getExpression());
 				}
 			}
@@ -1529,7 +1533,7 @@ expression_value[RestrictionConnectiveDescr base, String op] returns [Restrictio
 			}
 		|	rvc=paren_chunk 
 			{ 
-				$rd = new ReturnValueRestrictionDescr($op, $rvc.text.substring(1, $rvc.text.length()-1) );							
+				$rd = new ReturnValueRestrictionDescr($op, safeSubstring( $rvc.text, 1, $rvc.text.length()-1) );							
 			} 
 		)	
 		{
@@ -1561,7 +1565,7 @@ predicate[ConditionalElementDescr base]
 		{
 		        if( $text.text != null ) {
 				d = new PredicateDescr( );
-			        d.setContent( $text.text.substring(1, $text.text.length()-1) );
+			        d.setContent( safeSubstring( $text.text, 1, $text.text.length()-1 ) );
 				d.setEndCharacter( ((CommonToken)$text.stop).getStopIndex() );
 				$base.addDescr( d );
 		        }
@@ -1634,7 +1638,7 @@ rhs_chunk[RuleDescr rule]
                     // ignoring first line in the consequence
                     String buf = input.toString( $THEN, $loc );
                     // removing final END keyword
-                    buf = buf.substring( 0, buf.length()-3 );
+                    buf = safeSubstring( buf, 0, buf.length()-3 );
                     if( buf.indexOf( '\n' ) > -1 ) {
                         buf = buf.substring( buf.indexOf( '\n' ) + 1 );
                     } else if ( buf.indexOf( '\r' ) > -1 ) {
