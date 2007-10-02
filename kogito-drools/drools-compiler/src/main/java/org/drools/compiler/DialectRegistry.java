@@ -24,8 +24,8 @@ public class DialectRegistry {
      * @param name
      * @param dialect
      */
-    public void addDialectConfiguration(final String name,
-                                        final DialectConfiguration dialect) {
+    public void addDialect(final String name,
+                                        final Dialect dialect) {
         this.map.put( name,
                       dialect );
     }
@@ -35,8 +35,8 @@ public class DialectRegistry {
      * @param name
      * @return
      */
-    public DialectConfiguration getDialectConfiguration(final String name) {
-        return (DialectConfiguration) this.map.get( name );
+    public Dialect getDialect(final String name) {
+        return (Dialect) this.map.get( name );
     }
 
     /**
@@ -45,8 +45,8 @@ public class DialectRegistry {
      */
     public void initAll(PackageBuilder builder) {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            DialectConfiguration dialect = (DialectConfiguration) it.next();
-            dialect.getDialect().init( builder );
+        	Dialect dialect = (Dialect) it.next();
+            dialect.init( builder );
         }
     }
 
@@ -56,8 +56,8 @@ public class DialectRegistry {
      */
     public void compileAll() {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            DialectConfiguration dialect = (DialectConfiguration) it.next();
-            dialect.getDialect().compileAll();
+        	Dialect dialect = (Dialect) it.next();
+            dialect.compileAll();
         }
     }
 
@@ -79,8 +79,8 @@ public class DialectRegistry {
             list = new ArrayList();
         }
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            DialectConfiguration dialect = (DialectConfiguration) it.next();
-            List results = dialect.getDialect().getResults();
+        	Dialect dialect = (Dialect) it.next();
+            List results = dialect.getResults();
             if ( results != null ) {
                 list.addAll( results );
             }
@@ -94,8 +94,8 @@ public class DialectRegistry {
      */
     public void addImport(String importEntry) {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            DialectConfiguration dialect = (DialectConfiguration) it.next();
-            dialect.getDialect().addImport( importEntry );
+        	Dialect dialect = (Dialect) it.next();
+            dialect.addImport( importEntry );
         }
     }
 
@@ -105,8 +105,8 @@ public class DialectRegistry {
      */    
     public void addStaticImport(String staticImportEntry) {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            DialectConfiguration dialect = (DialectConfiguration) it.next();
-            dialect.getDialect().addStaticImport( staticImportEntry );
+        	Dialect dialect = (Dialect) it.next();
+            dialect.addStaticImport( staticImportEntry );
         }
     }
 

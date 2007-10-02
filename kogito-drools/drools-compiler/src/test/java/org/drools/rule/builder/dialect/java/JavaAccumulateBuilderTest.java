@@ -45,11 +45,11 @@ public class JavaAccumulateBuilderTest extends TestCase {
         org.drools.rule.Package pkg = new org.drools.rule.Package( "org.drools" );
         final PackageBuilder pkgBulider = new PackageBuilder(pkg);
         final PackageBuilderConfiguration conf = pkgBulider.getPackageBuilderConfiguration();
-        Dialect dialect = pkgBulider.getPackageBuilderConfiguration().getDialectRegistry().getDialectConfiguration( "java" ).getDialect();
+        Dialect dialect = pkgBulider.getDialectRegistry().getDialect( "java" );
         
         
         RuleDescr ruleDescr = new RuleDescr("test rule");
-        RuleBuildContext context = new RuleBuildContext( conf, pkg, ruleDescr, conf.getDialectRegistry(), dialect);
+        RuleBuildContext context = new RuleBuildContext( conf, pkg, ruleDescr, conf.buildDialectRegistry(), dialect);
         
         Accumulate accumulate = (Accumulate) builder.build( context, accumDescr );
         

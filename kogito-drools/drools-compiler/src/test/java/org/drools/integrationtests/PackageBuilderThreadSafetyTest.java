@@ -32,12 +32,13 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
     }
 
     public void execute(int compiler) {
+        final PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
+        ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( compiler );        	
+        
         final List errors = new ArrayList();
         final List exceptions = new ArrayList();
         Thread[] threads = new Thread[_NUMBER_OF_THREADS];
         for ( int i = 0; i < _NUMBER_OF_THREADS; i++ ) {
-            final PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
-            ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( compiler );        	
             final int ID = i;
             Thread testThread = new Thread() {
                 public void run() {

@@ -77,6 +77,8 @@ public class PackageBuilder {
 
     private Dialect                     dialect;
 
+    private DialectRegistry             dialectRegistry;
+    
     private ProcessBuilder              processBuilder;
 
     /**
@@ -97,6 +99,10 @@ public class PackageBuilder {
 
     /**
      * Pass a specific configuration for the PackageBuilder
+     * 
+	 * PackageBuilderConfiguration is not thread safe and it also contains state. Once it is created and used 
+	 * in one or more PackageBuilders it should be considered immutable. Do not modify its 
+	 * properties while it is being used by a PackageBuilder.
      * 
      * @param configuration
      */
@@ -123,7 +129,7 @@ public class PackageBuilder {
         this.configuration = configuration;
         this.results = new ArrayList();
         this.pkg = pkg;
-        this.classFieldExtractorCache = ClassFieldExtractorCache.getInstance();
+        this.classFieldExtractorCache = ClassFieldExtractorCache.getInstance();        
         
         if ( this.pkg != null ) {
             this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
@@ -134,12 +140,17 @@ public class PackageBuilder {
             this.typeResolver = new ClassTypeResolver( new HashSet(),
                                                        this.configuration.getClassLoader() );
         }
-        this.configuration.getDialectRegistry().initAll( this );
+        
+        this.dialectRegistry = this.configuration.buildDialectRegistry();
+        
+        this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
+        
+        this.dialectRegistry.initAll( this );
         if ( this.pkg != null ) {
             initDialectPackage( pkg );            
-        }
+        }        
         
-        this.dialect = this.configuration.getDefaultDialect();
+        
 
     }
 
@@ -240,14 +251,14 @@ public class PackageBuilder {
 //        }
         
         // The Package does not have a default dialect, so set it
-        if ( dialectName == null && this.dialect == null ) {
-                this.dialect = this.configuration.getDefaultDialect();
+        if ( dialectName == null && this.dialect == null ) {        	
+                this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
         } 
             
-        if ( dialectName != null ) {
-            this.dialect = this.configuration.getDialectRegistry().getDialectConfiguration( dialectName ).getDialect();
+        if ( dialectName != null ) {        	
+            this.dialect = this.dialectRegistry.getDialect( dialectName );
         } else if ( this.dialect == null ) {
-            this.dialect = this.configuration.getDefaultDialect();
+            this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
         }
                    
         if ( this.pkg != null ) {
@@ -281,12 +292,12 @@ public class PackageBuilder {
 	            }
             
 	            // We need to compile all the functions, so scripting languages like mvel can find them
-	            this.configuration.getDialectRegistry().compileAll();
+	            this.dialectRegistry.compileAll();
 	            
 	            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
 	                FunctionDescr functionDescr = (FunctionDescr) it.next();
 	                final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
-	                this.configuration.getDialectRegistry().addStaticImport(functionClassName + "." + functionDescr.getName());
+	                this.dialectRegistry.addStaticImport(functionClassName + "." + functionDescr.getName());
 	            }	            
             }
 
@@ -296,13 +307,13 @@ public class PackageBuilder {
             }
         }
 
-        this.configuration.getDialectRegistry().compileAll();
+        this.dialectRegistry.compileAll();
         
         // some of the rules and functions may have been redefined
         if ( this.pkg.getPackageCompilationData().isDirty() ) {
             this.pkg.getPackageCompilationData().reload();
         }
-        this.results = this.configuration.getDialectRegistry().addResults( this.results );
+        this.results = this.dialectRegistry.addResults( this.results );
     }
 
     private void validatePackageName(final PackageDescr packageDescr) {
@@ -345,8 +356,8 @@ public class PackageBuilder {
     }
     
     private void initDialectPackage(Package pkg) {
-        for ( Iterator it = this.configuration.getDialectRegistry().iterator(); it.hasNext(); ) {
-            Dialect dialect = (( DialectConfiguration ) it.next()).getDialect();
+        for ( Iterator it = this.dialectRegistry.iterator(); it.hasNext(); ) {
+            Dialect dialect = ( Dialect) it.next();
             dialect.init( pkg );
         }
         
@@ -365,12 +376,12 @@ public class PackageBuilder {
             String importEntry = ((ImportDescr) it.next()).getTarget();
             pkg.addImport( importEntry );
             this.typeResolver.addImport( importEntry );            
-            this.configuration.getDialectRegistry().addImport( importEntry );
+            this.dialectRegistry.addImport( importEntry );
         }
 
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
             String importEntry = ((FunctionImportDescr) it.next()).getTarget();
-            this.configuration.getDialectRegistry().addStaticImport( importEntry );
+            this.dialectRegistry.addStaticImport( importEntry );
             pkg.addStaticImport( importEntry );
         }
 
@@ -432,7 +443,7 @@ public class PackageBuilder {
         RuleBuildContext context = new RuleBuildContext( this.configuration,
                                                          pkg,
                                                          ruleDescr,
-                                                         this.configuration.getDialectRegistry(),
+                                                         this.dialectRegistry,
                                                          this.dialect );
         this.builder.build( context );
 
@@ -480,6 +491,14 @@ public class PackageBuilder {
         return this.configuration;
     }
 
+    public DialectRegistry getDialectRegistry() {
+    	return this.dialectRegistry;
+    }
+    
+    public Dialect getDefaultDialect() {
+    	return this.dialect;
+    }
+    
     private void addRuleFlowsToPackage(ProcessBuilder processBuilder,
                                        Package pkg) {
         if ( processBuilder != null ) {

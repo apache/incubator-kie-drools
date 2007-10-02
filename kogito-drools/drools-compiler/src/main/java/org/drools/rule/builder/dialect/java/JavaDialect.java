@@ -64,7 +64,7 @@ public class JavaDialect
     implements
     Dialect {
 
-    public static final String ID = "JavaDialect";
+    public static final String ID = "java";
 
     private final static String            EXPRESSION_DIALECT_NAME = "MVEL";
     // builders

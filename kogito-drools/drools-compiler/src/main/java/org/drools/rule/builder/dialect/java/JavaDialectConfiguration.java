@@ -45,8 +45,6 @@ public class JavaDialectConfiguration
 
     private int                         compiler;
 
-    private JavaDialect                 dialect;
-
     public JavaDialectConfiguration() {
     }
 
@@ -63,10 +61,7 @@ public class JavaDialectConfiguration
     }
 
     public Dialect getDialect() {
-        if ( this.dialect == null ) {
-            this.dialect = new JavaDialect();
-        }
-        return this.dialect;
+        return new JavaDialect();
     }
 
     public String getJavaLanguageLevel() {
