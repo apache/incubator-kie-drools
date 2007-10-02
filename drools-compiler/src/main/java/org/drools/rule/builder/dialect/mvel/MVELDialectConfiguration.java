@@ -18,16 +18,12 @@ public class MVELDialectConfiguration
     implements
     DialectConfiguration {
 
-    private MVELDialect                 dialect;
     private PackageBuilderConfiguration conf;
 
     private boolean                     strict;
 
     public Dialect getDialect() {
-        if ( this.dialect == null ) {
-            this.dialect = new MVELDialect();
-        }
-        return this.dialect;
+        return new MVELDialect();
     }
 
     public void init(PackageBuilderConfiguration conf) {

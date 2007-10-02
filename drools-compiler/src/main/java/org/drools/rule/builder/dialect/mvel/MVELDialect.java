@@ -66,7 +66,7 @@ public class MVELDialect
     implements
     Dialect {
 
-    public final static String                ID 					  = "MVELDialect";
+    public final static String                ID 					  = "mvel";
 
     private final static String               EXPRESSION_DIALECT_NAME = "MVEL";
 

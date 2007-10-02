@@ -71,11 +71,13 @@ public class MVELExprAnalyzer {
                                                                    null,
                                                                    context.getPkg().getName() + "." + context.getRuleDescr().getClassName() );
 
-            for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
-                String packageImport = (String) it.next();
-                parserContext.addPackageImport( packageImport );
+            if ( dialect.getPackgeImports() != null && !dialect.getPackgeImports().isEmpty() ) {
+	            for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {
+	                String packageImport = (String) it.next();
+	                parserContext.addPackageImport( packageImport );
+	            }
             }
-
+            
             parserContext.setStrictTypeEnforcement( false );
 
             parserContext.setInterceptors( dialect.getInterceptors() );

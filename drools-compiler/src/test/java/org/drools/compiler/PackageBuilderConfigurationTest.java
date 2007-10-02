@@ -123,13 +123,13 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
     public void testProgrammaticProperties() {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        assertTrue( cfg.getDefaultDialect() instanceof JavaDialect );
+        assertTrue( cfg.getDefaultDialect().equals( "java") );
 
         Properties properties = new Properties();
         properties.setProperty( "drools.dialect.default",
                                 "mvel" );
         PackageBuilderConfiguration cfg1 = new PackageBuilderConfiguration( properties );
-        assertTrue( cfg1.getDefaultDialect() instanceof MVELDialect );
+        assertEquals("mvel", cfg1.getDefaultDialect() );
 
         final PackageBuilderConfiguration cfg2 = new PackageBuilderConfiguration( properties );
         assertEquals( cfg1.getDefaultDialect().getClass(),
@@ -163,14 +163,16 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
         PackageBuilderConfiguration cfg1 = new PackageBuilderConfiguration();
         MockDialectConfiguration mockConf = new MockDialectConfiguration();
-        cfg1.getDialectRegistry().addDialectConfiguration( "mock",
-                                                           mockConf );
+//        cfg1.buildDialectRegistry().addDialect( "mock",
+//                                                mockConf.getDialect() );
+        
+        cfg1.addDialect("mock", mockConf );
         cfg1.setDefaultDialect( "mock" );
 
         PackageBuilder builder = new PackageBuilder( pkg,
                                                      cfg1 );
 
-        MockDialect mockDialect2 = (MockDialect) builder.getPackageBuilderConfiguration().getDefaultDialect();
+        MockDialect mockDialect2 = (MockDialect) builder.getDialectRegistry().getDialect( cfg1.getDefaultDialect() );
         assertSame( mockConf.getDialect(),
                     mockDialect2 );
 
@@ -405,8 +407,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
         }
 
         public String getId() {
-            // TODO Auto-generated method stub
-            return null;
+            return "mock";
         }
     }
 

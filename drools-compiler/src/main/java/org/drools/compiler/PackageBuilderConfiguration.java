@@ -32,6 +32,10 @@ import org.drools.util.ChainedProperties;
  * Dialects and their DialectConfigurations  are handled by the DialectRegistry
  * Normally you will not need to look at this class, unless you want to override the defaults.
  * 
+ * This class is not thread safe and it also contains state. Once it is created and used 
+ * in one or more PackageBuilders it should be considered immutable. Do not modify its 
+ * properties while it is being used by a PackageBuilder.
+ * 
  * drools.dialect.default = <String>
  * drools.accumulate.function.<function name> = <qualified class>
  * 
@@ -46,10 +50,8 @@ import org.drools.util.ChainedProperties;
 public class PackageBuilderConfiguration {
 
     private static final String ACCUMULATE_FUNCTION_PREFIX = "drools.accumulate.function.";
-
-    private Map                 dialects;
-
-    private DialectRegistry     dialectRegistry;
+    
+    private Map                 dialectConfigurations;
 
     private String              defaultDialect;
 
@@ -109,14 +111,10 @@ public class PackageBuilderConfiguration {
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
         }
-
-        this.dialects = new HashMap();
-        this.chainedProperties.mapStartsWith( this.dialects,
-                                              "drools.dialect",
-                                              false );
-        setDefaultDialect( (String) this.dialects.remove( "drools.dialect.default" ) );
-
-        this.dialectRegistry = buildDialectRegistry();
+        
+        this.dialectConfigurations = new HashMap();
+        
+        buildDialectConfigurationMap();
 
         buildAccumulateFunctionsMap();
     }
@@ -125,34 +123,54 @@ public class PackageBuilderConfiguration {
         return this.chainedProperties;
     }
 
-    public DialectRegistry buildDialectRegistry() {
-        DialectRegistry registry = new DialectRegistry();
+    private void buildDialectConfigurationMap() {
+        //DialectRegistry registry = new DialectRegistry();
+        Map dialectProperties = new HashMap();
+        this.chainedProperties.mapStartsWith( dialectProperties,
+                                              "drools.dialect",
+                                              false );
+        setDefaultDialect( (String) dialectProperties.remove( "drools.dialect.default" ) );
+        
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        for ( Iterator it = this.dialects.entrySet().iterator(); it.hasNext(); ) {
+        for ( Iterator it = dialectProperties.entrySet().iterator(); it.hasNext(); ) {
             Entry entry = (Entry) it.next();
             String str = (String) entry.getKey();
             String dialectName = str.substring( str.lastIndexOf( "." ) + 1 );
             String dialectClass = (String) entry.getValue();
-            try {
-                Class cls = classLoader.loadClass( dialectClass );
-                DialectConfiguration dialectConf = (DialectConfiguration) cls.newInstance();
-                dialectConf.init( this );
-                registry.addDialectConfiguration( dialectName,
-                                                  dialectConf );
-            } catch ( Exception e ) {
-                throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + "'",
-                                                  e );
-            }
+            addDialect( dialectName, dialectClass);
         }
+    }
+    
+    public void addDialect(String dialectName, String dialectClass) {
+        try {
+            Class cls = classLoader.loadClass( dialectClass );
+            DialectConfiguration dialectConf = (DialectConfiguration) cls.newInstance();
+            dialectConf.init( this );
+            addDialect( dialectName, 
+            		    dialectConf);
+        } catch ( Exception e ) {
+            throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + "'",
+                                              e );
+        }    	
+    }
+
+    public void addDialect(String dialectName, DialectConfiguration dialectConf) {
+        dialectConfigurations.put( dialectName,
+                				   dialectConf );    	
+    }
+    
+    public DialectRegistry buildDialectRegistry() {
+    	DialectRegistry registry = new DialectRegistry();
+    	for ( Iterator it = this.dialectConfigurations.values().iterator(); it.hasNext(); ) {
+    		DialectConfiguration conf = ( DialectConfiguration ) it.next();
+    		Dialect dialect = conf.getDialect();
+    		registry.addDialect( conf.getDialect().getId(), dialect );
+    	}
         return registry;
     }
 
-    public DialectRegistry getDialectRegistry() {
-        return this.dialectRegistry;
-    }
-
-    public Dialect getDefaultDialect() {
-        return this.dialectRegistry.getDialectConfiguration( this.defaultDialect ).getDialect();
+    public String getDefaultDialect() {
+        return this.defaultDialect;
     }
 
     public void setDefaultDialect(String defaultDialect) {
@@ -160,13 +178,13 @@ public class PackageBuilderConfiguration {
     }
 
     public DialectConfiguration getDialectConfiguration(String name) {
-        return (DialectConfiguration) this.dialectRegistry.getDialectConfiguration( name );
+        return (DialectConfiguration) this.dialectConfigurations.get( name );
     }
 
     public void setDialectConfiguration(String name,
                                         DialectConfiguration configuration) {
-        this.dialectRegistry.addDialectConfiguration( name,
-                                                      configuration );
+        this.dialectConfigurations.put( name,
+                                        configuration );
     }
 
     public ClassLoader getClassLoader() {

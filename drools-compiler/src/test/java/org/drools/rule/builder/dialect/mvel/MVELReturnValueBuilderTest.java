@@ -42,12 +42,12 @@ public class MVELReturnValueBuilderTest extends TestCase {
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        MVELDialect mvelDialect = ( MVELDialect ) ( (DialectConfiguration) conf.getDialectConfiguration( "mvel" ) ).getDialect();
+        MVELDialect mvelDialect = ( MVELDialect ) pkgBuilder.getDialectRegistry().getDialect( "mvel" );
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
                                                                                pkg,
                                                                                ruleDescr,
-                                                                               conf.getDialectRegistry(),
+                                                                               pkgBuilder.getDialectRegistry(),
                                                                                mvelDialect );
         
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();

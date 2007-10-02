@@ -88,11 +88,11 @@ public class RuleBuilderTest extends TestCase {
 
         final RuleBuilder builder = new RuleBuilder( );                
         
-        final PackageBuilder pkgBulider = new PackageBuilder(pkg);
-        final PackageBuilderConfiguration conf = pkgBulider.getPackageBuilderConfiguration();
-        Dialect dialect = pkgBulider.getPackageBuilderConfiguration().getDialectRegistry().getDialectConfiguration( "java" ).getDialect();
+        final PackageBuilder pkgBuilder = new PackageBuilder(pkg);
+        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
+        Dialect dialect = pkgBuilder.getDialectRegistry().getDialect( "java" );
         
-        RuleBuildContext context = new RuleBuildContext(conf, pkg, ruleDescr, conf.getDialectRegistry(), dialect);
+        RuleBuildContext context = new RuleBuildContext(conf, pkg, ruleDescr, pkgBuilder.getDialectRegistry(), dialect);
       
         builder.build( context );
 
