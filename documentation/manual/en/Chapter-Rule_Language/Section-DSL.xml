@@ -222,8 +222,10 @@ There is a person called Mike who is sad
 [when]- type is '{type}'=type=='{type}'
 [when]- country equal to '{country}'=country=='{country}'</programlisting></para>
 
-    <para><emphasis role="bold">IMPORTANT:</emphasis> There must be an space
-    between the "-" (dash) and the constraint mappings.</para>
+    <para><emphasis role="bold">IMPORTANT:</emphasis> It is NOT possible to
+    use the "-" feature after an <emphasis role="bold">accumulate</emphasis>
+    statement to add constraints to the accumulate pattern. This limitation
+    will be removed in the future.</para>
 
     <para>You can then write rules with conditions like the following:
     <programlisting>There is a Cheese with
