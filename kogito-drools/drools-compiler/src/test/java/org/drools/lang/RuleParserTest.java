@@ -29,6 +29,7 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
+import org.antlr.runtime.MismatchedTokenException;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DrlParser;
@@ -2176,7 +2177,8 @@ public class RuleParserTest extends TestCase {
 
     public void testSoundsLike() throws Exception {
         parseResource( "soundslike_operator.drl" ).compilation_unit();
-        assertFalse(this.parser.getErrorMessages().toString(), this.parser.hasErrors());
+        assertFalse( this.parser.getErrorMessages().toString(),
+                     this.parser.hasErrors() );
 
         RuleDescr rule = (RuleDescr) this.parser.getPackageDescr().getRules().get( 0 );
         PatternDescr pat = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
@@ -3445,22 +3447,29 @@ public class RuleParserTest extends TestCase {
             System.err.println( parser.getErrorMessages() );
         }
         assertFalse( parser.hasErrors() );
-        assertEquals( 1, descrs.getDescrs().size());
-        OrDescr or = (OrDescr) descrs.getDescrs().get(0);
-        assertEquals( 2, or.getDescrs().size());
+        assertEquals( 1,
+                      descrs.getDescrs().size() );
+        OrDescr or = (OrDescr) descrs.getDescrs().get( 0 );
+        assertEquals( 2,
+                      or.getDescrs().size() );
         NotDescr not = (NotDescr) or.getDescrs().get( 0 );
         AndDescr and = (AndDescr) or.getDescrs().get( 1 );
-        assertEquals( 1, not.getDescrs().size());
+        assertEquals( 1,
+                      not.getDescrs().size() );
         PatternDescr person = (PatternDescr) not.getDescrs().get( 0 );
-        assertEquals( "Person", person.getObjectType() );
-        assertEquals( 3, and.getDescrs().size());
+        assertEquals( "Person",
+                      person.getObjectType() );
+        assertEquals( 3,
+                      and.getDescrs().size() );
         PatternDescr cheese = (PatternDescr) and.getDescrs().get( 0 );
-        assertEquals( "Cheese", cheese.getObjectType() );
+        assertEquals( "Cheese",
+                      cheese.getObjectType() );
         PatternDescr meat = (PatternDescr) and.getDescrs().get( 1 );
-        assertEquals( "Meat", meat.getObjectType() );
+        assertEquals( "Meat",
+                      meat.getObjectType() );
         PatternDescr wine = (PatternDescr) and.getDescrs().get( 2 );
-        assertEquals( "Wine", wine.getObjectType() );
-
+        assertEquals( "Wine",
+                      wine.getObjectType() );
 
     }
 
@@ -3490,13 +3499,30 @@ public class RuleParserTest extends TestCase {
                                       accum.getResultCode() );
 
         final AndDescr and = (AndDescr) accum.getInput();
-        assertEquals( 2, and.getDescrs().size() );
+        assertEquals( 2,
+                      and.getDescrs().size() );
         final PatternDescr person = (PatternDescr) and.getDescrs().get( 0 );
         final PatternDescr cheese = (PatternDescr) and.getDescrs().get( 1 );
         assertEquals( "Person",
                       person.getObjectType() );
         assertEquals( "Cheese",
                       cheese.getObjectType() );
+    }
+
+    public void testErrorMessageForMisplacedParenthesis() throws Exception {
+        final DRLParser parser = parseResource( "misplaced_parenthesis.drl" );
+        parser.compilation_unit();
+
+        assertTrue( "Parser should have raised errors",
+                    parser.hasErrors() );
+
+        for ( Iterator it = parser.getErrors().iterator(); it.hasNext(); ) {
+            Object error = it.next();
+            if ( !(error instanceof MismatchedTokenException) ) {
+                fail( "Error should be an instance of MismatchedTokenException" );
+            }
+        }
+
     }
 
     private DRLParser parse(final String text) throws Exception {
