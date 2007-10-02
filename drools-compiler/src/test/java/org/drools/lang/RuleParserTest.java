@@ -19,6 +19,7 @@ package org.drools.lang;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 
@@ -93,6 +94,15 @@ public class RuleParserTest extends TestCase {
                       packageName );
         assertFalse( this.parser.hasErrors() );
     }
+
+    // @FIXME
+    public void FIXME_testEmptyPackage() throws Exception {
+        final String source = "package foo.bar.baz";
+        final DrlParser parser = new DrlParser();
+        final PackageDescr pkg = parser.parse( new StringReader( source ) );
+        assertFalse( parser.hasErrors() );
+        assertEquals( "foo.bar.baz", pkg.getName() );        
+    }    
 
     public void testCompilationUnit() throws Exception {
         final String source = "package foo; import com.foo.Bar; import com.foo.Baz;";
@@ -244,7 +254,7 @@ public class RuleParserTest extends TestCase {
                                       (String) rule.getConsequence() );
     }
 
-    public void FIX_ME_testLatinChars() throws Exception {
+    public void FIXME_testLatinChars() throws Exception {
         final DrlParser parser = new DrlParser();
         final Reader drl = new InputStreamReader( this.getClass().getResourceAsStream( "latin-sample.dslr" ) );
         final Reader dsl = new InputStreamReader( this.getClass().getResourceAsStream( "latin.dsl" ) );
