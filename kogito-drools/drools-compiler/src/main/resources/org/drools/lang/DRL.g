@@ -202,7 +202,7 @@ compilation_unit
 		this.location = new Location( Location.LOCATION_UNKNOWN );
 	}
 	:	prolog 
-		statement+
+		statement*
 		EOF
 	;
 	catch [ RecognitionException e ] {

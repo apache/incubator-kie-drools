@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-10-01 21:43:12
+// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-10-02 19:31:56
 
 	package org.drools.lang;
 	import java.util.List;
@@ -318,22 +318,21 @@ public class DRLParser extends Parser {
 
 
     // $ANTLR start compilation_unit
-    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:199:1: compilation_unit : prolog ( statement )+ EOF ;
+    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:199:1: compilation_unit : prolog ( statement )* EOF ;
     public final void compilation_unit() throws RecognitionException {
 
         		// reset Location information
         		this.location = new Location( Location.LOCATION_UNKNOWN );
         	
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:204:2: ( prolog ( statement )+ EOF )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:204:4: prolog ( statement )+ EOF
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:204:2: ( prolog ( statement )* EOF )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:204:4: prolog ( statement )* EOF
             {
             pushFollow(FOLLOW_prolog_in_compilation_unit57);
             prolog();
             _fsp--;
             if (failed) return ;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:205:3: ( statement )+
-            int cnt2=0;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:205:3: ( statement )*
             loop2:
             do {
                 int alt2=2;
@@ -357,13 +356,8 @@ public class DRLParser extends Parser {
             	    break;
 
             	default :
-            	    if ( cnt2 >= 1 ) break loop2;
-            	    if (backtracking>0) {failed=true; return ;}
-                        EarlyExitException eee =
-                            new EarlyExitException(2, input);
-                        throw eee;
+            	    break loop2;
                 }
-                cnt2++;
             } while (true);
 
             match(input,EOF,FOLLOW_EOF_in_compilation_unit67); if (failed) return ;
@@ -5612,14 +5606,14 @@ public class DRLParser extends Parser {
             case NOT:
                 {
                 switch ( input.LA(2) ) {
-                case CONTAINS:
-                    {
-                    alt67=8;
-                    }
-                    break;
                 case MATCHES:
                     {
                     alt67=12;
+                    }
+                    break;
+                case CONTAINS:
+                    {
+                    alt67=8;
                     }
                     break;
                 case MEMBEROF:
@@ -7366,24 +7360,24 @@ public class DRLParser extends Parser {
     static final String DFA9_eofS =
         "\6\uffff";
     static final String DFA9_minS =
-        "\2\4\1\74\2\uffff\1\4";
+        "\2\4\1\uffff\1\74\1\uffff\1\4";
     static final String DFA9_maxS =
-        "\2\75\1\74\2\uffff\1\75";
+        "\2\75\1\uffff\1\74\1\uffff\1\75";
     static final String DFA9_acceptS =
-        "\3\uffff\1\2\1\1\1\uffff";
+        "\2\uffff\1\1\1\uffff\1\2\1\uffff";
     static final String DFA9_specialS =
         "\6\uffff}>";
     static final String[] DFA9_transitionS = {
             "\4\1\1\uffff\1\1\3\uffff\6\1\3\uffff\1\1\1\uffff\1\1\6\uffff"+
             "\2\1\5\uffff\1\1\5\uffff\4\1\1\uffff\6\1\6\uffff\1\1",
-            "\6\4\1\uffff\2\3\6\4\3\uffff\1\4\1\uffff\1\4\6\uffff\2\4\5\uffff"+
-            "\1\4\5\uffff\4\4\1\uffff\6\4\4\uffff\1\2\1\uffff\1\4",
+            "\6\2\1\uffff\2\4\6\2\3\uffff\1\2\1\uffff\1\2\6\uffff\2\2\5\uffff"+
+            "\1\2\5\uffff\4\2\1\uffff\6\2\4\uffff\1\3\1\uffff\1\2",
+            "",
             "\1\5",
             "",
-            "",
-            "\4\4\1\uffff\1\4\1\uffff\2\3\6\4\3\uffff\1\4\1\uffff\1\4\6\uffff"+
-            "\2\4\5\uffff\1\4\5\uffff\4\4\1\uffff\6\4\4\uffff\1\2\1\uffff"+
-            "\1\4"
+            "\4\2\1\uffff\1\2\1\uffff\2\4\6\2\3\uffff\1\2\1\uffff\1\2\6\uffff"+
+            "\2\2\5\uffff\1\2\5\uffff\4\2\1\uffff\6\2\4\uffff\1\3\1\uffff"+
+            "\1\2"
     };
 
     static final short[] DFA9_eot = DFA.unpackEncodedString(DFA9_eotS);
@@ -7483,100 +7477,101 @@ public class DRLParser extends Parser {
     static final String DFA52_eofS =
         "\150\uffff";
     static final String DFA52_minS =
-        "\1\7\1\uffff\1\4\1\uffff\2\4\1\0\5\4\2\uffff\1\4\1\0\5\4\1\0\5\4"+
-        "\2\0\1\4\2\0\2\4\1\0\2\4\1\0\1\4\3\0\2\4\1\0\2\4\1\0\1\4\3\0\2\4"+
-        "\1\0\3\4\1\0\3\4\1\0\2\4\1\0\1\4\1\uffff\44\0";
+        "\1\7\1\uffff\1\4\1\uffff\3\4\1\0\1\uffff\4\4\1\uffff\4\4\1\0\1\4"+
+        "\1\0\5\4\1\0\1\4\1\0\1\4\2\0\3\4\1\0\1\4\2\0\1\4\2\0\3\4\1\0\1\4"+
+        "\1\0\1\4\3\0\3\4\1\0\3\4\1\0\3\4\1\0\1\4\1\0\1\4\1\uffff\44\0";
     static final String DFA52_maxS =
-        "\1\110\1\uffff\1\121\1\uffff\2\121\1\0\5\121\2\uffff\1\121\1\0\5"+
-        "\121\1\0\5\121\2\0\1\121\2\0\2\121\1\0\2\121\1\0\1\121\3\0\2\121"+
-        "\1\0\2\121\1\0\1\121\3\0\2\121\1\0\3\121\1\0\3\121\1\0\2\121\1\0"+
-        "\1\121\1\uffff\44\0";
+        "\1\110\1\uffff\1\121\1\uffff\3\121\1\0\1\uffff\4\121\1\uffff\4\121"+
+        "\1\0\1\121\1\0\5\121\1\0\1\121\1\0\1\121\2\0\3\121\1\0\1\121\2\0"+
+        "\1\121\2\0\3\121\1\0\1\121\1\0\1\121\3\0\3\121\1\0\3\121\1\0\3\121"+
+        "\1\0\1\121\1\0\1\121\1\uffff\44\0";
     static final String DFA52_acceptS =
-        "\1\uffff\1\1\1\uffff\1\3\10\uffff\2\2\65\uffff\1\2\44\uffff";
+        "\1\uffff\1\1\1\uffff\1\3\4\uffff\1\2\4\uffff\1\2\65\uffff\1\2\44"+
+        "\uffff";
     static final String DFA52_specialS =
-        "\1\45\1\uffff\1\13\1\uffff\1\42\1\56\1\57\1\72\1\52\1\53\1\46\1"+
-        "\27\2\uffff\1\71\1\14\1\10\1\11\1\24\1\3\1\21\1\50\1\22\1\12\1\41"+
-        "\1\75\1\26\1\61\1\6\1\25\1\34\1\36\1\31\1\16\1\47\1\62\1\2\1\67"+
-        "\1\1\1\37\1\60\1\44\1\66\1\65\1\4\1\15\1\74\1\40\1\73\1\7\1\55\1"+
-        "\0\1\51\1\35\1\70\1\23\1\32\1\17\1\5\1\63\1\33\1\20\1\54\1\64\1"+
-        "\43\1\76\1\30\45\uffff}>";
+        "\1\34\1\uffff\1\62\1\uffff\1\22\1\41\1\10\1\60\1\uffff\1\14\1\20"+
+        "\1\64\1\31\1\uffff\1\35\1\72\1\65\1\54\1\61\1\47\1\0\1\12\1\33\1"+
+        "\24\1\74\1\17\1\66\1\30\1\56\1\27\1\76\1\73\1\5\1\42\1\51\1\2\1"+
+        "\46\1\37\1\67\1\45\1\75\1\36\1\1\1\26\1\4\1\57\1\16\1\63\1\15\1"+
+        "\11\1\55\1\70\1\21\1\71\1\50\1\13\1\6\1\43\1\52\1\3\1\7\1\44\1\53"+
+        "\1\23\1\40\1\25\1\32\45\uffff}>";
     static final String[] DFA52_transitionS = {
             "\2\3\1\uffff\1\2\2\3\1\uffff\1\3\23\uffff\4\3\1\uffff\4\3\1"+
             "\uffff\1\3\16\uffff\1\1\1\uffff\1\3\12\uffff\1\3",
             "",
-            "\3\14\1\13\2\14\1\6\1\14\1\15\25\14\1\5\1\14\1\4\2\14\1\7\1"+
-            "\10\1\11\1\12\47\14",
+            "\3\15\1\14\2\15\1\7\1\15\1\10\25\15\1\5\1\15\1\4\2\15\1\6\1"+
+            "\11\1\12\1\13\47\15",
             "",
-            "\3\14\1\23\2\14\1\17\1\14\1\15\32\14\1\16\1\20\1\21\1\22\47"+
-            "\14",
-            "\3\14\1\31\2\14\1\25\1\14\1\15\32\14\1\24\1\26\1\27\1\30\47"+
-            "\14",
+            "\3\15\1\23\2\15\1\22\1\15\1\10\32\15\1\16\1\17\1\20\1\21\47"+
+            "\15",
+            "\3\15\1\31\2\15\1\24\1\15\1\10\32\15\1\25\1\26\1\27\1\30\47"+
+            "\15",
+            "\3\15\1\33\2\15\1\32\1\15\1\10\105\15",
             "\1\uffff",
-            "\3\14\1\32\2\14\1\33\1\14\1\15\105\14",
-            "\3\14\1\35\2\14\1\34\1\14\1\15\105\14",
-            "\6\14\1\36\1\14\1\15\105\14",
-            "\6\14\1\37\1\14\1\15\105\14",
-            "\4\14\1\41\1\14\1\42\1\14\1\15\56\14\1\43\16\14\1\40\7\14",
             "",
+            "\3\15\1\35\2\15\1\34\1\15\1\10\105\15",
+            "\6\15\1\36\1\15\1\10\105\15",
+            "\6\15\1\37\1\15\1\10\105\15",
+            "\4\15\1\41\1\15\1\43\1\15\1\10\56\15\1\42\16\15\1\40\7\15",
             "",
-            "\3\14\1\44\2\14\1\45\1\14\1\15\105\14",
+            "\3\15\1\44\2\15\1\45\1\15\1\10\105\15",
+            "\3\15\1\47\2\15\1\46\1\15\1\10\105\15",
+            "\6\15\1\50\1\15\1\10\105\15",
+            "\6\15\1\51\1\15\1\10\105\15",
             "\1\uffff",
-            "\3\14\1\46\2\14\1\47\1\14\1\15\105\14",
-            "\6\14\1\50\1\14\1\15\105\14",
-            "\6\14\1\51\1\14\1\15\105\14",
-            "\4\14\1\53\1\14\1\54\1\14\1\15\56\14\1\55\16\14\1\52\7\14",
-            "\3\14\1\56\2\14\1\57\1\14\1\15\105\14",
+            "\4\15\1\53\1\15\1\55\1\15\1\10\56\15\1\54\16\15\1\52\7\15",
             "\1\uffff",
-            "\3\14\1\60\2\14\1\61\1\14\1\15\105\14",
-            "\6\14\1\62\1\14\1\15\105\14",
-            "\6\14\1\63\1\14\1\15\105\14",
-            "\4\14\1\65\1\14\1\66\1\14\1\15\56\14\1\67\16\14\1\64\7\14",
-            "\4\14\1\71\1\14\1\72\1\14\1\15\56\14\1\73\16\14\1\70\7\14",
+            "\3\15\1\56\2\15\1\57\1\15\1\10\105\15",
+            "\3\15\1\60\2\15\1\61\1\15\1\10\105\15",
+            "\6\15\1\62\1\15\1\10\105\15",
+            "\6\15\1\63\1\15\1\10\105\15",
+            "\4\15\1\65\1\15\1\67\1\15\1\10\56\15\1\66\16\15\1\64\7\15",
             "\1\uffff",
+            "\4\15\1\71\1\15\1\73\1\15\1\10\56\15\1\72\16\15\1\70\7\15",
             "\1\uffff",
-            "\4\14\1\75\1\14\1\76\1\14\1\15\56\14\1\77\16\14\1\74\7\14",
-            "\1\uffff",
-            "\1\uffff",
-            "\3\14\1\100\2\14\1\101\1\14\1\15\105\14",
-            "\4\102\1\14\1\102\1\103\1\14\1\15\6\102\3\14\1\102\1\14\1\102"+
-            "\6\14\2\102\5\14\1\102\5\14\4\102\1\14\6\102\6\14\1\102\24\14",
-            "\1\uffff",
-            "\6\14\1\103\1\14\1\15\57\14\1\104\25\14",
-            "\4\14\1\106\1\14\1\110\1\14\1\15\56\14\1\107\16\14\1\105\7\14",
-            "\1\uffff",
-            "\4\14\1\112\1\14\1\113\1\14\1\15\56\14\1\114\16\14\1\111\7\14",
+            "\4\15\1\75\1\15\1\77\1\15\1\10\56\15\1\76\16\15\1\74\7\15",
             "\1\uffff",
             "\1\uffff",
+            "\3\15\1\100\2\15\1\101\1\15\1\10\105\15",
+            "\4\102\1\15\1\102\1\103\1\15\1\10\6\102\3\15\1\102\1\15\1\102"+
+            "\6\15\2\102\5\15\1\102\5\15\4\102\1\15\6\102\6\15\1\102\24\15",
+            "\6\15\1\103\1\15\1\10\57\15\1\104\25\15",
             "\1\uffff",
-            "\3\14\1\115\2\14\1\116\1\14\1\15\105\14",
-            "\4\117\1\14\1\117\1\103\1\14\1\15\6\117\3\14\1\117\1\14\1\117"+
-            "\6\14\2\117\5\14\1\117\5\14\4\117\1\14\6\117\6\14\1\117\24\14",
-            "\1\uffff",
-            "\6\14\1\103\1\14\1\15\57\14\1\120\25\14",
-            "\4\14\1\122\1\14\1\123\1\14\1\15\56\14\1\124\16\14\1\121\7\14",
-            "\1\uffff",
-            "\4\14\1\126\1\14\1\127\1\14\1\15\56\14\1\130\16\14\1\125\7\14",
+            "\4\15\1\106\1\15\1\110\1\15\1\10\56\15\1\107\16\15\1\105\7\15",
             "\1\uffff",
             "\1\uffff",
+            "\4\15\1\112\1\15\1\114\1\15\1\10\56\15\1\113\16\15\1\111\7\15",
             "\1\uffff",
-            "\3\14\1\131\2\14\1\132\1\14\1\15\105\14",
-            "\4\133\1\14\1\133\1\103\1\14\1\15\6\133\3\14\1\133\1\14\1\133"+
-            "\6\14\2\133\5\14\1\133\5\14\4\133\1\14\6\133\6\14\1\133\24\14",
             "\1\uffff",
-            "\6\14\1\103\1\14\1\15\57\14\1\134\25\14",
-            "\3\14\1\135\2\14\1\136\1\14\1\15\105\14",
-            "\4\137\1\14\1\137\1\103\1\14\1\15\6\137\3\14\1\137\1\14\1\137"+
-            "\6\14\2\137\5\14\1\137\5\14\4\137\1\14\6\137\6\14\1\137\24\14",
+            "\3\15\1\115\2\15\1\116\1\15\1\10\105\15",
+            "\4\117\1\15\1\117\1\103\1\15\1\10\6\117\3\15\1\117\1\15\1\117"+
+            "\6\15\2\117\5\15\1\117\5\15\4\117\1\15\6\117\6\15\1\117\24\15",
+            "\6\15\1\103\1\15\1\10\57\15\1\120\25\15",
             "\1\uffff",
-            "\6\14\1\103\1\14\1\15\57\14\1\140\25\14",
-            "\3\14\1\141\2\14\1\142\1\14\1\15\105\14",
-            "\4\143\1\14\1\143\1\103\1\14\1\15\6\143\3\14\1\143\1\14\1\143"+
-            "\6\14\2\143\5\14\1\143\5\14\4\143\1\14\6\143\6\14\1\143\24\14",
+            "\4\15\1\122\1\15\1\124\1\15\1\10\56\15\1\123\16\15\1\121\7\15",
             "\1\uffff",
-            "\6\14\1\103\1\14\1\15\57\14\1\144\25\14",
-            "\4\14\1\145\1\14\1\146\1\14\1\15\56\14\1\147\26\14",
+            "\4\15\1\126\1\15\1\130\1\15\1\10\56\15\1\127\16\15\1\125\7\15",
             "\1\uffff",
-            "\4\14\1\41\1\14\1\42\1\14\1\15\56\14\1\43\26\14",
+            "\1\uffff",
+            "\1\uffff",
+            "\3\15\1\131\2\15\1\132\1\15\1\10\105\15",
+            "\4\133\1\15\1\133\1\103\1\15\1\10\6\133\3\15\1\133\1\15\1\133"+
+            "\6\15\2\133\5\15\1\133\5\15\4\133\1\15\6\133\6\15\1\133\24\15",
+            "\6\15\1\103\1\15\1\10\57\15\1\134\25\15",
+            "\1\uffff",
+            "\3\15\1\135\2\15\1\136\1\15\1\10\105\15",
+            "\4\137\1\15\1\137\1\103\1\15\1\10\6\137\3\15\1\137\1\15\1\137"+
+            "\6\15\2\137\5\15\1\137\5\15\4\137\1\15\6\137\6\15\1\137\24\15",
+            "\6\15\1\103\1\15\1\10\57\15\1\140\25\15",
+            "\1\uffff",
+            "\3\15\1\141\2\15\1\142\1\15\1\10\105\15",
+            "\4\143\1\15\1\143\1\103\1\15\1\10\6\143\3\15\1\143\1\15\1\143"+
+            "\6\15\2\143\5\15\1\143\5\15\4\143\1\15\6\143\6\15\1\143\24\15",
+            "\6\15\1\103\1\15\1\10\57\15\1\144\25\15",
+            "\1\uffff",
+            "\4\15\1\145\1\15\1\147\1\15\1\10\56\15\1\146\26\15",
+            "\1\uffff",
+            "\4\15\1\41\1\15\1\43\1\15\1\10\56\15\1\42\26\15",
             "",
             "\1\uffff",
             "\1\uffff",
@@ -7652,10 +7647,44 @@ public class DRLParser extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA52_51 = input.LA(1);
+                        int LA52_20 = input.LA(1);
 
                          
-                        int index52_51 = input.index();
+                        int index52_20 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_20);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA52_42 = input.LA(1);
+
+                         
+                        int index52_42 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_42==ID) ) {s = 77;}
+
+                        else if ( (LA52_42==LEFT_PAREN) ) {s = 78;}
+
+                        else if ( (LA52_42==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_42>=PACKAGE && LA52_42<=FUNCTION)||(LA52_42>=DOT && LA52_42<=GLOBAL)||LA52_42==COMMA||(LA52_42>=QUERY && LA52_42<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_42);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
+                        int LA52_35 = input.LA(1);
+
+                         
+                        int index52_35 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred7()) ) {s = 67;}
@@ -7663,76 +7692,22 @@ public class DRLParser extends Parser {
                         else if ( (true) ) {s = 3;}
 
                          
-                        input.seek(index52_51);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA52_38 = input.LA(1);
-
-                         
-                        int index52_38 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_38==74) ) {s = 73;}
-
-                        else if ( (LA52_38==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_38==DOT) ) {s = 74;}
-
-                        else if ( (LA52_38==LEFT_PAREN) ) {s = 75;}
-
-                        else if ( (LA52_38==LEFT_SQUARE) ) {s = 76;}
-
-                        else if ( ((LA52_38>=PACKAGE && LA52_38<=ID)||LA52_38==GLOBAL||LA52_38==COMMA||(LA52_38>=QUERY && LA52_38<=RIGHT_CURLY)||(LA52_38>=RIGHT_SQUARE && LA52_38<=73)||(LA52_38>=75 && LA52_38<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_38);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA52_36 = input.LA(1);
-
-                         
-                        int index52_36 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_36==74) ) {s = 69;}
-
-                        else if ( (LA52_36==DOT) ) {s = 70;}
-
-                        else if ( (LA52_36==LEFT_SQUARE) ) {s = 71;}
-
-                        else if ( (LA52_36==LEFT_PAREN) ) {s = 72;}
-
-                        else if ( (LA52_36==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_36>=PACKAGE && LA52_36<=ID)||LA52_36==GLOBAL||LA52_36==COMMA||(LA52_36>=QUERY && LA52_36<=RIGHT_CURLY)||(LA52_36>=RIGHT_SQUARE && LA52_36<=73)||(LA52_36>=75 && LA52_36<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_36);
+                        input.seek(index52_35);
                         if ( s>=0 ) return s;
                         break;
                     case 3 : 
-                        int LA52_19 = input.LA(1);
+                        int LA52_59 = input.LA(1);
 
                          
-                        int index52_19 = input.index();
+                        int index52_59 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA52_19==74) ) {s = 42;}
+                        if ( (synpred7()) ) {s = 67;}
 
-                        else if ( (LA52_19==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_19==DOT) ) {s = 43;}
-
-                        else if ( (LA52_19==LEFT_PAREN) ) {s = 44;}
-
-                        else if ( (LA52_19==LEFT_SQUARE) ) {s = 45;}
-
-                        else if ( ((LA52_19>=PACKAGE && LA52_19<=ID)||LA52_19==GLOBAL||LA52_19==COMMA||(LA52_19>=QUERY && LA52_19<=RIGHT_CURLY)||(LA52_19>=RIGHT_SQUARE && LA52_19<=73)||(LA52_19>=75 && LA52_19<=81)) && (synpred7())) {s = 12;}
+                        else if ( (true) ) {s = 3;}
 
                          
-                        input.seek(index52_19);
+                        input.seek(index52_59);
                         if ( s>=0 ) return s;
                         break;
                     case 4 : 
@@ -7742,45 +7717,95 @@ public class DRLParser extends Parser {
                         int index52_44 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 67;}
+                        if ( (LA52_44==RIGHT_SQUARE) ) {s = 80;}
 
-                        else if ( (true) ) {s = 3;}
+                        else if ( (LA52_44==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_44>=PACKAGE && LA52_44<=GLOBAL)||LA52_44==COMMA||(LA52_44>=QUERY && LA52_44<=LEFT_SQUARE)||(LA52_44>=THEN && LA52_44<=81)) && (synpred7())) {s = 13;}
+
+                        else if ( (LA52_44==LEFT_PAREN) && (synpred7())) {s = 67;}
 
                          
                         input.seek(index52_44);
                         if ( s>=0 ) return s;
                         break;
                     case 5 : 
-                        int LA52_58 = input.LA(1);
+                        int LA52_32 = input.LA(1);
 
                          
-                        int index52_58 = input.index();
+                        int index52_32 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 67;}
+                        if ( (LA52_32==ID) ) {s = 64;}
 
-                        else if ( (true) ) {s = 3;}
+                        else if ( (LA52_32==LEFT_PAREN) ) {s = 65;}
+
+                        else if ( (LA52_32==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_32>=PACKAGE && LA52_32<=FUNCTION)||(LA52_32>=DOT && LA52_32<=GLOBAL)||LA52_32==COMMA||(LA52_32>=QUERY && LA52_32<=81)) && (synpred7())) {s = 13;}
 
                          
-                        input.seek(index52_58);
+                        input.seek(index52_32);
                         if ( s>=0 ) return s;
                         break;
                     case 6 : 
-                        int LA52_28 = input.LA(1);
+                        int LA52_56 = input.LA(1);
 
                          
-                        int index52_28 = input.index();
+                        int index52_56 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 13;}
+                        if ( (LA52_56==ID) ) {s = 93;}
 
-                        else if ( (true) ) {s = 3;}
+                        else if ( (LA52_56==LEFT_PAREN) ) {s = 94;}
+
+                        else if ( (LA52_56==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_56>=PACKAGE && LA52_56<=FUNCTION)||(LA52_56>=DOT && LA52_56<=GLOBAL)||LA52_56==COMMA||(LA52_56>=QUERY && LA52_56<=81)) && (synpred7())) {s = 13;}
 
                          
-                        input.seek(index52_28);
+                        input.seek(index52_56);
                         if ( s>=0 ) return s;
                         break;
                     case 7 : 
+                        int LA52_60 = input.LA(1);
+
+                         
+                        int index52_60 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_60==ID) ) {s = 97;}
+
+                        else if ( (LA52_60==LEFT_PAREN) ) {s = 98;}
+
+                        else if ( (LA52_60==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_60>=PACKAGE && LA52_60<=FUNCTION)||(LA52_60>=DOT && LA52_60<=GLOBAL)||LA52_60==COMMA||(LA52_60>=QUERY && LA52_60<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_60);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 8 : 
+                        int LA52_6 = input.LA(1);
+
+                         
+                        int index52_6 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_6==LEFT_PAREN) ) {s = 26;}
+
+                        else if ( (LA52_6==ID) ) {s = 27;}
+
+                        else if ( (LA52_6==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_6>=PACKAGE && LA52_6<=FUNCTION)||(LA52_6>=DOT && LA52_6<=GLOBAL)||LA52_6==COMMA||(LA52_6>=QUERY && LA52_6<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_6);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 9 : 
                         int LA52_49 = input.LA(1);
 
                          
@@ -7795,52 +7820,216 @@ public class DRLParser extends Parser {
                         input.seek(index52_49);
                         if ( s>=0 ) return s;
                         break;
-                    case 8 : 
-                        int LA52_16 = input.LA(1);
-
-                         
-                        int index52_16 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_16==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_16==ID) ) {s = 38;}
-
-                        else if ( (LA52_16==LEFT_PAREN) ) {s = 39;}
-
-                        else if ( ((LA52_16>=PACKAGE && LA52_16<=FUNCTION)||(LA52_16>=DOT && LA52_16<=GLOBAL)||LA52_16==COMMA||(LA52_16>=QUERY && LA52_16<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_16);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 9 : 
-                        int LA52_17 = input.LA(1);
-
-                         
-                        int index52_17 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_17==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_17>=PACKAGE && LA52_17<=GLOBAL)||LA52_17==COMMA||(LA52_17>=QUERY && LA52_17<=81)) && (synpred7())) {s = 12;}
-
-                        else if ( (LA52_17==LEFT_PAREN) ) {s = 40;}
-
-                         
-                        input.seek(index52_17);
-                        if ( s>=0 ) return s;
-                        break;
                     case 10 : 
+                        int LA52_21 = input.LA(1);
+
+                         
+                        int index52_21 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_21==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( (LA52_21==ID) ) {s = 46;}
+
+                        else if ( (LA52_21==LEFT_PAREN) ) {s = 47;}
+
+                        else if ( ((LA52_21>=PACKAGE && LA52_21<=FUNCTION)||(LA52_21>=DOT && LA52_21<=GLOBAL)||LA52_21==COMMA||(LA52_21>=QUERY && LA52_21<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_21);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 11 : 
+                        int LA52_55 = input.LA(1);
+
+                         
+                        int index52_55 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 67;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_55);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 12 : 
+                        int LA52_9 = input.LA(1);
+
+                         
+                        int index52_9 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_9==LEFT_PAREN) ) {s = 28;}
+
+                        else if ( (LA52_9==ID) ) {s = 29;}
+
+                        else if ( (LA52_9==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_9>=PACKAGE && LA52_9<=FUNCTION)||(LA52_9>=DOT && LA52_9<=GLOBAL)||LA52_9==COMMA||(LA52_9>=QUERY && LA52_9<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_9);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 13 : 
+                        int LA52_48 = input.LA(1);
+
+                         
+                        int index52_48 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_48==74) ) {s = 85;}
+
+                        else if ( (LA52_48==DOT) ) {s = 86;}
+
+                        else if ( (LA52_48==LEFT_SQUARE) ) {s = 87;}
+
+                        else if ( (LA52_48==LEFT_PAREN) ) {s = 88;}
+
+                        else if ( (LA52_48==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_48>=PACKAGE && LA52_48<=ID)||LA52_48==GLOBAL||LA52_48==COMMA||(LA52_48>=QUERY && LA52_48<=RIGHT_CURLY)||(LA52_48>=RIGHT_SQUARE && LA52_48<=73)||(LA52_48>=75 && LA52_48<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_48);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 14 : 
+                        int LA52_46 = input.LA(1);
+
+                         
+                        int index52_46 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_46==74) ) {s = 81;}
+
+                        else if ( (LA52_46==DOT) ) {s = 82;}
+
+                        else if ( (LA52_46==LEFT_SQUARE) ) {s = 83;}
+
+                        else if ( (LA52_46==LEFT_PAREN) ) {s = 84;}
+
+                        else if ( (LA52_46==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_46>=PACKAGE && LA52_46<=ID)||LA52_46==GLOBAL||LA52_46==COMMA||(LA52_46>=QUERY && LA52_46<=RIGHT_CURLY)||(LA52_46>=RIGHT_SQUARE && LA52_46<=73)||(LA52_46>=75 && LA52_46<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_46);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 15 : 
+                        int LA52_25 = input.LA(1);
+
+                         
+                        int index52_25 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_25==74) ) {s = 52;}
+
+                        else if ( (LA52_25==DOT) ) {s = 53;}
+
+                        else if ( (LA52_25==LEFT_SQUARE) ) {s = 54;}
+
+                        else if ( (LA52_25==LEFT_PAREN) ) {s = 55;}
+
+                        else if ( (LA52_25==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_25>=PACKAGE && LA52_25<=ID)||LA52_25==GLOBAL||LA52_25==COMMA||(LA52_25>=QUERY && LA52_25<=RIGHT_CURLY)||(LA52_25>=RIGHT_SQUARE && LA52_25<=73)||(LA52_25>=75 && LA52_25<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_25);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 16 : 
+                        int LA52_10 = input.LA(1);
+
+                         
+                        int index52_10 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_10==LEFT_PAREN) ) {s = 30;}
+
+                        else if ( (LA52_10==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_10>=PACKAGE && LA52_10<=GLOBAL)||LA52_10==COMMA||(LA52_10>=QUERY && LA52_10<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_10);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 17 : 
+                        int LA52_52 = input.LA(1);
+
+                         
+                        int index52_52 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_52==ID) ) {s = 89;}
+
+                        else if ( (LA52_52==LEFT_PAREN) ) {s = 90;}
+
+                        else if ( (LA52_52==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_52>=PACKAGE && LA52_52<=FUNCTION)||(LA52_52>=DOT && LA52_52<=GLOBAL)||LA52_52==COMMA||(LA52_52>=QUERY && LA52_52<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_52);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 18 : 
+                        int LA52_4 = input.LA(1);
+
+                         
+                        int index52_4 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_4==EXISTS) ) {s = 14;}
+
+                        else if ( (LA52_4==NOT) ) {s = 15;}
+
+                        else if ( (LA52_4==EVAL) ) {s = 16;}
+
+                        else if ( (LA52_4==FORALL) ) {s = 17;}
+
+                        else if ( (LA52_4==LEFT_PAREN) ) {s = 18;}
+
+                        else if ( (LA52_4==ID) ) {s = 19;}
+
+                        else if ( (LA52_4==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_4>=PACKAGE && LA52_4<=FUNCTION)||(LA52_4>=DOT && LA52_4<=GLOBAL)||LA52_4==COMMA||(LA52_4>=QUERY && LA52_4<=FROM)||(LA52_4>=ACCUMULATE && LA52_4<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_4);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 19 : 
+                        int LA52_63 = input.LA(1);
+
+                         
+                        int index52_63 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 67;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_63);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 20 : 
                         int LA52_23 = input.LA(1);
 
                          
                         int index52_23 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA52_23==RIGHT_PAREN) && (synpred7())) {s = 13;}
+                        if ( (LA52_23==RIGHT_PAREN) && (synpred7())) {s = 8;}
 
-                        else if ( ((LA52_23>=PACKAGE && LA52_23<=GLOBAL)||LA52_23==COMMA||(LA52_23>=QUERY && LA52_23<=81)) && (synpred7())) {s = 12;}
+                        else if ( ((LA52_23>=PACKAGE && LA52_23<=GLOBAL)||LA52_23==COMMA||(LA52_23>=QUERY && LA52_23<=81)) && (synpred7())) {s = 13;}
 
                         else if ( (LA52_23==LEFT_PAREN) ) {s = 50;}
 
@@ -7848,203 +8037,41 @@ public class DRLParser extends Parser {
                         input.seek(index52_23);
                         if ( s>=0 ) return s;
                         break;
-                    case 11 : 
-                        int LA52_2 = input.LA(1);
+                    case 21 : 
+                        int LA52_65 = input.LA(1);
 
                          
-                        int index52_2 = input.index();
+                        int index52_65 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA52_2==AND) ) {s = 4;}
-
-                        else if ( (LA52_2==OR) ) {s = 5;}
-
-                        else if ( (LA52_2==LEFT_PAREN) ) {s = 6;}
-
-                        else if ( (LA52_2==EXISTS) ) {s = 7;}
-
-                        else if ( (LA52_2==NOT) ) {s = 8;}
-
-                        else if ( (LA52_2==EVAL) ) {s = 9;}
-
-                        else if ( (LA52_2==FORALL) ) {s = 10;}
-
-                        else if ( (LA52_2==ID) ) {s = 11;}
-
-                        else if ( ((LA52_2>=PACKAGE && LA52_2<=FUNCTION)||(LA52_2>=DOT && LA52_2<=GLOBAL)||LA52_2==COMMA||(LA52_2>=QUERY && LA52_2<=LOCK_ON_ACTIVE)||LA52_2==DOUBLE_PIPE||(LA52_2>=DOUBLE_AMPER && LA52_2<=FROM)||(LA52_2>=ACCUMULATE && LA52_2<=81)) && (synpred7())) {s = 12;}
-
-                        else if ( (LA52_2==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                         
-                        input.seek(index52_2);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 12 : 
-                        int LA52_15 = input.LA(1);
-
-                         
-                        int index52_15 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 13;}
+                        if ( (synpred7()) ) {s = 67;}
 
                         else if ( (true) ) {s = 3;}
 
                          
-                        input.seek(index52_15);
+                        input.seek(index52_65);
                         if ( s>=0 ) return s;
                         break;
-                    case 13 : 
-                        int LA52_45 = input.LA(1);
+                    case 22 : 
+                        int LA52_43 = input.LA(1);
 
                          
-                        int index52_45 = input.index();
+                        int index52_43 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA52_45==RIGHT_SQUARE) ) {s = 80;}
+                        if ( ((LA52_43>=PACKAGE && LA52_43<=ID)||LA52_43==GLOBAL||(LA52_43>=QUERY && LA52_43<=ATTRIBUTES)||LA52_43==ENABLED||LA52_43==SALIENCE||(LA52_43>=DURATION && LA52_43<=DIALECT)||LA52_43==FROM||(LA52_43>=INIT && LA52_43<=RESULT)||(LA52_43>=CONTAINS && LA52_43<=IN)||LA52_43==THEN) ) {s = 79;}
 
-                        else if ( (LA52_45==RIGHT_PAREN) && (synpred7())) {s = 13;}
+                        else if ( (LA52_43==RIGHT_PAREN) && (synpred7())) {s = 8;}
 
-                        else if ( ((LA52_45>=PACKAGE && LA52_45<=GLOBAL)||LA52_45==COMMA||(LA52_45>=QUERY && LA52_45<=LEFT_SQUARE)||(LA52_45>=THEN && LA52_45<=81)) && (synpred7())) {s = 12;}
+                        else if ( (LA52_43==DOT||LA52_43==COMMA||(LA52_43>=DATE_EFFECTIVE && LA52_43<=DATE_EXPIRES)||LA52_43==BOOL||(LA52_43>=INT && LA52_43<=AGENDA_GROUP)||(LA52_43>=LOCK_ON_ACTIVE && LA52_43<=DOUBLE_AMPER)||(LA52_43>=EXISTS && LA52_43<=ACCUMULATE)||LA52_43==COLLECT||(LA52_43>=FLOAT && LA52_43<=RIGHT_SQUARE)||(LA52_43>=EOL && LA52_43<=81)) && (synpred7())) {s = 13;}
 
-                        else if ( (LA52_45==LEFT_PAREN) && (synpred7())) {s = 67;}
+                        else if ( (LA52_43==LEFT_PAREN) && (synpred7())) {s = 67;}
 
                          
-                        input.seek(index52_45);
+                        input.seek(index52_43);
                         if ( s>=0 ) return s;
                         break;
-                    case 14 : 
-                        int LA52_33 = input.LA(1);
-
-                         
-                        int index52_33 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((LA52_33>=PACKAGE && LA52_33<=ID)||LA52_33==GLOBAL||(LA52_33>=QUERY && LA52_33<=ATTRIBUTES)||LA52_33==ENABLED||LA52_33==SALIENCE||(LA52_33>=DURATION && LA52_33<=DIALECT)||LA52_33==FROM||(LA52_33>=INIT && LA52_33<=RESULT)||(LA52_33>=CONTAINS && LA52_33<=IN)||LA52_33==THEN) ) {s = 66;}
-
-                        else if ( (LA52_33==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_33==DOT||LA52_33==COMMA||(LA52_33>=DATE_EFFECTIVE && LA52_33<=DATE_EXPIRES)||LA52_33==BOOL||(LA52_33>=INT && LA52_33<=AGENDA_GROUP)||(LA52_33>=LOCK_ON_ACTIVE && LA52_33<=DOUBLE_AMPER)||(LA52_33>=EXISTS && LA52_33<=ACCUMULATE)||LA52_33==COLLECT||(LA52_33>=FLOAT && LA52_33<=RIGHT_SQUARE)||(LA52_33>=EOL && LA52_33<=81)) && (synpred7())) {s = 12;}
-
-                        else if ( (LA52_33==LEFT_PAREN) && (synpred7())) {s = 67;}
-
-                         
-                        input.seek(index52_33);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 15 : 
-                        int LA52_57 = input.LA(1);
-
-                         
-                        int index52_57 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( ((LA52_57>=PACKAGE && LA52_57<=ID)||LA52_57==GLOBAL||(LA52_57>=QUERY && LA52_57<=ATTRIBUTES)||LA52_57==ENABLED||LA52_57==SALIENCE||(LA52_57>=DURATION && LA52_57<=DIALECT)||LA52_57==FROM||(LA52_57>=INIT && LA52_57<=RESULT)||(LA52_57>=CONTAINS && LA52_57<=IN)||LA52_57==THEN) ) {s = 95;}
-
-                        else if ( (LA52_57==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_57==DOT||LA52_57==COMMA||(LA52_57>=DATE_EFFECTIVE && LA52_57<=DATE_EXPIRES)||LA52_57==BOOL||(LA52_57>=INT && LA52_57<=AGENDA_GROUP)||(LA52_57>=LOCK_ON_ACTIVE && LA52_57<=DOUBLE_AMPER)||(LA52_57>=EXISTS && LA52_57<=ACCUMULATE)||LA52_57==COLLECT||(LA52_57>=FLOAT && LA52_57<=RIGHT_SQUARE)||(LA52_57>=EOL && LA52_57<=81)) && (synpred7())) {s = 12;}
-
-                        else if ( (LA52_57==LEFT_PAREN) && (synpred7())) {s = 67;}
-
-                         
-                        input.seek(index52_57);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 16 : 
-                        int LA52_61 = input.LA(1);
-
-                         
-                        int index52_61 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_61==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_61>=PACKAGE && LA52_61<=ID)||LA52_61==GLOBAL||(LA52_61>=QUERY && LA52_61<=ATTRIBUTES)||LA52_61==ENABLED||LA52_61==SALIENCE||(LA52_61>=DURATION && LA52_61<=DIALECT)||LA52_61==FROM||(LA52_61>=INIT && LA52_61<=RESULT)||(LA52_61>=CONTAINS && LA52_61<=IN)||LA52_61==THEN) ) {s = 99;}
-
-                        else if ( (LA52_61==LEFT_PAREN) && (synpred7())) {s = 67;}
-
-                        else if ( (LA52_61==DOT||LA52_61==COMMA||(LA52_61>=DATE_EFFECTIVE && LA52_61<=DATE_EXPIRES)||LA52_61==BOOL||(LA52_61>=INT && LA52_61<=AGENDA_GROUP)||(LA52_61>=LOCK_ON_ACTIVE && LA52_61<=DOUBLE_AMPER)||(LA52_61>=EXISTS && LA52_61<=ACCUMULATE)||LA52_61==COLLECT||(LA52_61>=FLOAT && LA52_61<=RIGHT_SQUARE)||(LA52_61>=EOL && LA52_61<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_61);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 17 : 
-                        int LA52_20 = input.LA(1);
-
-                         
-                        int index52_20 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_20==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_20==ID) ) {s = 46;}
-
-                        else if ( (LA52_20==LEFT_PAREN) ) {s = 47;}
-
-                        else if ( ((LA52_20>=PACKAGE && LA52_20<=FUNCTION)||(LA52_20>=DOT && LA52_20<=GLOBAL)||LA52_20==COMMA||(LA52_20>=QUERY && LA52_20<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_20);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 18 : 
-                        int LA52_22 = input.LA(1);
-
-                         
-                        int index52_22 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_22==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_22==ID) ) {s = 48;}
-
-                        else if ( (LA52_22==LEFT_PAREN) ) {s = 49;}
-
-                        else if ( ((LA52_22>=PACKAGE && LA52_22<=FUNCTION)||(LA52_22>=DOT && LA52_22<=GLOBAL)||LA52_22==COMMA||(LA52_22>=QUERY && LA52_22<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_22);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 19 : 
-                        int LA52_55 = input.LA(1);
-
-                         
-                        int index52_55 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_55==RIGHT_SQUARE) ) {s = 92;}
-
-                        else if ( (LA52_55==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_55>=PACKAGE && LA52_55<=GLOBAL)||LA52_55==COMMA||(LA52_55>=QUERY && LA52_55<=LEFT_SQUARE)||(LA52_55>=THEN && LA52_55<=81)) && (synpred7())) {s = 12;}
-
-                        else if ( (LA52_55==LEFT_PAREN) && (synpred7())) {s = 67;}
-
-                         
-                        input.seek(index52_55);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 20 : 
-                        int LA52_18 = input.LA(1);
-
-                         
-                        int index52_18 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_18==LEFT_PAREN) ) {s = 41;}
-
-                        else if ( (LA52_18==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_18>=PACKAGE && LA52_18<=GLOBAL)||LA52_18==COMMA||(LA52_18>=QUERY && LA52_18<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_18);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 21 : 
+                    case 23 : 
                         int LA52_29 = input.LA(1);
 
                          
@@ -8053,304 +8080,107 @@ public class DRLParser extends Parser {
                         s = -1;
                         if ( (LA52_29==74) ) {s = 60;}
 
-                        else if ( (LA52_29==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
                         else if ( (LA52_29==DOT) ) {s = 61;}
 
-                        else if ( (LA52_29==LEFT_PAREN) ) {s = 62;}
+                        else if ( (LA52_29==LEFT_SQUARE) ) {s = 62;}
 
-                        else if ( (LA52_29==LEFT_SQUARE) ) {s = 63;}
+                        else if ( (LA52_29==LEFT_PAREN) ) {s = 63;}
 
-                        else if ( ((LA52_29>=PACKAGE && LA52_29<=ID)||LA52_29==GLOBAL||LA52_29==COMMA||(LA52_29>=QUERY && LA52_29<=RIGHT_CURLY)||(LA52_29>=RIGHT_SQUARE && LA52_29<=73)||(LA52_29>=75 && LA52_29<=81)) && (synpred7())) {s = 12;}
+                        else if ( (LA52_29==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_29>=PACKAGE && LA52_29<=ID)||LA52_29==GLOBAL||LA52_29==COMMA||(LA52_29>=QUERY && LA52_29<=RIGHT_CURLY)||(LA52_29>=RIGHT_SQUARE && LA52_29<=73)||(LA52_29>=75 && LA52_29<=81)) && (synpred7())) {s = 13;}
 
                          
                         input.seek(index52_29);
                         if ( s>=0 ) return s;
                         break;
-                    case 22 : 
-                        int LA52_26 = input.LA(1);
-
-                         
-                        int index52_26 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_26==74) ) {s = 56;}
-
-                        else if ( (LA52_26==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_26==DOT) ) {s = 57;}
-
-                        else if ( (LA52_26==LEFT_PAREN) ) {s = 58;}
-
-                        else if ( (LA52_26==LEFT_SQUARE) ) {s = 59;}
-
-                        else if ( ((LA52_26>=PACKAGE && LA52_26<=ID)||LA52_26==GLOBAL||LA52_26==COMMA||(LA52_26>=QUERY && LA52_26<=RIGHT_CURLY)||(LA52_26>=RIGHT_SQUARE && LA52_26<=73)||(LA52_26>=75 && LA52_26<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_26);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 23 : 
-                        int LA52_11 = input.LA(1);
-
-                         
-                        int index52_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_11==74) ) {s = 32;}
-
-                        else if ( (LA52_11==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_11==DOT) ) {s = 33;}
-
-                        else if ( (LA52_11==LEFT_PAREN) ) {s = 34;}
-
-                        else if ( (LA52_11==LEFT_SQUARE) ) {s = 35;}
-
-                        else if ( ((LA52_11>=PACKAGE && LA52_11<=ID)||LA52_11==GLOBAL||LA52_11==COMMA||(LA52_11>=QUERY && LA52_11<=RIGHT_CURLY)||(LA52_11>=RIGHT_SQUARE && LA52_11<=73)||(LA52_11>=75 && LA52_11<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_11);
-                        if ( s>=0 ) return s;
-                        break;
                     case 24 : 
+                        int LA52_27 = input.LA(1);
+
+                         
+                        int index52_27 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_27==74) ) {s = 56;}
+
+                        else if ( (LA52_27==DOT) ) {s = 57;}
+
+                        else if ( (LA52_27==LEFT_SQUARE) ) {s = 58;}
+
+                        else if ( (LA52_27==LEFT_PAREN) ) {s = 59;}
+
+                        else if ( (LA52_27==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_27>=PACKAGE && LA52_27<=ID)||LA52_27==GLOBAL||LA52_27==COMMA||(LA52_27>=QUERY && LA52_27<=RIGHT_CURLY)||(LA52_27>=RIGHT_SQUARE && LA52_27<=73)||(LA52_27>=75 && LA52_27<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_27);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 25 : 
+                        int LA52_12 = input.LA(1);
+
+                         
+                        int index52_12 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_12==74) ) {s = 32;}
+
+                        else if ( (LA52_12==DOT) ) {s = 33;}
+
+                        else if ( (LA52_12==LEFT_SQUARE) ) {s = 34;}
+
+                        else if ( (LA52_12==LEFT_PAREN) ) {s = 35;}
+
+                        else if ( (LA52_12==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_12>=PACKAGE && LA52_12<=ID)||LA52_12==GLOBAL||LA52_12==COMMA||(LA52_12>=QUERY && LA52_12<=RIGHT_CURLY)||(LA52_12>=RIGHT_SQUARE && LA52_12<=73)||(LA52_12>=75 && LA52_12<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_12);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 26 : 
                         int LA52_66 = input.LA(1);
 
                          
                         int index52_66 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA52_66==RIGHT_PAREN) && (synpred7())) {s = 13;}
+                        if ( (LA52_66==LEFT_SQUARE) ) {s = 34;}
 
-                        else if ( (LA52_66==LEFT_SQUARE) ) {s = 35;}
-
-                        else if ( (LA52_66==LEFT_PAREN) ) {s = 34;}
+                        else if ( (LA52_66==LEFT_PAREN) ) {s = 35;}
 
                         else if ( (LA52_66==DOT) ) {s = 33;}
 
-                        else if ( ((LA52_66>=PACKAGE && LA52_66<=ID)||LA52_66==GLOBAL||LA52_66==COMMA||(LA52_66>=QUERY && LA52_66<=RIGHT_CURLY)||(LA52_66>=RIGHT_SQUARE && LA52_66<=81)) && (synpred7())) {s = 12;}
+                        else if ( (LA52_66==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_66>=PACKAGE && LA52_66<=ID)||LA52_66==GLOBAL||LA52_66==COMMA||(LA52_66>=QUERY && LA52_66<=RIGHT_CURLY)||(LA52_66>=RIGHT_SQUARE && LA52_66<=81)) && (synpred7())) {s = 13;}
 
                          
                         input.seek(index52_66);
                         if ( s>=0 ) return s;
                         break;
-                    case 25 : 
-                        int LA52_32 = input.LA(1);
-
-                         
-                        int index52_32 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_32==ID) ) {s = 64;}
-
-                        else if ( (LA52_32==LEFT_PAREN) ) {s = 65;}
-
-                        else if ( (LA52_32==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_32>=PACKAGE && LA52_32<=FUNCTION)||(LA52_32>=DOT && LA52_32<=GLOBAL)||LA52_32==COMMA||(LA52_32>=QUERY && LA52_32<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_32);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 26 : 
-                        int LA52_56 = input.LA(1);
-
-                         
-                        int index52_56 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_56==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_56==ID) ) {s = 93;}
-
-                        else if ( (LA52_56==LEFT_PAREN) ) {s = 94;}
-
-                        else if ( ((LA52_56>=PACKAGE && LA52_56<=FUNCTION)||(LA52_56>=DOT && LA52_56<=GLOBAL)||LA52_56==COMMA||(LA52_56>=QUERY && LA52_56<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_56);
-                        if ( s>=0 ) return s;
-                        break;
                     case 27 : 
-                        int LA52_60 = input.LA(1);
+                        int LA52_22 = input.LA(1);
 
                          
-                        int index52_60 = input.index();
+                        int index52_22 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA52_60==RIGHT_PAREN) && (synpred7())) {s = 13;}
+                        if ( (LA52_22==RIGHT_PAREN) && (synpred7())) {s = 8;}
 
-                        else if ( (LA52_60==ID) ) {s = 97;}
+                        else if ( (LA52_22==ID) ) {s = 48;}
 
-                        else if ( (LA52_60==LEFT_PAREN) ) {s = 98;}
+                        else if ( (LA52_22==LEFT_PAREN) ) {s = 49;}
 
-                        else if ( ((LA52_60>=PACKAGE && LA52_60<=FUNCTION)||(LA52_60>=DOT && LA52_60<=GLOBAL)||LA52_60==COMMA||(LA52_60>=QUERY && LA52_60<=81)) && (synpred7())) {s = 12;}
+                        else if ( ((LA52_22>=PACKAGE && LA52_22<=FUNCTION)||(LA52_22>=DOT && LA52_22<=GLOBAL)||LA52_22==COMMA||(LA52_22>=QUERY && LA52_22<=81)) && (synpred7())) {s = 13;}
 
                          
-                        input.seek(index52_60);
+                        input.seek(index52_22);
                         if ( s>=0 ) return s;
                         break;
                     case 28 : 
-                        int LA52_30 = input.LA(1);
-
-                         
-                        int index52_30 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 3;}
-
-                         
-                        input.seek(index52_30);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 29 : 
-                        int LA52_53 = input.LA(1);
-
-                         
-                        int index52_53 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_53==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_53>=PACKAGE && LA52_53<=ID)||LA52_53==GLOBAL||(LA52_53>=QUERY && LA52_53<=ATTRIBUTES)||LA52_53==ENABLED||LA52_53==SALIENCE||(LA52_53>=DURATION && LA52_53<=DIALECT)||LA52_53==FROM||(LA52_53>=INIT && LA52_53<=RESULT)||(LA52_53>=CONTAINS && LA52_53<=IN)||LA52_53==THEN) ) {s = 91;}
-
-                        else if ( (LA52_53==LEFT_PAREN) && (synpred7())) {s = 67;}
-
-                        else if ( (LA52_53==DOT||LA52_53==COMMA||(LA52_53>=DATE_EFFECTIVE && LA52_53<=DATE_EXPIRES)||LA52_53==BOOL||(LA52_53>=INT && LA52_53<=AGENDA_GROUP)||(LA52_53>=LOCK_ON_ACTIVE && LA52_53<=DOUBLE_AMPER)||(LA52_53>=EXISTS && LA52_53<=ACCUMULATE)||LA52_53==COLLECT||(LA52_53>=FLOAT && LA52_53<=RIGHT_SQUARE)||(LA52_53>=EOL && LA52_53<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_53);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 30 : 
-                        int LA52_31 = input.LA(1);
-
-                         
-                        int index52_31 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 3;}
-
-                         
-                        input.seek(index52_31);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 31 : 
-                        int LA52_39 = input.LA(1);
-
-                         
-                        int index52_39 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 67;}
-
-                        else if ( (true) ) {s = 3;}
-
-                         
-                        input.seek(index52_39);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 32 : 
-                        int LA52_47 = input.LA(1);
-
-                         
-                        int index52_47 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 67;}
-
-                        else if ( (true) ) {s = 3;}
-
-                         
-                        input.seek(index52_47);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 33 : 
-                        int LA52_24 = input.LA(1);
-
-                         
-                        int index52_24 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_24==LEFT_PAREN) ) {s = 51;}
-
-                        else if ( (LA52_24==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_24>=PACKAGE && LA52_24<=GLOBAL)||LA52_24==COMMA||(LA52_24>=QUERY && LA52_24<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_24);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 34 : 
-                        int LA52_4 = input.LA(1);
-
-                         
-                        int index52_4 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_4==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_4==EXISTS) ) {s = 14;}
-
-                        else if ( (LA52_4==LEFT_PAREN) ) {s = 15;}
-
-                        else if ( (LA52_4==NOT) ) {s = 16;}
-
-                        else if ( (LA52_4==EVAL) ) {s = 17;}
-
-                        else if ( (LA52_4==FORALL) ) {s = 18;}
-
-                        else if ( (LA52_4==ID) ) {s = 19;}
-
-                        else if ( ((LA52_4>=PACKAGE && LA52_4<=FUNCTION)||(LA52_4>=DOT && LA52_4<=GLOBAL)||LA52_4==COMMA||(LA52_4>=QUERY && LA52_4<=FROM)||(LA52_4>=ACCUMULATE && LA52_4<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_4);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 35 : 
-                        int LA52_64 = input.LA(1);
-
-                         
-                        int index52_64 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_64==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_64==DOT) ) {s = 101;}
-
-                        else if ( (LA52_64==LEFT_PAREN) ) {s = 102;}
-
-                        else if ( (LA52_64==LEFT_SQUARE) ) {s = 103;}
-
-                        else if ( ((LA52_64>=PACKAGE && LA52_64<=ID)||LA52_64==GLOBAL||LA52_64==COMMA||(LA52_64>=QUERY && LA52_64<=RIGHT_CURLY)||(LA52_64>=RIGHT_SQUARE && LA52_64<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_64);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 36 : 
-                        int LA52_41 = input.LA(1);
-
-                         
-                        int index52_41 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 67;}
-
-                        else if ( (true) ) {s = 3;}
-
-                         
-                        input.seek(index52_41);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 37 : 
                         int LA52_0 = input.LA(1);
 
                          
@@ -8367,121 +8197,320 @@ public class DRLParser extends Parser {
                         input.seek(index52_0);
                         if ( s>=0 ) return s;
                         break;
-                    case 38 : 
-                        int LA52_10 = input.LA(1);
+                    case 29 : 
+                        int LA52_14 = input.LA(1);
 
                          
-                        int index52_10 = input.index();
+                        int index52_14 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA52_10==LEFT_PAREN) ) {s = 31;}
+                        if ( (LA52_14==RIGHT_PAREN) && (synpred7())) {s = 8;}
 
-                        else if ( (LA52_10==RIGHT_PAREN) && (synpred7())) {s = 13;}
+                        else if ( (LA52_14==ID) ) {s = 36;}
 
-                        else if ( ((LA52_10>=PACKAGE && LA52_10<=GLOBAL)||LA52_10==COMMA||(LA52_10>=QUERY && LA52_10<=81)) && (synpred7())) {s = 12;}
+                        else if ( (LA52_14==LEFT_PAREN) ) {s = 37;}
+
+                        else if ( ((LA52_14>=PACKAGE && LA52_14<=FUNCTION)||(LA52_14>=DOT && LA52_14<=GLOBAL)||LA52_14==COMMA||(LA52_14>=QUERY && LA52_14<=81)) && (synpred7())) {s = 13;}
 
                          
-                        input.seek(index52_10);
+                        input.seek(index52_14);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 30 : 
+                        int LA52_41 = input.LA(1);
+
+                         
+                        int index52_41 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 67;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_41);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 31 : 
+                        int LA52_37 = input.LA(1);
+
+                         
+                        int index52_37 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 67;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_37);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 32 : 
+                        int LA52_64 = input.LA(1);
+
+                         
+                        int index52_64 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_64==DOT) ) {s = 101;}
+
+                        else if ( (LA52_64==LEFT_SQUARE) ) {s = 102;}
+
+                        else if ( (LA52_64==LEFT_PAREN) ) {s = 103;}
+
+                        else if ( (LA52_64==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_64>=PACKAGE && LA52_64<=ID)||LA52_64==GLOBAL||LA52_64==COMMA||(LA52_64>=QUERY && LA52_64<=RIGHT_CURLY)||(LA52_64>=RIGHT_SQUARE && LA52_64<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_64);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 33 : 
+                        int LA52_5 = input.LA(1);
+
+                         
+                        int index52_5 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_5==LEFT_PAREN) ) {s = 20;}
+
+                        else if ( (LA52_5==EXISTS) ) {s = 21;}
+
+                        else if ( (LA52_5==NOT) ) {s = 22;}
+
+                        else if ( (LA52_5==EVAL) ) {s = 23;}
+
+                        else if ( (LA52_5==FORALL) ) {s = 24;}
+
+                        else if ( (LA52_5==ID) ) {s = 25;}
+
+                        else if ( (LA52_5==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_5>=PACKAGE && LA52_5<=FUNCTION)||(LA52_5>=DOT && LA52_5<=GLOBAL)||LA52_5==COMMA||(LA52_5>=QUERY && LA52_5<=FROM)||(LA52_5>=ACCUMULATE && LA52_5<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_5);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 34 : 
+                        int LA52_33 = input.LA(1);
+
+                         
+                        int index52_33 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((LA52_33>=PACKAGE && LA52_33<=ID)||LA52_33==GLOBAL||(LA52_33>=QUERY && LA52_33<=ATTRIBUTES)||LA52_33==ENABLED||LA52_33==SALIENCE||(LA52_33>=DURATION && LA52_33<=DIALECT)||LA52_33==FROM||(LA52_33>=INIT && LA52_33<=RESULT)||(LA52_33>=CONTAINS && LA52_33<=IN)||LA52_33==THEN) ) {s = 66;}
+
+                        else if ( (LA52_33==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( (LA52_33==DOT||LA52_33==COMMA||(LA52_33>=DATE_EFFECTIVE && LA52_33<=DATE_EXPIRES)||LA52_33==BOOL||(LA52_33>=INT && LA52_33<=AGENDA_GROUP)||(LA52_33>=LOCK_ON_ACTIVE && LA52_33<=DOUBLE_AMPER)||(LA52_33>=EXISTS && LA52_33<=ACCUMULATE)||LA52_33==COLLECT||(LA52_33>=FLOAT && LA52_33<=RIGHT_SQUARE)||(LA52_33>=EOL && LA52_33<=81)) && (synpred7())) {s = 13;}
+
+                        else if ( (LA52_33==LEFT_PAREN) && (synpred7())) {s = 67;}
+
+                         
+                        input.seek(index52_33);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 35 : 
+                        int LA52_57 = input.LA(1);
+
+                         
+                        int index52_57 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((LA52_57>=PACKAGE && LA52_57<=ID)||LA52_57==GLOBAL||(LA52_57>=QUERY && LA52_57<=ATTRIBUTES)||LA52_57==ENABLED||LA52_57==SALIENCE||(LA52_57>=DURATION && LA52_57<=DIALECT)||LA52_57==FROM||(LA52_57>=INIT && LA52_57<=RESULT)||(LA52_57>=CONTAINS && LA52_57<=IN)||LA52_57==THEN) ) {s = 95;}
+
+                        else if ( (LA52_57==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( (LA52_57==DOT||LA52_57==COMMA||(LA52_57>=DATE_EFFECTIVE && LA52_57<=DATE_EXPIRES)||LA52_57==BOOL||(LA52_57>=INT && LA52_57<=AGENDA_GROUP)||(LA52_57>=LOCK_ON_ACTIVE && LA52_57<=DOUBLE_AMPER)||(LA52_57>=EXISTS && LA52_57<=ACCUMULATE)||LA52_57==COLLECT||(LA52_57>=FLOAT && LA52_57<=RIGHT_SQUARE)||(LA52_57>=EOL && LA52_57<=81)) && (synpred7())) {s = 13;}
+
+                        else if ( (LA52_57==LEFT_PAREN) && (synpred7())) {s = 67;}
+
+                         
+                        input.seek(index52_57);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 36 : 
+                        int LA52_61 = input.LA(1);
+
+                         
+                        int index52_61 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_61==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_61>=PACKAGE && LA52_61<=ID)||LA52_61==GLOBAL||(LA52_61>=QUERY && LA52_61<=ATTRIBUTES)||LA52_61==ENABLED||LA52_61==SALIENCE||(LA52_61>=DURATION && LA52_61<=DIALECT)||LA52_61==FROM||(LA52_61>=INIT && LA52_61<=RESULT)||(LA52_61>=CONTAINS && LA52_61<=IN)||LA52_61==THEN) ) {s = 99;}
+
+                        else if ( (LA52_61==LEFT_PAREN) && (synpred7())) {s = 67;}
+
+                        else if ( (LA52_61==DOT||LA52_61==COMMA||(LA52_61>=DATE_EFFECTIVE && LA52_61<=DATE_EXPIRES)||LA52_61==BOOL||(LA52_61>=INT && LA52_61<=AGENDA_GROUP)||(LA52_61>=LOCK_ON_ACTIVE && LA52_61<=DOUBLE_AMPER)||(LA52_61>=EXISTS && LA52_61<=ACCUMULATE)||LA52_61==COLLECT||(LA52_61>=FLOAT && LA52_61<=RIGHT_SQUARE)||(LA52_61>=EOL && LA52_61<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_61);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 37 : 
+                        int LA52_39 = input.LA(1);
+
+                         
+                        int index52_39 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_39==74) ) {s = 73;}
+
+                        else if ( (LA52_39==DOT) ) {s = 74;}
+
+                        else if ( (LA52_39==LEFT_SQUARE) ) {s = 75;}
+
+                        else if ( (LA52_39==LEFT_PAREN) ) {s = 76;}
+
+                        else if ( (LA52_39==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_39>=PACKAGE && LA52_39<=ID)||LA52_39==GLOBAL||LA52_39==COMMA||(LA52_39>=QUERY && LA52_39<=RIGHT_CURLY)||(LA52_39>=RIGHT_SQUARE && LA52_39<=73)||(LA52_39>=75 && LA52_39<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_39);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 38 : 
+                        int LA52_36 = input.LA(1);
+
+                         
+                        int index52_36 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_36==74) ) {s = 69;}
+
+                        else if ( (LA52_36==DOT) ) {s = 70;}
+
+                        else if ( (LA52_36==LEFT_SQUARE) ) {s = 71;}
+
+                        else if ( (LA52_36==LEFT_PAREN) ) {s = 72;}
+
+                        else if ( (LA52_36==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_36>=PACKAGE && LA52_36<=ID)||LA52_36==GLOBAL||LA52_36==COMMA||(LA52_36>=QUERY && LA52_36<=RIGHT_CURLY)||(LA52_36>=RIGHT_SQUARE && LA52_36<=73)||(LA52_36>=75 && LA52_36<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_36);
                         if ( s>=0 ) return s;
                         break;
                     case 39 : 
+                        int LA52_19 = input.LA(1);
+
+                         
+                        int index52_19 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_19==74) ) {s = 42;}
+
+                        else if ( (LA52_19==DOT) ) {s = 43;}
+
+                        else if ( (LA52_19==LEFT_SQUARE) ) {s = 44;}
+
+                        else if ( (LA52_19==LEFT_PAREN) ) {s = 45;}
+
+                        else if ( (LA52_19==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_19>=PACKAGE && LA52_19<=ID)||LA52_19==GLOBAL||LA52_19==COMMA||(LA52_19>=QUERY && LA52_19<=RIGHT_CURLY)||(LA52_19>=RIGHT_SQUARE && LA52_19<=73)||(LA52_19>=75 && LA52_19<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_19);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 40 : 
+                        int LA52_54 = input.LA(1);
+
+                         
+                        int index52_54 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_54==RIGHT_SQUARE) ) {s = 92;}
+
+                        else if ( (LA52_54==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_54>=PACKAGE && LA52_54<=GLOBAL)||LA52_54==COMMA||(LA52_54>=QUERY && LA52_54<=LEFT_SQUARE)||(LA52_54>=THEN && LA52_54<=81)) && (synpred7())) {s = 13;}
+
+                        else if ( (LA52_54==LEFT_PAREN) && (synpred7())) {s = 67;}
+
+                         
+                        input.seek(index52_54);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 41 : 
                         int LA52_34 = input.LA(1);
 
                          
                         int index52_34 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 67;}
+                        if ( (LA52_34==RIGHT_SQUARE) ) {s = 68;}
 
-                        else if ( (true) ) {s = 3;}
+                        else if ( (LA52_34==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_34>=PACKAGE && LA52_34<=GLOBAL)||LA52_34==COMMA||(LA52_34>=QUERY && LA52_34<=LEFT_SQUARE)||(LA52_34>=THEN && LA52_34<=81)) && (synpred7())) {s = 13;}
+
+                        else if ( (LA52_34==LEFT_PAREN) && (synpred7())) {s = 67;}
 
                          
                         input.seek(index52_34);
                         if ( s>=0 ) return s;
                         break;
-                    case 40 : 
-                        int LA52_21 = input.LA(1);
-
-                         
-                        int index52_21 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 3;}
-
-                         
-                        input.seek(index52_21);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 41 : 
-                        int LA52_52 = input.LA(1);
-
-                         
-                        int index52_52 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_52==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_52==ID) ) {s = 89;}
-
-                        else if ( (LA52_52==LEFT_PAREN) ) {s = 90;}
-
-                        else if ( ((LA52_52>=PACKAGE && LA52_52<=FUNCTION)||(LA52_52>=DOT && LA52_52<=GLOBAL)||LA52_52==COMMA||(LA52_52>=QUERY && LA52_52<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_52);
-                        if ( s>=0 ) return s;
-                        break;
                     case 42 : 
-                        int LA52_8 = input.LA(1);
+                        int LA52_58 = input.LA(1);
 
                          
-                        int index52_8 = input.index();
+                        int index52_58 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (LA52_8==LEFT_PAREN) ) {s = 28;}
+                        if ( (LA52_58==RIGHT_SQUARE) ) {s = 96;}
 
-                        else if ( (LA52_8==ID) ) {s = 29;}
+                        else if ( (LA52_58==RIGHT_PAREN) && (synpred7())) {s = 8;}
 
-                        else if ( (LA52_8==RIGHT_PAREN) && (synpred7())) {s = 13;}
+                        else if ( ((LA52_58>=PACKAGE && LA52_58<=GLOBAL)||LA52_58==COMMA||(LA52_58>=QUERY && LA52_58<=LEFT_SQUARE)||(LA52_58>=THEN && LA52_58<=81)) && (synpred7())) {s = 13;}
 
-                        else if ( ((LA52_8>=PACKAGE && LA52_8<=FUNCTION)||(LA52_8>=DOT && LA52_8<=GLOBAL)||LA52_8==COMMA||(LA52_8>=QUERY && LA52_8<=81)) && (synpred7())) {s = 12;}
+                        else if ( (LA52_58==LEFT_PAREN) && (synpred7())) {s = 67;}
 
                          
-                        input.seek(index52_8);
+                        input.seek(index52_58);
                         if ( s>=0 ) return s;
                         break;
                     case 43 : 
-                        int LA52_9 = input.LA(1);
-
-                         
-                        int index52_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_9==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_9>=PACKAGE && LA52_9<=GLOBAL)||LA52_9==COMMA||(LA52_9>=QUERY && LA52_9<=81)) && (synpred7())) {s = 12;}
-
-                        else if ( (LA52_9==LEFT_PAREN) ) {s = 30;}
-
-                         
-                        input.seek(index52_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 44 : 
                         int LA52_62 = input.LA(1);
 
                          
                         int index52_62 = input.index();
                         input.rewind();
                         s = -1;
-                        if ( (synpred7()) ) {s = 67;}
+                        if ( (LA52_62==RIGHT_SQUARE) ) {s = 100;}
 
-                        else if ( (true) ) {s = 3;}
+                        else if ( (LA52_62==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_62>=PACKAGE && LA52_62<=GLOBAL)||LA52_62==COMMA||(LA52_62>=QUERY && LA52_62<=LEFT_SQUARE)||(LA52_62>=THEN && LA52_62<=81)) && (synpred7())) {s = 13;}
+
+                        else if ( (LA52_62==LEFT_PAREN) && (synpred7())) {s = 67;}
 
                          
                         input.seek(index52_62);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 44 : 
+                        int LA52_17 = input.LA(1);
+
+                         
+                        int index52_17 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_17==LEFT_PAREN) ) {s = 41;}
+
+                        else if ( (LA52_17==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_17>=PACKAGE && LA52_17<=GLOBAL)||LA52_17==COMMA||(LA52_17>=QUERY && LA52_17<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_17);
                         if ( s>=0 ) return s;
                         break;
                     case 45 : 
@@ -8500,37 +8529,10 @@ public class DRLParser extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 46 : 
-                        int LA52_5 = input.LA(1);
+                        int LA52_28 = input.LA(1);
 
                          
-                        int index52_5 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_5==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_5==EXISTS) ) {s = 20;}
-
-                        else if ( (LA52_5==LEFT_PAREN) ) {s = 21;}
-
-                        else if ( (LA52_5==NOT) ) {s = 22;}
-
-                        else if ( (LA52_5==EVAL) ) {s = 23;}
-
-                        else if ( (LA52_5==FORALL) ) {s = 24;}
-
-                        else if ( (LA52_5==ID) ) {s = 25;}
-
-                        else if ( ((LA52_5>=PACKAGE && LA52_5<=FUNCTION)||(LA52_5>=DOT && LA52_5<=GLOBAL)||LA52_5==COMMA||(LA52_5>=QUERY && LA52_5<=FROM)||(LA52_5>=ACCUMULATE && LA52_5<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_5);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 47 : 
-                        int LA52_6 = input.LA(1);
-
-                         
-                        int index52_6 = input.index();
+                        int index52_28 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred7()) ) {s = 13;}
@@ -8538,10 +8540,250 @@ public class DRLParser extends Parser {
                         else if ( (true) ) {s = 3;}
 
                          
-                        input.seek(index52_6);
+                        input.seek(index52_28);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 47 : 
+                        int LA52_45 = input.LA(1);
+
+                         
+                        int index52_45 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 67;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_45);
                         if ( s>=0 ) return s;
                         break;
                     case 48 : 
+                        int LA52_7 = input.LA(1);
+
+                         
+                        int index52_7 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_7);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 49 : 
+                        int LA52_18 = input.LA(1);
+
+                         
+                        int index52_18 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_18);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 50 : 
+                        int LA52_2 = input.LA(1);
+
+                         
+                        int index52_2 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_2==AND) ) {s = 4;}
+
+                        else if ( (LA52_2==OR) ) {s = 5;}
+
+                        else if ( (LA52_2==EXISTS) ) {s = 6;}
+
+                        else if ( (LA52_2==LEFT_PAREN) ) {s = 7;}
+
+                        else if ( (LA52_2==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( (LA52_2==NOT) ) {s = 9;}
+
+                        else if ( (LA52_2==EVAL) ) {s = 10;}
+
+                        else if ( (LA52_2==FORALL) ) {s = 11;}
+
+                        else if ( (LA52_2==ID) ) {s = 12;}
+
+                        else if ( ((LA52_2>=PACKAGE && LA52_2<=FUNCTION)||(LA52_2>=DOT && LA52_2<=GLOBAL)||LA52_2==COMMA||(LA52_2>=QUERY && LA52_2<=LOCK_ON_ACTIVE)||LA52_2==DOUBLE_PIPE||(LA52_2>=DOUBLE_AMPER && LA52_2<=FROM)||(LA52_2>=ACCUMULATE && LA52_2<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_2);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 51 : 
+                        int LA52_47 = input.LA(1);
+
+                         
+                        int index52_47 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 67;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_47);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 52 : 
+                        int LA52_11 = input.LA(1);
+
+                         
+                        int index52_11 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_11==LEFT_PAREN) ) {s = 31;}
+
+                        else if ( (LA52_11==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_11>=PACKAGE && LA52_11<=GLOBAL)||LA52_11==COMMA||(LA52_11>=QUERY && LA52_11<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_11);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 53 : 
+                        int LA52_16 = input.LA(1);
+
+                         
+                        int index52_16 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_16==LEFT_PAREN) ) {s = 40;}
+
+                        else if ( (LA52_16==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_16>=PACKAGE && LA52_16<=GLOBAL)||LA52_16==COMMA||(LA52_16>=QUERY && LA52_16<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_16);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 54 : 
+                        int LA52_26 = input.LA(1);
+
+                         
+                        int index52_26 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_26);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 55 : 
+                        int LA52_38 = input.LA(1);
+
+                         
+                        int index52_38 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 67;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_38);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 56 : 
+                        int LA52_51 = input.LA(1);
+
+                         
+                        int index52_51 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 67;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_51);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 57 : 
+                        int LA52_53 = input.LA(1);
+
+                         
+                        int index52_53 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( ((LA52_53>=PACKAGE && LA52_53<=ID)||LA52_53==GLOBAL||(LA52_53>=QUERY && LA52_53<=ATTRIBUTES)||LA52_53==ENABLED||LA52_53==SALIENCE||(LA52_53>=DURATION && LA52_53<=DIALECT)||LA52_53==FROM||(LA52_53>=INIT && LA52_53<=RESULT)||(LA52_53>=CONTAINS && LA52_53<=IN)||LA52_53==THEN) ) {s = 91;}
+
+                        else if ( (LA52_53==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( (LA52_53==DOT||LA52_53==COMMA||(LA52_53>=DATE_EFFECTIVE && LA52_53<=DATE_EXPIRES)||LA52_53==BOOL||(LA52_53>=INT && LA52_53<=AGENDA_GROUP)||(LA52_53>=LOCK_ON_ACTIVE && LA52_53<=DOUBLE_AMPER)||(LA52_53>=EXISTS && LA52_53<=ACCUMULATE)||LA52_53==COLLECT||(LA52_53>=FLOAT && LA52_53<=RIGHT_SQUARE)||(LA52_53>=EOL && LA52_53<=81)) && (synpred7())) {s = 13;}
+
+                        else if ( (LA52_53==LEFT_PAREN) && (synpred7())) {s = 67;}
+
+                         
+                        input.seek(index52_53);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 58 : 
+                        int LA52_15 = input.LA(1);
+
+                         
+                        int index52_15 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_15==LEFT_PAREN) ) {s = 38;}
+
+                        else if ( (LA52_15==ID) ) {s = 39;}
+
+                        else if ( (LA52_15==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_15>=PACKAGE && LA52_15<=FUNCTION)||(LA52_15>=DOT && LA52_15<=GLOBAL)||LA52_15==COMMA||(LA52_15>=QUERY && LA52_15<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_15);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 59 : 
+                        int LA52_31 = input.LA(1);
+
+                         
+                        int index52_31 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred7()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 3;}
+
+                         
+                        input.seek(index52_31);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 60 : 
+                        int LA52_24 = input.LA(1);
+
+                         
+                        int index52_24 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA52_24==LEFT_PAREN) ) {s = 51;}
+
+                        else if ( (LA52_24==RIGHT_PAREN) && (synpred7())) {s = 8;}
+
+                        else if ( ((LA52_24>=PACKAGE && LA52_24<=GLOBAL)||LA52_24==COMMA||(LA52_24>=QUERY && LA52_24<=81)) && (synpred7())) {s = 13;}
+
+                         
+                        input.seek(index52_24);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 61 : 
                         int LA52_40 = input.LA(1);
 
                          
@@ -8556,11 +8798,11 @@ public class DRLParser extends Parser {
                         input.seek(index52_40);
                         if ( s>=0 ) return s;
                         break;
-                    case 49 : 
-                        int LA52_27 = input.LA(1);
+                    case 62 : 
+                        int LA52_30 = input.LA(1);
 
                          
-                        int index52_27 = input.index();
+                        int index52_30 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred7()) ) {s = 13;}
@@ -8568,254 +8810,7 @@ public class DRLParser extends Parser {
                         else if ( (true) ) {s = 3;}
 
                          
-                        input.seek(index52_27);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 50 : 
-                        int LA52_35 = input.LA(1);
-
-                         
-                        int index52_35 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_35==RIGHT_SQUARE) ) {s = 68;}
-
-                        else if ( (LA52_35==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_35>=PACKAGE && LA52_35<=GLOBAL)||LA52_35==COMMA||(LA52_35>=QUERY && LA52_35<=LEFT_SQUARE)||(LA52_35>=THEN && LA52_35<=81)) && (synpred7())) {s = 12;}
-
-                        else if ( (LA52_35==LEFT_PAREN) && (synpred7())) {s = 67;}
-
-                         
-                        input.seek(index52_35);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 51 : 
-                        int LA52_59 = input.LA(1);
-
-                         
-                        int index52_59 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_59==RIGHT_SQUARE) ) {s = 96;}
-
-                        else if ( (LA52_59==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_59>=PACKAGE && LA52_59<=GLOBAL)||LA52_59==COMMA||(LA52_59>=QUERY && LA52_59<=LEFT_SQUARE)||(LA52_59>=THEN && LA52_59<=81)) && (synpred7())) {s = 12;}
-
-                        else if ( (LA52_59==LEFT_PAREN) && (synpred7())) {s = 67;}
-
-                         
-                        input.seek(index52_59);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 52 : 
-                        int LA52_63 = input.LA(1);
-
-                         
-                        int index52_63 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_63==RIGHT_SQUARE) ) {s = 100;}
-
-                        else if ( (LA52_63==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_63>=PACKAGE && LA52_63<=GLOBAL)||LA52_63==COMMA||(LA52_63>=QUERY && LA52_63<=LEFT_SQUARE)||(LA52_63>=THEN && LA52_63<=81)) && (synpred7())) {s = 12;}
-
-                        else if ( (LA52_63==LEFT_PAREN) && (synpred7())) {s = 67;}
-
-                         
-                        input.seek(index52_63);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 53 : 
-                        int LA52_43 = input.LA(1);
-
-                         
-                        int index52_43 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_43==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( ((LA52_43>=PACKAGE && LA52_43<=ID)||LA52_43==GLOBAL||(LA52_43>=QUERY && LA52_43<=ATTRIBUTES)||LA52_43==ENABLED||LA52_43==SALIENCE||(LA52_43>=DURATION && LA52_43<=DIALECT)||LA52_43==FROM||(LA52_43>=INIT && LA52_43<=RESULT)||(LA52_43>=CONTAINS && LA52_43<=IN)||LA52_43==THEN) ) {s = 79;}
-
-                        else if ( (LA52_43==LEFT_PAREN) && (synpred7())) {s = 67;}
-
-                        else if ( (LA52_43==DOT||LA52_43==COMMA||(LA52_43>=DATE_EFFECTIVE && LA52_43<=DATE_EXPIRES)||LA52_43==BOOL||(LA52_43>=INT && LA52_43<=AGENDA_GROUP)||(LA52_43>=LOCK_ON_ACTIVE && LA52_43<=DOUBLE_AMPER)||(LA52_43>=EXISTS && LA52_43<=ACCUMULATE)||LA52_43==COLLECT||(LA52_43>=FLOAT && LA52_43<=RIGHT_SQUARE)||(LA52_43>=EOL && LA52_43<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_43);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 54 : 
-                        int LA52_42 = input.LA(1);
-
-                         
-                        int index52_42 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_42==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_42==ID) ) {s = 77;}
-
-                        else if ( (LA52_42==LEFT_PAREN) ) {s = 78;}
-
-                        else if ( ((LA52_42>=PACKAGE && LA52_42<=FUNCTION)||(LA52_42>=DOT && LA52_42<=GLOBAL)||LA52_42==COMMA||(LA52_42>=QUERY && LA52_42<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_42);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 55 : 
-                        int LA52_37 = input.LA(1);
-
-                         
-                        int index52_37 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 67;}
-
-                        else if ( (true) ) {s = 3;}
-
-                         
-                        input.seek(index52_37);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 56 : 
-                        int LA52_54 = input.LA(1);
-
-                         
-                        int index52_54 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 67;}
-
-                        else if ( (true) ) {s = 3;}
-
-                         
-                        input.seek(index52_54);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 57 : 
-                        int LA52_14 = input.LA(1);
-
-                         
-                        int index52_14 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_14==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_14==ID) ) {s = 36;}
-
-                        else if ( (LA52_14==LEFT_PAREN) ) {s = 37;}
-
-                        else if ( ((LA52_14>=PACKAGE && LA52_14<=FUNCTION)||(LA52_14>=DOT && LA52_14<=GLOBAL)||LA52_14==COMMA||(LA52_14>=QUERY && LA52_14<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_14);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 58 : 
-                        int LA52_7 = input.LA(1);
-
-                         
-                        int index52_7 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_7==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_7==ID) ) {s = 26;}
-
-                        else if ( (LA52_7==LEFT_PAREN) ) {s = 27;}
-
-                        else if ( ((LA52_7>=PACKAGE && LA52_7<=FUNCTION)||(LA52_7>=DOT && LA52_7<=GLOBAL)||LA52_7==COMMA||(LA52_7>=QUERY && LA52_7<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_7);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 59 : 
-                        int LA52_48 = input.LA(1);
-
-                         
-                        int index52_48 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_48==74) ) {s = 85;}
-
-                        else if ( (LA52_48==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_48==DOT) ) {s = 86;}
-
-                        else if ( (LA52_48==LEFT_PAREN) ) {s = 87;}
-
-                        else if ( (LA52_48==LEFT_SQUARE) ) {s = 88;}
-
-                        else if ( ((LA52_48>=PACKAGE && LA52_48<=ID)||LA52_48==GLOBAL||LA52_48==COMMA||(LA52_48>=QUERY && LA52_48<=RIGHT_CURLY)||(LA52_48>=RIGHT_SQUARE && LA52_48<=73)||(LA52_48>=75 && LA52_48<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_48);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 60 : 
-                        int LA52_46 = input.LA(1);
-
-                         
-                        int index52_46 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_46==74) ) {s = 81;}
-
-                        else if ( (LA52_46==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_46==DOT) ) {s = 82;}
-
-                        else if ( (LA52_46==LEFT_PAREN) ) {s = 83;}
-
-                        else if ( (LA52_46==LEFT_SQUARE) ) {s = 84;}
-
-                        else if ( ((LA52_46>=PACKAGE && LA52_46<=ID)||LA52_46==GLOBAL||LA52_46==COMMA||(LA52_46>=QUERY && LA52_46<=RIGHT_CURLY)||(LA52_46>=RIGHT_SQUARE && LA52_46<=73)||(LA52_46>=75 && LA52_46<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_46);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 61 : 
-                        int LA52_25 = input.LA(1);
-
-                         
-                        int index52_25 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA52_25==74) ) {s = 52;}
-
-                        else if ( (LA52_25==RIGHT_PAREN) && (synpred7())) {s = 13;}
-
-                        else if ( (LA52_25==DOT) ) {s = 53;}
-
-                        else if ( (LA52_25==LEFT_PAREN) ) {s = 54;}
-
-                        else if ( (LA52_25==LEFT_SQUARE) ) {s = 55;}
-
-                        else if ( ((LA52_25>=PACKAGE && LA52_25<=ID)||LA52_25==GLOBAL||LA52_25==COMMA||(LA52_25>=QUERY && LA52_25<=RIGHT_CURLY)||(LA52_25>=RIGHT_SQUARE && LA52_25<=73)||(LA52_25>=75 && LA52_25<=81)) && (synpred7())) {s = 12;}
-
-                         
-                        input.seek(index52_25);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 62 : 
-                        int LA52_65 = input.LA(1);
-
-                         
-                        int index52_65 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred7()) ) {s = 67;}
-
-                        else if ( (true) ) {s = 3;}
-
-                         
-                        input.seek(index52_65);
+                        input.seek(index52_30);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -8926,88 +8921,35 @@ public class DRLParser extends Parser {
         }
     }
     static final String DFA65_eotS =
-        "\67\uffff";
+        "\32\uffff";
     static final String DFA65_eofS =
-        "\1\1\13\uffff\1\4\1\uffff\5\4\44\uffff";
+        "\1\1\31\uffff";
     static final String DFA65_minS =
-        "\1\13\1\uffff\1\4\1\10\1\uffff\7\4\1\10\6\4\1\10\2\4\41\0";
+        "\1\13\1\uffff\1\4\1\10\2\4\1\uffff\1\4\22\0";
     static final String DFA65_maxS =
-        "\1\45\1\uffff\2\121\1\uffff\7\121\1\73\1\121\5\75\3\121\41\0";
+        "\1\45\1\uffff\4\121\1\uffff\1\121\22\0";
     static final String DFA65_acceptS =
-        "\1\uffff\1\2\2\uffff\1\1\62\uffff";
+        "\1\uffff\1\2\4\uffff\1\1\23\uffff";
     static final String DFA65_specialS =
-        "\67\uffff}>";
+        "\32\uffff}>";
     static final String[] DFA65_transitionS = {
             "\2\1\26\uffff\1\1\1\uffff\1\2",
             "",
-            "\4\1\1\uffff\1\1\1\12\2\uffff\6\1\3\uffff\1\1\1\uffff\1\1\6"+
-            "\uffff\2\1\5\uffff\1\1\1\uffff\1\4\1\1\2\uffff\4\1\1\uffff\1"+
-            "\5\1\6\1\7\1\10\1\11\1\3\6\uffff\1\1\16\uffff\6\4",
+            "\4\1\1\uffff\1\1\1\4\2\uffff\6\1\3\uffff\1\1\1\uffff\1\1\6\uffff"+
+            "\2\1\5\uffff\1\1\1\uffff\1\6\1\1\2\uffff\4\1\1\uffff\1\5\1\7"+
+            "\1\10\1\11\1\12\1\3\6\uffff\1\1\16\uffff\6\6",
             "\1\1\1\uffff\1\13\35\uffff\1\1\10\uffff\6\1\4\uffff\1\1\20\uffff"+
             "\6\1",
+            "\4\1\1\uffff\1\1\1\15\2\uffff\6\1\3\uffff\1\1\1\uffff\1\1\6"+
+            "\uffff\2\1\5\uffff\1\1\1\uffff\1\6\1\1\2\uffff\4\1\1\uffff\1"+
+            "\16\1\17\1\20\1\21\1\22\1\14\6\uffff\1\1\16\uffff\6\6",
+            "\4\6\1\1\1\6\1\24\2\uffff\6\6\1\uffff\1\6\1\uffff\4\6\5\uffff"+
+            "\2\6\5\uffff\1\6\1\uffff\1\1\3\uffff\4\6\1\uffff\1\25\1\26\1"+
+            "\27\1\30\1\31\1\23\2\6\2\uffff\1\1\1\uffff\1\6\16\uffff\6\1",
             "",
-            "\4\4\1\1\1\4\1\15\2\uffff\6\4\1\uffff\1\4\1\uffff\4\4\5\uffff"+
-            "\2\4\5\uffff\1\4\1\uffff\1\1\3\uffff\4\4\1\uffff\1\16\1\17\1"+
-            "\20\1\21\1\22\1\14\2\4\2\uffff\1\1\1\uffff\1\4\16\uffff\6\1",
-            "\4\4\1\1\1\4\1\15\2\uffff\6\4\1\uffff\1\4\1\uffff\4\4\5\uffff"+
-            "\2\4\5\uffff\1\4\1\uffff\1\1\3\uffff\4\4\1\uffff\1\16\1\17\1"+
-            "\20\1\21\1\22\1\14\2\4\2\uffff\1\1\1\uffff\1\4\16\uffff\6\1",
-            "\4\4\1\1\1\4\1\15\2\uffff\6\4\1\uffff\1\4\1\uffff\4\4\5\uffff"+
-            "\2\4\5\uffff\1\4\1\uffff\1\1\3\uffff\4\4\1\uffff\1\16\1\17\1"+
-            "\20\1\21\1\22\1\14\2\4\2\uffff\1\1\1\uffff\1\4\16\uffff\6\1",
-            "\4\4\1\1\1\4\1\15\2\uffff\6\4\1\uffff\1\4\1\uffff\4\4\5\uffff"+
-            "\2\4\5\uffff\1\4\1\uffff\1\1\3\uffff\4\4\1\uffff\1\16\1\17\1"+
-            "\20\1\21\1\22\1\14\2\4\2\uffff\1\1\1\uffff\1\4\16\uffff\6\1",
-            "\4\4\1\1\1\4\1\15\2\uffff\6\4\1\uffff\1\4\1\uffff\4\4\5\uffff"+
-            "\2\4\5\uffff\1\4\1\uffff\1\1\3\uffff\4\4\1\uffff\1\16\1\17\1"+
-            "\20\1\21\1\22\1\14\2\4\2\uffff\1\1\1\uffff\1\4\16\uffff\6\1",
-            "\4\1\1\uffff\1\1\1\31\2\uffff\6\1\3\uffff\1\1\1\uffff\1\1\6"+
-            "\uffff\2\1\5\uffff\1\1\1\uffff\1\4\1\1\2\uffff\4\1\1\uffff\1"+
-            "\24\1\25\1\26\1\27\1\30\1\23\6\uffff\1\1\16\uffff\6\4",
-            "\4\4\1\uffff\1\4\1\40\2\uffff\6\4\1\uffff\1\4\1\uffff\4\4\5"+
-            "\uffff\2\4\5\uffff\1\4\1\uffff\1\1\3\uffff\4\4\1\uffff\1\33"+
-            "\1\34\1\35\1\36\1\37\1\32\2\4\4\uffff\1\4\16\uffff\6\1",
-            "\1\4\1\uffff\1\1\2\4\26\uffff\1\4\1\uffff\1\4\25\uffff\1\4",
-            "\6\4\1\56\35\4\1\42\10\4\1\51\1\52\1\53\1\54\1\55\1\41\25\4"+
-            "\1\43\1\44\1\45\1\46\1\47\1\50",
-            "\4\1\1\4\2\1\2\4\6\1\1\uffff\1\1\1\uffff\4\1\5\uffff\2\1\2\uffff"+
-            "\1\4\1\uffff\1\4\1\1\5\uffff\4\1\1\uffff\10\1\2\uffff\1\4\1"+
-            "\uffff\1\1",
-            "\4\1\1\4\2\1\2\4\6\1\1\uffff\1\1\1\uffff\4\1\5\uffff\2\1\2\uffff"+
-            "\1\4\1\uffff\1\4\1\1\5\uffff\4\1\1\uffff\10\1\2\uffff\1\4\1"+
-            "\uffff\1\1",
-            "\4\1\1\4\2\1\2\4\6\1\1\uffff\1\1\1\uffff\4\1\5\uffff\2\1\2\uffff"+
-            "\1\4\1\uffff\1\4\1\1\5\uffff\4\1\1\uffff\10\1\2\uffff\1\4\1"+
-            "\uffff\1\1",
-            "\4\1\1\4\2\1\2\4\6\1\1\uffff\1\1\1\uffff\4\1\5\uffff\2\1\2\uffff"+
-            "\1\4\1\uffff\1\4\1\1\5\uffff\4\1\1\uffff\10\1\2\uffff\1\4\1"+
-            "\uffff\1\1",
-            "\4\1\1\4\2\1\2\4\6\1\1\uffff\1\1\1\uffff\4\1\5\uffff\2\1\2\uffff"+
-            "\1\4\1\uffff\1\4\1\1\5\uffff\4\1\1\uffff\10\1\2\uffff\1\4\1"+
-            "\uffff\1\1",
-            "\1\1\1\uffff\1\57\35\uffff\1\1\10\uffff\6\1\4\uffff\1\1\20\uffff"+
-            "\6\1",
-            "\4\4\1\1\1\4\1\66\2\uffff\6\4\1\uffff\1\4\1\uffff\4\4\5\uffff"+
-            "\2\4\5\uffff\1\4\1\uffff\1\1\3\uffff\4\4\1\uffff\1\61\1\62\1"+
-            "\63\1\64\1\65\1\60\2\4\2\uffff\1\1\1\uffff\1\4\16\uffff\6\1",
-            "\4\4\1\1\1\4\1\66\2\uffff\6\4\1\uffff\1\4\1\uffff\4\4\5\uffff"+
-            "\2\4\5\uffff\1\4\1\uffff\1\1\3\uffff\4\4\1\uffff\1\61\1\62\1"+
-            "\63\1\64\1\65\1\60\2\4\2\uffff\1\1\1\uffff\1\4\16\uffff\6\1",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
-            "\1\uffff",
+            "\4\6\1\1\1\6\1\24\2\uffff\6\6\1\uffff\1\6\1\uffff\4\6\5\uffff"+
+            "\2\6\5\uffff\1\6\1\uffff\1\1\3\uffff\4\6\1\uffff\1\25\1\26\1"+
+            "\27\1\30\1\31\1\23\2\6\2\uffff\1\1\1\uffff\1\6\16\uffff\6\1",
             "\1\uffff",
             "\1\uffff",
             "\1\uffff",
