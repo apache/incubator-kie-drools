@@ -95,8 +95,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( this.parser.hasErrors() );
     }
 
-    // @FIXME
-    public void FIXME_testEmptyPackage() throws Exception {
+    public void testEmptyPackage() throws Exception {
         final String source = "package foo.bar.baz";
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new StringReader( source ) );
