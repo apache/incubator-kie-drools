@@ -481,8 +481,6 @@ abstract public class AbstractRuleBase
 
                 this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
 
-                pkg.clear();
-
                 // getting the list of referenced globals 
                 final Set referencedGlobals = new HashSet();
                 for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
@@ -505,6 +503,9 @@ abstract public class AbstractRuleBase
                 }
                 // removing the package itself from the list
                 this.pkgs.remove( pkg.getName() );
+                
+                //clear all members of the pkg
+                pkg.clear();
                 
                 this.eventSupport.fireAfterPackageRemoved( pkg );
                 

@@ -449,5 +449,11 @@ public class Package
     public void clear() {
         this.rules.clear();
         this.packageCompilationData.clear();
+        this.ruleFlows.clear();       
+        this.imports.clear();
+        this.functions.clear();
+        this.staticImports.clear();
+        this.globals.clear();
+        this.factTemplates.clear();        
     }
 }
