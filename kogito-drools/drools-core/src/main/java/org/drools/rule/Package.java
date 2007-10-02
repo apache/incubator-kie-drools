@@ -149,8 +149,10 @@ public class Package
         stream.writeObject( this.name );
         stream.writeObject( this.imports );
         stream.writeObject( this.staticImports );
-        stream.writeObject( this.globals );
+        stream.writeObject( this.functions );
+        stream.writeObject( this.factTemplates );        
         stream.writeObject( this.ruleFlows );
+        stream.writeObject( this.globals );
         stream.writeBoolean( this.valid );
 
 
@@ -175,8 +177,10 @@ public class Package
         this.name = (String) stream.readObject();
         this.imports = (Set) stream.readObject();
         this.staticImports = (Set) stream.readObject();
+        this.functions = (List) stream.readObject();
+        this.factTemplates = (Map) stream.readObject();
+        this.ruleFlows = (Map) stream.readObject();        
         this.globals = (Map) stream.readObject();
-        this.ruleFlows = (Map) stream.readObject();
         this.valid = stream.readBoolean();
 
         // Return the rules stored as a byte[]
