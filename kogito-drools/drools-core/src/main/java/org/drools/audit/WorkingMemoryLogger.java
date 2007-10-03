@@ -36,17 +36,23 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.AfterFunctionRemovedEvent;
 import org.drools.event.AfterPackageAddedEvent;
 import org.drools.event.AfterPackageRemovedEvent;
 import org.drools.event.AfterRuleAddedEvent;
+import org.drools.event.AfterRuleBaseLockedEvent;
+import org.drools.event.AfterRuleBaseUnlockedEvent;
 import org.drools.event.AfterRuleRemovedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.BeforeFunctionRemovedEvent;
 import org.drools.event.BeforePackageAddedEvent;
 import org.drools.event.BeforePackageRemovedEvent;
 import org.drools.event.BeforeRuleAddedEvent;
+import org.drools.event.BeforeRuleBaseLockedEvent;
+import org.drools.event.BeforeRuleBaseUnlockedEvent;
 import org.drools.event.BeforeRuleRemovedEvent;
 import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectUpdatedEvent;
@@ -389,5 +395,33 @@ public abstract class WorkingMemoryLogger
                                               event.getRule().getName() ) );
     }
     
+    public void afterFunctionRemoved(AfterFunctionRemovedEvent event) {
+        // TODO Auto-generated method stub
+        
+    }
 
+    public void afterRuleBaseLocked(AfterRuleBaseLockedEvent event) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void afterRuleBaseUnlocked(AfterRuleBaseUnlockedEvent event) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void beforeFunctionRemoved(BeforeFunctionRemovedEvent event) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void beforeRuleBaseLocked(BeforeRuleBaseLockedEvent event) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
+        // TODO Auto-generated method stub
+        
+    }        
 }

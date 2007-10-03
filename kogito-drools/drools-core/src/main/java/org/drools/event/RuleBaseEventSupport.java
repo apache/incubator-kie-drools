@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.rule.Package;
+import org.drools.RuleBase;
 import org.drools.rule.Rule;
+import org.drools.rule.Package;
 
 /**
  * 
@@ -35,14 +36,20 @@ public class RuleBaseEventSupport
      */
     private static final long serialVersionUID = 400L;
     private final List        listeners        = Collections.synchronizedList( new ArrayList() );
+    private transient RuleBase    ruleBase;
 
-    public RuleBaseEventSupport() {
+    public RuleBaseEventSupport(final RuleBase ruleBase) {
+        this.ruleBase = ruleBase;
     }
 
     public void addEventListener(final RuleBaseEventListener listener) {
         if ( !this.listeners.contains( listener ) ) {
             this.listeners.add( listener );
         }
+    }
+    
+    public void setRuleBase(RuleBase ruleBase) {
+        this.ruleBase = ruleBase;
     }
 
     public void removeEventListener(final RuleBaseEventListener listener) {
@@ -61,61 +68,115 @@ public class RuleBaseEventSupport
         return this.listeners.isEmpty();
     }
 
-    public void fireBeforePackageAdded(Package newPkg) {
+    public void fireBeforePackageAdded(final Package newPkg) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final BeforePackageAddedEvent event = new BeforePackageAddedEvent( newPkg );
+        final BeforePackageAddedEvent event = new BeforePackageAddedEvent( this.ruleBase,
+                                                                           newPkg );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((RuleBaseEventListener) this.listeners.get( i )).beforePackageAdded( event );
         }
     }
 
-    public void fireAfterPackageAdded(Package newPkg) {
+    public void fireAfterPackageAdded(final Package newPkg) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final AfterPackageAddedEvent event = new AfterPackageAddedEvent( newPkg );
+        final AfterPackageAddedEvent event = new AfterPackageAddedEvent( this.ruleBase,
+                                                                         newPkg );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((RuleBaseEventListener) this.listeners.get( i )).afterPackageAdded( event );
         }
     }
 
-    public void fireBeforePackageRemoved(Package pkg) {
+    public void fireBeforePackageRemoved(final Package pkg) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final BeforePackageRemovedEvent event = new BeforePackageRemovedEvent( pkg );
+        final BeforePackageRemovedEvent event = new BeforePackageRemovedEvent( this.ruleBase,
+                                                                               pkg );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((RuleBaseEventListener) this.listeners.get( i )).beforePackageRemoved( event );
         }
     }
 
-    public void fireAfterPackageRemoved(Package pkg) {
+    public void fireAfterPackageRemoved(final Package pkg) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final AfterPackageRemovedEvent event = new AfterPackageRemovedEvent( pkg );
+        final AfterPackageRemovedEvent event = new AfterPackageRemovedEvent( this.ruleBase,
+                                                                             pkg );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((RuleBaseEventListener) this.listeners.get( i )).afterPackageRemoved( event );
         }
     }
 
-    public void fireBeforeRuleAdded(Package newPkg,
-                                    Rule rule) {
+    //--
+    public void fireBeforeRuleBaseLocked() {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final BeforeRuleAddedEvent event = new BeforeRuleAddedEvent( newPkg,
+        final BeforeRuleBaseLockedEvent event = new BeforeRuleBaseLockedEvent( this.ruleBase );
+
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleBaseEventListener) this.listeners.get( i )).beforeRuleBaseLocked( event );
+        }
+    }
+
+    public void fireAfterRuleBaseLocked() {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
+
+        final AfterRuleBaseLockedEvent event = new AfterRuleBaseLockedEvent( this.ruleBase );
+
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleBaseEventListener) this.listeners.get( i )).afterRuleBaseLocked( event );
+        }
+    }
+
+    public void fireBeforeRuleBaseUnlocked() {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
+
+        final BeforeRuleBaseUnlockedEvent event = new BeforeRuleBaseUnlockedEvent( this.ruleBase );
+
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleBaseEventListener) this.listeners.get( i )).beforeRuleBaseUnlocked( event );
+        }
+    }
+
+    public void fireAfterRuleBaseUnlocked() {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
+
+        final AfterRuleBaseUnlockedEvent event = new AfterRuleBaseUnlockedEvent( this.ruleBase );
+
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleBaseEventListener) this.listeners.get( i )).afterRuleBaseUnlocked( event );
+        }
+    }
+
+    public void fireBeforeRuleAdded(final Package newPkg,
+                                    final Rule rule) {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
+
+        final BeforeRuleAddedEvent event = new BeforeRuleAddedEvent( this.ruleBase,
+                                                                     newPkg,
                                                                      rule );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
@@ -123,13 +184,14 @@ public class RuleBaseEventSupport
         }
     }
 
-    public void fireAfterRuleAdded(Package newPkg,
-                                   Rule rule) {
+    public void fireAfterRuleAdded(final Package newPkg,
+                                   final Rule rule) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final AfterRuleAddedEvent event = new AfterRuleAddedEvent( newPkg,
+        final AfterRuleAddedEvent event = new AfterRuleAddedEvent( this.ruleBase,
+                                                                   newPkg,
                                                                    rule );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
@@ -137,13 +199,14 @@ public class RuleBaseEventSupport
         }
     }
 
-    public void fireBeforeRuleRemoved(Package pkg,
-                                      Rule rule) {
+    public void fireBeforeRuleRemoved(final Package pkg,
+                                      final Rule rule) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final BeforeRuleRemovedEvent event = new BeforeRuleRemovedEvent( pkg,
+        final BeforeRuleRemovedEvent event = new BeforeRuleRemovedEvent( this.ruleBase,
+                                                                         pkg,
                                                                          rule );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
@@ -151,17 +214,48 @@ public class RuleBaseEventSupport
         }
     }
 
-    public void fireAfterRuleRemoved(Package pkg,
-                                     Rule rule) {
+    public void fireAfterRuleRemoved(final Package pkg,
+                                     final Rule rule) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final AfterRuleRemovedEvent event = new AfterRuleRemovedEvent( pkg,
+        final AfterRuleRemovedEvent event = new AfterRuleRemovedEvent( this.ruleBase,
+                                                                       pkg,
                                                                        rule );
 
         for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
             ((RuleBaseEventListener) this.listeners.get( i )).afterRuleRemoved( event );
+        }
+    }
+
+    public void fireBeforeFunctionRemoved(final Package pkg,
+                                          final String function) {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
+
+        final BeforeFunctionRemovedEvent event = new BeforeFunctionRemovedEvent( this.ruleBase,
+                                                                                 pkg,
+                                                                                 function );
+
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleBaseEventListener) this.listeners.get( i )).beforeFunctionRemoved( event );
+        }
+    }
+
+    public void fireAfterFunctionRemoved(final Package pkg,
+                                         final String function) {
+        if ( this.listeners.isEmpty() ) {
+            return;
+        }
+
+        final AfterFunctionRemovedEvent event = new AfterFunctionRemovedEvent( this.ruleBase,
+                                                                               pkg,
+                                                                               function );
+
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleBaseEventListener) this.listeners.get( i )).afterFunctionRemoved( event );
         }
     }
 

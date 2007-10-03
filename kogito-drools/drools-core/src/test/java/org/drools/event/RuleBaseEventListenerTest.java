@@ -296,6 +296,36 @@ public class RuleBaseEventListenerTest extends TestCase {
             this.beforeRuleRemoved++;
         }
 
+        public void afterFunctionRemoved(AfterFunctionRemovedEvent event) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void afterRuleBaseLocked(AfterRuleBaseLockedEvent event) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void afterRuleBaseUnlocked(AfterRuleBaseUnlockedEvent event) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void beforeFunctionRemoved(BeforeFunctionRemovedEvent event) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void beforeRuleBaseLocked(BeforeRuleBaseLockedEvent event) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
+            // TODO Auto-generated method stub
+            
+        }
+
     }
 
 }

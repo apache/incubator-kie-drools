@@ -6,23 +6,23 @@ public class DefaultRuleFlowEventListener
     implements
     RuleFlowEventListener {
 
-    public void ruleFlowCompleted(RuleFlowCompletedEvent event,
-                                  WorkingMemory workingMemory) {
+    public void ruleFlowCompleted(final RuleFlowCompletedEvent event,
+                                  final WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
-    public void ruleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-                                       WorkingMemory workingMemory) {
+    public void ruleFlowGroupActivated(final RuleFlowGroupActivatedEvent event,
+                                       final WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
-    public void ruleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                                         WorkingMemory workingMemory) {
+    public void ruleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
+                                         final WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
-    public void ruleFlowStarted(RuleFlowStartedEvent event,
-                                WorkingMemory workingMemory) {
+    public void ruleFlowStarted(final RuleFlowStartedEvent event,
+                                final WorkingMemory workingMemory) {
         // intentionally left blank
     }
 

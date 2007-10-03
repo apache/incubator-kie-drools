@@ -36,6 +36,9 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.DefaultExecutorService;
 import org.drools.concurrent.ExecutorService;
+import org.drools.event.BeforeRuleBaseUnlockedEvent;
+import org.drools.event.DefaultRuleBaseEventListener;
+import org.drools.event.RuleBaseEventListener;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
@@ -246,8 +249,56 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                                                                  null,
                                                                                  null ) );
         }
+        
+        // setup event listener for fireAllRules on rulebase modifications
+        FireAllRulesBeforeUnlockEventListener listener =  new DefaultFireAllRulesBeforeUnlockEventListener();
+        listener.setSession( session );
+        addEventListener( listener );
+        
         return session;
     }
+    
+    public static interface FireAllRulesBeforeUnlockEventListener extends RuleBaseEventListener {
+        public void setSession(StatefulSession session);
+    }
+    
+    public static class DefaultFireAllRulesBeforeUnlockEventListener extends DefaultRuleBaseEventListener 
+    implements FireAllRulesBeforeUnlockEventListener {
+        private StatefulSession session;
+        
+        public DefaultFireAllRulesBeforeUnlockEventListener() {
+            
+        }
+        
+        public void setSession(StatefulSession session) {
+            this.session = session;
+        }
+        
+        public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
+            if ( session.getRuleBase().getAdditionsSinceLock() > 0 ) {
+                session.fireAllRules();
+            }
+        }
+    }
+    
+    public static class AsyncFireAllRulesBeforeUnlockEventListener extends DefaultRuleBaseEventListener 
+    implements FireAllRulesBeforeUnlockEventListener {
+        private StatefulSession session;
+        
+        public AsyncFireAllRulesBeforeUnlockEventListener() {
+            
+        }
+        
+        public void setSession(StatefulSession session) {
+            this.session = session;
+        }
+        
+        public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
+            if ( session.getRuleBase().getAdditionsSinceLock() > 0 ) { 
+                session.asyncFireAllRules();
+            }
+        }
+    }    
 
     public StatelessSession newStatelessSession() {
 

@@ -17,27 +17,70 @@ package org.drools.event;
  */
 
 import java.util.EventObject;
+
+import org.drools.RuleBase;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
 public class RuleBaseEvent extends EventObject {
 
     private static final long serialVersionUID = 400L;
-    private final Package pkg;
-    private final Rule rule;
+    private final RuleBase    ruleBase;
+    private final Package     pkg;
+    private final Rule        rule;
+    private final String      function;
 
-    public RuleBaseEvent(final Package pkg, final Rule rule) {
-        super( pkg );
+    public RuleBaseEvent(final RuleBase ruleBase) {
+        super( ruleBase );
+        this.ruleBase = ruleBase;
+        this.pkg = null;
+        this.rule = null;
+        this.function = null;
+    }
+
+    public RuleBaseEvent(final RuleBase ruleBase,
+                         final Package pkg) {
+        super( ruleBase );
+        this.ruleBase = ruleBase;
+        this.pkg = pkg;
+        this.rule = null;
+        this.function = null;
+    }
+
+    public RuleBaseEvent(final RuleBase ruleBase,
+                         final Package pkg,
+                         final Rule rule) {
+        super( ruleBase );
+        this.ruleBase = ruleBase;
         this.pkg = pkg;
         this.rule = rule;
+        this.function = null;
+    }
+
+    public RuleBaseEvent(final RuleBase ruleBase,
+                         final Package pkg,
+                         final String function) {
+        super( ruleBase );
+        this.ruleBase = ruleBase;
+        this.pkg = pkg;
+        this.rule = null;
+        this.function = function;
+    }
+
+    public RuleBase getRuleBase() {
+        return this.ruleBase;
     }
 
     public Package getPackage() {
         return this.pkg;
     }
-    
+
     public Rule getRule() {
         return this.rule;
+    }
+
+    public String getFunction() {
+        return this.function;
     }
 
 }

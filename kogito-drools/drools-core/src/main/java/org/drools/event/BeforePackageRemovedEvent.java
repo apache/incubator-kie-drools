@@ -16,14 +16,17 @@ package org.drools.event;
  * limitations under the License.
  */
 
+import org.drools.RuleBase;
 import org.drools.rule.Package;
 
 public class BeforePackageRemovedEvent extends RuleBaseEvent {
 
     private static final long serialVersionUID = 400L;
 
-    public BeforePackageRemovedEvent(final Package pkg) {
-        super( pkg, null );
+    public BeforePackageRemovedEvent(final RuleBase ruleBase,
+                                     final Package pkg) {
+        super( ruleBase,
+               pkg );
     }
 
     public String toString() {

@@ -35,8 +35,8 @@ public class AgendaEventSupport
     /**
      * 
      */
-    private static final long   serialVersionUID = 400L;
-    private final List          listeners        = Collections.synchronizedList( new ArrayList() );
+    private static final long serialVersionUID = 400L;
+    private final List        listeners        = Collections.synchronizedList( new ArrayList() );
 
     public AgendaEventSupport() {
     }
@@ -105,7 +105,8 @@ public class AgendaEventSupport
         }
     }
 
-    public void fireAfterActivationFired(final Activation activation, final InternalWorkingMemory workingMemory) {
+    public void fireAfterActivationFired(final Activation activation,
+                                         final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -118,7 +119,8 @@ public class AgendaEventSupport
         }
     }
 
-    public void fireAgendaGroupPopped(final AgendaGroup agendaGroup, final InternalWorkingMemory workingMemory) {
+    public void fireAgendaGroupPopped(final AgendaGroup agendaGroup,
+                                      final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }
@@ -131,7 +133,8 @@ public class AgendaEventSupport
         }
     }
 
-    public void fireAgendaGroupPushed(final AgendaGroup agendaGroup, final InternalWorkingMemory workingMemory) {
+    public void fireAgendaGroupPushed(final AgendaGroup agendaGroup,
+                                      final InternalWorkingMemory workingMemory) {
         if ( this.listeners.isEmpty() ) {
             return;
         }

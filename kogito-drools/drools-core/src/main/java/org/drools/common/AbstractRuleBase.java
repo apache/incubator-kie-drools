@@ -51,6 +51,7 @@ import org.drools.rule.Rule;
 import org.drools.ruleflow.common.core.Process;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.ObjectHashSet;
+import org.drools.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -87,16 +88,28 @@ abstract public class AbstractRuleBase
     protected FactHandleFactory                     factHandleFactory;
 
     protected Map                                   globals;
-    
-    private ReloadPackageCompilationData reloadPackageCompilationData = null;
-    
-    private RuleBaseEventSupport                    eventSupport = new RuleBaseEventSupport();
+
+    private ReloadPackageCompilationData            reloadPackageCompilationData = null;
+
+    private RuleBaseEventSupport                    eventSupport                 = new RuleBaseEventSupport( this );
 
     /**
      * WeakHashMap to keep references of WorkingMemories but allow them to be
      * garbage collected
      */
     protected transient ObjectHashSet               statefulSessions;
+
+    // wms used for lock list during dynamic updates
+    InternalWorkingMemory[]                         wms;
+
+    // indexed used to track invariant lock
+    int                                             lastAquiredLock;
+
+    // lock for entire rulebase, used for dynamic updates
+    protected final ReentrantLock                   lock                         = new ReentrantLock();
+    
+    private int                                  additionsSinceLock;
+    private int                                  removalsSinceLock;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it 
@@ -186,7 +199,7 @@ abstract public class AbstractRuleBase
         this.pkgs = (Map) stream.readObject();
 
         if ( stream instanceof DroolsObjectInputStream ) {
-            DroolsObjectInputStream parentStream = (DroolsObjectInputStream) stream;
+            final DroolsObjectInputStream parentStream = (DroolsObjectInputStream) stream;
             parentStream.setRuleBase( this );
             this.packageClassLoader = new CompositePackageClassLoader( parentStream.getClassLoader() );
             this.classLoader = new MapBackedClassLoader( parentStream.getClassLoader() );
@@ -210,7 +223,7 @@ abstract public class AbstractRuleBase
         childStream.setRuleBase( this );
 
         this.id = (String) childStream.readObject();
-        this.processes = ( Map ) childStream.readObject();
+        this.processes = (Map) childStream.readObject();
         this.agendaGroupRuleTotals = (Map) childStream.readObject();
         this.factHandleFactory = (FactHandleFactory) childStream.readObject();
         this.globals = (Map) childStream.readObject();
@@ -218,6 +231,7 @@ abstract public class AbstractRuleBase
         this.config = (RuleBaseConfiguration) childStream.readObject();
         this.config.setClassLoader( childStream.getClassLoader() );
         this.eventSupport = (RuleBaseEventSupport) childStream.readObject();
+        this.eventSupport.setRuleBase( this );
 
         this.statefulSessions = new ObjectHashSet();
 
@@ -278,6 +292,53 @@ abstract public class AbstractRuleBase
 
     public Map getAgendaGroupRuleTotals() {
         return this.agendaGroupRuleTotals;
+    }        
+
+    public int getAdditionsSinceLock() {
+        return additionsSinceLock;
+    }
+
+    public int getRemovalsSinceLock() {
+        return removalsSinceLock;
+    }
+
+    public void lock() {
+        this.additionsSinceLock = 0;
+        this.removalsSinceLock = 0;
+        
+        this.eventSupport.fireBeforeRuleBaseLocked();
+        this.lock.lock();
+
+        // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
+        // in the working memory array 
+        this.lastAquiredLock = 0;
+
+        this.wms = getWorkingMemories();
+
+        // Iterate each workingMemory and lock it
+        // This is so we don't update the Rete network during propagation
+        for ( this.lastAquiredLock = 0; this.lastAquiredLock < this.wms.length; this.lastAquiredLock++ ) {
+            this.wms[this.lastAquiredLock].getLock().lock();
+        }
+
+        this.eventSupport.fireAfterRuleBaseLocked();
+    }
+
+    public void unlock() {
+        this.eventSupport.fireBeforeRuleBaseUnlocked();
+
+        // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
+
+        // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
+        for ( this.lastAquiredLock--; this.lastAquiredLock > -1; this.lastAquiredLock-- ) {
+            this.wms[this.lastAquiredLock].getLock().unlock();
+        }
+
+        this.lock.unlock();
+
+        this.eventSupport.fireAfterRuleBaseUnlocked();
+
+        this.wms = null;      
     }
 
     /**
@@ -298,78 +359,68 @@ abstract public class AbstractRuleBase
      */
     public synchronized void addPackage(final Package newPkg) throws PackageIntegrationException {
         newPkg.checkValidity();
-
         synchronized ( this.pkgs ) {
             final Package pkg = (Package) this.pkgs.get( newPkg.getName() );
-            // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
-            // in the working memory array 
-            int lastAquiredLock = 0;
-            // get a snapshot of current working memories for locking
-            final InternalWorkingMemory[] wms = getWorkingMemories();
 
-            try {
-                // Iterate each workingMemory and lock it
-                // This is so we don't update the Rete network during propagation
-                for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
-                    wms[lastAquiredLock].getLock().lock();
-                }
+            // only acquire the lock if it hasn't been done explicitely
+            boolean doUnlock = false;
+            if ( !this.lock.isHeldByCurrentThread() && (this.wms == null || this.wms.length == 0) ) {
+                lock();
+                doUnlock = true;
+            }
+            this.additionsSinceLock++;
 
-                this.eventSupport.fireBeforePackageAdded( newPkg );
-                
-                if ( pkg != null ) {
-                    mergePackage( pkg,
-                                  newPkg );
-                } else {
-                    this.pkgs.put( newPkg.getName(),
-                                   newPkg );
-                }
+            this.eventSupport.fireBeforePackageAdded( newPkg );
 
-                final Map newGlobals = newPkg.getGlobals();
+            if ( pkg != null ) {
+                mergePackage( pkg,
+                              newPkg );
+            } else {
+                this.pkgs.put( newPkg.getName(),
+                               newPkg );
+            }
 
-                // Check that the global data is valid, we cannot change the type
-                // of an already declared global variable
-                for ( final Iterator it = newGlobals.keySet().iterator(); it.hasNext(); ) {
-                    final String identifier = (String) it.next();
-                    final Class type = (Class) newGlobals.get( identifier );
-                    final boolean f = this.globals.containsKey( identifier );
-                    if ( f ) {
-                        final boolean y = !this.globals.get( identifier ).equals( type );
-                        if ( f && y ) {
-                            throw new PackageIntegrationException( pkg );
-                        }
+            final Map newGlobals = newPkg.getGlobals();
+
+            // Check that the global data is valid, we cannot change the type
+            // of an already declared global variable
+            for ( final Iterator it = newGlobals.keySet().iterator(); it.hasNext(); ) {
+                final String identifier = (String) it.next();
+                final Class type = (Class) newGlobals.get( identifier );
+                final boolean f = this.globals.containsKey( identifier );
+                if ( f ) {
+                    final boolean y = !this.globals.get( identifier ).equals( type );
+                    if ( f && y ) {
+                        throw new PackageIntegrationException( pkg );
                     }
                 }
-                this.globals.putAll( newGlobals );
+            }
+            this.globals.putAll( newGlobals );
 
-                final Rule[] rules = newPkg.getRules();
+            final Rule[] rules = newPkg.getRules();
 
-                for ( int i = 0; i < rules.length; ++i ) {
-                    addRule( newPkg, rules[i] );
+            for ( int i = 0; i < rules.length; ++i ) {
+                addRule( newPkg,
+                         rules[i] );
+            }
+
+            //and now the rule flows
+            if ( newPkg.getRuleFlows() != Collections.EMPTY_MAP ) {
+                final Map flows = newPkg.getRuleFlows();
+                for ( final Iterator iter = flows.entrySet().iterator(); iter.hasNext(); ) {
+                    final Entry flow = (Entry) iter.next();
+                    this.processes.put( flow.getKey(),
+                                        flow.getValue() );
                 }
+            }
 
-                //and now the rule flows
-                if ( newPkg.getRuleFlows() != Collections.EMPTY_MAP ) {
-                    Map flows = newPkg.getRuleFlows();
-                    for ( Iterator iter = flows.entrySet().iterator(); iter.hasNext(); ) {
-                        Entry flow = (Entry) iter.next();
-                        this.processes.put( flow.getKey(),
-                                            flow.getValue() );
-                    }
-                }
+            this.packageClassLoader.addClassLoader( newPkg.getPackageCompilationData().getClassLoader() );
 
-                this.packageClassLoader.addClassLoader( newPkg.getPackageCompilationData().getClassLoader() );
+            this.eventSupport.fireAfterPackageAdded( newPkg );
 
-                this.eventSupport.fireAfterPackageAdded( newPkg );
-
-            } finally {
-                // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
-                // of the new rule addition. Unlock after fireAllRules();
-
-                // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
-                for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
-                    wms[lastAquiredLock].fireAllRules();
-                    wms[lastAquiredLock].getLock().unlock();
-                }
+            // only unlock if it had been acquired implicitely
+            if ( doUnlock ) {
+                unlock();
             }
         }
 
@@ -401,12 +452,12 @@ abstract public class AbstractRuleBase
 
         // Add invokers
         compilationData.putAllInvokers( newCompilationData.getInvokers() );
-        
+
         if ( compilationData.isDirty() ) {
             if ( this.reloadPackageCompilationData == null ) {
                 this.reloadPackageCompilationData = new ReloadPackageCompilationData();
             }
-            this.reloadPackageCompilationData.addPackageCompilationData( compilationData );            
+            this.reloadPackageCompilationData.addPackageCompilationData( compilationData );
         }
 
         // Add globals
@@ -432,92 +483,85 @@ abstract public class AbstractRuleBase
 
         //and now the rule flows
         if ( newPkg.getRuleFlows() != Collections.EMPTY_MAP ) {
-            Map flows = newPkg.getRuleFlows();
-            for ( Iterator iter = flows.values().iterator(); iter.hasNext(); ) {
-                Process flow = (Process) iter.next();
+            final Map flows = newPkg.getRuleFlows();
+            for ( final Iterator iter = flows.values().iterator(); iter.hasNext(); ) {
+                final Process flow = (Process) iter.next();
                 pkg.addRuleFlow( flow );
             }
         }
     }
-    
-    private synchronized void addRule( final Package pkg, final Rule rule ) throws InvalidPatternException {
-        this.eventSupport.fireBeforeRuleAdded( pkg, rule );
+
+    private synchronized void addRule(final Package pkg,
+                                      final Rule rule) throws InvalidPatternException {
+        this.eventSupport.fireBeforeRuleAdded( pkg,
+                                               rule );
         if ( !rule.isValid() ) {
             throw new IllegalArgumentException( "The rule called " + rule.getName() + " is not valid. Check for compile errors reported." );
         }
         addRule( rule );
-        this.eventSupport.fireAfterRuleAdded( pkg, rule );
+        this.eventSupport.fireAfterRuleAdded( pkg,
+                                              rule );
     }
 
     protected abstract void addRule(final Rule rule) throws InvalidPatternException;
 
-    public synchronized void removePackage(final String packageName) {
+    public void removePackage(final String packageName) {
         synchronized ( this.pkgs ) {
             final Package pkg = (Package) this.pkgs.get( packageName );
-            if ( pkg ==  null) {
-                throw new IllegalArgumentException("Package name '" + packageName + "' does not exist for this Rule Base.");
+            if ( pkg == null ) {
+                throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
             }
 
-            // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
-            // in the working memory array 
-            int lastAquiredLock = 0;
-            // get a snapshot of current working memories for locking
-            final InternalWorkingMemory[] wms = getWorkingMemories();
+            // only acquire the lock if it hasn't been done explicitely
+            boolean doUnlock = false;
+            if ( !this.lock.isHeldByCurrentThread() && (this.wms == null || this.wms.length == 0) ) {
+                lock();
+                doUnlock = true;
+            }
+            this.removalsSinceLock++;
+            
+            this.eventSupport.fireBeforePackageRemoved( pkg );
 
-            try {
-                // Iterate each workingMemory and lock it
-                // This is so we don't update the Rete network during propagation
-                for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
-                    wms[lastAquiredLock].getLock().lock();
-                }
-                
-                this.eventSupport.fireBeforePackageRemoved( pkg );
+            final Rule[] rules = pkg.getRules();
 
-                final Rule[] rules = pkg.getRules();
+            for ( int i = 0; i < rules.length; ++i ) {
+                removeRule( pkg,
+                            rules[i] );
+            }
 
-                for ( int i = 0; i < rules.length; ++i ) {
-                    removeRule( pkg, rules[i] );
-                }
+            this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
 
-                this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
+            // getting the list of referenced globals 
+            final Set referencedGlobals = new HashSet();
+            for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
+                final org.drools.rule.Package pkgref = (org.drools.rule.Package) it.next();
+                if ( pkgref != pkg ) {
+                    referencedGlobals.addAll( pkgref.getGlobals().keySet() );
+                }
+            }
+            // removing globals declared inside the package that are not shared
+            for ( final Iterator it = pkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
+                final String globalName = (String) it.next();
+                if ( !referencedGlobals.contains( globalName ) ) {
+                    this.globals.remove( globalName );
+                }
+            }
+            //and now the rule flows
+            final Map flows = pkg.getRuleFlows();
+            for ( final Iterator iter = flows.keySet().iterator(); iter.hasNext(); ) {
+                removeProcess( (String) iter.next() );
+            }
+            // removing the package itself from the list
+            this.pkgs.remove( pkg.getName() );
 
-                // getting the list of referenced globals 
-                final Set referencedGlobals = new HashSet();
-                for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
-                    final org.drools.rule.Package pkgref = (org.drools.rule.Package) it.next();
-                    if ( pkgref != pkg ) {
-                        referencedGlobals.addAll( pkgref.getGlobals().keySet() );
-                    }
-                }
-                // removing globals declared inside the package that are not shared
-                for ( final Iterator it = pkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
-                    final String globalName = (String) it.next();
-                    if ( !referencedGlobals.contains( globalName ) ) {
-                        this.globals.remove( globalName );
-                    }
-                }
-                //and now the rule flows
-                Map flows = pkg.getRuleFlows();
-                for ( Iterator iter = flows.keySet().iterator(); iter.hasNext(); ) {
-                    removeProcess( (String) iter.next() );
-                }
-                // removing the package itself from the list
-                this.pkgs.remove( pkg.getName() );
-                
-                //clear all members of the pkg
-                pkg.clear();
-                
-                this.eventSupport.fireAfterPackageRemoved( pkg );
-                
-            } finally {
-                // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
-                // of the new rule addition. Unlock after fireAllRules();
+            //clear all members of the pkg
+            pkg.clear();
 
-                // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
-                for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
-                    wms[lastAquiredLock].fireAllRules();
-                    wms[lastAquiredLock].getLock().unlock();
-                }
+            this.eventSupport.fireAfterPackageRemoved( pkg );
+
+            // only unlock if it had been acquired implicitely
+            if ( doUnlock ) {
+                unlock();
             }
         }
     }
@@ -526,73 +570,74 @@ abstract public class AbstractRuleBase
                            final String ruleName) {
         synchronized ( this.pkgs ) {
             final Package pkg = (Package) this.pkgs.get( packageName );
-            if ( pkg ==  null) {
-                throw new IllegalArgumentException("Package name '" + packageName + "' does not exist for this Rule Base.");
-            }
-            
-            final Rule rule = pkg.getRule( ruleName );            
-            if ( rule ==  null) {
-                throw new IllegalArgumentException("Rule name '"+ ruleName + "' does not exist in the Package '" + packageName + "'.");
+            if ( pkg == null ) {
+                throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
             }
 
-            // INVARIANT: lastAquiredLock always contains the index of the last aquired lock +1 
-            // in the working memory array 
-            int lastAquiredLock = 0;
-            // get a snapshot of current working memories for locking
-            final InternalWorkingMemory[] wms = getWorkingMemories();
-            
+            final Rule rule = pkg.getRule( ruleName );
+            if ( rule == null ) {
+                throw new IllegalArgumentException( "Rule name '" + ruleName + "' does not exist in the Package '" + packageName + "'." );
+            }
+
+            // only acquire the lock if it hasn't been done explicitely
+            boolean doUnlock = false;
+            if ( !this.lock.isHeldByCurrentThread() && (this.wms == null || this.wms.length == 0) ) {
+                lock();
+                doUnlock = true;
+            }
+            this.removalsSinceLock++;
+
             PackageCompilationData compilationData = null;
 
-            try {
-                // Iterate each workingMemory and lock it
-                // This is so we don't update the Rete network during propagation
-                for ( lastAquiredLock = 0; lastAquiredLock < wms.length; lastAquiredLock++ ) {
-                    wms[lastAquiredLock].getLock().lock();
-                }
-
-                removeRule( pkg, rule );
-                compilationData = pkg.removeRule( rule );
-                if ( this.reloadPackageCompilationData == null ) {
-                    this.reloadPackageCompilationData = new ReloadPackageCompilationData();
-                }
-                this.reloadPackageCompilationData.addPackageCompilationData( compilationData );
-
-            } finally {
-                // Iterate each workingMemory and attempt to fire any rules, that were activated as a result 
-                // of the new rule addition. Unlock after fireAllRules();
-
-                // as per the INVARIANT defined above, we need to iterate from lastAquiredLock-1 to 0. 
-                for ( lastAquiredLock--; lastAquiredLock > -1; lastAquiredLock-- ) {
-                    wms[lastAquiredLock].getLock().unlock();
-                }
-            }                       
-        }
-    }
-    
-    private void removeRule( final Package pkg, final Rule rule ) {
-        this.eventSupport.fireBeforeRuleRemoved( pkg, rule );
-        removeRule( rule );
-        this.eventSupport.fireAfterRuleRemoved( pkg, rule );
-    }
-
-    protected abstract void removeRule(Rule rule);
-    
-    public void removeFunction(String packageName, String functionName) {
-        synchronized ( this.pkgs ) {
-            final Package pkg = (Package) this.pkgs.get( packageName );
-            if ( pkg ==  null) {
-                throw new IllegalArgumentException("Package name '" + packageName + "' does not exist for this Rule Base.");
-            }
-            
-            PackageCompilationData compilationData = pkg.removeFunction( functionName );
-            if ( compilationData == null ) {
-                throw new IllegalArgumentException("function name '" + packageName + "' does not exist in the Package '" + packageName + "'.");
-            }
-            
+            removeRule( pkg,
+                        rule );
+            compilationData = pkg.removeRule( rule );
             if ( this.reloadPackageCompilationData == null ) {
                 this.reloadPackageCompilationData = new ReloadPackageCompilationData();
             }
-            this.reloadPackageCompilationData.addPackageCompilationData( compilationData );            
+            this.reloadPackageCompilationData.addPackageCompilationData( compilationData );
+
+            // only unlock if it had been acquired implicitely                
+            if ( doUnlock ) {
+                unlock();
+            }
+        }
+    }
+
+    private void removeRule(final Package pkg,
+                            final Rule rule) {
+        this.eventSupport.fireBeforeRuleRemoved( pkg,
+                                                 rule );
+        removeRule( rule );
+        this.eventSupport.fireAfterRuleRemoved( pkg,
+                                                rule );
+    }
+
+    protected abstract void removeRule(Rule rule);
+
+    public void removeFunction(final String packageName,
+                               final String functionName) {
+        synchronized ( this.pkgs ) {
+            final Package pkg = (Package) this.pkgs.get( packageName );
+            if ( pkg == null ) {
+                throw new IllegalArgumentException( "Package name '" + packageName + "' does not exist for this Rule Base." );
+            }
+
+            this.eventSupport.fireBeforeFunctionRemoved( pkg,
+                                                         functionName );
+
+            final PackageCompilationData compilationData = pkg.removeFunction( functionName );
+            if ( compilationData == null ) {
+                throw new IllegalArgumentException( "function name '" + packageName + "' does not exist in the Package '" + packageName + "'." );
+            }
+
+            if ( this.reloadPackageCompilationData == null ) {
+                this.reloadPackageCompilationData = new ReloadPackageCompilationData();
+            }
+            this.reloadPackageCompilationData.addPackageCompilationData( compilationData );
+
+            this.eventSupport.fireAfterFunctionRemoved( pkg,
+                                                        functionName );
         }
     }
 
@@ -601,11 +646,11 @@ abstract public class AbstractRuleBase
             this.processes.put( process.getId(),
                                 process );
         }
-        
+
     }
 
     public synchronized void removeProcess(final String id) {
-        synchronized ( this.pkgs ) {        
+        synchronized ( this.pkgs ) {
             this.processes.remove( id );
         }
     }
@@ -613,7 +658,7 @@ abstract public class AbstractRuleBase
     public Process getProcess(final String id) {
         Process process = null;
         synchronized ( this.pkgs ) {
-            process = ( Process ) this.processes.get( id );
+            process = (Process) this.processes.get( id );
         }
         return process;
     }
@@ -622,7 +667,7 @@ abstract public class AbstractRuleBase
         this.statefulSessions.add( statefulSession );
     }
 
-    public Package getPackage(String name) {
+    public Package getPackage(final String name) {
         return (Package) this.pkgs.get( name );
     }
 
@@ -663,8 +708,8 @@ abstract public class AbstractRuleBase
         }
     }
 
-    public void addClass(String className,
-                         byte[] bytes) {
+    public void addClass(final String className,
+                         final byte[] bytes) {
         this.classLoader.addClass( className,
                                    bytes );
     }
@@ -676,15 +721,15 @@ abstract public class AbstractRuleBase
     public MapBackedClassLoader getMapBackedClassLoader() {
         return this.classLoader;
     }
-    
+
     public void executeQueuedActions() {
-       synchronized ( this.pkgs ) {
-           if ( this.reloadPackageCompilationData != null ) {
-               this.reloadPackageCompilationData.execute( this );
-           }
+        synchronized ( this.pkgs ) {
+            if ( this.reloadPackageCompilationData != null ) {
+                this.reloadPackageCompilationData.execute( this );
+            }
         }
-    }    
-    
+    }
+
     public void addEventListener(final RuleBaseEventListener listener) {
         // since the event support is thread-safe, no need for locks... right?
         this.eventSupport.addEventListener( listener );
@@ -699,28 +744,32 @@ abstract public class AbstractRuleBase
         // since the event support is thread-safe, no need for locks... right?
         return this.eventSupport.getEventListeners();
     }
-    
-    public static class ReloadPackageCompilationData implements RuleBaseAction {
+
+    public static class ReloadPackageCompilationData
+        implements
+        RuleBaseAction {
         private static final long serialVersionUID = 1L;
-        private Set set;
-        
-        public void addPackageCompilationData(PackageCompilationData packageCompilationData) {
-            if ( set == null ) {
+        private Set               set;
+
+        public void addPackageCompilationData(final PackageCompilationData packageCompilationData) {
+            if ( this.set == null ) {
                 this.set = new HashSet();
             }
-            
+
             this.set.add( packageCompilationData );
         }
-        
-        public void execute(InternalRuleBase ruleBase) {
-            for ( Iterator it = this.set.iterator(); it.hasNext(); ) {
-                PackageCompilationData packageCompilationData = ( PackageCompilationData ) it.next();
+
+        public void execute(final InternalRuleBase ruleBase) {
+            for ( final Iterator it = this.set.iterator(); it.hasNext(); ) {
+                final PackageCompilationData packageCompilationData = (PackageCompilationData) it.next();
                 packageCompilationData.reload();
             }
         }
     }
 
-    public static interface RuleBaseAction extends Serializable  {
+    public static interface RuleBaseAction
+        extends
+        Serializable {
         public void execute(InternalRuleBase ruleBase);
     }
 }
