@@ -10,7 +10,7 @@ global RecommendationService recommendationService
 
 rule "Start Clinical Pathway X if diagnosed"
 	when
-		d: Diagnose( type == Terminology.DIAGNOSE_X_TYPE_UNKNOWN )
+		d: Diagnose( type == Terminology.DIAGNOSE_X )
 	then
 		retract(d);
 		drools.getWorkingMemory().startProcess(

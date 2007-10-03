@@ -39,7 +39,7 @@ public class CDSSExample {
             workingMemory.insert(patient);
             
             // Go!
-            Diagnose diagnose = new Diagnose(Terminology.DIAGNOSE_X_TYPE_UNKNOWN);
+            Diagnose diagnose = new Diagnose(Terminology.DIAGNOSE_X);
             workingMemory.insert(diagnose);
             workingMemory.fireAllRules();
             
