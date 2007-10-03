@@ -33,10 +33,10 @@ public class ObjectUpdatedEvent extends WorkingMemoryEvent {
     private final Object      object;
 
     public ObjectUpdatedEvent(final WorkingMemory workingMemory,
-                               final PropagationContext propagationContext,
-                               final FactHandle handle,
-                               final Object oldObject,
-                               final Object object) {
+                              final PropagationContext propagationContext,
+                              final FactHandle handle,
+                              final Object oldObject,
+                              final Object object) {
         super( workingMemory,
                propagationContext );
         this.handle = handle;

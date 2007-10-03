@@ -31,6 +31,30 @@ public interface RuleBaseEventListener
     void afterPackageRemoved(AfterPackageRemovedEvent event);
 
     /**
+     * Method called before a rule base is locked
+     * @param event
+     */
+    void beforeRuleBaseLocked(BeforeRuleBaseLockedEvent event);
+
+    /**
+     * Method called after a rule base is locked
+     * @param event
+     */
+    void afterRuleBaseLocked(AfterRuleBaseLockedEvent event);
+
+    /**
+     * Method called before a rule base is unlocked
+     * @param event
+     */
+    void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event);
+
+    /**
+     * Method called after a rule base is unlocked
+     * @param event
+     */
+    void afterRuleBaseUnlocked(AfterRuleBaseUnlockedEvent event);
+
+    /**
      * Method called before a new rule is added to the rule base
      * @param event
      */
@@ -53,5 +77,17 @@ public interface RuleBaseEventListener
      * @param event
      */
     void afterRuleRemoved(AfterRuleRemovedEvent event);
+
+    /**
+     * Method called before a function is removed from the rule base
+     * @param event
+     */
+    void beforeFunctionRemoved(BeforeFunctionRemovedEvent event);
+
+    /**
+     * Method called after a function is removed from the rule base
+     * @param event
+     */
+    void afterFunctionRemoved(AfterFunctionRemovedEvent event);
 
 }

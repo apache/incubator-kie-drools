@@ -16,6 +16,7 @@ package org.drools.event;
  * limitations under the License.
  */
 
+import org.drools.RuleBase;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
@@ -23,14 +24,18 @@ public class AfterRuleRemovedEvent extends RuleBaseEvent {
 
     private static final long serialVersionUID = 400L;
 
-    public AfterRuleRemovedEvent(final Package pkg, final Rule rule) {
-        super( pkg, rule );
+    public AfterRuleRemovedEvent(final RuleBase ruleBase,
+                                 final Package pkg,
+                                 final Rule rule) {
+        super( ruleBase,
+               pkg,
+               rule );
     }
-    
+
     public Object getSource() {
         return super.getRule();
     }
-    
+
     public String toString() {
         return "[AfterRuleRemoved: package=" + getPackage() + " rule=" + getRule() + "]";
     }

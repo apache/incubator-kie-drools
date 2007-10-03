@@ -16,20 +16,26 @@ package org.drools.event;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.RuleBase;
+import org.drools.rule.Package;
 
-/**
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
-public class RuleFlowCompletedEvent extends RuleFlowEvent {
+public class AfterFunctionRemovedEvent extends RuleBaseEvent {
 
     private static final long serialVersionUID = 400L;
 
-    public RuleFlowCompletedEvent(final RuleFlowProcessInstance instance) {
-        super( instance );
+    public AfterFunctionRemovedEvent(final RuleBase ruleBase,
+                                     final Package pkg,
+                                     final String function) {
+        super( ruleBase,
+               pkg,
+               function );
+    }
+
+    public Object getSource() {
+        return super.getRule();
     }
 
     public String toString() {
-        return "==>[RuleFlowCompleted(name=" + getRuleFlowProcessInstance().getRuleFlowProcess().getName() + "; id=" + getRuleFlowProcessInstance().getRuleFlowProcess().getId() + ")]";
+        return "[AfterFunctionRemoved: package=" + getPackage() + " function=" + getFunction() + "]";
     }
 }

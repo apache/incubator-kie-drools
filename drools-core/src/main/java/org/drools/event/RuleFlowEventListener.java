@@ -23,8 +23,10 @@ import org.drools.WorkingMemory;
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface RuleFlowEventListener extends EventListener {
-	
+public interface RuleFlowEventListener
+    extends
+    EventListener {
+
     void ruleFlowStarted(RuleFlowStartedEvent event,
                          WorkingMemory workingMemory);
 
@@ -36,5 +38,5 @@ public interface RuleFlowEventListener extends EventListener {
 
     void ruleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
                                   WorkingMemory workingMemory);
-    
+
 }

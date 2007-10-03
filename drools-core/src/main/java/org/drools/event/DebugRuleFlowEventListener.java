@@ -6,23 +6,23 @@ public class DebugRuleFlowEventListener
     implements
     RuleFlowEventListener {
 
-    public void ruleFlowCompleted(RuleFlowCompletedEvent event,
-                                  WorkingMemory workingMemory) {
+    public void ruleFlowCompleted(final RuleFlowCompletedEvent event,
+                                  final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
-    public void ruleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-                                       WorkingMemory workingMemory) {
+    public void ruleFlowGroupActivated(final RuleFlowGroupActivatedEvent event,
+                                       final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
-    public void ruleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                                         WorkingMemory workingMemory) {
+    public void ruleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
+                                         final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
-    public void ruleFlowStarted(RuleFlowStartedEvent event,
-                                WorkingMemory workingMemory) {
+    public void ruleFlowStarted(final RuleFlowStartedEvent event,
+                                final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 

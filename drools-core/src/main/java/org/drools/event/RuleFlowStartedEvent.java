@@ -23,9 +23,9 @@ import org.drools.ruleflow.instance.RuleFlowProcessInstance;
  */
 public class RuleFlowStartedEvent extends RuleFlowEvent {
 
-	private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;
 
-	public RuleFlowStartedEvent(final RuleFlowProcessInstance instance) {
+    public RuleFlowStartedEvent(final RuleFlowProcessInstance instance) {
         super( instance );
     }
 

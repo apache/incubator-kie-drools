@@ -54,6 +54,7 @@ public abstract class PackageProvider {
     }
     
     static void applyChanges(RuleBase rb, boolean removeExistingPackages, Collection changes, AgentEventListener listener) {
+        rb.lock();
         if ( changes == null ) return;
         for ( Iterator iter = changes.iterator(); iter.hasNext(); ) {
             Package p = (Package) iter.next();
@@ -69,6 +70,7 @@ public abstract class PackageProvider {
                 throw new RuntimeDroolsException( e );
             }
         }
+        rb.unlock();
     }
     
     public void setAgentListener(AgentEventListener listener) {

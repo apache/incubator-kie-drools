@@ -120,6 +120,14 @@ public interface RuleBase
     Package getPackage(String name);
 
     void addPackage(Package pkg) throws Exception;
+    
+    void lock();
+    
+    void unlock();
+    
+    int getAdditionsSinceLock();
+
+    int getRemovalsSinceLock();
 
     void removePackage(String packageName);
 

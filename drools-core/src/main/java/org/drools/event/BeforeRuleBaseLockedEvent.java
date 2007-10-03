@@ -16,20 +16,17 @@ package org.drools.event;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.RuleBase;
 
-/**
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
-public class RuleFlowCompletedEvent extends RuleFlowEvent {
+public class BeforeRuleBaseLockedEvent extends RuleBaseEvent {
 
     private static final long serialVersionUID = 400L;
 
-    public RuleFlowCompletedEvent(final RuleFlowProcessInstance instance) {
-        super( instance );
+    public BeforeRuleBaseLockedEvent(final RuleBase ruleBase) {
+        super( ruleBase );
     }
 
     public String toString() {
-        return "==>[RuleFlowCompleted(name=" + getRuleFlowProcessInstance().getRuleFlowProcess().getName() + "; id=" + getRuleFlowProcessInstance().getRuleFlowProcess().getId() + ")]";
+        return "[BeforeRuleBaseLocked: ruleBase=" + getRuleBase() + "]";
     }
 }
