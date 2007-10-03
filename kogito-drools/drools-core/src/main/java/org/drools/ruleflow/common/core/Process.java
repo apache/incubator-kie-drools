@@ -79,5 +79,19 @@ public interface Process extends Serializable {
      * @return the type of this process
      */
     String getType();
+    
+    /**
+     * Sets the package name of this RuleFlow process
+     * 
+     * @param packageName	the package name of this RuleFlow process
+     */
+    void setPackageName(String packageName);
+
+    /**
+     * Returns the package name of this RuleFlow process
+     * 
+     * @return	the package name of this RuleFlow process
+     */
+    String getPackageName();
 
 }
