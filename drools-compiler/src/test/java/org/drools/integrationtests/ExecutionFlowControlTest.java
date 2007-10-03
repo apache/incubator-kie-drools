@@ -732,6 +732,13 @@ public class ExecutionFlowControlTest extends TestCase {
         }
     }
 
+    public void testLoadingRuleFlowInPackage7() throws Exception {
+    	// loading a ruleflow with errors
+        final PackageBuilder builder = new PackageBuilder();
+    	builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "error_ruleflow.rfm" ) ) );
+    	assertEquals(1, builder.getErrors().getErrors().length);
+    }
+
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
                                                       DroolsParserException,
                                                       Exception {
