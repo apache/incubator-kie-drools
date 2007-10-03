@@ -1,12 +1,4 @@
-/* JBoss Drools Analytics Style Sheet */
-/* Website: http://labs.jboss.com/jbossrules/ */
 
-*
-{
-	border: 0;
-	margin: 0;
-	padding: 0;
-}
 
 table
 {
@@ -36,7 +28,7 @@ table caption
 
 table th
 {
-	width: 600px;
+	width: 200px;
 }
 
 tbody th
@@ -51,4 +43,14 @@ td
 {
 	border: 1px dotted #fff;
 	padding: 0 2px;
+}
+
+ul
+{
+	padding:0px 0px 0px 20px;
+	width:600px;
+}
+
+li
+{
 }

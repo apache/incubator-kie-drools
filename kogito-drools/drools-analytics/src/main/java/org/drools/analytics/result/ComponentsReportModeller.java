@@ -2,7 +2,12 @@ package org.drools.analytics.result;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 
 import org.drools.analytics.components.AnalyticsClass;
@@ -77,7 +82,51 @@ public class ComponentsReportModeller {
 				ComponentsReportVisitor.getCss(UrlFactory.CSS_FILE_DETAILS));
 		writeToFile(cssFolder + File.separator + UrlFactory.CSS_FILE_LIST,
 				ComponentsReportVisitor.getCss(UrlFactory.CSS_FILE_LIST));
+		
+		
+		// imagefiles 
+		
+		String imagesFolder = path + UrlFactory.SOURCE_FOLDER + File.separator + 
+		         UrlFactory.IMAGES_FOLDER;
+
+		File imgsFolder = new File(imagesFolder);
+		imgsFolder.mkdir();
+		
+		try {
+            copyFile( imagesFolder, "hdrlogo_drools50px.gif" );
+            copyFile( imagesFolder, "jbossrules_hdrbkg_blue.gif" );
+        } catch ( IOException e ) {
+            e.printStackTrace();
+        }
 	}
+	
+	public static void copyFile(String destination, String filename) throws IOException {
+	    
+	    File source = new File( ComponentsReportModeller.class.getResource( filename ).getFile() );
+	    File dest = new File (destination + File.separator + filename );
+	    
+        if(!dest.exists()) {
+            dest.createNewFile();
+        }
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new FileInputStream(source);
+            out = new FileOutputStream(dest);
+    
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+        }
+        finally {
+            in.close();
+            out.close();
+        }
+        
+    }
 
 	private static void writeToFile(String fileName, String text) {
 		try {
