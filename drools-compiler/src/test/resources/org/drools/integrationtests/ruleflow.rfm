@@ -147,4 +147,5 @@
   <id>0</id>
   <name>flow</name>
   <type>Workflow</type>
+  <packageName>com.sample</packageName>
 </org.drools.ruleflow.core.impl.RuleFlowProcessImpl>

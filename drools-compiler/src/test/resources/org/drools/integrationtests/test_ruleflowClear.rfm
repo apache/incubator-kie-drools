@@ -50,4 +50,5 @@
   <id>ruleFlowClear</id>
   <name>test_ruleflowClear</name>
   <type>RuleFlow</type>
+  <packageName>com.sample</packageName>
 </org.drools.ruleflow.core.impl.RuleFlowProcessImpl>

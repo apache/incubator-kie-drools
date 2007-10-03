@@ -24,6 +24,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ProcessBuilder;
+import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
@@ -671,6 +672,64 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( ProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
         
+    }
+    
+    public void testLoadingRuleFlowInPackage1() throws Exception {
+    	// adding ruleflow before adding package
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
+        builder.getPackage();
+    }
+
+    public void testLoadingRuleFlowInPackage2() throws Exception {
+    	// only adding ruleflow
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
+        builder.getPackage();
+    }
+
+    public void testLoadingRuleFlowInPackage3() throws Exception {
+    	// only adding ruleflow without any generated rules
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );
+        builder.getPackage();
+    }
+
+    public void testLoadingRuleFlowInPackage4() throws Exception {
+    	// adding ruleflows of different package
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );
+        try {
+        	builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
+        	throw new Exception("An exception should have been thrown.");
+        } catch (PackageMergeException e) {
+        	// do nothing
+        }
+    }
+
+    public void testLoadingRuleFlowInPackage5() throws Exception {
+    	// adding ruleflow of different package than rules
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
+        try {
+        	builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );
+        	throw new Exception("An exception should have been thrown.");
+        } catch (PackageMergeException e) {
+        	// do nothing
+        }
+    }
+
+    public void testLoadingRuleFlowInPackage6() throws Exception {
+    	// adding rules of different package than ruleflow
+        final PackageBuilder builder = new PackageBuilder();
+    	builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "empty_ruleflow.rfm" ) ) );
+        try {
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
+        	throw new Exception("An exception should have been thrown.");
+        } catch (PackageMergeException e) {
+        	// do nothing
+        }
     }
 
     private RuleBase loadRuleBase(final Reader reader) throws IOException,

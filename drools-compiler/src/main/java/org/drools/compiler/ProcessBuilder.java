@@ -16,6 +16,7 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -72,13 +73,15 @@ public class ProcessBuilder {
 	            this.processes.add( process );
 	            // generate and add rule for process
 	            String rules = generateRules( process );
-	            if (rules != null && rules.length() != 0) {
-	            	try {
-	            		packageBuilder.addPackageFromDrl(new StringReader(rules));
-	            	} catch (Throwable t) {
-	            		// should never occur
-	            	}
-	            }
+        		try {
+        			packageBuilder.addPackageFromDrl(new StringReader(rules));
+        		} catch (IOException e) {
+        			// should never occur
+        			e.printStackTrace(System.err);
+        		} catch (DroolsParserException e) {
+        			// should never occur
+        			e.printStackTrace(System.err);
+        		}
     		}
     	}
     }
@@ -86,17 +89,12 @@ public class ProcessBuilder {
     public void addProcessFromFile(final Reader reader) throws Exception {
         final XStream stream = new XStream();
         stream.setMode( XStream.ID_REFERENCES );
-
-        
         final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
         final ClassLoader newLoader = this.getClass().getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( newLoader );
             final RuleFlowProcess process = (RuleFlowProcess) stream.fromXML( reader );
             addProcess( process );
-        } catch ( final Exception t ) {
-            t.printStackTrace();
-            throw t;
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
         }
@@ -107,6 +105,7 @@ public class ProcessBuilder {
     	String result = "";
     	if (process instanceof RuleFlowProcessImpl) {
     		RuleFlowProcessImpl ruleFlow = (RuleFlowProcessImpl) process;
+    		result = "package " + ruleFlow.getPackageName() + "\n" + result;
     		List imports = ruleFlow.getImports();
     		if (imports != null) {
     			for (Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
@@ -142,7 +141,7 @@ public class ProcessBuilder {
     
     private String createSplitRule(Process process, Connection connection, String constraint) {
 		return 
-    		"rule \"RuleFlow-" + process.getId() + "-"
+    		"rule \"RuleFlow-Split-" + process.getId() + "-"
     			+ connection.getFrom().getId() + "-" + connection.getTo().getId() + "\" \n" + 
 			"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
 			"    when \n" + 
@@ -153,7 +152,7 @@ public class ProcessBuilder {
     
     private String createMilestoneRule(Process process, MilestoneNode milestone) {
 		return 
-    		"rule \"RuleFlow-" + process.getId() + "-" + milestone.getId() + "\" \n" + 
+    		"rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getId() + "\" \n" + 
 			"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
 			"    when \n" + 
 			"      " + milestone.getConstraint() + "\n" +

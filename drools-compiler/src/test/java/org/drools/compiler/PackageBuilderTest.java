@@ -1284,6 +1284,10 @@ public class PackageBuilderTest extends DroolsTestCase {
         public String getVersion() {
             return null;
         }
+        
+        public String getPackageName() {
+        	return null;
+        }
 
         public void setId(String id) {
         }
@@ -1295,6 +1299,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public void setVersion(String version) {
+        }
+        
+        public void setPackageName(String packageName) {
         }
 
     }

@@ -217,9 +217,6 @@ public class PackageBuilder {
         if ( this.processBuilder == null ) {
             this.processBuilder = new ProcessBuilder( this );
         }
-        if ( this.pkg == null) {
-        	this.pkg = new Package();
-        }
         try {
             this.processBuilder.addProcessFromFile( processSource );
         } catch ( Exception e ) {
