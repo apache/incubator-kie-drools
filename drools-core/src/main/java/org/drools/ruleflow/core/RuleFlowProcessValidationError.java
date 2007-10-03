@@ -26,6 +26,7 @@ public interface RuleFlowProcessValidationError {
     String NO_PROCESS_NAME                              = "RuleFlow process has no name.";
     String NO_PROCESS_ID                                = "RuleFlow process has no id.";
     String NO_START_NODE                                = "RuleFlow process has no start node.";
+    String NO_PACKAGE_NAME                              = "RuleFlow process has no package name.";
     String START_NODE_WITHOUT_OUTGOING_NODES            = "Start node has no outgoing connection.";
     String END_NODE_HAS_NO_INCOMING_CONNECTIONS         = "End node has no incoming connection.";
     String NO_END_NODE                                  = "No end node found.";

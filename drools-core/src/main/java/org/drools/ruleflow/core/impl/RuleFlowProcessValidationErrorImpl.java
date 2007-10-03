@@ -28,13 +28,19 @@ public class RuleFlowProcessValidationErrorImpl
     RuleFlowProcessValidationError {
 
     private String type;
+    private String text;
 
     public RuleFlowProcessValidationErrorImpl(final String type) {
         this.type = type;
     }
 
+    public RuleFlowProcessValidationErrorImpl(final String type, String text) {
+        this.type = type;
+        this.text = text;
+    }
+
     public String toString() {
-        return this.type;
+        return this.type + (text == null ? "" : text);
     }
 
     public String getType() {

@@ -59,7 +59,7 @@ public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl
                     final Connection connection = (Connection) iterator.next();
                     Constraint constraint = split.getConstraint(connection);
                     if (constraint != null && constraint.getPriority() < priority) {
-                    	String rule = "RuleFlow-" + getProcessInstance().getProcess().getId() + "-" +
+                    	String rule = "RuleFlow-Split-" + getProcessInstance().getProcess().getId() + "-" +
                 		getNode().getId() + "-" + connection.getTo().getId();
                     	for (Iterator activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
                     		Activation activation = ((RuleFlowGroupNode) activations.next()).getActivation();
@@ -84,7 +84,7 @@ public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl
                     final Connection connection = (Connection) iterator.next();
                     Constraint constraint = split.getConstraint(connection);
                     if (constraint != null) {
-                    	String rule = "RuleFlow-" + getProcessInstance().getProcess().getId() + "-" +
+                    	String rule = "RuleFlow-Split-" + getProcessInstance().getProcess().getId() + "-" +
                     		getNode().getId() + "-" + connection.getTo().getId();
                     	for (Iterator activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
                     		Activation activation = ((RuleFlowGroupNode) activations.next()).getActivation();

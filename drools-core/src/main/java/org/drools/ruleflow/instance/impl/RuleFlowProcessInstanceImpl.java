@@ -209,7 +209,7 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
 			for (Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
 				RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
 				if (nodeInstance instanceof MilestoneNodeInstanceImpl) {
-					String milestoneName = "RuleFlow-" + getProcess().getId()
+					String milestoneName = "RuleFlow-Milestone-" + getProcess().getId()
 		    			+ "-" + nodeInstance.getNodeId();
 					if (milestoneName.equals(ruleName)) {
 						((MilestoneNodeInstanceImpl) nodeInstance).triggerCompleted();
