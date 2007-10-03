@@ -1185,7 +1185,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         InputStream in = this.getClass().getResourceAsStream( "/org/drools/integrationtests/ruleflow.rfm" );
         assertNotNull( in );
 
-        builder.addPackage( new PackageDescr( "ya" ) );
+        builder.addPackage( new PackageDescr( "com.sample" ) );
 
         builder.addRuleFlow( new InputStreamReader( in ) );
         Package pkg = builder.getPackage();
