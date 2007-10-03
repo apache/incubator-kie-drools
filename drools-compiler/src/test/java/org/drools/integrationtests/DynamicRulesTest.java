@@ -102,9 +102,9 @@ public class DynamicRulesTest extends TestCase {
         final Package pkg3 = builder.getPackage();
         ruleBase.addPackage( pkg3 );
 
-        // Package 3 has a rule working on Person instances.
-        // As we added person instance in advance, rule should fire now
-        workingMemory.fireAllRules();
+//        // Package 3 has a rule working on Person instances.
+//        // As we added person instance in advance, rule should fire now
+//        workingMemory.fireAllRules();
 
         Assert.assertEquals( "Rule from package 3 should have been fired",
                              "match Person ok",
