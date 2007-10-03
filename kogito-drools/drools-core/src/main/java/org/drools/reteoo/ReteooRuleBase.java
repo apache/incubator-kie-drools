@@ -29,6 +29,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
+import org.drools.base.FireAllRulesRuleBaseUpdateListener;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
@@ -36,15 +37,14 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.DefaultExecutorService;
 import org.drools.concurrent.ExecutorService;
-import org.drools.event.BeforeRuleBaseUnlockedEvent;
-import org.drools.event.DefaultRuleBaseEventListener;
-import org.drools.event.RuleBaseEventListener;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
+import org.drools.spi.RuleBaseUpdateListener;
+import org.drools.spi.RuleBaseUpdateListenerFactory;
 import org.drools.util.ObjectHashSet;
 
 import sun.security.x509.IssuerAlternativeNameExtension;
@@ -68,6 +68,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
     private Rete              rete;
 
     private ReteooBuilder     reteooBuilder;
+    
+    private transient RuleBaseUpdateListenerFactory updateListenerFactory;
 
     // ------------------------------------------------------------
     // Constructors
@@ -250,56 +252,19 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                                                                  null ) );
         }
         
-        // setup event listener for fireAllRules on rulebase modifications
-        FireAllRulesBeforeUnlockEventListener listener =  new DefaultFireAllRulesBeforeUnlockEventListener();
-        listener.setSession( session );
-        addEventListener( listener );
+        if ( this.updateListenerFactory == null ) {
+            this.updateListenerFactory = new RuleBaseUpdateListenerFactory();
+        }
+
+        String listenerName = this.config.getRuleBaseUpdateHandler();
+        if ( listenerName != null && listenerName.length() > 0 ) {
+            RuleBaseUpdateListener listener = this.updateListenerFactory.createListener( listenerName, session );
+            addEventListener( listener );
+        }
         
         return session;
     }
     
-    public static interface FireAllRulesBeforeUnlockEventListener extends RuleBaseEventListener {
-        public void setSession(StatefulSession session);
-    }
-    
-    public static class DefaultFireAllRulesBeforeUnlockEventListener extends DefaultRuleBaseEventListener 
-    implements FireAllRulesBeforeUnlockEventListener {
-        private StatefulSession session;
-        
-        public DefaultFireAllRulesBeforeUnlockEventListener() {
-            
-        }
-        
-        public void setSession(StatefulSession session) {
-            this.session = session;
-        }
-        
-        public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
-            if ( session.getRuleBase().getAdditionsSinceLock() > 0 ) {
-                session.fireAllRules();
-            }
-        }
-    }
-    
-    public static class AsyncFireAllRulesBeforeUnlockEventListener extends DefaultRuleBaseEventListener 
-    implements FireAllRulesBeforeUnlockEventListener {
-        private StatefulSession session;
-        
-        public AsyncFireAllRulesBeforeUnlockEventListener() {
-            
-        }
-        
-        public void setSession(StatefulSession session) {
-            this.session = session;
-        }
-        
-        public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
-            if ( session.getRuleBase().getAdditionsSinceLock() > 0 ) { 
-                session.asyncFireAllRules();
-            }
-        }
-    }    
-
     public StatelessSession newStatelessSession() {
 
         //orders the rules

@@ -29,6 +29,7 @@ import org.drools.common.PriorityQueueAgendaGroupFactory;
 import org.drools.concurrent.ExecutorService;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
+import org.drools.spi.RuleBaseUpdateListener;
 import org.drools.util.ChainedProperties;
 
 /**
@@ -47,7 +48,8 @@ import org.drools.util.ChainedProperties;
  */
 
 /**
- * drools.shadowproxy = <true|false>
+ * drools.maintainTms = <true|false>
+ * drools.shadowproxy = <true|false> // sequentail=true always overrides setting this to false
  * drools.shadowproxy.exclude = org.domainy.* org.domainx.ClassZ
  * drools.sequential = <true|false>
  * drools.sequential.agenda = <sequential|dynamic>
@@ -63,7 +65,8 @@ import org.drools.util.ChainedProperties;
  * drools.logicalOverride = <discard|preserve>
  * drools.executorService = <qualified class name>
  * drools.conflictResolver = <qualified class name>
- * drools.conflictExceptionHandler = <qualified class name>
+ * drools.consequenceExceptionHandler = <qualified class name>
+ * drools.ruleBaseUpdateHandler = <qualified class name>
  * 
  */
 public class RuleBaseConfiguration
@@ -91,6 +94,7 @@ public class RuleBaseConfiguration
     private LogicalOverride             logicalOverride;
     private ExecutorService             executorService;
     private ConsequenceExceptionHandler consequenceExceptionHandler;
+    private String                      ruleBaseUpdateHandler;
 
     private ConflictResolver            conflictResolver;
 
@@ -214,12 +218,16 @@ public class RuleBaseConfiguration
 
         setConsequenceExceptionHandler( RuleBaseConfiguration.determineConsequenceExceptionHandler( this.chainedProperties.getProperty( "drools.consequenceExceptionHandler",
                                                                                                                                         "org.drools.base.DefaultConsequenceExceptionHandler" ) ) );
+        
+        setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler",
+                                                                      "org.drools.base.FireAllRulesRuleBaseUpdateListener" ) );        
 
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
                                                                                                                   "org.drools.conflict.DepthConflictResolver" ) ) );
 
+        // sequential mode always overrides and sets this to false
         setShadowProxy( determineShadowProxy( this.chainedProperties.getProperty( "drools.shadowproxy",
-                                                                                  null ) ) );
+                                                                                  "true" ) ) );
 
         setShadowProxyExcludes( this.chainedProperties.getProperty( "drools.shadowProxyExcludes",
                                                                     "" ) );
@@ -378,6 +386,15 @@ public class RuleBaseConfiguration
         checkCanChange(); // throws an exception if a change isn't possible;        
         this.consequenceExceptionHandler = consequenceExceptionHandler;
     }
+    
+    public String getRuleBaseUpdateHandler() {
+        return ruleBaseUpdateHandler;
+    }
+
+    public void setRuleBaseUpdateHandler(String ruleBaseUpdateHandler) {
+        checkCanChange(); // throws an exception if a change isn't possible;        
+        this.ruleBaseUpdateHandler = ruleBaseUpdateHandler;
+    }    
 
     public AgendaGroupFactory getAgendaGroupFactory() {
         if ( isSequential() ) {
@@ -401,14 +418,15 @@ public class RuleBaseConfiguration
     }
 
     private boolean determineShadowProxy(String userValue) {
+        if ( this.isSequential() ) {
+            // sequential never needs shadowing, so always override
+            return false;
+        }
+        
         if ( userValue != null ) {
             return Boolean.valueOf( userValue ).booleanValue();
         } else {
-            if ( this.isSequential() ) {
-                return false;
-            } else {
-                return true;
-            }
+            return true;
         }
     }
 
@@ -533,7 +551,7 @@ public class RuleBaseConfiguration
     private static ConsequenceExceptionHandler determineConsequenceExceptionHandler(String className) {
         return (ConsequenceExceptionHandler) instantiateClass( "ConsequenceExceptionHandler",
                                                                className );
-    }
+    }   
 
     private static Object instantiateClass(String type,
                                            String className) {
