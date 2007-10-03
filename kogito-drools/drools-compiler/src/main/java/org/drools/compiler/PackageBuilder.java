@@ -79,8 +79,6 @@ public class PackageBuilder {
 
     private DialectRegistry             dialectRegistry;
     
-    private ProcessBuilder              processBuilder;
-
     /**
      * Use this when package is starting from scratch.
      */
@@ -214,11 +212,14 @@ public class PackageBuilder {
      * Add a ruleflow (.rt) asset to this package.
      */
     public void addRuleFlow(Reader processSource) {
-        if ( this.processBuilder == null ) {
-            this.processBuilder = new ProcessBuilder( this );
-        }
+        ProcessBuilder processBuilder = new ProcessBuilder( this );
         try {
-            this.processBuilder.addProcessFromFile( processSource );
+            processBuilder.addProcessFromFile( processSource );
+            Process[] processes = processBuilder.getProcesses();
+            for ( int i = 0; i < processes.length; i++ ) {
+                pkg.addRuleFlow( processes[i] );
+            }
+            this.results.addAll(processBuilder.getErrors());
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;
@@ -471,8 +472,6 @@ public class PackageBuilder {
         if ( this.pkg != null && this.pkg.getPackageCompilationData() != null && this.pkg.getPackageCompilationData().isDirty() ) {
             this.pkg.getPackageCompilationData().reload();
         }
-        
-        addRuleFlowsToPackage( this.processBuilder, pkg );
         if ( hasErrors() ) {
             this.pkg.setError( getErrors().toString() );
         }
@@ -496,17 +495,6 @@ public class PackageBuilder {
     	return this.dialect;
     }
     
-    private void addRuleFlowsToPackage(ProcessBuilder processBuilder,
-                                       Package pkg) {
-        if ( processBuilder != null ) {
-            Process[] processes = processBuilder.getProcesses();
-            for ( int i = 0; i < processes.length; i++ ) {
-                pkg.addRuleFlow( processes[i] );
-            }
-            this.results.addAll(processBuilder.getErrors());
-        }
-    }
-
     /**
      * Return the ClassFieldExtractorCache, this should only be used internally, and is subject to change
      * @return
