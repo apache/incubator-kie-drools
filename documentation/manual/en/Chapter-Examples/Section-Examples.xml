@@ -551,12 +551,12 @@ end</programlisting>
       <example>
         <title>Inserting a Dynamic Fact</title>
 
-        <programlisting>        // By setting dynamic to TRUE, Drools will use JavaBean
-        // PropertyChangeListeners so you don't have to call update().
-        final boolean dynamic = true;
+        <programlisting>// By setting dynamic to TRUE, Drools will use JavaBean
+// PropertyChangeListeners so you don't have to call update().
+final boolean dynamic = true;
 
-        session.insert( fact,
-                        dynamic );
+session.insert( fact,
+                dynamic );
 </programlisting>
       </example>
 
@@ -963,19 +963,17 @@ end
       name, position (1 to 4 meaning left to right), and their pants color, as
       simple properties.</para>
 
-      <programlisting>
-        String[] names = new String[] { "Fred", "Joe", "Bob", "Tom" };
-        String[] colors = new String[] { "red", "blue", "plaid", "orange" };
-        int[] positions = new int[] { 1, 2, 3, 4 };
+      <programlisting>String[] names = new String[] { "Fred", "Joe", "Bob", "Tom" };
+String[] colors = new String[] { "red", "blue", "plaid", "orange" };
+int[] positions = new int[] { 1, 2, 3, 4 };
         
-        for ( int n = 0; n &lt; names.length; n++ ) {
-            for ( int c = 0; c &lt; colors.length; c++ ) {
-                for ( int p = 0; p &lt; positions.length; p++ ) {
-                    session.insert( new Golfer( names[n], colors[c], positions[p]) );
-                }                
-            }            
-        }
-      </programlisting>
+for ( int n = 0; n &lt; names.length; n++ ) {
+    for ( int c = 0; c &lt; colors.length; c++ ) {
+        for ( int p = 0; p &lt; positions.length; p++ ) {
+            session.insert( new Golfer( names[n], colors[c], positions[p]) );
+        }                
+    }            
+}      </programlisting>
 
       <para>The above listing shows the interesting part of the supporting
       code. Note that we have arrays representing each name, color, and
@@ -987,12 +985,10 @@ end
       <para>Launching the code as a java application should yield the
       following output:</para>
 
-      <programlisting>
-Fred 1 orange
+      <programlisting>Fred 1 orange
 Joe 2 blue
 Bob 4 plaid
-Tom 3 red
-      </programlisting>
+Tom 3 red     </programlisting>
 
       <para>This shows that the rule(s) have found a suitable solution.</para>
     </section>
@@ -1012,52 +1008,44 @@ Tom 3 red
       solution". The rule is made up of 5 patterns, with constraints that map
       to items in the riddle.</para>
 
-      <programlisting>
-        $fred : Golfer( name == "Fred" )
-      </programlisting>
+      <programlisting>$fred : Golfer( name == "Fred" )      </programlisting>
 
       <para>In the above pattern, we are simply matching a Golfer who is
       called fred, and binding it to a variable called $fred. All that we know
       is that there is a golfer called fred.</para>
 
-      <programlisting>
-        $joe : Golfer( name == "Joe",
-                position == 2,
-                position != $fred.position,
-                color != $fred.color )	
-      </programlisting>
+      <programlisting>$joe : Golfer( name == "Joe",
+               position == 2,
+               position != $fred.position,
+               color != $fred.color )      </programlisting>
 
       <para>The next pattern says that we have a golfer named Joe, in position
       2 ("second in line"). Now, we also know that he must NOT be in the same
       position as fred (of course !) and have different color pants. So far,
       nothing that amazing.</para>
 
-      <programlisting>
-        $bob : Golfer( name == "Bob",
-                position != $fred.position,
-                position != $joe.position,
-                color == "plaid",
-                color != $fred.color,
-                color != $joe.color )
-      </programlisting>
+      <programlisting>$bob : Golfer( name == "Bob",
+               position != $fred.position,
+               position != $joe.position,
+               color == "plaid",
+               color != $fred.color,
+               color != $joe.color )      </programlisting>
 
       <para>Refering to the above, we also know there is a golfer called Bob,
       who wears plaid pants - once again that all we know about him. but of
       course, we add in the constraints that he must be in a different
       position to fred, joe, and also have different colored pants.</para>
 
-      <programlisting>
-        $tom : Golfer( name == "Tom",
-                position != 1,
-                position != 4,
-                position != $fred.position,
-                position != $joe.position,
-                position != $bob.position,
-                color != "orange,               
-                color != $fred.color,
-                color != $joe.color,
-                color != $bob.color )
-      </programlisting>
+      <programlisting>$tom : Golfer( name == "Tom",
+               position != 1,
+               position != 4,
+               position != $fred.position,
+               position != $joe.position,
+               position != $bob.position,
+               color != "orange,               
+               color != $fred.color,
+               color != $joe.color,
+               color != $bob.color )      </programlisting>
 
       <para>(referring to the above) We also know that there is a guy called
       Tom, who doesn't wear the Orange pants, AND he is not in position 1, or
@@ -1065,11 +1053,9 @@ Tom 3 red
       different position to the others so far, and have a different
       color).</para>
 
-      <programlisting>
-        Golfer( position == ( $fred.position + 1 ),
-                      color == "blue",
-                      this in ( $joe, $bob, $tom ) )
-      </programlisting>
+      <programlisting>Golfer( position == ( $fred.position + 1 ),
+        color == "blue",
+        this in ( $joe, $bob, $tom ) )      </programlisting>
 
       <para>Finally, we know that the golfer on the right of Fred (position +
       1), is in blue pants. We also add in the constraint that he must be
@@ -1408,10 +1394,10 @@ session.update( ft3,
     deals with refining this with a subtractive percentage discount.</para>
 
     <programlisting><emphasis role="bold">Name:</emphasis> Example Policy Pricing
-       <emphasis role="bold">Main class:</emphasis> org.drools.examples.PricingRuleDTExample
-       <emphasis role="bold">Type:</emphasis> java application
-       <emphasis role="bold">Rules file:</emphasis> ExamplePolicyPricing.xls
-       <emphasis role="bold">Objective:</emphasis> demonstrate spreadsheet based decision tables.    </programlisting>
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.PricingRuleDTExample
+<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Rules file:</emphasis> ExamplePolicyPricing.xls
+<emphasis role="bold">Objective:</emphasis> demonstrate spreadsheet based decision tables.    </programlisting>
 
     <section>
       <title>Executing the example</title>
@@ -1542,23 +1528,22 @@ String drl = compiler.compile(getSpreadsheetStream(), InputType.XLS);
       to launch the example:</para>
 
       <programlisting>Customer mark = new Customer( "mark",
-                                      0 );
-        session.insert( mark );
-        Product shoes = new Product( "shoes",
-                                     60 );
-        session.insert( shoes );
-        Product hat = new Product( "hat",
-                                   60 );
-        session.insert( hat );
-        session.insert( new Purchase( mark,
-                                      shoes ) );
-        FactHandle hatPurchaseHandle = session.insert( new Purchase( mark,
-                                                                     hat ) );
-        session.fireAllRules();
-        session.retract( hatPurchaseHandle );
-        System.out.println( "Customer mark has returned the hat" );
-        session.fireAllRules();
-      </programlisting>
+                              0 );
+session.insert( mark );
+Product shoes = new Product( "shoes",
+                             60 );
+session.insert( shoes );
+Product hat = new Product( "hat",
+                           60 );
+session.insert( hat );
+session.insert( new Purchase( mark,
+                              shoes ) );
+FactHandle hatPurchaseHandle = session.insert( new Purchase( mark,
+                                                             hat ) );
+session.fireAllRules();
+session.retract( hatPurchaseHandle );
+System.out.println( "Customer mark has returned the hat" );
+session.fireAllRules();      </programlisting>
 
       <para>Refering the the above listing, we can see there is a Customer
       ("mark"), and there are 2 Products ("shoes" and "hat") which are
@@ -1574,8 +1559,7 @@ Customer mark just purchased shoes
 Customer mark now has a shopping total of 120.0
 Customer mark now has a discount of 10
 Customer mark has returned the hat
-Customer mark now has a discount of 0
-      </programlisting>
+Customer mark now has a discount of 0      </programlisting>
     </section>
 
     <section>
@@ -1830,8 +1814,8 @@ ui.createAndShowGUI();
       first of these creates a new workingMemory (statefulSession) from the
       Rulebase - remember that we passed in this Rulebase when we created the
       CheckoutCallBack class in the <emphasis role="italic">main()</emphasis>
-      method. The next two calls pass in two objects that we will hold as
-      Global variables in the rules - the Swing text area and Swing frame that
+      method. The next two calls pass in two objects that we will hold as Gl
+      obal variables in the rules - the Swing text area and Swing frame that
       we will use for writing messages later.</para>
 
       <para>More inserts put information on products into the working memory,
@@ -2388,9 +2372,7 @@ end
           <title>Console (System.out) from running the PetStore GUI</title>
 
           <programlisting>Adding free Fish Food Sample to cart 
-SUGGESTION: Would you like to buy a tank for your 6 fish? - Yes 
-
-</programlisting>
+SUGGESTION: Would you like to buy a tank for your 6 fish? - Yes</programlisting>
         </example>
       </para>
 
@@ -4010,7 +3992,7 @@ end
     <programlisting><emphasis role="bold">Name:</emphasis> Conways Game Of Life
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.conway.ConwayAgendaGroupRun org.drools.examples.conway.ConwayRuleFlowGroupRun
 <emphasis role="bold">Type:</emphasis> java application
-<emphasis role="bold">Rules file:</emphasis> PetStore.drl
+<emphasis role="bold">Rules file:</emphasis> conway-ruleflow.drl conway-agendagroup.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrates 'accumulate', 'collect' and 'from'</programlisting>
 
     <para>Conway's Game Of Life, <ulink
@@ -4077,8 +4059,8 @@ end
     <para>That is all there is to it. Any cell that doesn't meet any of those
     criteria is left as is for the next generation. With those simple rules in
     mind, go back and play with the system a little bit more and step through
-    some generations one at a time and notice these rules taking their effect.
-    </para>
+    some generations one at a time and notice these rules taking their
+    effect.</para>
 
     <para>The screnshot below shows an example generation, with a number of
     live cells. Don't worry about matching the exact patterns represented in
