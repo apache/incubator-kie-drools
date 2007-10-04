@@ -149,4 +149,34 @@
 	</rhs>
 </rule>
 
+<rule name="Check_NotNullof_rfqId">
+
+<rule-attribute name="agenda-group" value="Check" />
+
+<lhs><pattern object-type="RFQBean" >
+
+<or-constraint-connective><field-constraint field-name="m_rfqId">
+
+<literal-restriction evaluator="==" value="null" />
+
+</field-constraint>
+
+<field-constraint field-name="m_rfqId">
+
+<literal-restriction evaluator="==" value="" />
+
+</field-constraint>
+
+</or-constraint-connective>
+
+</pattern>
+
+</lhs><rhs> response.setStatus("For RFQ Bean: The value of m_rfqId is null.");
+
+System.out.println(response.getStatus());
+
+</rhs>
+
+</rule>
+
 </package>

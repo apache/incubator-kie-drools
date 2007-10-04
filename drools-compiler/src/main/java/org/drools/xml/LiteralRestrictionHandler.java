@@ -72,10 +72,6 @@ class LiteralRestrictionHandler extends BaseAbstractHandler
         }
 
         final String text = attrs.getValue( "value" );
-        if ( text == null || text.trim().equals( "" ) ) {
-            throw new SAXParseException( "<literal-restriction>  requires an 'value' attribute",
-                                         this.xmlPackageReader.getLocator() );
-        }
 
         final LiteralRestrictionDescr literalDescr = new LiteralRestrictionDescr( evaluator,
                                                                                   text );
