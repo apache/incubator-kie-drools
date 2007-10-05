@@ -7,6 +7,7 @@ global java.lang.String string
 
 
 rule "global rule test"
+    salience 10
     when
         eval( "stilton".equals( string ) )
     then
@@ -18,5 +19,5 @@ rule "global rule test with cheese"
     	Cheese( price == 100 );
         eval( "stilton".equals( string ) )
     then
-		list.add( new Integer(5) );
+		list.add( new Integer(6) );
 end    
