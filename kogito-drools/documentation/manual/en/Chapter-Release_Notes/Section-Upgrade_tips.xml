@@ -243,4 +243,24 @@ end
       <programlisting>[when][]- the {attr} is in \[ {values} \]={attr} in ( {values} )</programlisting>
     </example>
   </section>
+
+  <section>
+    <title>Rule flow Update for 4.0.2</title>
+
+    <para>
+    	The Rule flow feature was updated for 4.0.2, and now all your ruleflows must decalre a package name.
+    </para>
+
+  <figure>
+      <title>Rule Flow properties</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="ruleflowproperties.png" format="PNG"
+                     scalefit="1" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+  </section>
 </section>
