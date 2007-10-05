@@ -227,6 +227,8 @@ public class MiscTest extends TestCase {
         } );
 
         workingMemory.fireAllRules();
+        
+        assertEquals(1, list.size() );
 
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
@@ -250,12 +252,6 @@ public class MiscTest extends TestCase {
         map.put( "string",
                  string );
         
-        
-        Cheese bree = new Cheese ();
-        bree.setPrice( 100 );
-        
-        workingMemory.insert( bree );
-
         workingMemory.setGlobalResolver( new GlobalResolver() {
             public Object resolveGlobal(String identifier) {
                 return map.get( identifier );
@@ -267,12 +263,22 @@ public class MiscTest extends TestCase {
                          value );
             }
 
-        } );
+        } );                
+        
+        Cheese bree = new Cheese ();
+        bree.setPrice( 100 );
+        
+        workingMemory.insert( bree );
 
         workingMemory.fireAllRules();
 
+        assertEquals(2, list.size() );        
+        
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
+        
+        assertEquals( new Integer( 6 ),
+                      list.get( 1 ) );        
     }
     
 
