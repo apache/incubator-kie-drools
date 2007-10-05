@@ -151,7 +151,7 @@ public class MiscTest extends TestCase {
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
     }
-    
+
     public void testGlobals2() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -194,7 +194,7 @@ public class MiscTest extends TestCase {
         assertEquals( "not memberOf",
                       results.get( 1 ) );
     }
-    
+
     public void testCustomGlobalResolver() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
@@ -207,10 +207,12 @@ public class MiscTest extends TestCase {
         final Map map = new HashMap();
         List list = new ArrayList();
         String string = "stilton";
-        
-        map.put("list", list);
-        map.put("string", string);
-        
+
+        map.put( "list",
+                 list );
+        map.put( "string",
+                 string );
+
         workingMemory.setGlobalResolver( new GlobalResolver() {
             public Object resolveGlobal(String identifier) {
                 return map.get( identifier );
@@ -218,16 +220,61 @@ public class MiscTest extends TestCase {
 
             public void setGlobal(String identifier,
                                   Object value) {
-                map.put( identifier, value );
+                map.put( identifier,
+                         value );
             }
-            
+
         } );
 
         workingMemory.fireAllRules();
 
         assertEquals( new Integer( 5 ),
-                      list.get( 0 ) );        
-    }    
+                      list.get( 0 ) );
+    }
+    
+    public void testCustomGlobalResolverWithWorkingMemoryObject() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final Map map = new HashMap();
+        List list = new ArrayList();
+        String string = "stilton";
+
+        map.put( "list",
+                 list );
+        map.put( "string",
+                 string );
+        
+        
+        Cheese bree = new Cheese ();
+        bree.setPrice( 100 );
+        
+        workingMemory.insert( bree );
+
+        workingMemory.setGlobalResolver( new GlobalResolver() {
+            public Object resolveGlobal(String identifier) {
+                return map.get( identifier );
+            }
+
+            public void setGlobal(String identifier,
+                                  Object value) {
+                map.put( identifier,
+                         value );
+            }
+
+        } );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( new Integer( 5 ),
+                      list.get( 0 ) );
+    }
+    
 
     public void testFieldBiningsAndEvalSharing() throws Exception {
         final String drl = "test_FieldBindingsAndEvalSharing.drl";
@@ -377,7 +424,7 @@ public class MiscTest extends TestCase {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
-            System.err.println(parser.getErrors());
+            System.err.println( parser.getErrors() );
             Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
@@ -448,12 +495,13 @@ public class MiscTest extends TestCase {
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-        Cheese c = new Cheese("fubar", 2);
-
+        Cheese c = new Cheese( "fubar",
+                               2 );
 
         workingMemory.insert( c );
         workingMemory.fireAllRules();
-        assertEquals(42, c.getPrice());
+        assertEquals( 42,
+                      c.getPrice() );
     }
 
     public void testLiteral() throws Exception {
@@ -1267,7 +1315,7 @@ public class MiscTest extends TestCase {
         CustomConsequenceExceptionHandler handler = new CustomConsequenceExceptionHandler();
         conf.setConsequenceExceptionHandler( handler );
 
-        final RuleBase ruleBase = getRuleBase(conf);
+        final RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -1280,7 +1328,9 @@ public class MiscTest extends TestCase {
         assertTrue( handler.isCalled() );
     }
 
-    public static class CustomConsequenceExceptionHandler implements ConsequenceExceptionHandler {
+    public static class CustomConsequenceExceptionHandler
+        implements
+        ConsequenceExceptionHandler {
 
         private boolean called;
 
@@ -2483,7 +2533,8 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  results );
 
-        final Order order = new Order( 10, "Bob" );
+        final Order order = new Order( 10,
+                                       "Bob" );
         final OrderItem item1 = new OrderItem( order,
                                                1 );
         final OrderItem item2 = new OrderItem( order,
@@ -3088,28 +3139,32 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        final Order order1 = new Order( 10, "Bob" );
+        final Order order1 = new Order( 10,
+                                        "Bob" );
         final OrderItem item11 = new OrderItem( order1,
                                                 1 );
         final OrderItem item12 = new OrderItem( order1,
                                                 2 );
         order1.addItem( item11 );
         order1.addItem( item12 );
-        final Order order2 = new Order( 11, "Bob" );
+        final Order order2 = new Order( 11,
+                                        "Bob" );
         final OrderItem item21 = new OrderItem( order2,
                                                 1 );
         final OrderItem item22 = new OrderItem( order2,
                                                 2 );
         order2.addItem( item21 );
         order2.addItem( item22 );
-        final Order order3 = new Order( 12, "Bob" );
+        final Order order3 = new Order( 12,
+                                        "Bob" );
         final OrderItem item31 = new OrderItem( order3,
                                                 1 );
         final OrderItem item32 = new OrderItem( order3,
                                                 2 );
         order3.addItem( item31 );
         order3.addItem( item32 );
-        final Order order4 = new Order( 13, "Bob" );
+        final Order order4 = new Order( 13,
+                                        "Bob" );
         final OrderItem item41 = new OrderItem( order4,
                                                 1 );
         final OrderItem item42 = new OrderItem( order4,
@@ -3345,9 +3400,9 @@ public class MiscTest extends TestCase {
     public void testFunctionCallingFunctionWithEclipse() throws Exception {
         PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
         ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( JavaDialectConfiguration.ECLIPSE );
-        
+
         final PackageBuilder builder = new PackageBuilder( packageBuilderConfig );
-        
+
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_functionCallingFunction.drl" ) ) );
         final Package pkg = builder.getPackage();
 
@@ -3363,14 +3418,15 @@ public class MiscTest extends TestCase {
 
         assertEquals( 1,
                       list.size() );
-        
-        assertEquals( 10, ( (Integer)list.get( 0 ) ).intValue() );        
+
+        assertEquals( 10,
+                      ((Integer) list.get( 0 )).intValue() );
     }
-    
+
     public void testFunctionCallingFunctionWithJanino() throws Exception {
         PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
         ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( JavaDialectConfiguration.JANINO );
-        
+
         final PackageBuilder builder = new PackageBuilder( packageBuilderConfig );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_functionCallingFunction.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -3387,9 +3443,10 @@ public class MiscTest extends TestCase {
 
         assertEquals( 1,
                       list.size() );
-        
-        assertEquals( 10, ( (Integer)list.get( 0 ) ).intValue() );
-    }    
+
+        assertEquals( 10,
+                      ((Integer) list.get( 0 )).intValue() );
+    }
 
     public void testSelfReference2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -3862,19 +3919,21 @@ public class MiscTest extends TestCase {
 
     public void testNotInStatelessSession() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NotInStatelessSession.drl" )) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NotInStatelessSession.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );
-        final RuleBase ruleBase = getRuleBase(conf);
+        final RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
 
         StatelessSession session = ruleBase.newStatelessSession();
         List list = new ArrayList();
-        session.setGlobal( "list", list );
+        session.setGlobal( "list",
+                           list );
         session.execute( "not integer" );
-        assertEquals("not integer", list.get( 0 ) );
+        assertEquals( "not integer",
+                      list.get( 0 ) );
     }
 
     public void testDynamicallyAddInitialFactRule() throws Exception {
@@ -3888,12 +3947,14 @@ public class MiscTest extends TestCase {
 
         StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
-        session.setGlobal( "list", list );
+        session.setGlobal( "list",
+                           list );
 
-        session.insert( new Integer( 5) );
+        session.insert( new Integer( 5 ) );
         session.fireAllRules();
 
-        assertEquals( new Integer(5), list.get( 0 ) );
+        assertEquals( new Integer( 5 ),
+                      list.get( 0 ) );
 
         builder = new PackageBuilder();
         rule = "package org.drools.test\n global java.util.List list\n rule xxx\n when\nthen\n list.add(\"x\");\nend";
@@ -3904,7 +3965,8 @@ public class MiscTest extends TestCase {
         // even though the first rule didn't use it.
         ruleBase.addPackage( pkg );
 
-        assertEquals( "x", list.get( 1 ) );
+        assertEquals( "x",
+                      list.get( 1 ) );
 
     }
 
@@ -3921,31 +3983,47 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        final Order order1 = new Order( 10, "Bob" );
-        final OrderItem item11 = new OrderItem( order1, 1 );
-        final OrderItem item12 = new OrderItem( order1, 2 );
+        final Order order1 = new Order( 10,
+                                        "Bob" );
+        final OrderItem item11 = new OrderItem( order1,
+                                                1 );
+        final OrderItem item12 = new OrderItem( order1,
+                                                2 );
         order1.addItem( item11 );
         order1.addItem( item12 );
-        final Order order2 = new Order( 11, "Bob" );
-        final OrderItem item21 = new OrderItem( order2, 1 );
-        final OrderItem item22 = new OrderItem( order2, 2 );
+        final Order order2 = new Order( 11,
+                                        "Bob" );
+        final OrderItem item21 = new OrderItem( order2,
+                                                1 );
+        final OrderItem item22 = new OrderItem( order2,
+                                                2 );
         order2.addItem( item21 );
         order2.addItem( item22 );
-        final Order order3 = new Order( 12, "Bob" );
-        final OrderItem item31 = new OrderItem( order3, 1 );
-        final OrderItem item32 = new OrderItem( order3, 2 );
-        final OrderItem item33 = new OrderItem( order3, 3 );
+        final Order order3 = new Order( 12,
+                                        "Bob" );
+        final OrderItem item31 = new OrderItem( order3,
+                                                1 );
+        final OrderItem item32 = new OrderItem( order3,
+                                                2 );
+        final OrderItem item33 = new OrderItem( order3,
+                                                3 );
         order3.addItem( item31 );
         order3.addItem( item32 );
         order3.addItem( item33 );
-        final Order order4 = new Order( 13, "Bob" );
-        final OrderItem item41 = new OrderItem( order4, 1 );
-        final OrderItem item42 = new OrderItem( order4, 2 );
+        final Order order4 = new Order( 13,
+                                        "Bob" );
+        final OrderItem item41 = new OrderItem( order4,
+                                                1 );
+        final OrderItem item42 = new OrderItem( order4,
+                                                2 );
         order4.addItem( item41 );
         order4.addItem( item42 );
-        final Order order5 = new Order( 14, "Mark" );
-        final OrderItem item51 = new OrderItem( order5, 1 );
-        final OrderItem item52 = new OrderItem( order5, 2 );
+        final Order order5 = new Order( 14,
+                                        "Mark" );
+        final OrderItem item51 = new OrderItem( order5,
+                                                1 );
+        final OrderItem item52 = new OrderItem( order5,
+                                                2 );
         order5.addItem( item51 );
         order5.addItem( item52 );
         workingMemory.insert( order1 );
@@ -3969,17 +4047,25 @@ public class MiscTest extends TestCase {
 
         assertEquals( 9,
                       list.size() );
-        int index=0;
-        assertEquals( item11, list.get( index++ ) );
-        assertEquals( item12, list.get( index++ ) );
-        assertEquals( item21, list.get( index++ ) );
-        assertEquals( item22, list.get( index++ ) );
-        assertEquals( item31, list.get( index++ ) );
-        assertEquals( item33, list.get( index++ ) );
-        assertEquals( item41, list.get( index++ ) );
-        assertEquals( order5, list.get( index++ ) );
-        assertEquals( order5, list.get( index++ ) );
-
+        int index = 0;
+        assertEquals( item11,
+                      list.get( index++ ) );
+        assertEquals( item12,
+                      list.get( index++ ) );
+        assertEquals( item21,
+                      list.get( index++ ) );
+        assertEquals( item22,
+                      list.get( index++ ) );
+        assertEquals( item31,
+                      list.get( index++ ) );
+        assertEquals( item33,
+                      list.get( index++ ) );
+        assertEquals( item41,
+                      list.get( index++ ) );
+        assertEquals( order5,
+                      list.get( index++ ) );
+        assertEquals( order5,
+                      list.get( index++ ) );
 
     }
 
@@ -4068,14 +4154,14 @@ public class MiscTest extends TestCase {
         final QueryResults results = workingMemory.getQueryResults( "collect objects" );
         assertEquals( 1,
                       results.size() );
-        
+
         final QueryResult result = results.get( 0 );
         final List list = (List) result.get( "$list" );
-        
-        assertEquals( 2, 
+
+        assertEquals( 2,
                       list.size() );
     }
-    
+
     public void testNestedAccessors() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedAccessors.drl" ) ) );
@@ -4089,36 +4175,42 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        final Order order1 = new Order( 11, "Bob" );
-        final OrderItem item11 = new OrderItem( order1, 1 );
-        final OrderItem item12 = new OrderItem( order1, 2 );
+        final Order order1 = new Order( 11,
+                                        "Bob" );
+        final OrderItem item11 = new OrderItem( order1,
+                                                1 );
+        final OrderItem item12 = new OrderItem( order1,
+                                                2 );
         order1.addItem( item11 );
         order1.addItem( item12 );
-        
+
         workingMemory.insert( order1 );
         workingMemory.insert( item11 );
         workingMemory.insert( item12 );
-        
+
         workingMemory.fireAllRules();
-        
+
         assertEquals( 0,
                       list.size() );
-        
-        final Order order2 = new Order( 12, "Mark" );
+
+        final Order order2 = new Order( 12,
+                                        "Mark" );
         Order.OrderStatus status = new Order.OrderStatus();
         status.setActive( true );
         order2.setStatus( status );
-        final OrderItem item21 = new OrderItem( order2, 1 );
-        final OrderItem item22 = new OrderItem( order2, 2 );
+        final OrderItem item21 = new OrderItem( order2,
+                                                1 );
+        final OrderItem item22 = new OrderItem( order2,
+                                                2 );
         order1.addItem( item21 );
         order1.addItem( item22 );
-        
+
         workingMemory.insert( order2 );
         workingMemory.insert( item21 );
         workingMemory.insert( item22 );
-        
+
         workingMemory.fireAllRules();
-        
+
         assertEquals( 2,
                       list.size() );
         assertSame( item21,
@@ -4136,24 +4228,26 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg );
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
-        
+
         try {
             final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( wm );
             logger.setFileName( "testLogger" );
 
             wm.fireAllRules();
-            
-            wm.insert( new Cheese( "a", 10 ) );
-            wm.insert( new Cheese( "b", 11 ) );
-            
+
+            wm.insert( new Cheese( "a",
+                                   10 ) );
+            wm.insert( new Cheese( "b",
+                                   11 ) );
+
             wm.fireAllRules();
-            
-//            logger.writeToDisk();
-        } catch (Exception e) {
+
+            //            logger.writeToDisk();
+        } catch ( Exception e ) {
             e.printStackTrace();
-            fail( "No exception should be raised ");
+            fail( "No exception should be raised " );
         }
-        
+
     }
 
     public void testFromNestedAccessors() throws Exception {
@@ -4169,21 +4263,24 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        final Order order1 = new Order( 11, "Bob" );
-        final OrderItem item11 = new OrderItem( order1, 1 );
-        final OrderItem item12 = new OrderItem( order1, 2 );
+        final Order order1 = new Order( 11,
+                                        "Bob" );
+        final OrderItem item11 = new OrderItem( order1,
+                                                1 );
+        final OrderItem item12 = new OrderItem( order1,
+                                                2 );
         order1.addItem( item11 );
         order1.addItem( item12 );
-        
+
         workingMemory.insert( order1 );
         workingMemory.insert( item11 );
         workingMemory.insert( item12 );
-        
+
         workingMemory.fireAllRules();
-        
+
         assertEquals( 1,
                       list.size() );
-        
+
         assertSame( order1.getStatus(),
                     list.get( 0 ) );
     }
@@ -4193,16 +4290,16 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SubNetworks.drl" ) ) );
 
         final RuleBase ruleBase = getRuleBase();
-        
+
         try {
             ruleBase.addPackage( builder.getPackage() );
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             e.printStackTrace();
-            fail( "Should not raise any exception!");
+            fail( "Should not raise any exception!" );
         }
 
     }
-    
+
     public void testFinalClass() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FinalClass.drl" ) ) );
@@ -4215,26 +4312,26 @@ public class MiscTest extends TestCase {
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
                                  list );
-        
+
         final PersonFinal bob = new PersonFinal();
         bob.setName( "bob" );
         bob.setStatus( null );
 
         workingMemory.insert( bob );
-        
+
         workingMemory.fireAllRules();
-        
+
         assertEquals( 1,
                       list.size() );
 
         // Dynamic addition of rules which use the final class are not supported yet
-//        final PackageBuilder builder2 = new PackageBuilder();
-//        builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FinalClass2.drl" ) ) );
-//        ruleBase.addPackage( builder2.getPackage() );
-//        
-//        // it will automatically fire the rule
-//        assertEquals( 2,
-//                      list.size() );
+        //        final PackageBuilder builder2 = new PackageBuilder();
+        //        builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FinalClass2.drl" ) ) );
+        //        ruleBase.addPackage( builder2.getPackage() );
+        //        
+        //        // it will automatically fire the rule
+        //        assertEquals( 2,
+        //                      list.size() );
     }
 
     public void testEvalRewriteMatches() throws Exception {
@@ -4250,7 +4347,8 @@ public class MiscTest extends TestCase {
         workingMemory.setGlobal( "results",
                                  list );
 
-        final Order order1 = new Order( 14, "Mark" );
+        final Order order1 = new Order( 14,
+                                        "Mark" );
         final OrderItem item11 = new OrderItem( order1,
                                                 1 );
         final OrderItem item12 = new OrderItem( order1,
@@ -4270,5 +4368,4 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( item12 ) );
     }
 
-    
 }
