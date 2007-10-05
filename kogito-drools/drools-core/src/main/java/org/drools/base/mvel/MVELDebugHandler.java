@@ -6,23 +6,23 @@ import org.mvel.debug.Frame;
 
 /**
  * Debug Handler for MVEL dialect.
- * 
+ *
  * Takes care of registering breakpoints and calling required methods
- * to trigger eclipse debugger to keep breakpoints in sync etc. 
- * 
+ * to trigger eclipse debugger to keep breakpoints in sync etc.
+ *
  * @author Ahti Kitsik
  *
  */
 public final class MVELDebugHandler {
 
     private static int onBreakReturn = Debugger.CONTINUE;
-    
+
     public final static String DEBUG_LAUNCH_KEY="mvel.debugger";
-    
+
     private static Boolean debugMode = null;
-    
-    public static final boolean verbose = true;
-    
+
+    public static final boolean verbose = false;
+
 	static {
 		MVELRuntime.setThreadDebugger(new MVELDebugger());
 	}
@@ -57,26 +57,26 @@ public final class MVELDebugHandler {
         }
         MVELRuntime.registerBreakpoint( sourceName, lineNumber );
     }
-    
+
     protected final static void clearAllBreakpoints() {
         if (verbose) {
             System.out.println("Clearing all breakpoints");
         }
         MVELRuntime.clearAllBreakpoints();
     }
-    
+
     protected final static void removeBreakpoint(String sourceName, int lineNumber) {
         if (verbose) {
             System.out.println("Removing breakpoint from "+sourceName+":"+lineNumber);
         }
         MVELRuntime.removeBreakpoint( sourceName, lineNumber );
     }
-    
+
 	private static class MVELDebugger implements Debugger {
 
         public MVELDebugger() {
         }
-        
+
 		public int onBreak(Frame frame) {
 			if (verbose) {
 			    System.out.println("onBreak call for "+frame.getSourceName()+":"+frame.getLineNumber());
@@ -90,7 +90,7 @@ public final class MVELDebugHandler {
     protected final static void setOnBreakReturn(int value) {
         onBreakReturn = value;
     }
-    
+
     /**
      * Do nothing for now. ensures that class is loaded prior debug handler
      */
@@ -118,12 +118,12 @@ public final class MVELDebugHandler {
      * Updates local MVELDebugHandler property and System property "mvel.debugger"<br/>
      * <br/>
      * There's no need to ever call this method unless you write junit tests!<br/>
-     * 
+     *
      * @param b is Debug enabled?
      */
     public static void setDebugMode(boolean b) {
         debugMode = Boolean.valueOf( b );
         System.setProperty( DEBUG_LAUNCH_KEY, debugMode.toString());
     }
-        
+
 }
