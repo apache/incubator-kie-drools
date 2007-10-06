@@ -140,7 +140,8 @@ public interface WorkingMemory extends WorkingMemoryEventManager {
     FactHandle getFactHandle(Object object);
 
     /**
-     * Returns an Iterator for the Objects in the Working Memory. This Iterator is not thread safe.
+     * Returns an Iterator for the Objects in the Working Memory. This Iterator is not thread safe. 
+     * This means that any working memory actions during iteration may invalidate the iterator.
      * @return
      *     the Iterator
      */
@@ -149,6 +150,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager {
     /**
      *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
      *  any objects that the ObjectFilter does not accept. This Iterator is not thread safe.
+     * This means that any working memory actions during iteration may invalidate the iterator.
      *  
      * @param filter
      * 
@@ -159,6 +161,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager {
 
     /**
      * Returns an Iterator for the FactHandles in the Working Memory. This Iterator is not thread safe.
+     * This means that any working memory actions during iteration may invalidate the iterator.
      * @return
      *     the Iterator
      */    
@@ -167,6 +170,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager {
     /**
      *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
      *  any objects that the ObjectFilter does not accept. This Iterator is not thread safe.
+     * This means that any working memory actions during iteration may invalidate the iterator.
      *  
      * @param filter
      * 
