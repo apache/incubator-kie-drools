@@ -4,6 +4,18 @@ import org.drools.analytics.*
 
 global AnalysisResult result
 
+#
+#
+#
+#
+# This file is here as TODO list. It does not work with the current analytics components.
+# - Toni Rikkola -
+#
+#
+#
+#
+#
+
 rule "Less than"
 	when
 		constraint: Constraint( f:field, o:operator == "<", v:value, r:ruleName, ot:objectType    )

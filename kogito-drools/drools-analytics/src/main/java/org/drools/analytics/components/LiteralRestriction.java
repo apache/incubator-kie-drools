@@ -15,13 +15,33 @@ public class LiteralRestriction extends Restriction implements Cause {
 	private Field.FieldType valueType;
 
 	private boolean booleanValue;
+
 	private int intValue;
+
 	private double doubleValue;
+
 	private String stringValue;
+
 	private Date dateValue;
 
 	public RestrictionType getRestrictionType() {
 		return Restriction.RestrictionType.LITERAL;
+	}
+
+	public Object getValueAsObject() {
+		switch (valueType) {
+		case BOOLEAN:
+			return Boolean.valueOf(booleanValue);
+		case DATE:
+			return dateValue;
+		case DOUBLE:
+			return Double.valueOf(doubleValue);
+		case INT:
+			return Integer.valueOf(intValue);
+
+		default:
+			return stringValue;
+		}
 	}
 
 	public String getValueAsString() {
