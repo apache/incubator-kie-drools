@@ -76,23 +76,29 @@ public class MissingRangesReportVisitor extends ReportVisitor {
 	public static Collection<String> visitRestrictionsCollection(
 			String sourceFolder, Collection<Restriction> restrictions,
 			Collection<RangeCheckCause> causes) {
-		MapTree<String, String> map = new MapTree<String, String>();
+		MapTree<Object, String> map = new MapTree<Object, String>();
 
 		for (RangeCheckCause cause : causes) {
-			map.put(cause.getValueAsString(), cause.getEvaluator() + " "
+			map.put(cause.getValueAsObject(), cause.getEvaluator() + " "
 					+ cause.getValueAsString() + " is missing");
 		}
 
 		for (Restriction r : restrictions) {
 			if (r instanceof LiteralRestriction) {
-				LiteralRestriction restriction = (LiteralRestriction) r;
-				map.put(restriction.getValueAsString(), restriction
-						.getEvaluator()
-						+ " "
-						+ restriction.getValueAsString()
-						+ " "
-						+ UrlFactory.getRuleUrl(sourceFolder, restriction
-								.getRuleId(), restriction.getRuleName()));
+				try {
+					LiteralRestriction restriction = (LiteralRestriction) r;
+
+					map.put(restriction.getValueAsObject(), restriction
+							.getEvaluator()
+							+ " "
+							+ restriction.getValueAsString()
+							+ " "
+							+ UrlFactory.getRuleUrl(sourceFolder, restriction
+									.getRuleId(), restriction.getRuleName()));
+				} catch (Exception e) {
+					System.out.println(map);
+					System.out.println(r);
+				}
 			}
 		}
 
@@ -114,30 +120,36 @@ public class MissingRangesReportVisitor extends ReportVisitor {
 		return result;
 	}
 
-	static class MapTree<K, V> {
-		protected Map<K, Set<V>> map = new TreeMap<K, Set<V>>();
+}
 
-		protected void put(K key, V value) {
-			if (map.containsKey(key)) {
-				Set<V> set = map.get(key);
-				set.add(value);
-			} else {
-				Set<V> set = new TreeSet<V>();
-				set.add(value);
-				map.put(key, set);
+class MapTree<K, V> {
+	protected Map<K, Set<V>> map = new TreeMap<K, Set<V>>();
+
+	protected void put(K key, V value) {
+		if (map.containsKey(key)) {
+			Set<V> set = map.get(key);
+			set.add(value);
+		} else {
+			Set<V> set = new TreeSet<V>();
+			set.add(value);
+			map.put(key, set);
+		}
+	}
+
+	protected Collection<V> values() {
+		Collection<V> values = new ArrayList<V>();
+
+		for (Set<V> set : map.values()) {
+			for (V value : set) {
+				values.add(value);
 			}
 		}
 
-		protected Collection<V> values() {
-			Collection<V> values = new ArrayList<V>();
-
-			for (Set<V> set : map.values()) {
-				for (V value : set) {
-					values.add(value);
-				}
-			}
-
-			return values;
-		}
+		return values;
+	}
+	
+	@Override
+	public String toString() {
+		return values().toString();
 	}
 }

@@ -73,6 +73,10 @@ public class Gap extends MissingRange implements RangeCheckCause, Comparable {
 		return restriction.getValueAsString();
 	}
 
+	public Object getValueAsObject() {
+		return restriction.getValueAsObject();
+	}
+
 	@Override
 	public String toString() {
 		return "Gap: (" + field + ") " + getEvaluator() + " "
