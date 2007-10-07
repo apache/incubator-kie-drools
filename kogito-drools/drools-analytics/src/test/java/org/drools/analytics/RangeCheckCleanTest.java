@@ -25,7 +25,7 @@ public class RangeCheckCleanTest extends TestBase {
 
 	public void testUselessIntegerGapsLesser() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/clean.drl"));
+				.getResourceAsStream("rangeChecks/Clean.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Remove useless integer gaps lesser or lesser and equal"));
@@ -120,7 +120,7 @@ public class RangeCheckCleanTest extends TestBase {
 	
 	public void testUselessIntegerGapsGreater() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/clean.drl"));
+				.getResourceAsStream("rangeChecks/Clean.drl"));
 		
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 		"Remove useless integer gaps greater or greater and equal"));
@@ -215,7 +215,7 @@ public class RangeCheckCleanTest extends TestBase {
 	
 	public void testUselessDoubleGapsLesser() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/clean.drl"));
+				.getResourceAsStream("rangeChecks/Clean.drl"));
 		
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 		"Remove useless double gaps lesser or lesser and equal"));
@@ -310,7 +310,7 @@ public class RangeCheckCleanTest extends TestBase {
 	
 	public void testUselessDoubleGapsGreater() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/clean.drl"));
+				.getResourceAsStream("rangeChecks/Clean.drl"));
 		
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 		"Remove useless double gaps greater or greater and equal"));
@@ -405,7 +405,7 @@ public class RangeCheckCleanTest extends TestBase {
 	
 	public void testUselessDateGapsLesser() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/clean.drl"));
+				.getResourceAsStream("rangeChecks/Clean.drl"));
 		
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 		"Remove useless date gaps lesser or lesser and equal"));
@@ -500,7 +500,7 @@ public class RangeCheckCleanTest extends TestBase {
 	
 	public void testUselessDateGapsGreater() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/clean.drl"));
+				.getResourceAsStream("rangeChecks/Clean.drl"));
 		
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 		"Remove useless date gaps greater or greater and equal"));
@@ -595,7 +595,7 @@ public class RangeCheckCleanTest extends TestBase {
 /*
 	public void testUselessIntegerGapAboveRestriction1() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/clean.drl"));
+				.getResourceAsStream("rangeChecks/Clean.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Remove useless integer gaps"));
@@ -675,7 +675,7 @@ public class RangeCheckCleanTest extends TestBase {
 
 	public void testUselessDoubleGapAboveRestriction() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/clean.drl"));
+				.getResourceAsStream("rangeChecks/Clean.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Remove useless double gaps"));
@@ -755,7 +755,7 @@ public class RangeCheckCleanTest extends TestBase {
 
 	public void testUselessDateGapBelowRestriction() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/clean.drl"));
+				.getResourceAsStream("rangeChecks/Clean.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Remove useless date gaps"));
