@@ -18,6 +18,7 @@ package org.drools.xml;
 
 import java.util.HashSet;
 
+import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -83,6 +84,23 @@ class PackageHandler extends BaseAbstractHandler
             }
             packageDescr.addImport( new ImportDescr( importEntry ) );
         }
+        
+        final Configuration[] importfunctions = config.getChildren( "importfunction" );
+
+        for ( int i = 0, length = importfunctions.length; i < length; i++ ) {
+            final String importfunctionEntry = importfunctions[i].getAttribute( "name" );
+
+            if ( importfunctionEntry == null || importfunctionEntry.trim().equals( "" ) ) {
+                throw new SAXParseException( "<importfunction> cannot be blank",
+                                             this.xmlPackageReader.getLocator() );
+            }
+            
+            FunctionImportDescr funcdescr = new FunctionImportDescr();
+            funcdescr.setTarget( importfunctionEntry );
+            
+            packageDescr.addFunctionImport(funcdescr);
+        }
+        
 
         final Configuration[] globals = config.getChildren( "global" );
 

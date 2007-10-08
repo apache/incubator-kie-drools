@@ -21,6 +21,7 @@ import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -266,6 +267,11 @@ public class XmlPackageReaderTest extends TestCase {
                       ((ImportDescr) imports.get( 0 )).getTarget() );
         assertEquals( "org.drools.*",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
+        
+        final List functionImport = packageDescr.getFunctionImports();
+        
+        assertEquals("org.drools.function", 
+                     ((FunctionImportDescr) functionImport.get( 0 )).getTarget() );
     }
 
     public void testParseGlobal() throws Exception {

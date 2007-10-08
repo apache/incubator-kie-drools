@@ -4,6 +4,7 @@
     <xs:complexType>
       <xs:choice maxOccurs="unbounded" minOccurs="0">
         <xs:element ref="drools:import"/>
+        <xs:element ref="drools:importfunction"/>
         <xs:element ref="drools:global"/>
         <xs:element ref="drools:function"/>
         <xs:element ref="drools:rule"/>
@@ -51,6 +52,11 @@
       <xs:attribute name="name" type="xs:string" use="required"/>
     </xs:complexType>
   </xs:element>
+    <xs:element name="importfunction">
+      <xs:complexType>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+      </xs:complexType>
+    </xs:element>
   <xs:element name="global">
     <xs:complexType>
       <xs:attribute name="type" type="xs:string" use="required"/>

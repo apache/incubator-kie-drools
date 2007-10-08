@@ -266,6 +266,9 @@ public class DrlDumper extends ReflectiveVisitor
         if ( packageDescr.getGlobals() != null ) {
             appendDrlDump( processGlobalsList( packageDescr.getGlobals() ) );
         }
+        if ( packageDescr.getFunctionImports() != null ) {
+            appendDrlDump( processFunctionImportsList( packageDescr.getFunctionImports() ) );
+        }
         if ( packageDescr.getFunctions() != null ) {
             appendDrlDump( processFunctionsList( packageDescr.getFunctions() ) );
         }
@@ -478,6 +481,17 @@ public class DrlDumper extends ReflectiveVisitor
         }
 
         return globalList + DrlDumper.eol;
+    }
+    
+    private String processFunctionImportsList(final List imports) {
+        String importList = "";
+
+        for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
+            final String importString = ((FunctionImportDescr) it.next()).getTarget();
+            final String importTemplate = "import function " + importString + ";" + DrlDumper.eol;
+            importList = importTemplate;
+        }
+        return importList + DrlDumper.eol;
     }
 
     private String processImportsList(final List imports) {
