@@ -1,0 +1,13 @@
+package org.drools.tutorials.banking
+
+rule "Rule 01"  
+    when
+        $cashflow : TypedCashflow( $date : date,
+                                   $amount : amount,
+                                   type == TypedCashflow.CREDIT )
+        not TypedCashflow( date < $date,
+                           type == TypedCashflow.CREDIT )
+    then
+        System.out.println("Credit: "+$date+" :: "+$amount);   
+        retract($cashflow);
+end

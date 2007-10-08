@@ -1,0 +1,9 @@
+package org.drools.tutorials.banking
+
+
+rule "Rule 01"   
+    when
+        eval (1==1)
+    then
+        System.out.println("Rule 01 Works");
+end
