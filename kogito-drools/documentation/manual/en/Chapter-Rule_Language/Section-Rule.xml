@@ -105,6 +105,27 @@ end</programlisting>
     </section>
 
     <section>
+      <title>lock-on-active</title>
+
+      <para>default value : false</para>
+
+      <para>type : Boolean</para>
+
+      <para>when a ruleflow-group becomes active or an agenda-group receives
+      the focus any rules that ahve lock-on-active set to try cannot place
+      activations onto the agenda, the rules are matched and the resulting
+      activations discarded. This is a stronger version of no-loop. It's
+      idealy for calculation rules where you have a number of rules that will
+      modify a fact and you don't want any rule re-matching and firing. In
+      summary fire these currently active rules and only these rules, no
+      matter how the data changes, do not allow any more activations for the
+      rules with the attribute set to true. When the ruleflow-group is no
+      longer active or agenda-group loses the focus those rules with
+      lock-on-active set to true can once again add activations onto the
+      agenda.</para>
+    </section>
+
+    <section>
       <title>salience</title>
 
       <para>default value : 0</para>
