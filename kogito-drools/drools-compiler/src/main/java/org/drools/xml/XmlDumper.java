@@ -31,6 +31,7 @@ import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -90,29 +91,29 @@ public class XmlDumper extends ReflectiveVisitor
         this.patternContext = true;
         this.template = new String();
         StringBuffer localString = new StringBuffer();
-        
+
         if ( descr.getDescrs() != Collections.EMPTY_LIST ) {
             if ( descr.getIdentifier() != null ) {
-                localString.append("<pattern identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol);
+                localString.append( "<pattern identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol );
             } else {
-                localString.append("<pattern object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol);
+                localString.append( "<pattern object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol + processDescrList( descr.getDescrs() ) + XmlDumper.eol );
             }
         } else {
             if ( descr.getIdentifier() != null ) {
-                localString.append("<pattern identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol);;
+                localString.append( "<pattern identifier=\"" + descr.getIdentifier() + "\" object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol );;
             } else {
-                localString.append("<pattern object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol);
+                localString.append( "<pattern object-type=\"" + descr.getObjectType() + "\" >" + XmlDumper.eol );
             }
         }
-        
+
         if ( descr.getSource() != null ) {
-            visit(descr.getSource());
+            visit( descr.getSource() );
             localString.append( this.template );
         }
-        localString.append("</pattern>" + XmlDumper.eol);
-        
+        localString.append( "</pattern>" + XmlDumper.eol );
+
         this.template = localString.toString();
-        
+
         this.patternContext = false;
     }
 
@@ -125,21 +126,21 @@ public class XmlDumper extends ReflectiveVisitor
     public void visitCollectDescr(final CollectDescr descr) {
         StringBuffer tmpstr = new StringBuffer();
         tmpstr.append( "<from> <collect>" );
-        visit(descr.getInputPattern() );
+        visit( descr.getInputPattern() );
         tmpstr.append( this.template );
-        tmpstr.append(" </collect> </from> ");
+        tmpstr.append( " </collect> </from> " );
         this.template = tmpstr.toString();
     }
 
     public void visitAccumulateDescr(final AccumulateDescr descr) {
         String tmpstr = new String();
         tmpstr += this.template + " <from> <accumulate> ";
-        
-        if ( descr.isSinglePattern() ) { 
-        	visitPatternDescr( descr.getInputPattern() );
+
+        if ( descr.isSinglePattern() ) {
+            visitPatternDescr( descr.getInputPattern() );
         } else {
-        	this.patternContext = false;
-        	visit(descr.getInput());
+            this.patternContext = false;
+            visit( descr.getInput() );
         }
         tmpstr += this.template;
 
@@ -223,6 +224,7 @@ public class XmlDumper extends ReflectiveVisitor
         appendXmlDump( xmlString );
         appendXmlDump( processImportsList( packageDescr.getImports() ) );
         appendXmlDump( processGlobalsList( packageDescr.getGlobals() ) );
+        appendXmlDump( processFunctionImportsList( packageDescr.getFunctionImports() ));
         appendXmlDump( processFunctionsList( packageDescr.getFunctions() ) );
         appendXmlDump( processRules( packageDescr.getRules() ) );
         appendXmlDump( "</package>" );
@@ -334,6 +336,17 @@ public class XmlDumper extends ReflectiveVisitor
         }
 
         return paramList + XmlDumper.eol;
+    }
+
+    private String processFunctionImportsList(final List imports) {
+        String importList = "";
+
+        for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
+            final String importString = ((FunctionImportDescr) it.next()).getTarget();
+            final String importTemplate = "<importfunction name=\"" + importString + "\"/>" + XmlDumper.eol;
+            importList += importTemplate;
+        }
+        return importList + XmlDumper.eol;
     }
 
     private String processGlobalsList(final List globals) {
