@@ -1,0 +1,29 @@
+package org.drools.tutorials.banking
+
+rule "Rule 06 - Credit"  
+    when
+        $cashflow : AllocatedCashflow( $account : account,
+                                       $date : date, $amount : amount,
+                                        type==TypedCashflow.CREDIT )
+        not AllocatedCashflow( account == $account, date < $date)
+    then
+        System.out.println("Credit: " + $date + " :: " + $amount);     
+        $account.setBalance($account.getBalance()+$amount);
+        System.out.println("Account: " + $account.getAccountNo() +
+                           " - new balance: " + $account.getBalance());          
+        retract($cashflow);
+end
+
+rule "Rule 06 - Debit"  
+    when
+        $cashflow : AllocatedCashflow( $account : account,
+                            $date : date, $amount : amount,
+                            type==TypedCashflow.DEBIT )
+        not AllocatedCashflow( account == $account, date < $date)
+    then
+        System.out.println("Debit: " + $date + " :: " + $amount);      
+        $account.setBalance($account.getBalance() - $amount);
+        System.out.println("Account: " + $account.getAccountNo() +
+                           " - new balance: " + $account.getBalance());           
+        retract($cashflow);
+end

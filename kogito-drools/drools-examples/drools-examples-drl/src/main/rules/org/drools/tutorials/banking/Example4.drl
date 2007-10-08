@@ -1,0 +1,11 @@
+package org.drools.tutorials.banking
+
+
+rule "Rule 01"   
+    when
+        $cashflow : Cashflow( $date : date, $amount : amount )
+        not Cashflow( date < $date)
+    then
+        System.out.println("Cashflow: "+$date+" :: "+$amount);  
+        retract($cashflow);
+end
