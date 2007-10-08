@@ -662,6 +662,415 @@ E finished
   </section>
 
   <section>
+    <title>Banking Tutorial</title>
+
+    <para>This tutorial will demonstrate the process of developing a complete
+    personal banking application that will handle credits, debits, currencies
+    and that will use a set of design patterns that have been created for the
+    process. In order to make the examples documented here clear and modular,
+    I will try and steer away from re-visiting existing code to add new
+    functionality, and will instead extend and inject where
+    appropriate.</para>
+
+    <para></para>
+
+    <example>
+      <title>RuleRunner</title>
+
+      <programlisting>public class RuleRunner {
+
+    public RuleRunner() {
+    }
+
+    public void runRules(String[] rules,
+                         Object[] facts) throws Exception {
+
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        PackageBuilder builder = new PackageBuilder();
+
+        for ( int i = 0; i &lt; rules.length; i++ ) {
+            String ruleFile = rules[i];
+            System.out.println( "Loading file: " + ruleFile );            
+            builder.addPackageFromDrl(new InputStreamReader( RuleRunner.class.getResourceAsStream( ruleFile ) ) );
+        }
+
+        Package pkg = builder.getPackage();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        for ( int i = 0; i &lt; facts.length; i++ ) {
+            Object fact = facts[i];
+            System.out.println( "Inserting fact: " + fact );
+            workingMemory.insert( fact );
+        }
+
+        workingMemory.fireAllRules();
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class Example1 {
+    public static void main(String[] args) throws Exception {
+        new RuleRunner().runRules( new String[] { "Example1.drl" },
+                                   new Object[0] );
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>rule "Rule 01"   
+    when
+        eval (1==1)
+    then
+        System.out.println("Rule 01 Works");
+endh</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class Example2 {
+    public static void main(String[] args) throws Exception {
+        Number[] numbers = new Number[] {wrap(3), wrap(1), wrap(4), wrap(1), wrap(5)};
+        new RuleRunner().runRules( new String[] { "Example2.drl" },
+                                   numbers );
+    }
+    
+    private static Integer wrap(int i) {
+        return new Integer(i);
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>rule "Rule 02"   
+    when
+        Number( $intValue : intValue )
+    then
+        System.out.println("Number found with value: " + $intValue); 
+end</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class Example3 {
+    public static void main(String[] args) throws Exception {
+        Number[] numbers = new Number[] {wrap(3), wrap(1), wrap(4), wrap(1), wrap(5)};
+        new RuleRunner().runRules( new String[] { "Example3.drl" },
+                                   numbers );
+    }
+    
+    private static Integer wrap(int i) {
+        return new Integer(i);
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>rule "Rule 03"   
+    when
+        $number : Number( )
+        not Number( intValue &lt; $number.intValue )
+    then
+        System.out.println("Number found with value: " + $number.intValue() ); 
+        retract( $number );
+end</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class Cashflow {
+    private Date   date;
+    private double amount;
+
+    public Cashflow() {
+    }
+
+    public Cashflow(Date date,
+                    double amount) {
+        this.date = date;
+        this.amount = amount;
+    }
+
+..getters/setters here...
+
+    public String toString() {
+        return "Cashflow[date=" + date + ",amount=" + amount + "]";
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class Example4 {    
+    public static void main(String[] args) throws Exception {
+        Object[] cashflows = {
+            new Cashflow(new SimpleDate("01/01/2007"), 300.00),
+            new Cashflow(new SimpleDate("05/01/2007"), 100.00),
+            new Cashflow(new SimpleDate("11/01/2007"), 500.00),
+            new Cashflow(new SimpleDate("07/01/2007"), 800.00),
+            new Cashflow(new SimpleDate("02/01/2007"), 400.00),
+        };
+        
+        new RuleRunner().runRules( new String[] { "Example4.drl" },
+                                   cashflows );
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class SimpleDate extends Date {
+    private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+    
+    public SimpleDate(String datestr) throws Exception {             
+        setTime(format.parse(datestr).getTime());
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>rule "Rule 04"   
+    when
+        $cashflow : Cashflow( $date : date, $amount : amount )
+        not Cashflow( date &lt; $date)
+    then
+        System.out.println("Cashflow: "+$date+" :: "+$amount);  
+        retract($cashflow);
+end</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class TypedCashflow extends Cashflow {
+    public static final int CREDIT = 0;
+    public static final int DEBIT  = 1;
+
+    private int             type;
+
+    public TypedCashflow() {
+    }
+
+    public TypedCashflow(Date date,
+                         int type,
+                         double amount) {
+        super( date,
+               amount );
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String toString() {
+        return "TypedCashflow[date=" + getDate() + ",type=" + (type == CREDIT ? "Credit" : "Debit") + ",amount=" + getAmount() + "]";
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class Example5 {    
+    public static void main(String[] args) throws Exception {      
+        Object[] cashflows = {
+            new TypedCashflow(new SimpleDate("01/01/2007"),    
+                              TypedCashflow.CREDIT, 300.00),
+            new TypedCashflow(new SimpleDate("05/01/2007"),
+                              TypedCashflow.CREDIT, 100.00),
+            new TypedCashflow(new SimpleDate("11/01/2007"),
+                              TypedCashflow.CREDIT, 500.00),
+            new TypedCashflow(new SimpleDate("07/01/2007"),
+                              TypedCashflow.DEBIT, 800.00),
+            new TypedCashflow(new SimpleDate("02/01/2007"),
+                              TypedCashflow.DEBIT, 400.00),
+        };
+        
+        new RuleRunner().runRules( new String[] { "Example5.drl" },
+                                   cashflows );
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>rule "Rule 05"  
+    when
+        $cashflow : TypedCashflow( $date : date,
+                                   $amount : amount,
+                                   type == TypedCashflow.CREDIT )
+        not TypedCashflow( date &lt; $date,
+                           type == TypedCashflow.CREDIT )
+    then
+        System.out.println("Credit: "+$date+" :: "+$amount);   
+        retract($cashflow);
+end</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class Account {
+    private long   accountNo;
+    private double balance = 0;
+
+    public Account() {
+    }
+
+    public Account(long accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public long getAccountNo() {
+        return accountNo;
+    }
+
+    public void setAccountNo(long accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
+    public String toString() {
+        return "Account[" + "accountNo=" + accountNo + ",balance=" + balance + "]";
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class AllocatedCashflow extends TypedCashflow {
+    private Account account;
+
+    public AllocatedCashflow() {
+    }
+
+    public AllocatedCashflow(Account account,
+                             Date date,
+                             int type,
+                             double amount) {
+        super( date,
+               type,
+               amount );
+        this.account = account;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public String toString() {
+        return "AllocatedCashflow[" + "account=" + account + ",date=" + getDate() + 
+                                  ",type=" + (getType() == CREDIT ? "Credit" : "Debit") + 
+                                  ",amount=" + getAmount() + "]";
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>public class Example6 {    
+    public static void main(String[] args) throws Exception {      
+        Account acc1 = new Account(1);
+        Account acc2 = new Account(2);
+           
+        Object[] cashflows = {
+            new AllocatedCashflow(acc1,new SimpleDate("01/01/2007"),
+                                  TypedCashflow.CREDIT, 300.00),
+            new AllocatedCashflow(acc1,new SimpleDate("05/02/2007"),
+                                  TypedCashflow.CREDIT, 100.00),
+            new AllocatedCashflow(acc2,new SimpleDate("11/03/2007"),
+                                  TypedCashflow.CREDIT, 500.00),
+            new AllocatedCashflow(acc1,new SimpleDate("07/02/2007"),
+                                  TypedCashflow.DEBIT,  800.00),
+            new AllocatedCashflow(acc2,new SimpleDate("02/03/2007"),
+                                  TypedCashflow.DEBIT,  400.00),
+            new AllocatedCashflow(acc1,new SimpleDate("01/04/2007"),    
+                                  TypedCashflow.CREDIT, 200.00),
+            new AllocatedCashflow(acc1,new SimpleDate("05/04/2007"),
+                                  TypedCashflow.CREDIT, 300.00),
+            new AllocatedCashflow(acc2,new SimpleDate("11/05/2007"),
+                                  TypedCashflow.CREDIT, 700.00),
+            new AllocatedCashflow(acc1,new SimpleDate("07/05/2007"),
+                                  TypedCashflow.DEBIT,  900.00),
+            new AllocatedCashflow(acc2,new SimpleDate("02/05/2007"),
+                                  TypedCashflow.DEBIT,  100.00)           
+        };
+        
+        new RuleRunner().runRules( new String[] { "Example6.drl" },
+                                   cashflows );
+    }
+}</programlisting>
+    </example>
+
+    <example>
+      <title></title>
+
+      <programlisting>rule "Rule 06 - Credit"  
+    when
+        $cashflow : AllocatedCashflow( $account : account,
+                                       $date : date, $amount : amount,
+                                        type==TypedCashflow.CREDIT )
+        not AllocatedCashflow( account == $account, date &lt; $date)
+    then
+        System.out.println("Credit: " + $date + " :: " + $amount);     
+        $account.setBalance($account.getBalance()+$amount);
+        System.out.println("Account: " + $account.getAccountNo() +
+                           " - new balance: " + $account.getBalance());          
+        retract($cashflow);
+end
+
+rule "Rule 06 - Debit"  
+    when
+        $cashflow : AllocatedCashflow( $account : account,
+                            $date : date, $amount : amount,
+                            type==TypedCashflow.DEBIT )
+        not AllocatedCashflow( account == $account, date &lt; $date)
+    then
+        System.out.println("Debit: " + $date + " :: " + $amount);      
+        $account.setBalance($account.getBalance() - $amount);
+        System.out.println("Account: " + $account.getAccountNo() +
+                           " - new balance: " + $account.getBalance());           
+        retract($cashflow);
+end</programlisting>
+    </example>
+  </section>
+
+  <section>
     <title>Fibonacci Example</title>
 
     <programlisting><emphasis role="bold">Name:</emphasis> Fibonacci 
