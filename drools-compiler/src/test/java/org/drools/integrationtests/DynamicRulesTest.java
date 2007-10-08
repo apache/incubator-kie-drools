@@ -1,6 +1,13 @@
 package org.drools.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -43,7 +50,7 @@ public class DynamicRulesTest extends TestCase {
 
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( reader );
-        final Package pkg1 = builder.getPackage();
+        final Package pkg1 = serialisePackage( builder.getPackage() );
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
@@ -81,7 +88,7 @@ public class DynamicRulesTest extends TestCase {
         reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) );
         builder = new PackageBuilder();
         builder.addPackageFromDrl( reader );
-        final Package pkg2 = builder.getPackage();
+        final Package pkg2 = serialisePackage( builder.getPackage() );
         ruleBase.addPackage( pkg2 );
 
         assertEquals( 3,
@@ -99,7 +106,7 @@ public class DynamicRulesTest extends TestCase {
         reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) );
         builder = new PackageBuilder();
         builder.addPackageFromDrl( reader );
-        final Package pkg3 = builder.getPackage();
+        final Package pkg3 = serialisePackage( builder.getPackage() );
         ruleBase.addPackage( pkg3 );
 
         // Package 3 has a rule working on Person instances.
@@ -118,8 +125,8 @@ public class DynamicRulesTest extends TestCase {
         reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) );
         builder = new PackageBuilder();
         builder.addPackageFromDrl( reader );
-        final Package pkg4 = builder.getPackage();
-        ruleBase.addPackage( pkg4 );              
+        final Package pkg4 = serialisePackage( builder.getPackage() );
+        ruleBase.addPackage( pkg4 );
 
         Assert.assertEquals( "Rule from package 4 should have been fired",
                              "Who likes Stilton ok",
@@ -139,7 +146,7 @@ public class DynamicRulesTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) ) );
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic4.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        final Package pkg = serialisePackage( builder.getPackage() );
 
         org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
         // org.drools.leaps.LeapsRuleBase leapsRuleBase = null;
@@ -148,7 +155,7 @@ public class DynamicRulesTest extends TestCase {
         ruleBase.addPackage( pkg );
         final PackageBuilder builder2 = new PackageBuilder();
         builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic2.drl" ) ) );
-        ruleBase.addPackage( builder2.getPackage() );
+        ruleBase.addPackage( serialisePackage( builder2.getPackage() ) );
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -250,7 +257,7 @@ public class DynamicRulesTest extends TestCase {
     public void testDynamicFunction() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction1.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        final Package pkg = serialisePackage( builder.getPackage() );
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
@@ -288,7 +295,7 @@ public class DynamicRulesTest extends TestCase {
         builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction2.drl" ) ) );
 
-        ruleBase.addPackage( builder.getPackage() );
+        ruleBase.addPackage( serialisePackage( builder.getPackage() ) );
 
         final Cheese brie = new Cheese( "brie",
                                         5 );
@@ -302,7 +309,7 @@ public class DynamicRulesTest extends TestCase {
         builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction3.drl" ) ) );
 
-        ruleBase.addPackage( builder.getPackage() );
+        ruleBase.addPackage( serialisePackage( builder.getPackage() ) );
 
         final Cheese feta = new Cheese( "feta",
                                         5 );
@@ -320,7 +327,7 @@ public class DynamicRulesTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         final String packageName = builder.getPackage().getName();
-        ruleBase.addPackage( builder.getPackage() );
+        ruleBase.addPackage( serialisePackage( builder.getPackage() ) );
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -332,14 +339,14 @@ public class DynamicRulesTest extends TestCase {
         ruleBaseWM.removePackage( packageName );
         final PackageBuilder builder1 = new PackageBuilder();
         builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
-        ruleBaseWM.addPackage( builder1.getPackage() );
+        ruleBaseWM.addPackage( serialisePackage( builder1.getPackage() ) );
         workingMemory.fireAllRules();
 
         ruleBaseWM.removePackage( packageName );
-        ruleBaseWM.addPackage( builder1.getPackage() );
+        ruleBaseWM.addPackage( serialisePackage( builder1.getPackage() ) );
 
         ruleBaseWM.removePackage( packageName );
-        ruleBaseWM.addPackage( builder1.getPackage() );
+        ruleBaseWM.addPackage( serialisePackage( builder1.getPackage() ) );
     }
 
     public void testDynamicRules() throws Exception {
@@ -358,7 +365,7 @@ public class DynamicRulesTest extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules.drl" ) ) );
         final Package pkg = builder.getPackage();
-        ruleBase.addPackage( pkg );
+        ruleBase.addPackage( serialisePackage( pkg ) );
 
         workingMemory.fireAllRules();
     }
@@ -379,7 +386,7 @@ public class DynamicRulesTest extends TestCase {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRules2.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        final Package pkg = serialisePackage( builder.getPackage() );
         ruleBase.addPackage( pkg );
 
         workingMemory.fireAllRules();
@@ -391,14 +398,14 @@ public class DynamicRulesTest extends TestCase {
         //add and remove
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
-        Package pkg = builder.getPackage();
+        Package pkg = serialisePackage( builder.getPackage() );
         ruleBase.addPackage( pkg );
         ruleBase.removePackage( pkg.getName() );
 
         //add and remove again
         builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
-        pkg = builder.getPackage();
+        pkg = serialisePackage( builder.getPackage() );
         ruleBase.addPackage( pkg );
         ruleBase.removePackage( pkg.getName() );
     }
@@ -407,7 +414,7 @@ public class DynamicRulesTest extends TestCase {
         try {
             // Creates first class loader and use it to load fact classes
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
-                                                      this.getClass().getClassLoader() );
+                                                            this.getClass().getClassLoader() );
             Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
 
             PackageBuilderConfiguration conf = new PackageBuilderConfiguration( loader1 );
@@ -417,7 +424,7 @@ public class DynamicRulesTest extends TestCase {
             // must set the classloader for rulebase conf too
             RuleBaseConfiguration rbconf = new RuleBaseConfiguration( loader1 );
             RuleBase ruleBase = RuleBaseFactory.newRuleBase( rbconf );
-            Package pkg = builder.getPackage();
+            Package pkg = serialisePackage( builder.getPackage() );
             ruleBase.addPackage( pkg );
 
             StatefulSession wm = ruleBase.newStatefulSession();
@@ -435,7 +442,7 @@ public class DynamicRulesTest extends TestCase {
 
             rbconf = new RuleBaseConfiguration( loader2 );
             ruleBase = RuleBaseFactory.newRuleBase( rbconf );
-            pkg = builder.getPackage();
+            pkg = serialisePackage( builder.getPackage() );
             ruleBase.addPackage( pkg );
 
             wm = ruleBase.newStatefulSession();
@@ -453,15 +460,15 @@ public class DynamicRulesTest extends TestCase {
             // Creates first class loader and use it to load fact classes
             ClassLoader original = Thread.currentThread().getContextClassLoader();
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
-                                                      this.getClass().getClassLoader() );
+                                                            this.getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader1 );
             Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
 
-            PackageBuilder builder = new PackageBuilder( );
+            PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
 
             RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-            Package pkg = builder.getPackage();
+            Package pkg = serialisePackage( builder.getPackage() );
             ruleBase.addPackage( pkg );
 
             StatefulSession wm = ruleBase.newStatefulSession();
@@ -474,11 +481,11 @@ public class DynamicRulesTest extends TestCase {
             Thread.currentThread().setContextClassLoader( loader2 );
             cheeseClass = loader2.loadClass( "org.drools.Cheese" );
 
-            builder = new PackageBuilder( );
+            builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
 
             ruleBase = RuleBaseFactory.newRuleBase();
-            pkg = builder.getPackage();
+            pkg = serialisePackage( builder.getPackage() );
             ruleBase.addPackage( pkg );
 
             wm = ruleBase.newStatefulSession();
@@ -509,12 +516,42 @@ public class DynamicRulesTest extends TestCase {
             if ( c == null ) {
                 try {
                     c = findClass( name );
-                } catch( ClassNotFoundException e ) {
-                    c = super.loadClass( name, resolve );
+                } catch ( ClassNotFoundException e ) {
+                    c = super.loadClass( name,
+                                         resolve );
                 }
             }
             return c;
         }
+    }
+    
+    protected Package serialisePackage(Package pkg) {
+        try {
+        byte[] bytes = serializeOut( pkg );
+        return (Package) serializeIn( bytes );
+        } catch ( Exception e ) {
+            throw new RuntimeException( "trouble serialising package.", e);
+        }
+    }
+
+    protected Object serializeIn(final byte[] bytes) throws IOException,
+                                                    ClassNotFoundException {
+        final ObjectInput in = new ObjectInputStream( new ByteArrayInputStream( bytes ) );
+        final Object obj = in.readObject();
+        in.close();
+        return obj;
+    }
+
+    protected byte[] serializeOut(final Object obj) throws IOException {
+        // Serialize to a byte array
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        final ObjectOutput out = new ObjectOutputStream( bos );
+        out.writeObject( obj );
+        out.close();
+
+        // Get the bytes of the serialized object
+        final byte[] bytes = bos.toByteArray();
+        return bytes;
     }
 
 }
