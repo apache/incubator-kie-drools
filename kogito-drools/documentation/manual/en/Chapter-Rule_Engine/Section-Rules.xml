@@ -270,9 +270,8 @@ public void cheddarCheese(Cheese cheese) {
       
     </programlisting>
 
-    <para>Disjunctive field constraints connectives could also be used -
-    although they are not currently supported in Drools 3.0 - and would not
-    result in multiple rule generation.</para>
+    <para>Disjunctive field constraints connectives could also be used and
+    would not result in multiple rule generation.</para>
 
     <programlisting>
       
@@ -286,10 +285,10 @@ public void cheddarCheese(Cheese cheese) {
     Logic with two new quantifier concepts to allow expressions defining
     structure - specifically universal and existential quantifiers. Universal
     quantifiers allow you to check that something is true for everything;
-    normally supported by the 'forall' conditional element, but not yet
-    implemented in Drools 3.0. Existential quantifiers check for the existence
-    of something, in that it occurs at least once - this is supported with
-    'not' and 'exists' conditional elements.</para>
+    normally supported by the 'forall' conditional element. Existential
+    quantifiers check for the existence of something, in that it occurs at
+    least once - this is supported with 'not' and 'exists' conditional
+    elements.</para>
 
     <para>Imagine we have two classes - Student and Module. Module represents
     each of the courses the Student attended for that semester, referenced by
