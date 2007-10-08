@@ -14,12 +14,18 @@ public class AnalyticsClass implements Serializable {
 	private static int index = 0;
 
 	private int id = index++;
+	private int offset =0;
+	
 	private String name;
 
 	private Set<Field> fields = new HashSet<Field>();
 
 	public String getName() {
 		return name;
+	}
+	
+	public int getOffset(){ 
+	    return offset + id % 2;
 	}
 
 	public void setName(String name) {

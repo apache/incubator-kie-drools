@@ -22,7 +22,7 @@
 	                <th>Fields</th>
 	            </tr>
 					@foreach{objectTypes as objectType}
-			    	<tr>
+			    	<tr class="row@{objectType.offset}">
 			                <td><a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.id}.htm">@{objectType.name}</a></td>
 							<td>
 						@foreach{objectType.fields as field}

@@ -45,7 +45,7 @@ class AnalyticsTestStandalone {
 			a.fireAnalysis();
 			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());
-			a.writeComponentsHTML("/stash");
+			a.writeComponentsHTML("/stash/");
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
