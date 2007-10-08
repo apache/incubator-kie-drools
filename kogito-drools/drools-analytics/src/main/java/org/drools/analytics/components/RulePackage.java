@@ -11,6 +11,7 @@ public class RulePackage extends AnalyticsComponent {
 
 	private static int index = 0;
 
+	private int offset = 0;
 	private String name;
 	private Set<AnalyticsRule> rules = new HashSet<AnalyticsRule>();
 
@@ -22,6 +23,11 @@ public class RulePackage extends AnalyticsComponent {
 	public AnalyticsComponentType getComponentType() {
 		return AnalyticsComponentType.RULE_PACKAGE;
 	}
+	
+	public int getOffset(){ 
+	    offset++;
+        return offset % 2;
+	}	
 
 	public String getName() {
 		return name;
