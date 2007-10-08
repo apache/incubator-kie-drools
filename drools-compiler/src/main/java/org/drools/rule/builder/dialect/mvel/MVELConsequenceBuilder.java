@@ -20,24 +20,21 @@ public class MVELConsequenceBuilder
     //private final Interceptor assertInterceptor;
     //private final Interceptor modifyInterceptor;
 
-    private final Map macros;
-
-    public MVELConsequenceBuilder() {
-        macros = new HashMap( 4 );
-
+    private static final Map macros = new HashMap( 5 );
+    static {
         macros.put( "insert",
                     new Macro() {
                         public String doMacro() {
                             return "drools.insert";
                         }
                     } );
-        
+
         macros.put( "insertLogical",
                     new Macro() {
                         public String doMacro() {
                             return "drools.insertLogical";
                         }
-                    } );        
+                    } );
 
         macros.put( "modify",
                     new Macro() {
@@ -58,7 +55,11 @@ public class MVELConsequenceBuilder
                         public String doMacro() {
                             return "drools.retract";
                         }
-                    } );
+                    } );;
+    }
+
+    public MVELConsequenceBuilder() {
+
     }
 
     public void build(final RuleBuildContext context) {
@@ -67,7 +68,6 @@ public class MVELConsequenceBuilder
 
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect();
-
 
             String text = processMacros( (String) context.getRuleDescr().getConsequence() );
 
@@ -81,12 +81,12 @@ public class MVELConsequenceBuilder
                                                        analysis,
                                                        dialect.getInterceptors(),
                                                        null,
-                                                       context );            
-            
+                                                       context );
+
             final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                      null,
                                                                      context.getPkg().getGlobals(),
-                                                                     analysis.getBoundIdentifiers() );                        
+                                                                     analysis.getBoundIdentifiers() );
 
             context.getRule().setConsequence( new MVELConsequence( expr,
                                                                    factory ) );
@@ -98,7 +98,7 @@ public class MVELConsequenceBuilder
         }
     }
 
-    public String processMacros(String consequence) {
+    public static String processMacros(String consequence) {
         MacroProcessor macroProcessor = new MacroProcessor();
         macroProcessor.setMacros( macros );
         return macroProcessor.parse( delimitExpressions( consequence ) );
@@ -157,5 +157,4 @@ public class MVELConsequenceBuilder
         return result.toString();
     }
 
-        }
-
+}
