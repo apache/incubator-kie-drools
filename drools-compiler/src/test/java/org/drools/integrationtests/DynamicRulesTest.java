@@ -406,7 +406,7 @@ public class DynamicRulesTest extends TestCase {
     public void testClassLoaderSwitchsUsingConf() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
-            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" ).toURI().toURL()},
+            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                       this.getClass().getClassLoader() );
             Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
 
@@ -425,7 +425,7 @@ public class DynamicRulesTest extends TestCase {
             wm.fireAllRules();
 
             // Creates second class loader and use it to load fact classes
-            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" ).toURI().toURL()},
+            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
             cheeseClass = loader2.loadClass( "org.drools.Cheese" );
 
@@ -452,7 +452,7 @@ public class DynamicRulesTest extends TestCase {
         try {
             // Creates first class loader and use it to load fact classes
             ClassLoader original = Thread.currentThread().getContextClassLoader();
-            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" ).toURI().toURL()},
+            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                       this.getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader1 );
             Class cheeseClass = loader1.loadClass( "org.drools.Cheese" );
@@ -469,7 +469,7 @@ public class DynamicRulesTest extends TestCase {
             wm.fireAllRules();
 
             // Creates second class loader and use it to load fact classes
-            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" ).toURI().toURL()},
+            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
                                                             this.getClass().getClassLoader() );
             Thread.currentThread().setContextClassLoader( loader2 );
             cheeseClass = loader2.loadClass( "org.drools.Cheese" );
