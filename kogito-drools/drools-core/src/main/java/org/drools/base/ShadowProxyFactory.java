@@ -357,14 +357,14 @@ public class ShadowProxyFactory {
                                            final String className,
                                            final ClassWriter cw) {
         if ( clazz.isInterface() ) {
-            cw.visit( Opcodes.V1_2,
+            cw.visit( Opcodes.V1_5,
                       Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
                       className,
                       null,
                       Type.getInternalName( Object.class ),
                       new String[]{ShadowProxyFactory.BASE_INTERFACE, Type.getInternalName( clazz )} );
         } else {
-            cw.visit( Opcodes.V1_2,
+            cw.visit( Opcodes.V1_5,
                       Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
                       className,
                       null,
