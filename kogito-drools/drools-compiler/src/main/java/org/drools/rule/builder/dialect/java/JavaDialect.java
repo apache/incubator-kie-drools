@@ -496,11 +496,6 @@ public class JavaDialect
                 String lngLevel = this.configuration.getJavaLanguageLevel();
                 settings.setTargetVersion( lngLevel );
 
-                if ( lngLevel == "1.4" ) {
-                    // 1.5 is the minimum for source langauge level, so we can use static imports.
-                    lngLevel = "1.5";
-                }
-
                 settings.setSourceVersion(  lngLevel );
                 break;
             }
