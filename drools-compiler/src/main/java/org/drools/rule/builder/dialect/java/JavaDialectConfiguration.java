@@ -18,9 +18,9 @@ import org.drools.compiler.PackageBuilderConfiguration;
  * The valid values are "ECLIPSE" and "JANINO" only. 
  * 
  * drools.dialect.java.compiler = <ECLIPSE|JANINO>
- * drools.dialect.java.lngLevel = <1.4|1.5|1.6>
+ * drools.dialect.java.lngLevel = <1.5|1.6>
  * 
- * The default compiler is Eclipse and the default lngLevel is 1.4.
+ * The default compiler is Eclipse and the default lngLevel is 1.5.
  * The lngLevel will attempt to autodiscover your system using the 
  * system property "java.version"
  * 
@@ -37,7 +37,7 @@ public class JavaDialectConfiguration
     public static final int             ECLIPSE         = 0;
     public static final int             JANINO          = 1;
 
-    public static final String[]        LANGUAGE_LEVELS = new String[]{"1.4", "1.5", "1.6"};
+    public static final String[]        LANGUAGE_LEVELS = new String[]{"1.5", "1.6"};
 
     private String                      languageLevel;
 
@@ -145,14 +145,12 @@ public class JavaDialectConfiguration
 
         if ( level == null ) {
             String version = System.getProperty( "java.version" );
-            if ( version.startsWith( "1.4" ) ) {
-                level = "1.4";
-            } else if ( version.startsWith( "1.5" ) ) {
+            if ( version.startsWith( "1.5" ) ) {
                 level = "1.5";
             } else if ( version.startsWith( "1.6" ) ) {
                 level = "1.6";
             } else {
-                level = "1.4";
+                level = "1.5";
             }
         }
 
