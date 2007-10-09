@@ -175,7 +175,7 @@ public class ClassFieldExtractorFactory {
     protected void buildClassHeader(final Class superClass,
                                     final String className,
                                     final ClassWriter cw) {
-        cw.visit( Opcodes.V1_2,
+        cw.visit( Opcodes.V1_5,
                   Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
                   className,
                   null,
