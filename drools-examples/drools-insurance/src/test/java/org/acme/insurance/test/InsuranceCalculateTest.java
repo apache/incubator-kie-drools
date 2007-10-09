@@ -45,6 +45,7 @@ public class InsuranceCalculateTest extends TestCase {
         driver.setMaritalState( Driver.SINGLE );
         driver.setLicenceYears( 2 );
         driver.setId( 400 );
+        driver.setPriorClaims( 3 );
 
         SupplementalInfo suppinfo = new SupplementalInfo();
 
