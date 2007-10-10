@@ -1,0 +1,34 @@
+package org.drools
+ 
+import org.drools.Message;
+import org.drools.Attribute;
+
+global java.util.List list;
+ 
+rule "rule_1"
+
+when
+    Message()
+    Attribute(value == 1)
+then
+    System.err.println("case 1");
+end
+
+rule "rule_2"
+
+when
+    Message()
+    Attribute(value == 2)
+then
+System.err.println("case 2");
+end
+
+
+rule "rule_3"
+
+when
+    Message()
+    $a:Attribute(value == null)
+then
+    list.add( "X" );
+end 
