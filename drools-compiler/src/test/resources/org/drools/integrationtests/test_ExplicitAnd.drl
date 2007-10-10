@@ -1,6 +1,6 @@
 package HelloWorld
  
-import org.drools.integrationtests.helloworld.Message
+import org.drools.Message
 import org.drools.Cheese;
 
 global java.util.List list;

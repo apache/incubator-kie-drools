@@ -7,7 +7,7 @@ global java.util.List list;
 
 rule "Hello World"
 	when
-		$m : org.drools.integrationtests.helloworld.Message(list contains "hello", 
+		$m : org.drools.Message(list contains "hello", 
 					text:message == "hola", 
 					number > 40, 
 					birthday > "10-Jul-1974", 

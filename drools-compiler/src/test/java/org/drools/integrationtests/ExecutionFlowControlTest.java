@@ -29,7 +29,7 @@ import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.integrationtests.helloworld.Message;
+import org.drools.Message;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.ruleflow.common.instance.ProcessInstance;

@@ -3,6 +3,10 @@
  */
 package org.drools;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class Message {
 
     private String          message1 = "One";
@@ -17,6 +21,18 @@ public class Message {
 
     private int             status;
 
+    private List    list     = new ArrayList();
+    private int     number   = 0;
+    private Date    birthday = new Date();
+    private boolean fired    = false;    
+    
+    public Message() {
+    }
+    
+    public Message(final String msg) {
+        this.message = msg;
+    }    
+    
     public String getMessage() {
         return this.message;
     }
@@ -64,4 +80,40 @@ public class Message {
     public void setMessage4(final String message4) {
         this.message4 = message4;
     }
+    
+    public boolean isFired() {
+        return this.fired;
+    }
+
+    public void setFired(final boolean fired) {
+        this.fired = fired;
+    }
+
+    public Date getBirthday() {
+        return this.birthday;
+    }
+
+    public void setBirthday(final Date birthday) {
+        this.birthday = birthday;
+    }
+
+    public int getNumber() {
+        return this.number;
+    }
+
+    public void setNumber(final int number) {
+        this.number = number;
+    }
+
+    public List getList() {
+        return this.list;
+    }
+
+    public void setList(final List list) {
+        this.list = list;
+    }
+
+    public void addToList(final String s) {
+        this.list.add( s );
+    }    
 }

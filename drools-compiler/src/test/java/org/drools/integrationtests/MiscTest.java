@@ -39,6 +39,7 @@ import junit.framework.TestCase;
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
 import org.drools.Address;
+import org.drools.Attribute;
 import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.Cheesery;
@@ -96,7 +97,7 @@ import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
-import org.drools.integrationtests.helloworld.Message;
+import org.drools.Message;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -109,6 +110,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
+
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -396,6 +398,28 @@ public class MiscTest extends TestCase {
         assertEquals( 3,
                       list.size() );
 
+    }
+    
+    public void NullFieldOnCompositeSink() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullFieldOnCompositeSink.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        // add the package to a rulebase
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        workingMemory.setGlobal("list", list);
+        
+        workingMemory.insert(new Attribute());
+        workingMemory.insert(new Message());
+        workingMemory.fireAllRules();
+        
+        assertEquals(1, list.size());
+        assertEquals("X", list.get(0));
+    	
     }
 
     public void testEmptyPattern() throws Exception {
