@@ -577,7 +577,7 @@ restriction[RestrictionConnectiveDescr rc, ConditionalElementDescr base, FieldCo
 			String op = "==";
 	}
 	:	(TILDE{op = "!=";})?	 	  	 
-		(	predicate_constraint[op, base]	  	  	
+		(	predicate_constraint[rc, op, base]	  	  	
 	  	|	return_value_restriction[op, rc]
 	  	|	variable_restriction[op, rc, base, fcBase, declarations]
 	  	| 	lc=literal_restriction {
@@ -587,15 +587,15 @@ restriction[RestrictionConnectiveDescr rc, ConditionalElementDescr base, FieldCo
 		)		
 	;		
 
-predicate_constraint[String op, ConditionalElementDescr base]	
+predicate_constraint[RestrictionConnectiveDescr rc, String op, ConditionalElementDescr base]	
     @init {
    		ExecutionEngine engine = new CLPPredicate();
 		BuildContext context = new ExecutionBuildContext( engine, functionRegistry );    
     }
 	:	COLON
 		fc=lisp_list[context, new LispForm(context)] {	
-		    engine.addFunction( (FunctionCaller) fc );
-			base.addDescr( new PredicateDescr( engine ) );
+		        engine.addFunction( (FunctionCaller) fc );
+			$rc.addRestriction( new PredicateDescr( engine ) );
 		}	
 		
 	;

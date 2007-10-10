@@ -19,6 +19,7 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
@@ -28,7 +29,6 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
 
 public class LhsClpParserTest extends TestCase {
 
@@ -56,14 +56,17 @@ public class LhsClpParserTest extends TestCase {
     
     public void testPatternsRule() throws Exception {
         // the first pattern bellowshould generate a descriptor tree like that:
-        //
-        //                     FC[person name]
+        //            Pattern[person]
+        //                 |
+        //                AND
+        //               /   \
+        //              FB    FC[person name]
         //                     |
         //                     OR
         //          +----------|------------+
-        //         AND         LR          RVR
-        //        /   \
-        //       LR   VR
+        //         LR         LR          AND
+        //                                /   \
+        //                              RVR   PC
         
         // MARK: is it valid to add a predicate restriction as part of a field constraint? I mean, shouldn't
         // the predicate be out of the (name ...) scope? 
@@ -77,53 +80,62 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( 2,
                       lhsList.size() );
 
-        // Parse the first column
-        PatternDescr col = (PatternDescr) lhsList.get( 0 );
+        // Parse the first pattern
+        PatternDescr personPattern = (PatternDescr) lhsList.get( 0 );
         assertEquals( "?b",
-                      col.getIdentifier() );
+                      personPattern.getIdentifier() );
         assertEquals( "person",
-                      col.getObjectType() );
+                      personPattern.getObjectType() );
 
-        List colList = col.getDescrs();
+        List colList = personPattern.getDescrs();
         assertEquals( 2,
                       colList.size() );
-        FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) colList.get( 0 );
+        
+        // first, we have a field binding
+        FieldBindingDescr fbd = (FieldBindingDescr) colList.get( 0 );
+        assertEquals( "?bf",
+                      fbd.getIdentifier() );
+        assertEquals( "name",
+                      fbd.getFieldName() );
+        
+        // then, we have a field constraint
+        FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) colList.get( 1 );
         assertEquals( "name",
                       fieldConstraintDescr.getFieldName() );
-        // @todo the 7th one has no constraint, as its a predicate, have to figure out how to handle this
+        RestrictionConnectiveDescr root = (RestrictionConnectiveDescr) fieldConstraintDescr.getRestriction();
+        assertEquals( 1,
+                      root.getRestrictions().size() );
+        RestrictionConnectiveDescr or = (RestrictionConnectiveDescr) root.getRestrictions().get( 0 );
         assertEquals( RestrictionConnectiveDescr.OR, 
-                      fieldConstraintDescr.getRestriction().getConnective() );
+                      or.getConnective() );
         
-        List restrictionList = fieldConstraintDescr.getRestrictions();
+        List restrictionList = or.getRestrictions();
 
         assertEquals( 3,
                       restrictionList.size() );
 
-        RestrictionConnectiveDescr andRestr = (RestrictionConnectiveDescr) restrictionList.get( 0 );
-        assertEquals( RestrictionConnectiveDescr.AND,
-                      andRestr.getConnective() );
-        assertEquals( 2, 
-                      andRestr.getRestrictions().size() );
-        
-        LiteralRestrictionDescr litDescr = (LiteralRestrictionDescr) andRestr.getRestrictions().get( 0 );
+        // first we have a literal restriction
+        LiteralRestrictionDescr litDescr = (LiteralRestrictionDescr) restrictionList.get( 0 );
         assertEquals( "==",
                       litDescr.getEvaluator() );
         assertEquals( "yyy",
                       litDescr.getText() );
 
-        VariableRestrictionDescr varDescr = (VariableRestrictionDescr) restrictionList.get( 1 );
-        assertEquals( "==",
-                      varDescr.getEvaluator() );
-        assertEquals( "?bf",
-                      varDescr.getIdentifier() );
-
+        // second, we have another literal restriction
         litDescr = (LiteralRestrictionDescr) restrictionList.get( 1 );
         assertEquals( "!=",
                       litDescr.getEvaluator() );
         assertEquals( "zzz",
                       litDescr.getText() );
 
-        ReturnValueRestrictionDescr retDescr = (ReturnValueRestrictionDescr) restrictionList.get( 2 );
+        // third, we have an AND restriction connective
+        RestrictionConnectiveDescr and = (RestrictionConnectiveDescr) restrictionList.get( 2 );
+        assertEquals( RestrictionConnectiveDescr.AND,
+                      and.getConnective() );
+        assertEquals( 2, 
+                      and.getRestrictions().size() );
+        
+        ReturnValueRestrictionDescr retDescr = (ReturnValueRestrictionDescr) and.getRestrictions().get( 0 );
         assertEquals( "!=",
                       retDescr.getEvaluator() );
         CLPReturnValue clprv = ( CLPReturnValue ) retDescr.getContent();
@@ -134,7 +146,7 @@ public class LhsClpParserTest extends TestCase {
 
         // ----------------
         // this is how it would be compatible to our core engine
-        PredicateDescr predicateDescr = (PredicateDescr) colList.get( 1 );        
+        PredicateDescr predicateDescr = (PredicateDescr) and.getRestrictions().get( 1 );        
         CLPPredicate clpp = ( CLPPredicate ) predicateDescr.getContent();
         fc = clpp.getFunctions()[0];
         assertEquals( "<", fc.getName() );        
@@ -143,16 +155,23 @@ public class LhsClpParserTest extends TestCase {
 
         // -----------------
         // Parse the second column
-        col = (PatternDescr) lhsList.get( 1 );
+        PatternDescr hobbyPattern = (PatternDescr) lhsList.get( 1 );
         assertEquals( "?c",
-                      col.getIdentifier() );
+                      hobbyPattern.getIdentifier() );
         assertEquals( "hobby",
-                      col.getObjectType() );
+                      hobbyPattern.getObjectType() );
 
-        colList = col.getDescrs();
-        assertEquals( 2,
+        colList = hobbyPattern.getDescrs();
+        assertEquals( 3,
                       colList.size() );
-        fieldConstraintDescr = (FieldConstraintDescr) colList.get( 0 );
+
+        fbd = (FieldBindingDescr) colList.get( 0 );
+        assertEquals( "?bf2",
+                      fbd.getIdentifier() );
+        assertEquals( "type",
+                      fbd.getFieldName() );
+        
+        fieldConstraintDescr = (FieldConstraintDescr) colList.get( 1 );
         restrictionList = fieldConstraintDescr.getRestrictions();
 
         assertEquals( "type",
@@ -161,19 +180,13 @@ public class LhsClpParserTest extends TestCase {
         assertEquals( RestrictionConnectiveDescr.AND,
                       fieldConstraintDescr.getRestriction().getConnective() );
 
-        varDescr = (VariableRestrictionDescr) restrictionList.get( 0 );
-        assertEquals( "==",
-                      varDescr.getEvaluator() );
-        assertEquals( "?bf2",
-                      varDescr.getIdentifier() );
-
-        litDescr = (LiteralRestrictionDescr) restrictionList.get( 1 );
+        litDescr = (LiteralRestrictionDescr) restrictionList.get( 0 );
         assertEquals( "!=",
                       litDescr.getEvaluator() );
         assertEquals( "iii",
                       litDescr.getText() );
 
-        fieldConstraintDescr = (FieldConstraintDescr) colList.get( 1 );
+        fieldConstraintDescr = (FieldConstraintDescr) colList.get( 2 );
         restrictionList = fieldConstraintDescr.getRestrictions();
 
         assertEquals( "rating",
