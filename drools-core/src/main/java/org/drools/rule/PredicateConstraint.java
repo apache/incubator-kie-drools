@@ -24,12 +24,22 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.spi.Extractor;
 import org.drools.spi.PredicateExpression;
+import org.drools.spi.Restriction;
 
+/**
+ * A predicate can be written as a top level constraint or be nested
+ * inside inside a field constraint (and as so, must implement the 
+ * Restriction interface).
+ * 
+ * @author etirelli
+ */
 public class PredicateConstraint
     implements
     BetaNodeFieldConstraint,
-    AlphaNodeFieldConstraint {
+    AlphaNodeFieldConstraint,
+    Restriction {
 
     /**
      * 
@@ -216,6 +226,12 @@ public class PredicateConstraint
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
                                               e );
         }
+    }
+
+    public boolean isAllowed(Extractor extractor,
+                             Object object,
+                             InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException("Method not supported. Please contact development team.");
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
