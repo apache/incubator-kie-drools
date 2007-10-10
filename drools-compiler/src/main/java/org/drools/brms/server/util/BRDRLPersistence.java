@@ -157,12 +157,12 @@ public class BRDRLPersistence
             if ( CompositeFactPattern.COMPOSITE_TYPE_EXISTS.equals( pattern.type ) ) {
                 buf.append( pattern.type );
                 buf.append( " " );
-                renderSubPattern( pattern );
+                renderSubPattern( pattern, 0 );
                 buf.append( "\n" );
             } else if ( CompositeFactPattern.COMPOSITE_TYPE_NOT.equals( pattern.type ) ) {
                 buf.append( pattern.type );
                 buf.append( " " );
-                renderSubPattern( pattern );
+                renderSubPattern( pattern, 0 );
                 buf.append( "\n" );
             } else if ( CompositeFactPattern.COMPOSITE_TYPE_OR.equals( pattern.type ) ) {
                 buf.append( "( " );
@@ -173,16 +173,16 @@ public class BRDRLPersistence
                             buf.append( pattern.type );
                             buf.append( " " );
                         }
-                        renderSubPattern( pattern );
+                        renderSubPattern( pattern, i );
                     }
                 }
                 buf.append( " )\n" );
             }
         }
 
-        private void renderSubPattern(CompositeFactPattern pattern) {
+        private void renderSubPattern(CompositeFactPattern pattern, int subIndex) {
             if (pattern.patterns == null || pattern.patterns.length == 0) return;
-            this.generateFactPattern( pattern.patterns[0] );
+            this.generateFactPattern( pattern.patterns[subIndex] );
         }
 
         public void visitDSLSentence(final DSLSentence sentence) {

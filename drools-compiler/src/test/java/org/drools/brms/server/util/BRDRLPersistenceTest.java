@@ -178,6 +178,34 @@ public class BRDRLPersistenceTest extends TestCase {
         return m;
     }
 
+    public void testOrComposite() throws Exception {
+    	RuleModel m  = new RuleModel();
+    	m.name = "or";
+    	CompositeFactPattern cp = new CompositeFactPattern(CompositeFactPattern.COMPOSITE_TYPE_OR);
+    	FactPattern p1 = new FactPattern("Person");
+    	SingleFieldConstraint sf1 = new SingleFieldConstraint("age");
+    	sf1.operator = "==";
+    	sf1.value = "42";
+    	p1.addConstraint(sf1);
+
+    	cp.addFactPattern(p1);
+
+    	FactPattern p2 = new FactPattern("Person");
+    	SingleFieldConstraint sf2 = new SingleFieldConstraint("age");
+    	sf2.operator = "==";
+    	sf2.value = "43";
+    	p2.addConstraint(sf2);
+
+    	cp.addFactPattern(p2);
+
+    	m.addLhsItem(cp);
+
+    	String result = BRDRLPersistence.getInstance().marshal(m);
+    	assertTrue(result.indexOf("( Person( age == 42 ) or Person( age == 43 ) )") > 0);
+
+
+    }
+
     //    public void testLoadEmpty() {
     //        RuleModel m = BRXMLPersistence.getInstance().unmarshal( null );
     //        assertNotNull( m );
