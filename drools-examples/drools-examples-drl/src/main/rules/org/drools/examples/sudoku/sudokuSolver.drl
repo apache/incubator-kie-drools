@@ -60,7 +60,7 @@ rule "#4 If a column has a ResolvedCellValue in it, remove this value as a Possi
 end
 
 rule "#5 If a zone has a ResolvedCellValue in it, remove this value as a PossibleCellValue from all other cells in the same zone"
-	when		
+	when
 		$resolved : ResolvedCellValue( $resolvedZone : zone, $resolvedValue : value )
 		$possible : PossibleCellValue( zone == $resolvedZone, value == $resolvedValue )
 	then
