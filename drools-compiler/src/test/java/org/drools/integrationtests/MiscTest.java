@@ -229,13 +229,13 @@ public class MiscTest extends TestCase {
         } );
 
         workingMemory.fireAllRules();
-        
+
         assertEquals(1, list.size() );
 
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
     }
-    
+
     public void testCustomGlobalResolverWithWorkingMemoryObject() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
@@ -253,7 +253,7 @@ public class MiscTest extends TestCase {
                  list );
         map.put( "string",
                  string );
-        
+
         workingMemory.setGlobalResolver( new GlobalResolver() {
             public Object resolveGlobal(String identifier) {
                 return map.get( identifier );
@@ -265,24 +265,24 @@ public class MiscTest extends TestCase {
                          value );
             }
 
-        } );                
-        
+        } );
+
         Cheese bree = new Cheese ();
         bree.setPrice( 100 );
-        
+
         workingMemory.insert( bree );
 
         workingMemory.fireAllRules();
 
-        assertEquals(2, list.size() );        
-        
+        assertEquals(2, list.size() );
+
         assertEquals( new Integer( 5 ),
                       list.get( 0 ) );
-        
+
         assertEquals( new Integer( 6 ),
-                      list.get( 1 ) );        
+                      list.get( 1 ) );
     }
-    
+
 
     public void testFieldBiningsAndEvalSharing() throws Exception {
         final String drl = "test_FieldBindingsAndEvalSharing.drl";
@@ -399,7 +399,7 @@ public class MiscTest extends TestCase {
                       list.size() );
 
     }
-    
+
     public void NullFieldOnCompositeSink() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullFieldOnCompositeSink.drl" ) ) );
@@ -408,18 +408,18 @@ public class MiscTest extends TestCase {
         // add the package to a rulebase
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        
+
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List list = new ArrayList();
         workingMemory.setGlobal("list", list);
-        
+
         workingMemory.insert(new Attribute());
         workingMemory.insert(new Message());
         workingMemory.fireAllRules();
-        
+
         assertEquals(1, list.size());
         assertEquals("X", list.get(0));
-    	
+
     }
 
     public void testEmptyPattern() throws Exception {
@@ -3047,6 +3047,64 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void FIXME_testActivationCancellation() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader(this.getClass().getResourceAsStream( "test_ActivationCancellation.drl" )) );
+
+        assertFalse(builder.getErrors().toString(), builder.hasErrors());
+        RuleBase rb = RuleBaseFactory.newRuleBase();
+        rb.addPackage( builder.getPackage() );
+
+
+
+        StatefulSession session = rb.newStatefulSession();
+        List list = new ArrayList();
+
+        //lets just remove the rule3 activation..
+        session.addEventListener(new AgendaEventListener() {
+
+			public void activationCancelled(ActivationCancelledEvent event, WorkingMemory workingMemory) {
+			}
+
+			public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory) {
+			}
+
+			public void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory) {
+			}
+
+			public void agendaGroupPopped(AgendaGroupPoppedEvent event, WorkingMemory workingMemory) {
+			}
+
+			public void agendaGroupPushed(AgendaGroupPushedEvent event, WorkingMemory workingMemory) {
+			}
+
+			public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
+				if (event.getActivation().getRule().getName().equals("rule3")) {
+					event.getActivation().remove();
+				}
+			}
+
+        });
+
+        session.setGlobal("list", list);
+
+        session.insert(new Cheese());
+        session.fireAllRules();
+
+
+
+
+        //WTF? rule2 was removed.
+        assertTrue(list.contains("rule1"));
+        assertTrue(list.contains("rule2"));
+        assertFalse(list.contains("rule3"));
+
+
+
+
+
+    }
+
     public void testMatchesNotMatchesCheese() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesNotMatches.drl" ) ) );
@@ -4358,7 +4416,7 @@ public class MiscTest extends TestCase {
         //        final PackageBuilder builder2 = new PackageBuilder();
         //        builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FinalClass2.drl" ) ) );
         //        ruleBase.addPackage( builder2.getPackage() );
-        //        
+        //
         //        // it will automatically fire the rule
         //        assertEquals( 2,
         //                      list.size() );
