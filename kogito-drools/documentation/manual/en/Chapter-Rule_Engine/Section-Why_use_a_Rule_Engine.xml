@@ -119,7 +119,7 @@
     answer, some more explanation is required. The reason why there is no
     "traditional" approach is possibly one of the following: <itemizedlist>
         <listitem>
-          <para>The problem is just too fiddle for traditional code.</para>
+          <para>The problem is just too fiddly for traditional code.</para>
 
           <para>The problem may not be complex, but you can't see a
           non-fragile way of building it.</para>
@@ -239,11 +239,11 @@
 
     <para>Many people have also implemented data-driven systems successfully
     in the past (where there are control tables that store meta-data that
-    changes your applications behavior) - these can work well when the
-    control can remain very limited. However, they can quickly grow out of
-    control if extended to much (such that only the original creators can
-    change the applications behavior) or they cause the application to
-    stagnate as they are too inflexible.</para>
+    changes your applications behavior) - these can work well when the control
+    can remain very limited. However, they can quickly grow out of control if
+    extended to much (such that only the original creators can change the
+    applications behavior) or they cause the application to stagnate as they
+    are too inflexible.</para>
   </section>
 
   <section>
