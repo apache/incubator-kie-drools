@@ -3047,64 +3047,6 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void FIXME_testActivationCancellation() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader(this.getClass().getResourceAsStream( "test_ActivationCancellation.drl" )) );
-
-        assertFalse(builder.getErrors().toString(), builder.hasErrors());
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        rb.addPackage( builder.getPackage() );
-
-
-
-        StatefulSession session = rb.newStatefulSession();
-        List list = new ArrayList();
-
-        //lets just remove the rule3 activation..
-        session.addEventListener(new AgendaEventListener() {
-
-			public void activationCancelled(ActivationCancelledEvent event, WorkingMemory workingMemory) {
-			}
-
-			public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory) {
-			}
-
-			public void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory) {
-			}
-
-			public void agendaGroupPopped(AgendaGroupPoppedEvent event, WorkingMemory workingMemory) {
-			}
-
-			public void agendaGroupPushed(AgendaGroupPushedEvent event, WorkingMemory workingMemory) {
-			}
-
-			public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
-				if (event.getActivation().getRule().getName().equals("rule3")) {
-					event.getActivation().remove();
-				}
-			}
-
-        });
-
-        session.setGlobal("list", list);
-
-        session.insert(new Cheese());
-        session.fireAllRules();
-
-
-
-
-        //WTF? rule2 was removed.
-        assertTrue(list.contains("rule1"));
-        assertTrue(list.contains("rule2"));
-        assertFalse(list.contains("rule3"));
-
-
-
-
-
-    }
-
     public void testMatchesNotMatchesCheese() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesNotMatches.drl" ) ) );
