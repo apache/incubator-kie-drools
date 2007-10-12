@@ -235,4 +235,19 @@ public class DefaultDSLMappingEntryTest extends TestCase {
                       result );
     }
     
+    public void testSingleCharacterBetweenVars() {
+        final String inputKey = "DSL sentence with {key1} {key2}";
+        final String inputValue = "Sentence( {key1} == {key2} )";
+
+        this.entry = new DefaultDSLMappingEntry( DSLMappingEntry.CONDITION,
+                                            null,
+                                            inputKey,
+                                            inputValue );
+
+        String result = this.entry.getKeyPattern().matcher( "DSL sentence with mykey myvalue" ).replaceAll( this.entry.getValuePattern() );
+        assertEquals( result,
+                      "Sentence( mykey == myvalue )",
+                      result );
+    }
+    
 }

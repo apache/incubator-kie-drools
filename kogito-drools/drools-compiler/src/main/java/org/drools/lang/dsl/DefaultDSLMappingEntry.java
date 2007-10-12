@@ -136,7 +136,7 @@ public class DefaultDSLMappingEntry
                 }
                 
                 // calculating and fixing variable offset 
-                String before = escapedKey.substring( lastMatch, m.start() );
+                String before = escapedKey.substring( lastMatch, Math.max( m.start(), lastMatch) );
                 lastMatch = m.end()+1;
                 Matcher m2 = PAREN_FINDER.matcher( before );
                 while( m2.find() ) {
