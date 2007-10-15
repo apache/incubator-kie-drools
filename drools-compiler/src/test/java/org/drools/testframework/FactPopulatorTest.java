@@ -44,7 +44,7 @@ public class FactPopulatorTest extends TestCase {
 
 	}
 
-	public void testMVELFactChecked() throws Exception {
+	public void testMVELFactChecker() throws Exception {
 		//now we have a bean check it can be verified
 		final DumbFact d = new DumbFact();
 		d.setAge(42);
