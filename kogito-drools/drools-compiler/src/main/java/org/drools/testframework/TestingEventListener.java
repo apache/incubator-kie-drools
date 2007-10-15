@@ -16,8 +16,6 @@ import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.spi.Activation;
-import org.drools.spi.AgendaFilter;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 
@@ -32,9 +30,9 @@ import org.drools.spi.KnowledgeHelper;
  */
 public class TestingEventListener implements AgendaEventListener {
 
-    final Map	firingCounts = new HashMap(100);
+    final Map<String, Integer>	firingCounts = new HashMap<String, Integer>(100);
 
-    HashSet	ruleNames = new HashSet();
+    HashSet<String>	ruleNames = new HashSet<String>();
 
 
     /**
@@ -43,7 +41,7 @@ public class TestingEventListener implements AgendaEventListener {
      * Inclusive means only the rules on the given set are allowed to fire.
      * The other rules will have their activation counted but not be allowed to fire.
      */
-    public TestingEventListener(HashSet ruleNames, RuleBase ruleBase, boolean inclusive) {
+    public TestingEventListener(HashSet<String> ruleNames, RuleBase ruleBase, boolean inclusive) {
     	if (inclusive) {
     		Package[] pkgs = ruleBase.getPackages();
     		for (int i = 0; i < pkgs.length; i++) {
@@ -87,15 +85,9 @@ public class TestingEventListener implements AgendaEventListener {
     	recordFiring(event.getActivation().getRule());
     }
 
-
-
-
-
 	private void recordFiring(Rule rule) {
 		record(rule, this.firingCounts);
 	}
-
-
 
 	public void agendaGroupPopped(AgendaGroupPoppedEvent event,
             WorkingMemory workingMemory) {
@@ -106,20 +98,14 @@ public class TestingEventListener implements AgendaEventListener {
     }
 
 	public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
-
 	}
 
-
-
-
-
-	private void record(Rule rule, Map counts) {
+	private void record(Rule rule, Map<String, Integer> counts) {
 		String name = rule.getName();
 		if (!counts.containsKey(name)) {
-			counts.put(name, new Integer(1));
+			counts.put(name, 1);
 		} else {
-			Integer count = (Integer) counts.get(name);
-			counts.put(name, new Integer(count.intValue() + 1));
+			counts.put(name, counts.get(name) + 1);
 		}
 	}
 
