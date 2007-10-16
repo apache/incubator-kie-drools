@@ -87,69 +87,69 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
-    protected static final Class[]         ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    protected static final Class[]                  ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected final long                   id;
+    protected final long                            id;
 
     /** The arguments used when adding/removing a property change listener. */
-    protected final Object[]               addRemovePropertyChangeListenerArgs           = new Object[]{this};
+    protected final Object[]                        addRemovePropertyChangeListenerArgs           = new Object[]{this};
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected final PrimitiveLongMap       nodeMemories                                  = new PrimitiveLongMap( 32,
-                                                                                                                 8 );
+    protected final PrimitiveLongMap                nodeMemories                                  = new PrimitiveLongMap( 32,
+                                                                                                                          8 );
     /** Object-to-handle mapping. */
-    private final ObjectHashMap            assertMap;
-    private final ObjectHashMap            identityMap;
+    private final ObjectHashMap                     assertMap;
+    private final ObjectHashMap                     identityMap;
 
-    protected Map                          queryResults                                  = Collections.EMPTY_MAP;
+    protected Map                                   queryResults                                  = Collections.EMPTY_MAP;
 
     /** Global values which are associated with this memory. */
-    protected GlobalResolver               globalResolver;
+    protected GlobalResolver                        globalResolver;
 
-    protected static final Object          NULL                                          = new Serializable() {
-                                                                                             private static final long serialVersionUID = 400L;
-                                                                                         };
+    protected static final Object                   NULL                                          = new Serializable() {
+                                                                                                      private static final long serialVersionUID = 400L;
+                                                                                                  };
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport    workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
+    protected WorkingMemoryEventSupport             workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
 
-    protected AgendaEventSupport           agendaEventSupport                            = new AgendaEventSupport();
+    protected AgendaEventSupport                    agendaEventSupport                            = new AgendaEventSupport();
 
-    protected RuleFlowEventSupport         ruleFlowEventSupport                          = new RuleFlowEventSupport();
+    protected RuleFlowEventSupport                  ruleFlowEventSupport                          = new RuleFlowEventSupport();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected transient InternalRuleBase   ruleBase;
+    protected transient InternalRuleBase            ruleBase;
 
-    protected final FactHandleFactory      handleFactory;
+    protected final FactHandleFactory               handleFactory;
 
-    protected final TruthMaintenanceSystem tms;
+    protected final TruthMaintenanceSystem          tms;
 
     /** Rule-firing agenda. */
-    protected DefaultAgenda                agenda;
+    protected DefaultAgenda                         agenda;
 
-    protected final List                   actionQueue                                   = new ArrayList();
+    protected final List                            actionQueue                                   = new ArrayList();
 
-    protected final ReentrantLock          lock                                          = new ReentrantLock();
+    protected final ReentrantLock                   lock                                          = new ReentrantLock();
 
-    protected final boolean                discardOnLogicalOverride;
+    protected final boolean                         discardOnLogicalOverride;
 
-    protected long                         propagationIdCounter;
+    protected long                                  propagationIdCounter;
 
-    private final boolean                  maintainTms;
+    private final boolean                           maintainTms;
 
-    private final boolean                  sequential;
+    private final boolean                           sequential;
 
-    private List                           liaPropagations                               = Collections.EMPTY_LIST;
+    private List                                    liaPropagations                               = Collections.EMPTY_LIST;
 
     /** Flag to determine if a rule is currently being fired. */
-    protected boolean                      firing;
+    protected boolean                               firing;
 
-    protected boolean                      halt;
+    protected boolean                               halt;
 
-    private int                            processCounter;
+    private int                                     processCounter;
 
     // ------------------------------------------------------------
     // Constructors
@@ -566,7 +566,7 @@ public abstract class AbstractWorkingMemory
         }
 
     }
-    
+
     public ObjectHashMap getAssertMap() {
         return this.assertMap;
     }

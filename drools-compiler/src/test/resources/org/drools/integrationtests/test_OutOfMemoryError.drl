@@ -1,0 +1,6 @@
+package org.drools
+
+rule "empty rule"
+when
+then
+end

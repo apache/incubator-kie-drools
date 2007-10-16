@@ -1,7 +1,5 @@
 package org.drools.common;
 
-import java.util.Map;
-
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -60,4 +58,5 @@ public interface InternalWorkingMemory
     public boolean isSequential();
     
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation);
+    
 }

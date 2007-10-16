@@ -261,6 +261,9 @@ abstract public class AbstractRuleBase
 
     public synchronized void disposeStatefulSession(final StatefulSession statefulSession) {
         this.statefulSessions.remove( statefulSession );
+        for( Iterator it = statefulSession.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
+            this.removeEventListener( (RuleBaseEventListener) it.next() );
+        }
     }
 
     /**

@@ -382,6 +382,11 @@ public class ExternalSheetListenerTest extends TestCase {
                     // TODO Auto-generated method stub
                     
                 }
+
+                public List getRuleBaseUpdateListeners() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
 			};
 		}
 	}

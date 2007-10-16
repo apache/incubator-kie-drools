@@ -29,7 +29,6 @@ import org.drools.common.PriorityQueueAgendaGroupFactory;
 import org.drools.concurrent.ExecutorService;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
-import org.drools.spi.RuleBaseUpdateListener;
 import org.drools.util.ChainedProperties;
 
 /**

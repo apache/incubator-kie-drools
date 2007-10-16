@@ -50,6 +50,7 @@ import org.drools.FromTestClass;
 import org.drools.Guess;
 import org.drools.IndexedNumber;
 import org.drools.InsertedObject;
+import org.drools.Message;
 import org.drools.Order;
 import org.drools.OrderItem;
 import org.drools.Person;
@@ -97,7 +98,6 @@ import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
-import org.drools.Message;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -3607,24 +3607,6 @@ public class MiscTest extends TestCase {
             e.printStackTrace();
             fail( "unexpected exception: " + e.getMessage() );
         }
-    }
-
-    public void testOutOfMemory() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OutOfMemory.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        workingMemory.insert( new Cheese( "stilton",
-                                          1 ) );
-
-        workingMemory.fireAllRules( 3000000 );
-
-        // just for profiling
-        //Thread.currentThread().wait();
     }
 
     public void testBindingsOnConnectiveExpressions() throws Exception {
