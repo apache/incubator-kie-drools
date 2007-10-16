@@ -2,13 +2,13 @@ package org.drools.base;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -73,7 +73,7 @@ public class ClassTypeResolver
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.drools.semantics.base.Importer#getImports( Class clazz )
      */
     /* (non-Javadoc)
@@ -85,7 +85,7 @@ public class ClassTypeResolver
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.drools.semantics.base.Importer#addImports(org.drools.spi.ImportEntry)
      */
     /* (non-Javadoc)
@@ -104,7 +104,7 @@ public class ClassTypeResolver
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.drools.semantics.base.Importer#importClass(java.lang.ClassLoader,
      *      java.lang.String)
      */
@@ -136,7 +136,7 @@ public class ClassTypeResolver
         }
 
         if ( clazz == null ) {
-            // Now try the package object type cache         
+            // Now try the package object type cache
             clazz = lookupFromCache( className );
         }
 
@@ -149,7 +149,7 @@ public class ClassTypeResolver
             }
         }
 
-        // Now try the className with each of the given imports 
+        // Now try the className with each of the given imports
         if ( clazz == null ) {
             final Set validClazzCandidates = new HashSet();
 
@@ -187,7 +187,7 @@ public class ClassTypeResolver
             clazz = defaultClass( className );
         }
 
-        // If array component class was found, try to resolve the array class of it 
+        // If array component class was found, try to resolve the array class of it
         if ( isArray ) {
             if ( clazz == null && internalNamesMap.containsKey( className ) ) {
                 arrayClassName.append( internalNamesMap.get( className ) );
@@ -195,7 +195,7 @@ public class ClassTypeResolver
                 if ( clazz != null ) {
                     arrayClassName.append( "L" ).append( clazz.getName() ).append( ";" );
                 } else {
-                    // we know we will probably not be able to resolve this name, but nothing else we can do. 
+                    // we know we will probably not be able to resolve this name, but nothing else we can do.
                     arrayClassName.append( "L" ).append( className ).append( ";" );
                 }
             }
@@ -206,7 +206,7 @@ public class ClassTypeResolver
             }
         }
 
-        // We still can't find the class so throw an exception 
+        // We still can't find the class so throw an exception
         if ( clazz == null ) {
             throw new ClassNotFoundException( "Unable to find class '" + className + "'" );
         }
@@ -281,4 +281,16 @@ public class ClassTypeResolver
     public boolean isEmpty() {
         return this.imports.isEmpty();
     }
+
+    /*
+     * (non-Javadoc)
+     * @see org.drools.base.TypeResolver#getFullTypeName(java.lang.String)
+     */
+	public String getFullTypeName(String shortName) throws ClassNotFoundException {
+
+		Class clz = resolveType(shortName);
+		if (clz == null)  throw new IllegalArgumentException("Unable to resolve the full type name for " + shortName);
+		return clz.getName();
+
+	}
 }

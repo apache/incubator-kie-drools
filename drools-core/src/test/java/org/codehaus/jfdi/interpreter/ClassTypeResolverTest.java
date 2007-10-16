@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.codehaus.jfdi.interpreter;
 
@@ -11,6 +11,7 @@ import org.drools.Cheese;
 import org.drools.FirstClass;
 import org.drools.SecondClass;
 import org.drools.base.ClassTypeResolver;
+import org.drools.base.TypeResolver;
 
 /**
  * @author fburlet
@@ -91,8 +92,8 @@ public class ClassTypeResolverTest extends TestCase {
         resolver.addImport( "org.drools.FirstClass" );
         resolver.addImport( "org.drools.FirstClass.AlternativeKey" );
         resolver.addImport( "org.drools.SecondClass" );
-        resolver.addImport( "org.drools.SecondClass.AlternativeKey" );        
-        
+        resolver.addImport( "org.drools.SecondClass.AlternativeKey" );
+
         assertEquals( String.class,
                       resolver.resolveType( "String" ) );
         assertEquals( String.class,
@@ -111,7 +112,20 @@ public class ClassTypeResolverTest extends TestCase {
         assertEquals( SecondClass.AlternativeKey.class,
                       resolver.resolveType( "org.drools.SecondClass.AlternativeKey" ) );
     }
-    
+
+    public void testResolveFullTypeName() throws Exception {
+
+        final TypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.FirstClass" );
+
+        assertEquals("org.drools.Cheese", resolver.getFullTypeName("Cheese"));
+        assertEquals("org.drools.FirstClass", resolver.getFullTypeName("FirstClass"));
+
+
+
+    }
+
     public void testResolveObjectFromImportMultipleClassesDifferentPackages() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.Cheese" );
