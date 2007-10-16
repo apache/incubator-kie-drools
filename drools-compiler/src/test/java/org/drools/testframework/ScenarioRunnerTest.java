@@ -41,7 +41,8 @@ public class ScenarioRunnerTest extends TestCase {
 		assertEquals("mic", p.getName());
 		assertEquals(33, p.getAge());
 
-
 	}
+
+
 
 }

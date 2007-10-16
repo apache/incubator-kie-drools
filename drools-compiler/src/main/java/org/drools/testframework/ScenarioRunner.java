@@ -1,16 +1,16 @@
 package org.drools.testframework;
 
-import java.util.ArrayList;
+import static org.mvel.MVEL.eval;
+
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
+import org.drools.brms.client.modeldriven.testing.AssertFactValue;
+import org.drools.brms.client.modeldriven.testing.Assertion;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Scenario;
-
-import static org.mvel.MVEL.*;
 
 /**
  * This actually runs the test scenarios.
@@ -27,6 +27,12 @@ public class ScenarioRunner {
 	/**
 	 * @param scenario The scenario to run.
 	 * @param resolver A populated type resolved to be used to resolve the types in the scenario.
+	 *
+	 * For info on how to invoke this, see ContentPackageAssemblerTest.testPackageWithRuleflow in drools-jbrms
+	 * This requires that the classloader for the context be set appropraitely. The PackageBuilder
+	 * can provide a suitable TypeResolver for a given package header, and the Package config can provide
+	 * a classloader.
+	 *
 	 */
 	public ScenarioRunner(Scenario scenario, TypeResolver resolver) throws ClassNotFoundException {
 		Map<String, Object> factData = new HashMap<String, Object>();
@@ -41,7 +47,21 @@ public class ScenarioRunner {
 		}
 
 		this.populatedData = factData;
+
+		for (int i = 0; i < scenario.assertions.length; i++) {
+			Assertion assertion = scenario.assertions[i];
+			if (assertion instanceof AssertFactValue) {
+				verify((AssertFactValue)assertion);
+			}
+		}
 	}
+
+
+
+	private void verify(AssertFactValue value) {
+		
+	}
+
 
 
 	private void populate(FactData fact, Map<String, Object> factData) {
@@ -54,11 +74,15 @@ public class ScenarioRunner {
 			} else {
 				val = field.value;
 			}
-			Map vars = new HashMap();
+			Map<String, Object> vars = new HashMap<String, Object>();
 			vars.putAll(factData);
 			vars.put("__val__", val);
 			eval(fact.name + "." + field.name + " = __val__", vars);
 		}
+	}
+
+	public Map<String, Object> getFacts() {
+		return this.populatedData;
 	}
 
 
