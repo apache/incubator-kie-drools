@@ -3,9 +3,10 @@
  */
 package org.drools.concurrent;
 
-import org.drools.WorkingMemory;
 
 public class DefaultExecutorService implements ExecutorService {   
+
+    private static final long serialVersionUID = 7860812696865293690L;
     private Thread thread;
     private CommandExecutor executor;
     private boolean running;
@@ -27,6 +28,7 @@ public class DefaultExecutorService implements ExecutorService {
     public void shutDown() {
         this.executor.shutdown();
         this.running = false;
+        this.thread = null;
     }             
     
     public Future submit(Command command) {

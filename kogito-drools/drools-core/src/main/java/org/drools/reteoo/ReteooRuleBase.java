@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.WeakHashMap;
+import java.util.Iterator;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -29,25 +28,18 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
-import org.drools.base.FireAllRulesRuleBaseUpdateListener;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.CommandExecutor;
-import org.drools.concurrent.DefaultExecutorService;
 import org.drools.concurrent.ExecutorService;
-import org.drools.rule.CompositePackageClassLoader;
+import org.drools.event.RuleBaseEventListener;
+import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
-import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.RuleBaseUpdateListener;
-import org.drools.spi.RuleBaseUpdateListenerFactory;
-import org.drools.util.ObjectHashSet;
-
-import sun.security.x509.IssuerAlternativeNameExtension;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -69,8 +61,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     private ReteooBuilder     reteooBuilder;
     
-    private transient RuleBaseUpdateListenerFactory updateListenerFactory;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -241,6 +231,9 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
             if ( keepReference ) {
                 super.addStatefulSession( session );
+                for( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
+                    addEventListener( (RuleBaseEventListener) it.next() ); 
+                }
             }
 
             final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
@@ -250,16 +243,6 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                                                                  true,
                                                                                  null,
                                                                                  null ) );
-        }
-        
-        if ( this.updateListenerFactory == null ) {
-            this.updateListenerFactory = new RuleBaseUpdateListenerFactory();
-        }
-
-        String listenerName = this.config.getRuleBaseUpdateHandler();
-        if ( listenerName != null && listenerName.length() > 0 ) {
-            RuleBaseUpdateListener listener = this.updateListenerFactory.createListener( listenerName, session );
-            addEventListener( listener );
         }
         
         return session;

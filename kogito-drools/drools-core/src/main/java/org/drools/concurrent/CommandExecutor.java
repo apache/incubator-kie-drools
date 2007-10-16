@@ -16,6 +16,9 @@ import org.drools.util.concurrent.locks.LinkedBlockingQueue;
  *
  */
 public class CommandExecutor implements Runnable, Serializable {
+
+    private static final long serialVersionUID = 5924295088331461167L;
+    
     private WorkingMemory workingMemory;
     private BlockingQueue queue;
     

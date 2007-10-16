@@ -1,6 +1,7 @@
 package org.drools.reteoo;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.FactHandle;
@@ -11,14 +12,21 @@ import org.drools.concurrent.AssertObjects;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.FireAllRules;
 import org.drools.concurrent.Future;
-import org.drools.concurrent.UpdateObject;
 import org.drools.concurrent.RetractObject;
+import org.drools.concurrent.UpdateObject;
 import org.drools.spi.AgendaFilter;
+import org.drools.spi.RuleBaseUpdateListener;
+import org.drools.spi.RuleBaseUpdateListenerFactory;
 
 public class ReteooStatefulSession extends ReteooWorkingMemory
     implements
     StatefulSession {
-    private final ExecutorService executor;
+
+    private static final long serialVersionUID = -5360554247241558374L;
+    private ExecutorService executor;
+    
+    private transient List                          ruleBaseListeners;
+    private transient RuleBaseUpdateListenerFactory updateListenerFactory;
 
     public ReteooStatefulSession(final int id,
                                  final InternalRuleBase ruleBase,
@@ -70,5 +78,24 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
     
     public void dispose() {
         this.ruleBase.disposeStatefulSession( this );
-    }    
+        this.executor.shutDown();
+    }
+
+    public List getRuleBaseUpdateListeners() {
+        if ( this.ruleBaseListeners == null || this.ruleBaseListeners == Collections.EMPTY_LIST ) {
+            String listenerName = this.ruleBase.getConfiguration().getRuleBaseUpdateHandler();
+            if ( listenerName != null && listenerName.length() > 0 ) {
+                if ( this.updateListenerFactory == null ) {
+                    this.updateListenerFactory = new RuleBaseUpdateListenerFactory();
+                }
+                RuleBaseUpdateListener listener = this.updateListenerFactory.createListener( listenerName,
+                                                                                             this );
+                this.ruleBaseListeners = Collections.singletonList( listener );
+            } else {
+                this.ruleBaseListeners = Collections.EMPTY_LIST;
+            }
+        }
+        return this.ruleBaseListeners;
+    }
+
 }

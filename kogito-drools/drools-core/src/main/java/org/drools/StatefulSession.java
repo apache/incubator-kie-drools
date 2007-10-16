@@ -70,5 +70,6 @@ public interface StatefulSession
      * to check on the status of the task.
      */
     Future asyncFireAllRules(AgendaFilter agendaFilter);
-
+    
+    public List getRuleBaseUpdateListeners();
 }
