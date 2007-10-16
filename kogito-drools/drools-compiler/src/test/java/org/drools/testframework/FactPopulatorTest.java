@@ -1,11 +1,14 @@
 package org.drools.testframework;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.mvel.ExpressionCompiler;
 import org.mvel.MVEL;
+import org.mvel.ParserContext;
 
 import junit.framework.TestCase;
 
@@ -40,6 +43,9 @@ public class FactPopulatorTest extends TestCase {
 		assertEquals(42, d.getAge());
 		assertEquals(new Long(44), d.getNumber());
 		assertEquals(true, d.isEnabled());
+
+
+
 
 
 	}
