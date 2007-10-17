@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.drools.base.TypeResolver;
 import org.drools.brms.client.modeldriven.testing.AssertFactValue;
+import org.drools.brms.client.modeldriven.testing.AssertFieldValue;
 import org.drools.brms.client.modeldriven.testing.Assertion;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
@@ -59,7 +60,11 @@ public class ScenarioRunner {
 
 
 	private void verify(AssertFactValue value) {
-		
+		for (int i = 0; i < value.fieldValues.length; i++) {
+			AssertFieldValue verify = value.fieldValues[i];
+			verify.isChecked = true;
+
+		}
 	}
 
 
