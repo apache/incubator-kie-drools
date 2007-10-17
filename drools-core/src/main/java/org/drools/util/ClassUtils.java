@@ -1,9 +1,13 @@
 package org.drools.util;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class ClassUtils {
-
+    private static Map classes = Collections.synchronizedMap( new HashMap() );
+    
     /**
      * Please do not use - internal
      * org/my/Class.xxx -> org.my.Class
@@ -75,5 +79,32 @@ public final class ClassUtils {
         
         return name.toString();
     }
+    
+    
+    /**
+     * This method will attempt to create an instance of the specified Class. It uses
+     * a syncrhonized HashMap to cache the reflection Class lookup.
+     * @param className
+     * @return
+     */
+    public static Object instantiateObject(String className) {
+        Class cls = (Class) ClassUtils.classes.get( className );
+        if ( cls == null ) {
+            try {
+                cls = Class.forName( className );
+                ClassUtils.classes.put(  className, cls );
+            } catch ( Throwable e ) {
+                throw new RuntimeException("Unable to load class '" + className + "'", e );
+            }            
+        }
+        
+        Object object = null;
+        try {
+            object = cls.newInstance();            
+        } catch ( Throwable e ) {
+            throw new RuntimeException("Unable to instantiate object for class '" + className + "'", e );
+        }  
+        return object;
+    }    
 
 }

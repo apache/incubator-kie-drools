@@ -26,7 +26,6 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
     private ExecutorService executor;
     
     private transient List                          ruleBaseListeners;
-    private transient RuleBaseUpdateListenerFactory updateListenerFactory;
 
     public ReteooStatefulSession(final int id,
                                  final InternalRuleBase ruleBase,
@@ -85,11 +84,8 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         if ( this.ruleBaseListeners == null || this.ruleBaseListeners == Collections.EMPTY_LIST ) {
             String listenerName = this.ruleBase.getConfiguration().getRuleBaseUpdateHandler();
             if ( listenerName != null && listenerName.length() > 0 ) {
-                if ( this.updateListenerFactory == null ) {
-                    this.updateListenerFactory = new RuleBaseUpdateListenerFactory();
-                }
-                RuleBaseUpdateListener listener = this.updateListenerFactory.createListener( listenerName,
-                                                                                             this );
+                RuleBaseUpdateListener listener = RuleBaseUpdateListenerFactory.createListener( listenerName,
+                                                                                                this );
                 this.ruleBaseListeners = Collections.singletonList( listener );
             } else {
                 this.ruleBaseListeners = Collections.EMPTY_LIST;

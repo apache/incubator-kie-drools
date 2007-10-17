@@ -24,6 +24,7 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.ReteooRuleBase.InitialFactHandleDummyObject;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.spi.AgendaFilter;
+import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.GlobalExporter;
 import org.drools.spi.GlobalResolver;
 
@@ -165,7 +166,7 @@ public class ReteooStatelessSession
         InternalWorkingMemory wm = newWorkingMemory();
 
         final AssertObject assertObject = new AssertObject( object );
-        ExecutorService executor = this.ruleBase.getConfiguration().getExecutorService();
+        ExecutorService executor = ExecutorServiceFactory.createExecutorService(  this.ruleBase.getConfiguration().getExecutorService() );
         executor.setCommandExecutor( new CommandExecutor( wm ) );
         executor.submit( assertObject );
         executor.submit( new FireAllRules( this.agendaFilter ) );
@@ -175,7 +176,7 @@ public class ReteooStatelessSession
         InternalWorkingMemory wm = newWorkingMemory();
 
         final AssertObjects assertObjects = new AssertObjects( array );
-        ExecutorService executor = this.ruleBase.getConfiguration().getExecutorService();
+        ExecutorService executor = ExecutorServiceFactory.createExecutorService(  this.ruleBase.getConfiguration().getExecutorService() );
         executor.setCommandExecutor( new CommandExecutor( wm ) );
         executor.submit( assertObjects );
         executor.submit( new FireAllRules( this.agendaFilter ) );
@@ -185,7 +186,7 @@ public class ReteooStatelessSession
         InternalWorkingMemory wm = newWorkingMemory();
 
         final AssertObjects assertObjects = new AssertObjects( collection );
-        ExecutorService executor = this.ruleBase.getConfiguration().getExecutorService();
+        ExecutorService executor = ExecutorServiceFactory.createExecutorService(  this.ruleBase.getConfiguration().getExecutorService() );
         executor.setCommandExecutor( new CommandExecutor( wm ) );
         executor.submit( assertObjects );
         executor.submit( new FireAllRules( this.agendaFilter ) );
