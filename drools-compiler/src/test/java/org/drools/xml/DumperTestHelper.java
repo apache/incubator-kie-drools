@@ -5,6 +5,7 @@ package org.drools.xml;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 
 import junit.framework.Assert;
 
@@ -40,13 +41,12 @@ public class DumperTestHelper extends Assert {
         DrlParser parser = new DrlParser();
         final PackageDescr pkgOriginal = parser.parse( new InputStreamReader( DumperTestHelper.class.getResourceAsStream( filename ) ) );
         final DrlDumper dumper = new DrlDumper();
-        final String result = dumper.dump( pkgOriginal );
+        String result = dumper.dump( pkgOriginal );
 
         parser = new DrlParser();
         String buffer = readFile( filename );
         assertEqualsIgnoreWhitespace( buffer.toString(),
-                                      result );
-
+                                      result );                 
     }
 
     private static void assertEqualsIgnoreWhitespace(final String expected,

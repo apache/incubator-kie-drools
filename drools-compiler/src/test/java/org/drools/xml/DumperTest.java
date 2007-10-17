@@ -75,6 +75,16 @@ public class DumperTest extends TestCase {
         DumperTestHelper.XmlFile( "test_ParseComplex.xml" );
     }
     
-
+    public static void testStaticMethod1() {
+        System.out.println( "testStaticMethod1" ) ;
+    }
+    
+    public static void testStaticMethod2() {
+        System.out.println( "testStaticMethod2" ) ;
+    }
+    
+    public static void testStaticMethod3() {
+        System.out.println( "testStaticMethod3" ) ;
+    }    
     
 }

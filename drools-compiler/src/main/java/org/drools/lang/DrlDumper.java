@@ -16,8 +16,12 @@ package org.drools.lang;
  * limitations under the License.
  */
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -80,12 +84,24 @@ public class DrlDumper extends ReflectiveVisitor
             this.template = "";
         }
     }
+    
+    private static Set needsQuotes = new HashSet();
+    static {
+        needsQuotes.add( "agenda-group" );
+        needsQuotes.add( "activation-group" );
+        needsQuotes.add( "ruleflow-group" );
+        needsQuotes.add( "date-effective" );
+        needsQuotes.add( "date-expires" );
+        needsQuotes.add( "dialect" );
+    }
+    
 
     public void visitAttributeDescr(final AttributeDescr attributeDescr) {
         this.template = new String();
         final String name = attributeDescr.getName();
         String value = null;
-        if ( name.equals( "agenda-group" ) || name.equals( "activation-group" ) || name.equals( "ruleflow-group" ) ) {
+                        
+        if ( needsQuotes.contains( name) ) {
             // These attributes may need quotes around them, if they have spaces, so add anyway
             value = "\"" + attributeDescr.getValue() + "\"";
         } else {
@@ -489,7 +505,7 @@ public class DrlDumper extends ReflectiveVisitor
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             final String importString = ((FunctionImportDescr) it.next()).getTarget();
             final String importTemplate = "import function " + importString + ";" + DrlDumper.eol;
-            importList = importTemplate;
+            importList += importTemplate;
         }
         return importList + DrlDumper.eol;
     }
