@@ -38,6 +38,7 @@ import org.drools.event.RuleBaseEventListener;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
+import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 
@@ -222,7 +223,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         ReteooStatefulSession session = null;
 
         synchronized ( this.pkgs ) {
-            ExecutorService executor = this.config.getExecutorService();
+            ExecutorService executor = ExecutorServiceFactory.createExecutorService(  this.config.getExecutorService() );;
             session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
                                                  this,
                                                  executor );

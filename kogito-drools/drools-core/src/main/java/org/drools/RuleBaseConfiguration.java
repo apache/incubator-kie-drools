@@ -91,7 +91,7 @@ public class RuleBaseConfiguration
     private boolean                     indexRightBetaMemory;
     private AssertBehaviour             assertBehaviour;
     private LogicalOverride             logicalOverride;
-    private ExecutorService             executorService;
+    private String                      executorService;
     private ConsequenceExceptionHandler consequenceExceptionHandler;
     private String                      ruleBaseUpdateHandler;
 
@@ -212,8 +212,8 @@ public class RuleBaseConfiguration
         setLogicalOverride( LogicalOverride.determineLogicalOverride( this.chainedProperties.getProperty( "drools.logicalOverride",
                                                                                                           "discard" ) ) );
 
-        setExecutorService( RuleBaseConfiguration.determineExecutorService( this.chainedProperties.getProperty( "drools.executorService",
-                                                                                                                "org.drools.concurrent.DefaultExecutorService" ) ) );
+        setExecutorService( this.chainedProperties.getProperty( "drools.executorService",
+                                                                "org.drools.concurrent.DefaultExecutorService" ) );
 
         setConsequenceExceptionHandler( RuleBaseConfiguration.determineConsequenceExceptionHandler( this.chainedProperties.getProperty( "drools.consequenceExceptionHandler",
                                                                                                                                         "org.drools.base.DefaultConsequenceExceptionHandler" ) ) );
@@ -368,11 +368,11 @@ public class RuleBaseConfiguration
         this.logicalOverride = logicalOverride;
     }
 
-    public ExecutorService getExecutorService() {
+    public String getExecutorService() {
         return executorService;
     }
 
-    public void setExecutorService(ExecutorService executorService) {
+    public void setExecutorService(String executorService) {
         checkCanChange(); // throws an exception if a change isn't possible;    	
         this.executorService = executorService;
     }
@@ -540,11 +540,6 @@ public class RuleBaseConfiguration
             List list = (List) object;
             return !list.contains( name );
         }
-    }
-
-    private static ExecutorService determineExecutorService(String className) {
-        return (ExecutorService) instantiateClass( "ExecutorService",
-                                                   className );
     }
 
     private static ConsequenceExceptionHandler determineConsequenceExceptionHandler(String className) {
