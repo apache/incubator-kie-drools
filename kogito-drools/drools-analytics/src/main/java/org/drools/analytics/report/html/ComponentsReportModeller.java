@@ -78,10 +78,8 @@ public class ComponentsReportModeller extends ReportModeller {
 				+ UrlFactory.CSS_FOLDER;
 		File cssesFolder = new File(cssFolder);
 		cssesFolder.mkdir();
-		writeToFile(cssFolder + File.separator + UrlFactory.CSS_FILE_DETAILS,
-				ComponentsReportVisitor.getCss(UrlFactory.CSS_FILE_DETAILS));
-		writeToFile(cssFolder + File.separator + UrlFactory.CSS_FILE_LIST,
-				ComponentsReportVisitor.getCss(UrlFactory.CSS_FILE_LIST));
+		writeToFile(cssFolder + File.separator + UrlFactory.CSS_BASIC,
+				ComponentsReportVisitor.getCss(UrlFactory.CSS_BASIC));
 
 		// Image files
 		String imagesFolder = path + UrlFactory.SOURCE_FOLDER + File.separator

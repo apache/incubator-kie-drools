@@ -18,8 +18,7 @@ class UrlFactory {
 	public static final String PACKAGE_FOLDER = "packages";
 	public static final String CSS_FOLDER = "css";
 
-	public static final String CSS_FILE_LIST = "relationsList.css";
-	public static final String CSS_FILE_DETAILS = "relationsDetails.css";
+	public static final String CSS_BASIC = "basic.css";
 
 	public static final String IMAGES_FOLDER = "images";
 

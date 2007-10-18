@@ -1,5 +1,5 @@
 
-	<table>
+	<table class="message">
 		<tr>
 			<th><h3>@{title}</h3></th>
 		</tr>
@@ -7,12 +7,14 @@
 			<td>
 				@{message}<br/>
 				Reason: @{reason}<br/>
-				<span>Causes:</span>
-				<ul>	
-				@foreach{causes as cause}
-					<li>@{cause}</li>
+				@if{ causes != null && !causes.isEmpty() }
+					<span>Causes:</span>
+					<ul>	
+					@foreach{causes as cause}
+						<li>@{cause}</li>
+					@end{}
+					</ul>
 				@end{}
-				</ul>
 			</td>
 		</tr>
 	</table>

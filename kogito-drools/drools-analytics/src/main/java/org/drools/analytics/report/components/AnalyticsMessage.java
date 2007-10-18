@@ -1,6 +1,7 @@
 package org.drools.analytics.report.components;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * 
@@ -16,6 +17,13 @@ public class AnalyticsMessage extends AnalyticsMessageBase {
 		super(severity, messageType, faulty, message);
 
 		this.causes = causes;
+	}
+
+	public AnalyticsMessage(Severity severity, MessageType messageType,
+			Cause faulty, String message) {
+		super(severity, messageType, faulty, message);
+
+		this.causes = Collections.emptyList();
 	}
 
 	public Collection<Cause> getCauses() {
