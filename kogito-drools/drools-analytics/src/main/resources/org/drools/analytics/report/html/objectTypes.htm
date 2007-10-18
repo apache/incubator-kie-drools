@@ -1,0 +1,21 @@
+
+<div>
+	<h1>Object Types</h1>
+    <table class="objectTypes">
+        <tr>
+            <th>Name</th>
+
+            <th>Fields</th>
+        </tr>
+			@foreach{objectTypes as objectType}
+	    	<tr class="row@{objectType.offset}">
+	                <td><a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.id}.htm">@{objectType.name}</a></td>
+					<td>
+				@foreach{objectType.fields as field}
+					@{field.fieldType}&nbsp;<a href="@{sourceFolder}/@{fieldFolder}/@{field.id}.htm">@{field.name}</a>@end{","}
+					</td>
+        	</tr>
+			@end{}
+    </table>
+</div>
+

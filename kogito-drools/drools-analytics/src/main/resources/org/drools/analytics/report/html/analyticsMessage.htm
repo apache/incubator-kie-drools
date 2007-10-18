@@ -1,0 +1,18 @@
+
+	<table>
+		<tr>
+			<th><h3>@{title}</h3></th>
+		</tr>
+		<tr>
+			<td>
+				@{message}<br/>
+				Reason: @{reason}<br/>
+				<span>Causes:</span>
+				<ul>	
+				@foreach{causes as cause}
+					<li>@{cause}</li>
+				@end{}
+				</ul>
+			</td>
+		</tr>
+	</table>

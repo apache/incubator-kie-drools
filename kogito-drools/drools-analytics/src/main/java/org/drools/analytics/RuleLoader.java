@@ -60,8 +60,10 @@ class RuleLoader {
 		//
 		// list.add(new InputStreamReader(RuleLoader.class
 		// .getResourceAsStream("redundancy/Patterns.drl")));
-		// list.add(new InputStreamReader(RuleLoader.class
-		// .getResourceAsStream("redundancy/Restrictions.drl")));
+		list.add(new InputStreamReader(RuleLoader.class
+				.getResourceAsStream("redundancy/Restrictions.drl")));
+		list.add(new InputStreamReader(RuleLoader.class
+				.getResourceAsStream("redundancy/Notes.drl")));
 		// list.add(new InputStreamReader(RuleLoader.class
 		// .getResourceAsStream("redundancy/Rules.drl")));
 		list.add(new InputStreamReader(RuleLoader.class

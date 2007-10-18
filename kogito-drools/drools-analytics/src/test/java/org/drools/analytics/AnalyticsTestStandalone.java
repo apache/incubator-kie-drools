@@ -35,9 +35,9 @@ class AnalyticsTestStandalone {
 					Analyzer.class.getResourceAsStream("Misc3.drl")));
 
 			Analyzer a = new Analyzer();
-//			a.addPackageDescr(descr);
+			// a.addPackageDescr(descr);
 			// a.addPackageDescr(descr2);
-//			 a.addPackageDescr(descr3);
+			// a.addPackageDescr(descr3);
 			// a.addPackageDescr(descr4);
 			a.addPackageDescr(descr5);
 			a.addPackageDescr(descr6);
@@ -45,7 +45,8 @@ class AnalyticsTestStandalone {
 			a.fireAnalysis();
 			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());
-			a.writeComponentsHTML("/stash/");
+			// a.writeComponentsHTML("/stash/");
+			a.writeComponentsHTML("C:\\");
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}

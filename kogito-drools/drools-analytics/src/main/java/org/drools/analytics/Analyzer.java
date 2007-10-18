@@ -5,12 +5,11 @@ import java.util.Collection;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
+import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.dao.AnalyticsDataFactory;
-import org.drools.analytics.result.AnalysisResult;
-import org.drools.analytics.result.AnalysisResultNormal;
-import org.drools.analytics.result.ComponentsReportModeller;
-import org.drools.analytics.result.ReportModeller;
+import org.drools.analytics.report.ReportModeller;
+import org.drools.analytics.report.html.ComponentsReportModeller;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 
@@ -19,8 +18,6 @@ import org.drools.rule.Package;
  * @author Toni Rikkola
  */
 public class Analyzer {
-
-	private AnalysisResult result = new AnalysisResultNormal();
 
 	public void addPackageDescr(PackageDescr descr) {
 		try {
@@ -37,11 +34,12 @@ public class Analyzer {
 	public void fireAnalysis() {
 		try {
 			AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+			AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 
 			System.setProperty("drools.accumulate.function.validatePattern",
 					"org.drools.analytics.accumulateFunction.ValidatePattern");
 
-			// load up the rulebase
+			// load up the rule base
 			RuleBase ruleBase = createRuleBase();
 
 			WorkingMemory workingMemory = ruleBase.newStatefulSession();
@@ -51,7 +49,6 @@ public class Analyzer {
 			}
 
 			// Object that returns the results.
-			workingMemory.setGlobal("data", data);
 			workingMemory.setGlobal("result", result);
 			workingMemory.fireAllRules();
 
@@ -66,7 +63,7 @@ public class Analyzer {
 	 * @return Analysis results as plain text.
 	 */
 	public String getResultAsPlainText() {
-		return ReportModeller.writePlainText(result);
+		return ReportModeller.writePlainText();
 	}
 
 	/**
@@ -75,7 +72,7 @@ public class Analyzer {
 	 * @return Analysis results as XML
 	 */
 	public String getResultAsXML() {
-		return ReportModeller.writeXML(result);
+		return ReportModeller.writeXML();
 	}
 
 	/**
@@ -84,16 +81,7 @@ public class Analyzer {
 	 * @return Analysis results as HTML
 	 */
 	public void writeComponentsHTML(String path) {
-		ComponentsReportModeller.writeHTML(path, result);
-	}
-
-	/**
-	 * Returns the analysis results as HTML.
-	 * 
-	 * @return Analysis results as HTML
-	 */
-	public String getResultAsHTML() {
-		return ReportModeller.writeHTML(result);
+		ComponentsReportModeller.writeHTML(path);
 	}
 
 	/**
@@ -101,7 +89,8 @@ public class Analyzer {
 	 * 
 	 * @return Analysis result
 	 */
-	public AnalysisResult getResult() {
+	public AnalyticsResult getResult() {
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		return result;
 	}
 

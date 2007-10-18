@@ -23,7 +23,7 @@ import org.drools.rule.Package;
  * @author Toni Rikkola
  * 
  */
-abstract class TestBase extends TestCase {
+abstract public class TestBase extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {

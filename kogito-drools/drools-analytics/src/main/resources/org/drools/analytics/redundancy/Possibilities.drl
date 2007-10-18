@@ -2,12 +2,12 @@
 package org.drools.analytics.redundancy.possibilities
 
 import org.drools.analytics.components.*;
-import org.drools.analytics.result.Redundancy;
-import org.drools.analytics.result.Redundancy.RedundancyType;
-import org.drools.analytics.result.PartialRedundancy;
-import org.drools.analytics.result.Subsumption;
-import org.drools.analytics.result.Cause;
-import org.drools.analytics.result.Cause.CauseType;
+import org.drools.analytics.report.components.Redundancy;
+import org.drools.analytics.report.components.Redundancy.RedundancyType;
+import org.drools.analytics.report.components.PartialRedundancy;
+import org.drools.analytics.report.components.Subsumption;
+import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.Cause.CauseType;
 
 import java.util.ArrayList;
 

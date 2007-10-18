@@ -7,9 +7,9 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
-import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.dao.AnalyticsDataFactory;
-import org.drools.analytics.result.Gap;
+import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.report.components.Gap;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
 /**
@@ -23,20 +23,19 @@ public class RangeCheckDatesTest extends TestBase {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Dates.drl"));
 
-		session
-				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-						"Range check for dates, if smaller than or equal is missing"));
+		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+				"Range check for dates, if smaller than or equal is missing"));
 
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"));
 
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
-		session.setGlobal("data", data);
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
 				.executeWithResults(testData);
 
-		Iterator iter = sessionResult.iterateObjects();
+		Iterator<Object> iter = sessionResult.iterateObjects();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
@@ -61,20 +60,19 @@ public class RangeCheckDatesTest extends TestBase {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Dates.drl"));
 
-		session
-				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-						"Range check for dates, if greater than or equal is missing"));
+		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+				"Range check for dates, if greater than or equal is missing"));
 
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"));
 
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
-		session.setGlobal("data", data);
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
 				.executeWithResults(testData);
 
-		Iterator iter = sessionResult.iterateObjects();
+		Iterator<Object> iter = sessionResult.iterateObjects();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
@@ -105,13 +103,13 @@ public class RangeCheckDatesTest extends TestBase {
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"));
 
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
-		session.setGlobal("data", data);
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
 				.executeWithResults(testData);
 
-		Iterator iter = sessionResult.iterateObjects();
+		Iterator<Object> iter = sessionResult.iterateObjects();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
@@ -143,13 +141,13 @@ public class RangeCheckDatesTest extends TestBase {
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"));
 
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
-		session.setGlobal("data", data);
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
 				.executeWithResults(testData);
 
-		Iterator iter = sessionResult.iterateObjects();
+		Iterator<Object> iter = sessionResult.iterateObjects();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {

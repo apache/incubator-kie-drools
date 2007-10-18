@@ -10,19 +10,20 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
+import org.drools.analytics.components.AnalyticsComponent;
 import org.drools.analytics.components.LiteralRestriction;
 import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.RulePossibility;
-import org.drools.analytics.result.PartialRedundancy;
-import org.drools.analytics.result.Redundancy;
-import org.drools.analytics.result.Subsumption;
+import org.drools.analytics.report.components.PartialRedundancy;
+import org.drools.analytics.report.components.Redundancy;
+import org.drools.analytics.report.components.Subsumption;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
 public class SubsumptantPossibilitiesRuleTest extends TestBase {
 
 	private static final String RULE_NAME = "Find subsumptant Possibilities";
-	
-	public void testFake ( ) {
+
+	public void testFake() {
 		assertTrue(true);
 	}
 
@@ -212,13 +213,16 @@ public class SubsumptantPossibilitiesRuleTest extends TestBase {
 			Object o = (Object) iter.next();
 			if (o instanceof Subsumption) {
 				Subsumption s = (Subsumption) o;
-				if (map.containsKey(s.getLeft().getRuleName())) {
-					Set<String> set = map.get(s.getLeft().getRuleName());
-					set.add(s.getRight().getRuleName());
+				AnalyticsComponent left = (AnalyticsComponent) s.getLeft();
+				AnalyticsComponent right = (AnalyticsComponent) s.getRight();
+
+				if (map.containsKey(left.getRuleName())) {
+					Set<String> set = map.get(left.getRuleName());
+					set.add(right.getRuleName());
 				} else {
 					Set<String> set = new HashSet<String>();
-					set.add(s.getRight().getRuleName());
-					map.put(s.getLeft().getRuleName(), set);
+					set.add(right.getRuleName());
+					map.put(left.getRuleName(), set);
 				}
 			}
 		}

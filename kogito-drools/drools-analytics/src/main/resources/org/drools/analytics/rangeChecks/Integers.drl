@@ -3,12 +3,12 @@ package org.drools.analytics.rangeChecks.integers;
 
 #list any import classes here.
 import org.drools.analytics.components.*;
-import org.drools.analytics.result.AnalysisResult;
-import org.drools.analytics.result.Gap;
+import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.report.components.Gap;
 
-import org.drools.analytics.dao.AnalyticsData;
+import org.drools.analytics.dao.AnalyticsResult;
 
-global AnalyticsData data;
+global AnalyticsResult result;
 
 # If all ranges are not checked for a field.
 # 
@@ -38,7 +38,7 @@ rule "Range check for integers, if smaller than or equal is missing"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -70,7 +70,7 @@ rule "Range check for integers, if greater than or equal is missing"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -111,7 +111,7 @@ rule "Range check for integers, equal and greater than"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -152,6 +152,6 @@ rule "Range check for integers, equal and smaller than"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end

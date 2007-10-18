@@ -10,15 +10,17 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
+import org.drools.analytics.components.AnalyticsComponent;
 import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.components.LiteralRestriction;
 import org.drools.analytics.components.Pattern;
 import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.RulePossibility;
-import org.drools.analytics.result.AnalysisResultNormal;
-import org.drools.analytics.result.PartialRedundancy;
-import org.drools.analytics.result.Redundancy;
-import org.drools.analytics.result.Subsumption;
+import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.report.components.PartialRedundancy;
+import org.drools.analytics.report.components.Redundancy;
+import org.drools.analytics.report.components.Subsumption;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
 /**
@@ -27,8 +29,8 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
  * 
  */
 public class RedundancyTest extends TestBase {
-	
-	public void testFake ( ) {
+
+	public void testFake() {
 		assertTrue(true);
 	}
 
@@ -41,8 +43,9 @@ public class RedundancyTest extends TestBase {
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
-		session.setGlobal("result", analysisResult);
+		AnalyticsResult result = AnalyticsDataFactory
+				.getAnalyticsResult();
+		session.setGlobal("result", result);
 
 		String ruleName1 = "Rule 1";
 		String ruleName2 = "Rule 2";
@@ -83,13 +86,15 @@ public class RedundancyTest extends TestBase {
 
 		Map<String, Set<Redundancy>> map = new HashMap<String, Set<Redundancy>>();
 
-		Iterator iter = sessionResult.iterateObjects();
+		Iterator<Object> iter = sessionResult.iterateObjects();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
 			if (o instanceof PartialRedundancy) {
 				PartialRedundancy pr = (PartialRedundancy) o;
-				String key = pr.getLeft().getRuleName() + ":"
-						+ pr.getRight().getRuleName();
+				AnalyticsComponent left = (AnalyticsComponent) pr.getLeft();
+				AnalyticsComponent right = (AnalyticsComponent) pr.getRight();
+
+				String key = left.getRuleName() + ":" + right.getRuleName();
 				if (map.containsKey(key)) {
 					Set<Redundancy> set = map.get(key);
 					set.add(pr.getRedundancy());
@@ -118,8 +123,9 @@ public class RedundancyTest extends TestBase {
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
-		session.setGlobal("result", analysisResult);
+		AnalyticsResult result = AnalyticsDataFactory
+				.getAnalyticsResult();
+		session.setGlobal("result", result);
 
 		String ruleName1 = "Rule 1";
 		String ruleName2 = "Rule 2";
@@ -140,7 +146,7 @@ public class RedundancyTest extends TestBase {
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
 
-		Iterator iter = sessionResult.iterateObjects();
+		Iterator<Object> iter = sessionResult.iterateObjects();
 
 		Map<String, Set<String>> map = createRedundancyMap(iter);
 
@@ -160,8 +166,9 @@ public class RedundancyTest extends TestBase {
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
-		session.setGlobal("result", analysisResult);
+		AnalyticsResult result = AnalyticsDataFactory
+				.getAnalyticsResult();
+		session.setGlobal("result", result);
 
 		String ruleName1 = "Rule 1";
 		String ruleName2 = "Rule 2";
@@ -202,13 +209,15 @@ public class RedundancyTest extends TestBase {
 
 		Map<String, Set<Redundancy>> map = new HashMap<String, Set<Redundancy>>();
 
-		Iterator iter = sessionResult.iterateObjects();
+		Iterator<Object> iter = sessionResult.iterateObjects();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
 			if (o instanceof PartialRedundancy) {
 				PartialRedundancy pr = (PartialRedundancy) o;
-				String key = pr.getLeft().getRuleName() + ":"
-						+ pr.getRight().getRuleName();
+				AnalyticsComponent left = (AnalyticsComponent) pr.getLeft();
+				AnalyticsComponent right = (AnalyticsComponent) pr.getRight();
+
+				String key = left.getRuleName() + ":" + right.getRuleName();
 				if (map.containsKey(key)) {
 					Set<Redundancy> set = map.get(key);
 					set.add(pr.getRedundancy());
@@ -272,8 +281,9 @@ public class RedundancyTest extends TestBase {
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("PatternRedundancyTest.drl"));
 
-		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
-		session.setGlobal("result", analysisResult);
+		AnalyticsResult result = AnalyticsDataFactory
+				.getAnalyticsResult();
+		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
 
@@ -302,7 +312,7 @@ public class RedundancyTest extends TestBase {
 		}
 	}
 
-	public void fixmetestAnalyticsLiteralRestrictionRedundancy() throws Exception {
+	public void testAnalyticsLiteralRestrictionRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("redundancy/Restrictions.drl"));
 
@@ -312,33 +322,35 @@ public class RedundancyTest extends TestBase {
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("RedundancyLiteralRestrictionTest.drl"));
 
-		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
-		session.setGlobal("result", analysisResult);
+		AnalyticsResult result = AnalyticsDataFactory
+				.getAnalyticsResult();
+		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
 
 		Map<String, Set<String>> map = createRedundancyMap(sessionResult
 				.iterateObjects());
 
-		assertTrue(TestBase.mapContains(map, "Redundant 1a", "Redundant 1b"));
-		assertTrue(TestBase.mapContains(map, "Redundant 1b", "Redundant 1a"));
-		assertTrue(TestBase.mapContains(map, "Redundant 2a", "Redundant 2b"));
-		assertTrue(TestBase.mapContains(map, "Redundant 2b", "Redundant 2a"));
-		assertTrue(TestBase.mapContains(map, "Redundant 3a", "Redundant 3b"));
-		assertTrue(TestBase.mapContains(map, "Redundant 3b", "Redundant 3a"));
-		assertTrue(TestBase.mapContains(map, "Redundant 4a", "Redundant 4b"));
-		assertTrue(TestBase.mapContains(map, "Redundant 4b", "Redundant 4a"));
-		assertTrue(TestBase.mapContains(map, "Redundant 5a", "Redundant 5b"));
-		assertTrue(TestBase.mapContains(map, "Redundant 5b", "Redundant 5a"));
-		assertTrue(TestBase.mapContains(map, "Redundant 6a", "Redundant 6b"));
-		assertTrue(TestBase.mapContains(map, "Redundant 6b", "Redundant 6a"));
+		assertTrue((TestBase.mapContains(map, "Redundant 1a", "Redundant 1b") ^ TestBase
+				.mapContains(map, "Redundant 1b", "Redundant 1a")));
+		assertTrue((TestBase.mapContains(map, "Redundant 2a", "Redundant 2b") ^ TestBase
+				.mapContains(map, "Redundant 2b", "Redundant 2a")));
+		assertTrue((TestBase.mapContains(map, "Redundant 3a", "Redundant 3b") ^ TestBase
+				.mapContains(map, "Redundant 3b", "Redundant 3a")));
+		assertTrue((TestBase.mapContains(map, "Redundant 4a", "Redundant 4b") ^ TestBase
+				.mapContains(map, "Redundant 4b", "Redundant 4a")));
+		assertTrue((TestBase.mapContains(map, "Redundant 5a", "Redundant 5b") ^ TestBase
+				.mapContains(map, "Redundant 5b", "Redundant 5a")));
+		assertTrue((TestBase.mapContains(map, "Redundant 6a", "Redundant 6b") ^ TestBase
+				.mapContains(map, "Redundant 6b", "Redundant 6a")));
 
 		if (!map.isEmpty()) {
 			fail("More redundancies than was expected.");
 		}
 	}
 
-	public void fixmetestAnalyticsVariableRestrictionRedundancy() throws Exception {
+	public void fixmetestAnalyticsVariableRestrictionRedundancy()
+			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("redundancy/Restrictions.drl"));
 
@@ -348,8 +360,9 @@ public class RedundancyTest extends TestBase {
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("SubsumptionVariableRestrictionTest.drl"));
 
-		AnalysisResultNormal analysisResult = new AnalysisResultNormal();
-		session.setGlobal("result", analysisResult);
+		AnalyticsResult result = AnalyticsDataFactory
+				.getAnalyticsResult();
+		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
 
@@ -372,20 +385,23 @@ public class RedundancyTest extends TestBase {
 	 * @param iter
 	 * @return
 	 */
-	private Map<String, Set<String>> createRedundancyMap(Iterator iter) {
+	private Map<String, Set<String>> createRedundancyMap(Iterator<Object> iter) {
 
 		Map<String, Set<String>> map = new HashMap<String, Set<String>>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
 			if (o instanceof Redundancy) {
 				Redundancy r = (Redundancy) o;
-				if (map.containsKey(r.getLeft().getRuleName())) {
-					Set<String> set = map.get(r.getLeft().getRuleName());
-					set.add(r.getRight().getRuleName());
+				AnalyticsComponent left = (AnalyticsComponent) r.getLeft();
+				AnalyticsComponent right = (AnalyticsComponent) r.getRight();
+
+				if (map.containsKey(left.getRuleName())) {
+					Set<String> set = map.get(left.getRuleName());
+					set.add(right.getRuleName());
 				} else {
 					Set<String> set = new HashSet<String>();
-					set.add(r.getRight().getRuleName());
-					map.put(r.getLeft().getRuleName(), set);
+					set.add(right.getRuleName());
+					map.put(left.getRuleName(), set);
 				}
 			}
 		}
