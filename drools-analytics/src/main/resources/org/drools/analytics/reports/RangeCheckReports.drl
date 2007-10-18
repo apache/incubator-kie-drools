@@ -3,14 +3,14 @@ package org.drools.analytics.rangeChecks.reports;
 
 #list any import classes here.
 import org.drools.analytics.components.Field;
-import org.drools.analytics.result.AnalysisWarning;
-import org.drools.analytics.result.AnalysisResult;
-import org.drools.analytics.result.MissingRange;
+import org.drools.analytics.report.components.AnalyticsRangeCheckMessage;
+import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.report.components.MissingRange;
 
 import java.util.ArrayList;
 
 #declare any global variables here
-global AnalysisResult result
+global AnalyticsResult result
 
 rule "Collect gaps"
 	when
@@ -20,5 +20,7 @@ rule "Collect gaps"
 				MissingRange( field == $f )
 			)
 	then
-		result.add( new AnalysisWarning( $f, $f + " has one or more gaps.", $list ) );
+		result.save( new AnalyticsRangeCheckMessage( 
+								AnalyticsRangeCheckMessage.Severity.WARNING, $f, 
+								$f + " has one or more gaps.", $list ) );
 end

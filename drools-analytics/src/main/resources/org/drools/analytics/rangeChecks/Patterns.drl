@@ -5,19 +5,18 @@ package org.drools.analytics.rangeChecks.patterns;
 import org.drools.analytics.components.*;
 import org.drools.analytics.accumulateFunction.ValidatePattern;
 import org.drools.analytics.accumulateFunction.ValidatePatternResult;
-import org.drools.analytics.result.AnalysisResult;
-import org.drools.analytics.result.MissingNumberPattern;
-import org.drools.analytics.result.Cause;
-import org.drools.analytics.result.AnalysisWarning;
+import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.report.components.MissingNumberPattern;
+import org.drools.analytics.report.components.Cause;
 import org.drools.analytics.accumulateFunction.FindMissingNumber;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.analytics.dao.AnalyticsData;
+import org.drools.analytics.dao.AnalyticsResult;
 
 #declare any global variables here
-global AnalyticsData data;
+global AnalyticsResult result;
 
 #
 # If all pattern ranges are not checked for a field.
@@ -55,7 +54,7 @@ rule "Range check for number patterns"
 		Number number = FindMissingNumber.testForPattern( $list );
 		if( number != null ){
 			MissingNumberPattern mnp = new MissingNumberPattern( $f, "==", $f.getFieldType(), number.toString() );
-			data.save( mnp );
+			result.save( mnp );
 		}
 end
 
@@ -95,6 +94,6 @@ rule "Range check for number patterns, !="
 		Number number = FindMissingNumber.testForPattern( $list );
 		if( number != null ){
 			MissingNumberPattern mnp = new MissingNumberPattern( $f, "!=", $f.getFieldType(), number.toString() );
-			data.save( mnp );
+			result.save( mnp );
 		}
 end

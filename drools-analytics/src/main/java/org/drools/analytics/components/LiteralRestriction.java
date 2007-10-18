@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.drools.analytics.result.Cause;
+import org.drools.analytics.report.components.Cause;
 
 /**
  * 

@@ -3,13 +3,13 @@ package org.drools.analytics.rangeChecks.doubles;
 
 #list any import classes here.
 import org.drools.analytics.components.*;
-import org.drools.analytics.result.AnalysisResult;
-import org.drools.analytics.result.Gap;
+import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.report.components.Gap;
 
-import org.drools.analytics.dao.AnalyticsData;
+import org.drools.analytics.dao.AnalyticsResult;
 
 #declare any global variables here
-global AnalyticsData data;
+global AnalyticsResult result;
 
 
 # If all ranges are not checked for a field.
@@ -40,7 +40,7 @@ rule "Range check for doubles, if smaller than or equal is missing"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -72,7 +72,7 @@ rule "Range check for doubles, if greater than or equal is missing"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -105,7 +105,7 @@ rule "Range check for doubles, equal and greater than"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -138,7 +138,7 @@ rule "Range check for doubles, equal and smaller than"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -204,7 +204,7 @@ rule "Range check for doubles, smaller and greater than"
 	then
 		Gap gap = new Gap( $f, Gap.getReversedEvaluator($r.getEvaluator()), $r );
 		gap.setFiredRuleName( drools.getRule().getName() );
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -238,7 +238,7 @@ rule "Range check for doubles, equal and greater than"
 	then
 		Gap gap = new Gap( $f, "<", $r );
 		gap.setFiredRuleName( drools.getRule().getName() );
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -272,7 +272,7 @@ rule "Range check for doubles, equal and smaller than"
 	then
 		Gap gap = new Gap( $f, ">", $r );
 		gap.setFiredRuleName( drools.getRule().getName() );
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 */

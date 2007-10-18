@@ -11,7 +11,7 @@ import org.drools.analytics.components.Pattern;
 import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.Restriction;
 import org.drools.analytics.components.RulePossibility;
-import org.drools.analytics.result.Cause;
+import org.drools.analytics.report.components.Cause;
 
 import junit.framework.TestCase;
 

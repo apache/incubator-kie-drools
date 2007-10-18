@@ -13,9 +13,6 @@ import org.drools.analytics.components.Restriction;
 import org.drools.analytics.components.RulePackage;
 import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.components.Variable;
-import org.drools.analytics.result.Gap;
-import org.drools.analytics.result.MissingNumberPattern;
-import org.drools.analytics.result.RangeCheckCause;
 
 /**
  * 
@@ -44,12 +41,6 @@ public interface AnalyticsData {
 	public void save(RulePossibility possibility);
 
 	public void save(RulePackage rulePackage);
-
-	public void save(Gap gap);
-
-	public void remove(Gap gap);
-
-	public void save(MissingNumberPattern missingNumberPattern);
 
 	public AnalyticsClass getClassByPackageAndName(String name);
 
@@ -80,15 +71,7 @@ public interface AnalyticsData {
 
 	public Collection<AnalyticsRule> getRulesByFieldId(int id);
 
-	public Collection<Field> getFieldsWithGaps();
-
-	public Collection<Gap> getGapsByFieldId(int fieldId);
-
 	public RulePackage getRulePackageByName(String name);
 
 	public Collection<Restriction> getRestrictionsByFieldId(int id);
-
-	public Collection<RangeCheckCause> getRangeCheckCauses();
-	
-	public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(int id);
 }

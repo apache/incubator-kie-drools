@@ -1,6 +1,6 @@
 package org.drools.analytics.components;
 
-import org.drools.analytics.result.Cause;
+import org.drools.analytics.report.components.Cause;
 
 /**
  * 

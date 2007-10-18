@@ -3,7 +3,7 @@ package org.drools.analytics.components;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.analytics.result.Cause;
+import org.drools.analytics.report.components.Cause;
 
 /**
  * Instance of this class represents a possible combination of Constraints under

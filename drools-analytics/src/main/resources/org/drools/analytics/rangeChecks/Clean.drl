@@ -2,13 +2,13 @@
 package org.drools.analytics.rangeChecks.cleanUp
 
 import org.drools.analytics.components.*;  
-import org.drools.analytics.result.Gap;  
-import org.drools.analytics.result.MissingNumberPattern;
+import org.drools.analytics.report.components.Gap;  
+import org.drools.analytics.report.components.MissingNumberPattern;
 
-import org.drools.analytics.dao.AnalyticsData;
+import org.drools.analytics.dao.AnalyticsResult;
 
 #declare any global variables here
-global AnalyticsData data;
+global AnalyticsResult result;
 
 #
 # Example: missing ( x >= 10 ) and ( x <= 10 ). This is the same as ( x == 10 )
@@ -25,8 +25,8 @@ rule "Merge gaps"
 			valueAsString == $g1.valueAsString
 		)		
 	then	
-		data.remove( $g1 );
-		data.remove( $g2 );
+		result.remove( $g1 );
+		result.remove( $g2 );
 		retract( $g1 );
 		retract( $g2 );
 		
@@ -36,7 +36,7 @@ rule "Merge gaps"
 											$g1.getField().getFieldType(), 
 											$g1.getValueAsString() );
 		mnp.setFiredRuleName( drools.getRule().getName() );
-		data.save( mnp );
+		result.save( mnp );
 		insert( mnp );
 end
 
@@ -79,7 +79,7 @@ rule "Remove useless integer gaps lesser or lesser and equal"
 	then
 		#System.out.println( $lower + " | " + $higher );
 		retract( $gap );
-		data.remove( $gap );
+		result.remove( $gap );
 end
 
 #
@@ -121,7 +121,7 @@ rule "Remove useless integer gaps greater or greater and equal"
 	then
 		#System.out.println( $lower + " | " + $higher );
 		retract( $gap );
-		data.remove( $gap );
+		result.remove( $gap );
 end
 
 #
@@ -163,7 +163,7 @@ rule "Remove useless double gaps lesser or lesser and equal"
 	then
 		#System.out.println( $lower + " | " + $higher );
 		retract( $gap );
-		data.remove( $gap );
+		result.remove( $gap );
 end
 
 #
@@ -205,7 +205,7 @@ rule "Remove useless double gaps greater or greater and equal"
 	then
 		#System.out.println( $lower + " | " + $higher );
 		retract( $gap );
-		data.remove( $gap );
+		result.remove( $gap );
 end
 
 #
@@ -247,7 +247,7 @@ rule "Remove useless date gaps lesser or lesser and equal"
 	then
 		#System.out.println( $lower + " | " + $higher );
 		retract( $gap );
-		data.remove( $gap );
+		result.remove( $gap );
 end
 
 #
@@ -289,7 +289,7 @@ rule "Remove useless date gaps greater or greater and equal"
 	then
 		#System.out.println( $lower + " | " + $higher );
 		retract( $gap );
-		data.remove( $gap );
+		result.remove( $gap );
 end
 
 /*
@@ -333,7 +333,7 @@ rule "Remove useless integer gaps"
 
 	then
 		retract( $gap );
-		data.remove( $gap );
+		result.remove( $gap );
 end
 
 #
@@ -376,7 +376,7 @@ rule "Remove useless double gaps"
 
 	then
 		retract( $gap );
-		data.remove( $gap );
+		result.remove( $gap );
 end
 
 #
@@ -419,6 +419,6 @@ rule "Remove useless date gaps"
 
 	then
 		retract( $gap );
-		data.remove( $gap );
+		result.remove( $gap );
 end
 */

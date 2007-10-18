@@ -2,7 +2,7 @@
 package org.drools.analytics.redundancy.rules
 
 import org.drools.analytics.components.*;
-import org.drools.analytics.result.Redundancy;
+import org.drools.analytics.report.components.Redundancy;
 
 #
 # Only checks for redundant rule specifications, 

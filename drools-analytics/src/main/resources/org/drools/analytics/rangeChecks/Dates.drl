@@ -3,17 +3,17 @@ package org.drools.analytics.rangeChecks.dates;
 
 #list any import classes here.
 import org.drools.analytics.components.*;
-import org.drools.analytics.result.AnalysisResult;
-import org.drools.analytics.result.Gap;
+import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.report.components.Gap;
 
 import java.util.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.drools.analytics.dao.AnalyticsData;
+import org.drools.analytics.dao.AnalyticsResult;
 
 #declare any global variables here
-global AnalyticsData data;
+global AnalyticsResult result;
 
 function boolean checkDates(Date d1, Date d2, boolean up) {
 		Calendar c1 = new GregorianCalendar();
@@ -54,7 +54,7 @@ rule "Range check for dates, if smaller than or equal is missing"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -86,7 +86,7 @@ rule "Range check for dates, if greater than or equal is missing"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -127,7 +127,7 @@ rule "Range check for dates, equal and greater than"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end
 
@@ -168,6 +168,6 @@ rule "Range check for dates, equal and smaller than"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		data.save( gap );
+		result.save( gap );
 		insert( gap );
 end

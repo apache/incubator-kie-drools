@@ -2,7 +2,116 @@
 package org.drools.analytics.redundancy.restrictions
 
 import org.drools.analytics.components.*;
-import org.drools.analytics.result.Redundancy;
+import org.drools.analytics.report.components.Redundancy;
+
+rule "Find redundant VariableRestriction"
+	when
+		# Check that Restrictions $left and $right have redundant fields.
+		$left :VariableRestriction()
+		$right :VariableRestriction( 
+			id != $left.id, 
+			evaluator == $left.evaluator 
+		)
+		# Check that there is not already a pair with these values.
+		not Redundancy( 
+			left == $left, 
+			right == $right 
+		)
+		not Redundancy(
+			left == $right, 
+			right == $left 
+		)
+		
+		# Check that these two variables point to the same object.
+		$v :Variable( id == $left.variableId )
+		Variable( 
+			id == $right.variableId,
+			objectType == $v.objectType,
+			objectId == $v.objectId
+		)
+	then
+		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
+end
+
+
+rule "Find redundant LiteralRestriction"
+	when
+		# Check that Restrictions $left and $right have redundant fields.
+		$left :LiteralRestriction()
+		and
+		(
+				$right :LiteralRestriction( 
+					id != $left.id, 
+					evaluator == $left.evaluator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.BOOLEAN,
+					booleanValue == $left.booleanValue
+				)
+			or
+				$right :LiteralRestriction( id != $left.id, 
+					evaluator == $left.evaluator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.STRING,
+					valueAsString matches $left.valueAsString
+				)
+			or
+				$right :LiteralRestriction( 
+					id != $left.id, 
+					evaluator == $left.evaluator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.INT,
+					intValue == $left.intValue
+				)
+			or
+				$right :LiteralRestriction( 
+					id != $left.id, 
+					evaluator == $left.evaluator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.DOUBLE,
+					doubleValue == $left.doubleValue
+				)
+			or
+				$right :LiteralRestriction( 
+					id != $left.id, 
+					evaluator == $left.evaluator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.DATE,
+					eval( dateValue.equals($left.getDateValue()) )
+				)
+			or
+			(
+				$right :LiteralRestriction( 
+					id != $left.id, 
+					evaluator == $left.evaluator,
+					valueType == $left.valueType,
+					valueType == Field.FieldType.VARIABLE
+				)
+				and
+					$v :Variable( 
+						objectType == AnalyticsComponentType.FIELD,
+						objectId == $left.id
+					)
+				and
+					Variable( 
+						objectType == AnalyticsComponentType.FIELD,
+						objectId == $right.id,
+						objectName == $v.objectName,
+						name == $v.name
+					)
+			)
+		)
+		# Check that there is not already a pair with these values.
+		not Redundancy( 
+			left == $left, 
+			right == $right 
+		)
+		not Redundancy(
+			left == $right, 
+			right == $left 
+		)
+	then
+		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
+end
 
 # TODO: And from and every object.
 //TODO: Also check that patterns and rules are redundant.
@@ -34,35 +143,6 @@ rule "Find redundant ReturnValueRestriction"
 		insert( new RedundantPair( $pp1, $pp2, $left, $right ) );
 end
 */
-rule "Find redundant VariableRestriction"
-	when
-		# Check that Restrictions $left and $right have redundant fields.
-		$left :VariableRestriction()
-		$right :VariableRestriction( 
-			id != $left.id, 
-			evaluator == $left.evaluator 
-		)
-		# Check that there is not already a pair with these values.
-		not Redundancy( 
-			left == $left, 
-			right == $right 
-		)
-		not Redundancy(
-			left == $right, 
-			right == $left 
-		)
-		
-		# Check that these two variables point to the same object.
-		$v :Variable( id == $left.variableId )
-		Variable( 
-			id == $right.variableId,
-			objectType == $v.objectType,
-			objectId == $v.objectId
-		)
-	then
-		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
-end
-
 /*
 XXX: Not sure if this can be done.
 rule "Find redundant QualifiedIdentifierRestriction"
@@ -95,77 +175,3 @@ rule "Find redundant QualifiedIdentifierRestriction"
 		insert( new Redundancy( $left, $right ) );
 end
 */
-
-
-rule "Find redundant LiteralRestriction"
-	when
-		# Check that Restrictions $left and $right have redundant fields.
-		$left :LiteralRestriction()
-		and
-		(
-				$right :LiteralRestriction( 
-					id != $left.id, 
-					evaluator == $left.evaluator,
-					valueType == Field.FieldType.BOOLEAN,
-					booleanValue == $left.booleanValue
-				)
-			or
-				$right :LiteralRestriction( id != $left.id, 
-					evaluator == $left.evaluator,
-					valueType == Field.FieldType.STRING,
-					stringValue matches $left.stringValue
-				)
-			or
-				$right :LiteralRestriction( 
-					id != $left.id, 
-					evaluator == $left.evaluator,
-					valueType == Field.FieldType.INT,
-					intValue == $left.intValue
-				)
-			or
-				$right :LiteralRestriction( 
-					id != $left.id, 
-					evaluator == $left.evaluator,
-					valueType == Field.FieldType.DOUBLE,
-					doubleValue == $left.doubleValue
-				)
-			or
-				$right :LiteralRestriction( 
-					id != $left.id, 
-					evaluator == $left.evaluator,
-					valueType == Field.FieldType.DATE,
-					eval( dateValue.equals($left.getDateValue()) )
-				)
-			or
-			(
-				$right :LiteralRestriction( 
-					id != $left.id, 
-					evaluator == $left.evaluator,
-					valueType == Field.FieldType.VARIABLE
-				)
-				and
-					$v :Variable( 
-						objectType == AnalyticsComponentType.FIELD,
-						objectId == $left.id
-					)
-				and
-					Variable( 
-						objectType == AnalyticsComponentType.FIELD,
-						objectId == $right.id,
-						objectName == $v.objectName,
-						name == $v.name
-					)
-			)
-		)
-		# Check that there is not already a pair with these values.
-		not Redundancy( 
-			left == $left, 
-			right == $right 
-		)
-		not Redundancy(
-			left == $right, 
-			right == $left 
-		)
-	then
-		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
-end
