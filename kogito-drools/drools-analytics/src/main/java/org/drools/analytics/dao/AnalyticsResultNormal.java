@@ -5,10 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
-import org.drools.analytics.components.Field;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.Gap;
 import org.drools.analytics.report.components.MissingNumberPattern;
@@ -29,13 +27,11 @@ class AnalyticsResultNormal implements AnalyticsResult {
 	private List<AnalyticsMessageBase> messages = new ArrayList<AnalyticsMessageBase>();
 	private DataTree<AnalyticsMessageBase.Severity, AnalyticsMessageBase> messagesBySeverity = new DataTree<AnalyticsMessageBase.Severity, AnalyticsMessageBase>();
 
-	@Override
 	public void save(AnalyticsMessageBase message) {
 		messages.add(message);
 		messagesBySeverity.put(message.getSeverity(), message);
 	}
 
-	@Override
 	public Collection<AnalyticsMessageBase> getBySeverity(
 			AnalyticsMessageBase.Severity severity) {
 		Collection<AnalyticsMessageBase> result = messagesBySeverity

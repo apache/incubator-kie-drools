@@ -49,7 +49,6 @@ abstract public class AnalyticsMessageBase implements Serializable,
 	protected Cause faulty;
 	protected String message;
 
-	@Override
 	public int compareTo(AnalyticsMessageBase o) {
 		if (id == o.getId()) {
 			return 0;

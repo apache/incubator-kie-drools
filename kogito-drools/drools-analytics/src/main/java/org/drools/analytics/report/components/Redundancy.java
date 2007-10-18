@@ -34,12 +34,10 @@ public class Redundancy implements Cause {
 		this.right = right;
 	}
 
-	@Override
 	public CauseType getCauseType() {
 		return CauseType.REDUNDANCY;
 	}
 
-	@Override
 	public int getId() {
 		return id;
 	}

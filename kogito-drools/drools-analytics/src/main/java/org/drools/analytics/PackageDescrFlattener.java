@@ -1,6 +1,7 @@
 package org.drools.analytics;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Stack;
 
 import org.drools.analytics.components.AnalyticsAccessorDescr;
 import org.drools.analytics.components.AnalyticsAccumulateDescr;
@@ -66,6 +67,8 @@ public class PackageDescrFlattener {
 
 	private Solvers solvers = new Solvers();
 
+	private Stack<AnalyticsComponent> components = new Stack<AnalyticsComponent>();
+
 	private RulePackage currentPackage = null;
 	private AnalyticsRule currentRule = null;
 	private Pattern currentPattern = null;
@@ -74,25 +77,13 @@ public class PackageDescrFlattener {
 	private Field currentField = null;
 
 	public void insert(PackageDescr packageDescr) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
-		RulePackage rulePackage = data.getRulePackageByName(packageDescr
-				.getName());
 
-		if (rulePackage == null) {
-			rulePackage = new RulePackage();
-
-			rulePackage.setName(packageDescr.getName());
-			data.save(rulePackage);
-		}
-
-		currentPackage = rulePackage;
-
-		flatten(packageDescr.getRules());
+		flatten(packageDescr);
 
 		formPossibilities();
 	}
 
-	private void flatten(List descrs) {
+	private void flatten(Collection<Object> descrs) {
 
 		for (Object o : descrs) {
 			BaseDescr descr = (BaseDescr) o;
@@ -313,7 +304,21 @@ public class PackageDescrFlattener {
 	}
 
 	private void flatten(PackageDescr descr) {
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+		RulePackage rulePackage = data.getRulePackageByName(descr.getName());
+
+		if (rulePackage == null) {
+			rulePackage = new RulePackage();
+
+			rulePackage.setName(descr.getName());
+			data.save(rulePackage);
+		}
+
+		currentPackage = rulePackage;
+
+		components.push(rulePackage);
 		flatten(descr.getRules());
+		components.pop();
 	}
 
 	private void flatten(RuleDescr descr) {
@@ -355,7 +360,8 @@ public class PackageDescrFlattener {
 	private int flatten(PatternDescr descr) {
 		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
-		AnalyticsClass clazz = data.getClassByPackageAndName(descr.getObjectType());
+		AnalyticsClass clazz = data.getClassByPackageAndName(descr
+				.getObjectType());
 		if (clazz == null) {
 			clazz = new AnalyticsClass();
 			clazz.setName(descr.getObjectType());
