@@ -86,7 +86,7 @@ rule "Find part of redundant RulePossibility combination"
 	then
 		insert( new PartialRedundancy( $rp1, $rp2, $redundancy ) );
 end
-*/
+
 
 rule "new rule"
 	when
@@ -145,7 +145,7 @@ rule "Find subsumptant Possibilities"
 		#insert( new Subsumption( $p1, $p2 ) );
 end
 
-/*
+
 #
 # If two possibilities are subsumptant to each others, then they are redundant.
 # Since this tests only one possibility, the entire rule or pattern might not be redundant.
