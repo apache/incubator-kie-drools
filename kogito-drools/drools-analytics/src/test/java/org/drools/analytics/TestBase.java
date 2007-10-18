@@ -31,7 +31,8 @@ abstract public class TestBase extends TestCase {
 
 		System.setProperty("drools.accumulate.function.validatePattern",
 				"com.analytics.accumulateFunction.ValidatePattern");
-
+		
+		System.setProperty("drools.dateformat", "dd-MMM-yyyy");
 	}
 
 	public StatelessSession getStatelessSession(InputStream stream)
