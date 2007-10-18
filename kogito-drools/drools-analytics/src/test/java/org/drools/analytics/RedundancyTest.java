@@ -312,7 +312,7 @@ public class RedundancyTest extends TestBase {
 		}
 	}
 
-	public void testAnalyticsLiteralRestrictionRedundancy() throws Exception {
+	public void fixmetestAnalyticsLiteralRestrictionRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("redundancy/Restrictions.drl"));
 
