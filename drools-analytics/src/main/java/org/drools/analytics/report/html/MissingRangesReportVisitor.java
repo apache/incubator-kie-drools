@@ -158,7 +158,6 @@ class DataRow implements Comparable<DataRow> {
 	protected String evaluator;
 	protected String value;
 
-	@Override
 	public int compareTo(DataRow o) {
 		return evaluator.compareTo(o.evaluator);
 	}
@@ -171,7 +170,6 @@ class DataRow implements Comparable<DataRow> {
 		this.value = valueAsString;
 	}
 
-	@Override
 	public String toString() {
 		return evaluator + " " + value;
 	}
