@@ -19,6 +19,7 @@ import org.drools.analytics.report.components.Cause;
 
 
 rule "Find redundant restrictions from pattern possibilities"
+	salience -100
 	when
 		$r :Redundancy()
 		PatternPossibility(

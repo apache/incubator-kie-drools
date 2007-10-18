@@ -55,6 +55,9 @@ class RuleLoader {
 		list.add(new InputStreamReader(RuleLoader.class
 				.getResourceAsStream("rangeChecks/Clean.drl")));
 
+		list.add(new InputStreamReader(RuleLoader.class
+				.getResourceAsStream("Consequence.drl")));
+
 		// list.add(new InputStreamReader(RuleLoader.class
 		// .getResourceAsStream("redundancy/Possibilities.drl")));
 		//

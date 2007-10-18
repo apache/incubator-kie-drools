@@ -1,0 +1,24 @@
+#created on: 18.10.2007
+package org.drools.analytics.consequence
+
+#list any import classes here.
+import org.drools.analytics.components.AnalyticsRule;  
+import org.drools.analytics.report.components.AnalyticsMessage;  
+import org.drools.analytics.dao.AnalyticsResult;
+
+#declare any global variables here
+global AnalyticsResult result;
+
+
+rule "No action - possibly commented out"
+	when
+		$r :AnalyticsRule(
+			( consequence == null || consequence matches "" )
+		)
+	then 
+		result.save( new AnalyticsMessage( 
+								AnalyticsMessage.Severity.WARNING,
+								AnalyticsMessage.MessageType.MISSING_COMPONENT,
+								$r, 
+								$r + " has no RHS." ) );
+end

@@ -33,6 +33,8 @@ class AnalyticsTestStandalone {
 					Analyzer.class.getResourceAsStream("Misc2.drl")));
 			PackageDescr descr7 = new DrlParser().parse(new InputStreamReader(
 					Analyzer.class.getResourceAsStream("Misc3.drl")));
+			PackageDescr descr8 = new DrlParser().parse(new InputStreamReader(
+					Analyzer.class.getResourceAsStream("ConsequenceTest.drl")));
 
 			Analyzer a = new Analyzer();
 			// a.addPackageDescr(descr);
@@ -42,6 +44,7 @@ class AnalyticsTestStandalone {
 			a.addPackageDescr(descr5);
 			a.addPackageDescr(descr6);
 			a.addPackageDescr(descr7);
+			a.addPackageDescr(descr8);
 			a.fireAnalysis();
 			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());

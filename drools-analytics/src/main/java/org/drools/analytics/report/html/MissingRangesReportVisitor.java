@@ -137,7 +137,7 @@ public class MissingRangesReportVisitor extends ReportVisitor {
 				.put("packageFolder", sourceFolder + "/"
 						+ UrlFactory.PACKAGE_FOLDER);
 		map.put("cssStyle", createStyleTag(sourceFolder + "/"
-				+ UrlFactory.CSS_FOLDER + "/" + UrlFactory.CSS_FILE_LIST));
+				+ UrlFactory.CSS_FOLDER + "/" + UrlFactory.CSS_BASIC));
 
 		map.put("field", field);
 		map.put("objectType", data.getClassById(field.getClassId()));

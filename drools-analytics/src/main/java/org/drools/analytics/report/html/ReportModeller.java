@@ -20,7 +20,7 @@ public abstract class ReportModeller {
 		String myTemplate = AnalyticsMessagesVisitor.readFile("frame.htm");
 
 		map.put("cssStyle", ReportVisitor.createStyleTag(sourceFolder + "/"
-				+ UrlFactory.CSS_FOLDER + "/" + UrlFactory.CSS_FILE_LIST));
+				+ UrlFactory.CSS_FOLDER + "/" + UrlFactory.CSS_BASIC));
 		map.put("sourceFolder", sourceFolder);
 		map.put("header", ReportVisitor.processHeader(sourceFolder));
 		map.put("content", content);
