@@ -13,6 +13,7 @@ import java.util.ArrayList;
 global AnalyticsResult result
 
 rule "Collect gaps"
+	salience -100
 	when
 		$f :Field()
 		$list :ArrayList( size > 0)
