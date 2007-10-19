@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,6 +39,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.TimeMachine;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 
@@ -86,14 +87,14 @@ public class RuleBuilderTest extends TestCase {
         typeResolver.addImport( pkgDescr.getName() + ".*" );
         typeResolver.addImport( "java.lang.*" );
 
-        final RuleBuilder builder = new RuleBuilder( );                
-        
+        final RuleBuilder builder = new RuleBuilder( );
+
         final PackageBuilder pkgBuilder = new PackageBuilder(pkg);
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
         Dialect dialect = pkgBuilder.getDialectRegistry().getDialect( "java" );
-        
+
         RuleBuildContext context = new RuleBuildContext(conf, pkg, ruleDescr, pkgBuilder.getDialectRegistry(), dialect);
-      
+
         builder.build( context );
 
         Assert.assertTrue( context.getErrors().toString(),
@@ -125,8 +126,8 @@ public class RuleBuilderTest extends TestCase {
     }
 
     public void testBuildAttributes() throws Exception {
-        Rule rule = new Rule( "my rule" );                
-        
+        Rule rule = new Rule( "my rule" );
+
         List attributes = new ArrayList();
 
         attributes.add( new AttributeDescr("dialect", "java") );
@@ -136,11 +137,11 @@ public class RuleBuilderTest extends TestCase {
                                             "false" ) );
         attributes.add( new AttributeDescr( "ruleflow-group",
                                             "mygroup" ) );
-        
+
         RuleBuildContext.setAttributes( rule, null, attributes );
 
         assertTrue( rule.isNoLoop() );
-        assertFalse( rule.isEffective() );
+        assertFalse( rule.isEffective(new TimeMachine()) );
         assertEquals( "mygroup",
                       rule.getRuleFlowGroup() );
 
@@ -153,7 +154,7 @@ public class RuleBuilderTest extends TestCase {
         rule = new Rule( "myrule" );
 
         RuleBuildContext.setAttributes( rule, null, attributes );
-        
+
         final Field eff = rule.getClass().getDeclaredField( "dateEffective" );
         eff.setAccessible( true );
         final Calendar effectiveDate = (Calendar) eff.get( rule );
