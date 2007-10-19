@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,6 +53,7 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
+import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.common.core.Process;
 import org.drools.ruleflow.common.instance.ProcessInstance;
 import org.drools.ruleflow.core.RuleFlowProcess;
@@ -74,7 +75,7 @@ import org.drools.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
- * 
+ *
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
@@ -151,13 +152,15 @@ public abstract class AbstractWorkingMemory
 
     private int                                     processCounter;
 
+    private TimeMachine 							timeMachine = new TimeMachine();
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
 
     /**
      * Construct.
-     * 
+     *
      * @param ruleBase
      *            The backing rule-base.
      */
@@ -189,7 +192,7 @@ public abstract class AbstractWorkingMemory
             this.identityMap.setComparator( new IdentityAssertMapComparator() );
         }
 
-        // Only takes effect if are using idententity behaviour for assert        
+        // Only takes effect if are using idententity behaviour for assert
         if ( conf.getLogicalOverride() == LogicalOverride.DISCARD ) {
             this.discardOnLogicalOverride = true;
         } else {
@@ -199,7 +202,7 @@ public abstract class AbstractWorkingMemory
 
     // ------------------------------------------------------------
     // Instance methods
-    // ------------------------------------------------------------    
+    // ------------------------------------------------------------
 
     void setRuleBase(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
@@ -440,7 +443,7 @@ public abstract class AbstractWorkingMemory
         // If we're already firing a rule, then it'll pick up
         // the firing for any other assertObject(..) that get
         // nested inside, avoiding concurrent-modification
-        // exceptions, depending on code paths of the actions.          
+        // exceptions, depending on code paths of the actions.
         this.halt = false;
 
         if ( isSequential() ) {
@@ -507,8 +510,8 @@ public abstract class AbstractWorkingMemory
 
     //
     //        MN: The following is the traditional fireAllRules (without otherwise).
-    //            Purely kept here as this implementation of otherwise is still experimental.    
-    //    
+    //            Purely kept here as this implementation of otherwise is still experimental.
+    //
     //    public synchronized void fireAllRules(final AgendaFilter agendaFilter) throws FactException {
     //        // If we're already firing a rule, then it'll pick up
     //        // the firing for any other assertObject(..) that get
@@ -530,19 +533,19 @@ public abstract class AbstractWorkingMemory
     //                this.firing = false;
     //            }
     //        }
-    //    }    
+    //    }
 
     /**
      * Returns the fact Object for the given <code>FactHandle</code>. It
      * actually attemps to return the value from the handle, before retrieving
      * it from objects map.
-     * 
+     *
      * @see WorkingMemory
-     * 
+     *
      * @param handle
      *            The <code>FactHandle</code> reference for the
      *            <code>Object</code> lookup
-     * 
+     *
      */
     public Object getObject(final FactHandle handle) {
         try {
@@ -585,7 +588,7 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    /** 
+    /**
      * This is an internal method, used to avoid java.util.Iterator adaptors
      */
     public ObjectHashMap getFactHandleMap() {
@@ -1192,7 +1195,7 @@ public abstract class AbstractWorkingMemory
     /**
      * modify is implemented as half way retract / assert due to the truth
      * maintenance issues.
-     * 
+     *
      * @see WorkingMemory
      */
     public void update(final FactHandle factHandle,
@@ -1315,10 +1318,10 @@ public abstract class AbstractWorkingMemory
     /**
      * Retrieve the <code>JoinMemory</code> for a particular
      * <code>JoinNode</code>.
-     * 
+     *
      * @param node
      *            The <code>JoinNode</code> key.
-     * 
+     *
      * @return The node's memory.
      */
     public Object getNodeMemory(final NodeMemory node) {
@@ -1353,7 +1356,7 @@ public abstract class AbstractWorkingMemory
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
      * Scheduler used for duration rules.
-     * 
+     *
      * @param handler
      */
     public void setAsyncExceptionHandler(final AsyncExceptionHandler handler) {
@@ -1438,7 +1441,7 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * Helper method 
+     * Helper method
      */
     public Map getActivationParameters(Activation activation) {
         Map result = new HashMap();
@@ -1453,5 +1456,20 @@ public abstract class AbstractWorkingMemory
         }
         return result;
     }
+
+    /**
+     * The time machine tells you what time it is.
+     */
+	public TimeMachine getTimeMachine() {
+		return timeMachine;
+	}
+
+	/**
+	 * The time machine defaults to returning the current time when asked. However, you can use tell it to go back in time.
+	 * @param timeMachine
+	 */
+	public void setTimeMachine(TimeMachine timeMachine) {
+		this.timeMachine = timeMachine;
+	}
 
 }

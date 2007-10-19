@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,9 +34,7 @@ import org.drools.spi.Salience;
  * The <code>Test</code>s describe the circumstances that representrepresent
  * a match for this rule. The <code>Consequence</code> gets fired when the
  * Conditions match.
- * 
- * @see Eval
- * @see Consequence
+ *
  * @author <a href="mailto:bob@eng.werken.com"> bob mcwhirter </a>
  * @author <a href="mailto:simon@redhillconsulting.com.au"> Simon Harris </a>
  * @author <a href="mailto:mproctor@codehaus.org"> mark proctor </a>
@@ -45,7 +43,7 @@ public class Rule
     implements
     Serializable {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
 
@@ -68,7 +66,7 @@ public class Rule
     private Declaration[]     declarationArray;
 
     private GroupElement      lhsRoot;
-    
+
     private String            dialect;
 
     private String            agendaGroup;
@@ -93,7 +91,7 @@ public class Rule
     private String            ruleFlowGroup;
 
     private boolean           lockOnActive;
-    
+
     private boolean           hasLogicalDependency;
 
     /** indicates that the rule is semantically correct. */
@@ -147,8 +145,8 @@ public class Rule
               null,
               AgendaGroup.MAIN );
     }
-    
-    
+
+
 
     public String getDialect() {
         return dialect;
@@ -162,15 +160,15 @@ public class Rule
      * Set the truthness duration. This causes a delay before the firing of the
      * <code>Consequence</code> if the rule is still true at the end of the
      * duration.
-     * 
+     *
      * <p>
      * This is merely a convenience method for calling
      * {@link #setDuration(Duration)}with a <code>FixedDuration</code>.
      * </p>
-     * 
+     *
      * @see #setDuration(Duration)
      * @see FixedDuration
-     * 
+     *
      * @param seconds -
      *            The number of seconds the rule must hold true in order to
      *            fire.
@@ -183,7 +181,7 @@ public class Rule
      * Set the truthness duration object. This causes a delay before the firing
      * of the <code>Consequence</code> if the rule is still true at the end of
      * the duration.
-     * 
+     *
      * @param duration
      *            The truth duration object.
      */
@@ -193,7 +191,7 @@ public class Rule
 
     /**
      * Retrieve the truthness duration object.
-     * 
+     *
      * @return The truthness duration object.
      */
     public Duration getDuration() {
@@ -204,13 +202,13 @@ public class Rule
      * Determine if this rule is internally consistent and valid.
      * This will include checks to make sure the rules semantic components (actions and predicates)
      * are valid.
-     * 
+     *
      * No exception is thrown.
      * <p>
      * A <code>Rule</code> must include at least one parameter declaration and
      * one condition.
      * </p>
-     * 
+     *
      * @return <code>true</code> if this rule is valid, else
      *         <code>false</code>.
      */
@@ -232,7 +230,7 @@ public class Rule
 
     /**
      * Retrieve the name of this rule.
-     * 
+     *
      * @return The name of this rule.
      */
     public String getName() {
@@ -241,7 +239,7 @@ public class Rule
 
     /**
      * Retrieve the <code>Rule</code> salience.
-     * 
+     *
      * @return The salience.
      */
     public Salience getSalience() {
@@ -270,19 +268,20 @@ public class Rule
     }
 
     /**
-     * This returns true is the rule is effective. 
+     * This returns true is the rule is effective.
      * If the rule is not effective, it cannot activate.
-     * 
+     *
      * This uses the dateEffective, dateExpires and enabled flag to decide this.
      */
-    public boolean isEffective() {
+    public boolean isEffective(TimeMachine tm) {
         if ( !this.enabled ) {
             return false;
         }
+        final Calendar now = tm.getNow();
+
         if ( this.dateEffective == null && this.dateExpires == null ) {
             return true;
         } else {
-            final Calendar now = Calendar.getInstance();
             if ( this.dateEffective != null && this.dateExpires != null ) {
                 return (now.after( this.dateEffective ) && now.before( this.dateExpires ));
             } else if ( this.dateEffective != null ) {
@@ -324,10 +323,10 @@ public class Rule
 
     /**
      * Retrieve a parameter <code>Declaration</code> by identifier.
-     * 
+     *
      * @param identifier
      *            The identifier.
-     * 
+     *
      * @return The declaration or <code>null</code> if no declaration matches
      *         the <code>identifier</code>.
      */
@@ -340,7 +339,7 @@ public class Rule
         return (Declaration) this.declarations.get( identifier );
     }
 
-    /** 
+    /**
      * This field is updated at runtime, when the first logical assertion is done. I'm currently not too happy about having this determine at runtime
      * but its currently easier than trying to do this at compile time, although eventually this should be changed
      * @return
@@ -348,11 +347,11 @@ public class Rule
     public boolean hasLogicalDependency() {
         return this.hasLogicalDependency;
     }
-    
+
     public void setHasLogicalDependency(boolean hasLogicalDependency) {
         this.hasLogicalDependency = hasLogicalDependency;
     }
-    
+
     public boolean isLockOnActive() {
         return this.lockOnActive;
     }
@@ -360,11 +359,11 @@ public class Rule
     public void setLockOnActive(final boolean lockOnActive) {
         this.lockOnActive = lockOnActive;
     }
-    
+
     /**
      * Retrieve the set of all <i>root fact object </i> parameter
      * <code>Declarations</code>.
-     * 
+     *
      * @return The Set of <code>Declarations</code> in order which specify the
      *         <i>root fact objects</i>.
      */
@@ -379,11 +378,11 @@ public class Rule
 
     /**
      * Add a pattern to the rule. All patterns are searched for bindings which are then added to the rule
-     * as declarations 
-     * 
+     * as declarations
+     *
      * @param condition
      *            The <code>Test</code> to add.
-     * @throws InvalidRuleException 
+     * @throws InvalidRuleException
      */
     public void addPattern(final RuleConditionElement element) {
         this.dirty = true;
@@ -393,7 +392,7 @@ public class Rule
     /**
      * Retrieve the <code>List</code> of <code>Conditions</code> for this
      * rule.
-     * 
+     *
      * @return The <code>List</code> of <code>Conditions</code>.
      */
     public GroupElement getLhs() {
@@ -411,7 +410,7 @@ public class Rule
      * it will return an And element for each possible logic branch. The
      * processing uses as a clone of the Rule's patterns, so they are not
      * changed.
-     * 
+     *
      * @return
      * @throws InvalidPatternException
      */
@@ -450,7 +449,7 @@ public class Rule
     /**
      * Set the <code>Consequence</code> that is associated with the successful
      * match of this rule.
-     * 
+     *
      * @param consequence
      *            The <code>Consequence</code> to attach to this
      *            <code>Rule</code>.
@@ -462,7 +461,7 @@ public class Rule
     /**
      * Retrieve the <code>Consequence</code> associated with this
      * <code>Rule</code>.
-     * 
+     *
      * @return The <code>Consequence</code>.
      */
     public Consequence getConsequence() {
@@ -507,7 +506,7 @@ public class Rule
         this.semanticallyValid = valid;
     }
 
-    /** 
+    /**
      * This will return if the semantic actions or predicates in the rules
      * are valid.
      * This is provided so that lists of rules can be provided even if their semantic actions
@@ -532,7 +531,7 @@ public class Rule
     public void setDateExpires(final Calendar expiresDate) {
         this.dateExpires = expiresDate;
     }
-        
+
 
     public Calendar getDateEffective() {
         return this.dateEffective;
@@ -548,7 +547,7 @@ public class Rule
     public void setEnabled(final boolean b) {
         this.enabled = b;
     }
-    
+
     public boolean isEnabled() {
         return this.enabled;
     }
