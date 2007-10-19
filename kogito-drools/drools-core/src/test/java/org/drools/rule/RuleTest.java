@@ -12,14 +12,14 @@ public class RuleTest extends TestCase {
     public void testDateEffective() {
         final Rule rule = new Rule( "myrule" );
 
-        assertTrue( rule.isEffective() );
+        assertTrue( rule.isEffective(new TimeMachine()) );
 
         final Calendar earlier = Calendar.getInstance();
         earlier.setTimeInMillis( 10 );
 
         rule.setDateEffective( earlier );
 
-        assertTrue( rule.isEffective() );
+        assertTrue( rule.isEffective(new TimeMachine()) );
 
         final Calendar later = Calendar.getInstance();
         later.setTimeInMillis( later.getTimeInMillis() + 100000000 );
@@ -27,27 +27,27 @@ public class RuleTest extends TestCase {
         assertTrue( later.after( Calendar.getInstance() ) );
 
         rule.setDateEffective( later );
-        assertFalse( rule.isEffective() );
+        assertFalse( rule.isEffective(new TimeMachine()) );
 
     }
 
     public void testDateExpires() throws Exception {
         final Rule rule = new Rule( "myrule" );
 
-        assertTrue( rule.isEffective() );
+        assertTrue( rule.isEffective(new TimeMachine()) );
 
         final Calendar earlier = Calendar.getInstance();
         earlier.setTimeInMillis( 10 );
 
         rule.setDateExpires( earlier );
 
-        assertFalse( rule.isEffective() );
+        assertFalse( rule.isEffective(new TimeMachine()) );
 
         final Calendar later = Calendar.getInstance();
         later.setTimeInMillis( later.getTimeInMillis() + 100000000 );
 
         rule.setDateExpires( later );
-        assertTrue( rule.isEffective() );
+        assertTrue( rule.isEffective(new TimeMachine()) );
 
     }
 
@@ -63,31 +63,55 @@ public class RuleTest extends TestCase {
         rule.setDateEffective( past );
         rule.setDateExpires( future );
 
-        assertTrue( rule.isEffective() );
+        assertTrue( rule.isEffective(new TimeMachine()) );
 
         rule.setDateExpires( past );
-        assertFalse( rule.isEffective() );
+        assertFalse( rule.isEffective(new TimeMachine()) );
 
         rule.setDateExpires( future );
         rule.setDateEffective( future );
 
-        assertFalse( rule.isEffective() );
+
+
+        assertFalse( rule.isEffective(new TimeMachine()) );
 
     }
 
     public void testRuleEnabled() {
         final Rule rule = new Rule( "myrule" );
         rule.setEnabled( false );
-        assertFalse( rule.isEffective() );
+        assertFalse( rule.isEffective(new TimeMachine()) );
 
         final Calendar past = Calendar.getInstance();
         past.setTimeInMillis( 10 );
 
         rule.setDateEffective( past );
-        assertFalse( rule.isEffective() );
+        assertFalse( rule.isEffective(new TimeMachine()) );
         rule.setEnabled( true );
 
-        assertTrue( rule.isEffective() );
+        assertTrue( rule.isEffective(new TimeMachine()) );
+    }
+
+    public void testTimeMachine() {
+        final Rule rule = new Rule( "myrule" );
+        rule.setEnabled( true );
+        assertTrue(rule.isEffective(new TimeMachine()));
+
+        final Calendar future = Calendar.getInstance();
+        future.setTimeInMillis( future.getTimeInMillis() + 100000000 );
+        rule.setDateEffective(future);
+        assertFalse(rule.isEffective(new TimeMachine()));
+
+        assertTrue(rule.isEffective(new TimeMachine() {
+        	public Calendar getNow() {
+        		Calendar loveYouLongTime = Calendar.getInstance();
+        		loveYouLongTime.setTimeInMillis(future.getTimeInMillis() + 1000000000000L);
+        		return loveYouLongTime;
+        	}
+        }));
+
+
+
     }
 
 }

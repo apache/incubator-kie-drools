@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -48,9 +48,9 @@ import org.drools.util.TupleHashTable;
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
  * matched <code>Rule</code>.
- * 
+ *
  * @see org.drools.rule.Rule
- * 
+ *
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
 public final class RuleTerminalNode extends BaseNode
@@ -63,14 +63,14 @@ public final class RuleTerminalNode extends BaseNode
     // ------------------------------------------------------------
 
     private int sequence;
-    
+
     /**
-     * 
+     *
      */
     private static final long  serialVersionUID = 400L;
     /** The rule to invoke upon match. */
     private final Rule         rule;
-    /** 
+    /**
      * the subrule reference is needed to resolve declarations
      * because declarations may have different offsets in each subrule
      */
@@ -79,8 +79,8 @@ public final class RuleTerminalNode extends BaseNode
 
     private TupleSinkNode      previousTupleSinkNode;
     private TupleSinkNode      nextTupleSinkNode;
-    
-    protected boolean          tupleMemoryEnabled;    
+
+    protected boolean          tupleMemoryEnabled;
 
     // ------------------------------------------------------------
     // Constructors
@@ -88,7 +88,7 @@ public final class RuleTerminalNode extends BaseNode
 
     /**
      * Construct.
-     * 
+     *
      * @param inputSource
      *            The parent tuple source.
      * @param rule
@@ -112,13 +112,13 @@ public final class RuleTerminalNode extends BaseNode
 
     /**
      * Retrieve the <code>Action</code> associated with this node.
-     * 
+     *
      * @return The <code>Action</code> associated with this node.
      */
     public Rule getRule() {
         return this.rule;
     }
-    
+
     public void setSequence(int seq) {
         this.sequence = seq;
     }
@@ -126,7 +126,7 @@ public final class RuleTerminalNode extends BaseNode
     public int getSequence() {
         return this.sequence;
     }
-    
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // org.drools.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -143,7 +143,7 @@ public final class RuleTerminalNode extends BaseNode
 
     /**
      * Assert a new <code>Tuple</code>.
-     * 
+     *
      * @param tuple
      *            The <code>Tuple</code> being asserted.
      * @param workingMemory
@@ -157,7 +157,7 @@ public final class RuleTerminalNode extends BaseNode
                             final boolean fireActivationCreated) {
 
         //check if the rule is effective
-        if ( !this.rule.isEffective() ) {
+        if ( !this.rule.isEffective(workingMemory.getTimeMachine()) ) {
             return;
         }
 
@@ -195,7 +195,7 @@ public final class RuleTerminalNode extends BaseNode
 
             agenda.scheduleItem( item );
             tuple.setActivation( item );
-            
+
             if ( this.tupleMemoryEnabled ) {
                 memory.getTupleMemory().add( tuple );
             }
@@ -236,7 +236,7 @@ public final class RuleTerminalNode extends BaseNode
                                                     context,
                                                     this.rule,
                                                     this.subrule );
-            
+
             if ( this.tupleMemoryEnabled ) {
                 item.setSequenence( this.sequence );
             }
@@ -254,13 +254,13 @@ public final class RuleTerminalNode extends BaseNode
                 // No RuleFlowNode so add  it directly to  the Agenda
 
                 // do not add the activation if the rule is "lock-on-active" and the AgendaGroup is active
-                // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract                
+                // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract
                 if ( context.getType() == PropagationContext.MODIFICATION ) {
                     if ( this.rule.isLockOnActive() && agendaGroup.isActive() ) {
                         Activation justifier = context.removeRetractedTuple( this.rule,
                                                                              tuple );
                         if ( justifier == null ) {
-                            // This rule is locked and active, do not allow new tuples to activate 
+                            // This rule is locked and active, do not allow new tuples to activate
                             return;
                         } else if ( this.rule.hasLogicalDependency() ) {
                             copyLogicalDependencies( context,
@@ -291,13 +291,13 @@ public final class RuleTerminalNode extends BaseNode
                 }
 
                 // do not add the activation if the rule is "lock-on-active" and the RuleFlowGroup is active
-                // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract                
+                // we must check the context to determine if its a new tuple or an exist re-activated tuple as part of the retract
                 if ( context.getType() == PropagationContext.MODIFICATION ) {
                     if ( this.rule.isLockOnActive() && rfg.isActive() ) {
                         Activation justifier = context.removeRetractedTuple( this.rule,
                                                                              tuple );
                         if ( justifier == null ) {
-                            // This rule is locked and active, do not allow new tuples to activate 
+                            // This rule is locked and active, do not allow new tuples to activate
                             return;
                         } else if ( this.rule.hasLogicalDependency() ) {
                             copyLogicalDependencies( context,
@@ -454,7 +454,7 @@ public final class RuleTerminalNode extends BaseNode
                                                                                           null );
                 workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
                                                                                      propagationContext,
-                                                                                     this.rule );                                
+                                                                                     this.rule );
             }
 
             workingMemory.executeQueuedActions();
@@ -462,7 +462,7 @@ public final class RuleTerminalNode extends BaseNode
         }
 
         removeShare();
-        
+
         this.tupleSource.remove( this,
                                  workingMemories );
     }
@@ -470,14 +470,14 @@ public final class RuleTerminalNode extends BaseNode
     public Object createMemory(final RuleBaseConfiguration config) {
         return new TerminalNodeMemory();
     }
-    
+
     public boolean isTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }
 
     public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
-    }     
+    }
 
     /**
      * Returns the next node
@@ -489,7 +489,7 @@ public final class RuleTerminalNode extends BaseNode
     }
 
     /**
-     * Sets the next node 
+     * Sets the next node
      * @param next
      *      The next TupleSinkNode
      */
@@ -507,7 +507,7 @@ public final class RuleTerminalNode extends BaseNode
     }
 
     /**
-     * Sets the previous node 
+     * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode
      */
