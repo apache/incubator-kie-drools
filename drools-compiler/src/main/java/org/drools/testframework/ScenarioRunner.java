@@ -39,7 +39,7 @@ public class ScenarioRunner {
 		Map<String, Object> factData = new HashMap<String, Object>();
 		this.scenario = scenario;
 
-		//have to go and instansiate all the facts
+		//have to go and instanciate all the facts
 		for (int i = 0; i < scenario.facts.length; i++) {
 			FactData fact = scenario.facts[i];
 			Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
@@ -49,6 +49,9 @@ public class ScenarioRunner {
 
 		this.populatedData = factData;
 
+		//now run the rules...
+
+		//now check the results...
 		for (int i = 0; i < scenario.assertions.length; i++) {
 			Assertion assertion = scenario.assertions[i];
 			if (assertion instanceof AssertFactValue) {
@@ -63,7 +66,9 @@ public class ScenarioRunner {
 		for (int i = 0; i < value.fieldValues.length; i++) {
 			AssertFieldValue verify = value.fieldValues[i];
 			verify.isChecked = true;
-
+			//hmmm... need a ruleset that we can use to take data
+			//from the WM under test - perhaps ALL the data
+			//if checking a named fact, may not be worth the hassle
 		}
 	}
 
