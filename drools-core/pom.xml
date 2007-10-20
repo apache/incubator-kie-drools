@@ -29,7 +29,7 @@
 
     <dependency>
       <groupId>org.mvel</groupId>
-      <artifactId>mvel</artifactId>
+      <artifactId>mvel14</artifactId>
     </dependency>     
     
   </dependencies>
