@@ -12,7 +12,7 @@ public class Scenario implements Serializable {
 
 	public FactData[] facts = new FactData[0];
 	public Assertion[] assertions = new Assertion[0];
-	public ScenarioRules rules = new ScenarioRules();
+	public ScenarioRules ruleTrace = new ScenarioRules();
 
 
 }
