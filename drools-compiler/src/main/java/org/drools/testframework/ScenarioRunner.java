@@ -48,8 +48,10 @@ public class ScenarioRunner {
 			factData.put(fact.name, f);
 			populate(fact, factData);
 		}
-
 		this.populatedData = factData;
+
+
+
 
 		//now run the rules...
 		insertData(wm, this.populatedData);
