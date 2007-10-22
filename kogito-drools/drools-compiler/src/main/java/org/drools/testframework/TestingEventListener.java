@@ -113,7 +113,13 @@ public class TestingEventListener implements AgendaEventListener {
 		return this.ruleNames.contains(rule.getName());
 	}
 
-
+	/**
+	 * @return A map of the number of times a given rule "fired".
+	 * (of course in reality the side effect of its firing may have been nilled out).
+	 */
+	public Map<String, Integer> getFiringCounts() {
+		return this.firingCounts;
+	}
 
 }
 
