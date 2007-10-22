@@ -42,28 +42,30 @@ public class TestingEventListener implements AgendaEventListener {
      * The other rules will have their activation counted but not be allowed to fire.
      */
     public TestingEventListener(HashSet<String> ruleNames, RuleBase ruleBase, boolean inclusive) {
-    	if (inclusive) {
-    		Package[] pkgs = ruleBase.getPackages();
-    		for (int i = 0; i < pkgs.length; i++) {
-				Rule[] rules = pkgs[i].getRules();
-				for (int j = 0; j < rules.length; j++) {
-					Rule rule = rules[j];
-					if (!ruleNames.contains(rule.getName())) {
-						rule.setConsequence(new NilConsequence());
+    	if (ruleNames.size() > 0) {
+	    	if (inclusive) {
+	    		Package[] pkgs = ruleBase.getPackages();
+	    		for (int i = 0; i < pkgs.length; i++) {
+					Rule[] rules = pkgs[i].getRules();
+					for (int j = 0; j < rules.length; j++) {
+						Rule rule = rules[j];
+						if (!ruleNames.contains(rule.getName())) {
+							rule.setConsequence(new NilConsequence());
+						}
 					}
 				}
-			}
-    	} else {
-    		Package[] pkgs = ruleBase.getPackages();
-    		for (int i = 0; i < pkgs.length; i++) {
-    			Package pkg = pkgs[i];
-    			for (Iterator iter = ruleNames.iterator(); iter.hasNext();) {
-					String name = (String) iter.next();
-					Rule rule = pkg.getRule(name);
-					rule.setConsequence(new NilConsequence());
-				}
+	    	} else {
+	    		Package[] pkgs = ruleBase.getPackages();
+	    		for (int i = 0; i < pkgs.length; i++) {
+	    			Package pkg = pkgs[i];
+	    			for (Iterator iter = ruleNames.iterator(); iter.hasNext();) {
+						String name = (String) iter.next();
+						Rule rule = pkg.getRule(name);
+						rule.setConsequence(new NilConsequence());
+					}
 
-    		}
+	    		}
+	    	}
     	}
     	this.ruleNames = ruleNames;
     }
