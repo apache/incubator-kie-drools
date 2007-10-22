@@ -2,7 +2,10 @@ package org.drools.testframework;
 
 import static org.mvel.MVEL.eval;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -50,7 +53,9 @@ public class ScenarioRunner {
 		}
 		this.populatedData = factData;
 
-
+		HashSet<String> ruleList = new HashSet<String>();
+		ruleList.addAll(Arrays.asList(scenario.ruleTrace.rules));
+		TestingEventListener listener = new TestingEventListener(ruleList, wm.getRuleBase(), scenario.ruleTrace.inclusive);
 
 
 		//now run the rules...

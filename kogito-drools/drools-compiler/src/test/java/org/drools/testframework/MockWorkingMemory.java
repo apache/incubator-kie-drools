@@ -7,7 +7,6 @@ import java.util.List;
 import org.drools.Agenda;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.MockFactHandle;
 import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
