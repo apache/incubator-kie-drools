@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.base.TypeResolver;
-import org.drools.brms.client.modeldriven.testing.AssertFactValue;
-import org.drools.brms.client.modeldriven.testing.AssertFieldValue;
+import org.drools.brms.client.modeldriven.testing.VerifyFact;
+import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.Assertion;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
@@ -30,7 +30,7 @@ public class ScenarioRunner {
 	 * @param resolver A populated type resolved to be used to resolve the types in the scenario.
 	 *
 	 * For info on how to invoke this, see ContentPackageAssemblerTest.testPackageWithRuleflow in drools-jbrms
-	 * This requires that the classloader for the context be set appropraitely. The PackageBuilder
+	 * This requires that the classloader for the thread context be set appropraitely. The PackageBuilder
 	 * can provide a suitable TypeResolver for a given package header, and the Package config can provide
 	 * a classloader.
 	 *
@@ -54,21 +54,25 @@ public class ScenarioRunner {
 		//now check the results...
 		for (int i = 0; i < scenario.assertions.length; i++) {
 			Assertion assertion = scenario.assertions[i];
-			if (assertion instanceof AssertFactValue) {
-				verify((AssertFactValue)assertion);
+			if (assertion instanceof VerifyFact) {
+				verify((VerifyFact)assertion);
 			}
 		}
 	}
 
 
 
-	private void verify(AssertFactValue value) {
+	void verify(VerifyFact value) {
+		Object fact = this.populatedData.get(value.factName);
 		for (int i = 0; i < value.fieldValues.length; i++) {
-			AssertFieldValue verify = value.fieldValues[i];
-			verify.isChecked = true;
-			//hmmm... need a ruleset that we can use to take data
-			//from the WM under test - perhaps ALL the data
-			//if checking a named fact, may not be worth the hassle
+			VerifyField fld = value.fieldValues[i];
+			Map<String, Object> st = new HashMap<String, Object>();
+			st.put("__fact__", fact);
+			st.put("__expected__", fld.expected);
+			fld.success =  (Boolean) eval( "__fact__." + fld.fieldName + " == __expected__", st);
+ 			if (!fld.success) {
+ 				fld.actual = eval("__fact__." + fld.fieldName, st).toString();
+ 			}
 		}
 	}
 
