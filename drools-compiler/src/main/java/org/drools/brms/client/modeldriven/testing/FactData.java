@@ -4,14 +4,6 @@ import java.io.Serializable;
 
 public class FactData implements Serializable {
 
-
-	public FactData() {}
-	public FactData(String type, String name, FieldData[] fieldData) {
-		this.type = type;
-		this.name = name;
-		this.fieldData = fieldData;
-	}
-
 	/**
 	 * The type (class)
 	 */
@@ -24,6 +16,13 @@ public class FactData implements Serializable {
 
 
 	public FieldData[] fieldData;
+
+	public FactData() {}
+	public FactData(String type, String name, FieldData[] fieldData) {
+		this.type = type;
+		this.name = name;
+		this.fieldData = fieldData;
+	}
 
 
 }

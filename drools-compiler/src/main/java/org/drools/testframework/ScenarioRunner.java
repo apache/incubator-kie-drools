@@ -32,7 +32,7 @@ public class ScenarioRunner {
 	 * @param resolver A populated type resolved to be used to resolve the types in the scenario.
 	 *
 	 * For info on how to invoke this, see ContentPackageAssemblerTest.testPackageWithRuleflow in drools-jbrms
-	 * This requires that the classloader for the thread context be set appropraitely. The PackageBuilder
+	 * This requires that the classloader for the thread context be set appropriately. The PackageBuilder
 	 * can provide a suitable TypeResolver for a given package header, and the Package config can provide
 	 * a classloader.
 	 *
@@ -41,7 +41,7 @@ public class ScenarioRunner {
 		Map<String, Object> factData = new HashMap<String, Object>();
 		this.scenario = scenario;
 
-		//have to go and instanciate all the facts
+		//have to go and create all the facts
 		for (int i = 0; i < scenario.facts.length; i++) {
 			FactData fact = scenario.facts[i];
 			Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
