@@ -3,8 +3,10 @@ package org.drools.testframework;
 import static org.mvel.MVEL.eval;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.WorkingMemory;
 import org.drools.base.TypeResolver;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
@@ -35,7 +37,7 @@ public class ScenarioRunner {
 	 * a classloader.
 	 *
 	 */
-	public ScenarioRunner(Scenario scenario, TypeResolver resolver) throws ClassNotFoundException {
+	public ScenarioRunner(Scenario scenario, TypeResolver resolver, WorkingMemory wm) throws ClassNotFoundException {
 		Map<String, Object> factData = new HashMap<String, Object>();
 		this.scenario = scenario;
 
@@ -50,6 +52,8 @@ public class ScenarioRunner {
 		this.populatedData = factData;
 
 		//now run the rules...
+		insertData(wm, this.populatedData);
+		wm.fireAllRules();
 
 		//now check the results...
 		for (int i = 0; i < scenario.assertions.length; i++) {
@@ -57,6 +61,14 @@ public class ScenarioRunner {
 			if (assertion instanceof VerifyFact) {
 				verify((VerifyFact)assertion);
 			}
+		}
+	}
+
+
+
+	private void insertData(WorkingMemory wm, Map<String, Object> data) {
+		for (Iterator<Object> iterator = data.values().iterator(); iterator.hasNext();) {
+			wm.insert(iterator.next());
 		}
 	}
 
@@ -95,9 +107,6 @@ public class ScenarioRunner {
 		}
 	}
 
-	public Map<String, Object> getFacts() {
-		return this.populatedData;
-	}
 
 
 
