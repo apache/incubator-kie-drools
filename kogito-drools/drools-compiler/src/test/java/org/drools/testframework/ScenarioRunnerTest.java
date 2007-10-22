@@ -27,10 +27,10 @@ public class ScenarioRunnerTest extends TestCase {
 																			new FieldData("age", "30 + 3", true)
 									})};
 
-		TypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
+		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(), Thread.currentThread().getContextClassLoader());
 		resolver.addImport("org.drools.Cheese");
 		resolver.addImport("org.drools.Person");
-		ScenarioRunner runner = new ScenarioRunner(sc, resolver);
+		ScenarioRunner runner = new ScenarioRunner(sc, resolver, new MockWorkingMemory());
 
 		assertTrue(runner.populatedData.containsKey("c1"));
 		assertTrue(runner.populatedData.containsKey("p1"));
@@ -47,7 +47,7 @@ public class ScenarioRunnerTest extends TestCase {
 
 	public void testVerifyFacts() throws Exception {
 
-		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null);
+		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null, new MockWorkingMemory());
 		Cheese f1 = new Cheese("cheddar", 42);
 		runner.populatedData.put("f1", f1);
 
@@ -100,6 +100,37 @@ public class ScenarioRunnerTest extends TestCase {
 
 		assertEquals("33", vf.fieldValues[1].actual);
 		assertEquals("32", vf.fieldValues[1].expected);
+
+	}
+
+	public void testDummyRunNoRules() throws Exception {
+		Scenario sc = new Scenario();
+		sc.facts = new FactData[] { new FactData("Cheese", "c1", new FieldData[] {
+																			new FieldData("type", "cheddar", false),
+																			new FieldData("price", "42", false)
+																		})};
+
+		sc.assertions = new VerifyFact[] {
+				new VerifyFact("c1", new VerifyField[] {
+						new VerifyField("type", "cheddar"),
+						new VerifyField("price", "42")
+				})
+		};
+
+		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(), Thread.currentThread().getContextClassLoader());
+		resolver.addImport("org.drools.Cheese");
+
+		MockWorkingMemory wm = new MockWorkingMemory();
+		ScenarioRunner runner = new ScenarioRunner(sc, resolver, wm);
+		assertEquals(1, wm.facts.size());
+		assertEquals(runner.populatedData.get("c1"), wm.facts.get(0));
+
+		assertTrue(runner.populatedData.containsKey("c1"));
+		VerifyFact vf = (VerifyFact) sc.assertions[0];
+		for (int i = 0; i < vf.fieldValues.length; i++) {
+			assertTrue(vf.fieldValues[i].success);
+		}
+
 
 	}
 
