@@ -91,41 +91,68 @@ public class DSLMappingFile {
         final BufferedReader dslFileReader = new BufferedReader( dsl );
         this.mapping = new DefaultDSLMapping();
         this.errors = new LinkedList();
+        //Note: Use a string builder for 1.5 targets
+        StringBuffer sb = new StringBuffer();
+        boolean spacesAllowed = true;
         while ( (line = dslFileReader.readLine()) != null ) {
             linecounter++;
-            final Matcher mat = pattern.matcher( line );
+            String trimmedline = line.trim(); //this can be more efficient, get rid of trim(), iterate-- over last chars only.
+            if ( spacesAllowed ) { //prevents that the break of some line be mixed with comments or empty lines
+                if ( trimmedline.length() == 0 ) {
+                    // empty line in DSL: [\t ]*\n
+                    continue;
+                }
+                if ( trimmedline.startsWith( "#" ) ) {
+                    // comment line in DSL: # bla bla \n
+                    continue;
+                }
+            }
+            //else, add the chars in the buffer, we'll see about that in a sec
+            sb.append( trimmedline );
+            if ( sb.charAt( sb.length() - 1 ) == '\\' ) {
+                sb.append( ' ' ); //put a space, don't be ridiculous
+                spacesAllowed = false;
+                continue;
+            }
+            //reinit the buffer, no matter what, but keep the accumulated chars
+            String lineToParse = sb.toString();
+            spacesAllowed = true;
+            sb = new StringBuffer();
+            final Matcher mat = pattern.matcher( lineToParse );
+            // - END - 
             if ( mat.matches() ) {
                 final String sectionStr = mat.group( 2 );
                 final String metadataStr = mat.group( 4 );
-                final String key = mat.group( 5 ).replaceAll( "\\\\=", "=" );
+                final String key = mat.group( 5 ).replaceAll( "\\\\=",
+                                                              "=" );
                 final String value = mat.group( 7 );
 
                 DSLMappingEntry.Section section = DSLMappingEntry.ANY;
                 if ( KEYWORD.equals( sectionStr ) ) {
                     section = DSLMappingEntry.KEYWORD;
-                } else if ( CONDITION.equals( sectionStr ) || WHEN.equals( sectionStr )) {
+                } else if ( CONDITION.equals( sectionStr ) || WHEN.equals( sectionStr ) ) {
                     section = DSLMappingEntry.CONDITION;
-                } else if ( CONSEQUENCE.equals( sectionStr ) || THEN.equals( sectionStr )) {
+                } else if ( CONSEQUENCE.equals( sectionStr ) || THEN.equals( sectionStr ) ) {
                     section = DSLMappingEntry.CONSEQUENCE;
                 }
 
                 DSLMappingEntry.MetaData metadata;
-                if( metadataStr == null || metadataStr.length() == 0 ) {
+                if ( metadataStr == null || metadataStr.length() == 0 ) {
                     metadata = DSLMappingEntry.EMPTY_METADATA;
                 } else {
                     metadata = new DefaultDSLEntryMetaData( metadataStr );
                 }
 
                 final DSLMappingEntry entry = new DefaultDSLMappingEntry( section,
-                                                                    metadata,
-                                                                    key,
-                                                                    value );
+                                                                          metadata,
+                                                                          key,
+                                                                          value );
 
                 this.mapping.addEntry( entry );
-            } else if ( !line.trim().startsWith( "#" ) ) { // it is not a comment 
+            } else { // it is for sure an error !
                 final String error = "Error parsing mapping entry: " + line;
                 final DSLMappingParseException exception = new DSLMappingParseException( error,
-                                                                                   linecounter );
+                                                                                         linecounter );
                 this.errors.add( exception );
             }
         }
