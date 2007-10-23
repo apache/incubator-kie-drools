@@ -62,4 +62,5 @@ public interface InternalWorkingMemory
 
 	public TimeMachine getTimeMachine();
 
+	public void setTimeMachine(TimeMachine tm);
 }
