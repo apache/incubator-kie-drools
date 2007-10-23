@@ -70,7 +70,7 @@ public class ScenarioRunner {
 			if (assertion instanceof VerifyFact) {
 				verify((VerifyFact)assertion);
 			} else if (assertion instanceof VerifyRuleFired) {
-				verify((VerifyRuleFired) assertion, scenario.ruleTrace.firingCounts);
+				verify((VerifyRuleFired) assertion, listener.firingCounts);
 			}
  		}
 
@@ -78,14 +78,13 @@ public class ScenarioRunner {
 
 
 
-	private void verify(VerifyRuleFired assertion, Map<String, Integer> firingCounts) {
+	void verify(VerifyRuleFired assertion, Map<String, Integer> firingCounts) {
 		assertion.actual = firingCounts.containsKey(assertion.ruleName) ?  firingCounts.get(assertion.ruleName) : 0;
-		if (assertion.expectNotFire) {
-			assertion.success = assertion.actual == 0;
-		} else if (assertion.expectFire) {
-			assertion.success = assertion.actual > 0;
-		} else {
-			assertion.success = assertion.actual == assertion.expectedCount;
+		if (assertion.expectedFire != null) {
+			assertion.success = assertion.expectedFire ? assertion.actual > 0 : assertion.actual == 0;
+		}
+		if (assertion.expectedCount != null) {
+			assertion.success = assertion.actual.equals(assertion.expectedCount);
 		}
 	}
 

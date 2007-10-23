@@ -1,6 +1,8 @@
 package org.drools.testframework;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.drools.Cheese;
 import org.drools.Person;
@@ -11,6 +13,7 @@ import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
+import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 
 import junit.framework.TestCase;
 
@@ -133,6 +136,40 @@ public class ScenarioRunnerTest extends TestCase {
 
 
 	}
+
+	public void testCountVerification() throws Exception {
+
+		Map<String, Integer> firingCounts = new HashMap<String, Integer>();
+		firingCounts.put("foo", 2);
+		firingCounts.put("bar", 1);
+		//and baz, we leave out
+
+		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null, new MockWorkingMemory());
+		VerifyRuleFired v = new VerifyRuleFired();
+		v.ruleName = "foo";
+		v.expectedFire = true;
+		runner.verify(v, firingCounts);
+		assertTrue(v.success);
+		assertEquals(2, v.actual.intValue());
+
+		v = new VerifyRuleFired();
+		v.ruleName = "foo";
+		v.expectedFire = false;
+		runner.verify(v, firingCounts);
+		assertFalse(v.success);
+		assertEquals(2, v.actual.intValue());
+
+		v = new VerifyRuleFired();
+		v.ruleName = "foo";
+		v.expectedCount = 2;
+
+		runner.verify(v, firingCounts);
+		assertTrue(v.success);
+		assertEquals(2, v.actual.intValue());
+
+	}
+
+
 
 
 
