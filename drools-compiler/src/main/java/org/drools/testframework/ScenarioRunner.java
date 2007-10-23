@@ -17,6 +17,7 @@ import org.drools.brms.client.modeldriven.testing.Assertion;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Scenario;
+import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 
 /**
  * This actually runs the test scenarios.
@@ -56,18 +57,35 @@ public class ScenarioRunner {
 		HashSet<String> ruleList = new HashSet<String>();
 		ruleList.addAll(Arrays.asList(scenario.ruleTrace.rules));
 		TestingEventListener listener = new TestingEventListener(ruleList, wm.getRuleBase(), scenario.ruleTrace.inclusive);
-
+		wm.addEventListener(listener);
 
 		//now run the rules...
 		insertData(wm, this.populatedData);
-		wm.fireAllRules();
+		wm.fireAllRules(scenario.maxRuleFirings);
+		scenario.ruleTrace.firingCounts = listener.firingCounts;
 
 		//now check the results...
 		for (int i = 0; i < scenario.assertions.length; i++) {
 			Assertion assertion = scenario.assertions[i];
 			if (assertion instanceof VerifyFact) {
 				verify((VerifyFact)assertion);
+			} else if (assertion instanceof VerifyRuleFired) {
+				verify((VerifyRuleFired) assertion, scenario.ruleTrace.firingCounts);
 			}
+ 		}
+
+	}
+
+
+
+	private void verify(VerifyRuleFired assertion, Map<String, Integer> firingCounts) {
+		assertion.actual = firingCounts.containsKey(assertion.ruleName) ?  firingCounts.get(assertion.ruleName) : 0;
+		if (assertion.expectNotFire) {
+			assertion.success = assertion.actual == 0;
+		} else if (assertion.expectFire) {
+			assertion.success = assertion.actual > 0;
+		} else {
+			assertion.success = assertion.actual == assertion.expectedCount;
 		}
 	}
 
