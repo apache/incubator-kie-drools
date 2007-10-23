@@ -11,6 +11,7 @@ public class VerifyFact implements Assertion {
 	public String factName;
 
 
+
 	public VerifyFact() {}
 	public VerifyFact(String factName, VerifyField[] fieldValues) {
 		this.factName = factName;

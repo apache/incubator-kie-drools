@@ -1,8 +1,10 @@
 package org.drools.testframework;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.Agenda;
 import org.drools.FactException;
@@ -38,6 +40,9 @@ import org.drools.util.concurrent.locks.Lock;
 public class MockWorkingMemory implements InternalWorkingMemory {
 
 	List<Object> facts = new ArrayList<Object>();
+	AgendaEventListener agendaEventListener;
+	TimeMachine timeMachine;
+	Map<String, Object> globals = new HashMap<String, Object>();
 
 	public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
 		// TODO Auto-generated method stub
@@ -48,6 +53,8 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 		// TODO Auto-generated method stub
 
 	}
+
+
 
 	public void executeQueuedActions() {
 		// TODO Auto-generated method stub
@@ -221,8 +228,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 	}
 
 	public RuleBase getRuleBase() {
-		// TODO Auto-generated method stub
-		return null;
+		return new MockRuleBase();
 	}
 
 	public void halt() {
@@ -292,7 +298,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 	}
 
 	public void setGlobal(String identifier, Object value) {
-		// TODO Auto-generated method stub
+		this.globals.put(identifier, value);
 
 	}
 
@@ -317,8 +323,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 	}
 
 	public void addEventListener(AgendaEventListener listener) {
-		// TODO Auto-generated method stub
-
+		this.agendaEventListener = listener;
 	}
 
 	public void addEventListener(RuleFlowEventListener listener) {
@@ -368,6 +373,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
 	public void removeEventListener(RuleBaseEventListener listener) {
 		// TODO Auto-generated method stub
+
+	}
+
+	public void setTimeMachine(TimeMachine tm) {
+		this.timeMachine = tm;
 
 	}
 

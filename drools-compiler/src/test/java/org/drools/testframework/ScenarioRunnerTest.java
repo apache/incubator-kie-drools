@@ -19,155 +19,197 @@ import junit.framework.TestCase;
 
 public class ScenarioRunnerTest extends TestCase {
 
-	public void testPopulateFacts() throws Exception {
-		Scenario sc = new Scenario();
-		sc.facts = new FactData[] { new FactData("Cheese", "c1", new FieldData[] {
-																			new FieldData("type", "cheddar", false),
-																			new FieldData("price", "42", false)
-																		}),
-									new FactData("Person", "p1", new FieldData[] {
-																			new FieldData("name", "mic", false),
-																			new FieldData("age", "30 + 3", true)
-									})};
+    public void testPopulateFacts() throws Exception {
+        Scenario sc = new Scenario();
+        sc.facts = new FactData[] { new FactData("Cheese", "c1", new FieldData[] {
+                                                                            new FieldData("type", "cheddar", false),
+                                                                            new FieldData("price", "42", false)
+                                                                        }, false),
+                                    new FactData("Person", "p1", new FieldData[] {
+                                                                            new FieldData("name", "mic", false),
+                                                                            new FieldData("age", "30 + 3", true)
+                                    }, false)};
 
-		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(), Thread.currentThread().getContextClassLoader());
-		resolver.addImport("org.drools.Cheese");
-		resolver.addImport("org.drools.Person");
-		ScenarioRunner runner = new ScenarioRunner(sc, resolver, new MockWorkingMemory());
+        TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(), Thread.currentThread().getContextClassLoader());
+        resolver.addImport("org.drools.Cheese");
+        resolver.addImport("org.drools.Person");
+        ScenarioRunner runner = new ScenarioRunner(sc, resolver, new MockWorkingMemory());
 
-		assertTrue(runner.populatedData.containsKey("c1"));
-		assertTrue(runner.populatedData.containsKey("p1"));
+        assertTrue(runner.populatedData.containsKey("c1"));
+        assertTrue(runner.populatedData.containsKey("p1"));
 
-		Cheese c = (Cheese) runner.populatedData.get("c1");
-		assertEquals("cheddar", c.getType());
-		assertEquals(42, c.getPrice());
+        Cheese c = (Cheese) runner.populatedData.get("c1");
+        assertEquals("cheddar", c.getType());
+        assertEquals(42, c.getPrice());
 
-		Person p = (Person) runner.populatedData.get("p1");
-		assertEquals("mic", p.getName());
-		assertEquals(33, p.getAge());
+        Person p = (Person) runner.populatedData.get("p1");
+        assertEquals("mic", p.getName());
+        assertEquals(33, p.getAge());
 
-	}
+    }
 
-	public void testVerifyFacts() throws Exception {
+    public void testVerifyFacts() throws Exception {
 
-		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null, new MockWorkingMemory());
-		Cheese f1 = new Cheese("cheddar", 42);
-		runner.populatedData.put("f1", f1);
+        ScenarioRunner runner = new ScenarioRunner(new Scenario(), null, new MockWorkingMemory());
+        Cheese f1 = new Cheese("cheddar", 42);
+        runner.populatedData.put("f1", f1);
 
-		Person f2 = new Person("michael", 33);
-		runner.populatedData.put("f2", f2);
+        Person f2 = new Person("michael", 33);
+        runner.populatedData.put("f2", f2);
 
-		//test all true
-		VerifyFact vf = new VerifyFact();
-		vf.factName = "f1";
-		vf.fieldValues = new VerifyField[] { new VerifyField("type", "cheddar"), new VerifyField("price", "42") } ;
+        //test all true
+        VerifyFact vf = new VerifyFact();
+        vf.factName = "f1";
+        vf.fieldValues = new VerifyField[] { new VerifyField("type", "cheddar"), new VerifyField("price", "42") } ;
 
-		runner.verify(vf);
-		for (int i = 0; i < vf.fieldValues.length; i++) {
-			assertTrue(vf.fieldValues[i].success);
-		}
+        runner.verify(vf);
+        for (int i = 0; i < vf.fieldValues.length; i++) {
+            assertTrue(vf.fieldValues[i].success);
+        }
 
-		vf = new VerifyFact();
-		vf.factName = "f2";
-		vf.fieldValues = new VerifyField[] { new VerifyField("name", "michael"), new VerifyField("age", "33") } ;
+        vf = new VerifyFact();
+        vf.factName = "f2";
+        vf.fieldValues = new VerifyField[] { new VerifyField("name", "michael"), new VerifyField("age", "33") } ;
 
-		runner.verify(vf);
-		for (int i = 0; i < vf.fieldValues.length; i++) {
-			assertTrue(vf.fieldValues[i].success);
-		}
+        runner.verify(vf);
+        for (int i = 0; i < vf.fieldValues.length; i++) {
+            assertTrue(vf.fieldValues[i].success);
+        }
 
-		//test one false
-		vf = new VerifyFact();
-		vf.factName = "f2";
-		vf.fieldValues = new VerifyField[] { new VerifyField("name", "mark"), new VerifyField("age", "33") } ;
+        //test one false
+        vf = new VerifyFact();
+        vf.factName = "f2";
+        vf.fieldValues = new VerifyField[] { new VerifyField("name", "mark"), new VerifyField("age", "33") } ;
 
-		runner.verify(vf);
-		assertFalse(vf.fieldValues[0].success);
-		assertTrue(vf.fieldValues[1].success);
+        runner.verify(vf);
+        assertFalse(vf.fieldValues[0].success);
+        assertTrue(vf.fieldValues[1].success);
 
-		assertEquals("michael", vf.fieldValues[0].actual);
-		assertEquals("mark", vf.fieldValues[0].expected);
-
-
-		//test 2 false
-		vf = new VerifyFact();
-		vf.factName = "f2";
-		vf.fieldValues = new VerifyField[] { new VerifyField("name", "mark"), new VerifyField("age", "32") } ;
-
-		runner.verify(vf);
-		assertFalse(vf.fieldValues[0].success);
-		assertFalse(vf.fieldValues[1].success);
-
-		assertEquals("michael", vf.fieldValues[0].actual);
-		assertEquals("mark", vf.fieldValues[0].expected);
-
-		assertEquals("33", vf.fieldValues[1].actual);
-		assertEquals("32", vf.fieldValues[1].expected);
-
-	}
-
-	public void testDummyRunNoRules() throws Exception {
-		Scenario sc = new Scenario();
-		sc.facts = new FactData[] { new FactData("Cheese", "c1", new FieldData[] {
-																			new FieldData("type", "cheddar", false),
-																			new FieldData("price", "42", false)
-																		})};
-
-		sc.assertions = new VerifyFact[] {
-				new VerifyFact("c1", new VerifyField[] {
-						new VerifyField("type", "cheddar"),
-						new VerifyField("price", "42")
-				})
-		};
-
-		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(), Thread.currentThread().getContextClassLoader());
-		resolver.addImport("org.drools.Cheese");
-
-		MockWorkingMemory wm = new MockWorkingMemory();
-		ScenarioRunner runner = new ScenarioRunner(sc, resolver, wm);
-		assertEquals(1, wm.facts.size());
-		assertEquals(runner.populatedData.get("c1"), wm.facts.get(0));
-
-		assertTrue(runner.populatedData.containsKey("c1"));
-		VerifyFact vf = (VerifyFact) sc.assertions[0];
-		for (int i = 0; i < vf.fieldValues.length; i++) {
-			assertTrue(vf.fieldValues[i].success);
-		}
+        assertEquals("michael", vf.fieldValues[0].actual);
+        assertEquals("mark", vf.fieldValues[0].expected);
 
 
-	}
+        //test 2 false
+        vf = new VerifyFact();
+        vf.factName = "f2";
+        vf.fieldValues = new VerifyField[] { new VerifyField("name", "mark"), new VerifyField("age", "32") } ;
 
-	public void testCountVerification() throws Exception {
+        runner.verify(vf);
+        assertFalse(vf.fieldValues[0].success);
+        assertFalse(vf.fieldValues[1].success);
 
-		Map<String, Integer> firingCounts = new HashMap<String, Integer>();
-		firingCounts.put("foo", 2);
-		firingCounts.put("bar", 1);
-		//and baz, we leave out
+        assertEquals("michael", vf.fieldValues[0].actual);
+        assertEquals("mark", vf.fieldValues[0].expected);
 
-		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null, new MockWorkingMemory());
-		VerifyRuleFired v = new VerifyRuleFired();
-		v.ruleName = "foo";
-		v.expectedFire = true;
-		runner.verify(v, firingCounts);
-		assertTrue(v.success);
-		assertEquals(2, v.actual.intValue());
+        assertEquals("33", vf.fieldValues[1].actual);
+        assertEquals("32", vf.fieldValues[1].expected);
 
-		v = new VerifyRuleFired();
-		v.ruleName = "foo";
-		v.expectedFire = false;
-		runner.verify(v, firingCounts);
-		assertFalse(v.success);
-		assertEquals(2, v.actual.intValue());
+    }
 
-		v = new VerifyRuleFired();
-		v.ruleName = "foo";
-		v.expectedCount = 2;
+    public void testDummyRunNoRules() throws Exception {
+        Scenario sc = new Scenario();
+        sc.facts = new FactData[] { new FactData("Cheese", "c1", new FieldData[] {
+                                                                            new FieldData("type", "cheddar", false),
+                                                                            new FieldData("price", "42", false)
+                                                                        }, false)};
 
-		runner.verify(v, firingCounts);
-		assertTrue(v.success);
-		assertEquals(2, v.actual.intValue());
+        sc.assertions = new VerifyFact[] {
+                new VerifyFact("c1", new VerifyField[] {
+                        new VerifyField("type", "cheddar"),
+                        new VerifyField("price", "42")
+                })
+        };
 
-	}
+        TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(), Thread.currentThread().getContextClassLoader());
+        resolver.addImport("org.drools.Cheese");
+
+        MockWorkingMemory wm = new MockWorkingMemory();
+        ScenarioRunner runner = new ScenarioRunner(sc, resolver, wm);
+        assertEquals(1, wm.facts.size());
+        assertEquals(runner.populatedData.get("c1"), wm.facts.get(0));
+
+        assertTrue(runner.populatedData.containsKey("c1"));
+        VerifyFact vf = (VerifyFact) sc.assertions[0];
+        for (int i = 0; i < vf.fieldValues.length; i++) {
+            assertTrue(vf.fieldValues[i].success);
+        }
+
+
+    }
+
+    public void testCountVerification() throws Exception {
+
+        Map<String, Integer> firingCounts = new HashMap<String, Integer>();
+        firingCounts.put("foo", 2);
+        firingCounts.put("bar", 1);
+        //and baz, we leave out
+
+        ScenarioRunner runner = new ScenarioRunner(new Scenario(), null, new MockWorkingMemory());
+        VerifyRuleFired v = new VerifyRuleFired();
+        v.ruleName = "foo";
+        v.expectedFire = true;
+        runner.verify(v, firingCounts);
+        assertTrue(v.success);
+        assertEquals(2, v.actual.intValue());
+
+        v = new VerifyRuleFired();
+        v.ruleName = "foo";
+        v.expectedFire = false;
+        runner.verify(v, firingCounts);
+        assertFalse(v.success);
+        assertEquals(2, v.actual.intValue());
+
+        v = new VerifyRuleFired();
+        v.ruleName = "foo";
+        v.expectedCount = 2;
+
+        runner.verify(v, firingCounts);
+        assertTrue(v.success);
+        assertEquals(2, v.actual.intValue());
+
+    }
+
+    public void testTestingEventListener() throws Exception {
+        Scenario sc = new Scenario();
+        sc.ruleTrace.rules = new String[] {"foo", "bar"};
+        MockWorkingMemory wm = new MockWorkingMemory();
+        ScenarioRunner run = new ScenarioRunner(sc, null, wm);
+        assertEquals(wm, run.workingMemory);
+        assertNotNull(wm.agendaEventListener);
+        assertTrue(wm.agendaEventListener instanceof TestingEventListener);
+        TestingEventListener lnr = (TestingEventListener) wm.agendaEventListener;
+        assertEquals(2, lnr.ruleNames.size());
+        assertTrue(lnr.ruleNames.contains("foo"));
+        assertTrue(lnr.ruleNames.contains("bar"));
+    }
+
+    public void testWithGlobals() throws Exception {
+        Scenario sc = new Scenario();
+        sc.facts = new FactData[] {
+                new FactData("Cheese", "c", new FieldData[] {
+                		new FieldData("type", "cheddar", false)
+                }, true),
+                new FactData("Cheese", "c2", new FieldData[] {
+                		new FieldData("type", "stilton", false)
+                }, false)
+        };
+        TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(), Thread.currentThread().getContextClassLoader());
+        resolver.addImport("org.drools.Cheese");
+
+        MockWorkingMemory wm = new MockWorkingMemory();
+        ScenarioRunner run = new ScenarioRunner(sc, resolver, wm);
+        assertEquals(1, wm.globals.size());
+        assertEquals(1, run.globalData.size());
+        assertEquals(1, run.populatedData.size());
+        assertEquals(1, wm.facts.size());
+
+        Cheese c = (Cheese) wm.globals.get("c");
+        assertEquals("cheddar", c.getType());
+        Cheese c2 = (Cheese) wm.facts.get(0);
+        assertEquals("stilton", c2.getType());
+
+
+    }
 
 
 

@@ -3,7 +3,6 @@ package org.drools.testframework;
 import static org.mvel.MVEL.eval;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,13 +10,14 @@ import java.util.Map;
 
 import org.drools.WorkingMemory;
 import org.drools.base.TypeResolver;
-import org.drools.brms.client.modeldriven.testing.VerifyFact;
-import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.Assertion;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Scenario;
+import org.drools.brms.client.modeldriven.testing.VerifyFact;
+import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.common.InternalWorkingMemory;
 
 /**
  * This actually runs the test scenarios.
@@ -28,75 +28,87 @@ import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 public class ScenarioRunner {
 
 	final Scenario scenario;
-	final Map<String, Object> populatedData;
-
+	final Map<String, Object> populatedData = new HashMap<String, Object>();
+	final Map<String, Object> globalData = new HashMap<String, Object>();
+	final InternalWorkingMemory workingMemory;
 
 	/**
-	 * @param scenario The scenario to run.
-	 * @param resolver A populated type resolved to be used to resolve the types in the scenario.
+	 * @param scenario
+	 *            The scenario to run.
+	 * @param resolver
+	 *            A populated type resolved to be used to resolve the types in
+	 *            the scenario.
 	 *
-	 * For info on how to invoke this, see ContentPackageAssemblerTest.testPackageWithRuleflow in drools-jbrms
-	 * This requires that the classloader for the thread context be set appropriately. The PackageBuilder
-	 * can provide a suitable TypeResolver for a given package header, and the Package config can provide
-	 * a classloader.
+	 * For info on how to invoke this, see
+	 * ContentPackageAssemblerTest.testPackageWithRuleflow in drools-jbrms This
+	 * requires that the classloader for the thread context be set
+	 * appropriately. The PackageBuilder can provide a suitable TypeResolver for
+	 * a given package header, and the Package config can provide a classloader.
 	 *
 	 */
-	public ScenarioRunner(Scenario scenario, TypeResolver resolver, WorkingMemory wm) throws ClassNotFoundException {
-		Map<String, Object> factData = new HashMap<String, Object>();
+	public ScenarioRunner(Scenario scenario, TypeResolver resolver,
+			InternalWorkingMemory wm) throws ClassNotFoundException {
 		this.scenario = scenario;
+		this.workingMemory = wm;
 
-		//have to go and create all the facts
+		// have to go and create all the facts
 		for (int i = 0; i < scenario.facts.length; i++) {
 			FactData fact = scenario.facts[i];
 			Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
-			factData.put(fact.name, f);
-			populate(fact, factData);
+			if (fact.isGlobal) {
+				populateFields(fact, globalData, f);
+				globalData.put(fact.name, f);
+			} else {
+				populateFields(fact, populatedData, f);
+				populatedData.put(fact.name, f);
+			}
 		}
-		this.populatedData = factData;
 
 		HashSet<String> ruleList = new HashSet<String>();
 		ruleList.addAll(Arrays.asList(scenario.ruleTrace.rules));
-		TestingEventListener listener = new TestingEventListener(ruleList, wm.getRuleBase(), scenario.ruleTrace.inclusive);
+		TestingEventListener listener = new TestingEventListener(ruleList, wm
+				.getRuleBase(), scenario.ruleTrace.inclusive);
 		wm.addEventListener(listener);
 
-		//now run the rules...
-		insertData(wm, this.populatedData);
+		// now run the rules...
+		applyData(wm, this.populatedData, this.globalData);
 		wm.fireAllRules(scenario.maxRuleFirings);
 		scenario.ruleTrace.firingCounts = listener.firingCounts;
 
-		//now check the results...
+		// now check the results...
 		for (int i = 0; i < scenario.assertions.length; i++) {
 			Assertion assertion = scenario.assertions[i];
 			if (assertion instanceof VerifyFact) {
-				verify((VerifyFact)assertion);
+				verify((VerifyFact) assertion);
 			} else if (assertion instanceof VerifyRuleFired) {
 				verify((VerifyRuleFired) assertion, listener.firingCounts);
 			}
- 		}
+		}
 
 	}
-
-
 
 	void verify(VerifyRuleFired assertion, Map<String, Integer> firingCounts) {
-		assertion.actual = firingCounts.containsKey(assertion.ruleName) ?  firingCounts.get(assertion.ruleName) : 0;
+		assertion.actual = firingCounts.containsKey(assertion.ruleName) ? firingCounts
+				.get(assertion.ruleName)
+				: 0;
 		if (assertion.expectedFire != null) {
-			assertion.success = assertion.expectedFire ? assertion.actual > 0 : assertion.actual == 0;
+			assertion.success = assertion.expectedFire ? assertion.actual > 0
+					: assertion.actual == 0;
 		}
 		if (assertion.expectedCount != null) {
-			assertion.success = assertion.actual.equals(assertion.expectedCount);
+			assertion.success = assertion.actual
+					.equals(assertion.expectedCount);
 		}
 	}
 
-
-
-	private void insertData(WorkingMemory wm, Map<String, Object> data) {
-		for (Iterator<Object> iterator = data.values().iterator(); iterator.hasNext();) {
-			wm.insert(iterator.next());
+	private void applyData(WorkingMemory wm, Map<String, Object> facts, Map<String, Object> globals) {
+		for (Map.Entry<String, Object> e : globals.entrySet()) {
+			wm.setGlobal(e.getKey(), e.getValue());
+		}
+		for (Object f : facts.values()) {
+			wm.insert(f);
 		}
 	}
-
-
 
 	void verify(VerifyFact value) {
 		Object fact = this.populatedData.get(value.factName);
@@ -105,21 +117,20 @@ public class ScenarioRunner {
 			Map<String, Object> st = new HashMap<String, Object>();
 			st.put("__fact__", fact);
 			st.put("__expected__", fld.expected);
-			fld.success =  (Boolean) eval( "__fact__." + fld.fieldName + " == __expected__", st);
- 			if (!fld.success) {
- 				fld.actual = eval("__fact__." + fld.fieldName, st).toString();
- 			}
+			fld.success = (Boolean) eval("__fact__." + fld.fieldName
+					+ " == __expected__", st);
+			if (!fld.success) {
+				fld.actual = eval("__fact__." + fld.fieldName, st).toString();
+			}
 		}
 	}
 
-
-
-	private void populate(FactData fact, Map<String, Object> factData) {
+	private Object populateFields(FactData fact, Map<String, Object> factData, Object factObject) {
 		for (int i = 0; i < fact.fieldData.length; i++) {
 			FieldData field = fact.fieldData[i];
 			Object val;
 			if (field.isExpression) {
-				//eval the val into existence
+				// eval the val into existence
 				val = eval(field.value, factData);
 			} else {
 				val = field.value;
@@ -127,13 +138,10 @@ public class ScenarioRunner {
 			Map<String, Object> vars = new HashMap<String, Object>();
 			vars.putAll(factData);
 			vars.put("__val__", val);
-			eval(fact.name + "." + field.name + " = __val__", vars);
+			vars.put("__fact__", factObject);
+			eval("__fact__." + field.name + " = __val__", vars);
 		}
+		return factObject;
 	}
-
-
-
-
-
 
 }
