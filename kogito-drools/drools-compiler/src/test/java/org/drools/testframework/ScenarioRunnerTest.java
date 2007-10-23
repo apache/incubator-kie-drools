@@ -1,5 +1,6 @@
 package org.drools.testframework;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
+import org.drools.rule.TimeMachine;
 
 import junit.framework.TestCase;
 
@@ -211,6 +213,29 @@ public class ScenarioRunnerTest extends TestCase {
 
     }
 
+    public void testSimulatedDate() throws Exception {
+    	Scenario sc = new Scenario();
+    	MockWorkingMemory wm = new MockWorkingMemory();
+    	ScenarioRunner run = new ScenarioRunner(sc, null, wm);
+    	TimeMachine tm = run.workingMemory.getTimeMachine();
+
+    	//love you
+    	long time = tm.getNow().getTimeInMillis();
+
+    	Thread.sleep(100);
+    	long future = tm.getNow().getTimeInMillis();
+    	assertTrue(future > time);
+
+    	sc.scenarioSimulatedDate = new Date("10-Jul-1974");
+    	run = new ScenarioRunner(sc, null, wm);
+    	tm = run.workingMemory.getTimeMachine();
+
+    	long expected  = sc.scenarioSimulatedDate.getTime();
+    	assertEquals(expected, tm.getNow().getTimeInMillis());
+    	Thread.sleep(50);
+    	assertEquals(expected, tm.getNow().getTimeInMillis());
+
+    }
 
 
 

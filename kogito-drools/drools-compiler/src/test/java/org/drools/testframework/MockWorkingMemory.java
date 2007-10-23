@@ -41,7 +41,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
 	List<Object> facts = new ArrayList<Object>();
 	AgendaEventListener agendaEventListener;
-	TimeMachine timeMachine;
+	TimeMachine timeMachine = new TimeMachine();
 	Map<String, Object> globals = new HashMap<String, Object>();
 
 	public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
@@ -97,8 +97,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 	}
 
 	public TimeMachine getTimeMachine() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.timeMachine;
 	}
 
 	public TruthMaintenanceSystem getTruthMaintenanceSystem() {

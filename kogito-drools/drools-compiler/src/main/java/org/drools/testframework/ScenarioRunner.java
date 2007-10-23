@@ -3,6 +3,7 @@ package org.drools.testframework;
 import static org.mvel.MVEL.eval;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.TimeMachine;
 
 /**
  * This actually runs the test scenarios.
@@ -46,8 +48,8 @@ public class ScenarioRunner {
 	 * a given package header, and the Package config can provide a classloader.
 	 *
 	 */
-	public ScenarioRunner(Scenario scenario, TypeResolver resolver,
-			InternalWorkingMemory wm) throws ClassNotFoundException {
+	public ScenarioRunner(final Scenario scenario, final TypeResolver resolver,
+			final InternalWorkingMemory wm) throws ClassNotFoundException {
 		this.scenario = scenario;
 		this.workingMemory = wm;
 
@@ -64,11 +66,24 @@ public class ScenarioRunner {
 			}
 		}
 
+		//create the listener to trace rules
 		HashSet<String> ruleList = new HashSet<String>();
 		ruleList.addAll(Arrays.asList(scenario.ruleTrace.rules));
 		TestingEventListener listener = new TestingEventListener(ruleList, wm
 				.getRuleBase(), scenario.ruleTrace.inclusive);
 		wm.addEventListener(listener);
+
+		//set up the time machine
+		if (scenario.scenarioSimulatedDate != null) {
+			final Calendar now = Calendar.getInstance();
+			now.setTimeInMillis(scenario.scenarioSimulatedDate.getTime());
+			wm.setTimeMachine(new TimeMachine() {
+				@Override
+				public Calendar getNow() {
+					return now;
+				}
+			});
+		}
 
 		// now run the rules...
 		applyData(wm, this.populatedData, this.globalData);
