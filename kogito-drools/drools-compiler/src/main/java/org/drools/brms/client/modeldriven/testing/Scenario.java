@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 public class Scenario implements Serializable {
 
+	public int		maxRuleFirings = 100000;
 	public FactData[] facts = new FactData[0];
 	public Assertion[] assertions = new Assertion[0];
 	public ScenarioRules ruleTrace = new ScenarioRules();
