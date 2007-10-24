@@ -37,6 +37,19 @@ public class Scenario implements Serializable {
 	 */
 	public ScenarioRules ruleTrace = new ScenarioRules();
 
+	/**
+	 * Returns true if this was a totally successful scenario, based on the results contained.
+	 */
+	public boolean wasSuccessful() {
+		for (int i = 0; i < this.assertions.length; i++) {
+			Assertion as = this.assertions[i];
+			if (!as.wasSuccessful()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 }
 

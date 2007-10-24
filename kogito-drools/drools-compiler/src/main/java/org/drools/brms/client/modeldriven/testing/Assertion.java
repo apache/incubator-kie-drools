@@ -16,6 +16,12 @@ import java.io.Serializable;
  */
 public interface Assertion extends Serializable {
 
+	/**
+	 * Return false if the assertion
+	 * @return
+	 */
+	boolean wasSuccessful();
+
 
 
 }
