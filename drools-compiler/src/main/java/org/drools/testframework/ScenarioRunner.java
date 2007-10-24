@@ -7,7 +7,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
@@ -53,7 +52,7 @@ public class ScenarioRunner {
 			final InternalWorkingMemory wm) throws ClassNotFoundException {
 		this.scenario = scenario;
 		this.workingMemory = wm;
-		scenario.lastRunResult = new Date();
+		scenario.executionTrace.lastRunResult = new Date();
 
 
 
@@ -72,9 +71,9 @@ public class ScenarioRunner {
 
 		//create the listener to trace rules
 		HashSet<String> ruleList = new HashSet<String>();
-		ruleList.addAll(Arrays.asList(scenario.ruleTrace.rules));
+		ruleList.addAll(Arrays.asList(scenario.executionTrace.rules));
 		TestingEventListener listener = new TestingEventListener(ruleList, wm
-				.getRuleBase(), scenario.ruleTrace.inclusive);
+				.getRuleBase(), scenario.executionTrace.inclusive);
 		wm.addEventListener(listener);
 
 		//set up the time machine
@@ -94,8 +93,8 @@ public class ScenarioRunner {
 		//love you
 		long time = System.currentTimeMillis();
 		wm.fireAllRules(scenario.maxRuleFirings);
-		scenario.executionTimeResult = System.currentTimeMillis() - time;
-		scenario.ruleTrace.firingCounts = listener.firingCounts;
+		scenario.executionTrace.executionTimeResult = System.currentTimeMillis() - time;
+		scenario.executionTrace.firingCounts = listener.firingCounts;
 
 		// now check the results...
 		for (int i = 0; i < scenario.assertions.length; i++) {

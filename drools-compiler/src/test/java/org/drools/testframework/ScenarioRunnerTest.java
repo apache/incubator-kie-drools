@@ -187,7 +187,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testTestingEventListener() throws Exception {
 		Scenario sc = new Scenario();
-		sc.ruleTrace.rules = new String[] { "foo", "bar" };
+		sc.executionTrace.rules = new String[] { "foo", "bar" };
 		MockWorkingMemory wm = new MockWorkingMemory();
 		ScenarioRunner run = new ScenarioRunner(sc, null, wm);
 		assertEquals(wm, run.workingMemory);
@@ -266,8 +266,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 				};
 
 
-		sc.ruleTrace.rules = new String[] {"rule1", "rule2" };
-		sc.ruleTrace.inclusive = true;
+		sc.executionTrace.rules = new String[] {"rule1", "rule2" };
+		sc.executionTrace.inclusive = true;
 
 		sc.assertions = new Assertion[5];
 
@@ -305,8 +305,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertEquals(0, p.getAge());
 
 
-        assertTrue((new Date()).after(sc.lastRunResult));
-        assertTrue(sc.executionTimeResult != -1);
+        assertTrue((new Date()).after(sc.executionTrace.lastRunResult));
+        assertTrue(sc.executionTrace.executionTimeResult != -1);
 
 	}
 
@@ -320,8 +320,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 				};
 
 
-		sc.ruleTrace.rules = new String[] {"rule1", "rule2" };
-		sc.ruleTrace.inclusive = true;
+		sc.executionTrace.rules = new String[] {"rule1", "rule2" };
+		sc.executionTrace.inclusive = true;
 
 		sc.assertions = new Assertion[5];
 

@@ -9,7 +9,7 @@ public class VerifyFact implements Assertion {
 
 	public VerifyField[] fieldValues = new VerifyField[0];
 	public String factName;
-
+	public String description;
 
 
 	public VerifyFact() {}
