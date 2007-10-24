@@ -4,6 +4,7 @@ import static org.mvel.MVEL.eval;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,6 +53,9 @@ public class ScenarioRunner {
 			final InternalWorkingMemory wm) throws ClassNotFoundException {
 		this.scenario = scenario;
 		this.workingMemory = wm;
+		scenario.lastRunDate = new Date();
+
+
 
 		// have to go and create all the facts
 		for (int i = 0; i < scenario.facts.length; i++) {
@@ -87,7 +91,10 @@ public class ScenarioRunner {
 
 		// now run the rules...
 		applyData(wm, this.populatedData, this.globalData);
+		//love you
+		long time = System.currentTimeMillis();
 		wm.fireAllRules(scenario.maxRuleFirings);
+		scenario.executionTimeTaken = System.currentTimeMillis() - time;
 		scenario.ruleTrace.firingCounts = listener.firingCounts;
 
 		// now check the results...

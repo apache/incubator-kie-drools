@@ -50,6 +50,16 @@ public class Scenario implements Serializable {
 		return true;
 	}
 
+	/**
+	 * The time taken for execution.
+	 */
+	public long executionTimeTaken = -1;
+
+
+	/**
+	 * This is the date the last time the scenario was run (and what the results apply to).
+	 */
+	public Date lastRunDate;
 
 }
 
