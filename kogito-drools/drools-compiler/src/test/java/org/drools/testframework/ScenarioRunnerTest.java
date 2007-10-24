@@ -254,6 +254,9 @@ public class ScenarioRunnerTest extends RuleUnit {
 	 * Do a kind of end to end test with some real rules.
 	 */
 	public void testIntegrationWithSuccess() throws Exception {
+
+		Date now = new Date();
+
 		Scenario sc = new Scenario();
 		sc.facts = new FactData[] {
 				new FactData("Cheese", "c1", new FieldData[] {
@@ -301,6 +304,9 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertEquals("rule2", p.getStatus());
         assertEquals(0, p.getAge());
 
+
+        assertTrue((new Date()).after(sc.lastRunDate));
+        assertTrue(sc.executionTimeTaken != -1);
 
 	}
 
