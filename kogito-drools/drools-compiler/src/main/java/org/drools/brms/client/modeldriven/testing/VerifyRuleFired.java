@@ -20,12 +20,12 @@ public class VerifyRuleFired implements Assertion {
 		this.expectedFire = expectedFire;
 	}
 
-	public Boolean success;
-	public Integer actual;
+	public Boolean successResult;
+	public Integer actualResult;
 
 
 	public boolean wasSuccessful() {
-		return success;
+		return successResult;
 	}
 
 }

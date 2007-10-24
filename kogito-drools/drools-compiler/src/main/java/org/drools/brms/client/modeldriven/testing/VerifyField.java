@@ -7,8 +7,8 @@ public class VerifyField implements Serializable {
 	public String fieldName;
 	public String expected;
 
-	public String actual;
-	public Boolean success;
+	public String actualResult;
+	public Boolean successResult;
 
 	public VerifyField() {}
 

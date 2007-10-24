@@ -53,7 +53,7 @@ public class ScenarioRunner {
 			final InternalWorkingMemory wm) throws ClassNotFoundException {
 		this.scenario = scenario;
 		this.workingMemory = wm;
-		scenario.lastRunDate = new Date();
+		scenario.lastRunResult = new Date();
 
 
 
@@ -94,7 +94,7 @@ public class ScenarioRunner {
 		//love you
 		long time = System.currentTimeMillis();
 		wm.fireAllRules(scenario.maxRuleFirings);
-		scenario.executionTimeTaken = System.currentTimeMillis() - time;
+		scenario.executionTimeResult = System.currentTimeMillis() - time;
 		scenario.ruleTrace.firingCounts = listener.firingCounts;
 
 		// now check the results...
@@ -110,15 +110,15 @@ public class ScenarioRunner {
 	}
 
 	void verify(VerifyRuleFired assertion, Map<String, Integer> firingCounts) {
-		assertion.actual = firingCounts.containsKey(assertion.ruleName) ? firingCounts
+		assertion.actualResult = firingCounts.containsKey(assertion.ruleName) ? firingCounts
 				.get(assertion.ruleName)
 				: 0;
 		if (assertion.expectedFire != null) {
-			assertion.success = assertion.expectedFire ? assertion.actual > 0
-					: assertion.actual == 0;
+			assertion.successResult = assertion.expectedFire ? assertion.actualResult > 0
+					: assertion.actualResult == 0;
 		}
 		if (assertion.expectedCount != null) {
-			assertion.success = assertion.actual
+			assertion.successResult = assertion.actualResult
 					.equals(assertion.expectedCount);
 		}
 	}
@@ -140,10 +140,10 @@ public class ScenarioRunner {
 			Map<String, Object> st = new HashMap<String, Object>();
 			st.put("__fact__", fact);
 			st.put("__expected__", fld.expected);
-			fld.success = (Boolean) eval("__fact__." + fld.fieldName
+			fld.successResult = (Boolean) eval("__fact__." + fld.fieldName
 					+ " == __expected__", st);
-			if (!fld.success) {
-				fld.actual = eval("__fact__." + fld.fieldName, st).toString();
+			if (!fld.successResult) {
+				fld.actualResult = eval("__fact__." + fld.fieldName, st).toString();
 			}
 		}
 	}
