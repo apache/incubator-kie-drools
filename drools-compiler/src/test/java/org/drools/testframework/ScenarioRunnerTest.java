@@ -253,7 +253,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 	/**
 	 * Do a kind of end to end test with some real rules.
 	 */
-	public void testIntegration() throws Exception {
+	public void testIntegrationWithSuccess() throws Exception {
 		Scenario sc = new Scenario();
 		sc.facts = new FactData[] {
 				new FactData("Cheese", "c1", new FieldData[] {
@@ -300,6 +300,63 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertEquals("rule1", p.getName());
         assertEquals("rule2", p.getStatus());
         assertEquals(0, p.getAge());
+
+
+	}
+
+	public void testIntegrationWithFailure() throws Exception {
+		Scenario sc = new Scenario();
+		sc.facts = new FactData[] {
+				new FactData("Cheese", "c1", new FieldData[] {
+						new FieldData("type", "cheddar", false),
+						new FieldData("price", "42", false) }, false),
+						new FactData("Person", "p", new FieldData[0] , true)
+				};
+
+
+		sc.ruleTrace.rules = new String[] {"rule1", "rule2" };
+		sc.ruleTrace.inclusive = true;
+
+		sc.assertions = new Assertion[5];
+
+		sc.assertions[0] =	new VerifyFact("c1", new VerifyField[] {
+					new VerifyField("type", "cheddar")
+
+		});
+
+		sc.assertions[1] = new VerifyFact("p", new VerifyField[] {
+					new VerifyField("name", "XXX"),
+					new VerifyField("status", "rule2")
+
+		});
+
+		sc.assertions[2] = new VerifyRuleFired("rule1", 1, null);
+		sc.assertions[3] = new VerifyRuleFired("rule2", 1, null);
+		sc.assertions[4] = new VerifyRuleFired("rule3", 2, null);
+
+		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
+				Thread.currentThread().getContextClassLoader());
+		resolver.addImport("org.drools.Cheese");
+		resolver.addImport("org.drools.Person");
+
+        WorkingMemory wm = getWorkingMemory("test_rules2.drl");
+
+        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
+
+        assertSame(run.scenario, sc);
+
+        assertFalse(sc.wasSuccessful());
+
+        VerifyFact vf = (VerifyFact) sc.assertions[1];
+        assertFalse(vf.fieldValues[0].success);
+        assertEquals("XXX", vf.fieldValues[0].expected);
+        assertEquals("rule1", vf.fieldValues[0].actual);
+
+        VerifyRuleFired vr = (VerifyRuleFired) sc.assertions[4];
+        assertFalse(vr.success);
+
+        assertEquals(2, vr.expectedCount.intValue());
+        assertEquals(1, vr.actual.intValue());
 
 
 	}
