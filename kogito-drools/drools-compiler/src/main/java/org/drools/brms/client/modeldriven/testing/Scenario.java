@@ -35,7 +35,7 @@ public class Scenario implements Serializable {
 	/**
 	 * The rules to trace in this scenario.
 	 */
-	public ScenarioRules ruleTrace = new ScenarioRules();
+	public ExecutionTrace executionTrace = new ExecutionTrace();
 
 	/**
 	 * Returns true if this was a totally successful scenario, based on the results contained.
@@ -49,17 +49,6 @@ public class Scenario implements Serializable {
 		}
 		return true;
 	}
-
-	/**
-	 * The time taken for execution.
-	 */
-	public long executionTimeResult = -1;
-
-
-	/**
-	 * This is the date the last time the scenario was run (and what the results apply to).
-	 */
-	public Date lastRunResult;
 
 }
 
