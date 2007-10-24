@@ -80,7 +80,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		runner.verify(vf);
 		for (int i = 0; i < vf.fieldValues.length; i++) {
-			assertTrue(vf.fieldValues[i].success);
+			assertTrue(vf.fieldValues[i].successResult);
 		}
 
 		vf = new VerifyFact();
@@ -91,7 +91,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		runner.verify(vf);
 		for (int i = 0; i < vf.fieldValues.length; i++) {
-			assertTrue(vf.fieldValues[i].success);
+			assertTrue(vf.fieldValues[i].successResult);
 		}
 
 		// test one false
@@ -101,10 +101,10 @@ public class ScenarioRunnerTest extends RuleUnit {
 				new VerifyField("age", "33") };
 
 		runner.verify(vf);
-		assertFalse(vf.fieldValues[0].success);
-		assertTrue(vf.fieldValues[1].success);
+		assertFalse(vf.fieldValues[0].successResult);
+		assertTrue(vf.fieldValues[1].successResult);
 
-		assertEquals("michael", vf.fieldValues[0].actual);
+		assertEquals("michael", vf.fieldValues[0].actualResult);
 		assertEquals("mark", vf.fieldValues[0].expected);
 
 		// test 2 false
@@ -114,13 +114,13 @@ public class ScenarioRunnerTest extends RuleUnit {
 				new VerifyField("age", "32") };
 
 		runner.verify(vf);
-		assertFalse(vf.fieldValues[0].success);
-		assertFalse(vf.fieldValues[1].success);
+		assertFalse(vf.fieldValues[0].successResult);
+		assertFalse(vf.fieldValues[1].successResult);
 
-		assertEquals("michael", vf.fieldValues[0].actual);
+		assertEquals("michael", vf.fieldValues[0].actualResult);
 		assertEquals("mark", vf.fieldValues[0].expected);
 
-		assertEquals("33", vf.fieldValues[1].actual);
+		assertEquals("33", vf.fieldValues[1].actualResult);
 		assertEquals("32", vf.fieldValues[1].expected);
 
 	}
@@ -147,7 +147,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		assertTrue(runner.populatedData.containsKey("c1"));
 		VerifyFact vf = (VerifyFact) sc.assertions[0];
 		for (int i = 0; i < vf.fieldValues.length; i++) {
-			assertTrue(vf.fieldValues[i].success);
+			assertTrue(vf.fieldValues[i].successResult);
 		}
 
 	}
@@ -165,23 +165,23 @@ public class ScenarioRunnerTest extends RuleUnit {
 		v.ruleName = "foo";
 		v.expectedFire = true;
 		runner.verify(v, firingCounts);
-		assertTrue(v.success);
-		assertEquals(2, v.actual.intValue());
+		assertTrue(v.successResult);
+		assertEquals(2, v.actualResult.intValue());
 
 		v = new VerifyRuleFired();
 		v.ruleName = "foo";
 		v.expectedFire = false;
 		runner.verify(v, firingCounts);
-		assertFalse(v.success);
-		assertEquals(2, v.actual.intValue());
+		assertFalse(v.successResult);
+		assertEquals(2, v.actualResult.intValue());
 
 		v = new VerifyRuleFired();
 		v.ruleName = "foo";
 		v.expectedCount = 2;
 
 		runner.verify(v, firingCounts);
-		assertTrue(v.success);
-		assertEquals(2, v.actual.intValue());
+		assertTrue(v.successResult);
+		assertEquals(2, v.actualResult.intValue());
 
 	}
 
@@ -305,8 +305,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertEquals(0, p.getAge());
 
 
-        assertTrue((new Date()).after(sc.lastRunDate));
-        assertTrue(sc.executionTimeTaken != -1);
+        assertTrue((new Date()).after(sc.lastRunResult));
+        assertTrue(sc.executionTimeResult != -1);
 
 	}
 
@@ -354,15 +354,15 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertFalse(sc.wasSuccessful());
 
         VerifyFact vf = (VerifyFact) sc.assertions[1];
-        assertFalse(vf.fieldValues[0].success);
+        assertFalse(vf.fieldValues[0].successResult);
         assertEquals("XXX", vf.fieldValues[0].expected);
-        assertEquals("rule1", vf.fieldValues[0].actual);
+        assertEquals("rule1", vf.fieldValues[0].actualResult);
 
         VerifyRuleFired vr = (VerifyRuleFired) sc.assertions[4];
-        assertFalse(vr.success);
+        assertFalse(vr.successResult);
 
         assertEquals(2, vr.expectedCount.intValue());
-        assertEquals(1, vr.actual.intValue());
+        assertEquals(1, vr.actualResult.intValue());
 
 
 	}
