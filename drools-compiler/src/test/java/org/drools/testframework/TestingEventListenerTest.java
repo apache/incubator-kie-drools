@@ -5,32 +5,22 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 
-public class TestingEventListenerTest extends TestCase {
+public class TestingEventListenerTest extends RuleUnit {
 
 	public void testInclusive() throws Exception {
 		HashSet<String> set = new HashSet<String>();
 		set.add("rule1");
 		set.add("rule2");
 
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader(this.getClass().getResourceAsStream( "test_rules.drl" )) );
+		StatefulSession session  = getWorkingMemory("test_rules.drl");
+        TestingEventListener ls = new TestingEventListener(set, session.getRuleBase(), true);
 
-        assertFalse(builder.getErrors().toString(), builder.hasErrors());
-
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        rb.addPackage(builder.getPackage());
-
-        TestingEventListener ls = new TestingEventListener(set, rb, true);
-
-        StatefulSession session = rb.newStatefulSession();
         session.addEventListener(ls);
 
         session.insert(new Cheese());
@@ -57,17 +47,11 @@ public class TestingEventListenerTest extends TestCase {
 		set.add("rule3");
 
 
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader(this.getClass().getResourceAsStream( "test_rules.drl" )) );
+		StatefulSession session  = getWorkingMemory("test_rules.drl");
 
-        assertFalse(builder.getErrors().toString(), builder.hasErrors());
+        TestingEventListener ls = new TestingEventListener(set, session.getRuleBase(), false);
 
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        rb.addPackage(builder.getPackage());
 
-        TestingEventListener ls = new TestingEventListener(set, rb, false);
-
-        StatefulSession session = rb.newStatefulSession();
         session.addEventListener(ls);
 
         session.insert(new Cheese());
@@ -87,17 +71,10 @@ public class TestingEventListenerTest extends TestCase {
 		HashSet<String> set = new HashSet<String>();
 
 
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader(this.getClass().getResourceAsStream( "test_rules.drl" )) );
+		StatefulSession session  = getWorkingMemory("test_rules.drl");
 
-        assertFalse(builder.getErrors().toString(), builder.hasErrors());
+        TestingEventListener ls = new TestingEventListener(set, session.getRuleBase(), false);
 
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        rb.addPackage(builder.getPackage());
-
-        TestingEventListener ls = new TestingEventListener(set, rb, false);
-
-        StatefulSession session = rb.newStatefulSession();
         session.addEventListener(ls);
 
         session.insert(new Cheese());

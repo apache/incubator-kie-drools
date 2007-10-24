@@ -18,4 +18,15 @@ public class VerifyFact implements Assertion {
 		this.fieldValues = fieldValues;
 	}
 
+
+	public boolean wasSuccessful() {
+		for (int i = 0; i < fieldValues.length; i++) {
+			VerifyField vf = fieldValues[i];
+			if (!vf.success) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

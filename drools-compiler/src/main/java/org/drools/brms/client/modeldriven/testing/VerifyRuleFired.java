@@ -12,7 +12,20 @@ public class VerifyRuleFired implements Assertion {
 	 */
 	public Boolean expectedFire;
 
+
+	public VerifyRuleFired() {}
+	public VerifyRuleFired(String ruleName, Integer expectedCount, Boolean expectedFire) {
+		this.ruleName = ruleName;
+		this.expectedCount = expectedCount;
+		this.expectedFire = expectedFire;
+	}
+
 	public Boolean success;
 	public Integer actual;
+
+
+	public boolean wasSuccessful() {
+		return success;
+	}
 
 }
