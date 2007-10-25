@@ -66,7 +66,7 @@ public class InsuranceCalculateTest extends TestCase {
 
         session.fireAllRules();
         
-        assertEquals( 2.333772,
+        assertEquals( 3.7340352000000006,
                       driver.getInsuranceFactor() );
 
         assertTrue( policy.isApproved() );
