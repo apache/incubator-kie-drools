@@ -284,6 +284,8 @@ public class SuggestionCompletionLoader {
                     this.builder.addFactType( shortTypeName );
                 } catch ( final IOException e ) {
                     this.errors.add( "Error while inspecting the class: " + className + ". The error was: " + e.getMessage() );
+                } catch (NoClassDefFoundError e) {
+                	this.errors.add( "Unable to find the class: " + e.getMessage().replace('/', '.') + " which is required by: " + className + ". You may need to add more classes to the model.");
                 }
             }
         }
