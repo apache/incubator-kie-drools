@@ -25,7 +25,7 @@ public class VerifyRuleFired implements Assertion {
 
 
 	public boolean wasSuccessful() {
-		return successResult;
+		return successResult.booleanValue();
 	}
 
 }
