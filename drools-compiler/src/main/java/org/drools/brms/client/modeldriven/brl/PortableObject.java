@@ -1,5 +1,7 @@
 package org.drools.brms.client.modeldriven.brl;
 
+import java.io.Serializable;
+
 /**
  * This is the marker interface for portable Ajaxy type objects.
  * This is replaced in the BRMS with a GWT specific one, and only used here so the RuleModel
@@ -7,6 +9,6 @@ package org.drools.brms.client.modeldriven.brl;
  * @author Michael Neale
  *
  */
-public interface PortableObject {
+public interface PortableObject extends Serializable {
 
 }
