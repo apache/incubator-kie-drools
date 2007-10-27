@@ -1,13 +1,12 @@
 package org.drools.analytics.components;
 
-import java.io.Serializable;
+import org.drools.analytics.report.components.Cause;
 
 /**
  * 
  * @author Toni Rikkola
  */
-public class Constraint extends AnalyticsComponent implements Serializable {
-	private static final long serialVersionUID = -1564096753608593465L;
+public class Constraint extends AnalyticsComponent implements Cause {
 
 	private static int index = 0;
 
@@ -15,6 +14,7 @@ public class Constraint extends AnalyticsComponent implements Serializable {
 	private int patternId;
 	private boolean patternIsNot;
 	private int fieldId;
+	private String fieldName;
 	private int lineNumber;
 
 	public Constraint() {
@@ -24,6 +24,10 @@ public class Constraint extends AnalyticsComponent implements Serializable {
 	@Override
 	public AnalyticsComponentType getComponentType() {
 		return AnalyticsComponentType.CONSTRAINT;
+	}
+
+	public CauseType getCauseType() {
+		return CauseType.CONSTRAINT;
 	}
 
 	public int getFieldId() {
@@ -64,5 +68,18 @@ public class Constraint extends AnalyticsComponent implements Serializable {
 
 	public void setPatternIsNot(boolean patternIsNot) {
 		this.patternIsNot = patternIsNot;
+	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
+	}
+
+	@Override
+	public String toString() {
+		return "Constraint id: " + id + " field name: " + fieldName;
 	}
 }

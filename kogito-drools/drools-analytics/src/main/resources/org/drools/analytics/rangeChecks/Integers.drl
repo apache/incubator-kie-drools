@@ -3,7 +3,6 @@ package org.drools.analytics.rangeChecks.integers;
 
 #list any import classes here.
 import org.drools.analytics.components.*;
-import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.Gap;
 
 import org.drools.analytics.dao.AnalyticsResult;

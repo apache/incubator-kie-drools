@@ -20,4 +20,12 @@ public class AnalyticsDataFactory {
 
 		return result;
 	}
+
+	public static void clearAnalyticsResult() {
+		result = new AnalyticsResultNormal();
+	}
+
+	public static void clearAnalyticsData() {
+		data = new AnalyticsDataMaps();
+	}
 }

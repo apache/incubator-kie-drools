@@ -13,7 +13,10 @@ public interface Cause {
 		RESTRICTION,
 		POSSIBILITY,
 		RANGE_CHECK_CAUSE, 
-		REDUNDANCY
+		REDUNDANCY, 
+		EVAL,
+		PREDICATE, 
+		CONSTRAINT
 	}
 	
 	public int getId();

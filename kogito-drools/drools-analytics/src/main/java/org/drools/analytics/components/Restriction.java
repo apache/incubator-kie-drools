@@ -13,14 +13,14 @@ public abstract class Restriction extends AnalyticsComponent implements Cause {
 
 	private static int index = 0;
 
-	private int ruleId;
 	private int patternId;
 	private boolean patternIsNot;
 	private int constraintId;
-	// Id of the field that this restriction is compared to.
+
+	// Id of the field that this restriction is related to.
 	private int fieldId;
 
-	private String evaluator;
+	protected String evaluator;
 
 	public Restriction() {
 		super(index++);

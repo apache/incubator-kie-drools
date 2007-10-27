@@ -20,6 +20,7 @@ public class AnalyticsRule extends AnalyticsComponent implements Cloneable,
 
 	public AnalyticsRule() {
 		super(index++);
+		ruleId = index;
 	}
 
 	@Override
@@ -68,6 +69,7 @@ public class AnalyticsRule extends AnalyticsComponent implements Cloneable,
 		AnalyticsRule clone = new AnalyticsRule();
 
 		clone.setRuleName(ruleName);
+		clone.setRuleId(ruleId);
 		clone.setRuleSalience(ruleSalience);
 		clone.setRuleAgendaGroup(ruleAgendaGroup);
 		clone.setConsequence(consequence);

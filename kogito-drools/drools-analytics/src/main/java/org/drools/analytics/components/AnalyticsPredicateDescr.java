@@ -1,10 +1,13 @@
 package org.drools.analytics.components;
 
+import org.drools.analytics.report.components.Cause;
+
 /**
  * 
  * @author Toni Rikkola
  */
-public class AnalyticsPredicateDescr extends AnalyticsComponent {
+public class AnalyticsPredicateDescr extends AnalyticsComponent implements
+		Cause {
 
 	private static int index = 0;
 
@@ -18,6 +21,10 @@ public class AnalyticsPredicateDescr extends AnalyticsComponent {
 	@Override
 	public AnalyticsComponentType getComponentType() {
 		return AnalyticsComponentType.PREDICATE;
+	}
+
+	public CauseType getCauseType() {
+		return CauseType.PREDICATE;
 	}
 
 	public String getClassMethodName() {
@@ -34,5 +41,10 @@ public class AnalyticsPredicateDescr extends AnalyticsComponent {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	@Override
+	public String toString() {
+		return "Predicate id: " + id + " content: " + content;
 	}
 }

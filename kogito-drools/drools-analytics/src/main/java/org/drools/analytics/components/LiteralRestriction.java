@@ -119,6 +119,6 @@ public class LiteralRestriction extends Restriction implements Cause {
 	@Override
 	public String toString() {
 		return "LiteralRestriction from rule '" + ruleName + "' value '"
-				+ stringValue + "'";
+				+ evaluator + " " + stringValue + "'";
 	}
 }

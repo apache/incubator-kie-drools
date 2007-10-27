@@ -43,7 +43,7 @@ public class SolversTest extends TestCase {
 		Restriction r3 = new LiteralRestriction();
 		Restriction r4 = new LiteralRestriction();
 
-		OperatorDescr andDescr = OperatorDescr.valueOf(OperatorDescr.Type.AND);
+		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
 		Solvers solvers = new Solvers();
 
 		solvers.startRuleSolver(rule);
@@ -113,7 +113,7 @@ public class SolversTest extends TestCase {
 		Restriction r = new LiteralRestriction();
 		Restriction r2 = new LiteralRestriction();
 
-		OperatorDescr andDescr = OperatorDescr.valueOf(OperatorDescr.Type.AND);
+		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
 		Solvers solvers = new Solvers();
 
 		solvers.startRuleSolver(rule);
