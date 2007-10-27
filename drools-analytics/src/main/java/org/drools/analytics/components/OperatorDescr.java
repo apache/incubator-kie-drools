@@ -11,28 +11,19 @@ public class OperatorDescr extends AnalyticsComponent implements Serializable {
 
 	private static int index = 0;
 
-	private static final OperatorDescr OR_OPERATOR = new OperatorDescr(Type.OR);
-	private static final OperatorDescr AND_OPERATOR = new OperatorDescr(Type.AND);
-
 	public static enum Type {
 		AND, OR
 	};
 
 	private Type type;
 
-	private OperatorDescr() {
+	public OperatorDescr() {
 		super(index++);
 	}
 
-	public static OperatorDescr valueOf(Type type) {
-		switch (type) {
-		case OR:
-			return OR_OPERATOR;
-		case AND:
-			return AND_OPERATOR;
-		default:
-			return null;
-		}
+	public OperatorDescr(Type operatorType) {
+		super(index++);
+		this.type = operatorType;
 	}
 
 	@Override
@@ -40,12 +31,11 @@ public class OperatorDescr extends AnalyticsComponent implements Serializable {
 		return AnalyticsComponentType.OPERATOR;
 	}
 
-	private OperatorDescr(Type operatorType) {
-		super(index++);
-		this.type = operatorType;
-	}
-
 	public Type getType() {
 		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 }

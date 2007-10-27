@@ -1,0 +1,222 @@
+#created on: 25.10.2007
+package org.drools.analytics.optimisation.drl
+
+#list any import classes here.
+import java.util.Collection;
+import java.util.ArrayList;
+
+import org.drools.analytics.components.Restriction;
+import org.drools.analytics.components.Pattern;
+import org.drools.analytics.components.AnalyticsRule;
+import org.drools.analytics.components.OperatorDescr;
+import org.drools.analytics.components.AnalyticsPredicateDescr;
+import org.drools.analytics.components.AnalyticsComponent;
+import org.drools.analytics.components.AnalyticsComponentType;
+import org.drools.analytics.report.components.AnalyticsMessage;
+import org.drools.analytics.dao.AnalyticsResult;
+
+
+#declare any global variables here
+global AnalyticsResult result;
+
+
+# Informs that rule would be more effective if the less expensive
+# component was on the left side.
+# 
+# Type: Note
+# Example: { a:bar } < { baz == 1 } < { baz > 1 || < 1 } < { baz != 1 }
+#
+rule "Optimise restrictions inside operator"
+	when
+		$operator :OperatorDescr()
+	
+		(
+				$r1 :Restriction(
+					parent.parent == $operator,
+					( evaluator == "==" || == "matches" )
+				)
+			and
+				# There is no reason to check if there is a less expensive constraint
+				# if this one has a restriction that is more expensive.
+				not Restriction(
+					parent == $r1.parent,
+					( evaluator == ">" || == "<" || == ">=" || == "<=" || == "not matches" || == "!=" ) 
+				)
+			and
+				$r2 :Restriction(
+					parent.parent == $operator,
+					parent.orderNumber < $r1.parent.orderNumber,
+					( evaluator == ">" || == "<" || == ">=" || == "<=" || == "not matches" || == "!=" ) 
+				)
+			and
+				# The other restriction should not have any less expensive restrictions. 
+				not Restriction(
+					parent == $r2.parent,
+					( evaluator == "==" || == "matches" )
+				)
+		) or (
+				$r1 :Restriction(
+					parent.parent == $operator,
+					( evaluator == ">" || == "<" )
+				)
+			and
+				# There is no reason to check if there is a less expensive constraint
+				# if this one has a restriction that is more expensive.
+				not Restriction(
+					parent == $r1.parent,
+					( evaluator == ">=" || == "<=" || == "not matches" || == "!=" ) 
+				)
+			and
+				$r2 :Restriction(
+					parent.parent == $operator,
+					parent.orderNumber < $r1.parent.orderNumber,
+					( evaluator == ">=" || == "<=" || == "not matches" || == "!=" ) 
+				)
+			and
+				# The other restriction should not have any less expensive restrictions. 
+				not Restriction(
+					parent == $r2.parent,
+					( evaluator == "==" || == "matches" || == ">" || == "<" )
+				)
+		) or (
+				$r1 :Restriction(
+					parent.parent == $operator,
+					( evaluator == ">=" || == "<=" )
+				)
+			and
+				# There is no reason to check if there is a less expensive constraint
+				# if this one has a restriction that is more expensive.
+				not Restriction(
+					parent == $r1.parent,
+					( evaluator == "not matches" || == "!=" ) 
+				)
+			and
+				$r2 :Restriction(
+					parent.parent == $operator,
+					parent.orderNumber < $r1.parent.orderNumber,
+					( evaluator == "not matches" || == "!=" ) 
+				)
+			and
+				# The other restriction should not have any less expensive restrictions. 
+				not Restriction(
+					parent == $r2.parent,
+					( evaluator == "==" || == "matches" || == ">" || == "<" || == ">" || == "<" || == ">=" || == "<=" )
+				)
+		)
+		
+		$pattern :Pattern( 
+			id == $r1.patternId 
+		)
+	then
+		Collection list = new ArrayList();
+		list.add( $r1 ); 
+		list.add( $r2 ); 
+		result.save( new AnalyticsMessage( 
+								AnalyticsMessage.Severity.NOTE, 
+								AnalyticsMessage.MessageType.OPTIMISATION, 
+								$pattern, 
+								"Rule \"" + $r1.getRuleName() + 
+								"\" would be more effective if the more restrictive component (" + 
+								$r2 +
+								") could be before (" + 
+								$r1 + ").", 
+								list ) );
+end
+
+# Informs that rule would be more effective if the less expensive
+# component was on the left side.
+# 
+# Type: Note
+# Example: { a:bar } < { baz == 1 } < { baz > 1 || < 1 } < { baz != 1 }
+#
+rule "Optimise restrictions inside constraint"
+	when
+		(
+				$r1 :Restriction(
+					( evaluator == "==" || == "matches" )
+				)
+			and
+				$r2 :Restriction(
+					parent == $r1.parent,
+					orderNumber < $r1.orderNumber,
+					( evaluator == ">" || == "<" || == ">=" || == "<=" || == "not matches" || == "!=" ) 
+				)
+		) or (
+				$r1 :Restriction(
+					( evaluator == ">" || == "<" )
+				)
+			and
+				$r2 :Restriction(
+					parent == $r1.parent,
+					orderNumber < $r1.orderNumber,
+					( evaluator == ">=" || == "<=" || == "not matches" || == "!=" ) 
+				)
+		) or (
+				$r1 :Restriction(
+					( evaluator == ">=" || == "<=" )
+				)
+			and
+				$r2 :Restriction(
+					parent == $r1.parent,
+					orderNumber < $r1.orderNumber,
+					( evaluator == "not matches" || == "!=" ) 
+				)
+		)
+		
+		$pattern :Pattern( 
+			id == $r1.patternId 
+		)
+	then
+		Collection list = new ArrayList();
+		list.add( $r1 ); 
+		list.add( $r2 ); 
+		result.save( new AnalyticsMessage( 
+								AnalyticsMessage.Severity.NOTE, 
+								AnalyticsMessage.MessageType.OPTIMISATION, 
+								$pattern, 
+								"Rule \"" + $r1.getRuleName() + 
+								"\" would be more effective if the more restrictive component (" + 
+								$r2 +
+								") could be before (" + 
+								$r1 + ").", 
+								list ) );
+end
+
+# AnalyticsPredicateDescr should be last.
+# 
+# Type: Note
+# Example: Foo( eval( bar == 1), bar == 1 ) 
+#
+rule "Optimise predicates inside operator"
+	when
+		$operator :OperatorDescr()
+		
+		$predicate :AnalyticsPredicateDescr( 
+			parent == $operator 
+		)
+		
+		# Any other AnalyticsComponent that is not predicate or operator 
+		$other :AnalyticsComponent(
+			parent == $operator,
+			orderNumber > $predicate.orderNumber,
+			( componentType != AnalyticsComponentType.OPERATOR && != AnalyticsComponentType.PREDICATE )
+		)
+
+		$rule :AnalyticsRule( 
+			id == $predicate.ruleId 
+		)
+	then
+		Collection list = new ArrayList();
+		list.add( $predicate );
+		list.add( $other );
+		result.save( new AnalyticsMessage(
+								AnalyticsMessage.Severity.NOTE, 
+								AnalyticsMessage.MessageType.OPTIMISATION, 
+								$rule, 
+								"Rule \"" + $predicate.getRuleName() + 
+								"\" would be more effective if the less expensive component, (" + 
+								$other +
+								"), could be before (" + 
+								$predicate + ").", 
+								list ) );
+end

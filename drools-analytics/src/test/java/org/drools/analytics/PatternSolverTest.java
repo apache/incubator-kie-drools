@@ -8,14 +8,12 @@ import org.drools.analytics.components.LiteralRestriction;
 import org.drools.analytics.components.OperatorDescr;
 import org.drools.analytics.components.Pattern;
 
-
-
 import junit.framework.TestCase;
 
 /**
  * 
  * @author Toni Rikkola
- *
+ * 
  */
 public class PatternSolverTest extends TestCase {
 
@@ -35,8 +33,7 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction = new LiteralRestriction();
 		LiteralRestriction literalRestriction2 = new LiteralRestriction();
 
-		OperatorDescr operatorDescr = OperatorDescr
-				.valueOf(OperatorDescr.Type.AND);
+		OperatorDescr operatorDescr = new OperatorDescr(OperatorDescr.Type.AND);
 		PatternSolver solver = new PatternSolver(pattern);
 
 		solver.add(operatorDescr);
@@ -67,8 +64,7 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction = new LiteralRestriction();
 		LiteralRestriction literalRestriction2 = new LiteralRestriction();
 
-		OperatorDescr operatorDescr = OperatorDescr
-				.valueOf(OperatorDescr.Type.OR);
+		OperatorDescr operatorDescr = new OperatorDescr(OperatorDescr.Type.OR);
 		PatternSolver solver = new PatternSolver(pattern);
 
 		solver.add(operatorDescr);
@@ -103,8 +99,8 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction2 = new LiteralRestriction();
 		LiteralRestriction literalRestriction3 = new LiteralRestriction();
 
-		OperatorDescr orDescr = OperatorDescr.valueOf(OperatorDescr.Type.OR);
-		OperatorDescr andDescr = OperatorDescr.valueOf(OperatorDescr.Type.AND);
+		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.OR);
+		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
 		PatternSolver solver = new PatternSolver(pattern);
 
 		solver.add(orDescr);
@@ -147,8 +143,8 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction2 = new LiteralRestriction();
 		LiteralRestriction literalRestriction3 = new LiteralRestriction();
 
-		OperatorDescr orDescr = OperatorDescr.valueOf(OperatorDescr.Type.AND);
-		OperatorDescr andDescr = OperatorDescr.valueOf(OperatorDescr.Type.OR);
+		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.AND);
+		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.OR);
 		PatternSolver solver = new PatternSolver(pattern);
 
 		solver.add(orDescr);
@@ -197,9 +193,9 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction3 = new LiteralRestriction();
 		LiteralRestriction literalRestriction4 = new LiteralRestriction();
 
-		OperatorDescr andDescr = OperatorDescr.valueOf(OperatorDescr.Type.AND);
-		OperatorDescr orDescr = OperatorDescr.valueOf(OperatorDescr.Type.OR);
-		OperatorDescr orDescr2 = OperatorDescr.valueOf(OperatorDescr.Type.OR);
+		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
+		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.OR);
+		OperatorDescr orDescr2 = new OperatorDescr(OperatorDescr.Type.OR);
 		PatternSolver solver = new PatternSolver(pattern);
 
 		solver.add(andDescr);
@@ -255,9 +251,9 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction3 = new LiteralRestriction();
 		LiteralRestriction literalRestriction4 = new LiteralRestriction();
 
-		OperatorDescr orDescr = OperatorDescr.valueOf(OperatorDescr.Type.OR);
-		OperatorDescr andDescr = OperatorDescr.valueOf(OperatorDescr.Type.AND);
-		OperatorDescr andDescr2 = OperatorDescr.valueOf(OperatorDescr.Type.AND);
+		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.OR);
+		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
+		OperatorDescr andDescr2 = new OperatorDescr(OperatorDescr.Type.AND);
 		PatternSolver solver = new PatternSolver(pattern);
 
 		solver.add(orDescr);
@@ -307,9 +303,9 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction3 = new LiteralRestriction();
 		LiteralRestriction literalRestriction4 = new LiteralRestriction();
 
-		OperatorDescr orDescr = OperatorDescr.valueOf(OperatorDescr.Type.OR);
-		OperatorDescr andDescr = OperatorDescr.valueOf(OperatorDescr.Type.AND);
-		OperatorDescr orDescr2 = OperatorDescr.valueOf(OperatorDescr.Type.OR);
+		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.OR);
+		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
+		OperatorDescr orDescr2 = new OperatorDescr(OperatorDescr.Type.OR);
 		PatternSolver solver = new PatternSolver(pattern);
 
 		solver.add(orDescr);
@@ -360,9 +356,9 @@ public class PatternSolverTest extends TestCase {
 		LiteralRestriction literalRestriction4 = new LiteralRestriction();
 		LiteralRestriction literalRestriction5 = new LiteralRestriction();
 
-		OperatorDescr andDescr = OperatorDescr.valueOf(OperatorDescr.Type.AND);
-		OperatorDescr andDescr2 = OperatorDescr.valueOf(OperatorDescr.Type.AND);
-		OperatorDescr orDescr = OperatorDescr.valueOf(OperatorDescr.Type.OR);
+		OperatorDescr andDescr = new OperatorDescr(OperatorDescr.Type.AND);
+		OperatorDescr andDescr2 = new OperatorDescr(OperatorDescr.Type.AND);
+		OperatorDescr orDescr = new OperatorDescr(OperatorDescr.Type.OR);
 		PatternSolver solver = new PatternSolver(pattern);
 
 		solver.add(andDescr);

@@ -57,6 +57,8 @@ class RuleLoader {
 
 		list.add(new InputStreamReader(RuleLoader.class
 				.getResourceAsStream("Consequence.drl")));
+		list.add(new InputStreamReader(RuleLoader.class
+				.getResourceAsStream("optimisation/RestrictionOrder.drl")));
 
 		// list.add(new InputStreamReader(RuleLoader.class
 		// .getResourceAsStream("redundancy/Possibilities.drl")));

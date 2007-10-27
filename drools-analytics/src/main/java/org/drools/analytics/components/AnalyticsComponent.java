@@ -8,10 +8,13 @@ public abstract class AnalyticsComponent implements
 		Comparable<AnalyticsComponent> {
 
 	protected String ruleName;
+	protected int ruleId;
 	protected int id;
 
 	protected AnalyticsComponent parent;
-	protected int orderNumber; // Order number of this instance under parent.
+	protected int orderNumber = 0; // Order number of this instance under
+
+	// parent.
 
 	public abstract AnalyticsComponentType getComponentType();
 
@@ -53,5 +56,13 @@ public abstract class AnalyticsComponent implements
 
 	public void setOrderNumber(int orderNumber) {
 		this.orderNumber = orderNumber;
+	}
+
+	public int getRuleId() {
+		return ruleId;
+	}
+
+	public void setRuleId(int ruleId) {
+		this.ruleId = ruleId;
 	}
 }

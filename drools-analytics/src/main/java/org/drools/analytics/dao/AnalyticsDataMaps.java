@@ -9,10 +9,13 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.drools.analytics.components.AnalyticsClass;
+import org.drools.analytics.components.AnalyticsEvalDescr;
+import org.drools.analytics.components.AnalyticsPredicateDescr;
 import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.components.Constraint;
 import org.drools.analytics.components.Field;
 import org.drools.analytics.components.FieldClassLink;
+import org.drools.analytics.components.OperatorDescr;
 import org.drools.analytics.components.Pattern;
 import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.Restriction;
@@ -43,6 +46,9 @@ class AnalyticsDataMaps implements AnalyticsData {
 	private Map<Integer, Constraint> constraintsById = new TreeMap<Integer, Constraint>();
 	private Map<Integer, Restriction> restrictionsById = new TreeMap<Integer, Restriction>();
 	private DataTree<Integer, Restriction> restrictionsByFieldId = new DataTree<Integer, Restriction>();
+	private Map<Integer, OperatorDescr> operatorsById = new TreeMap<Integer, OperatorDescr>();
+	private Map<Integer, AnalyticsEvalDescr> evalsById = new TreeMap<Integer, AnalyticsEvalDescr>();
+	private Map<Integer, AnalyticsPredicateDescr> predicatesById = new TreeMap<Integer, AnalyticsPredicateDescr>();
 
 	private Map<String, Variable> variablesByRuleAndVariableName = new TreeMap<String, Variable>();
 
@@ -152,6 +158,9 @@ class AnalyticsDataMaps implements AnalyticsData {
 		objects.addAll(patternsById.values());
 		objects.addAll(constraintsById.values());
 		objects.addAll(restrictionsById.values());
+		objects.addAll(operatorsById.values());
+		objects.addAll(evalsById.values());
+		objects.addAll(predicatesById.values());
 
 		objects.addAll(patternPossibilitiesById.values());
 		objects.addAll(rulePossibilitiesById.values());
@@ -211,5 +220,17 @@ class AnalyticsDataMaps implements AnalyticsData {
 
 	public Collection<Restriction> getRestrictionsByFieldId(int id) {
 		return restrictionsByFieldId.getBranch(id);
+	}
+
+	public void save(OperatorDescr operatorDescr) {
+		operatorsById.put(operatorDescr.getId(), operatorDescr);
+	}
+
+	public void save(AnalyticsEvalDescr eval) {
+		evalsById.put(eval.getId(), eval);
+	}
+
+	public void save(AnalyticsPredicateDescr predicate) {
+		predicatesById.put(predicate.getId(), predicate);
 	}
 }
