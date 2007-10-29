@@ -29,4 +29,14 @@ public final class PossibleCellValue
    {
       super(value, row, col);
    }
+   
+   /**
+    * Uses the constructor on the superclass to construct a new PossibleCellValue
+    * 
+    * @param cellValue the existing cellValue to copy the information from
+    */ 
+   public PossibleCellValue(AbstractCellValue cellValue)
+   {
+      super(cellValue);
+   }
 }

@@ -29,4 +29,14 @@ public class ResolvedCellValue
    {
       super(value, row, col);
    }
+   
+   /**
+    * Uses the constructor on the superclass to construct a new PossibleCellValue
+    * 
+    * @param cellValue the existing cellValue to copy the information from
+    */ 
+   public ResolvedCellValue(AbstractCellValue cellValue)
+   {
+      super(cellValue);
+   }   
 }
