@@ -46,6 +46,17 @@ public abstract class AbstractCellValue
       this.col = col;
       this.zone = deriveZone(row, col);
    }
+
+   /**
+    * Create a new AbstractCellValue with the same value, row
+    * and column as the passed cellValue. The zone is added automatically.
+    * 
+    * @param cellValue the existing cellValue to copy the information from
+    */ 
+   protected AbstractCellValue(AbstractCellValue cellValue)
+   {
+      this(cellValue.getValue(), cellValue.getRow(), cellValue.getCol());
+   }
    
    /**
     * Derives the 3x3 zone in which the cell is located based on its row and column
