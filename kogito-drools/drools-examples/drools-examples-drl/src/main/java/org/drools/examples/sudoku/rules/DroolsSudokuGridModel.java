@@ -8,7 +8,6 @@ package org.drools.examples.sudoku.rules;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.drools.RuleBase;
@@ -33,6 +32,7 @@ import org.drools.examples.sudoku.swing.SudokuGridModel;
  * @author <a href="pbennett@redhat.com">Pete Bennett</a>
  * @version $Revision: 1.1 $
  */
+@SuppressWarnings("unchecked")
 public class DroolsSudokuGridModel
    extends AbstractSudokuGridModel
    implements SudokuGridModel
@@ -48,7 +48,12 @@ public class DroolsSudokuGridModel
    public final static String SUDOKU_VALIDATOR_DRL = "../sudokuValidator.drl";
    
    /** A set of AbtractCellValues capturing the current state of the grid */
-   private Set allCellValues = new HashSet();
+   private Set<AbstractCellValue> allCellValues 
+      = new HashSet<AbstractCellValue>();
+   
+   /** A index into the AbstractCellValues based on row and column */
+   private Set<Integer>[][] cellValuesByRowAndCol 
+      = new HashSet[SudokuGridModel.NUM_ROWS][SudokuGridModel.NUM_COLS];
 
    /** The solver rule base */
    private RuleBase solverRuleBase;
@@ -72,14 +77,20 @@ public class DroolsSudokuGridModel
     * 
     * @param cellValues a two dimensional grid of Integer values for cells, a null means the value is not yet resolved
     */
-   public DroolsSudokuGridModel(int[][] cellValues)
+   public DroolsSudokuGridModel(Integer[][] cellValues)
    {  
       this();
       setCellValues(cellValues);
    }
    
-   public void setCellValues(int[][] cellValues)
+   /**
+    * Set the state of the Grid based on a two dimensional array of Integers.
+    * 
+    * @param cellValues a two dimensional grid of Integer values for cells, a null means the value is not yet resolved
+    */
+   public void setCellValues(Integer[][] cellValues)
    {
+      long startTime = System.currentTimeMillis();
       if (solverRuleBase == null)
       {
          try
@@ -105,46 +116,78 @@ public class DroolsSudokuGridModel
       {
          for (int col=0; col<cellValues[row].length; col++)
          {
-            if(cellValues[row][col] == 0)
+            cellValuesByRowAndCol[row][col] = new HashSet<Integer>();
+            
+            if(cellValues[row][col] == null)
             {
                for(int value=1; value<10; value++)
                {
                   PossibleCellValue cellValue = new PossibleCellValue(value, row, col);
+                  addCellValue(cellValue);
                   allCellValues.add(cellValue);
                }
             }
             else
             {
                ResolvedCellValue cellValue = new ResolvedCellValue(cellValues[row][col], row, col);
-               allCellValues.add(cellValue);
+               addCellValue(cellValue);
             }
          }
       }
       
       insertAllCellValues(solverStatefulSession);
+      System.out.println("Setting up working memory and inserting all cell value POJOs took "+(System.currentTimeMillis()-startTime)+"ms.");
    }
    
+   /**
+    * Determines whether a given cell is editable from another class.
+    * 
+    * @param row the row in the grid for the cell
+    * @param col the column in the grid for the cell
+    * @return is the specified cell editable
+    */
    public boolean isCellEditable(int row, int col)
    {
       return false;
    }
-   
+
+   /**
+    * Determines whether a given cell has been solved.
+    * 
+    * @param row the row in the grid for the cell
+    * @param col the column in the grid for the cell
+    * @return is the specified cell solved
+    */
    public boolean isCellResolved(int row, int col)
    {
       return getPossibleCellValues(row, col).size() == 1;
    }
    
+   /**
+    * Evaluates the current state of the Grid against the 
+    * validation rules determined in the SUDOKU_VALIDATOR_DRL
+    * and indicates if the grid is currently solved or not.
+    * 
+    * @return true if the current state represents a completely filled out
+    *              and valid Sudoku solution, false otherwise
+    */
    public boolean isGridSolved()
    {
       boolean solved = true;
       
+      // TODO: move this logic into SUDOKU_VALIDATOR_DRL and out of Java code
       for(int row=0; row<NUM_ROWS; row++)
       {
          for (int col=0; col<NUM_COLS; col++)
          {
             if(!isCellResolved(row, col))
             {
-               System.out.println("("+row+","+col+") has not been resolved");
+               System.out.print("("+row+","+col+") has not been resolved but has been narrowed down to ");
+               for (Integer possibleInt : getPossibleCellValues(row, col))
+               {
+                  System.out.print(possibleInt+" ");
+               }
+               System.out.println();
                solved=false;
             }
          }
@@ -169,10 +212,8 @@ public class DroolsSudokuGridModel
             else
             {
                solved = false;
-               Iterator iter = issues.iterator();
-               while(iter.hasNext())
+               for (Object issue : issues)
                {
-            	  Object issue = iter.next();
                   System.out.println(issue);
                }
             }
@@ -187,23 +228,31 @@ public class DroolsSudokuGridModel
       return solved;
    }
    
-   public List getPossibleCellValues(int row, int col)
+   /**
+    * Returns the possible values of the cell at a specific 
+    * row and column in the Grid.
+    * 
+    * @param row the row in the Grid
+    * @param col the column in the Grid
+    * @return the Set of possible Integer values this cell can have, if 
+    *         the Set is of size one then this is the value this cell 
+    *         must have, otherwise it is a list of the possibilities
+    */
+   public Set<Integer> getPossibleCellValues(int row, int col)
    {
-      List possibleCellValues = new ArrayList();
-
-      Iterator iter = allCellValues.iterator();
-      while(iter.hasNext())
-      {
-    	 AbstractCellValue cellValue = (AbstractCellValue) iter.next();
-         if (cellValue.getRow() == row && cellValue.getCol() == col)
-         {
-            possibleCellValues.add(new Integer(cellValue.getValue()));
-         }
-      }
-      
-      return possibleCellValues;
+      return cellValuesByRowAndCol[row][col];
    }
    
+   /**
+    * Attempt to solve the Sudoku puzzle from its current state by 
+    * firing all of the rules in SUDOKU_SOLVER_DRL against the 
+    * current state of the Grid then validate if we have solved the 
+    * Grid after this.
+    * 
+    * @return true if the state after firing all rules 
+    *              represents a completely filled out
+    *              and valid Sudoku solution, false otherwise 
+    */
    public boolean solve()
    {
       solverStatefulSession.fireAllRules();
@@ -211,15 +260,61 @@ public class DroolsSudokuGridModel
       return isGridSolved();
    }
    
+   /**
+    * Fire the next rule on the agenda and return
+    * 
+    * @return true if the state after firing the single rule 
+    *              represents a completely filled out
+    *              and valid Sudoku solution, false otherwise 
+    */
+   public boolean step()
+   {
+      // TODO: I am not sure where the fireAllRules(int) method has gone
+      // should be solverStatefulSession.fireAllRules(1)
+      solverStatefulSession.fireAllRules();
+      
+      return isGridSolved();
+   }   
+   
+   /**
+    * Inserts all of the current state of the Grid as represented
+    * by the set of AbstractCellValues this class is maintaining
+    * into the specified StatefulSession working memory.
+    * 
+    * @param statefulSession the target StatefulSession
+    */
    private void insertAllCellValues(StatefulSession statefulSession)
    {
-	  Iterator iter = allCellValues.iterator();
-	  while(iter.hasNext())
-	  {
-	     AbstractCellValue cellValue = (AbstractCellValue) iter.next();
+      for (AbstractCellValue cellValue : allCellValues)
+      {
          statefulSession.insert(cellValue);
       }
    }
+
+   /**
+    * Adds the specified AbstractCellValue into the set of 
+    * AbstractCellValues that this class is maintaining.
+    * 
+    * @param cellValue the AbstractCellValue to add
+    */
+   private void addCellValue(AbstractCellValue cellValue)
+   {
+      allCellValues.add(cellValue);
+      cellValuesByRowAndCol[cellValue.getRow()][cellValue.getCol()].add(cellValue.getValue());
+   }
+
+   /**
+    * Removes the specified AbstractCellValue from the set of 
+    * AbstractCellValues that this class is maintaining.
+    * 
+    * @param cellValue the AbstractCellValue to remove
+    */
+   private void removeCellValue(AbstractCellValue cellValue)
+   {
+      allCellValues.remove(cellValue);
+      cellValuesByRowAndCol[cellValue.getRow()][cellValue.getCol()].remove(cellValue.getValue());
+   }
+ 
 
    class SudokuWorkingMemoryListener
       implements WorkingMemoryEventListener
@@ -228,7 +323,7 @@ public class DroolsSudokuGridModel
       {
          if (ev.getObject() instanceof AbstractCellValue)
          {
-            allCellValues.add(((AbstractCellValue) ev.getObject()));
+            addCellValue(((AbstractCellValue) ev.getObject()));
          }
          
          if (ev.getObject() instanceof ResolvedCellValue)
@@ -236,13 +331,21 @@ public class DroolsSudokuGridModel
             ResolvedCellValue cellValue = (ResolvedCellValue) ev.getObject();
             fireCellResolvedEvent(new SudokuGridEvent(this, cellValue.getRow(), cellValue.getCol(), cellValue.getValue()));
          }
+         
+         if (ev.getObject() instanceof String)
+         {
+            System.out.println(ev.getObject());
+         }
       }
    
       public void objectRetracted(ObjectRetractedEvent ev)
       {
          if (ev.getOldObject() instanceof AbstractCellValue)
          {
-            allCellValues.remove(((AbstractCellValue) ev.getOldObject()));
+            AbstractCellValue cellValue = (AbstractCellValue) ev.getOldObject();
+            
+            removeCellValue(cellValue);
+            fireCellUpdatedEvent(new SudokuGridEvent(this, cellValue.getRow(), cellValue.getCol(), cellValue.getValue()));
          }     
       }
    
@@ -252,7 +355,6 @@ public class DroolsSudokuGridModel
          {
             ResolvedCellValue cellValue = (ResolvedCellValue) ev.getObject();
             fireCellUpdatedEvent(new SudokuGridEvent(this, cellValue.getRow(), cellValue.getCol(), cellValue.getValue()));
-   
          }     
       }
    }

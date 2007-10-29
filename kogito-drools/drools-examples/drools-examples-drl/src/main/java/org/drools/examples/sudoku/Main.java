@@ -11,7 +11,6 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -48,21 +47,21 @@ public class Main
    private BorderLayout borderLayout = new BorderLayout();
    private FlowLayout flowLayout = new FlowLayout(FlowLayout.RIGHT);
    private JPanel buttonPanel = new JPanel(flowLayout);
-   private JButton solveButton = new JButton("Solve Grid");
+   private JButton solveButton = new JButton("Solve");
+   private JButton fireOneRuleButton = new JButton("Step");
    private JFileChooser fileChooser;
    
    public static void main(String[] args)
    {
-	  Main main = new Main();
+      @SuppressWarnings("unused")
+      Main main = new Main();
    }
    
    public Main()
    {
       mainFrame = new JFrame("Drools Sudoku Example");
-      Iterator iter = SudokuGridSamples.getInstance().getSampleNames().iterator();
-      while(iter.hasNext())
+      for (String sampleName : SudokuGridSamples.getInstance().getSampleNames())
       {
-         String sampleName = (String)iter.next();
          JMenuItem menuItem = new JMenuItem(sampleName);
          menuItem.addActionListener(this);
          samplesMenu.add(menuItem);
@@ -78,6 +77,7 @@ public class Main
       droolsSudokuGridModel = new DroolsSudokuGridModel(SudokuGridSamples.getInstance().getSample("Simple"));
       mainFrame.setLayout(borderLayout);
       mainFrame.add(BorderLayout.CENTER, sudokuGridView);
+      // buttonPanel.add(fireOneRuleButton);
       buttonPanel.add(solveButton);
       solveButton.addActionListener(this);
       mainFrame.add(BorderLayout.SOUTH, buttonPanel);

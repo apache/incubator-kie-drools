@@ -6,7 +6,7 @@
  */
 package org.drools.examples.sudoku.swing;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * An interface representing a 9x9 Sudoku Grid of Cells.
@@ -24,7 +24,7 @@ import java.util.List;
  * @version $Revision: 1.1 $
  */
 public interface SudokuGridModel
-{ 
+{
    /**
     * The number of rows in the Grid, i.e. the height
     */
@@ -34,11 +34,17 @@ public interface SudokuGridModel
     * The number of columns in the Grid, i.e. the width
     */
    public static int NUM_COLS = 9;
-   
-   public static int INNER_GRID_HEIGHT = 3;
-   
+
+   /**
+    * The number of colums that make up a zone within the Grid
+    */
    public static int INNER_GRID_WIDTH = 3;   
    
+   /**
+    * The number of rows that make up a zone within the Grid
+    */
+   public static int INNER_GRID_HEIGHT = 3;
+
    /**
     * A NUM_ROWSxNUM_COLS two dimensional array which maps from rows and columns
     * to the 3x3 subzones in a Sudoku grid
@@ -54,13 +60,13 @@ public interface SudokuGridModel
      { 7 , 7 , 7 , 8 , 8 , 8 , 9 , 9 , 9},
      { 7 , 7 , 7 , 8 , 8 , 8 , 9 , 9 , 9} };  
    
-   public void setCellValues(int[][] cellValues);
+   public void setCellValues(Integer[][] cellValues);
    
    public boolean isCellEditable(int row, int col);
    
    public boolean isCellResolved(int row, int col);
    
-   public List getPossibleCellValues(int row, int col);
+   public Set<Integer> getPossibleCellValues(int row, int col);
    
    public boolean solve();
    
