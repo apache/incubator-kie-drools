@@ -2,9 +2,11 @@ package org.drools.testframework;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.Cheese;
@@ -26,6 +28,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.TimeMachine;
+
+import com.thoughtworks.xstream.XStream;
 
 import junit.framework.TestCase;
 
@@ -59,6 +63,27 @@ public class ScenarioRunnerTest extends RuleUnit {
 		assertEquals("mic", p.getName());
 		assertEquals(33, p.getAge());
 
+	}
+
+	public void testDumpXStream() throws Exception {
+		XStream x = new XStream();
+
+
+		Foo f = new Foo();
+		f.another = new ArrayList();
+		f.another.add("whee");
+		f.another.add("waa");
+
+		f.something = new String[2];
+		f.something[0] = "whee";
+		f.something[1] = "waa";
+
+		System.err.println(x.toXML(f));
+	}
+
+	class Foo {
+		String[] something;
+	 	List another;
 	}
 
 	public void testVerifyFacts() throws Exception {
