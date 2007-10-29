@@ -6,7 +6,7 @@ import org.drools.examples.sudoku.rules.ResolvedCellValue;
 global java.util.List issues;
 
 /**
- * This rule package defines a set of rules that can be used to validate whether a valid Suoku solution
+ * This rule package defines a set of rules that can be used to validate whether a valid Sudoku solution
  * has been produced or not. It expects to have objects of type PossibleCellValue and ResolvedCellValue
  * inserted into the working memory and will then check that only a single ResolvedCellValue exists
  * in a 9x9 Sudoku grid for each row, column and 3x3 zone.
@@ -20,6 +20,14 @@ global java.util.List issues;
 
 // TODO: I would like to have a rule that checks there are exactly SudokuGridModel.NUM_ROWS x SudokuGridModel.NUM_COLS = 81
 //       ResolvedCellValues in the working memory
+/**
+rule "There should be exactly 81 ResolvedCellValues in working memory"
+	when
+	    # count number of ResovledCellValues in working memory and check it is exactly 81
+	then
+		issues.add("There are not exactly 81 ResolvedCellValues in working memory");
+end
+**/
 
 /**
  * Checks for any remaining PossibleCellValues in the working memory, such values can be an artifact
