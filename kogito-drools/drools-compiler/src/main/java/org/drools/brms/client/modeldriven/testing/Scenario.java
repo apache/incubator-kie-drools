@@ -32,6 +32,8 @@ public class Scenario implements Serializable {
 	 */
 	public Assertion[] assertions = new Assertion[0];
 
+
+
 	/**
 	 * The rules to trace in this scenario.
 	 */
