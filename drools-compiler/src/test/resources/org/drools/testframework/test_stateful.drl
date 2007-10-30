@@ -19,5 +19,19 @@ rule "rule2"
 		c2.setType("rule2");
 end
 
+rule "rule3"
+	when
+		c1: Cheese(price == 42)
+    then
+    	c1.setType("rule3");
+end
+
+rule "rule4"
+	when
+		c1 : Cheese(price == 46)
+		not Cheese(price == 42)
+	then
+		c1.setType("rule4");
+end
 
 

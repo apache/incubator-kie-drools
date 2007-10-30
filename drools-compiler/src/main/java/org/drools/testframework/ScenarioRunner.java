@@ -18,6 +18,7 @@ import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Fixture;
+import org.drools.brms.client.modeldriven.testing.RetractFact;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
@@ -68,23 +69,32 @@ public class ScenarioRunner {
 			if (fx instanceof FactData) {
 				//deal with facts and globals
 				FactData fact = (FactData)fx;
-				Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
+				Object f = (fact.isModify)? this.populatedData.get(fact.name) : eval("new " + resolver.getFullTypeName(fact.type) + "()");
 				if (fact.isGlobal) {
 					populateFields(fact, globalData, f);
 					globalData.put(fact.name, f);
 					wm.setGlobal(fact.name, f);
-				} else {
+				} else if (fact.isModify) {
+					if (!this.factHandles.containsKey(fact.name)) {
+						throw new IllegalArgumentException("Was not a previously inserted fact. [" + fact.name  + "]");
+					}
+					populateFields(fact, populatedData, f);
+					this.workingMemory.update(this.factHandles.get(fact.name), f);
+				} else /* a new one */ {
 					populateFields(fact, populatedData, f);
 					populatedData.put(fact.name, f);
 					this.factHandles.put(fact.name, wm.insert(f));
 				}
+			} else if (fx instanceof RetractFact) {
+				RetractFact f = (RetractFact)fx;
+				this.workingMemory.retract(this.factHandles.get(f.name));
+				this.populatedData.remove(f.name);
 			} else if (fx instanceof ExecutionTrace) {
 				ExecutionTrace executionTrace = (ExecutionTrace)fx;
 				//create the listener to trace rules
 				HashSet<String> ruleList = new HashSet<String>();
 				ruleList.addAll(Arrays.asList(executionTrace.rules));
-				listener = new TestingEventListener(ruleList, wm
-						.getRuleBase(), executionTrace.inclusive);
+				listener = new TestingEventListener(ruleList, wm.getRuleBase(), executionTrace.inclusive);
 				wm.addEventListener(listener);
 
 				//set up the time machine
