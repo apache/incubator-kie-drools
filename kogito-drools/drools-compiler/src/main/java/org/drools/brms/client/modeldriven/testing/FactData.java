@@ -22,12 +22,22 @@ public class FactData implements Fixture {
 
 	public FieldData[] fieldData;
 
+	/**
+	 * If its a modify, obviously we are modifying existing data in working memory.
+	 */
+	public boolean isModify;
+
 	public FactData() {}
-	public FactData(String type, String name, FieldData[] fieldData, boolean global) {
+	public FactData(String type, String name, FieldData[] fieldData, boolean global, boolean modify) {
+		if (isGlobal && modify) {
+			throw new IllegalArgumentException("Not able to be a global modify.");
+		}
 		this.type = type;
 		this.name = name;
 		this.fieldData = fieldData;
 		this.isGlobal = global;
+		this.isModify = modify;
+
 	}
 
 

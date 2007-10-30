@@ -22,6 +22,7 @@ import org.drools.brms.client.modeldriven.testing.Expectation;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
+import org.drools.brms.client.modeldriven.testing.RetractFact;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
@@ -42,10 +43,10 @@ public class ScenarioRunnerTest extends RuleUnit {
 		FactData[] facts = new FactData[] {
 				new FactData("Cheese", "c1", new FieldData[] {
 						new FieldData("type", "cheddar", false),
-						new FieldData("price", "42", false) }, false),
+						new FieldData("price", "42", false) }, false, false),
 				new FactData("Person", "p1", new FieldData[] {
 						new FieldData("name", "mic", false),
-						new FieldData("age", "30 + 3", true) }, false) };
+						new FieldData("age", "30 + 3", true) }, false, false) };
 
 		sc.fixtures.addAll(Arrays.asList(facts));
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
@@ -157,7 +158,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		Scenario sc = new Scenario();
 		FactData[] facts = new FactData[] { new FactData("Cheese", "c1",
 				new FieldData[] { new FieldData("type", "cheddar", false),
-						new FieldData("price", "42", false) }, false) };
+						new FieldData("price", "42", false) }, false, false) };
 
 		VerifyFact[] assertions = new VerifyFact[] { new VerifyFact("c1",
 				new VerifyField[] { new VerifyField("type", "cheddar"),
@@ -238,9 +239,9 @@ public class ScenarioRunnerTest extends RuleUnit {
 		Scenario sc = new Scenario();
 		FactData[] facts = new FactData[] {
 				new FactData("Cheese", "c", new FieldData[] { new FieldData(
-						"type", "cheddar", false) }, true),
+						"type", "cheddar", false) }, true, false),
 				new FactData("Cheese", "c2", new FieldData[] { new FieldData(
-						"type", "stilton", false) }, false) };
+						"type", "stilton", false) }, false, false) };
 		sc.fixtures.addAll(Arrays.asList(facts));
 
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
@@ -298,8 +299,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 		FactData[] facts = new FactData[] {
 				new FactData("Cheese", "c1", new FieldData[] {
 						new FieldData("type", "cheddar", false),
-						new FieldData("price", "42", false) }, false),
-						new FactData("Person", "p", new FieldData[0] , true)
+						new FieldData("price", "42", false) }, false, false),
+						new FactData("Person", "p", new FieldData[0] , true, false)
 				};
 		sc.fixtures.addAll(Arrays.asList(facts));
 
@@ -354,10 +355,10 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testIntgerationStateful() throws Exception {
 		Scenario sc = new Scenario();
-		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "1", false)}, false));
+		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "1", false)}, false, false));
 		ExecutionTrace ex = new ExecutionTrace();
 		sc.fixtures.add(ex);
-		sc.fixtures.add(new FactData("Cheese", "c2", new FieldData[] {new FieldData("price", "2", false)}, false));
+		sc.fixtures.add(new FactData("Cheese", "c2", new FieldData[] {new FieldData("price", "2", false)}, false, false));
 		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule1")}));
 		ex = new ExecutionTrace();
 		sc.fixtures.add(ex);
@@ -382,13 +383,76 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	}
 
+	public void testIntegrationWithModify() throws Exception {
+		Scenario sc = new Scenario();
+		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "1", false)}, false, false));
+
+		sc.fixtures.add(new ExecutionTrace());
+
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule1")}));
+
+		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "42", false)}, false, true));
+		sc.fixtures.add(new ExecutionTrace());
+
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule3")}));
+
+
+
+		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
+				Thread.currentThread().getContextClassLoader());
+		resolver.addImport("org.drools.Cheese");
+
+
+        WorkingMemory wm = getWorkingMemory("test_stateful.drl");
+        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
+
+        Cheese c1 = (Cheese) run.populatedData.get("c1");
+
+
+        assertEquals("rule3", c1.getType());
+
+
+        assertTrue(sc.wasSuccessful());
+	}
+
+	public void testIntegrationWithRetract() throws Exception {
+		Scenario sc = new Scenario();
+		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "46", false), new FieldData("type", "XXX", false)}, false, false));
+		sc.fixtures.add(new FactData("Cheese", "c2", new FieldData[] {new FieldData("price", "42", false)}, false, false));
+		sc.fixtures.add(new ExecutionTrace());
+
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "XXX")}));
+
+		sc.fixtures.add(new RetractFact("c2"));
+		sc.fixtures.add(new ExecutionTrace());
+
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule4")}));
+
+
+
+		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
+				Thread.currentThread().getContextClassLoader());
+		resolver.addImport("org.drools.Cheese");
+
+
+        WorkingMemory wm = getWorkingMemory("test_stateful.drl");
+        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
+
+        Cheese c1 = (Cheese) run.populatedData.get("c1");
+
+        assertEquals("rule4", c1.getType());
+        assertFalse(run.populatedData.containsKey("c2"));
+
+        assertTrue(sc.wasSuccessful());
+	}
+
 	public void testIntegrationWithFailure() throws Exception {
 		Scenario sc = new Scenario();
 		FactData[] facts = new FactData[] {
 				new FactData("Cheese", "c1", new FieldData[] {
 						new FieldData("type", "cheddar", false),
-						new FieldData("price", "42", false) }, false),
-						new FactData("Person", "p", new FieldData[0] , true)
+						new FieldData("price", "42", false) }, false, false),
+						new FactData("Person", "p", new FieldData[0] , true, false)
 				};
 		sc.fixtures.addAll(Arrays.asList(facts));
 
