@@ -2,7 +2,7 @@ package org.drools.brms.client.modeldriven.testing;
 
 import java.io.Serializable;
 
-public class FactData implements Serializable {
+public class FactData implements Fixture {
 
 	/**
 	 * The type (class)

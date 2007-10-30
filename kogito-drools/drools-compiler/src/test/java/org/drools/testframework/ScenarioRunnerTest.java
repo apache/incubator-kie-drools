@@ -3,6 +3,7 @@ package org.drools.testframework;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,7 +18,8 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
-import org.drools.brms.client.modeldriven.testing.Assertion;
+import org.drools.brms.client.modeldriven.testing.Expectation;
+import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Scenario;
@@ -37,7 +39,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testPopulateFacts() throws Exception {
 		Scenario sc = new Scenario();
-		sc.facts = new FactData[] {
+		FactData[] facts = new FactData[] {
 				new FactData("Cheese", "c1", new FieldData[] {
 						new FieldData("type", "cheddar", false),
 						new FieldData("price", "42", false) }, false),
@@ -45,6 +47,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 						new FieldData("name", "mic", false),
 						new FieldData("age", "30 + 3", true) }, false) };
 
+		sc.fixtures.addAll(Arrays.asList(facts));
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
 				Thread.currentThread().getContextClassLoader());
 		resolver.addImport("org.drools.Cheese");
@@ -152,13 +155,16 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testDummyRunNoRules() throws Exception {
 		Scenario sc = new Scenario();
-		sc.facts = new FactData[] { new FactData("Cheese", "c1",
+		FactData[] facts = new FactData[] { new FactData("Cheese", "c1",
 				new FieldData[] { new FieldData("type", "cheddar", false),
 						new FieldData("price", "42", false) }, false) };
 
-		sc.assertions = new VerifyFact[] { new VerifyFact("c1",
+		VerifyFact[] assertions = new VerifyFact[] { new VerifyFact("c1",
 				new VerifyField[] { new VerifyField("type", "cheddar"),
 						new VerifyField("price", "42") }) };
+
+		sc.fixtures.addAll(Arrays.asList(facts));
+		sc.fixtures.addAll(Arrays.asList(assertions));
 
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
 				Thread.currentThread().getContextClassLoader());
@@ -170,7 +176,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		assertEquals(runner.populatedData.get("c1"), wm.facts.get(0));
 
 		assertTrue(runner.populatedData.containsKey("c1"));
-		VerifyFact vf = (VerifyFact) sc.assertions[0];
+		VerifyFact vf = (VerifyFact) assertions[0];
 		for (int i = 0; i < vf.fieldValues.length; i++) {
 			assertTrue(vf.fieldValues[i].successResult);
 		}
@@ -212,7 +218,11 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testTestingEventListener() throws Exception {
 		Scenario sc = new Scenario();
-		sc.executionTrace.rules = new String[] { "foo", "bar" };
+		ExecutionTrace ext = new ExecutionTrace();
+
+		ext.rules = new String[] { "foo", "bar" };
+		sc.fixtures.add(ext);
+
 		MockWorkingMemory wm = new MockWorkingMemory();
 		ScenarioRunner run = new ScenarioRunner(sc, null, wm);
 		assertEquals(wm, run.workingMemory);
@@ -226,11 +236,13 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testWithGlobals() throws Exception {
 		Scenario sc = new Scenario();
-		sc.facts = new FactData[] {
+		FactData[] facts = new FactData[] {
 				new FactData("Cheese", "c", new FieldData[] { new FieldData(
 						"type", "cheddar", false) }, true),
 				new FactData("Cheese", "c2", new FieldData[] { new FieldData(
 						"type", "stilton", false) }, false) };
+		sc.fixtures.addAll(Arrays.asList(facts));
+
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
 				Thread.currentThread().getContextClassLoader());
 		resolver.addImport("org.drools.Cheese");
@@ -264,11 +276,13 @@ public class ScenarioRunnerTest extends RuleUnit {
 		long future = tm.getNow().getTimeInMillis();
 		assertTrue(future > time);
 
-		sc.scenarioSimulatedDate = new Date("10-Jul-1974");
+		ExecutionTrace ext = new ExecutionTrace();
+		ext.scenarioSimulatedDate = new Date("10-Jul-1974");
+		sc.fixtures.add(ext);
 		run = new ScenarioRunner(sc, null, wm);
 		tm = run.workingMemory.getTimeMachine();
 
-		long expected = sc.scenarioSimulatedDate.getTime();
+		long expected = ext.scenarioSimulatedDate.getTime();
 		assertEquals(expected, tm.getNow().getTimeInMillis());
 		Thread.sleep(50);
 		assertEquals(expected, tm.getNow().getTimeInMillis());
@@ -280,36 +294,39 @@ public class ScenarioRunnerTest extends RuleUnit {
 	 */
 	public void testIntegrationWithSuccess() throws Exception {
 
-		Date now = new Date();
-
 		Scenario sc = new Scenario();
-		sc.facts = new FactData[] {
+		FactData[] facts = new FactData[] {
 				new FactData("Cheese", "c1", new FieldData[] {
 						new FieldData("type", "cheddar", false),
 						new FieldData("price", "42", false) }, false),
 						new FactData("Person", "p", new FieldData[0] , true)
 				};
+		sc.fixtures.addAll(Arrays.asList(facts));
 
+		ExecutionTrace executionTrace = new ExecutionTrace();
 
-		sc.executionTrace.rules = new String[] {"rule1", "rule2" };
-		sc.executionTrace.inclusive = true;
+		executionTrace.rules = new String[] {"rule1", "rule2" };
+		executionTrace.inclusive = true;
+		sc.fixtures.add(executionTrace);
 
-		sc.assertions = new Assertion[5];
+		Expectation[] assertions = new Expectation[5];
 
-		sc.assertions[0] =	new VerifyFact("c1", new VerifyField[] {
+		assertions[0] =	new VerifyFact("c1", new VerifyField[] {
 					new VerifyField("type", "cheddar")
 
 		});
 
-		sc.assertions[1] = new VerifyFact("p", new VerifyField[] {
+		assertions[1] = new VerifyFact("p", new VerifyField[] {
 					new VerifyField("name", "rule1"),
 					new VerifyField("status", "rule2")
 
 		});
 
-		sc.assertions[2] = new VerifyRuleFired("rule1", 1, null);
-		sc.assertions[3] = new VerifyRuleFired("rule2", 1, null);
-		sc.assertions[4] = new VerifyRuleFired("rule3", 1, null);
+		assertions[2] = new VerifyRuleFired("rule1", 1, null);
+		assertions[3] = new VerifyRuleFired("rule2", 1, null);
+		assertions[4] = new VerifyRuleFired("rule3", 1, null);
+
+		sc.fixtures.addAll(Arrays.asList(assertions));
 
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
 				Thread.currentThread().getContextClassLoader());
@@ -330,40 +347,74 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertEquals(0, p.getAge());
 
 
-        assertTrue((new Date()).after(sc.executionTrace.lastRunResult));
-        assertTrue(sc.executionTrace.executionTimeResult != -1);
+        assertTrue((new Date()).after(sc.lastRunResult));
+        assertTrue(executionTrace.executionTimeResult != -1);
+
+	}
+
+	public void testIntgerationStateful() throws Exception {
+		Scenario sc = new Scenario();
+		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "1", false)}, false));
+		ExecutionTrace ex = new ExecutionTrace();
+		sc.fixtures.add(ex);
+		sc.fixtures.add(new FactData("Cheese", "c2", new FieldData[] {new FieldData("price", "2", false)}, false));
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule1")}));
+		ex = new ExecutionTrace();
+		sc.fixtures.add(ex);
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule2")}));
+
+		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
+				Thread.currentThread().getContextClassLoader());
+		resolver.addImport("org.drools.Cheese");
+
+
+        WorkingMemory wm = getWorkingMemory("test_stateful.drl");
+        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
+
+        Cheese c1 = (Cheese) run.populatedData.get("c1");
+        Cheese c2 = (Cheese) run.populatedData.get("c2");
+
+        assertEquals("rule2", c1.getType());
+        assertEquals("rule2", c2.getType());
+
+        assertTrue(sc.wasSuccessful());
+
 
 	}
 
 	public void testIntegrationWithFailure() throws Exception {
 		Scenario sc = new Scenario();
-		sc.facts = new FactData[] {
+		FactData[] facts = new FactData[] {
 				new FactData("Cheese", "c1", new FieldData[] {
 						new FieldData("type", "cheddar", false),
 						new FieldData("price", "42", false) }, false),
 						new FactData("Person", "p", new FieldData[0] , true)
 				};
+		sc.fixtures.addAll(Arrays.asList(facts));
 
+		ExecutionTrace executionTrace = new ExecutionTrace();
+		executionTrace.rules = new String[] {"rule1", "rule2" };
+		executionTrace.inclusive = true;
+		sc.fixtures.add(executionTrace);
 
-		sc.executionTrace.rules = new String[] {"rule1", "rule2" };
-		sc.executionTrace.inclusive = true;
+		Expectation[] assertions = new Expectation[5];
 
-		sc.assertions = new Assertion[5];
-
-		sc.assertions[0] =	new VerifyFact("c1", new VerifyField[] {
+		assertions[0] =	new VerifyFact("c1", new VerifyField[] {
 					new VerifyField("type", "cheddar")
 
 		});
 
-		sc.assertions[1] = new VerifyFact("p", new VerifyField[] {
+		assertions[1] = new VerifyFact("p", new VerifyField[] {
 					new VerifyField("name", "XXX"),
 					new VerifyField("status", "rule2")
 
 		});
 
-		sc.assertions[2] = new VerifyRuleFired("rule1", 1, null);
-		sc.assertions[3] = new VerifyRuleFired("rule2", 1, null);
-		sc.assertions[4] = new VerifyRuleFired("rule3", 2, null);
+		assertions[2] = new VerifyRuleFired("rule1", 1, null);
+		assertions[3] = new VerifyRuleFired("rule2", 1, null);
+		assertions[4] = new VerifyRuleFired("rule3", 2, null);
+
+		sc.fixtures.addAll(Arrays.asList(assertions));
 
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
 				Thread.currentThread().getContextClassLoader());
@@ -378,12 +429,12 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         assertFalse(sc.wasSuccessful());
 
-        VerifyFact vf = (VerifyFact) sc.assertions[1];
+        VerifyFact vf = (VerifyFact) assertions[1];
         assertFalse(vf.fieldValues[0].successResult);
         assertEquals("XXX", vf.fieldValues[0].expected);
         assertEquals("rule1", vf.fieldValues[0].actualResult);
 
-        VerifyRuleFired vr = (VerifyRuleFired) sc.assertions[4];
+        VerifyRuleFired vr = (VerifyRuleFired) assertions[4];
         assertFalse(vr.successResult);
 
         assertEquals(2, vr.expectedCount.intValue());

@@ -7,13 +7,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.base.TypeResolver;
-import org.drools.brms.client.modeldriven.testing.Assertion;
+import org.drools.brms.client.modeldriven.testing.Expectation;
+import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
+import org.drools.brms.client.modeldriven.testing.Fixture;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
@@ -32,6 +36,8 @@ public class ScenarioRunner {
 	final Scenario scenario;
 	final Map<String, Object> populatedData = new HashMap<String, Object>();
 	final Map<String, Object> globalData = new HashMap<String, Object>();
+	final Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
+
 	final InternalWorkingMemory workingMemory;
 
 	/**
@@ -52,34 +58,72 @@ public class ScenarioRunner {
 			final InternalWorkingMemory wm) throws ClassNotFoundException {
 		this.scenario = scenario;
 		this.workingMemory = wm;
-		scenario.executionTrace.lastRunResult = new Date();
+		scenario.lastRunResult = new Date();
 
+		TestingEventListener listener = null;
 
+		for (Iterator<Fixture> iterator = scenario.fixtures.iterator(); iterator.hasNext();) {
+			Fixture fx = iterator.next();
 
-		// have to go and create all the facts
-		for (int i = 0; i < scenario.facts.length; i++) {
-			FactData fact = scenario.facts[i];
-			Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
-			if (fact.isGlobal) {
-				populateFields(fact, globalData, f);
-				globalData.put(fact.name, f);
+			if (fx instanceof FactData) {
+				//deal with facts and globals
+				FactData fact = (FactData)fx;
+				Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
+				if (fact.isGlobal) {
+					populateFields(fact, globalData, f);
+					globalData.put(fact.name, f);
+					wm.setGlobal(fact.name, f);
+				} else {
+					populateFields(fact, populatedData, f);
+					populatedData.put(fact.name, f);
+					this.factHandles.put(fact.name, wm.insert(f));
+				}
+			} else if (fx instanceof ExecutionTrace) {
+				ExecutionTrace executionTrace = (ExecutionTrace)fx;
+				//create the listener to trace rules
+				HashSet<String> ruleList = new HashSet<String>();
+				ruleList.addAll(Arrays.asList(executionTrace.rules));
+				listener = new TestingEventListener(ruleList, wm
+						.getRuleBase(), executionTrace.inclusive);
+				wm.addEventListener(listener);
+
+				//set up the time machine
+				applyTimeMachine(wm, executionTrace);
+
+				//love you
+				long time = System.currentTimeMillis();
+				wm.fireAllRules(scenario.maxRuleFirings);
+				executionTrace.executionTimeResult = System.currentTimeMillis() - time;
+				executionTrace.firingCounts = listener.firingCounts;
+			} else if (fx instanceof Expectation) {
+					Expectation assertion = (Expectation) fx;
+					if (assertion instanceof VerifyFact) {
+						verify((VerifyFact) assertion);
+					} else if (assertion instanceof VerifyRuleFired) {
+						verify((VerifyRuleFired) assertion,
+								(listener.firingCounts != null) ? listener.firingCounts : new HashMap<String, Integer>());
+					}
 			} else {
-				populateFields(fact, populatedData, f);
-				populatedData.put(fact.name, f);
+				throw new IllegalArgumentException("Not sure what to do with " + fx);
 			}
+
+
+
 		}
 
-		//create the listener to trace rules
-		HashSet<String> ruleList = new HashSet<String>();
-		ruleList.addAll(Arrays.asList(scenario.executionTrace.rules));
-		TestingEventListener listener = new TestingEventListener(ruleList, wm
-				.getRuleBase(), scenario.executionTrace.inclusive);
-		wm.addEventListener(listener);
 
-		//set up the time machine
-		if (scenario.scenarioSimulatedDate != null) {
+
+
+
+
+
+	}
+
+	private void applyTimeMachine(final InternalWorkingMemory wm,
+			ExecutionTrace executionTrace) {
+		if (executionTrace.scenarioSimulatedDate != null) {
 			final Calendar now = Calendar.getInstance();
-			now.setTimeInMillis(scenario.scenarioSimulatedDate.getTime());
+			now.setTimeInMillis(executionTrace.scenarioSimulatedDate.getTime());
 			wm.setTimeMachine(new TimeMachine() {
 				@Override
 				public Calendar getNow() {
@@ -87,25 +131,6 @@ public class ScenarioRunner {
 				}
 			});
 		}
-
-		// now run the rules...
-		applyData(wm, this.populatedData, this.globalData);
-		//love you
-		long time = System.currentTimeMillis();
-		wm.fireAllRules(scenario.maxRuleFirings);
-		scenario.executionTrace.executionTimeResult = System.currentTimeMillis() - time;
-		scenario.executionTrace.firingCounts = listener.firingCounts;
-
-		// now check the results...
-		for (int i = 0; i < scenario.assertions.length; i++) {
-			Assertion assertion = scenario.assertions[i];
-			if (assertion instanceof VerifyFact) {
-				verify((VerifyFact) assertion);
-			} else if (assertion instanceof VerifyRuleFired) {
-				verify((VerifyRuleFired) assertion, listener.firingCounts);
-			}
-		}
-
 	}
 
 	void verify(VerifyRuleFired assertion, Map<String, Integer> firingCounts) {
@@ -122,14 +147,6 @@ public class ScenarioRunner {
 		}
 	}
 
-	private void applyData(WorkingMemory wm, Map<String, Object> facts, Map<String, Object> globals) {
-		for (Map.Entry<String, Object> e : globals.entrySet()) {
-			wm.setGlobal(e.getKey(), e.getValue());
-		}
-		for (Object f : facts.values()) {
-			wm.insert(f);
-		}
-	}
 
 	void verify(VerifyFact value) {
 		Object fact = this.populatedData.get(value.factName);
