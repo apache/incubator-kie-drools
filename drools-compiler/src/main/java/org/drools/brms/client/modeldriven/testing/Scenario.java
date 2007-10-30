@@ -1,7 +1,10 @@
 package org.drools.brms.client.modeldriven.testing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This represents a test scenario.
@@ -16,38 +19,31 @@ public class Scenario implements Serializable {
 	 */
 	public int		maxRuleFirings = 100000;
 
-	/**
-	 * This is the simulated date - leaving it as null means it will use
-	 * the current time.
-	 */
-	public Date		scenarioSimulatedDate = null;
 
 	/**
-	 * the fact data (and globals) to use
+	 * Fixtures are parts of the test. They may be assertions, globals, data, execution runs etc.
+	 * Anything really.
 	 */
-	public FactData[] facts = new FactData[0];
+	public List fixtures = new ArrayList();
 
 	/**
-	 * Result assertions/expectations.
+	 * This is the date the last time the scenario was run (and what the results apply to).
 	 */
-	public Assertion[] assertions = new Assertion[0];
+	public Date lastRunResult;
 
-
-
-	/**
-	 * The rules to trace in this scenario.
-	 */
-	public ExecutionTrace executionTrace = new ExecutionTrace();
 
 	/**
 	 * Returns true if this was a totally successful scenario, based on the results contained.
 	 */
 	public boolean wasSuccessful() {
-		for (int i = 0; i < this.assertions.length; i++) {
-			Assertion as = this.assertions[i];
-			if (!as.wasSuccessful()) {
-				return false;
+		for (Iterator iterator = fixtures.iterator(); iterator.hasNext();) {
+			Fixture f= (Fixture) iterator.next();
+			if (f instanceof Expectation) {
+				if (! ((Expectation) f ).wasSuccessful()) {
+					return false;
+				}
 			}
+
 		}
 		return true;
 	}

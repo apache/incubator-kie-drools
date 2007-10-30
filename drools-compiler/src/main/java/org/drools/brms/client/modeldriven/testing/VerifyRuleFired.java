@@ -1,6 +1,6 @@
 package org.drools.brms.client.modeldriven.testing;
 
-public class VerifyRuleFired implements Assertion {
+public class VerifyRuleFired implements Expectation {
 
 	public String ruleName;
 	public Integer expectedCount;

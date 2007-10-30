@@ -1,0 +1,23 @@
+package foo.bar
+
+import org.drools.Cheese
+
+
+rule "rule1"
+	when
+		c1: Cheese(price == 1)
+	then
+		c1.setType("rule1");
+end
+
+rule "rule2"
+	when
+		c1: Cheese(price == 1)
+		c2: Cheese(price == 2)
+	then
+		c1.setType("rule2");
+		c2.setType("rule2");
+end
+
+
+

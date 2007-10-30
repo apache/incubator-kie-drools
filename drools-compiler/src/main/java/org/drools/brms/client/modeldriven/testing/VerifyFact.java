@@ -5,7 +5,7 @@ package org.drools.brms.client.modeldriven.testing;
  * @author Michael Neale
  *
  */
-public class VerifyFact implements Assertion {
+public class VerifyFact implements Expectation {
 
 	public VerifyField[] fieldValues = new VerifyField[0];
 	public String factName;
