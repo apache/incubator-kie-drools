@@ -11,10 +11,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.FactHandle;
-import org.drools.WorkingMemory;
 import org.drools.base.TypeResolver;
-import org.drools.brms.client.modeldriven.testing.Expectation;
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
+import org.drools.brms.client.modeldriven.testing.Expectation;
 import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.Fixture;
@@ -63,6 +62,14 @@ public class ScenarioRunner {
 
 		TestingEventListener listener = null;
 
+		for (Iterator iterator = scenario.globals.iterator(); iterator.hasNext();) {
+			FactData fact = (FactData) iterator.next();
+			Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
+			populateFields(fact, globalData, f);
+			globalData.put(fact.name, f);
+			wm.setGlobal(fact.name, f);
+		}
+
 		for (Iterator<Fixture> iterator = scenario.fixtures.iterator(); iterator.hasNext();) {
 			Fixture fx = iterator.next();
 
@@ -70,11 +77,7 @@ public class ScenarioRunner {
 				//deal with facts and globals
 				FactData fact = (FactData)fx;
 				Object f = (fact.isModify)? this.populatedData.get(fact.name) : eval("new " + resolver.getFullTypeName(fact.type) + "()");
-				if (fact.isGlobal) {
-					populateFields(fact, globalData, f);
-					globalData.put(fact.name, f);
-					wm.setGlobal(fact.name, f);
-				} else if (fact.isModify) {
+				if (fact.isModify) {
 					if (!this.factHandles.containsKey(fact.name)) {
 						throw new IllegalArgumentException("Was not a previously inserted fact. [" + fact.name  + "]");
 					}
@@ -174,21 +177,23 @@ public class ScenarioRunner {
 		}
 	}
 
-	private Object populateFields(FactData fact, Map<String, Object> factData, Object factObject) {
+	Object populateFields(FactData fact, Map<String, Object> factData, Object factObject) {
 		for (int i = 0; i < fact.fieldData.length; i++) {
 			FieldData field = fact.fieldData[i];
 			Object val;
-			if (field.isExpression) {
-				// eval the val into existence
-				val = eval(field.value, factData);
-			} else {
-				val = field.value;
+			if (field.value != null && !field.value.equals("")) {
+				if (field.isExpression) {
+					// eval the val into existence
+					val = eval(field.value, factData);
+				} else {
+					val = field.value;
+				}
+				Map<String, Object> vars = new HashMap<String, Object>();
+				vars.putAll(factData);
+				vars.put("__val__", val);
+				vars.put("__fact__", factObject);
+				eval("__fact__." + field.name + " = __val__", vars);
 			}
-			Map<String, Object> vars = new HashMap<String, Object>();
-			vars.putAll(factData);
-			vars.put("__val__", val);
-			vars.put("__fact__", factObject);
-			eval("__fact__." + field.name + " = __val__", vars);
 		}
 		return factObject;
 	}

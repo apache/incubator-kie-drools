@@ -20,11 +20,6 @@ public class FactData implements Fixture {
 	public String name;
 
 
-	/**
-	 * If its a global, then we will punt it in as a global, not a fact.
-	 */
-	public boolean isGlobal;
-
 	public FieldData[] fieldData;
 
 	/**
@@ -33,14 +28,11 @@ public class FactData implements Fixture {
 	public boolean isModify;
 
 	public FactData() {}
-	public FactData(String type, String name, FieldData[] fieldData, boolean global, boolean modify) {
-		if (isGlobal && modify) {
-			throw new IllegalArgumentException("Not able to be a global modify.");
-		}
+	public FactData(String type, String name, FieldData[] fieldData, boolean modify) {
+
 		this.type = type;
 		this.name = name;
 		this.fieldData = fieldData;
-		this.isGlobal = global;
 		this.isModify = modify;
 
 	}

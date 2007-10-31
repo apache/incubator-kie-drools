@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 
 public class FactDataTest extends TestCase {
 	public void testAdd() {
-		FactData fd = new FactData("x", "y", new FieldData[0], false, false );
+		FactData fd = new FactData("x", "y", new FieldData[0], false );
 		assertEquals(0, fd.fieldData.length);
 		fd.addFieldData(new FieldData("x", "y", false));
 		assertEquals(1, fd.fieldData.length);
