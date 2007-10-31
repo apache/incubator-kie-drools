@@ -19,6 +19,11 @@ public class Scenario implements Serializable {
 	 */
 	public int		maxRuleFirings = 100000;
 
+	/**
+	 * global data which must be setup before hand.
+	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.testing.FactData>
+	 */
+	public List globals = new ArrayList();
 
 	/**
 	 * Fixtures are parts of the test. They may be assertions, globals, data, execution runs etc.
