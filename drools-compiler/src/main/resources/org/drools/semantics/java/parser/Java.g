@@ -404,7 +404,9 @@ variableDeclarator
 			if( this.localVariableLevel == 1 ) { // we only want top level local vars
 				$variableDeclarator::ident.setIdentifier( $id.text );
 				$variableDeclarator::ident.setStart( ((CommonToken)$id).getStartIndex() - 1 );
-				$variableDeclarator::ident.setEnd( ((CommonToken)$rest.stop).getStopIndex() );
+				if( $rest.stop != null ) {
+   					$variableDeclarator::ident.setEnd( ((CommonToken)$rest.stop).getStopIndex() );
+				}
 			}
 		}
 	;
