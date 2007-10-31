@@ -23,6 +23,8 @@ public class Scenario implements Serializable {
 	/**
 	 * Fixtures are parts of the test. They may be assertions, globals, data, execution runs etc.
 	 * Anything really.
+	 *
+	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.testing.Fixture>
 	 */
 	public List fixtures = new ArrayList();
 
