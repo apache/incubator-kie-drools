@@ -41,6 +41,7 @@ public class NotesTest extends TestBase {
 		objects.add(redundancy);
 		objects.add(possibility);
 
+		AnalyticsDataFactory.clearAnalyticsResult();
 		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
