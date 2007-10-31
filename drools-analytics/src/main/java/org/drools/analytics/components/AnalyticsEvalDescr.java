@@ -41,4 +41,9 @@ public class AnalyticsEvalDescr extends AnalyticsComponent implements Cause {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	@Override
+	public String toString() {
+		return "Eval, content: " + content;
+	}
 }

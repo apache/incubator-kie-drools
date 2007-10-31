@@ -246,6 +246,8 @@ public class PackageDescrFlattener {
 		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		AnalyticsEvalDescr eval = new AnalyticsEvalDescr();
+		eval.setRuleId(currentRule.getId());
+		eval.setRuleName(currentRule.getRuleName());
 		eval.setContent(descr.getContent().toString());
 		eval.setClassMethodName(descr.getClassMethodName());
 		eval.setOrderNumber(orderNumber);
@@ -431,6 +433,7 @@ public class PackageDescrFlattener {
 		pattern.setRuleId(currentRule.getId());
 		pattern.setRuleName(currentRule.getRuleName());
 		pattern.setClassId(clazz.getId());
+		pattern.setName(clazz.getName());
 		pattern.setPatternNot(solvers.getRuleSolver().isChildNot());
 		pattern.setPatternExists(solvers.getRuleSolver().isExists());
 		pattern.setPatternForall(solvers.getRuleSolver().isForall());
