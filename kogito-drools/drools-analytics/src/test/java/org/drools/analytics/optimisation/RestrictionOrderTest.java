@@ -166,7 +166,7 @@ public class RestrictionOrderTest extends TestBase {
 		assertEquals(2, pairs.size());
 	}
 
-	public void testEvalOrderInsideOperator() throws Exception {
+	public void testPredicateOrderInsideOperator() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("RestrictionOrder.drl"));
 

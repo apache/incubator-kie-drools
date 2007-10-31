@@ -39,6 +39,10 @@ class AnalyticsTestStandalone {
 					.parse(new InputStreamReader(
 							Analyzer.class
 									.getResourceAsStream("optimisation/OptimisationRestrictionOrderTest.drl")));
+			PackageDescr descr10 = new DrlParser()
+			.parse(new InputStreamReader(
+					Analyzer.class
+					.getResourceAsStream("optimisation/OptimisationPatternOrderTest.drl")));
 
 			Analyzer a = new Analyzer();
 			// a.addPackageDescr(descr);
@@ -50,6 +54,8 @@ class AnalyticsTestStandalone {
 			a.addPackageDescr(descr7);
 			a.addPackageDescr(descr8);
 			a.addPackageDescr(descr9);
+			a.addPackageDescr(descr10);
+			
 			a.fireAnalysis();
 			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());

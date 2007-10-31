@@ -14,6 +14,7 @@ public class Pattern extends AnalyticsComponent implements Cloneable, Cause {
 
 	private int ruleId;
 	private int classId;
+	private String name;
 	private AnalyticsComponentType sourceType = AnalyticsComponentType.NOTHING;
 	private int sourceId = -1;
 
@@ -90,11 +91,20 @@ public class Pattern extends AnalyticsComponent implements Cloneable, Cause {
 		this.sourceType = sourceType;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	@Override
 	public Object clone() {
 		Pattern clone = new Pattern();
 		clone.setRuleId(ruleId);
 		clone.setClassId(classId);
+		clone.setName(name);
 		clone.setSourceType(sourceType);
 		clone.setSourceId(sourceId);
 		clone.setPatternNot(isPatternNot);
@@ -106,6 +116,6 @@ public class Pattern extends AnalyticsComponent implements Cloneable, Cause {
 
 	@Override
 	public String toString() {
-		return "Pattern, id: " + id + " from rule '" + ruleName + "'";
+		return "Pattern, name: " + name;
 	}
 }
