@@ -51,6 +51,12 @@ public class JavaConsequenceBuilder extends AbstractJavaBuilder
         Dialect.AnalysisResult analysis = context.getDialect().analyzeBlock( context,
                                                                              ruleDescr,
                                                                              (String) ruleDescr.getConsequence() );
+        
+        if( analysis == null ) {
+            // not possible to get the analysis results
+            return;
+        }
+        
         final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];

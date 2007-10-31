@@ -4380,4 +4380,10 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( item12 ) );
     }
 
+    public void testConsequenceBuilderException() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceBuilderException.drl" ) ) );
+        
+        assertTrue( builder.hasErrors() );
+    }
 }

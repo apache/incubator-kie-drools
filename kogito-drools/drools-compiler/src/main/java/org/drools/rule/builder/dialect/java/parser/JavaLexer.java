@@ -1,4 +1,4 @@
-// $ANTLR 3.0 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g 2007-07-15 10:51:14
+// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g 2007-10-31 14:52:30
 
 	package org.drools.rule.builder.dialect.java.parser;
 
@@ -135,7 +135,7 @@ public class JavaLexer extends Lexer {
     public final void mT24() throws RecognitionException {
         try {
             int _type = T24;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:10:7: ( 'package' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:10:5: ( 'package' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:10:7: 'package'
             {
             match("package"); 
@@ -154,7 +154,7 @@ public class JavaLexer extends Lexer {
     public final void mT25() throws RecognitionException {
         try {
             int _type = T25;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:11:7: ( ';' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:11:5: ( ';' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:11:7: ';'
             {
             match(';'); 
@@ -172,7 +172,7 @@ public class JavaLexer extends Lexer {
     public final void mT26() throws RecognitionException {
         try {
             int _type = T26;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:12:7: ( 'import' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:12:5: ( 'import' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:12:7: 'import'
             {
             match("import"); 
@@ -191,7 +191,7 @@ public class JavaLexer extends Lexer {
     public final void mT27() throws RecognitionException {
         try {
             int _type = T27;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:13:7: ( 'static' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:13:5: ( 'static' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:13:7: 'static'
             {
             match("static"); 
@@ -210,7 +210,7 @@ public class JavaLexer extends Lexer {
     public final void mT28() throws RecognitionException {
         try {
             int _type = T28;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:14:7: ( '.' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:14:5: ( '.' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:14:7: '.'
             {
             match('.'); 
@@ -228,7 +228,7 @@ public class JavaLexer extends Lexer {
     public final void mT29() throws RecognitionException {
         try {
             int _type = T29;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:15:7: ( '*' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:15:5: ( '*' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:15:7: '*'
             {
             match('*'); 
@@ -246,7 +246,7 @@ public class JavaLexer extends Lexer {
     public final void mT30() throws RecognitionException {
         try {
             int _type = T30;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:16:7: ( 'class' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:16:5: ( 'class' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:16:7: 'class'
             {
             match("class"); 
@@ -265,7 +265,7 @@ public class JavaLexer extends Lexer {
     public final void mT31() throws RecognitionException {
         try {
             int _type = T31;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:17:7: ( 'extends' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:17:5: ( 'extends' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:17:7: 'extends'
             {
             match("extends"); 
@@ -284,7 +284,7 @@ public class JavaLexer extends Lexer {
     public final void mT32() throws RecognitionException {
         try {
             int _type = T32;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:18:7: ( 'implements' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:18:5: ( 'implements' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:18:7: 'implements'
             {
             match("implements"); 
@@ -303,7 +303,7 @@ public class JavaLexer extends Lexer {
     public final void mT33() throws RecognitionException {
         try {
             int _type = T33;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:19:7: ( '<' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:19:5: ( '<' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:19:7: '<'
             {
             match('<'); 
@@ -321,7 +321,7 @@ public class JavaLexer extends Lexer {
     public final void mT34() throws RecognitionException {
         try {
             int _type = T34;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:20:7: ( ',' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:20:5: ( ',' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:20:7: ','
             {
             match(','); 
@@ -339,7 +339,7 @@ public class JavaLexer extends Lexer {
     public final void mT35() throws RecognitionException {
         try {
             int _type = T35;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:21:7: ( '>' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:21:5: ( '>' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:21:7: '>'
             {
             match('>'); 
@@ -357,7 +357,7 @@ public class JavaLexer extends Lexer {
     public final void mT36() throws RecognitionException {
         try {
             int _type = T36;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:22:7: ( '&' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:22:5: ( '&' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:22:7: '&'
             {
             match('&'); 
@@ -375,7 +375,7 @@ public class JavaLexer extends Lexer {
     public final void mT37() throws RecognitionException {
         try {
             int _type = T37;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:23:7: ( '{' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:23:5: ( '{' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:23:7: '{'
             {
             match('{'); 
@@ -393,7 +393,7 @@ public class JavaLexer extends Lexer {
     public final void mT38() throws RecognitionException {
         try {
             int _type = T38;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:24:7: ( '}' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:24:5: ( '}' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:24:7: '}'
             {
             match('}'); 
@@ -411,7 +411,7 @@ public class JavaLexer extends Lexer {
     public final void mT39() throws RecognitionException {
         try {
             int _type = T39;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:25:7: ( 'interface' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:25:5: ( 'interface' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:25:7: 'interface'
             {
             match("interface"); 
@@ -430,7 +430,7 @@ public class JavaLexer extends Lexer {
     public final void mT40() throws RecognitionException {
         try {
             int _type = T40;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:26:7: ( 'void' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:26:5: ( 'void' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:26:7: 'void'
             {
             match("void"); 
@@ -449,7 +449,7 @@ public class JavaLexer extends Lexer {
     public final void mT41() throws RecognitionException {
         try {
             int _type = T41;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:27:7: ( '[' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:27:5: ( '[' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:27:7: '['
             {
             match('['); 
@@ -467,7 +467,7 @@ public class JavaLexer extends Lexer {
     public final void mT42() throws RecognitionException {
         try {
             int _type = T42;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:28:7: ( ']' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:28:5: ( ']' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:28:7: ']'
             {
             match(']'); 
@@ -485,7 +485,7 @@ public class JavaLexer extends Lexer {
     public final void mT43() throws RecognitionException {
         try {
             int _type = T43;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:29:7: ( 'throws' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:29:5: ( 'throws' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:29:7: 'throws'
             {
             match("throws"); 
@@ -504,7 +504,7 @@ public class JavaLexer extends Lexer {
     public final void mT44() throws RecognitionException {
         try {
             int _type = T44;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:30:7: ( '=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:30:5: ( '=' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:30:7: '='
             {
             match('='); 
@@ -522,7 +522,7 @@ public class JavaLexer extends Lexer {
     public final void mT45() throws RecognitionException {
         try {
             int _type = T45;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:31:7: ( 'public' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:31:5: ( 'public' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:31:7: 'public'
             {
             match("public"); 
@@ -541,7 +541,7 @@ public class JavaLexer extends Lexer {
     public final void mT46() throws RecognitionException {
         try {
             int _type = T46;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:32:7: ( 'protected' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:32:5: ( 'protected' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:32:7: 'protected'
             {
             match("protected"); 
@@ -560,7 +560,7 @@ public class JavaLexer extends Lexer {
     public final void mT47() throws RecognitionException {
         try {
             int _type = T47;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:33:7: ( 'private' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:33:5: ( 'private' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:33:7: 'private'
             {
             match("private"); 
@@ -579,7 +579,7 @@ public class JavaLexer extends Lexer {
     public final void mT48() throws RecognitionException {
         try {
             int _type = T48;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:34:7: ( 'abstract' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:34:5: ( 'abstract' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:34:7: 'abstract'
             {
             match("abstract"); 
@@ -598,7 +598,7 @@ public class JavaLexer extends Lexer {
     public final void mT49() throws RecognitionException {
         try {
             int _type = T49;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:35:7: ( 'final' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:35:5: ( 'final' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:35:7: 'final'
             {
             match("final"); 
@@ -617,7 +617,7 @@ public class JavaLexer extends Lexer {
     public final void mT50() throws RecognitionException {
         try {
             int _type = T50;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:36:7: ( 'native' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:36:5: ( 'native' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:36:7: 'native'
             {
             match("native"); 
@@ -636,7 +636,7 @@ public class JavaLexer extends Lexer {
     public final void mT51() throws RecognitionException {
         try {
             int _type = T51;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:37:7: ( 'synchronized' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:37:5: ( 'synchronized' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:37:7: 'synchronized'
             {
             match("synchronized"); 
@@ -655,7 +655,7 @@ public class JavaLexer extends Lexer {
     public final void mT52() throws RecognitionException {
         try {
             int _type = T52;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:38:7: ( 'transient' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:38:5: ( 'transient' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:38:7: 'transient'
             {
             match("transient"); 
@@ -674,7 +674,7 @@ public class JavaLexer extends Lexer {
     public final void mT53() throws RecognitionException {
         try {
             int _type = T53;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:39:7: ( 'volatile' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:39:5: ( 'volatile' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:39:7: 'volatile'
             {
             match("volatile"); 
@@ -693,7 +693,7 @@ public class JavaLexer extends Lexer {
     public final void mT54() throws RecognitionException {
         try {
             int _type = T54;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:40:7: ( 'strictfp' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:40:5: ( 'strictfp' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:40:7: 'strictfp'
             {
             match("strictfp"); 
@@ -712,7 +712,7 @@ public class JavaLexer extends Lexer {
     public final void mT55() throws RecognitionException {
         try {
             int _type = T55;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:41:7: ( 'boolean' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:41:5: ( 'boolean' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:41:7: 'boolean'
             {
             match("boolean"); 
@@ -731,7 +731,7 @@ public class JavaLexer extends Lexer {
     public final void mT56() throws RecognitionException {
         try {
             int _type = T56;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:42:7: ( 'char' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:42:5: ( 'char' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:42:7: 'char'
             {
             match("char"); 
@@ -750,7 +750,7 @@ public class JavaLexer extends Lexer {
     public final void mT57() throws RecognitionException {
         try {
             int _type = T57;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:43:7: ( 'byte' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:43:5: ( 'byte' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:43:7: 'byte'
             {
             match("byte"); 
@@ -769,7 +769,7 @@ public class JavaLexer extends Lexer {
     public final void mT58() throws RecognitionException {
         try {
             int _type = T58;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:44:7: ( 'short' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:44:5: ( 'short' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:44:7: 'short'
             {
             match("short"); 
@@ -788,7 +788,7 @@ public class JavaLexer extends Lexer {
     public final void mT59() throws RecognitionException {
         try {
             int _type = T59;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:45:7: ( 'int' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:45:5: ( 'int' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:45:7: 'int'
             {
             match("int"); 
@@ -807,7 +807,7 @@ public class JavaLexer extends Lexer {
     public final void mT60() throws RecognitionException {
         try {
             int _type = T60;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:46:7: ( 'long' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:46:5: ( 'long' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:46:7: 'long'
             {
             match("long"); 
@@ -826,7 +826,7 @@ public class JavaLexer extends Lexer {
     public final void mT61() throws RecognitionException {
         try {
             int _type = T61;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:47:7: ( 'float' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:47:5: ( 'float' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:47:7: 'float'
             {
             match("float"); 
@@ -845,7 +845,7 @@ public class JavaLexer extends Lexer {
     public final void mT62() throws RecognitionException {
         try {
             int _type = T62;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:48:7: ( 'double' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:48:5: ( 'double' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:48:7: 'double'
             {
             match("double"); 
@@ -864,7 +864,7 @@ public class JavaLexer extends Lexer {
     public final void mT63() throws RecognitionException {
         try {
             int _type = T63;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:49:7: ( '?' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:49:5: ( '?' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:49:7: '?'
             {
             match('?'); 
@@ -882,7 +882,7 @@ public class JavaLexer extends Lexer {
     public final void mT64() throws RecognitionException {
         try {
             int _type = T64;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:50:7: ( 'super' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:50:5: ( 'super' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:50:7: 'super'
             {
             match("super"); 
@@ -901,7 +901,7 @@ public class JavaLexer extends Lexer {
     public final void mT65() throws RecognitionException {
         try {
             int _type = T65;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:51:7: ( '(' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:51:5: ( '(' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:51:7: '('
             {
             match('('); 
@@ -919,7 +919,7 @@ public class JavaLexer extends Lexer {
     public final void mT66() throws RecognitionException {
         try {
             int _type = T66;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:52:7: ( ')' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:52:5: ( ')' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:52:7: ')'
             {
             match(')'); 
@@ -937,7 +937,7 @@ public class JavaLexer extends Lexer {
     public final void mT67() throws RecognitionException {
         try {
             int _type = T67;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:53:7: ( '...' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:53:5: ( '...' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:53:7: '...'
             {
             match("..."); 
@@ -956,7 +956,7 @@ public class JavaLexer extends Lexer {
     public final void mT68() throws RecognitionException {
         try {
             int _type = T68;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:54:7: ( 'null' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:54:5: ( 'null' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:54:7: 'null'
             {
             match("null"); 
@@ -975,7 +975,7 @@ public class JavaLexer extends Lexer {
     public final void mT69() throws RecognitionException {
         try {
             int _type = T69;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:55:7: ( 'true' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:55:5: ( 'true' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:55:7: 'true'
             {
             match("true"); 
@@ -994,7 +994,7 @@ public class JavaLexer extends Lexer {
     public final void mT70() throws RecognitionException {
         try {
             int _type = T70;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:56:7: ( 'false' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:56:5: ( 'false' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:56:7: 'false'
             {
             match("false"); 
@@ -1013,7 +1013,7 @@ public class JavaLexer extends Lexer {
     public final void mT71() throws RecognitionException {
         try {
             int _type = T71;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:57:7: ( '@' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:57:5: ( '@' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:57:7: '@'
             {
             match('@'); 
@@ -1031,7 +1031,7 @@ public class JavaLexer extends Lexer {
     public final void mT72() throws RecognitionException {
         try {
             int _type = T72;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:58:7: ( 'default' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:58:5: ( 'default' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:58:7: 'default'
             {
             match("default"); 
@@ -1050,7 +1050,7 @@ public class JavaLexer extends Lexer {
     public final void mT73() throws RecognitionException {
         try {
             int _type = T73;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:59:7: ( 'assert' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:59:5: ( 'assert' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:59:7: 'assert'
             {
             match("assert"); 
@@ -1069,7 +1069,7 @@ public class JavaLexer extends Lexer {
     public final void mT74() throws RecognitionException {
         try {
             int _type = T74;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:60:7: ( ':' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:60:5: ( ':' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:60:7: ':'
             {
             match(':'); 
@@ -1087,7 +1087,7 @@ public class JavaLexer extends Lexer {
     public final void mT75() throws RecognitionException {
         try {
             int _type = T75;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:61:7: ( 'if' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:61:5: ( 'if' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:61:7: 'if'
             {
             match("if"); 
@@ -1106,7 +1106,7 @@ public class JavaLexer extends Lexer {
     public final void mT76() throws RecognitionException {
         try {
             int _type = T76;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:62:7: ( 'else' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:62:5: ( 'else' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:62:7: 'else'
             {
             match("else"); 
@@ -1125,7 +1125,7 @@ public class JavaLexer extends Lexer {
     public final void mT77() throws RecognitionException {
         try {
             int _type = T77;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:63:7: ( 'for' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:63:5: ( 'for' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:63:7: 'for'
             {
             match("for"); 
@@ -1144,7 +1144,7 @@ public class JavaLexer extends Lexer {
     public final void mT78() throws RecognitionException {
         try {
             int _type = T78;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:64:7: ( 'while' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:64:5: ( 'while' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:64:7: 'while'
             {
             match("while"); 
@@ -1163,7 +1163,7 @@ public class JavaLexer extends Lexer {
     public final void mT79() throws RecognitionException {
         try {
             int _type = T79;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:65:7: ( 'do' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:65:5: ( 'do' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:65:7: 'do'
             {
             match("do"); 
@@ -1182,7 +1182,7 @@ public class JavaLexer extends Lexer {
     public final void mT80() throws RecognitionException {
         try {
             int _type = T80;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:66:7: ( 'try' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:66:5: ( 'try' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:66:7: 'try'
             {
             match("try"); 
@@ -1201,7 +1201,7 @@ public class JavaLexer extends Lexer {
     public final void mT81() throws RecognitionException {
         try {
             int _type = T81;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:67:7: ( 'finally' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:67:5: ( 'finally' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:67:7: 'finally'
             {
             match("finally"); 
@@ -1220,7 +1220,7 @@ public class JavaLexer extends Lexer {
     public final void mT82() throws RecognitionException {
         try {
             int _type = T82;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:68:7: ( 'switch' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:68:5: ( 'switch' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:68:7: 'switch'
             {
             match("switch"); 
@@ -1239,7 +1239,7 @@ public class JavaLexer extends Lexer {
     public final void mT83() throws RecognitionException {
         try {
             int _type = T83;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:69:7: ( 'return' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:69:5: ( 'return' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:69:7: 'return'
             {
             match("return"); 
@@ -1258,7 +1258,7 @@ public class JavaLexer extends Lexer {
     public final void mT84() throws RecognitionException {
         try {
             int _type = T84;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:70:7: ( 'throw' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:70:5: ( 'throw' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:70:7: 'throw'
             {
             match("throw"); 
@@ -1277,7 +1277,7 @@ public class JavaLexer extends Lexer {
     public final void mT85() throws RecognitionException {
         try {
             int _type = T85;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:71:7: ( 'break' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:71:5: ( 'break' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:71:7: 'break'
             {
             match("break"); 
@@ -1296,7 +1296,7 @@ public class JavaLexer extends Lexer {
     public final void mT86() throws RecognitionException {
         try {
             int _type = T86;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:72:7: ( 'continue' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:72:5: ( 'continue' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:72:7: 'continue'
             {
             match("continue"); 
@@ -1315,7 +1315,7 @@ public class JavaLexer extends Lexer {
     public final void mT87() throws RecognitionException {
         try {
             int _type = T87;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:73:7: ( 'catch' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:73:5: ( 'catch' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:73:7: 'catch'
             {
             match("catch"); 
@@ -1334,7 +1334,7 @@ public class JavaLexer extends Lexer {
     public final void mT88() throws RecognitionException {
         try {
             int _type = T88;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:74:7: ( 'case' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:74:5: ( 'case' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:74:7: 'case'
             {
             match("case"); 
@@ -1353,7 +1353,7 @@ public class JavaLexer extends Lexer {
     public final void mT89() throws RecognitionException {
         try {
             int _type = T89;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:75:7: ( '+=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:75:5: ( '+=' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:75:7: '+='
             {
             match("+="); 
@@ -1372,7 +1372,7 @@ public class JavaLexer extends Lexer {
     public final void mT90() throws RecognitionException {
         try {
             int _type = T90;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:76:7: ( '-=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:76:5: ( '-=' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:76:7: '-='
             {
             match("-="); 
@@ -1391,7 +1391,7 @@ public class JavaLexer extends Lexer {
     public final void mT91() throws RecognitionException {
         try {
             int _type = T91;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:77:7: ( '*=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:77:5: ( '*=' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:77:7: '*='
             {
             match("*="); 
@@ -1410,7 +1410,7 @@ public class JavaLexer extends Lexer {
     public final void mT92() throws RecognitionException {
         try {
             int _type = T92;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:78:7: ( '/=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:78:5: ( '/=' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:78:7: '/='
             {
             match("/="); 
@@ -1429,7 +1429,7 @@ public class JavaLexer extends Lexer {
     public final void mT93() throws RecognitionException {
         try {
             int _type = T93;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:79:7: ( '&=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:79:5: ( '&=' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:79:7: '&='
             {
             match("&="); 
@@ -1448,7 +1448,7 @@ public class JavaLexer extends Lexer {
     public final void mT94() throws RecognitionException {
         try {
             int _type = T94;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:80:7: ( '|=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:80:5: ( '|=' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:80:7: '|='
             {
             match("|="); 
@@ -1467,7 +1467,7 @@ public class JavaLexer extends Lexer {
     public final void mT95() throws RecognitionException {
         try {
             int _type = T95;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:81:7: ( '^=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:81:5: ( '^=' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:81:7: '^='
             {
             match("^="); 
@@ -1486,7 +1486,7 @@ public class JavaLexer extends Lexer {
     public final void mT96() throws RecognitionException {
         try {
             int _type = T96;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:82:7: ( '%=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:82:5: ( '%=' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:82:7: '%='
             {
             match("%="); 
@@ -1505,7 +1505,7 @@ public class JavaLexer extends Lexer {
     public final void mT97() throws RecognitionException {
         try {
             int _type = T97;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:83:7: ( '||' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:83:5: ( '||' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:83:7: '||'
             {
             match("||"); 
@@ -1524,7 +1524,7 @@ public class JavaLexer extends Lexer {
     public final void mT98() throws RecognitionException {
         try {
             int _type = T98;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:84:7: ( '&&' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:84:5: ( '&&' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:84:7: '&&'
             {
             match("&&"); 
@@ -1543,7 +1543,7 @@ public class JavaLexer extends Lexer {
     public final void mT99() throws RecognitionException {
         try {
             int _type = T99;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:85:7: ( '|' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:85:5: ( '|' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:85:7: '|'
             {
             match('|'); 
@@ -1561,7 +1561,7 @@ public class JavaLexer extends Lexer {
     public final void mT100() throws RecognitionException {
         try {
             int _type = T100;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:86:8: ( '^' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:86:6: ( '^' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:86:8: '^'
             {
             match('^'); 
@@ -1579,7 +1579,7 @@ public class JavaLexer extends Lexer {
     public final void mT101() throws RecognitionException {
         try {
             int _type = T101;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:87:8: ( '==' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:87:6: ( '==' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:87:8: '=='
             {
             match("=="); 
@@ -1598,7 +1598,7 @@ public class JavaLexer extends Lexer {
     public final void mT102() throws RecognitionException {
         try {
             int _type = T102;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:88:8: ( '!=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:88:6: ( '!=' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:88:8: '!='
             {
             match("!="); 
@@ -1617,7 +1617,7 @@ public class JavaLexer extends Lexer {
     public final void mT103() throws RecognitionException {
         try {
             int _type = T103;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:89:8: ( 'instanceof' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:89:6: ( 'instanceof' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:89:8: 'instanceof'
             {
             match("instanceof"); 
@@ -1636,7 +1636,7 @@ public class JavaLexer extends Lexer {
     public final void mT104() throws RecognitionException {
         try {
             int _type = T104;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:90:8: ( '+' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:90:6: ( '+' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:90:8: '+'
             {
             match('+'); 
@@ -1654,7 +1654,7 @@ public class JavaLexer extends Lexer {
     public final void mT105() throws RecognitionException {
         try {
             int _type = T105;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:91:8: ( '-' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:91:6: ( '-' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:91:8: '-'
             {
             match('-'); 
@@ -1672,7 +1672,7 @@ public class JavaLexer extends Lexer {
     public final void mT106() throws RecognitionException {
         try {
             int _type = T106;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:92:8: ( '/' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:92:6: ( '/' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:92:8: '/'
             {
             match('/'); 
@@ -1690,7 +1690,7 @@ public class JavaLexer extends Lexer {
     public final void mT107() throws RecognitionException {
         try {
             int _type = T107;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:93:8: ( '%' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:93:6: ( '%' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:93:8: '%'
             {
             match('%'); 
@@ -1708,7 +1708,7 @@ public class JavaLexer extends Lexer {
     public final void mT108() throws RecognitionException {
         try {
             int _type = T108;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:94:8: ( '++' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:94:6: ( '++' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:94:8: '++'
             {
             match("++"); 
@@ -1727,7 +1727,7 @@ public class JavaLexer extends Lexer {
     public final void mT109() throws RecognitionException {
         try {
             int _type = T109;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:95:8: ( '--' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:95:6: ( '--' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:95:8: '--'
             {
             match("--"); 
@@ -1746,7 +1746,7 @@ public class JavaLexer extends Lexer {
     public final void mT110() throws RecognitionException {
         try {
             int _type = T110;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:96:8: ( '~' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:96:6: ( '~' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:96:8: '~'
             {
             match('~'); 
@@ -1764,7 +1764,7 @@ public class JavaLexer extends Lexer {
     public final void mT111() throws RecognitionException {
         try {
             int _type = T111;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:97:8: ( '!' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:97:6: ( '!' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:97:8: '!'
             {
             match('!'); 
@@ -1782,7 +1782,7 @@ public class JavaLexer extends Lexer {
     public final void mT112() throws RecognitionException {
         try {
             int _type = T112;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:98:8: ( 'this' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:98:6: ( 'this' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:98:8: 'this'
             {
             match("this"); 
@@ -1801,7 +1801,7 @@ public class JavaLexer extends Lexer {
     public final void mT113() throws RecognitionException {
         try {
             int _type = T113;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:99:8: ( 'new' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:99:6: ( 'new' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:99:8: 'new'
             {
             match("new"); 
@@ -1820,8 +1820,8 @@ public class JavaLexer extends Lexer {
     public final void mHexLiteral() throws RecognitionException {
         try {
             int _type = HexLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:934:14: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:934:14: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:12: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:14: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
             {
             match('0'); 
             if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
@@ -1834,7 +1834,7 @@ public class JavaLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:934:28: ( HexDigit )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:28: ( HexDigit )+
             int cnt1=0;
             loop1:
             do {
@@ -1848,7 +1848,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:934:28: HexDigit
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:28: HexDigit
             	    {
             	    mHexDigit(); 
 
@@ -1864,7 +1864,7 @@ public class JavaLexer extends Lexer {
                 cnt1++;
             } while (true);
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:934:38: ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:38: ( IntegerTypeSuffix )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -1873,7 +1873,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:934:38: IntegerTypeSuffix
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:38: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -1896,10 +1896,10 @@ public class JavaLexer extends Lexer {
     public final void mDecimalLiteral() throws RecognitionException {
         try {
             int _type = DecimalLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:18: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:18: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:16: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:18: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
             {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -1911,23 +1911,23 @@ public class JavaLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("936:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )", 4, 0, input);
+                    new NoViableAltException("938:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )", 4, 0, input);
 
                 throw nvae;
             }
             switch (alt4) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:19: '0'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:19: '0'
                     {
                     match('0'); 
 
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:25: '1' .. '9' ( '0' .. '9' )*
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:25: '1' .. '9' ( '0' .. '9' )*
                     {
                     matchRange('1','9'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:34: ( '0' .. '9' )*
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:34: ( '0' .. '9' )*
                     loop3:
                     do {
                         int alt3=2;
@@ -1940,7 +1940,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt3) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:34: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:34: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -1958,7 +1958,7 @@ public class JavaLexer extends Lexer {
 
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:45: ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:45: ( IntegerTypeSuffix )?
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -1967,7 +1967,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:45: IntegerTypeSuffix
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:45: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -1990,11 +1990,11 @@ public class JavaLexer extends Lexer {
     public final void mOctalLiteral() throws RecognitionException {
         try {
             int _type = OctalLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:16: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:16: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:14: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:16: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
             {
             match('0'); 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:20: ( '0' .. '7' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:20: ( '0' .. '7' )+
             int cnt6=0;
             loop6:
             do {
@@ -2008,7 +2008,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:21: '0' .. '7'
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:21: '0' .. '7'
             	    {
             	    matchRange('0','7'); 
 
@@ -2024,7 +2024,7 @@ public class JavaLexer extends Lexer {
                 cnt6++;
             } while (true);
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:32: ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:32: ( IntegerTypeSuffix )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -2033,7 +2033,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt7) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:32: IntegerTypeSuffix
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:32: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -2055,8 +2055,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start HexDigit
     public final void mHexDigit() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:941:12: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:941:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:943:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:943:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -2080,8 +2080,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start IntegerTypeSuffix
     public final void mIntegerTypeSuffix() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:944:21: ( ( 'l' | 'L' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:944:21: ( 'l' | 'L' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:946:19: ( ( 'l' | 'L' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:946:21: ( 'l' | 'L' )
             {
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
@@ -2106,14 +2106,14 @@ public class JavaLexer extends Lexer {
     public final void mFloatingPointLiteral() throws RecognitionException {
         try {
             int _type = FloatingPointLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:947:9: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix )
             int alt19=4;
             alt19 = dfa19.predict(input);
             switch (alt19) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:947:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
                     {
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:947:9: ( '0' .. '9' )+
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:9: ( '0' .. '9' )+
                     int cnt8=0;
                     loop8:
                     do {
@@ -2127,7 +2127,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt8) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:947:10: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2144,7 +2144,7 @@ public class JavaLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:947:25: ( '0' .. '9' )*
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:25: ( '0' .. '9' )*
                     loop9:
                     do {
                         int alt9=2;
@@ -2157,7 +2157,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:947:26: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:26: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2169,7 +2169,7 @@ public class JavaLexer extends Lexer {
                         }
                     } while (true);
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:947:37: ( Exponent )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:37: ( Exponent )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -2178,7 +2178,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt10) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:947:37: Exponent
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:37: Exponent
                             {
                             mExponent(); 
 
@@ -2187,7 +2187,7 @@ public class JavaLexer extends Lexer {
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:947:47: ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:47: ( FloatTypeSuffix )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -2196,7 +2196,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt11) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:947:47: FloatTypeSuffix
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:47: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2209,10 +2209,10 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:948:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
                     {
                     match('.'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:948:13: ( '0' .. '9' )+
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:13: ( '0' .. '9' )+
                     int cnt12=0;
                     loop12:
                     do {
@@ -2226,7 +2226,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt12) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:948:14: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:14: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2242,7 +2242,7 @@ public class JavaLexer extends Lexer {
                         cnt12++;
                     } while (true);
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:948:25: ( Exponent )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:25: ( Exponent )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -2251,7 +2251,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt13) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:948:25: Exponent
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:25: Exponent
                             {
                             mExponent(); 
 
@@ -2260,7 +2260,7 @@ public class JavaLexer extends Lexer {
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:948:35: ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:35: ( FloatTypeSuffix )?
                     int alt14=2;
                     int LA14_0 = input.LA(1);
 
@@ -2269,7 +2269,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt14) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:948:35: FloatTypeSuffix
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:35: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2282,9 +2282,9 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:9: ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:951:9: ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )?
                     {
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:9: ( '0' .. '9' )+
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:951:9: ( '0' .. '9' )+
                     int cnt15=0;
                     loop15:
                     do {
@@ -2298,7 +2298,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt15) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:10: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:951:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2315,7 +2315,7 @@ public class JavaLexer extends Lexer {
                     } while (true);
 
                     mExponent(); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:30: ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:951:30: ( FloatTypeSuffix )?
                     int alt16=2;
                     int LA16_0 = input.LA(1);
 
@@ -2324,7 +2324,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt16) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:30: FloatTypeSuffix
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:951:30: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2337,9 +2337,9 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:9: ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:952:9: ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix
                     {
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:9: ( '0' .. '9' )+
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:952:9: ( '0' .. '9' )+
                     int cnt17=0;
                     loop17:
                     do {
@@ -2353,7 +2353,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt17) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:10: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:952:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2369,7 +2369,7 @@ public class JavaLexer extends Lexer {
                         cnt17++;
                     } while (true);
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:21: ( Exponent )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:952:21: ( Exponent )?
                     int alt18=2;
                     int LA18_0 = input.LA(1);
 
@@ -2378,7 +2378,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt18) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:21: Exponent
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:952:21: Exponent
                             {
                             mExponent(); 
 
@@ -2403,8 +2403,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start Exponent
     public final void mExponent() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:954:12: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:954:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:956:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:956:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -2416,7 +2416,7 @@ public class JavaLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:954:22: ( '+' | '-' )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:956:22: ( '+' | '-' )?
             int alt20=2;
             int LA20_0 = input.LA(1);
 
@@ -2443,7 +2443,7 @@ public class JavaLexer extends Lexer {
 
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:954:33: ( '0' .. '9' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:956:33: ( '0' .. '9' )+
             int cnt21=0;
             loop21:
             do {
@@ -2457,7 +2457,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt21) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:954:34: '0' .. '9'
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:956:34: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -2485,8 +2485,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start FloatTypeSuffix
     public final void mFloatTypeSuffix() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:957:19: ( ( 'f' | 'F' | 'd' | 'D' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:957:19: ( 'f' | 'F' | 'd' | 'D' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:959:17: ( ( 'f' | 'F' | 'd' | 'D' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:959:19: ( 'f' | 'F' | 'd' | 'D' )
             {
             if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
                 input.consume();
@@ -2511,11 +2511,11 @@ public class JavaLexer extends Lexer {
     public final void mCharacterLiteral() throws RecognitionException {
         try {
             int _type = CharacterLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:9: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\'' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\''
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\'' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\''
             {
             match('\''); 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -2527,20 +2527,20 @@ public class JavaLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("960:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )", 22, 0, input);
+                    new NoViableAltException("962:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )", 22, 0, input);
 
                 throw nvae;
             }
             switch (alt22) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:16: EscapeSequence
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:16: EscapeSequence
                     {
                     mEscapeSequence(); 
 
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:33: ~ ( '\\'' | '\\\\' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:33: ~ ( '\\'' | '\\\\' )
                     {
                     if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                         input.consume();
@@ -2573,11 +2573,11 @@ public class JavaLexer extends Lexer {
     public final void mStringLiteral() throws RecognitionException {
         try {
             int _type = StringLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:8: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:966:5: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:966:8: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:12: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:966:12: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
             loop23:
             do {
                 int alt23=3;
@@ -2593,14 +2593,14 @@ public class JavaLexer extends Lexer {
 
                 switch (alt23) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:14: EscapeSequence
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:966:14: EscapeSequence
             	    {
             	    mEscapeSequence(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:31: ~ ( '\\\\' | '\"' )
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:966:31: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
             	        input.consume();
@@ -2635,7 +2635,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start EscapeSequence
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:969:9: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:971:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape )
             int alt24=3;
             int LA24_0 = input.LA(1);
 
@@ -2672,7 +2672,7 @@ public class JavaLexer extends Lexer {
                     break;
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("967:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 24, 1, input);
+                        new NoViableAltException("969:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 24, 1, input);
 
                     throw nvae;
                 }
@@ -2680,13 +2680,13 @@ public class JavaLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("967:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 24, 0, input);
+                    new NoViableAltException("969:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 24, 0, input);
 
                 throw nvae;
             }
             switch (alt24) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:969:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:971:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); 
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -2703,14 +2703,14 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:970:9: UnicodeEscape
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:972:9: UnicodeEscape
                     {
                     mUnicodeEscape(); 
 
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:971:9: OctalEscape
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:9: OctalEscape
                     {
                     mOctalEscape(); 
 
@@ -2727,7 +2727,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start OctalEscape
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:9: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt25=3;
             int LA25_0 = input.LA(1);
 
@@ -2760,38 +2760,38 @@ public class JavaLexer extends Lexer {
                 }
                 else {
                     NoViableAltException nvae =
-                        new NoViableAltException("974:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 25, 1, input);
+                        new NoViableAltException("976:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 25, 1, input);
 
                     throw nvae;
                 }
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("974:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 25, 0, input);
+                    new NoViableAltException("976:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 25, 0, input);
 
                 throw nvae;
             }
             switch (alt25) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:14: ( '0' .. '3' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:15: '0' .. '3'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:14: ( '0' .. '3' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:15: '0' .. '3'
                     {
                     matchRange('0','3'); 
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:25: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:26: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:25: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:26: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:36: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:37: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:36: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:37: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2801,18 +2801,18 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:977:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:979:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:977:14: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:977:15: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:979:14: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:979:15: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:977:25: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:977:26: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:979:25: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:979:26: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2822,11 +2822,11 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:9: '\\\\' ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:9: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:14: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:15: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:14: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:15: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2846,8 +2846,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start UnicodeEscape
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:983:9: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:983:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:985:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:985:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); 
             match('u'); 
@@ -2868,8 +2868,8 @@ public class JavaLexer extends Lexer {
     public final void mENUM() throws RecognitionException {
         try {
             int _type = ENUM;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:986:7: ( 'enum' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:986:7: 'enum'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:988:5: ( 'enum' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:988:7: 'enum'
             {
             match("enum"); 
 
@@ -2888,11 +2888,11 @@ public class JavaLexer extends Lexer {
     public final void mIdentifier() throws RecognitionException {
         try {
             int _type = Identifier;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:990:9: ( Letter ( Letter | JavaIDDigit )* )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:990:9: Letter ( Letter | JavaIDDigit )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:992:5: ( Letter ( Letter | JavaIDDigit )* )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:992:9: Letter ( Letter | JavaIDDigit )*
             {
             mLetter(); 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:990:16: ( Letter | JavaIDDigit )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:992:16: ( Letter | JavaIDDigit )*
             loop26:
             do {
                 int alt26=2;
@@ -2939,7 +2939,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start Letter
     public final void mLetter() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:998:8: ( '\\u0024' | '\\u0041' .. '\\u005a' | '\\u005f' | '\\u0061' .. '\\u007a' | '\\u00c0' .. '\\u00d6' | '\\u00d8' .. '\\u00f6' | '\\u00f8' .. '\\u00ff' | '\\u0100' .. '\\u1fff' | '\\u3040' .. '\\u318f' | '\\u3300' .. '\\u337f' | '\\u3400' .. '\\u3d2d' | '\\u4e00' .. '\\u9fff' | '\\uf900' .. '\\ufaff' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1000:5: ( '\\u0024' | '\\u0041' .. '\\u005a' | '\\u005f' | '\\u0061' .. '\\u007a' | '\\u00c0' .. '\\u00d6' | '\\u00d8' .. '\\u00f6' | '\\u00f8' .. '\\u00ff' | '\\u0100' .. '\\u1fff' | '\\u3040' .. '\\u318f' | '\\u3300' .. '\\u337f' | '\\u3400' .. '\\u3d2d' | '\\u4e00' .. '\\u9fff' | '\\uf900' .. '\\ufaff' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:
             {
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00D6')||(input.LA(1)>='\u00D8' && input.LA(1)<='\u00F6')||(input.LA(1)>='\u00F8' && input.LA(1)<='\u1FFF')||(input.LA(1)>='\u3040' && input.LA(1)<='\u318F')||(input.LA(1)>='\u3300' && input.LA(1)<='\u337F')||(input.LA(1)>='\u3400' && input.LA(1)<='\u3D2D')||(input.LA(1)>='\u4E00' && input.LA(1)<='\u9FFF')||(input.LA(1)>='\uF900' && input.LA(1)<='\uFAFF') ) {
@@ -2964,7 +2964,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start JavaIDDigit
     public final void mJavaIDDigit() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1015:8: ( '\\u0030' .. '\\u0039' | '\\u0660' .. '\\u0669' | '\\u06f0' .. '\\u06f9' | '\\u0966' .. '\\u096f' | '\\u09e6' .. '\\u09ef' | '\\u0a66' .. '\\u0a6f' | '\\u0ae6' .. '\\u0aef' | '\\u0b66' .. '\\u0b6f' | '\\u0be7' .. '\\u0bef' | '\\u0c66' .. '\\u0c6f' | '\\u0ce6' .. '\\u0cef' | '\\u0d66' .. '\\u0d6f' | '\\u0e50' .. '\\u0e59' | '\\u0ed0' .. '\\u0ed9' | '\\u1040' .. '\\u1049' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1017:5: ( '\\u0030' .. '\\u0039' | '\\u0660' .. '\\u0669' | '\\u06f0' .. '\\u06f9' | '\\u0966' .. '\\u096f' | '\\u09e6' .. '\\u09ef' | '\\u0a66' .. '\\u0a6f' | '\\u0ae6' .. '\\u0aef' | '\\u0b66' .. '\\u0b6f' | '\\u0be7' .. '\\u0bef' | '\\u0c66' .. '\\u0c6f' | '\\u0ce6' .. '\\u0cef' | '\\u0d66' .. '\\u0d6f' | '\\u0e50' .. '\\u0e59' | '\\u0ed0' .. '\\u0ed9' | '\\u1040' .. '\\u1049' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='\u0660' && input.LA(1)<='\u0669')||(input.LA(1)>='\u06F0' && input.LA(1)<='\u06F9')||(input.LA(1)>='\u0966' && input.LA(1)<='\u096F')||(input.LA(1)>='\u09E6' && input.LA(1)<='\u09EF')||(input.LA(1)>='\u0A66' && input.LA(1)<='\u0A6F')||(input.LA(1)>='\u0AE6' && input.LA(1)<='\u0AEF')||(input.LA(1)>='\u0B66' && input.LA(1)<='\u0B6F')||(input.LA(1)>='\u0BE7' && input.LA(1)<='\u0BEF')||(input.LA(1)>='\u0C66' && input.LA(1)<='\u0C6F')||(input.LA(1)>='\u0CE6' && input.LA(1)<='\u0CEF')||(input.LA(1)>='\u0D66' && input.LA(1)<='\u0D6F')||(input.LA(1)>='\u0E50' && input.LA(1)<='\u0E59')||(input.LA(1)>='\u0ED0' && input.LA(1)<='\u0ED9')||(input.LA(1)>='\u1040' && input.LA(1)<='\u1049') ) {
@@ -2990,8 +2990,8 @@ public class JavaLexer extends Lexer {
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1032:8: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1032:8: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1034:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1034:8: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -3018,12 +3018,12 @@ public class JavaLexer extends Lexer {
     public final void mCOMMENT() throws RecognitionException {
         try {
             int _type = COMMENT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1036:9: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1036:9: '/*' ( options {greedy=false; } : . )* '*/'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1038:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1038:9: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1036:14: ( options {greedy=false; } : . )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1038:14: ( options {greedy=false; } : . )*
             loop27:
             do {
                 int alt27=2;
@@ -3048,7 +3048,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt27) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1036:42: .
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1038:42: .
             	    {
             	    matchAny(); 
 
@@ -3077,12 +3077,12 @@ public class JavaLexer extends Lexer {
     public final void mLINE_COMMENT() throws RecognitionException {
         try {
             int _type = LINE_COMMENT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1040:7: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1040:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
             {
             match("//"); 
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1040:12: (~ ( '\\n' | '\\r' ) )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:12: (~ ( '\\n' | '\\r' ) )*
             loop28:
             do {
                 int alt28=2;
@@ -3095,7 +3095,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt28) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1040:12: ~ ( '\\n' | '\\r' )
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:12: ~ ( '\\n' | '\\r' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFE') ) {
             	        input.consume();
@@ -3116,7 +3116,7 @@ public class JavaLexer extends Lexer {
                 }
             } while (true);
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1040:26: ( '\\r' )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:26: ( '\\r' )?
             int alt29=2;
             int LA29_0 = input.LA(1);
 
@@ -3125,7 +3125,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt29) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1040:26: '\\r'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:26: '\\r'
                     {
                     match('\r'); 
 
@@ -3147,7 +3147,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR end LINE_COMMENT
 
     public void mTokens() throws RecognitionException {
-        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:10: ( T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | T44 | T45 | T46 | T47 | T48 | T49 | T50 | T51 | T52 | T53 | T54 | T55 | T56 | T57 | T58 | T59 | T60 | T61 | T62 | T63 | T64 | T65 | T66 | T67 | T68 | T69 | T70 | T71 | T72 | T73 | T74 | T75 | T76 | T77 | T78 | T79 | T80 | T81 | T82 | T83 | T84 | T85 | T86 | T87 | T88 | T89 | T90 | T91 | T92 | T93 | T94 | T95 | T96 | T97 | T98 | T99 | T100 | T101 | T102 | T103 | T104 | T105 | T106 | T107 | T108 | T109 | T110 | T111 | T112 | T113 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT )
+        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:8: ( T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | T44 | T45 | T46 | T47 | T48 | T49 | T50 | T51 | T52 | T53 | T54 | T55 | T56 | T57 | T58 | T59 | T60 | T61 | T62 | T63 | T64 | T65 | T66 | T67 | T68 | T69 | T70 | T71 | T72 | T73 | T74 | T75 | T76 | T77 | T78 | T79 | T80 | T81 | T82 | T83 | T84 | T85 | T86 | T87 | T88 | T89 | T90 | T91 | T92 | T93 | T94 | T95 | T96 | T97 | T98 | T99 | T100 | T101 | T102 | T103 | T104 | T105 | T106 | T107 | T108 | T109 | T110 | T111 | T112 | T113 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT )
         int alt30=101;
         alt30 = dfa30.predict(input);
         switch (alt30) {
@@ -3921,7 +3921,7 @@ public class JavaLexer extends Lexer {
             this.transition = DFA19_transition;
         }
         public String getDescription() {
-            return "946:1: FloatingPointLiteral : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix );";
+            return "948:1: FloatingPointLiteral : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix );";
         }
     }
     static final String DFA30_eotS =
