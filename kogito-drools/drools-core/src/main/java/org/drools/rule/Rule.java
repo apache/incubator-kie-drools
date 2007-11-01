@@ -277,11 +277,11 @@ public class Rule
         if ( !this.enabled ) {
             return false;
         }
-        final Calendar now = tm.getNow();
-
         if ( this.dateEffective == null && this.dateExpires == null ) {
             return true;
         } else {
+            final Calendar now = tm.getNow();
+
             if ( this.dateEffective != null && this.dateExpires != null ) {
                 return (now.after( this.dateEffective ) && now.before( this.dateExpires ));
             } else if ( this.dateEffective != null ) {
