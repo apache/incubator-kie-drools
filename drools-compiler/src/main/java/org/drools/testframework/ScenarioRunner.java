@@ -107,7 +107,6 @@ public class ScenarioRunner {
 				long time = System.currentTimeMillis();
 				wm.fireAllRules(scenario.maxRuleFirings);
 				executionTrace.executionTimeResult = System.currentTimeMillis() - time;
-				executionTrace.firingCounts = listener.firingCounts;
 			} else if (fx instanceof Expectation) {
 					Expectation assertion = (Expectation) fx;
 					if (assertion instanceof VerifyFact) {
