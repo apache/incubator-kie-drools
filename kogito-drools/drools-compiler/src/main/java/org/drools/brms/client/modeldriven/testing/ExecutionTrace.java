@@ -29,10 +29,6 @@ public class ExecutionTrace implements Fixture {
 	 */
 	public Date		scenarioSimulatedDate = null;
 
-	/**
-	 * @gwt.typeArgs <java.lang.String, java.lang.Integer>
-	 */
-	public Map firingCounts = new HashMap();
 
 	/**
 	 * The time taken for execution.
