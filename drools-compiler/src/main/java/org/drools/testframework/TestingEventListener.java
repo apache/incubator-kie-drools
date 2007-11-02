@@ -32,7 +32,13 @@ public class TestingEventListener implements AgendaEventListener {
 
     final Map<String, Integer>	firingCounts = new HashMap<String, Integer>(100);
 
-    HashSet<String>	ruleNames = new HashSet<String>();
+	long totalFires;
+
+
+    public TestingEventListener() {
+    }
+
+
 
 
     /**
@@ -41,8 +47,9 @@ public class TestingEventListener implements AgendaEventListener {
      * Inclusive means only the rules on the given set are allowed to fire.
      * The other rules will have their activation counted but not be allowed to fire.
      */
-    public TestingEventListener(HashSet<String> ruleNames, RuleBase ruleBase, boolean inclusive) {
-    	if (ruleNames.size() > 0) {
+	static void stubOutRules(HashSet<String> ruleNames, RuleBase ruleBase,
+			boolean inclusive) {
+		if (ruleNames.size() > 0) {
 	    	if (inclusive) {
 	    		Package[] pkgs = ruleBase.getPackages();
 	    		for (int i = 0; i < pkgs.length; i++) {
@@ -67,8 +74,7 @@ public class TestingEventListener implements AgendaEventListener {
 	    		}
 	    	}
     	}
-    	this.ruleNames = ruleNames;
-    }
+	}
 
 
 
@@ -103,6 +109,7 @@ public class TestingEventListener implements AgendaEventListener {
 	}
 
 	private void record(Rule rule, Map<String, Integer> counts) {
+		this.totalFires++;
 		String name = rule.getName();
 		if (!counts.containsKey(name)) {
 			counts.put(name, 1);
@@ -111,9 +118,7 @@ public class TestingEventListener implements AgendaEventListener {
 		}
 	}
 
-	boolean hasRule(Rule rule) {
-		return this.ruleNames.contains(rule.getName());
-	}
+
 
 	/**
 	 * @return A map of the number of times a given rule "fired".
@@ -122,6 +127,8 @@ public class TestingEventListener implements AgendaEventListener {
 	public Map<String, Integer> getFiringCounts() {
 		return this.firingCounts;
 	}
+
+
 
 }
 

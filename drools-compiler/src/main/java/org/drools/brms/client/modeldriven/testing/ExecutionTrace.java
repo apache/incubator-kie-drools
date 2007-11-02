@@ -1,8 +1,10 @@
 package org.drools.brms.client.modeldriven.testing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,16 +14,7 @@ import java.util.Map;
  */
 public class ExecutionTrace implements Fixture {
 
-	/**
-	 * the rules to include or exclude
-	 */
-	public String[] rules = new String[0];
 
-	/**
-	 * true if only the rules in the list should be allowed to fire. Otherwise
-	 * it is exclusive (ie all rules can fire BUT the ones in the list).
-	 */
-	public boolean inclusive = false;
 
 	/**
 	 * This is the simulated date - leaving it as null means it will use
@@ -35,12 +28,12 @@ public class ExecutionTrace implements Fixture {
 	 */
 	public long executionTimeResult = -1;
 
-
+	/**
+	 * This is pretty obvious really. The total firing count of all rules.
+	 */
+	public long numberOfRulesFired;
 
 	public ExecutionTrace() {}
-	public ExecutionTrace(String[] ruleList, boolean inclusive) {
-		this.rules = ruleList;
-		this.inclusive = inclusive;
-	}
+
 
 }

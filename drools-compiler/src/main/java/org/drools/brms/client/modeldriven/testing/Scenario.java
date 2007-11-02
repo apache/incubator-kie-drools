@@ -38,6 +38,19 @@ public class Scenario implements Serializable {
 	 */
 	public Date lastRunResult;
 
+	/**
+	 * the rules to include or exclude
+	 * @gwt.typeArgs <java.lang.String>
+	 */
+	public List rules = new ArrayList();
+
+	/**
+	 * true if only the rules in the list should be allowed to fire. Otherwise
+	 * it is exclusive (ie all rules can fire BUT the ones in the list).
+	 */
+	public boolean inclusive = false;
+
+
 
 	/**
 	 * Returns true if this was a totally successful scenario, based on the results contained.
