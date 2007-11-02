@@ -60,6 +60,11 @@ public class ScenarioRunner {
 		this.workingMemory = wm;
 		scenario.lastRunResult = new Date();
 
+		//stub out any rules we don't want to have the consequences firing of.
+		HashSet<String> ruleList = new HashSet<String>();
+		ruleList.addAll(scenario.rules);
+		TestingEventListener.stubOutRules(ruleList, wm.getRuleBase(), scenario.inclusive);
+
 		TestingEventListener listener = null;
 
 		for (Iterator iterator = scenario.globals.iterator(); iterator.hasNext();) {
@@ -95,9 +100,10 @@ public class ScenarioRunner {
 			} else if (fx instanceof ExecutionTrace) {
 				ExecutionTrace executionTrace = (ExecutionTrace)fx;
 				//create the listener to trace rules
-				HashSet<String> ruleList = new HashSet<String>();
-				ruleList.addAll(Arrays.asList(executionTrace.rules));
-				listener = new TestingEventListener(ruleList, wm.getRuleBase(), executionTrace.inclusive);
+
+				if (listener != null) wm.removeEventListener(listener); //remove the old
+				listener = new TestingEventListener();
+
 				wm.addEventListener(listener);
 
 				//set up the time machine
@@ -107,6 +113,8 @@ public class ScenarioRunner {
 				long time = System.currentTimeMillis();
 				wm.fireAllRules(scenario.maxRuleFirings);
 				executionTrace.executionTimeResult = System.currentTimeMillis() - time;
+				executionTrace.numberOfRulesFired = listener.totalFires;
+
 			} else if (fx instanceof Expectation) {
 					Expectation assertion = (Expectation) fx;
 					if (assertion instanceof VerifyFact) {
@@ -142,6 +150,9 @@ public class ScenarioRunner {
 					return now;
 				}
 			});
+		} else {
+			//normal time.
+			wm.setTimeMachine(new TimeMachine());
 		}
 	}
 

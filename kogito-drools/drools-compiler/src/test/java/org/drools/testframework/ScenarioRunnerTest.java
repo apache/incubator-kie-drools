@@ -23,6 +23,13 @@ import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.event.ActivationCancelledEvent;
+import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.AgendaEventListener;
+import org.drools.event.AgendaGroupPoppedEvent;
+import org.drools.event.AgendaGroupPushedEvent;
+import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.rule.TimeMachine;
 
 import com.thoughtworks.xstream.XStream;
@@ -80,26 +87,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		assertEquals(42, c.getPrice());
 	}
 
-	public void testDumpXStream() throws Exception {
-		XStream x = new XStream();
 
-
-		Foo f = new Foo();
-		f.another = new ArrayList();
-		f.another.add("whee");
-		f.another.add("waa");
-
-		f.something = new String[2];
-		f.something[0] = "whee";
-		f.something[1] = "waa";
-
-		System.err.println(x.toXML(f));
-	}
-
-	class Foo {
-		String[] something;
-	 	List another;
-	}
 
 	public void testVerifyFacts() throws Exception {
 
@@ -230,9 +218,12 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testTestingEventListener() throws Exception {
 		Scenario sc = new Scenario();
+		sc.rules.add("foo"); sc.rules.add("bar");
 		ExecutionTrace ext = new ExecutionTrace();
 
-		ext.rules = new String[] { "foo", "bar" };
+
+
+
 		sc.fixtures.add(ext);
 
 		MockWorkingMemory wm = new MockWorkingMemory();
@@ -241,9 +232,9 @@ public class ScenarioRunnerTest extends RuleUnit {
 		assertNotNull(wm.agendaEventListener);
 		assertTrue(wm.agendaEventListener instanceof TestingEventListener);
 		TestingEventListener lnr = (TestingEventListener) wm.agendaEventListener;
-		assertEquals(2, lnr.ruleNames.size());
-		assertTrue(lnr.ruleNames.contains("foo"));
-		assertTrue(lnr.ruleNames.contains("bar"));
+		assertEquals(2, sc.rules.size());
+		assertTrue(sc.rules.contains("foo"));
+		assertTrue(sc.rules.contains("bar"));
 	}
 
 	public void testWithGlobals() throws Exception {
@@ -318,8 +309,10 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		ExecutionTrace executionTrace = new ExecutionTrace();
 
-		executionTrace.rules = new String[] {"rule1", "rule2" };
-		executionTrace.inclusive = true;
+
+		sc.rules.add("rule1");
+		sc.rules.add("rule2");
+		sc.inclusive = true;
 		sc.fixtures.add(executionTrace);
 
 		Expectation[] assertions = new Expectation[5];
@@ -349,6 +342,8 @@ public class ScenarioRunnerTest extends RuleUnit {
         WorkingMemory wm = getWorkingMemory("test_rules2.drl");
 
         ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
+
+        assertEquals(3, executionTrace.numberOfRulesFired);
 
         assertSame(run.scenario, sc);
 
@@ -470,8 +465,9 @@ public class ScenarioRunnerTest extends RuleUnit {
 		sc.globals.add(new FactData("Person", "p", new FieldData[0] , false));
 
 		ExecutionTrace executionTrace = new ExecutionTrace();
-		executionTrace.rules = new String[] {"rule1", "rule2" };
-		executionTrace.inclusive = true;
+		sc.rules.add("rule1");
+		sc.rules.add("rule2");
+		sc.inclusive = true;
 		sc.fixtures.add(executionTrace);
 
 		Expectation[] assertions = new Expectation[5];
@@ -519,6 +515,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 
 	}
+
+
 
 
 
