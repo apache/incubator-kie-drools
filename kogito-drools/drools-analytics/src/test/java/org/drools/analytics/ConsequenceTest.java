@@ -6,13 +6,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.StatelessSession;
-import org.drools.StatelessSessionResult;
 import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
-import org.drools.analytics.report.components.Gap;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
 /**

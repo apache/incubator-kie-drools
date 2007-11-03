@@ -29,6 +29,7 @@ import org.drools.analytics.components.Variable;
 import org.drools.analytics.components.VariableRestriction;
 import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.base.evaluators.Operator;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -446,6 +447,7 @@ public class PackageDescrFlattener {
 		if (descr.getIdentifier() != null) {
 			Variable variable = new Variable();
 			variable.setRuleId(currentRule.getId());
+			variable.setRuleName(currentRule.getRuleName());
 			variable.setName(descr.getIdentifier());
 
 			variable.setObjectType(AnalyticsComponentType.CLASS);
@@ -519,6 +521,7 @@ public class PackageDescrFlattener {
 
 		Variable variable = new Variable();
 		variable.setRuleId(currentRule.getId());
+		variable.setRuleName(currentRule.getRuleName());
 		variable.setName(descr.getIdentifier());
 		variable.setOrderNumber(orderNumber);
 		variable.setParent(parent);
@@ -550,9 +553,9 @@ public class PackageDescrFlattener {
 		restriction.setPatternIsNot(currentPattern.isPatternNot());
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
-		restriction.setEvaluator(descr.getEvaluator());
-		restriction.setVariableId(variable.getId());
-		restriction.setVariableName(descr.getIdentifier());
+		restriction.setOperator(Operator
+				.determineOperator(descr.getEvaluator()));
+		restriction.setVariable(variable);
 		restriction.setOrderNumber(orderNumber);
 		restriction.setParent(parent);
 
@@ -580,7 +583,8 @@ public class PackageDescrFlattener {
 		restriction.setPatternIsNot(currentPattern.isPatternNot());
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
-		restriction.setEvaluator(descr.getEvaluator());
+		restriction.setOperator(Operator
+				.determineOperator(descr.getEvaluator()));
 		restriction.setClassMethodName(descr.getClassMethodName());
 		restriction.setContent(descr.getContent());
 		restriction.setDeclarations(descr.getDeclarations());
@@ -610,7 +614,8 @@ public class PackageDescrFlattener {
 		restriction.setPatternIsNot(currentPattern.isPatternNot());
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
-		restriction.setEvaluator(descr.getEvaluator());
+		restriction.setOperator(Operator
+				.determineOperator(descr.getEvaluator()));
 		restriction.setValue(descr.getText());
 		restriction.setOrderNumber(orderNumber);
 		restriction.setParent(parent);
@@ -642,7 +647,8 @@ public class PackageDescrFlattener {
 		restriction.setPatternIsNot(currentPattern.isPatternNot());
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
-		restriction.setEvaluator(descr.getEvaluator());
+		restriction.setOperator(Operator
+				.determineOperator(descr.getEvaluator()));
 		restriction.setVariableId(variable.getId());
 		restriction.setVariableName(text.substring(0, text.indexOf(".")));
 		restriction.setVariablePath(text.substring(text.indexOf(".")));

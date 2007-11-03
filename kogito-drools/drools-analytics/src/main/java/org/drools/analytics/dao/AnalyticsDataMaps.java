@@ -72,9 +72,7 @@ class AnalyticsDataMaps implements AnalyticsData {
 	}
 
 	public void save(Variable variable) {
-		AnalyticsRule rule = rulesById.get(Integer
-				.valueOf(variable.getRuleId()));
-		variablesByRuleAndVariableName.put(rule.getRuleName() + "."
+		variablesByRuleAndVariableName.put(variable.getRuleName() + "."
 				+ variable.getName(), variable);
 	}
 

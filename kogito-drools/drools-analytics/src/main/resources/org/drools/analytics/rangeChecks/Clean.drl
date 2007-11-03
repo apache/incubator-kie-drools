@@ -1,6 +1,8 @@
 #created on: 24.9.2007
 package org.drools.analytics.rangeChecks.cleanUp
 
+import org.drools.base.evaluators.Operator;
+
 import org.drools.analytics.components.*;  
 import org.drools.analytics.report.components.Gap;  
 import org.drools.analytics.report.components.MissingNumberPattern;
@@ -16,12 +18,12 @@ global AnalyticsResult result;
 rule "Merge gaps"
 	when
 		$g1 :Gap(
-			evaluator == ">="
+			operator == Operator.GREATER_OR_EQUAL
 		)
 		$g2 :Gap( 
 			id != $g1.id,
 			field == $g1.field,
-			evaluator == "<=",
+			operator == Operator.LESS_OR_EQUAL,
 			valueAsString == $g1.valueAsString
 		)		
 	then	
@@ -32,7 +34,7 @@ rule "Merge gaps"
 		
 		MissingNumberPattern mnp = new MissingNumberPattern( 
 											$g1.getField(), 
-											"==", 
+											Operator.EQUAL, 
 											$g1.getField().getFieldType(), 
 											$g1.getValueAsString() );
 		mnp.setFiredRuleName( drools.getRule().getName() );
@@ -49,7 +51,7 @@ rule "Remove useless integer gaps lesser or lesser and equal"
 		# Covered x > 10
 		$lower :LiteralRestriction( 
 			valueType == Field.FieldType.INT,
-			( evaluator == ">" || == ">=")
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
 		# Covered x < 100
@@ -57,12 +59,12 @@ rule "Remove useless integer gaps lesser or lesser and equal"
 			fieldId == $lower.fieldId,
 			intValue > $lower.intValue,
 			patternIsNot == $lower.patternIsNot,
-			( evaluator == "<" || == "<=")
+			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
 		)
 		
 		# No "<" or "<=" restrictions between these two
 		not LiteralRestriction( 
-			( evaluator == "<=" || == "<" ),
+			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
 			fieldId == $lower.fieldId,
 			patternIsNot == $lower.patternIsNot, 
 			intValue > $lower.intValue,
@@ -91,7 +93,7 @@ rule "Remove useless integer gaps greater or greater and equal"
 		# Covered x > 10
 		$lower :LiteralRestriction( 
 			valueType == Field.FieldType.INT,
-			( evaluator == ">" || == ">=")
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
 		# Covered x < 100
@@ -99,12 +101,12 @@ rule "Remove useless integer gaps greater or greater and equal"
 			fieldId == $lower.fieldId,
 			intValue > $lower.intValue,
 			patternIsNot == $lower.patternIsNot,
-			( evaluator == "<" || == "<=")
+			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
 		)
 		
 		# No "<" or "<=" restrictions between these two
 		not LiteralRestriction( 
-			( evaluator == ">=" || == ">" ),
+			( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
 			fieldId == $lower.fieldId,
 			patternIsNot == $lower.patternIsNot, 
 			intValue > $lower.intValue,
@@ -133,7 +135,7 @@ rule "Remove useless double gaps lesser or lesser and equal"
 		# Covered x > 10.0
 		$lower :LiteralRestriction( 
 			valueType == Field.FieldType.DOUBLE,
-			( evaluator == ">" || == ">=")
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
 		# Covered x < 100.0
@@ -141,12 +143,12 @@ rule "Remove useless double gaps lesser or lesser and equal"
 			fieldId == $lower.fieldId,
 			doubleValue > $lower.doubleValue,
 			patternIsNot == $lower.patternIsNot,
-			( evaluator == "<" || == "<=")
+			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
 		)
 		
 		# No "<" or "<=" restrictions between these two
 		not LiteralRestriction( 
-			( evaluator == "<=" || == "<" ),
+			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
 			fieldId == $lower.fieldId,
 			patternIsNot == $lower.patternIsNot, 
 			doubleValue > $lower.doubleValue,
@@ -175,7 +177,7 @@ rule "Remove useless double gaps greater or greater and equal"
 		# Covered x > 10.0
 		$lower :LiteralRestriction( 
 			valueType == Field.FieldType.DOUBLE,
-			( evaluator == ">" || == ">=")
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
 		# Covered x < 100.0
@@ -183,12 +185,12 @@ rule "Remove useless double gaps greater or greater and equal"
 			fieldId == $lower.fieldId,
 			doubleValue > $lower.doubleValue,
 			patternIsNot == $lower.patternIsNot,
-			( evaluator == "<" || == "<=")
+			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
 		)
 		
 		# No "<" or "<=" restrictions between these two
 		not LiteralRestriction( 
-			( evaluator == ">=" || == ">" ),
+			( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
 			fieldId == $lower.fieldId,
 			patternIsNot == $lower.patternIsNot, 
 			doubleValue > $lower.doubleValue,
@@ -217,20 +219,20 @@ rule "Remove useless date gaps lesser or lesser and equal"
 		# Covered x > "01-Oct-2007"
 		$lower :LiteralRestriction( 
 			valueType == Field.FieldType.DATE,
-			( evaluator == ">" || == ">=")
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
 		# Covered x < "20-Oct-2007"
 		$higher :LiteralRestriction( 
 			fieldId == $lower.fieldId,
 			patternIsNot == $lower.patternIsNot,
-			( evaluator == "<" || == "<="),
+			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL),
 			eval( dateValue.after( $lower.getDateValue() ) )
 		)
 		
 		# No "<" or "<=" restrictions between these two
 		not LiteralRestriction( 
-			( evaluator == "<=" || == "<" ),
+			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
 			fieldId == $lower.fieldId,
 			patternIsNot == $lower.patternIsNot, 
 			eval( dateValue.after( $lower.getDateValue() ) ),
@@ -245,7 +247,6 @@ rule "Remove useless date gaps lesser or lesser and equal"
 			eval( restriction.getDateValue().before( $higher.getDateValue() ) )
 		)
 	then
-		#System.out.println( $lower + " | " + $higher );
 		retract( $gap );
 		result.remove( $gap );
 end
@@ -259,20 +260,20 @@ rule "Remove useless date gaps greater or greater and equal"
 		# Covered x > "01-Oct-2007"
 		$lower :LiteralRestriction( 
 			valueType == Field.FieldType.DATE,
-			( evaluator == ">" || == ">=")
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
 		)
 
 		# Covered x < "20-Oct-2007"
 		$higher :LiteralRestriction( 
 			fieldId == $lower.fieldId,
 			patternIsNot == $lower.patternIsNot,
-			( evaluator == "<" || == "<="),
+			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL),
 			eval( dateValue.after( $lower.getDateValue() ) )
 		)
 		
-		# No "<" or "<=" restrictions between these two
+		# No ">" or ">=" restrictions between these two
 		not LiteralRestriction( 
-			( evaluator == ">=" || == ">" ),
+			( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
 			fieldId == $lower.fieldId,
 			patternIsNot == $lower.patternIsNot,
 			eval( dateValue.after( $lower.getDateValue() ) ),
@@ -291,134 +292,3 @@ rule "Remove useless date gaps greater or greater and equal"
 		retract( $gap );
 		result.remove( $gap );
 end
-
-/*
-#
-# Example: covered ( x > 10 ),  ( x < 100 )and ( x == 50 )
-# reports that ( x < 50 ) ( x > 50 ) is missing.
-#
-rule "Remove useless integer gaps"
-	when
-		# Covered x > 10
-		$lower :LiteralRestriction( 
-			valueType == Field.FieldType.INT,
-			( evaluator == ">" || == ">=")
-		)
-		
-		# Covered x < 100
-		$higher :LiteralRestriction( 
-			fieldId == $lower.fieldId,
-			intValue > $lower.intValue,
-			patternIsNot == $lower.patternIsNot,
-			( evaluator == "<" || == "<=")
-		)
-	
-		# Nothing in between except "==" restrictions
-		not LiteralRestriction( 
-			evaluator != "==",
-			fieldId == $lower.fieldId,
-			patternIsNot == $lower.patternIsNot, 
-			intValue > $lower.intValue,
-			intValue < $higher.intValue
-		)
-		
-		# gap ( x < 50.0 ) or ( x > 50.0 )
-		$gap :Gap(
-			restriction.fieldId == $lower.fieldId,
-			restriction.patternIsNot == $lower.patternIsNot,
-			restriction.evaluator == "==",
-			restriction.intValue > $lower.intValue,
-			restriction.intValue < $higher.intValue
-		)
-
-	then
-		retract( $gap );
-		result.remove( $gap );
-end
-
-#
-# Example: covered ( x > 10.0 ),  ( x < 100.0 )and ( x == 50.0 )
-# reports that ( x < 50.0 ) ( x > 50.0 ) is missing.
-#
-rule "Remove useless double gaps"
-	when
-		# Covered x > 10.0
-		$lower :LiteralRestriction( 
-			valueType == Field.FieldType.DOUBLE,
-			( evaluator == ">" || == ">=")
-		)
-		
-		# Covered x < 100.0
-		$higher :LiteralRestriction( 
-			fieldId == $lower.fieldId,
-			doubleValue > $lower.doubleValue,
-			patternIsNot == $lower.patternIsNot,
-			( evaluator == "<" || == "<=")
-		)
-	
-		# Nothing in between except "==" restrictions
-		not LiteralRestriction( 
-			evaluator != "==",
-			fieldId == $lower.fieldId,
-			patternIsNot == $lower.patternIsNot, 
-			doubleValue > $lower.doubleValue,
-			doubleValue < $higher.doubleValue
-		)
-		
-		# gap ( x < 50.0 ) or ( x > 50.0 )
-		$gap :Gap(
-			restriction.fieldId == $lower.fieldId,
-			restriction.patternIsNot == $lower.patternIsNot,
-			restriction.evaluator == "==",
-			restriction.doubleValue > $lower.doubleValue,
-			restriction.doubleValue < $higher.doubleValue
-		)
-
-	then
-		retract( $gap );
-		result.remove( $gap );
-end
-
-#
-# Example: covered ( x > "01-Oct-2007" ),  ( x < "20-Oct-2007" )and ( x == "10-Oct-2007" )
-# reports that ( x < "10-Oct-2007" ) ( x > "10-Oct-2007" ) is missing.
-#
-rule "Remove useless date gaps"
-	when
-		# Covered x > "01-Oct-2007"
-		$lower :LiteralRestriction( 
-			valueType == Field.FieldType.DATE,
-			( evaluator == ">" || == ">=")
-		)
-		
-		# Covered x < "20-Oct-2007"
-		$higher :LiteralRestriction( 
-			fieldId == $lower.fieldId,
-			dateValue > $lower.dateValue,
-			patternIsNot == $lower.patternIsNot,
-			( evaluator == "<" || == "<=")
-		)
-	
-		# Nothing in between except "==" restrictions
-		not LiteralRestriction( 
-			evaluator != "==",
-			fieldId == $lower.fieldId,
-			patternIsNot == $lower.patternIsNot, 
-			dateValue > $lower.dateValue,
-			dateValue < $higher.dateValue
-		)
-		
-		# gap ( x < "10-Oct-2007" ) or ( x > "10-Oct-2007" )
-		$gap :Gap(
-			restriction.fieldId == $lower.fieldId,
-			restriction.patternIsNot == $lower.patternIsNot,
-			restriction.evaluator == "==",
-			restriction.dateValue > $lower.dateValue,
-			restriction.dateValue < $higher.dateValue
-		)
-
-	then
-		retract( $gap );
-		result.remove( $gap );
-end
-*/

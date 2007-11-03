@@ -1,6 +1,7 @@
 package org.drools.analytics.report.components;
 
 import org.drools.analytics.components.Field;
+import org.drools.base.evaluators.Operator;
 
 /**
  * 
@@ -14,5 +15,5 @@ public interface RangeCheckCause extends Cause {
 
 	public String getValueAsString();
 
-	public String getEvaluator();
+	public Operator getOperator();
 }

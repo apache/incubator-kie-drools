@@ -1,12 +1,14 @@
 package org.drools.analytics.components;
 
 import org.drools.analytics.report.components.Cause;
+import org.drools.base.evaluators.Operator;
 
 /**
  * 
  * @author Toni Rikkola
  */
 public abstract class Restriction extends AnalyticsComponent implements Cause {
+
 	public static enum RestrictionType {
 		LITERAL, VARIABLE, QUALIFIED_IDENTIFIER, RETURN_VALUE_RESTRICTION
 	}
@@ -20,7 +22,7 @@ public abstract class Restriction extends AnalyticsComponent implements Cause {
 	// Id of the field that this restriction is related to.
 	private int fieldId;
 
-	protected String evaluator;
+	protected Operator operator;
 
 	public Restriction() {
 		super(index++);
@@ -37,12 +39,12 @@ public abstract class Restriction extends AnalyticsComponent implements Cause {
 
 	public abstract RestrictionType getRestrictionType();
 
-	public String getEvaluator() {
-		return evaluator;
+	public Operator getOperator() {
+		return operator;
 	}
 
-	public void setEvaluator(String evaluator) {
-		this.evaluator = evaluator;
+	public void setOperator(Operator operator) {
+		this.operator = operator;
 	}
 
 	public int getConstraintId() {

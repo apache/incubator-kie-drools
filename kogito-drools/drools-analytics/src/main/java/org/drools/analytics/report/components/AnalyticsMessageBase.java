@@ -39,7 +39,7 @@ abstract public class AnalyticsMessageBase implements Serializable,
 	}
 
 	public static enum MessageType {
-		NOT_SPECIFIED, RANGE_CHECK, REDUNDANCY, SUBSUMPTION, MISSING_COMPONENT, OPTIMISATION
+		NOT_SPECIFIED, RANGE_CHECK, MISSING_EQUALITY, REDUNDANCY, SUBSUMPTION, MISSING_COMPONENT, OPTIMISATION
 	}
 
 	protected Severity severity;
