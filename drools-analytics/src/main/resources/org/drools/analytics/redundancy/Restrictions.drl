@@ -10,7 +10,9 @@ rule "Find redundant VariableRestriction"
 		$left :VariableRestriction()
 		$right :VariableRestriction( 
 			id != $left.id, 
-			evaluator == $left.evaluator 
+			operator == $left.operator,
+			variable.objectType == $left.variable.objectType,
+			variable.objectId == $left.variable.objectId 
 		)
 		# Check that there is not already a pair with these values.
 		not Redundancy( 
@@ -23,12 +25,12 @@ rule "Find redundant VariableRestriction"
 		)
 		
 		# Check that these two variables point to the same object.
-		$v :Variable( id == $left.variableId )
-		Variable( 
-			id == $right.variableId,
-			objectType == $v.objectType,
-			objectId == $v.objectId
-		)
+		#$v :Variable( id == $left.variableId )
+		#Variable( 
+		#	id == $right.variableId,
+		#	objectType == $v.objectType,
+		#	objectId == $v.objectId
+		#)
 	then
 		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
 end
@@ -42,14 +44,14 @@ rule "Find redundant LiteralRestriction"
 		(
 				$right :LiteralRestriction( 
 					id != $left.id, 
-					evaluator == $left.evaluator,
+					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.BOOLEAN,
 					booleanValue == $left.booleanValue
 				)
 			or
 				$right :LiteralRestriction( id != $left.id, 
-					evaluator == $left.evaluator,
+					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.STRING,
 					valueAsString matches $left.valueAsString
@@ -57,7 +59,7 @@ rule "Find redundant LiteralRestriction"
 			or
 				$right :LiteralRestriction( 
 					id != $left.id, 
-					evaluator == $left.evaluator,
+					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.INT,
 					intValue == $left.intValue
@@ -65,7 +67,7 @@ rule "Find redundant LiteralRestriction"
 			or
 				$right :LiteralRestriction( 
 					id != $left.id, 
-					evaluator == $left.evaluator,
+					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.DOUBLE,
 					doubleValue == $left.doubleValue
@@ -73,7 +75,7 @@ rule "Find redundant LiteralRestriction"
 			or
 				$right :LiteralRestriction( 
 					id != $left.id, 
-					evaluator == $left.evaluator,
+					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.DATE,
 					eval( dateValue.equals($left.getDateValue()) )
@@ -82,7 +84,7 @@ rule "Find redundant LiteralRestriction"
 			(
 				$right :LiteralRestriction( 
 					id != $left.id, 
-					evaluator == $left.evaluator,
+					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.VARIABLE
 				)
@@ -122,7 +124,7 @@ rule "Find redundant ReturnValueRestriction"
 		$left :ReturnValueRestriction()
 		$right :ReturnValueRestriction( 
 			id != $left.id,
-			evaluator == $left.evaluator,
+			operator == $left.operator,
 			classMethodName matches $left.classMethodName,
 			compareStringArrays( declarations, $left.declarations )
 		)
@@ -151,7 +153,7 @@ rule "Find redundant QualifiedIdentifierRestriction"
 		$left :QualifiedIdentifierRestriction()
 		$right :QualifiedIdentifierRestriction( 
 			id != $left.id, 
-			evaluator == $left.evaluator 
+			operator == $left.operator 
 		)
 		
 		# Check that these two variables point to the same object.

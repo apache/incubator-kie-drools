@@ -5,6 +5,8 @@ package org.drools.analytics.optimisation.drl
 import java.util.Collection;
 import java.util.ArrayList;
 
+import org.drools.base.evaluators.Operator;
+
 import org.drools.analytics.components.Restriction;
 import org.drools.analytics.components.Pattern;
 import org.drools.analytics.components.AnalyticsRule;
@@ -29,78 +31,78 @@ global AnalyticsResult result;
 rule "Optimise restrictions inside operator"
 	when
 		$operator :OperatorDescr()
-	
+		
 		(
 				$r1 :Restriction(
 					parent.parent == $operator,
-					( evaluator == "==" || == "matches" )
+					( operator == Operator.EQUAL || == Operator.MATCHES )
 				)
 			and
 				# There is no reason to check if there is a less expensive constraint
 				# if this one has a restriction that is more expensive.
 				not Restriction(
 					parent == $r1.parent,
-					( evaluator == ">" || == "<" || == ">=" || == "<=" || == "not matches" || == "!=" ) 
+					( operator == Operator.GREATER || == Operator.LESS || == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == Operator.NOT_MATCHES || == Operator.NOT_EQUAL ) 
 				)
 			and
 				$r2 :Restriction(
 					parent.parent == $operator,
 					parent.orderNumber < $r1.parent.orderNumber,
-					( evaluator == ">" || == "<" || == ">=" || == "<=" || == "not matches" || == "!=" ) 
+					( operator == Operator.GREATER || == Operator.LESS || == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == Operator.NOT_MATCHES || == Operator.NOT_EQUAL ) 
 				)
 			and
 				# The other restriction should not have any less expensive restrictions. 
 				not Restriction(
 					parent == $r2.parent,
-					( evaluator == "==" || == "matches" )
+					( operator == Operator.EQUAL || == Operator.MATCHES )
 				)
 		) or (
 				$r1 :Restriction(
 					parent.parent == $operator,
-					( evaluator == ">" || == "<" )
+					( operator == Operator.GREATER || == Operator.LESS )
 				)
 			and
 				# There is no reason to check if there is a less expensive constraint
 				# if this one has a restriction that is more expensive.
 				not Restriction(
 					parent == $r1.parent,
-					( evaluator == ">=" || == "<=" || == "not matches" || == "!=" ) 
+					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == Operator.NOT_MATCHES || == Operator.NOT_EQUAL ) 
 				)
 			and
 				$r2 :Restriction(
 					parent.parent == $operator,
 					parent.orderNumber < $r1.parent.orderNumber,
-					( evaluator == ">=" || == "<=" || == "not matches" || == "!=" ) 
+					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == Operator.NOT_MATCHES || == Operator.NOT_EQUAL ) 
 				)
 			and
 				# The other restriction should not have any less expensive restrictions. 
 				not Restriction(
 					parent == $r2.parent,
-					( evaluator == "==" || == "matches" || == ">" || == "<" )
+					( operator == Operator.EQUAL || == Operator.MATCHES || == Operator.GREATER || == Operator.LESS )
 				)
 		) or (
 				$r1 :Restriction(
 					parent.parent == $operator,
-					( evaluator == ">=" || == "<=" )
+					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL )
 				)
 			and
 				# There is no reason to check if there is a less expensive constraint
 				# if this one has a restriction that is more expensive.
 				not Restriction(
 					parent == $r1.parent,
-					( evaluator == "not matches" || == "!=" ) 
+					( operator == Operator.NOT_MATCHES || == Operator.NOT_EQUAL ) 
 				)
 			and
 				$r2 :Restriction(
 					parent.parent == $operator,
 					parent.orderNumber < $r1.parent.orderNumber,
-					( evaluator == "not matches" || == "!=" ) 
+					( operator == Operator.NOT_MATCHES || == Operator.NOT_EQUAL ) 
 				)
 			and
 				# The other restriction should not have any less expensive restrictions. 
 				not Restriction(
 					parent == $r2.parent,
-					( evaluator == "==" || == "matches" || == ">" || == "<" || == ">" || == "<" || == ">=" || == "<=" )
+					( operator == Operator.EQUAL || == Operator.MATCHES || == Operator.GREATER || == Operator.LESS || == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL )
 				)
 		)
 		
@@ -133,33 +135,33 @@ rule "Optimise restrictions inside constraint"
 	when
 		(
 				$r1 :Restriction(
-					( evaluator == "==" || == "matches" )
+					( operator == Operator.EQUAL || == Operator.MATCHES )
 				)
 			and
 				$r2 :Restriction(
 					parent == $r1.parent,
 					orderNumber < $r1.orderNumber,
-					( evaluator == ">" || == "<" || == ">=" || == "<=" || == "not matches" || == "!=" ) 
+					( operator == Operator.GREATER || == Operator.LESS || == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == Operator.NOT_MATCHES || == Operator.NOT_EQUAL ) 
 				)
 		) or (
 				$r1 :Restriction(
-					( evaluator == ">" || == "<" )
+					( operator == Operator.GREATER || == Operator.LESS )
 				)
 			and
 				$r2 :Restriction(
 					parent == $r1.parent,
 					orderNumber < $r1.orderNumber,
-					( evaluator == ">=" || == "<=" || == "not matches" || == "!=" ) 
+					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == Operator.NOT_MATCHES || == Operator.NOT_EQUAL ) 
 				)
 		) or (
 				$r1 :Restriction(
-					( evaluator == ">=" || == "<=" )
+					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL )
 				)
 			and
 				$r2 :Restriction(
 					parent == $r1.parent,
 					orderNumber < $r1.orderNumber,
-					( evaluator == "not matches" || == "!=" ) 
+					( operator == Operator.NOT_MATCHES || == Operator.NOT_EQUAL ) 
 				)
 		)
 		

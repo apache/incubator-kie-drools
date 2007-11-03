@@ -100,7 +100,12 @@ public class Analyzer {
 
 		Collection<Package> packages = RuleLoader.loadPackages();
 		for (Package pkg : packages) {
-			ruleBase.addPackage(pkg);
+			try {
+				ruleBase.addPackage(pkg);
+			} catch (Exception e) {
+				throw new Exception("Adding package " + pkg.getName()
+						+ " caused an error.", e);
+			}
 		}
 
 		return ruleBase;

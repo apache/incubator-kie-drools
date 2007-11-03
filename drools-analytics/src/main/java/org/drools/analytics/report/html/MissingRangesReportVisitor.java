@@ -14,6 +14,7 @@ import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.analytics.dao.DataTree;
 import org.drools.analytics.report.components.AnalyticsRangeCheckMessage;
 import org.drools.analytics.report.components.RangeCheckCause;
+import org.drools.base.evaluators.Operator;
 import org.mvel.TemplateInterpreter;
 
 public class MissingRangesReportVisitor extends ReportVisitor {
@@ -26,7 +27,7 @@ public class MissingRangesReportVisitor extends ReportVisitor {
 
 		for (RangeCheckCause cause : causes) {
 			dt.put(cause.getValueAsObject(), new DataRow(null, null, cause
-					.getEvaluator(), cause.getValueAsString()));
+					.getOperator(), cause.getValueAsString()));
 		}
 
 		for (Restriction r : restrictions) {
@@ -36,7 +37,7 @@ public class MissingRangesReportVisitor extends ReportVisitor {
 
 					dt.put(restriction.getValueAsObject(), new DataRow(
 							restriction.getRuleId(), restriction.getRuleName(),
-							restriction.getEvaluator(), restriction
+							restriction.getOperator(), restriction
 									.getValueAsString()));
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -52,10 +53,10 @@ public class MissingRangesReportVisitor extends ReportVisitor {
 			if (previous != null) {
 				// Check if previous and current are from the same rule.
 				if (previous.ruleId == null && current.ruleId == null
-						&& !previous.evaluator.equals("==")
-						&& !previous.evaluator.equals("!=")
-						&& !current.evaluator.equals("==")
-						&& !current.evaluator.equals("!=")) {
+						&& !previous.operator.equals(Operator.EQUAL)
+						&& !previous.operator.equals(Operator.NOT_EQUAL)
+						&& !current.operator.equals(Operator.EQUAL)
+						&& !current.operator.equals(Operator.NOT_EQUAL)) {
 					// Combine these two.
 					stringRows.add("Missing : " + previous + " .. " + current);
 
@@ -155,22 +156,23 @@ public class MissingRangesReportVisitor extends ReportVisitor {
 class DataRow implements Comparable<DataRow> {
 	public String ruleName;
 	protected Integer ruleId;
-	protected String evaluator;
+	protected Operator operator;
 	protected String value;
 
 	public int compareTo(DataRow o) {
-		return evaluator.compareTo(o.evaluator);
+		return operator.getOperatorString().compareTo(
+				o.operator.getOperatorString());
 	}
 
-	public DataRow(Integer ruleId, String ruleName, String evaluator,
+	public DataRow(Integer ruleId, String ruleName, Operator operator,
 			String valueAsString) {
 		this.ruleId = ruleId;
 		this.ruleName = ruleName;
-		this.evaluator = evaluator;
+		this.operator = operator;
 		this.value = valueAsString;
 	}
 
 	public String toString() {
-		return evaluator + " " + value;
+		return operator.getOperatorString() + " " + value;
 	}
 }

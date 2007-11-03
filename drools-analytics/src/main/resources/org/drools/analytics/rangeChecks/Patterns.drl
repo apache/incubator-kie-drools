@@ -2,6 +2,8 @@
 package org.drools.analytics.rangeChecks.patterns;
 
 #list any import classes here.
+import org.drools.base.evaluators.Operator;
+
 import org.drools.analytics.components.*;
 import org.drools.analytics.accumulateFunction.ValidatePattern;
 import org.drools.analytics.accumulateFunction.ValidatePatternResult;
@@ -36,7 +38,7 @@ rule "Range check for number patterns"
 					LiteralRestriction( 
 						fieldId == $f.id, 
 						patternIsNot == false, 
-						evaluator == "=="
+						operator == Operator.EQUAL
 					)
 				)
 		) or (
@@ -46,14 +48,14 @@ rule "Range check for number patterns"
 					LiteralRestriction( 
 						fieldId == $f.id, 
 						patternIsNot == true, 
-						evaluator == "=="
+						operator == Operator.EQUAL
 					)
 				)
 		)
 	then
 		Number number = FindMissingNumber.testForPattern( $list );
 		if( number != null ){
-			MissingNumberPattern mnp = new MissingNumberPattern( $f, "==", $f.getFieldType(), number.toString() );
+			MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.EQUAL, $f.getFieldType(), number.toString() );
 			result.save( mnp );
 		}
 end
@@ -76,7 +78,7 @@ rule "Range check for number patterns, !="
 					LiteralRestriction( 
 						fieldId == $f.id, 
 						patternIsNot == false, 
-						evaluator == "!="
+						operator == Operator.NOT_EQUAL
 					)
 				)
 		) or (
@@ -86,14 +88,14 @@ rule "Range check for number patterns, !="
 					LiteralRestriction( 
 						fieldId == $f.id, 
 						patternIsNot == true, 
-						evaluator == "!="
+						operator == Operator.NOT_EQUAL
 					)
 				)
 		)
 	then
 		Number number = FindMissingNumber.testForPattern( $list );
 		if( number != null ){
-			MissingNumberPattern mnp = new MissingNumberPattern( $f, "!=", $f.getFieldType(), number.toString() );
+			MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.NOT_EQUAL, $f.getFieldType(), number.toString() );
 			result.save( mnp );
 		}
 end

@@ -19,6 +19,7 @@ import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.Cause;
 import org.drools.base.RuleNameMatchesAgendaFilter;
+import org.drools.base.evaluators.Operator;
 
 public class RestrictionOrderTest extends TestBase {
 
@@ -84,21 +85,21 @@ public class RestrictionOrderTest extends TestBase {
 		LiteralRestriction r1 = new LiteralRestriction();
 		r1.setPatternId(pattern1.getId());
 		r1.setParent(parent1);
-		r1.setEvaluator(">");
+		r1.setOperator(Operator.GREATER);
 		r1.setOrderNumber(1);
 		testData.add(r1);
 
 		LiteralRestriction r2 = new LiteralRestriction();
 		r2.setPatternId(pattern1.getId());
 		r2.setParent(parent1);
-		r2.setEvaluator("==");
+		r2.setOperator(Operator.EQUAL);
 		r2.setOrderNumber(2);
 		testData.add(r2);
 
 		LiteralRestriction r3 = new LiteralRestriction();
 		r3.setPatternId(pattern1.getId());
 		r3.setParent(parent1);
-		r3.setEvaluator("<");
+		r3.setOperator(Operator.LESS);
 		r3.setOrderNumber(3);
 		testData.add(r3);
 
@@ -113,21 +114,21 @@ public class RestrictionOrderTest extends TestBase {
 		LiteralRestriction r4 = new LiteralRestriction();
 		r4.setPatternId(pattern2.getId());
 		r4.setParent(parent2);
-		r4.setEvaluator("!=");
+		r4.setOperator(Operator.NOT_EQUAL);
 		r4.setOrderNumber(1);
 		testData.add(r4);
 
 		LiteralRestriction r5 = new LiteralRestriction();
 		r5.setPatternId(pattern2.getId());
 		r5.setParent(parent2);
-		r5.setEvaluator("<=");
+		r5.setOperator(Operator.LESS_OR_EQUAL);
 		r5.setOrderNumber(2);
 		testData.add(r5);
 
 		LiteralRestriction r6 = new LiteralRestriction();
 		r6.setPatternId(pattern2.getId());
 		r6.setParent(parent2);
-		r6.setEvaluator("!=");
+		r6.setOperator(Operator.NOT_EQUAL);
 		r6.setOrderNumber(3);
 		testData.add(r6);
 

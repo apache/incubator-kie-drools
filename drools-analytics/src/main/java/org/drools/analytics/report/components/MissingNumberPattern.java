@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import org.drools.analytics.components.Field;
+import org.drools.base.evaluators.Operator;
 
 /**
  * 
@@ -25,10 +26,10 @@ public class MissingNumberPattern extends MissingRange implements
 		return Cause.CauseType.RANGE_CHECK_CAUSE;
 	}
 
-	public MissingNumberPattern(Field field, String evaluator,
+	public MissingNumberPattern(Field field, Operator operator,
 			Field.FieldType valueType, String value) {
 		this.field = field;
-		this.evaluator = evaluator;
+		this.operator = operator;
 		this.valueType = valueType;
 		this.value = value;
 	}
@@ -79,6 +80,6 @@ public class MissingNumberPattern extends MissingRange implements
 
 	@Override
 	public String toString() {
-		return "Missing restriction " + evaluator + " " + value;
+		return "Missing restriction " + operator + " " + value;
 	}
 }

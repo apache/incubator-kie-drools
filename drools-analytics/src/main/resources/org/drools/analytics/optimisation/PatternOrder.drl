@@ -21,6 +21,12 @@ global AnalyticsResult result;
 
 
 
+# Informs that rule would be more effective if eval
+# was after fact patterns.
+# 
+# Type: Note
+# Example: eval(function( $something )) Pattern() 
+#
 rule "Optimise evals inside pattern"
 	when
 		$operator :OperatorDescr()

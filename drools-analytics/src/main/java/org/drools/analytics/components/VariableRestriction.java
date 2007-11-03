@@ -8,23 +8,14 @@ import org.drools.analytics.report.components.Cause;
  */
 public class VariableRestriction extends Restriction implements Cause {
 
-	protected String variableName;
-	protected int variableId;
+	protected Variable variable;
 
-	public int getVariableId() {
-		return variableId;
+	public Variable getVariable() {
+		return variable;
 	}
 
-	public void setVariableId(int variableId) {
-		this.variableId = variableId;
-	}
-
-	public String getVariableName() {
-		return variableName;
-	}
-
-	public void setVariableName(String variableName) {
-		this.variableName = variableName;
+	public void setVariable(Variable variable) {
+		this.variable = variable;
 	}
 
 	public RestrictionType getRestrictionType() {
@@ -33,7 +24,7 @@ public class VariableRestriction extends Restriction implements Cause {
 
 	@Override
 	public String toString() {
-		return "VariableRestriction from rule '" + ruleName + "' name '"
-				+ variableName + "'";
+		return "VariableRestriction from rule '" + ruleName + "' variable '"
+				+ variable + "'";
 	}
 }

@@ -1,0 +1,218 @@
+#created on: 31.10.2007
+package org.drools.analytics.missingEquality
+
+#list any import classes here.
+import org.drools.base.evaluators.Operator;
+
+import org.drools.analytics.components.VariableRestriction;
+import org.drools.analytics.components.LiteralRestriction;	
+import org.drools.analytics.report.components.MissingRange;
+import org.drools.analytics.report.components.AnalyticsMessage;
+import org.drools.analytics.dao.AnalyticsResult;
+
+
+
+#declare any global variables here
+global AnalyticsResult result;
+
+#
+# Informs that there are inequalities, but not equality being catered for.
+# 
+# Type: Warning
+# Example: val != 10 when val == 10 is missing. 
+#
+rule "Missing restriction in LiteralRestrictions"
+	when
+		#
+		# == and !=
+		#
+		(
+				$r :LiteralRestriction(
+					operator == Operator.EQUAL
+				)
+			and
+				not LiteralRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.NOT_EQUAL,
+					patternIsNot == $r.patternIsNot,
+					valueAsString matches $r.valueAsString
+				)
+		) or (
+				$r :LiteralRestriction(
+					operator == Operator.NOT_EQUAL
+				)
+			and
+				not LiteralRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.EQUAL,
+					patternIsNot == $r.patternIsNot,
+					valueAsString matches $r.valueAsString
+				)
+		#
+		# matches and not matches
+		#
+		) or (
+				$r :LiteralRestriction(
+					operator == Operator.MATCHES,
+					valueAsString matches $r.valueAsString
+				)
+			and
+				not LiteralRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.NOT_MATCHES,
+					patternIsNot == $r.patternIsNot,
+					valueAsString matches $r.valueAsString
+				)
+		) or (
+				$r :LiteralRestriction(
+					operator == Operator.NOT_MATCHES,
+					valueAsString matches $r.valueAsString
+				)
+			and
+				not LiteralRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.MATCHES,
+					patternIsNot == $r.patternIsNot,
+					valueAsString matches $r.valueAsString
+				)
+		)
+	then
+		result.save( new AnalyticsMessage(
+								AnalyticsMessage.Severity.WARNING, 
+								AnalyticsMessage.MessageType.MISSING_EQUALITY, 
+								$r, 
+								"Rule base covers " + 
+								$r.getOperator().getOperatorString() + " " + $r.getValueAsString() +
+								", but it is missing " + MissingRange.getReversedOperator( $r.getOperator() ).getOperatorString() +
+								" " + $r.getValueAsString()
+								) );		
+end
+
+#
+# Informs that there are inequalities, but not equality being catered for.
+# 
+# Type: Warning
+# Example: val != $var when val == $var is missing. 
+#
+rule "Missing restriction in VariableRestrictions"
+	when
+		#
+		# == and !=
+		#
+		(
+				$r :VariableRestriction(
+					operator == Operator.EQUAL
+				)
+			and
+				not VariableRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.NOT_EQUAL,
+					patternIsNot == $r.patternIsNot,
+					variable.objectId == $r.variable.objectId,
+					variable.objectType == $r.variable.objectType
+				)
+		) or (
+				$r :VariableRestriction(
+					operator == Operator.NOT_EQUAL
+				)
+			and
+				not VariableRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.EQUAL,
+					patternIsNot == $r.patternIsNot,
+					variable.objectId == $r.variable.objectId,
+					variable.objectType == $r.variable.objectType  
+				)
+		#
+		# matches and not matches
+		#
+		) or (
+				$r :VariableRestriction(
+					operator == Operator.MATCHES 
+				)
+			and
+				not VariableRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.NOT_MATCHES,
+					patternIsNot == $r.patternIsNot,
+					variable.objectId == $r.variable.objectId,
+					variable.objectType == $r.variable.objectType
+				)
+		) or (
+				$r :VariableRestriction(
+					operator == Operator.NOT_MATCHES
+				)
+			and
+				not VariableRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.MATCHES,
+					patternIsNot == $r.patternIsNot,
+					variable.objectId == $r.variable.objectId,
+					variable.objectType == $r.variable.objectType 
+				)
+		#
+		# memberof and not memberof
+		#
+		) or (
+				$r :VariableRestriction(
+					operator == Operator.MEMBEROF
+				)
+			and
+				not VariableRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.NOTMEMBEROF,
+					patternIsNot == $r.patternIsNot,
+					variable.objectId == $r.variable.objectId,
+					variable.objectType == $r.variable.objectType
+				)
+		) or (
+				$r :VariableRestriction(
+					operator == Operator.NOTMEMBEROF
+				)
+			and
+				not VariableRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.MEMBEROF,
+					patternIsNot == $r.patternIsNot,
+					variable.objectId == $r.variable.objectId,
+					variable.objectType == $r.variable.objectType
+				)
+		#
+		# contains and not contains
+		#
+		) or (
+				$r :VariableRestriction(
+					operator == Operator.CONTAINS
+				)
+			and
+				not VariableRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.NOT_CONTAINS,
+					patternIsNot == $r.patternIsNot,
+					variable.objectId == $r.variable.objectId,
+					variable.objectType == $r.variable.objectType
+				)
+		) or (
+				$r :VariableRestriction(
+					operator == Operator.NOT_CONTAINS
+				)
+			and
+				not VariableRestriction(
+					fieldId == $r.fieldId,
+					operator == Operator.CONTAINS,
+					patternIsNot == $r.patternIsNot,
+					variable.objectId == $r.variable.objectId,
+					variable.objectType == $r.variable.objectType
+				)
+		)
+	then
+		result.save( new AnalyticsMessage(
+								AnalyticsMessage.Severity.WARNING, 
+								AnalyticsMessage.MessageType.MISSING_EQUALITY, 
+								$r, 
+								"Rule base covers " + 
+								$r.getOperator().getOperatorString() + " " + $r.getVariable().getName() +
+								", but it is missing " + MissingRange.getReversedOperator( $r.getOperator() ).getOperatorString() +
+								" " + $r.getVariable().getName()
+								) );		
+end
