@@ -32,6 +32,7 @@ public class ObjectFieldImpl
     private final boolean     isNumber;
     private final boolean     isBoolean;
     private final boolean     isCharacter;
+    private final boolean     isString;
 
     public ObjectFieldImpl(final Object value) {
         this.value = value;
@@ -39,6 +40,7 @@ public class ObjectFieldImpl
         this.isNumber = value instanceof Number;
         this.isBoolean = value instanceof Boolean;
         this.isCharacter = value instanceof Character;
+        this.isString = value instanceof String;
     }
 
     public Object getValue() {
@@ -52,6 +54,8 @@ public class ObjectFieldImpl
     public boolean getBooleanValue() {
         if ( isBoolean ) {
             return ((Boolean) this.value).booleanValue();
+        } else if( isString ) {
+            return Boolean.valueOf( (String) this.value ).booleanValue();
         }
         throw new RuntimeDroolsException( "Conversion to boolean not supported for type: " + this.value.getClass() );
     }
@@ -59,13 +63,17 @@ public class ObjectFieldImpl
     public byte getByteValue() {
         if ( isNumber ) {
             return ((Number) this.value).byteValue();
-        }
+        } else if( isString ) {
+            return Byte.valueOf( (String) this.value ).byteValue();
+        } 
         throw new RuntimeDroolsException( "Conversion to byte not supported for type: " + this.value.getClass() );
     }
 
     public char getCharValue() {
         if ( isCharacter ) {
             return ((Character) this.value).charValue();
+        } else if( isString && ((String) this.value).length() == 1 ) {
+            return ( (String) this.value ).charAt( 0 );
         }
         throw new RuntimeDroolsException( "Conversion to char not supported for type: " + this.value.getClass() );
     }
@@ -73,6 +81,8 @@ public class ObjectFieldImpl
     public double getDoubleValue() {
         if ( isNumber ) {
             return ((Number) this.value).doubleValue();
+        } else if( isString ) {
+            return Double.valueOf( (String) this.value ).doubleValue();
         }
         throw new RuntimeDroolsException( "Conversion to double not supported for type: " + this.value.getClass() );
     }
@@ -80,6 +90,8 @@ public class ObjectFieldImpl
     public float getFloatValue() {
         if ( isNumber ) {
             return ((Number) this.value).floatValue();
+        } else if( isString ) {
+            return Float.valueOf( (String) this.value ).floatValue();
         }
         throw new RuntimeDroolsException( "Conversion to float not supported for type: " + this.value.getClass() );
     }
@@ -87,6 +99,8 @@ public class ObjectFieldImpl
     public int getIntValue() {
         if ( isNumber ) {
             return ((Number) this.value).intValue();
+        } else if( isString ) {
+            return Integer.valueOf( (String) this.value ).intValue();
         }
         throw new RuntimeDroolsException( "Conversion to int not supported for type: " + this.value.getClass() );
     }
@@ -94,6 +108,8 @@ public class ObjectFieldImpl
     public long getLongValue() {
         if ( isNumber ) {
             return ((Number) this.value).longValue();
+        } else if( isString ) {
+            return Long.valueOf( (String) this.value ).longValue();
         }
         throw new RuntimeDroolsException( "Conversion to long not supported for type: " + this.value.getClass() );
     }
@@ -101,6 +117,8 @@ public class ObjectFieldImpl
     public short getShortValue() {
         if ( isNumber ) {
             return ((Number) this.value).shortValue();
+        } else if( isString ) {
+            return Short.valueOf( (String) this.value ).shortValue();
         }
         throw new RuntimeDroolsException( "Conversion to short not supported for type: " + this.value.getClass() );
     }
@@ -147,5 +165,9 @@ public class ObjectFieldImpl
     
     public boolean isCollectionField() {
         return this.isCollection;
+    }
+    
+    public boolean isStringField() {
+        return this.isString;
     }
 }

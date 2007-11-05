@@ -1,5 +1,8 @@
 package org.drools.lang.descr;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -32,7 +35,6 @@ public class LiteralRestrictionDescr extends RestrictionDescr {
      */
     private static final long serialVersionUID = 400L;
     private String            evaluator;
-    private String            text;
     private int               type;
 
     public LiteralRestrictionDescr(final String evaluator,
@@ -45,7 +47,7 @@ public class LiteralRestrictionDescr extends RestrictionDescr {
     public LiteralRestrictionDescr(final String evaluator,
                                    final String text,
                                    final int type) {
-        this.text = text;
+        this.setText( text );
         this.evaluator = evaluator;
         this.type = type;
     }
@@ -54,12 +56,24 @@ public class LiteralRestrictionDescr extends RestrictionDescr {
         return this.evaluator;
     }
 
-    public String getText() {
-        return this.text;
+    public Object getValue() {
+        switch( this.type ) {
+            case TYPE_NUMBER:
+                try {
+                    return DecimalFormat.getInstance().parse( this.getText() );
+                } catch ( ParseException e ) {
+                    // return String anyway
+                    return this.getText();
+                }
+            case TYPE_BOOLEAN:
+                return Boolean.valueOf( this.getText() );
+            default:
+                return this.getText();
+        }
     }
 
     public String toString() {
-        return "[LiteralRestriction: " + this.evaluator + " " + this.text + "]";
+        return "[LiteralRestriction: " + this.evaluator + " " + this.getText() + "]";
 
     }
 

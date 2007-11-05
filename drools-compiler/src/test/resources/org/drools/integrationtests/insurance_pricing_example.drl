@@ -1,7 +1,7 @@
 package org.acme.insurance;
 #generated from Decision Table
 #From row number: 10
-rule "Pricing bracket_10"
+/*rule "Pricing bracket_10"
 	
 	when
 		Driver(age >= 18, age <= 24, locationRiskProfile == "LOW", priorClaims == "1")
@@ -83,7 +83,7 @@ rule "Pricing bracket_17"
 		policy.setBasePrice(550);
 		// System.out.println("Location risk");
 end
-
+*/
 #From row number: 18
 rule "Pricing bracket_18"
 	
@@ -94,7 +94,7 @@ rule "Pricing bracket_18"
 		policy.setBasePrice(120);
 		// System.out.println("Cheapest possible");
 end
-
+/*
 #From row number: 19
 rule "Pricing bracket_19"
 	
@@ -145,7 +145,7 @@ rule "Discounts_31"
 	then
 		policy.applyDiscount(2);
 end
-
+*/
 #From row number: 32
 rule "Discounts_32"
 	

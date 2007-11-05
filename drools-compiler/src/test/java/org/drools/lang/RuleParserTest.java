@@ -136,7 +136,7 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( "empty",
                       rule.getName() );
-        assertNull( rule.getLhs() );
+        assertNotNull( rule.getLhs() );
         assertNotNull( rule.getConsequence() );
 
         assertFalse( this.parser.getErrorMessages().toString(),
@@ -3441,6 +3441,34 @@ public class RuleParserTest extends TestCase {
         parser.setLineOffset( descrs.getLine() );
         parser.normal_lhs_block( descrs );
         assertTrue( parser.hasErrors() );
+    }
+    
+    public void testRuleSingleLine() throws Exception {
+        final String text = "rule \"another test\" salience 10 when eval( true ) then System.out.println(1); end";
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+        parser.setLineOffset( 10 );
+        RuleDescr rule = parser.rule();
+        
+        assertFalse( parser.hasErrors() );
+        assertEquals( "another test", rule.getName() );
+        assertEquals( "System.out.println(1); ", rule.getConsequence());
+    }
+    
+    public void testRuleTwoLines() throws Exception {
+        final String text = "rule \"another test\" salience 10 when eval( true ) then System.out.println(1);\n end";
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+        parser.setLineOffset( 10 );
+        RuleDescr rule = parser.rule();
+        
+        assertFalse( parser.hasErrors() );
+        assertEquals( "another test", rule.getName() );
+        assertEquals( "System.out.println(1);\n ", rule.getConsequence());
     }
 
     public void testRuleParseLhs3() throws Exception {

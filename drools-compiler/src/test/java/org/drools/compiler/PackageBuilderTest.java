@@ -304,7 +304,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         builder.addPackageFromDrl( new StringReader( "package foo" ) );
-        builder.addPackageFromDrl( new StringReader( "rule x end" ) );
+        builder.addPackageFromDrl( new StringReader( "rule x then end" ) );
 
     }
 

@@ -94,4 +94,8 @@ public class DoubleFieldImpl
         return false;
     }
 
+    public boolean isStringField() {
+        return false;
+    }
+
 }

@@ -74,7 +74,8 @@ public class CompositeObjectSinkAdapter
                         final FieldValue value = literalConstraint.getField();
                         // no need to check, we know  the sink  does not exist
                         this.hashedSinkMap.put( new HashKey( index,
-                                                             value ),
+                                                             value,
+                                                             fieldIndex.getFieldExtractor() ),
                                                 sink,
                                                 false );
                     } else {
@@ -112,6 +113,7 @@ public class CompositeObjectSinkAdapter
 
                     if ( fieldIndex.isHashed() ) {
                         this.hashKey.setValue( index,
+                                               fieldIndex.getFieldExtractor(),
                                                value );
                         this.hashedSinkMap.remove( this.hashKey );
                         if ( fieldIndex.getCount() <= this.alphaNodeHashingThreshold - 1 ) {
@@ -156,7 +158,8 @@ public class CompositeObjectSinkAdapter
                 final FieldValue value = literalConstraint.getField();
                 list.add( sink );
                 this.hashedSinkMap.put( new HashKey( index,
-                                                     value ),
+                                                     value,
+                                                     fieldIndex.getFieldExtractor() ),
                                         sink );
             }
         }
@@ -199,7 +202,8 @@ public class CompositeObjectSinkAdapter
                 }
                 this.hashableSinks.add( sink );
                 this.hashedSinkMap.remove( new HashKey( index,
-                                                        value ) );
+                                                        value,
+                                                        fieldIndex.getFieldExtractor() ) );
             };
         }
 
@@ -439,8 +443,10 @@ public class CompositeObjectSinkAdapter
         }
 
         public HashKey(final int index,
-                       final FieldValue value) {
+                       final FieldValue value,
+                       final Extractor extractor ) {
             this.setValue( index,
+                           extractor, 
                            value );
         }
 
@@ -501,12 +507,14 @@ public class CompositeObjectSinkAdapter
         }
 
         public void setValue(final int index,
+                             final Extractor extractor,
                              final FieldValue value) {
             this.index = index;
             
             this.isNull = value.isNull();
+            final ValueType vtype = extractor.getValueType();
             
-            if ( value.isBooleanField() ) {
+            if ( vtype.isBoolean() ) {
                 this.type = BOOL;
                 if ( !isNull ) {      
 	                this.bvalue = value.getBooleanValue();
@@ -514,7 +522,7 @@ public class CompositeObjectSinkAdapter
                 } else {
              		this.setHashCode( 0 );
                 }
-            } else if ( value.isIntegerNumberField() ) {
+            } else if ( vtype.isIntegerNumber() ) {
                 this.type = LONG;
                 if ( !isNull ) {      
 	                this.lvalue = value.getLongValue();
@@ -522,7 +530,7 @@ public class CompositeObjectSinkAdapter
                 } else {
              		this.setHashCode( 0 );
                 }
-            } else if ( value.isFloatNumberField() ) {
+            } else if ( vtype.isFloatNumber() ) {
                 this.type = DOUBLE;
                 if ( !isNull ) {      
 	                this.dvalue = value.getDoubleValue();

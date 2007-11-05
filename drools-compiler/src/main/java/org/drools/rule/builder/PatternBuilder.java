@@ -639,7 +639,7 @@ public class PatternBuilder
                                                 final LiteralRestrictionDescr literalRestrictionDescr) {
         FieldValue field = null;
         try {
-            field = FieldFactory.getFieldValue( literalRestrictionDescr.getText(),
+            field = FieldFactory.getFieldValue( literalRestrictionDescr.getValue(),
                                                 extractor.getValueType() );
         } catch ( final Exception e ) {
             context.getErrors().add( new RuleError( context.getRule(),
