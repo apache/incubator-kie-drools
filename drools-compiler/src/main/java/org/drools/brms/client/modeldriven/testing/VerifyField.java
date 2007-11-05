@@ -13,7 +13,7 @@ public class VerifyField implements Serializable {
 	/**
 	 * Operator is generally "==" or "!="  - an MVEL operator.
 	 */
-	public String operator;
+	public String operator = "==";
 
 	public VerifyField() {}
 

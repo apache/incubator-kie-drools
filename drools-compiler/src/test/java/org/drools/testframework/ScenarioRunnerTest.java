@@ -319,6 +319,47 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	}
 
+	public void testVerifyRuleFired() throws Exception {
+		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null,
+				new MockWorkingMemory());
+
+		VerifyRuleFired vr = new VerifyRuleFired("qqq", 42, null);
+		Map<String, Integer> f = new HashMap<String, Integer>();
+		f.put("qqq", 42);
+		f.put("qaz", 1);
+
+		runner.verify(vr, f);
+		assertTrue(vr.wasSuccessful());
+		assertEquals(42, vr.actualResult.intValue());
+
+		vr = new VerifyRuleFired("qqq", 41, null);
+		runner.verify(vr, f);
+		assertFalse(vr.wasSuccessful());
+		assertEquals(42, vr.actualResult.intValue());
+
+		vr = new VerifyRuleFired("qaz", 1, null);
+		runner.verify(vr, f);
+		assertTrue(vr.wasSuccessful());
+		assertEquals(1, vr.actualResult.intValue());
+
+		vr = new VerifyRuleFired("XXX", null, false);
+		runner.verify(vr, f);
+		assertTrue(vr.wasSuccessful());
+		assertEquals(0, vr.actualResult.intValue());
+
+		vr = new VerifyRuleFired("qqq", null, true);
+		runner.verify(vr, f);
+		assertTrue(vr.wasSuccessful());
+		assertEquals(42, vr.actualResult.intValue());
+
+		vr = new VerifyRuleFired("qqq", null, false);
+		runner.verify(vr, f);
+		assertFalse(vr.wasSuccessful());
+		assertEquals(42, vr.actualResult.intValue());
+
+
+	}
+
 	/**
 	 * Do a kind of end to end test with some real rules.
 	 */
