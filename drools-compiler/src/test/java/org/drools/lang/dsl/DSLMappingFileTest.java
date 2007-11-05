@@ -107,6 +107,40 @@ public class DSLMappingFileTest extends TestCase {
 
     }
 
+    public void testParseFileWithEscapes() {
+        String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" + 
+                      "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n" + 
+                      "[when]code {code1} occurs=BBBB\n";
+        try {
+            final Reader reader = new StringReader( file );
+            this.file = new DSLMappingFile();
+
+            final boolean parsingResult = this.file.parseAndLoad( reader );
+            reader.close();
+
+            assertTrue( this.file.getErrors().toString(),
+                        parsingResult );
+            assertTrue( this.file.getErrors().isEmpty() );
+            
+            final String LHS = "code 1041 occurs and sum of all digit not equal ( 1034 + 1035 )";
+            final String rule = "rule \"x\"\nwhen\n" + LHS + "\nthen\nTEST\nend";
+
+            DefaultExpander de = new DefaultExpander();
+            de.addDSLMapping(this.file.getMapping());
+                    
+            final String ruleAfterExpansion = de.expand(rule);
+            
+            final String expected = "rule \"x\"\nwhen\nAAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))\nthen\nSystem.out.println(\"DO_SOMETHING\");\nend\n";
+            
+            assertEquals( expected, ruleAfterExpansion );
+            
+        } catch ( final IOException e ) {
+            e.printStackTrace();
+            fail( "Should not raise exception " );
+        }
+
+    }
+
     public void testParseFileWithEscaptedEquals() {
         String file = "[when][]something:\\={value}=Attribute( something == \"{value}\" )";
         try {
