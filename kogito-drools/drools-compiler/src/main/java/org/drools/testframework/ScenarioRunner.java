@@ -180,7 +180,7 @@ public class ScenarioRunner {
 			st.put("__fact__", fact);
 			st.put("__expected__", fld.expected);
 			fld.successResult = (Boolean) eval("__fact__." + fld.fieldName
-					+ " == __expected__", st);
+					+ " " + fld.operator  + " __expected__", st);
 			if (!fld.successResult) {
 				fld.actualResult = eval("__fact__." + fld.fieldName, st).toString();
 			}

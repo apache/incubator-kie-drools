@@ -103,8 +103,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 		VerifyFact vf = new VerifyFact();
 		vf.factName = "f1";
 		vf.fieldValues = new VerifyField[] {
-				new VerifyField("type", "cheddar"),
-				new VerifyField("price", "42") };
+				new VerifyField("type", "cheddar", "=="),
+				new VerifyField("price", "42", "==") };
 
 		runner.verify(vf);
 		for (int i = 0; i < vf.fieldValues.length; i++) {
@@ -114,8 +114,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 		vf = new VerifyFact();
 		vf.factName = "f2";
 		vf.fieldValues = new VerifyField[] {
-				new VerifyField("name", "michael"),
-				new VerifyField("age", "33") };
+				new VerifyField("name", "michael", "=="),
+				new VerifyField("age", "33", "==") };
 
 		runner.verify(vf);
 		for (int i = 0; i < vf.fieldValues.length; i++) {
@@ -125,8 +125,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 		// test one false
 		vf = new VerifyFact();
 		vf.factName = "f2";
-		vf.fieldValues = new VerifyField[] { new VerifyField("name", "mark"),
-				new VerifyField("age", "33") };
+		vf.fieldValues = new VerifyField[] { new VerifyField("name", "mark", "=="),
+				new VerifyField("age", "33", "==") };
 
 		runner.verify(vf);
 		assertFalse(vf.fieldValues[0].successResult);
@@ -138,8 +138,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 		// test 2 false
 		vf = new VerifyFact();
 		vf.factName = "f2";
-		vf.fieldValues = new VerifyField[] { new VerifyField("name", "mark"),
-				new VerifyField("age", "32") };
+		vf.fieldValues = new VerifyField[] { new VerifyField("name", "mark", "=="),
+				new VerifyField("age", "32", "==") };
 
 		runner.verify(vf);
 		assertFalse(vf.fieldValues[0].successResult);
@@ -153,6 +153,33 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	}
 
+	public void testVerifyFactsWithOperator() throws Exception {
+		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null,
+				new MockWorkingMemory());
+		Cheese f1 = new Cheese("cheddar", 42);
+		runner.populatedData.put("f1", f1);
+
+		// test all true
+		VerifyFact vf = new VerifyFact();
+		vf.factName = "f1";
+		vf.fieldValues = new VerifyField[] {
+				new VerifyField("type", "cheddar", "=="),
+				new VerifyField("price", "4777", "!=") };
+		runner.verify(vf);
+		for (int i = 0; i < vf.fieldValues.length; i++) {
+			assertTrue(vf.fieldValues[i].successResult);
+		}
+
+		vf = new VerifyFact();
+		vf.factName = "f1";
+		vf.fieldValues = new VerifyField[] {
+				new VerifyField("type", "cheddar", "!=")};
+		runner.verify(vf);
+		assertFalse(vf.fieldValues[0].successResult);
+
+
+	}
+
 	public void testDummyRunNoRules() throws Exception {
 		Scenario sc = new Scenario();
 		FactData[] facts = new FactData[] { new FactData("Cheese", "c1",
@@ -160,8 +187,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 						new FieldData("price", "42", false) }, false) };
 
 		VerifyFact[] assertions = new VerifyFact[] { new VerifyFact("c1",
-				new VerifyField[] { new VerifyField("type", "cheddar"),
-						new VerifyField("price", "42") }) };
+				new VerifyField[] { new VerifyField("type", "cheddar", "=="),
+						new VerifyField("price", "42", "==") }) };
 
 		sc.fixtures.addAll(Arrays.asList(facts));
 		sc.fixtures.addAll(Arrays.asList(assertions));
@@ -318,13 +345,13 @@ public class ScenarioRunnerTest extends RuleUnit {
 		Expectation[] assertions = new Expectation[5];
 
 		assertions[0] =	new VerifyFact("c1", new VerifyField[] {
-					new VerifyField("type", "cheddar")
+					new VerifyField("type", "cheddar", "==")
 
 		});
 
 		assertions[1] = new VerifyFact("p", new VerifyField[] {
-					new VerifyField("name", "rule1"),
-					new VerifyField("status", "rule2")
+					new VerifyField("name", "rule1", "=="),
+					new VerifyField("status", "rule2", "==")
 
 		});
 
@@ -366,10 +393,10 @@ public class ScenarioRunnerTest extends RuleUnit {
 		ExecutionTrace ex = new ExecutionTrace();
 		sc.fixtures.add(ex);
 		sc.fixtures.add(new FactData("Cheese", "c2", new FieldData[] {new FieldData("price", "2", false)}, false));
-		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule1")}));
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule1", "==")}));
 		ex = new ExecutionTrace();
 		sc.fixtures.add(ex);
-		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule2")}));
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule2", "==")}));
 
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
 				Thread.currentThread().getContextClassLoader());
@@ -396,12 +423,12 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		sc.fixtures.add(new ExecutionTrace());
 
-		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule1")}));
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule1", "==")}));
 
 		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "42", false)}, true));
 		sc.fixtures.add(new ExecutionTrace());
 
-		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule3")}));
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule3", "==")}));
 
 
 
@@ -428,12 +455,12 @@ public class ScenarioRunnerTest extends RuleUnit {
 		sc.fixtures.add(new FactData("Cheese", "c2", new FieldData[] {new FieldData("price", "42", false)}, false));
 		sc.fixtures.add(new ExecutionTrace());
 
-		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "XXX")}));
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "XXX", "==")}));
 
 		sc.fixtures.add(new RetractFact("c2"));
 		sc.fixtures.add(new ExecutionTrace());
 
-		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule4")}));
+		sc.fixtures.add(new VerifyFact("c1", new VerifyField[] {new VerifyField("type", "rule4", "==")}));
 
 
 
@@ -473,13 +500,13 @@ public class ScenarioRunnerTest extends RuleUnit {
 		Expectation[] assertions = new Expectation[5];
 
 		assertions[0] =	new VerifyFact("c1", new VerifyField[] {
-					new VerifyField("type", "cheddar")
+					new VerifyField("type", "cheddar", "==")
 
 		});
 
 		assertions[1] = new VerifyFact("p", new VerifyField[] {
-					new VerifyField("name", "XXX"),
-					new VerifyField("status", "rule2")
+					new VerifyField("name", "XXX", "=="),
+					new VerifyField("status", "rule2", "==")
 
 		});
 
