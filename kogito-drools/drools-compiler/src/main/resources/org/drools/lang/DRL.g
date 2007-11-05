@@ -183,7 +183,7 @@ grammar DRL;
         }
         
         private String safeSubstring( String text, int start, int end ) {
-        	return text.substring( start, Math.max( start, end ) );
+            	return text.substring( Math.min( start, text.length() ), Math.min( Math.max( start, end ), text.length() ) );
         }
       
 }
@@ -471,13 +471,14 @@ rule returns [RuleDescr rule]
 			$rule = new RuleDescr( $ruleName.name, null ); 
 			$rule.setLocation( offset($RULE.line), $RULE.pos );
 			$rule.setStartCharacter( ((CommonToken)$RULE).getStartIndex() );
+			lhs = new AndDescr(); 
+			$rule.setLhs( lhs ); 
 		}
 		rule_attributes[$rule]?
 		(	
 			WHEN ':'?
 			{ 
 				this.location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-				lhs = new AndDescr(); $rule.setLhs( lhs ); 
 				lhs.setLocation( offset($WHEN.line), $WHEN.pos );
 				lhs.setStartCharacter( ((CommonToken)$WHEN).getStartIndex() );
 			}
@@ -1638,12 +1639,13 @@ rhs_chunk[RuleDescr rule]
                     // ignoring first line in the consequence
                     String buf = input.toString( $THEN, $loc );
                     // removing final END keyword
-                    buf = safeSubstring( buf, 0, buf.length()-3 );
-                    if( buf.indexOf( '\n' ) > -1 ) {
-                        buf = buf.substring( buf.indexOf( '\n' ) + 1 );
-                    } else if ( buf.indexOf( '\r' ) > -1 ) {
-                        buf = buf.substring( buf.indexOf( '\r' ) + 1 );
+                    int idx=4;
+                    while( idx < buf.length()-3 && (buf.charAt(idx) == ' ' || buf.charAt(idx) == '\t') ) {
+                        idx++;
                     }
+                    if( idx < buf.length()-3 && buf.charAt(idx) == '\r' ) idx++;
+                    if( idx < buf.length()-3 && buf.charAt(idx) == '\n' ) idx++;
+                    buf = safeSubstring( buf, idx, buf.length()-3 );
 		    $rule.setConsequence( buf );
      		    $rule.setConsequenceLocation(offset($THEN.line), $THEN.pos);
  		    $rule.setEndCharacter( ((CommonToken)$loc).getStopIndex() );

@@ -94,4 +94,8 @@ public class LongFieldImpl
         return false;
     }
 
+    public boolean isStringField() {
+        return false;
+    }
+
 }

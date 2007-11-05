@@ -17,6 +17,7 @@ package org.drools.base.evaluators;
  */
 
 import java.util.Collection;
+import java.util.Comparator;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ShadowProxy;
@@ -92,6 +93,7 @@ public class ObjectFactory
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectEqualEvaluator();
+        private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();        
 
         private ObjectEqualEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -103,37 +105,21 @@ public class ObjectFactory
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
             final Object value2 = object2.getValue();
-            if ( value1 == null ) {
-                return value2 == null;
-            }
-            if( value2 != null && value2 instanceof ShadowProxy ) {
-                return value2.equals( value1 );
-            }
-            return value1.equals( value2 );
+            return comparator.equals( value1, value2 );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
-            if ( value == null ) {
-                return ((ObjectVariableContextEntry) context).right == null;
-            }
-            if( ((ObjectVariableContextEntry) context).right != null && ((ObjectVariableContextEntry) context).right instanceof ShadowProxy ) {
-                return ((ObjectVariableContextEntry) context).right.equals( value );
-            }
-            return value.equals( ((ObjectVariableContextEntry) context).right );
+            final Object value1 = context.declaration.getExtractor().getValue( workingMemory, left );
+            final Object value2 = ((ObjectVariableContextEntry) context).right;
+            return comparator.equals( value1, value2 );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            final Object value = context.extractor.getValue( workingMemory, right );
-            if ( ((ObjectVariableContextEntry) context).left == null ) {
-                return value == null;
-            }
-            if( value != null && value instanceof ShadowProxy ) {
-                return value.equals( ((ObjectVariableContextEntry) context).left );
-            }
-            return ((ObjectVariableContextEntry) context).left.equals( value );
+            final Object value1 = context.extractor.getValue( workingMemory, right );
+            final Object value2 = ((ObjectVariableContextEntry) context).left;
+            return comparator.equals( value1, value2 );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -142,13 +128,7 @@ public class ObjectFactory
                                 final Extractor extractor2, final Object object2) {
             final Object value1 = extractor1.getValue( workingMemory, object1 );
             final Object value2 = extractor2.getValue( workingMemory, object2 );
-            if ( value1 == null ) {
-                return value2 == null;
-            }
-            if( value2 != null && value2 instanceof ShadowProxy ) {
-                return value2.equals( value1 );
-            }
-            return value1.equals( value2 );
+            return comparator.equals( value1, value2 );
         }
 
         public String toString() {
@@ -163,6 +143,7 @@ public class ObjectFactory
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectNotEqualEvaluator();
+        private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();        
 
         private ObjectNotEqualEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -174,37 +155,21 @@ public class ObjectFactory
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
             final Object value2 = object2.getValue();
-            if ( value1 == null ) {
-                return value2 != null;
-            }
-            if( value2 != null && value2 instanceof ShadowProxy ) {
-                return !value2.equals( value1 );
-            }
-            return !value1.equals( value2 );
+            return !comparator.equals( value1, value2 );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
-            final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
-            if ( value == null ) {
-                return ((ObjectVariableContextEntry) context).right != null;
-            }
-            if( ((ObjectVariableContextEntry) context).right != null && ((ObjectVariableContextEntry) context).right instanceof ShadowProxy ) {
-                return !((ObjectVariableContextEntry) context).right.equals( value );
-            }
-            return !value.equals( ((ObjectVariableContextEntry) context).right );
+            final Object value1 = context.declaration.getExtractor().getValue( workingMemory, left );
+            final Object value2 = ((ObjectVariableContextEntry) context).right;
+            return !comparator.equals( value1, value2 );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
-            final Object value = context.extractor.getValue( workingMemory, right );
-            if ( ((ObjectVariableContextEntry) context).left == null ) {
-                return value != null;
-            }
-            if( value != null && value instanceof ShadowProxy ) {
-                return !value.equals( ((ObjectVariableContextEntry) context).left );
-            }
-            return !((ObjectVariableContextEntry) context).left.equals( value );
+            final Object value1 = context.extractor.getValue( workingMemory, right );
+            final Object value2 = ((ObjectVariableContextEntry) context).left;
+            return !comparator.equals( value1, value2 );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -213,13 +178,7 @@ public class ObjectFactory
                                 final Extractor extractor2, final Object object2) {
             final Object value1 = extractor1.getValue( workingMemory, object1 );
             final Object value2 = extractor2.getValue( workingMemory, object2 );
-            if ( value1 == null ) {
-                return value2 != null;
-            }
-            if( value2 != null && value2 instanceof ShadowProxy ) {
-                return !value2.equals( value1 );
-            }
-            return !value1.equals( value2 );
+            return !comparator.equals( value1, value2 );
         }
 
         public String toString() {
@@ -230,6 +189,7 @@ public class ObjectFactory
     static class ObjectLessEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectLessEvaluator();
+        private static final ObjectComparator comparator = new ObjectComparator();
 
         private ObjectLessEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -243,7 +203,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( object2.getValue() ) < 0;
+            return comparator.compare( comp, object2.getValue() ) < 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -252,7 +212,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( context.declaration.getExtractor().getValue( workingMemory, left ) ) < 0;
+            return comparator.compare( comp, context.declaration.getExtractor().getValue( workingMemory, left ) ) < 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -261,7 +221,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) < 0;
+            return comparator.compare( comp, ((ObjectVariableContextEntry) context).left ) < 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -272,7 +232,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( extractor2.getValue( workingMemory, object2 ) ) < 0;
+            return comparator.compare( comp, extractor2.getValue( workingMemory, object2 ) ) < 0;
         }
 
         public String toString() {
@@ -286,6 +246,8 @@ public class ObjectFactory
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectLessOrEqualEvaluator();
+        private static final ObjectComparator comparator = new ObjectComparator();
+
 
         private ObjectLessOrEqualEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -299,7 +261,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( object2.getValue() ) <= 0;
+            return comparator.compare( comp, object2.getValue() ) <= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -308,7 +270,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( context.declaration.getExtractor().getValue( workingMemory, left ) ) <= 0;
+            return comparator.compare( comp, context.declaration.getExtractor().getValue( workingMemory, left ) ) <= 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -317,7 +279,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) <= 0;
+            return comparator.compare( comp, ((ObjectVariableContextEntry) context).left ) <= 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -328,7 +290,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( extractor2.getValue( workingMemory, object2 ) ) <= 0;
+            return comparator.compare( comp, extractor2.getValue( workingMemory, object2 ) ) <= 0;
         }
 
         public String toString() {
@@ -342,6 +304,8 @@ public class ObjectFactory
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectGreaterEvaluator();
+        private static final ObjectComparator comparator = new ObjectComparator();
+
 
         private ObjectGreaterEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -355,7 +319,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( object2.getValue() ) > 0;
+            return comparator.compare( comp, object2.getValue() ) > 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -364,7 +328,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( context.declaration.getExtractor().getValue( workingMemory, left ) ) > 0;
+            return comparator.compare( comp, context.declaration.getExtractor().getValue( workingMemory, left ) ) > 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -373,7 +337,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) > 0;
+            return comparator.compare( comp, ((ObjectVariableContextEntry) context).left ) > 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -384,7 +348,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( extractor2.getValue( workingMemory, object2 ) ) > 0;
+            return comparator.compare( comp, extractor2.getValue( workingMemory, object2 ) ) > 0;
         }
 
         public String toString() {
@@ -398,6 +362,8 @@ public class ObjectFactory
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectGreaterOrEqualEvaluator();
+        private static final ObjectComparator comparator = new ObjectComparator();
+
 
         private ObjectGreaterOrEqualEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -411,7 +377,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( object2.getValue() ) >= 0;
+            return comparator.compare( comp, object2.getValue() ) >= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -420,7 +386,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) ((ObjectVariableContextEntry) context).right;
-            return comp.compareTo( context.declaration.getExtractor().getValue( workingMemory, left ) ) >= 0;
+            return comparator.compare( comp, context.declaration.getExtractor().getValue( workingMemory, left ) ) >= 0;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -429,7 +395,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) context.extractor.getValue( workingMemory, right );
-            return comp.compareTo( ((ObjectVariableContextEntry) context).left ) >= 0;
+            return comparator.compare( comp, ((ObjectVariableContextEntry) context).left ) >= 0;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -440,7 +406,7 @@ public class ObjectFactory
                 return false;
             }
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
-            return comp.compareTo( extractor2.getValue( workingMemory, object2 ) ) >= 0;
+            return comparator.compare( comp, extractor2.getValue( workingMemory, object2 ) ) >= 0;
         }
 
         public String toString() {
@@ -571,6 +537,85 @@ public class ObjectFactory
 
         public String toString() {
             return "Object not memberOf";
+        }
+    }
+    
+    protected static class ObjectEqualsComparator {
+
+        // trying to implement runtime type coercion
+        public boolean equals( Object arg0, Object arg1 ) {
+            if ( arg0 == null ) {
+                return arg1 == null;
+            }
+            if( arg1 != null && arg1 instanceof ShadowProxy ) {
+                return arg1.equals( arg0 );
+            }
+            if( arg0 instanceof Number ){
+                double val0 = ((Number) arg0).doubleValue();
+                double val1 = 0;
+                if( arg1 instanceof Number ) {
+                    val1 = ((Number) arg1).doubleValue();
+                } else if( arg1 instanceof String ) {
+                    val1 = Double.parseDouble( ( String ) arg1 );
+                } else {
+                    throw new ClassCastException( "Not possible to convert "+arg1.getClass()+" into a double value to compare it to "+arg0.getClass() );
+                }
+                return val0 == val1; // in the future we may need to handle rounding errors 
+            } 
+            if( arg0 instanceof String ) {
+                return arg0.equals( arg1.toString() );
+            }
+            return arg0.equals( arg1 );
+        }
+    }
+    
+    protected static class ObjectComparator implements Comparator {
+        // this is a stateless object, and so, can be shared among threads
+        // PLEASE: do not add state to it, unless you remove all concurrent 
+        // calls to this class instances
+
+        public int compare(Object arg0,
+                           Object arg1) {
+            if( arg0 instanceof Double || arg0 instanceof Float ) {
+                double val0 = ((Number) arg0).doubleValue();
+                double val1 = 0;
+                if( arg1 instanceof Number ) {
+                    val1 = ((Number) arg1).doubleValue();
+                } else if( arg1 instanceof String ) {
+                    val1 = Double.parseDouble( ( String ) arg1 );
+                } else {
+                    throw new ClassCastException( "Not possible to convert "+arg1.getClass()+" into a double value to compare it to "+arg0.getClass() );
+                }
+                return val0 > val1 ? 1 : val0 < val1 ? -1 : 0;
+            } else if( arg0 instanceof Number ){
+                long val0 = ((Number) arg0).longValue();
+                long val1 = 0;
+                if( arg1 instanceof Number ) {
+                    val1 = ((Number) arg1).longValue();
+                } else if( arg1 instanceof String ) {
+                    val1 = Long.parseLong( ( String ) arg1 ); 
+                } else {
+                    throw new ClassCastException( "Not possible to convert "+arg1.getClass()+" into a long value to compare it to "+arg0.getClass() );
+                }
+                return val0 > val1 ? 1 : val0 < val1 ? -1 : 0;
+            } else if( arg0 instanceof String ) {
+                try {
+                    double val0 = Double.parseDouble( (String) arg0 );
+                    double val1 = 0;
+                    if( arg1 instanceof Number ) {
+                        val1 = ((Number) arg1).doubleValue();
+                    } else if( arg1 instanceof String ) {
+                        val1 = Double.parseDouble( ( String ) arg1 );
+                    } else {
+                        throw new ClassCastException( "Not possible to convert "+arg1.getClass()+" into a double value to compare it to "+arg0.getClass() );
+                    }
+                    return val0 > val1 ? 1 : val0 < val1 ? -1 : 0;
+                } catch( NumberFormatException nfe ) {
+                    return ( (String) arg0).compareTo( arg1.toString() );
+                }
+                
+            }
+            return ((Comparable)arg0).compareTo( arg1 );
         }
     }
     

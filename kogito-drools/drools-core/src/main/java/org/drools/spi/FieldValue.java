@@ -55,5 +55,7 @@ public interface FieldValue
      * @return
      */
     public boolean isCollectionField();
+    
+    public boolean isStringField();
 
 }

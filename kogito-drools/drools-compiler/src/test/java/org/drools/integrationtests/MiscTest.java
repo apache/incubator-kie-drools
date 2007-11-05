@@ -57,6 +57,7 @@ import org.drools.Person;
 import org.drools.PersonFinal;
 import org.drools.PersonInterface;
 import org.drools.PersonWithEquals;
+import org.drools.PolymorphicFact;
 import org.drools.Primitives;
 import org.drools.QueryResult;
 import org.drools.QueryResults;
@@ -4386,4 +4387,29 @@ public class MiscTest extends TestCase {
         
         assertTrue( builder.hasErrors() );
     }
+    
+    public void testRuntimeTypeCoercion() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+        
+        final PolymorphicFact fact = new PolymorphicFact( new Integer( 10 ) );
+        final FactHandle handle = workingMemory.insert( fact );
+        
+        workingMemory.fireAllRules();
+        
+        assertEquals( 1, list.size() );
+        assertEquals( fact.getData(), list.get( 0 ) );
+
+    }
+
+    
 }

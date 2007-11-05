@@ -170,7 +170,11 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     public void testTripleAlpha() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        final LiteralConstraint lit = new LiteralConstraint( new MockExtractor(),
+        FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
+                                                                                        "type",
+                                                                                        this.getClass().getClassLoader() );
+        
+        final LiteralConstraint lit = new LiteralConstraint( extractor,
                                                              StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
                                                              new ObjectFieldImpl( "stilton" ) );
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
@@ -187,7 +191,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         assertEquals( al,
                       ad.getSinks()[0] );
 
-        final LiteralConstraint lit2 = new LiteralConstraint( new MockExtractor(),
+        final LiteralConstraint lit2 = new LiteralConstraint( extractor,
                                                               StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
                                                               new ObjectFieldImpl( "cheddar" ) );
         final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
@@ -201,7 +205,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         assertEquals( 2,
                       ad.hashableSinks.size() );
 
-        final LiteralConstraint lit3 = new LiteralConstraint( new MockExtractor(),
+        final LiteralConstraint lit3 = new LiteralConstraint( extractor,
                                                               StringFactory.getInstance().getEvaluator( Operator.EQUAL ),
                                                               new ObjectFieldImpl( "stinky" ) );
         final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
@@ -353,7 +357,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         public ValueType getValueType() {
             //  Auto-generated method stub
-            return null;
+            return ValueType.OBJECT_TYPE;
         }
 
         public int getHashCode(InternalWorkingMemory workingMemory,

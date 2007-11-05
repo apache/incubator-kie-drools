@@ -106,21 +106,53 @@ public class FieldFactory {
         if ( valueType == ValueType.NULL_TYPE ) {
             field = new ObjectFieldImpl( null );
         } else if ( valueType == ValueType.PCHAR_TYPE ) {
-            field = new LongFieldImpl( ((Character) value).charValue() );
+            if( value instanceof String && ((String)value).length() == 1 ) {
+                field = new LongFieldImpl( ((String) value).charAt(0) );
+            } else {
+                field = new LongFieldImpl( ((Character) value).charValue() );
+            } 
         } else if ( valueType == ValueType.PBYTE_TYPE ) {
-            field = new LongFieldImpl( ((Number) value).byteValue() );
+            if( value instanceof String ) {
+                field = new LongFieldImpl( Byte.parseByte( (String) value) );
+            } else {
+                field = new LongFieldImpl( ((Number) value).byteValue() );
+            } 
         } else if ( valueType == ValueType.PSHORT_TYPE ) {
-            field = new LongFieldImpl( ((Number) value).shortValue() );
+            if( value instanceof String ) {
+                field = new LongFieldImpl( Short.parseShort( (String) value) );
+            } else {
+                field = new LongFieldImpl( ((Number) value).shortValue() );
+            } 
         } else if ( valueType == ValueType.PINTEGER_TYPE ) {
-            field = new LongFieldImpl( ((Number) value).intValue() );
+            if( value instanceof String ) {
+                field = new LongFieldImpl( Integer.parseInt( stripNumericType( (String) value ) ) );
+            } else {
+                field = new LongFieldImpl( ((Number) value).intValue() );
+            } 
         } else if ( valueType == ValueType.PLONG_TYPE ) {
-            field = new LongFieldImpl( ((Number) value).longValue() );
+            if( value instanceof String ) {
+                field = new LongFieldImpl( Long.parseLong( stripNumericType( (String) value ) ) );
+            } else {
+                field = new LongFieldImpl( ((Number) value).longValue() );
+            } 
         } else if ( valueType == ValueType.PFLOAT_TYPE ) {
-            field = new DoubleFieldImpl( ((Number) value).floatValue() );
+            if( value instanceof String ) {
+                field = new DoubleFieldImpl( Float.parseFloat( stripNumericType( (String) value ) ) );
+            } else {
+                field = new DoubleFieldImpl( ((Number) value).floatValue() );
+            } 
         } else if ( valueType == ValueType.PDOUBLE_TYPE ) {
-            field = new DoubleFieldImpl( ((Number) value).doubleValue() );
+            if( value instanceof String ) {
+                field = new DoubleFieldImpl( Double.parseDouble( stripNumericType( (String) value ) ) );
+            } else {
+                field = new DoubleFieldImpl( ((Number) value).doubleValue() );
+            } 
         } else if ( valueType == ValueType.PBOOLEAN_TYPE ) {
-            field = new BooleanFieldImpl( ((Boolean) value).booleanValue() );
+            if( value instanceof String ) {
+                field = new BooleanFieldImpl( Boolean.valueOf( (String) value).booleanValue() );
+            } else {
+                field = new BooleanFieldImpl( ((Boolean) value).booleanValue() );
+            } 
         } else if ( valueType == ValueType.CHAR_TYPE ) {
             field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.BYTE_TYPE ) {

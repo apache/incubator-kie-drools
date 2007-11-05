@@ -113,5 +113,9 @@ public class BooleanFieldImpl
     public boolean isCollectionField() {
         return false;
     }
+    
+    public boolean isStringField() {
+        return false;
+    }
 
 }
