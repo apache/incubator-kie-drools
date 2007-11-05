@@ -8,3 +8,12 @@ rule "error compiling consequence"
 	    // this must generate a compile error, but not NPE
 	    results.add(message without quotes);
 end
+
+rule "another test"
+    salience 10
+
+   when
+    eval( true ) 
+then
+    System.out.println(1);
+end
