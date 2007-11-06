@@ -9,9 +9,9 @@ public class FactDataTest extends TestCase {
 	public void testAdd() {
 		FactData fd = new FactData("x", "y", new FieldData[0], false );
 		assertEquals(0, fd.fieldData.length);
-		fd.addFieldData(new FieldData("x", "y", false));
+		fd.addFieldData(new FieldData("x", "y"));
 		assertEquals(1, fd.fieldData.length);
-		fd.addFieldData(new FieldData("q", "x", false));
+		fd.addFieldData(new FieldData("q", "x"));
 		assertEquals(2, fd.fieldData.length);
 	}
 }

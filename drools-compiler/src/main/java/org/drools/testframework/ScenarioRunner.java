@@ -192,9 +192,9 @@ public class ScenarioRunner {
 			FieldData field = fact.fieldData[i];
 			Object val;
 			if (field.value != null && !field.value.equals("")) {
-				if (field.isExpression) {
+				if (field.value.startsWith("=")) {
 					// eval the val into existence
-					val = eval(field.value, factData);
+					val = eval(field.value.substring(1), factData);
 				} else {
 					val = field.value;
 				}
