@@ -95,6 +95,7 @@ public class ReteooBuilder
                                                      ClassNotFoundException {
         stream.defaultReadObject();
         this.ruleBase = ((DroolsObjectInputStream) stream).getRuleBase();
+        this.ruleBuilder = new ReteooRuleBuilder();        
     }
 
     // ------------------------------------------------------------
