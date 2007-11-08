@@ -18,11 +18,14 @@ package org.drools.event;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EventListener;
 import java.util.List;
 
 import org.drools.RuleBase;
 import org.drools.rule.Rule;
 import org.drools.rule.Package;
+
+import java.util.Iterator;
 
 /**
  * 
@@ -35,7 +38,7 @@ public class RuleBaseEventSupport
      * 
      */
     private static final long serialVersionUID = 400L;
-    private final List        listeners        = Collections.synchronizedList( new ArrayList() );
+    private final List<EventListener>        listeners        = Collections.synchronizedList( new ArrayList<EventListener>() );
     private transient RuleBase    ruleBase;
 
     public RuleBaseEventSupport(final RuleBase ruleBase) {
@@ -51,12 +54,21 @@ public class RuleBaseEventSupport
     public void setRuleBase(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
+    
+    public void removeEventListener(Class cls) {
+        for ( Iterator<EventListener> it = this.listeners.iterator(); it.hasNext(); ) {
+            EventListener listener = it.next();
+            if ( cls.isAssignableFrom( listener.getClass() ) ) {
+                it.remove();
+            }
+        }        
+    }
 
     public void removeEventListener(final RuleBaseEventListener listener) {
         this.listeners.remove( listener );
     }
 
-    public List getEventListeners() {
+    public List<EventListener> getEventListeners() {
         return Collections.unmodifiableList( this.listeners );
     }
 

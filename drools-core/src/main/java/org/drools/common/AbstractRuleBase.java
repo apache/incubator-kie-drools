@@ -40,8 +40,11 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleIntegrationException;
 import org.drools.StatefulSession;
+import org.drools.concurrent.CommandExecutor;
+import org.drools.concurrent.ExecutorService;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
+import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.MapBackedClassLoader;
@@ -49,6 +52,7 @@ import org.drools.rule.Package;
 import org.drools.rule.PackageCompilationData;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.common.core.Process;
+import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.ObjectHashSet;
 import org.drools.util.concurrent.locks.ReentrantLock;
@@ -164,7 +168,7 @@ abstract public class AbstractRuleBase
      * 
      */
     public void doWriteExternal(final ObjectOutput stream,
-                                final Object[] objects) throws IOException {
+                                final Object[] objects) throws IOException {        
         stream.writeObject( this.pkgs );
 
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
@@ -177,12 +181,14 @@ abstract public class AbstractRuleBase
         out.writeObject( this.factHandleFactory );
         out.writeObject( this.globals );
         out.writeObject( this.config );
+        
+        this.eventSupport.removeEventListener( RuleBaseEventListener.class );
         out.writeObject( this.eventSupport );
-
+        
         for ( int i = 0, length = objects.length; i < length; i++ ) {
             out.writeObject( objects[i] );
-        }
-
+        }        
+        
         stream.writeObject( bos.toByteArray() );
     }
 
@@ -703,11 +709,24 @@ abstract public class AbstractRuleBase
         final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( stream,
                                                                                       this.packageClassLoader );
 
-        final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) streamWithLoader.readObject();
+        final StatefulSession session = (StatefulSession) streamWithLoader.readObject();
 
         synchronized ( this.pkgs ) {
-            workingMemory.setRuleBase( this );
-            return (StatefulSession) workingMemory;
+            ((InternalWorkingMemory) session).setRuleBase( this );
+            ((InternalWorkingMemory) session).setId( ( nextWorkingMemoryCounter() ) );
+            
+            ExecutorService executor = ExecutorServiceFactory.createExecutorService(  this.config.getExecutorService() );;
+
+            executor.setCommandExecutor( new CommandExecutor( session ) );
+
+            if ( keepReference ) {
+                addStatefulSession( session );
+                for( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
+                    addEventListener( (RuleBaseEventListener) it.next() ); 
+                }
+            }     
+            
+            return (StatefulSession) session;
         }
     }
 
