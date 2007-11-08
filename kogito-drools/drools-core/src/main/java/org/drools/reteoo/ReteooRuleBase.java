@@ -38,6 +38,7 @@ import org.drools.event.RuleBaseEventListener;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
+import org.drools.rule.Package;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
@@ -58,7 +59,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     private static final long serialVersionUID = 400L;
 
     /** The root Rete-OO for this <code>RuleBase</code>. */
-    private Rete              rete;
+    private transient Rete              rete;
 
     private ReteooBuilder     reteooBuilder;
     
@@ -134,9 +135,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * 
      */
     public void writeExternal(final ObjectOutput stream) throws IOException {
-        final Object[] objects = new Object[]{this.rete, this.reteooBuilder};
-        doWriteExternal( stream,
-                         objects );
+        doWriteExternal( stream );
     }
 
     /**
@@ -147,12 +146,18 @@ public class ReteooRuleBase extends AbstractRuleBase {
      */
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
-        final Object[] objects = new Object[2];
-        doReadExternal( stream,
-                        objects );
-
-        this.rete = (Rete) objects[0];
-        this.reteooBuilder = (ReteooBuilder) objects[1];
+        doReadExternal( stream );
+        
+        // rebuild the Rete network from the pkg information
+        this.reteooBuilder = new ReteooBuilder( this );
+        this.rete = new Rete( this );        
+        synchronized ( this.pkgs ) {            
+            for (Package pkg : this.pkgs.values() ) {
+                for ( Rule rule : pkg.getRules() ) {
+                    addRule( rule );
+                }
+            }
+        }
     }
 
     // ------------------------------------------------------------
