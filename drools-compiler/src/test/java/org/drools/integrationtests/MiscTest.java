@@ -4569,7 +4569,68 @@ public class MiscTest extends TestCase {
         
         assertEquals( 1, list.size() );
         assertEquals( fact.getData(), list.get( 0 ) );
+        
+        fact.setData( "10" );
+        workingMemory.update( handle, fact );
+        workingMemory.fireAllRules();
+        
+        assertEquals( 2, list.size() );
+        assertEquals( fact.getData(), list.get( 1 ) );
+        
+        try {
+            fact.setData( new Boolean(true) );
+            workingMemory.update( handle, fact );
+            fail("Should not allow to compare < with a Boolean object");
+        } catch( ClassCastException cce ) {
+            // success, as can't use "<" to compare to a boolean
+        }
+        
+    }
 
+    public void testRuntimeTypeCoercion2() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion2.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+        
+        final Primitives fact = new Primitives( );
+        fact.setBooleanPrimitive( true );
+        fact.setBooleanWrapper( new Boolean(true) );
+        fact.setObject( new Boolean(true) );
+        fact.setCharPrimitive( 'X' );
+        final FactHandle handle = workingMemory.insert( fact );
+        
+        workingMemory.fireAllRules();
+        
+        int index = 0;
+        assertEquals( list.toString(), 4, list.size() );
+        assertEquals( "boolean", list.get( index++ ));
+        assertEquals( "boolean wrapper", list.get( index++ ));
+        assertEquals( "boolean object", list.get( index++ ));
+        assertEquals( "char", list.get( index++ ));
+        
+        fact.setBooleanPrimitive( false );
+        fact.setBooleanWrapper( null );
+        fact.setCharPrimitive( '\0' );
+        fact.setObject( new Character('X') );
+        workingMemory.update( handle, fact );
+        workingMemory.fireAllRules();
+        assertEquals( 5, list.size() );
+        assertEquals( "char object", list.get( index++ ) );
+        
+//        fact.setObject( null );
+//        workingMemory.update( handle, fact );
+//        workingMemory.fireAllRules();
+//        assertEquals( 6, list.size() );
+//        assertEquals( "null object", list.get( index++ ) );
+        
     }
 
     
