@@ -34,6 +34,8 @@ public class Primitives {
     private String[] stringArray;
     
     private Boolean  booleanWrapper;
+    
+    private Object   object;
 
     public boolean isBooleanPrimitive() {
         return this.booleanPrimitive;
@@ -143,6 +145,14 @@ public class Primitives {
 
     public void setBooleanWrapper(Boolean booleanWrapper) {
         this.booleanWrapper = booleanWrapper;
+    }
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(Object object) {
+        this.object = object;
     }
 
 }

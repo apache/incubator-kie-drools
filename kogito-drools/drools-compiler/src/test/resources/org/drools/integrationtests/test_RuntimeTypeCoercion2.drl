@@ -1,0 +1,53 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "Test boolean coercion"
+    salience 100
+    when
+        Primitives( booleanPrimitive == "true" )
+    then
+        results.add( "boolean" );
+end
+
+rule "Test boolean wrapper coercion"
+    salience 95
+    when
+        Primitives( booleanWrapper == "true" )
+    then
+        results.add( "boolean wrapper" );
+end
+
+rule "Test boolean object coercion"
+    salience 92
+    when
+        Primitives( object == "true" )
+    then
+        results.add( "boolean object" );
+end
+
+rule "Test char coercion"
+    salience 90
+    when
+        Primitives( charPrimitive == "X" )
+    then
+        results.add( "char" );
+end
+
+
+rule "Test object char coercion"
+    salience 85
+    when
+        Primitives( object == "X" )
+    then
+        results.add( "char object" );
+end
+
+
+/* rule "Test object null coercion"
+    salience 82
+    when
+        Primitives( object == null )
+    then
+        results.add( "null object" );
+end*/
