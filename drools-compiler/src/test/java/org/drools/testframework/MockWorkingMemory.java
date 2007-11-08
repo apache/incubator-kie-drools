@@ -12,6 +12,7 @@ import org.drools.FactHandle;
 import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.TruthMaintenanceSystem;
@@ -379,5 +380,15 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 		this.timeMachine = tm;
 
 	}
+
+    public void setId(long id) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void setRuleBase(InternalRuleBase ruleBase) {
+        // TODO Auto-generated method stub
+        
+    }
 
 }
