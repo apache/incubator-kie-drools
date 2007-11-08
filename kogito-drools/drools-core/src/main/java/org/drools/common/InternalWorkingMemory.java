@@ -19,6 +19,10 @@ public interface InternalWorkingMemory
     extends
     WorkingMemory {
     public long getId();
+    
+    public void setId(long id);
+    
+    void setRuleBase(final InternalRuleBase ruleBase);
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport);
 

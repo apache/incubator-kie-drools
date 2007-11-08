@@ -23,7 +23,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
     StatefulSession {
 
     private static final long serialVersionUID = -5360554247241558374L;
-    private ExecutorService executor;
+    private transient ExecutorService executor;
     
     private transient List                          ruleBaseListeners;
 
