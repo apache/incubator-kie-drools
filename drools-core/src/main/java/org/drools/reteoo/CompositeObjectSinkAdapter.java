@@ -62,7 +62,7 @@ public class CompositeObjectSinkAdapter
                 final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
                 final Evaluator evaluator = literalConstraint.getEvaluator();
 
-                if ( evaluator.getOperator() == Operator.EQUAL ) {
+                if ( evaluator.getOperator() == Operator.EQUAL && literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE ) {
                     final int index = literalConstraint.getFieldExtractor().getIndex();
                     final FieldIndex fieldIndex = registerFieldIndex( index,
                                                                       literalConstraint.getFieldExtractor() );
@@ -107,7 +107,7 @@ public class CompositeObjectSinkAdapter
                 final Evaluator evaluator = literalConstraint.getEvaluator();
                 final FieldValue value = literalConstraint.getField();
 
-                if ( evaluator.getOperator() == Operator.EQUAL ) {
+                if ( evaluator.getOperator() == Operator.EQUAL && literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE ) {
                     final int index = literalConstraint.getFieldExtractor().getIndex();
                     final FieldIndex fieldIndex = unregisterFieldIndex( index );
 

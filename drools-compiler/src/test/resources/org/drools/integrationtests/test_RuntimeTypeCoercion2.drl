@@ -44,10 +44,10 @@ rule "Test object char coercion"
 end
 
 
-/* rule "Test object null coercion"
+rule "Test object null coercion"
     salience 82
     when
         Primitives( object == null )
     then
         results.add( "null object" );
-end*/
+end
