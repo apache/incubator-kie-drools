@@ -667,6 +667,10 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
 
         <para>Generates a random number for each accepted move and if it's
         below the move's accept chance, it picks it as the next move.</para>
+
+        <programlisting>    &lt;forager&gt;
+        &lt;foragerType&gt;FIRST_RANDOMLY_ACCEPTED&lt;/foragerType&gt;
+    &lt;/forager&gt;</programlisting>
       </section>
     </section>
   </section>
