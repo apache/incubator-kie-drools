@@ -107,7 +107,13 @@
 
 									 <td>
 
-									<input type="text" name="birthdate" onblur="validateDate(this);" value="<% out.print(request.getParameter("birthdate"));%>">> (mm/dd/yyyy)
+									<input type="text" name="birthdate" onblur="validateDate(this);" value="<% 
+											if ( request.getParameter("birthdate") == null ) { 
+												out.print("09/18/1983");
+											} else { 
+												out.print(request.getParameter("birthdate"));
+											}
+										%>">> (mm/dd/yyyy)
 									</td>
                                 </tr>
 
@@ -115,7 +121,12 @@
                                     <td class="c1">License Age:</td>
 
                                     <td><input name="habilitacao" size="2" maxlength="2" type="text" onblur="validateNumber(this);"
-                                               value="<% out.print(request.getParameter("habilitacao"));%>">
+                                               value="<% 
+											if ( request.getParameter("habilitacao") == null ) { 
+												out.print("0");
+											} else { 
+												out.print(request.getParameter("habilitacao")); 
+											} %>">
                                         <span class="c2">Years</span></td>
                                 </tr>
 
@@ -454,7 +465,13 @@
                                     <td class="c1" width="50%">Alarm:</td>
 
                                     <td width="50%"><input size="12" name="alarme" onblur="validateMoney(this);" 
-                                                           value="<% out.print(request.getParameter("alarme"));%>"
+                                                           value="<% 
+														if ( request.getParameter("alarme") == null ) { 
+															out.print("0.00");
+														} else { 
+															out.print(request.getParameter("alarme"));
+														}
+														%>"
                                                            type="text"> &nbsp;</td>
                                 </tr>
 
@@ -462,15 +479,25 @@
                                     <td class="c1" width="50%">Sound:</td>
 
                                     <td width="50%"><input size="12" name="sistemaSom" onblur="validateMoney(this);"
-                                                           value="<% out.print(request.getParameter("sistemaSom"));%>"
-                                                           type="text"> &nbsp;</td>
+                                                           value="<% 
+														if ( request.getParameter("sistemaSom") == null ) { 
+															out.print("0.00");
+														} else { 
+															out.print(request.getParameter("sistemaSom"));
+														}
+														%>" type="text"> &nbsp;</td>
                                 </tr>
 
                                 <tr>
                                     <td class="c1" width="50%">Armor:</td>
-
                                     <td width="50%"><input size="12" name="blindagem" onblur="validateMoney(this);"
-                                                           value="<% out.print(request.getParameter("blindagem"));%>"
+                                                           value="<%	
+															if ( request.getParameter("blindagem") == null ) { 
+																out.print("0.00");
+															} else { 
+																out.print(request.getParameter("blindagem"));
+															}
+															%>"
                                                            type="text"> &nbsp;</td>
                                 </tr>
                             </tbody>
