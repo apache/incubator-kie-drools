@@ -357,7 +357,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
         public ValueType getValueType() {
             //  Auto-generated method stub
-            return ValueType.OBJECT_TYPE;
+            return ValueType.STRING_TYPE;
         }
 
         public int getHashCode(InternalWorkingMemory workingMemory,
