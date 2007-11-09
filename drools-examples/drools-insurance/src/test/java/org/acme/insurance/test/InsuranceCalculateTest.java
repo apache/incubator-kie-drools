@@ -69,10 +69,8 @@ public class InsuranceCalculateTest extends TestCase {
         assertEquals( 3.7340352000000006,
                       driver.getInsuranceFactor() );
 
-        assertTrue( policy.isApproved() );
+        assertFalse( policy.isApproved() );
 
-        assertEquals( 2333.7720000000004,
-                      policy.getInsurancePrice() );
     }
 
     public void testDriveVehiclePlace() throws 
