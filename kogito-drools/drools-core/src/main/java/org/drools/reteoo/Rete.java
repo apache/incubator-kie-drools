@@ -40,8 +40,6 @@ import org.drools.common.NodeMemory;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateObjectType;
-import org.drools.objenesis.Objenesis;
-import org.drools.objenesis.ObjenesisStd;
 import org.drools.objenesis.instantiator.ObjectInstantiator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
@@ -420,8 +418,6 @@ public class Rete extends ObjectSource
         implements
         ObjectTypeConf,
         Serializable {
-        // Objenesis instance without cache (false)
-        private static final Objenesis         OBJENESIS = new ObjenesisStd( false );
 
         private final Class                    cls;
         private transient InternalRuleBase     ruleBase;
@@ -602,7 +598,7 @@ public class Rete extends ObjectSource
          *
          */
         private void setInstantiator() {
-            this.instantiator = OBJENESIS.getInstantiatorOf( this.shadowClass );
+            this.instantiator = ruleBase.getObjenesis().getInstantiatorOf(this.shadowClass);
         }
 
         public Object getShadow(final Object fact) throws RuntimeDroolsException {
