@@ -59,8 +59,8 @@ public class URLScannerTest extends TestCase {
 
         File f1 = result[0];
         File f2 = result[1];
-        assertEquals( "http%3A%2F%2Flocalhost%3A8080%2Ffoo%2Fbar.bar%2Fpackages%2FIMINYRURL%2FLATEST", f1.getName() );
-        assertEquals( "http%3A%2F%2Flocalhost%3A8080%2Ffoo%2Fbar.bar%2Fpackages%2FIMINYRURL%2FPROD", f2.getName() );
+        assertEquals( "http%3A%2F%2Flocalhost%3A8080%2Ffoo%2Fbar.bar%2Fpackages%2FIMINYRURL%2FLATEST.pkg", f1.getName() );
+        assertEquals( "http%3A%2F%2Flocalhost%3A8080%2Ffoo%2Fbar.bar%2Fpackages%2FIMINYRURL%2FPROD.pkg", f2.getName() );
 
     }
 
@@ -83,8 +83,8 @@ public class URLScannerTest extends TestCase {
 
         assertEquals( 2, scan.localCacheFileScanner.files.length );
 
-        assertEquals( "http%3A%2F%2Fgoo.ber", scan.localCacheFileScanner.files[0].getName() );
-        assertEquals( "http%3A%2F%2Fwee.waa", scan.localCacheFileScanner.files[1].getName() );
+        assertEquals( "http%3A%2F%2Fgoo.ber.pkg", scan.localCacheFileScanner.files[0].getName() );
+        assertEquals( "http%3A%2F%2Fwee.waa.pkg", scan.localCacheFileScanner.files[1].getName() );
 
     }
 
@@ -103,8 +103,8 @@ public class URLScannerTest extends TestCase {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
         int numfiles = dir.list().length;
-        
-        
+
+
         Properties config = new Properties();
         //config.setProperty( RuleAgent.LOCAL_URL_CACHE, dir.getPath() );
         config.setProperty( RuleAgent.URLS, "http://goo2.ber http://wee2.waa" );
@@ -141,7 +141,7 @@ public class URLScannerTest extends TestCase {
         assertEquals( 2, rb.getPackages().length );
 
         assertExists(new String[] {"goo2.ber", "wee2.waa"}, rb.getPackages());
-        
+
 
 
         assertEquals( numfiles, dir.list().length );
@@ -164,7 +164,7 @@ public class URLScannerTest extends TestCase {
             }
             assertEquals("Should only have one package named " + name, 1, matches);
         }
-        
+
     }
 
     public void testUpdateWithLocalCache() {
@@ -219,7 +219,7 @@ public class URLScannerTest extends TestCase {
                 if (url.toExternalForm().equals( "http://wee.waa" )) {
                     ping.lastUpdated = -1;
                     ping.responseMessage = "XXX";
-                    
+
                 } else {
                     ping.lastUpdated = 123;
                     ping.responseMessage = "200 OK";
@@ -231,18 +231,18 @@ public class URLScannerTest extends TestCase {
                 throw new IOException("poo");
             }
 
-        };      
-        
+        };
+
         rb = RuleBaseFactory.newRuleBase();
         assertEquals(0, rb.getPackages().length);
         PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), getNilListener() );
 
         assertEquals(2, rb.getPackages().length);
-        
+
         final boolean[] fetchCalled = new boolean[1];
-        
+
         fetchCalled[0] = false;
-        
+
         //now check with IOExceptions
         scan.httpClient = new IHttpClient() {
 
@@ -258,14 +258,14 @@ public class URLScannerTest extends TestCase {
                 throw new IOException("poo");
             }
 
-        };          
-        
+        };
+
         Package[] changes = scan.loadPackageChanges();
         assertEquals(0, changes.length);
         assertEquals(true, fetchCalled[0]);
 
     }
-    
+
     public void testColdStartWithError() throws Exception {
         //this will show starting up and reading packages from the dir when the remote one doesn't respond
         URLScanner scan = new URLScanner();
@@ -274,13 +274,13 @@ public class URLScannerTest extends TestCase {
 
         Package p1 = new Package("goo.ber");
         Package p2 = new Package("wee.waa");
-        
-        File f1 = URLScanner.getLocalCacheFileForURL( dir, new URL("http://goo.ber") );        
+
+        File f1 = URLScanner.getLocalCacheFileForURL( dir, new URL("http://goo.ber") );
         File f2 = URLScanner.getLocalCacheFileForURL( dir, new URL("http://wee.waa") );
-        
+
         RuleBaseAssemblerTest.writePackage( p1, f1 );
         RuleBaseAssemblerTest.writePackage( p2, f2 );
-        
+
         Properties config = new Properties();
         config.setProperty( RuleAgent.LOCAL_URL_CACHE, dir.getPath() );
         config.setProperty( RuleAgent.URLS, "http://goo.ber http://wee.waa" );
@@ -301,12 +301,12 @@ public class URLScannerTest extends TestCase {
 
         assertNotNull( scan.localCacheFileScanner );
         assertNotNull( scan.localCacheDir );
-        
+
         RuleBase rb = RuleBaseFactory.newRuleBase();
         PackageProvider.applyChanges( rb, true, scan.loadPackageChanges(), getNilListener() );
         assertEquals(2, rb.getPackages().length);
-        
-        
+
+
     }
 
 

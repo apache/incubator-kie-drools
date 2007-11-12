@@ -21,14 +21,14 @@ public class URLScanner extends PackageProvider {
 
     //this is the URLs we are managing
     URL[]       urls;
-    
+
     //this is only set if we are using a local cache - only fall back on this
     //when URL connection is not available.
     FileScanner localCacheFileScanner;
-    
+
     //this is used to access the remote resources
     IHttpClient httpClient = new HttpClientImpl();
-    
+
     //a record of the last updated URL timestamps
     Map         lastUpdated = new HashMap();
 
@@ -73,7 +73,7 @@ public class URLScanner extends PackageProvider {
         File f;
         try {
             f = new File( cacheDir,
-                          URLEncoder.encode(  u.toExternalForm(), "UTF-8" ) );
+                          URLEncoder.encode(  u.toExternalForm(), "UTF-8" ) + ".pkg" );
         } catch ( UnsupportedEncodingException e ) {
             throw new RuntimeDroolsException( e );
         }
@@ -90,16 +90,16 @@ public class URLScanner extends PackageProvider {
         } catch ( IOException e ) {
             if (this.localCacheFileScanner != null) {
                 listener.warning( "Falling back to local cache." );
-                return localCacheFileScanner.loadPackageChanges();                
+                return localCacheFileScanner.loadPackageChanges();
             }
             listener.exception( e );
         } catch ( ClassNotFoundException e ) {
             this.listener.exception( e );
             this.listener.warning( "Was unable to load a class when loading a package. Perhaps it is missing from this application." );
-        }        
+        }
         return null;
     }
-    
+
     private Package[] getChangeSet() throws IOException, ClassNotFoundException {
         if ( this.urls == null ) return new Package[0];
         List list = new ArrayList();
@@ -120,7 +120,7 @@ public class URLScanner extends PackageProvider {
     private void writeLocalCacheCopy(Package p, URL u, File localCacheDir) {
         File local = getLocalCacheFileForURL( localCacheDir, u );
         if (local.exists()) local.delete();
-        
+
         try {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(local));
             out.writeObject( p );
@@ -130,11 +130,11 @@ public class URLScanner extends PackageProvider {
             listener.exception( e );
             listener.warning( "Was an error with the local cache directory " + localCacheDir.getPath() );
         }
-        
+
     }
 
     private Package readPackage(URL u) throws IOException, ClassNotFoundException {
-        return httpClient.fetchPackage( u );        
+        return httpClient.fetchPackage( u );
     }
 
     private boolean hasChanged(URL u, Map updates) throws IOException {
@@ -143,7 +143,7 @@ public class URLScanner extends PackageProvider {
             listener.warning( "Was an error contacting " + u.toExternalForm() + ". Reponse header: " + pong.responseMessage );
             throw new IOException("Was unable to reach server.");
         }
-        
+
         String url = u.toExternalForm();
         if ( !updates.containsKey( url ) ) {
             updates.put( url,
@@ -158,9 +158,9 @@ public class URLScanner extends PackageProvider {
             } else {
                 return false;
             }
-        }        
-    }    
-    
+        }
+    }
+
     public String toString() {
         String s = "URLScanner monitoring URLs: ";
         if (this.urls != null) {
