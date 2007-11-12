@@ -1,0 +1,15 @@
+package org.drools;
+
+rule "Test"
+when
+    action : Object()
+then
+    System.out.println("A RHS");
+end
+
+rule
+when
+    Object()
+then
+    System.out.println("A RHS");
+end

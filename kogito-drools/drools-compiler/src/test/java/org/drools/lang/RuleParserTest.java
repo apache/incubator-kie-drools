@@ -31,6 +31,7 @@ import org.antlr.runtime.CommonToken;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.MismatchedTokenException;
+import org.antlr.runtime.NoViableAltException;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DrlParser;
@@ -3560,6 +3561,21 @@ public class RuleParserTest extends TestCase {
             }
         }
 
+    }
+
+    public void testNPEOnParser() throws Exception {
+        final DRLParser parser = parseResource( "npe_on_parser.drl" );
+        parser.compilation_unit();
+
+        assertTrue( "Parser should have raised errors",
+                    parser.hasErrors() );
+        
+        List errors = parser.getErrors();
+        assertEquals( 2, errors.size() );
+        
+        assertTrue( errors.get( 0 ) instanceof MismatchedTokenException ); // "action" is a reserved word
+        assertTrue( errors.get( 1 ) instanceof NoViableAltException ); // no title in the rule
+        
     }
 
     private DRLParser parse(final String text) throws Exception {
