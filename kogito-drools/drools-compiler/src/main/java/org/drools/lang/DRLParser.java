@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-11-05 20:11:26
+// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g 2007-11-12 18:04:44
 
 	package org.drools.lang;
 	import java.util.List;
@@ -3351,7 +3351,7 @@ public class DRLParser extends Parser {
                             _fsp--;
                             if (failed) return d;
                             if ( backtracking==0 ) {
-                               ((PatternDescr)d).setSource((PatternSourceDescr) ac); 
+                               if( d != null ) ((PatternDescr)d).setSource((PatternSourceDescr) ac); 
                             }
 
                             }
@@ -3370,7 +3370,7 @@ public class DRLParser extends Parser {
                             _fsp--;
                             if (failed) return d;
                             if ( backtracking==0 ) {
-                               ((PatternDescr)d).setSource((PatternSourceDescr) cs); 
+                               if( d != null ) ((PatternDescr)d).setSource((PatternSourceDescr) cs); 
                             }
 
                             }
@@ -3389,7 +3389,7 @@ public class DRLParser extends Parser {
                             _fsp--;
                             if (failed) return d;
                             if ( backtracking==0 ) {
-                               ((PatternDescr)d).setSource((PatternSourceDescr) fm); 
+                               if( d != null ) ((PatternDescr)d).setSource((PatternSourceDescr) fm); 
                             }
 
                             }
