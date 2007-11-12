@@ -822,9 +822,9 @@ pattern_source returns [BaseDescr d]
 				location.setProperty(Location.LOCATION_FROM_CONTENT, "");
 		        }
 		        ( options { k=1; } :
-		            ( ac=accumulate_statement { ((PatternDescr)$d).setSource((PatternSourceDescr) $ac.d); })
-		          | ( cs=collect_statement { ((PatternDescr)$d).setSource((PatternSourceDescr) $cs.d); }) 
-		          | ( fm=from_statement { ((PatternDescr)$d).setSource((PatternSourceDescr) $fm.d); }) 
+		            ( ac=accumulate_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $ac.d); })
+		          | ( cs=collect_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $cs.d); }) 
+		          | ( fm=from_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $fm.d); }) 
 		        )
 		)?
 	;

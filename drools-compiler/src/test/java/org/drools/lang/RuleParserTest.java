@@ -3578,6 +3578,20 @@ public class RuleParserTest extends TestCase {
         
     }
 
+    public void testCommaMisuse() throws Exception {
+        final DRLParser parser = parseResource( "comma_misuse.drl" );
+        try {
+            parser.compilation_unit();
+
+            assertTrue( "Parser should have raised errors",
+                        parser.hasErrors() );
+            assertEquals( 3, parser.getErrors().size() );
+            
+        } catch( NullPointerException npe ) {
+            fail("Should not raise NPE");
+        }
+    }
+
     private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;

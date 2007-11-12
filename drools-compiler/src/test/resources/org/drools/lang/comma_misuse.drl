@@ -1,0 +1,8 @@
+package org.drools;
+
+rule "Avoid NPE on wrong syntax"
+when
+    not( Cheese( ( type == "stilton", price == 10 ) || ( type == "brie", price == 15 ) ) from $cheeseList )
+then
+    System.out.println("OK");
+end
