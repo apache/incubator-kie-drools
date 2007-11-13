@@ -68,6 +68,24 @@ public class Scenario implements Serializable {
 		return true;
 	}
 
+	/**
+	 * Will slip in a fixture after the specified one.
+	 */
+	public void insertAfter(Fixture fix, Fixture toAdd) {
+		if (fix == null) {
+			this.fixtures.add(0, toAdd);
+		} else {
+			fixtures.add( fixtures.indexOf(fix) + 1, toAdd);
+		}
+	}
+
+	/**
+	 * Remove the specified fixture.
+	 */
+	public void removeFixture(VerifyRuleFired vf2) {
+		this.fixtures.remove(vf2);
+	}
+
 }
 
 
