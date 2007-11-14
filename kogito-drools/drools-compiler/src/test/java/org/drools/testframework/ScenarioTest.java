@@ -1,5 +1,8 @@
 package org.drools.testframework;
 
+import java.util.Map;
+
+import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 
@@ -51,6 +54,19 @@ public class ScenarioTest extends TestCase {
 		assertEquals(2, sc.fixtures.size());
 		assertEquals(vf1, sc.fixtures.get(0));
 		assertEquals(vf3, sc.fixtures.get(1));
+	}
+
+	public void testMapFactTypes() {
+		Scenario sc = new Scenario();
+		sc.fixtures.add(new FactData("X", "q", null, false));
+		sc.globals.add(new FactData("Q", "x", null, false));
+
+		Map r = sc.getVariableTypes();
+		assertEquals(2, r.size());
+
+		assertEquals("X", r.get("q"));
+		assertEquals("Q", r.get("x"));
+
 	}
 
 }
