@@ -3,8 +3,10 @@ package org.drools.brms.client.modeldriven.testing;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This represents a test scenario.
@@ -82,10 +84,30 @@ public class Scenario implements Serializable {
 	/**
 	 * Remove the specified fixture.
 	 */
-	public void removeFixture(VerifyRuleFired vf2) {
-		this.fixtures.remove(vf2);
+	public void removeFixture(Fixture f) {
+		this.fixtures.remove(f);
 	}
 
+
+	/**
+	 *
+	 * @return A mapping of variable names to their fact type.
+	 */
+	public Map getVariableTypes() {
+		Map m = new HashMap();
+		for (Iterator iterator = fixtures.iterator(); iterator.hasNext();) {
+			Fixture f = (Fixture) iterator.next();
+			if (f instanceof FactData) {
+				FactData fd = (FactData)f;
+				m.put(fd.name, fd.type);
+			}
+		}
+		for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
+			FactData fd = (FactData) iterator.next();
+			m.put(fd.name, fd.type);
+		}
+		return m;
+	}
 }
 
 
