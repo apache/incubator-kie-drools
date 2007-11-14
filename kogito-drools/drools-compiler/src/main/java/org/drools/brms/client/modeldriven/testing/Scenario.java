@@ -108,6 +108,30 @@ public class Scenario implements Serializable {
 		}
 		return m;
 	}
+
+	/**
+	 * This will return a list of fact names that are in scope (including globals).
+	 */
+	public List getFactNamesInScope(ExecutionTrace ex) {
+		List l = new ArrayList();
+		int p = this.fixtures.indexOf(ex);
+		for (int i = 0; i < p; i++) {
+			Fixture f = (Fixture) fixtures.get(i);
+			if (f instanceof FactData) {
+				FactData fd = (FactData) f;
+				l.add(fd.name);
+			} else if (f instanceof RetractFact) {
+				RetractFact rf = (RetractFact) f;
+				l.remove(rf.name);
+			}
+		}
+
+		for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
+			FactData f = (FactData) iterator.next();
+			l.add(f.name);
+		}
+		return l;
+	}
 }
 
 
