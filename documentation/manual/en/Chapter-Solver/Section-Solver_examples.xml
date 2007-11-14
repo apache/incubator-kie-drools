@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section>
+  <title>Solver examples</title>
+
+  <section>
+    <title>Introduction</title>
+
+    <para>Drools-solver has several examples. In this manual we explain
+    drools-solver mainly using the n queens example. So it's advisable to read
+    at least the section about that example.</para>
+  </section>
+
+  <section>
+    <title>The n queens example</title>
+
+    <section>
+      <title>Running the example</title>
+
+      <para>In the directory
+      <literal>/drools-solver/drools-solver-examples/</literal> run the
+      following command:</para>
+
+      <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
+...</programlisting>
+    </section>
+
+    <section>
+      <title>Screenshot</title>
+
+      <para>Here is a screenshot of the example:</para>
+
+      <figure>
+        <title>Screenshot of the n queens example</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="screenshotNQueens.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Problem statement</title>
+
+      <para>The <emphasis>n queens puzzle</emphasis> is a puzzle with the
+      follow constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Use a chessboard of n rows and n columns.</para>
+        </listitem>
+
+        <listitem>
+          <para>Place n queens on the chessboard.</para>
+        </listitem>
+
+        <listitem>
+          <para>No 2 queens can attack each other. Note that a queen can
+          attack any other queen on the same horizontal, vertical or diagonal
+          line.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The most common n queens puzzle is the 8 queens puzzle, with
+      <emphasis>n = 8</emphasis>. We 'll explain drools-solver using the 4
+      queens puzzle as the primary example.</para>
+
+      <para>A proposed solution could be:</para>
+
+      <figure>
+        <title>A wrong solution for the 4 queens puzzle</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="partiallySolvedNQueens04Explained.svg"
+                       format="SVG" />
+          </imageobject>
+
+          <imageobject>
+            <imagedata align="center"
+                       fileref="partiallySolvedNQueens04Explained.png"
+                       format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above solution is wrong because queens A1 and B0 can attack
+      each other (as can queens B0 and D0). Removing queen B0 would respect
+      the "no 2 queens can attack each other" constraint, but would break the
+      "place n queens" constraint.</para>
+    </section>
+
+    <section>
+      <title>Solution(s)</title>
+
+      <para>Below is a correct solution:</para>
+
+      <figure>
+        <title>A correct solution for the 4 queens puzzle</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="solvedNQueens04.svg"
+                       format="SVG" />
+          </imageobject>
+
+          <imageobject>
+            <imagedata align="center" fileref="solvedNQueens04.png"
+                       format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>All the constraints have been met, so the solution is correct.
+      Note that most n queens puzzles have multiple correct solutions. We 'll
+      focus on finding a single correct solution for a given n, not on finding
+      the number of possible correct solutions for a given n.</para>
+    </section>
+
+    <section>
+      <title>Class diagram</title>
+
+      <para>Use a good domain model and it will be easier to understand and
+      solve your problem with drools-solver. We 'll use this domain model for
+      the n queens example:</para>
+
+      <figure>
+        <title>NQueens domain diagram</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="nQueensDomainDiagram.png"
+                       format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>A <literal>Queen</literal> instance has an x (its column, for
+      example: 0 is column A, 1 is column B, ...) and a y (its row, for
+      example: 0 is row 0, 1 is row 1, ...). Based on the x and y, the
+      ascending diagonal line as well as the descending diagonal line can be
+      calculated. The x and y indexes start from the upper left corner of the
+      chessboard.</para>
+
+      <table>
+        <title>A solution for the 4 queens puzzle shown in the domain
+        model</title>
+
+        <tgroup cols="6">
+          <thead>
+            <row>
+              <entry align="center">A solution</entry>
+
+              <entry align="center">Queen</entry>
+
+              <entry>x</entry>
+
+              <entry>y</entry>
+
+              <entry>ascendingD (x + y)</entry>
+
+              <entry>descendingD (x - y)</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry morerows="3"><mediaobject>
+                  <imageobject>
+                    <imagedata fileref="partiallySolvedNQueens04Explained.png"
+                               format="PNG" />
+                  </imageobject>
+                </mediaobject></entry>
+
+              <entry>A1</entry>
+
+              <entry>0</entry>
+
+              <entry>1</entry>
+
+              <entry>1 (**)</entry>
+
+              <entry>-1</entry>
+            </row>
+
+            <row>
+              <entry>B0</entry>
+
+              <entry>1</entry>
+
+              <entry>0 (*)</entry>
+
+              <entry>1 (**)</entry>
+
+              <entry>1</entry>
+            </row>
+
+            <row>
+              <entry>C2</entry>
+
+              <entry>2</entry>
+
+              <entry>2</entry>
+
+              <entry>4</entry>
+
+              <entry>0</entry>
+            </row>
+
+            <row>
+              <entry>D0</entry>
+
+              <entry>3</entry>
+
+              <entry>0 (*)</entry>
+
+              <entry>3</entry>
+
+              <entry>3</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para>A single <literal>NQueens</literal> instance contains a list of
+      all <literal>Queen</literal> instances. It is the
+      <literal>Solution</literal> implementation which will be supplied to and
+      retrieved from drools-solver. Notice that in the 4 queens example,
+      NQueens's <literal>getN()</literal> method will always return 4.</para>
+
+      <para>You can find the source code of this example (as well as well as
+      several other examples) in the drools-solver-examples src
+      distribution.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>The lesson schedule example</title>
+
+    <section>
+      <title>Running the example</title>
+
+      <para>In the directory
+      <literal>/drools-solver/drools-solver-examples/</literal> run the
+      following command:</para>
+
+      <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.lessonschedule.app.LessonScheduleApp"
+...</programlisting>
+    </section>
+
+    <section>
+      <title>Screenshot</title>
+
+      <para>Here is a screenshot of the example:</para>
+
+      <figure>
+        <title>Screenshot of the lesson schedule example</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="screenshotLessonSchedule.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Problem statement</title>
+
+      <para>Schedule lessons with the follow constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>No teacher with 2 lessons in the same timeslot</para>
+        </listitem>
+
+        <listitem>
+          <para>No group with 2 lessons in the same timeslot</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
+
+  <section>
+    <title>The traveling tournament example</title>
+
+    <section>
+      <title>Running the example</title>
+
+      <para>In the directory
+      <literal>/drools-solver/drools-solver-examples/</literal> run one of the
+      the following commands:</para>
+
+      <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
+...
+$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
+...</programlisting>
+
+      <para>The smart implementation performs and scales a lot better than the
+      simple implementation.</para>
+    </section>
+
+    <section>
+      <title>Screenshot</title>
+
+      <para>Here is a screenshot of the example:</para>
+
+      <figure>
+        <title>Screenshot of the traveling tournament example</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="screenshotTravelingTournament.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Problem statement</title>
+
+      <para>Schedule matches between teams with the following hard
+      constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Each team plays twice against every other team: once home and
+          once away</para>
+        </listitem>
+
+        <listitem>
+          <para>Each team has exactly 1 match on each playing day</para>
+        </listitem>
+
+        <listitem>
+          <para>No more than 3 consecutive home or 3 consecutive away matches
+          for any team</para>
+        </listitem>
+
+        <listitem>
+          <para>No repeaters: 2 consecutive matches of the same 2 teams (so
+          each team plays once home and once away</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>and the following soft constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Minimize the total distance traveled of all teams.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><ulink url="http://mat.gsia.cmu.edu/TOURN/">You can find a
+      detailed description as well as several records of this problem
+      here.</ulink></para>
+    </section>
+  </section>
+
+  <section>
+    <title>The ITC2007 examination example</title>
+
+    <section>
+      <title>Running the example</title>
+
+      <para>In the directory
+      <literal>/drools-solver/drools-solver-examples/</literal> run the
+      following command:</para>
+
+      <programlisting>$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.itc2007.examination.app.ExaminationApp"
+...</programlisting>
+    </section>
+
+    <section>
+      <title>Screenshot</title>
+
+      <para>Here is a screenshot of the example:</para>
+
+      <figure>
+        <title>Screenshot of the examination example</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="screenshotExamination.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Problem statement</title>
+
+      <para>Schedule exams with the a large number of hard and soft
+      constraints. It uses real-life data of a large university.</para>
+
+      <para><ulink
+      url="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">You
+      can find a detailed description of this problem here.</ulink></para>
+    </section>
+  </section>
+</section>

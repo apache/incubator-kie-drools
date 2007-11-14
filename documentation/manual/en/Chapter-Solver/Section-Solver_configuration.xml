@@ -3,6 +3,158 @@
   <title>Solver configuration</title>
 
   <section>
+    <title>Types of solvers</title>
+
+    <para>Different solvers solve problems in different ways. Each type has
+    advantages and disadvantages. We 'll roughly discuss a few of the solver
+    types here. You can safely skip this section.</para>
+
+    <section>
+      <title>Brute force</title>
+
+      <para>Brute force creates and evaluates every possible solution, usually
+      by creating a search tree.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It finds an optimal solution. If there is more then 1 optimal
+          solution, it finds all optimal solutions.</para>
+        </listitem>
+
+        <listitem>
+          <para>It is straightforward and simple to implement.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It has a horrible performance and scalability. Mostly unusable
+          for a real-world problem due to time constraints.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Brute force is currently not implemented in drools-solver. But we
+      have plans to implement it in the future, as a reference for validating
+      the output of the other solver types.</para>
+    </section>
+
+    <section>
+      <title>Branch and bound</title>
+
+      <para>Branch and bound is an improvement over brute force, as it prunes
+      away subsets of solutions which cannot have a better solution than the
+      best solution already found at that point.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It finds an optimal solution. If there is more then 1 optimal
+          solution, it can find all optimal solutions if needed.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It still scales very badly.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Branch and bound is currently not implemented in
+      drools-solver.</para>
+    </section>
+
+    <section>
+      <title>Simplex</title>
+
+      <para>Simplex turns all constraints into a big equation, which it
+      transmutes into a mathematical function without local optima. It then
+      finds an optimal solution to the planning problem by finding an optima
+      of that mathematical function.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It finds an optimal solution.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It's usually rather complex and mathematical to implement
+          constraints.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Drools-solver does not currently implement simplex.</para>
+    </section>
+
+    <section>
+      <title>Local search (tabu search, simulated annealing, ...)</title>
+
+      <para>Local search starts from an initial solution and evolves that
+      single solution into a better and better solution. It uses a single
+      search path of solutions. At each solution in this path it evaluates a
+      number of possible moves on the solution and applies the most suitable
+      move to take the step to the next solution.</para>
+
+      <para>Local search works a lot like a human planner: it uses a single
+      search path and moves facts around to find a good feasible
+      solution.</para>
+
+      <para>A simple local search can easily get stuck in a local optima, but
+      improvements (such as tabu search and simulated annealing) address this
+      problem.</para>
+
+      <para>Advantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It's relatively simple and natural to implement constraints
+          (at least in drools-solver's implementation).</para>
+        </listitem>
+
+        <listitem>
+          <para>It's very scalable, even when adding extra constraints (at
+          least in drools-solver's implementation).</para>
+        </listitem>
+
+        <listitem>
+          <para>It generally needs to worry about less negative hard
+          constraints, because the move pattern can fulfill a number of the
+          negative hard constraints.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Disadvantages:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It does not know when it has found an optimal solution.</para>
+        </listitem>
+
+        <listitem>
+          <para>If the optimal score is unknown (which is usually the case),
+          it must be told when to stop looking (for example based on time
+          spend, user input, ...).</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Drools-solver implements local search, including tabu search and
+      simulated annealing.</para>
+    </section>
+  </section>
+
+  <section>
     <title>The Solver interface</title>
 
     <para>Every build-in solver implemented in drools-solver implements the
