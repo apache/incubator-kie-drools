@@ -188,8 +188,8 @@ public class ScenarioRunner {
 	}
 
 	Object populateFields(FactData fact, Map<String, Object> factData, Object factObject) {
-		for (int i = 0; i < fact.fieldData.length; i++) {
-			FieldData field = fact.fieldData[i];
+		for (int i = 0; i < fact.fieldData.size(); i++) {
+			FieldData field = (FieldData) fact.fieldData.get(i);
 			Object val;
 			if (field.value != null && !field.value.equals("")) {
 				if (field.value.startsWith("=")) {

@@ -1,5 +1,6 @@
 package org.drools.testframework;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -75,15 +76,15 @@ public class ScenarioTest extends TestCase {
 
 	public void testVariablesInScope() {
 		Scenario sc = new Scenario();
-		sc.globals.add(new FactData("X", "x", new FieldData[0], false));
+		sc.globals.add(new FactData("X", "x", new ArrayList(), false));
 
-		sc.fixtures.add(new FactData("Q", "q", new FieldData[0], true));
-		sc.fixtures.add(new FactData("Z", "z", new FieldData[0], false));
+		sc.fixtures.add(new FactData("Q", "q", new ArrayList(), true));
+		sc.fixtures.add(new FactData("Z", "z", new ArrayList(), false));
 		ExecutionTrace ex1 = new ExecutionTrace();
 
 		sc.fixtures.add(ex1);
 		sc.fixtures.add(new RetractFact("z"));
-		sc.fixtures.add(new FactData("Y", "y", new FieldData[0], false));
+		sc.fixtures.add(new FactData("Y", "y", new ArrayList(), false));
 
 		ExecutionTrace ex2 = new ExecutionTrace();
 		sc.fixtures.add(ex2);
@@ -100,6 +101,8 @@ public class ScenarioTest extends TestCase {
 		assertEquals("y", l.get(1));
 		assertEquals("x", l.get(2));
 
+		l= sc.getFactNamesInScope(null);
+		assertEquals(0, l.size());
 
 	}
 
