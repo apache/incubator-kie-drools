@@ -113,6 +113,7 @@ public class Scenario implements Serializable {
 	 * This will return a list of fact names that are in scope (including globals).
 	 */
 	public List getFactNamesInScope(ExecutionTrace ex) {
+		if (ex == null) return new ArrayList();
 		List l = new ArrayList();
 		int p = this.fixtures.indexOf(ex);
 		for (int i = 0; i < p; i++) {

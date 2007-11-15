@@ -1,5 +1,6 @@
 package org.drools.testframework;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,15 +29,15 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testPopulateFacts() throws Exception {
 		Scenario sc = new Scenario();
-		FactData[] facts = new FactData[] {
-				new FactData("Cheese", "c1", new FieldData[] {
+		List facts = ls(
+				new FactData("Cheese", "c1", ls(
 						new FieldData("type", "cheddar"),
-						new FieldData("price", "42") },  false),
-				new FactData("Person", "p1", new FieldData[] {
+						new FieldData("price", "42") ),  false),
+				new FactData("Person", "p1", ls(
 						new FieldData("name", "mic"),
-						new FieldData("age", "=30 + 3") }, false) };
+						new FieldData("age", "=30 + 3") ), false) );
 
-		sc.fixtures.addAll(Arrays.asList(facts));
+		sc.fixtures.addAll(facts);
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
 				Thread.currentThread().getContextClassLoader());
 		resolver.addImport("org.drools.Cheese");
@@ -59,14 +60,14 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testPopulateFactsWithExpressions() throws Exception {
 		Scenario sc = new Scenario();
-		FactData[] facts = new FactData[] {
-				new FactData("Cheese", "c1", new FieldData[] {
+		List facts = ls(
+				new FactData("Cheese", "c1", ls(
 						new FieldData("type", "cheddar"),
-						new FieldData("price", "42") },  false),
-				new FactData("Cheese", "c2", new FieldData[] {
-						new FieldData("type", "= c1.type")}, false) };
+						new FieldData("price", "42") ),  false),
+				new FactData("Cheese", "c2", ls(
+						new FieldData("type", "= c1.type")), false) );
 
-		sc.fixtures.addAll(Arrays.asList(facts));
+		sc.fixtures.addAll(facts);
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
 				Thread.currentThread().getContextClassLoader());
 		resolver.addImport("org.drools.Cheese");
@@ -100,7 +101,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		assertEquals(1, c.getPrice());
 
-		FactData fd = new FactData("Cheese", "x", new FieldData[] {new FieldData("type", ""), new FieldData("price", "42")}, false);
+		FactData fd = new FactData("Cheese", "x", ls(new FieldData("type", ""), new FieldData("price", "42")), false);
 
 		run.populateFields(fd, run.populatedData, c);
 		assertEquals("whee", c.getType());
@@ -122,9 +123,9 @@ public class ScenarioRunnerTest extends RuleUnit {
 		// test all true
 		VerifyFact vf = new VerifyFact();
 		vf.factName = "f1";
-		vf.fieldValues = ls(new VerifyField[] {
+		vf.fieldValues = ls(
 				new VerifyField("type", "cheddar", "=="),
-				new VerifyField("price", "42", "==") });
+				new VerifyField("price", "42", "==") );
 
 		runner.verify(vf);
 		for (int i = 0; i < vf.fieldValues.size(); i++) {
@@ -133,9 +134,9 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		vf = new VerifyFact();
 		vf.factName = "f2";
-		vf.fieldValues = ls(new VerifyField[] {
+		vf.fieldValues = ls(
 				new VerifyField("name", "michael", "=="),
-				new VerifyField("age", "33", "==") });
+				new VerifyField("age", "33", "==") );
 
 		runner.verify(vf);
 		for (int i = 0; i < vf.fieldValues.size(); i++) {
@@ -145,8 +146,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 		// test one false
 		vf = new VerifyFact();
 		vf.factName = "f2";
-		vf.fieldValues = ls(new VerifyField[] { new VerifyField("name", "mark", "=="),
-				new VerifyField("age", "33", "==") });
+		vf.fieldValues = ls(new VerifyField("name", "mark", "=="),
+				new VerifyField("age", "33", "==") );
 
 		runner.verify(vf);
 		assertFalse(((VerifyField)vf.fieldValues.get(0)).successResult);
@@ -158,8 +159,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 		// test 2 false
 		vf = new VerifyFact();
 		vf.factName = "f2";
-		vf.fieldValues = ls(new VerifyField[] { new VerifyField("name", "mark", "=="),
-				new VerifyField("age", "32", "==") });
+		vf.fieldValues = ls( new VerifyField("name", "mark", "=="),
+				new VerifyField("age", "32", "==") );
 
 		runner.verify(vf);
 		assertFalse(((VerifyField)vf.fieldValues.get(0)).successResult);
@@ -182,9 +183,9 @@ public class ScenarioRunnerTest extends RuleUnit {
 		// test all true
 		VerifyFact vf = new VerifyFact();
 		vf.factName = "f1";
-		vf.fieldValues = ls(new VerifyField[] {
+		vf.fieldValues = ls(
 				new VerifyField("type", "cheddar", "=="),
-				new VerifyField("price", "4777", "!=") });
+				new VerifyField("price", "4777", "!=") );
 		runner.verify(vf);
 		for (int i = 0; i < vf.fieldValues.size(); i++) {
 			assertTrue(((VerifyField)vf.fieldValues.get(i)).successResult);
@@ -192,8 +193,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		vf = new VerifyFact();
 		vf.factName = "f1";
-		vf.fieldValues = ls(new VerifyField[] {
-				new VerifyField("type", "cheddar", "!=")});
+		vf.fieldValues = ls(
+				new VerifyField("type", "cheddar", "!="));
 		runner.verify(vf);
 		assertFalse(((VerifyField)vf.fieldValues.get(0)).successResult);
 
@@ -203,12 +204,12 @@ public class ScenarioRunnerTest extends RuleUnit {
 	public void testDummyRunNoRules() throws Exception {
 		Scenario sc = new Scenario();
 		FactData[] facts = new FactData[] { new FactData("Cheese", "c1",
-				new FieldData[] { new FieldData("type", "cheddar"),
-						new FieldData("price", "42") }, false) };
+				ls( new FieldData("type", "cheddar"),
+						new FieldData("price", "42") ), false) };
 
 		VerifyFact[] assertions = new VerifyFact[] { new VerifyFact("c1",
-				ls(new VerifyField[] { new VerifyField("type", "cheddar", "=="),
-						new VerifyField("price", "42", "==") })) };
+				ls( new VerifyField("type", "cheddar", "=="),
+						new VerifyField("price", "42", "==") )) };
 
 		sc.fixtures.addAll(Arrays.asList(facts));
 		sc.fixtures.addAll(Arrays.asList(assertions));
@@ -287,10 +288,10 @@ public class ScenarioRunnerTest extends RuleUnit {
 	public void testWithGlobals() throws Exception {
 		Scenario sc = new Scenario();
 		FactData[] facts = new FactData[] {
-				new FactData("Cheese", "c2", new FieldData[] { new FieldData(
-						"type", "stilton") }, false) };
-		sc.globals.add(new FactData("Cheese", "c", new FieldData[] { new FieldData(
-				"type", "cheddar") }, false));
+				new FactData("Cheese", "c2", ls( new FieldData(
+						"type", "stilton") ), false) };
+		sc.globals.add(new FactData("Cheese", "c", ls( new FieldData(
+				"type", "cheddar") ), false));
 		sc.fixtures.addAll(Arrays.asList(facts));
 
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
@@ -387,12 +388,12 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		Scenario sc = new Scenario();
 		FactData[] facts = new FactData[] {
-				new FactData("Cheese", "c1", new FieldData[] {
+				new FactData("Cheese", "c1", ls(
 						new FieldData("type", "cheddar"),
-						new FieldData("price", "42") },  false)
+						new FieldData("price", "42") ),  false)
 
 				};
-		sc.globals.add(new FactData("Person", "p", new FieldData[0] , false));
+		sc.globals.add(new FactData("Person", "p", new ArrayList() , false));
 		sc.fixtures.addAll(Arrays.asList(facts));
 
 		ExecutionTrace executionTrace = new ExecutionTrace();
@@ -405,12 +406,12 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		Expectation[] assertions = new Expectation[5];
 
-		assertions[0] =	new VerifyFact("c1", ls(new VerifyField[] {
+		assertions[0] =	new VerifyFact("c1", ls(
 					new VerifyField("type", "cheddar", "==")
 
-		}));
+		));
 
-		assertions[1] = new VerifyFact("p", listof(
+		assertions[1] = new VerifyFact("p", ls(
 					new VerifyField("name", "rule1", "=="),
 					new VerifyField("status", "rule2", "=="))
 
@@ -450,14 +451,14 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testIntgerationStateful() throws Exception {
 		Scenario sc = new Scenario();
-		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "1")}, false));
+		sc.fixtures.add(new FactData("Cheese", "c1", ls(new FieldData("price", "1")), false));
 		ExecutionTrace ex = new ExecutionTrace();
 		sc.fixtures.add(ex);
-		sc.fixtures.add(new FactData("Cheese", "c2", new FieldData[] {new FieldData("price", "2")}, false));
-		sc.fixtures.add(new VerifyFact("c1", listof(new VerifyField("type", "rule1", "=="))));
+		sc.fixtures.add(new FactData("Cheese", "c2", ls(new FieldData("price", "2")), false));
+		sc.fixtures.add(new VerifyFact("c1", ls(new VerifyField("type", "rule1", "=="))));
 		ex = new ExecutionTrace();
 		sc.fixtures.add(ex);
-		sc.fixtures.add(new VerifyFact("c1", listof(new VerifyField("type", "rule2", "=="))));
+		sc.fixtures.add(new VerifyFact("c1", ls(new VerifyField("type", "rule2", "=="))));
 
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
 				Thread.currentThread().getContextClassLoader());
@@ -480,16 +481,16 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testIntegrationWithModify() throws Exception {
 		Scenario sc = new Scenario();
-		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "1")}, false));
+		sc.fixtures.add(new FactData("Cheese", "c1", ls(new FieldData("price", "1")), false));
 
 		sc.fixtures.add(new ExecutionTrace());
 
-		sc.fixtures.add(new VerifyFact("c1", listof(new VerifyField("type", "rule1", "=="))));
+		sc.fixtures.add(new VerifyFact("c1", ls(new VerifyField("type", "rule1", "=="))));
 
-		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "42")}, true));
+		sc.fixtures.add(new FactData("Cheese", "c1", ls(new FieldData("price", "42")), true));
 		sc.fixtures.add(new ExecutionTrace());
 
-		sc.fixtures.add(new VerifyFact("c1", listof(new VerifyField("type", "rule3", "=="))));
+		sc.fixtures.add(new VerifyFact("c1", ls(new VerifyField("type", "rule3", "=="))));
 
 
 
@@ -512,16 +513,16 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testIntegrationWithRetract() throws Exception {
 		Scenario sc = new Scenario();
-		sc.fixtures.add(new FactData("Cheese", "c1", new FieldData[] {new FieldData("price", "46"), new FieldData("type", "XXX")}, false));
-		sc.fixtures.add(new FactData("Cheese", "c2", new FieldData[] {new FieldData("price", "42")}, false));
+		sc.fixtures.add(new FactData("Cheese", "c1", ls(new FieldData("price", "46"), new FieldData("type", "XXX")), false));
+		sc.fixtures.add(new FactData("Cheese", "c2", ls(new FieldData("price", "42")), false));
 		sc.fixtures.add(new ExecutionTrace());
 
-		sc.fixtures.add(new VerifyFact("c1", listof(new VerifyField("type", "XXX", "=="))));
+		sc.fixtures.add(new VerifyFact("c1", ls(new VerifyField("type", "XXX", "=="))));
 
 		sc.fixtures.add(new RetractFact("c2"));
 		sc.fixtures.add(new ExecutionTrace());
 
-		sc.fixtures.add(new VerifyFact("c1", listof(new VerifyField("type", "rule4", "=="))));
+		sc.fixtures.add(new VerifyFact("c1", ls(new VerifyField("type", "rule4", "=="))));
 
 
 
@@ -544,13 +545,13 @@ public class ScenarioRunnerTest extends RuleUnit {
 	public void testIntegrationWithFailure() throws Exception {
 		Scenario sc = new Scenario();
 		FactData[] facts = new FactData[] {
-				new FactData("Cheese", "c1", new FieldData[] {
+				new FactData("Cheese", "c1", ls(
 						new FieldData("type", "cheddar"),
-						new FieldData("price", "42") }, false)
+						new FieldData("price", "42") ), false)
 
 				};
 		sc.fixtures.addAll(Arrays.asList(facts));
-		sc.globals.add(new FactData("Person", "p", new FieldData[0] , false));
+		sc.globals.add(new FactData("Person", "p", new ArrayList() , false));
 
 		ExecutionTrace executionTrace = new ExecutionTrace();
 		sc.rules.add("rule1");
@@ -560,12 +561,12 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		Expectation[] assertions = new Expectation[5];
 
-		assertions[0] =	new VerifyFact("c1", listof(
+		assertions[0] =	new VerifyFact("c1", ls(
 					new VerifyField("type", "cheddar", "==")
 
 		));
 
-		assertions[1] = new VerifyFact("p", listof(
+		assertions[1] = new VerifyFact("p", ls(
 					new VerifyField("name", "XXX", "=="),
 					new VerifyField("status", "rule2", "==")
 
@@ -604,12 +605,10 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	}
 
-	private List ls(Object[] arr) {
-		return Arrays.asList(arr);
-	}
 
 
-	private<T> List<T> listof(T... objects) {
+
+	private<T> List<T> ls(T... objects) {
 		return Arrays.asList(objects);
 	}
 
