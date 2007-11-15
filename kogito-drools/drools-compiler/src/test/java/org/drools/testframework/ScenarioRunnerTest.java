@@ -122,7 +122,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		// test all true
 		VerifyFact vf = new VerifyFact();
-		vf.factName = "f1";
+		vf.name = "f1";
 		vf.fieldValues = ls(
 				new VerifyField("type", "cheddar", "=="),
 				new VerifyField("price", "42", "==") );
@@ -133,7 +133,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		}
 
 		vf = new VerifyFact();
-		vf.factName = "f2";
+		vf.name = "f2";
 		vf.fieldValues = ls(
 				new VerifyField("name", "michael", "=="),
 				new VerifyField("age", "33", "==") );
@@ -145,7 +145,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		// test one false
 		vf = new VerifyFact();
-		vf.factName = "f2";
+		vf.name = "f2";
 		vf.fieldValues = ls(new VerifyField("name", "mark", "=="),
 				new VerifyField("age", "33", "==") );
 
@@ -158,7 +158,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		// test 2 false
 		vf = new VerifyFact();
-		vf.factName = "f2";
+		vf.name = "f2";
 		vf.fieldValues = ls( new VerifyField("name", "mark", "=="),
 				new VerifyField("age", "32", "==") );
 
@@ -182,7 +182,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 		// test all true
 		VerifyFact vf = new VerifyFact();
-		vf.factName = "f1";
+		vf.name = "f1";
 		vf.fieldValues = ls(
 				new VerifyField("type", "cheddar", "=="),
 				new VerifyField("price", "4777", "!=") );
@@ -192,7 +192,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		}
 
 		vf = new VerifyFact();
-		vf.factName = "f1";
+		vf.name = "f1";
 		vf.fieldValues = ls(
 				new VerifyField("type", "cheddar", "!="));
 		runner.verify(vf);
