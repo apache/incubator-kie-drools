@@ -14,13 +14,13 @@ public class VerifyFact implements Expectation {
 	 * @gwt.typeArgs <org.drools.brms.client.modeldriven.testing.VerifyField>
 	 */
 	public List fieldValues = new ArrayList();
-	public String factName;
+	public String name;
 	public String description;
 
 
 	public VerifyFact() {}
 	public VerifyFact(String factName, List fieldValues) {
-		this.factName = factName;
+		this.name = factName;
 		this.fieldValues = fieldValues;
 	}
 

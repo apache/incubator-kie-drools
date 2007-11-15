@@ -9,6 +9,7 @@ import org.drools.brms.client.modeldriven.testing.FactData;
 import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.RetractFact;
 import org.drools.brms.client.modeldriven.testing.Scenario;
+import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 
 import junit.framework.TestCase;
@@ -104,6 +105,30 @@ public class ScenarioTest extends TestCase {
 		l= sc.getFactNamesInScope(null);
 		assertEquals(0, l.size());
 
+	}
+
+	public void testAllowRemoveFact() {
+		Scenario sc = new Scenario();
+
+		FactData fd1 = new FactData("X", "x", new ArrayList(), false);
+		sc.fixtures.add(fd1);
+		FactData fd2 = new FactData("Q", "q", new ArrayList(), false);
+		sc.fixtures.add(fd2);
+		FactData fd3 = new FactData("Z", "z", new ArrayList(), false);
+		sc.fixtures.add(fd3);
+		ExecutionTrace ex1 = new ExecutionTrace();
+		FactData fd4 = new FactData("I", "i", new ArrayList(), false);
+		sc.globals.add(fd4);
+
+		sc.fixtures.add(ex1);
+		sc.fixtures.add(new RetractFact("z"));
+		sc.fixtures.add(new FactData("Z", "z", new ArrayList(), true));
+		sc.fixtures.add(new VerifyFact("q", new ArrayList()));
+
+		assertFalse(sc.isFactNameUsed(fd1));
+		assertTrue(sc.isFactNameUsed(fd2));
+		assertTrue(sc.isFactNameUsed(fd3));
+		assertFalse(sc.isFactNameUsed(fd4));
 	}
 
 }

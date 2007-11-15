@@ -133,6 +133,30 @@ public class Scenario implements Serializable {
 		}
 		return l;
 	}
+
+	/**
+	 * @return true iff a fact is actually used (ie if its not, its safe to remove it).
+	 */
+	public boolean isFactNameUsed(FactData fd) {
+		int start = this.fixtures.indexOf(fd);
+		for (int i = start + 1; i < fixtures.size(); i++) {
+			Fixture f = (Fixture) fixtures.get(i);
+			if (f instanceof RetractFact) {
+				 if (((RetractFact)f).name.equals(fd.name)) {
+					 return true;
+				 }
+			} else if (f instanceof VerifyFact) {
+				 if (((VerifyFact)f).name.equals(fd.name)) {
+					 return true;
+				 }
+			} else if (f instanceof FactData) {
+				 if (((FactData)f).name.equals(fd.name)) {
+					 return true;
+				 }
+			}
+		}
+		return false;
+	}
 }
 
 

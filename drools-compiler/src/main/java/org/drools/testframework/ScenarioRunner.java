@@ -172,8 +172,8 @@ public class ScenarioRunner {
 
 
 	void verify(VerifyFact value) {
-		Object fact = this.populatedData.get(value.factName);
-		if (fact == null) fact = this.globalData.get(value.factName);
+		Object fact = this.populatedData.get(value.name);
+		if (fact == null) fact = this.globalData.get(value.name);
 		for (int i = 0; i < value.fieldValues.size(); i++) {
 			VerifyField fld = (VerifyField) value.fieldValues.get(i);
 			Map<String, Object> st = new HashMap<String, Object>();
