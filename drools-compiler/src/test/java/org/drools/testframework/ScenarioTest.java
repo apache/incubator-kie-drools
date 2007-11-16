@@ -52,14 +52,27 @@ public class ScenarioTest extends TestCase {
 		VerifyRuleFired vf2 = new VerifyRuleFired();
 		VerifyRuleFired vf3 = new VerifyRuleFired();
 
+		FactData fd = new FactData();
+
 		sc.fixtures.add(vf1);
 		sc.fixtures.add(vf2);
 		sc.fixtures.add(vf3);
+		sc.globals.add(fd);
+
 
 		sc.removeFixture(vf2);
 		assertEquals(2, sc.fixtures.size());
 		assertEquals(vf1, sc.fixtures.get(0));
 		assertEquals(vf3, sc.fixtures.get(1));
+		assertEquals(1, sc.globals.size());
+
+		sc.removeFixture(fd);
+		assertEquals(0, sc.globals.size());
+		assertEquals(2, sc.fixtures.size());
+
+
+
+
 	}
 
 	public void testMapFactTypes() {
