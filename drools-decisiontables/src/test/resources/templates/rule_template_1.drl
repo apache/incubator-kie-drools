@@ -1,0 +1,36 @@
+template header
+FEE_SCHEDULE_ID
+FEE_SCHEDULE_TYPE
+FEE_MODE_TYPE
+ENTITY_BRANCH
+PRODUCT_TYPE
+ACTIVITY_TYPE
+FEE_TYPE
+OWNING_PARTY
+CCY
+LC_AMOUNT
+dummy
+AMOUNT
+
+
+package org.drools.decisiontable;
+#generated from Decision Table
+
+global FeeResult result;
+
+template "Fee Schedule"
+rule "Fee Schedule_@{row.rowNumber}"
+	agenda-group "@{FEE_SCHEDULE_TYPE}"
+	when
+		FeeEvent(productType == "@{PRODUCT_TYPE}",
+			activityType == "@{ACTIVITY_TYPE}",
+			feeType == "@{FEE_TYPE}",
+			txParty == "@{OWNING_PARTY}",
+			entityBranch == "@{ENTITY_BRANCH}",
+			amount @{LC_AMOUNT},
+			ccy == "@{CCY}"
+			)
+	then
+		result.setSchedule(new FeeSchedule("@{FEE_SCHEDULE_ID}", "@{FEE_SCHEDULE_TYPE}", @{AMOUNT}));	
+end
+end template
