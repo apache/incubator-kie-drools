@@ -86,6 +86,7 @@ public class Scenario implements Serializable {
 	 */
 	public void removeFixture(Fixture f) {
 		this.fixtures.remove(f);
+		this.globals.remove(f);
 	}
 
 
