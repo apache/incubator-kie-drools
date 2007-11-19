@@ -14,7 +14,7 @@ public class RuleSolver extends Solver {
 
 	public RuleSolver(AnalyticsRule rule) {
 		super(OperatorDescr.Type.OR);
-		this.rule = (AnalyticsRule) rule.clone();
+		this.rule = (AnalyticsRule) rule;
 	}
 
 	public AnalyticsRule getRule() {

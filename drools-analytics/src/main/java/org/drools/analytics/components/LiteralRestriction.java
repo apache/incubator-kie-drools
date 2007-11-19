@@ -3,6 +3,7 @@ package org.drools.analytics.components;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.zip.DataFormatException;
 
 import org.drools.analytics.report.components.Cause;
 
@@ -26,6 +27,53 @@ public class LiteralRestriction extends Restriction implements Cause {
 
 	public RestrictionType getRestrictionType() {
 		return Restriction.RestrictionType.LITERAL;
+	}
+
+	/**
+	 * Compares two LiteralRestrictions by value.
+	 * 
+	 * @param restriction
+	 *            Restriction that this object is compared to.
+	 * @return a negative integer, zero, or a positive integer as this object is
+	 *         less than, equal to, or greater than the specified object.
+	 * @throws DataFormatException
+	 *             If data was not supported.
+	 */
+	public int compareValues(LiteralRestriction restriction)
+			throws DataFormatException {
+		if (restriction.getValueType() != valueType) {
+			throw new DataFormatException(
+					"Value types did not match. Value type "
+							+ restriction.getValueType() + " was compared to "
+							+ valueType);
+		}
+		switch (valueType) {
+		case DATE:
+			return dateValue.compareTo(restriction.getDateValue());
+		case DOUBLE:
+			if (doubleValue > restriction.getDoubleValue()) {
+				return 1;
+			} else if (doubleValue < restriction.getDoubleValue()) {
+				return -1;
+			} else {
+				return 0;
+			}
+		case INT:
+			if (intValue > restriction.getIntValue()) {
+				return 1;
+			} else if (intValue < restriction.getIntValue()) {
+				return -1;
+			} else {
+				return 0;
+			}
+		case STRING:
+			return stringValue.compareTo(restriction.getValueAsString());
+		default:
+			throw new DataFormatException(
+					"Value types did not match. Value type "
+							+ restriction.getValueType() + " was compared to "
+							+ valueType);
+		}
 	}
 
 	public Object getValueAsObject() {

@@ -14,7 +14,7 @@ public class PatternSolver extends Solver {
 
 	public PatternSolver(Pattern pattern) {
 		super(OperatorDescr.Type.OR);
-		this.pattern = (Pattern) pattern.clone();
+		this.pattern = pattern;
 	}
 
 	public Pattern getPattern() {

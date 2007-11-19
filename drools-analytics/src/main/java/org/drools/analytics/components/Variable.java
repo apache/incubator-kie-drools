@@ -65,4 +65,9 @@ public class Variable extends AnalyticsComponent {
 	public void setObjectName(String objectName) {
 		this.objectName = objectName;
 	}
+
+	@Override
+	public String toString() {
+		return "Variable name: " + name;
+	}
 }
