@@ -30,6 +30,7 @@ public class RangeCheckDatesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, if smaller than or equal is missing"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"));
 
@@ -67,6 +68,7 @@ public class RangeCheckDatesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, if greater than or equal is missing"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"));
 
@@ -104,6 +106,7 @@ public class RangeCheckDatesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, equal and greater than"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"));
 
@@ -142,6 +145,7 @@ public class RangeCheckDatesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for dates, equal and smaller than"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDates.drl"));
 

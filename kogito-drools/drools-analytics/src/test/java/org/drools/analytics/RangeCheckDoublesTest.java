@@ -27,6 +27,7 @@ public class RangeCheckDoublesTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Range check for doubles, if smaller than or equal is missing"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"));
 
@@ -65,6 +66,7 @@ public class RangeCheckDoublesTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Range check for doubles, if greater than or equal is missing"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"));
 
@@ -102,6 +104,7 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and greater than"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"));
 
@@ -141,6 +144,7 @@ public class RangeCheckDoublesTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for doubles, equal and smaller than"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("MissingRangesForDoubles.drl"));
 
