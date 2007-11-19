@@ -112,8 +112,9 @@ public class Scenario implements Serializable {
 
 	/**
 	 * This will return a list of fact names that are in scope (including globals).
+	 * @return List<String>
 	 */
-	public List getFactNamesInScope(ExecutionTrace ex) {
+	public List getFactNamesInScope(ExecutionTrace ex, boolean includeGlobals) {
 		if (ex == null) return new ArrayList();
 		List l = new ArrayList();
 		int p = this.fixtures.indexOf(ex);
@@ -128,11 +129,35 @@ public class Scenario implements Serializable {
 			}
 		}
 
-		for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
-			FactData f = (FactData) iterator.next();
-			l.add(f.name);
+		if (includeGlobals) {
+			for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
+				FactData f = (FactData) iterator.next();
+				l.add(f.name);
+			}
 		}
 		return l;
+	}
+
+	/**
+	 * @return true iff a fact name is already in use.
+	 */
+	public boolean isFactNameExisting(String factName) {
+		for (Iterator iterator = globals.iterator(); iterator.hasNext();) {
+			FactData fd = (FactData) iterator.next();
+			if (fd.name.equals(factName)) {
+				return true;
+			}
+		}
+		for (Iterator iterator = fixtures.iterator(); iterator.hasNext();) {
+			Fixture f = (Fixture) iterator.next();
+			if (f instanceof FactData) {
+				FactData fd = (FactData) f;
+				if (fd.name.equals(factName)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
