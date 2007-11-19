@@ -103,19 +103,25 @@ public class ScenarioTest extends TestCase {
 		ExecutionTrace ex2 = new ExecutionTrace();
 		sc.fixtures.add(ex2);
 
-		List l = sc.getFactNamesInScope(ex1);
+		List l = sc.getFactNamesInScope(ex1, true);
+
 		assertEquals(3, l.size());
 		assertEquals("q", l.get(0));
 		assertEquals("z", l.get(1));
 		assertEquals("x", l.get(2));
 
-		l = sc.getFactNamesInScope(ex2);
+
+		l = sc.getFactNamesInScope(ex1, false);
+		assertEquals(2, l.size());
+		assertFalse(l.contains(sc.globals.get(0)));
+
+		l = sc.getFactNamesInScope(ex2, true);
 		assertEquals(3, l.size());
 		assertEquals("q", l.get(0));
 		assertEquals("y", l.get(1));
 		assertEquals("x", l.get(2));
 
-		l= sc.getFactNamesInScope(null);
+		l= sc.getFactNamesInScope(null, true);
 		assertEquals(0, l.size());
 
 	}
@@ -142,6 +148,21 @@ public class ScenarioTest extends TestCase {
 		assertTrue(sc.isFactNameUsed(fd2));
 		assertTrue(sc.isFactNameUsed(fd3));
 		assertFalse(sc.isFactNameUsed(fd4));
+	}
+
+	public void testIsFactNameUsed() {
+		Scenario sc = new Scenario();
+		sc.globals.add(new FactData("X", "x", null, false));
+		sc.fixtures.add(new FactData("Q", "q", null, false));
+		sc.fixtures.add(new ExecutionTrace());
+
+		assertTrue(sc.isFactNameExisting("x"));
+		assertTrue(sc.isFactNameExisting("q"));
+		assertFalse(sc.isFactNameExisting("w"));
+
+
+		sc = new Scenario();
+		assertFalse(sc.isFactNameExisting("w"));
 	}
 
 }
