@@ -6,8 +6,7 @@ import org.drools.analytics.report.components.Cause;
  * 
  * @author Toni Rikkola
  */
-public class AnalyticsRule extends AnalyticsComponent implements Cloneable,
-		Cause {
+public class AnalyticsRule extends AnalyticsComponent implements Cause {
 
 	private static int index = 0;
 
@@ -62,20 +61,6 @@ public class AnalyticsRule extends AnalyticsComponent implements Cloneable,
 
 	public void setLineNumber(int lineNumber) {
 		this.lineNumber = lineNumber;
-	}
-
-	@Override
-	public Object clone() {
-		AnalyticsRule clone = new AnalyticsRule();
-
-		clone.setRuleName(ruleName);
-		clone.setRuleId(ruleId);
-		clone.setRuleSalience(ruleSalience);
-		clone.setRuleAgendaGroup(ruleAgendaGroup);
-		clone.setConsequence(consequence);
-		clone.setLineNumber(lineNumber);
-
-		return clone;
 	}
 
 	@Override

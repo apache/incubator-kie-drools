@@ -6,7 +6,7 @@ import org.drools.analytics.report.components.Cause;
  * 
  * @author Toni Rikkola
  */
-public class Pattern extends AnalyticsComponent implements Cloneable, Cause {
+public class Pattern extends AnalyticsComponent implements Cause {
 
 	private static final long serialVersionUID = 5852308145251025423L;
 
@@ -97,21 +97,6 @@ public class Pattern extends AnalyticsComponent implements Cloneable, Cause {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@Override
-	public Object clone() {
-		Pattern clone = new Pattern();
-		clone.setRuleId(ruleId);
-		clone.setClassId(classId);
-		clone.setName(name);
-		clone.setSourceType(sourceType);
-		clone.setSourceId(sourceId);
-		clone.setPatternNot(isPatternNot);
-		clone.setPatternExists(isPatternExists);
-		clone.setPatternForall(isPatternForall);
-
-		return clone;
 	}
 
 	@Override
