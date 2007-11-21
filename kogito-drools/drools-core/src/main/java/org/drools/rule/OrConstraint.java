@@ -20,6 +20,8 @@ import java.util.Arrays;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
+import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.util.ArrayUtils;
 
 /**
@@ -112,4 +114,23 @@ public class OrConstraint extends AbstractCompositeConstraint {
                                                                                                                    other.requiredDeclarations );
     }
 
+    public Object clone() {
+        OrConstraint clone = new OrConstraint();
+        
+        // clone alpha constraints
+        clone.alphaConstraints = new AlphaNodeFieldConstraint[ this.alphaConstraints.length ];
+        for( int i = 0; i < this.alphaConstraints.length; i++ ) {
+            clone.alphaConstraints[i] = (AlphaNodeFieldConstraint) this.alphaConstraints[i].clone();
+            clone.updateRequiredDeclarations( clone.alphaConstraints[i] );
+        }
+        
+        // clone beta constraints
+        clone.betaConstraints = new BetaNodeFieldConstraint[ this.betaConstraints.length ];
+        for( int i = 0; i < this.betaConstraints.length; i++ ) {
+            clone.betaConstraints[i] = (BetaNodeFieldConstraint) this.betaConstraints[i].clone();
+            clone.updateRequiredDeclarations( clone.betaConstraints[i] );
+        }
+        
+        return clone;
+    }
 }

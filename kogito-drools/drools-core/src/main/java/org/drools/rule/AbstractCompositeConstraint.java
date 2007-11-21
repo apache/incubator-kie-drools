@@ -75,17 +75,17 @@ public abstract class AbstractCompositeConstraint
             this.updateRequiredDeclarations( constraint );
         }
     }
-    
+
     /**
      * Adds a constraint too all lists it belongs to by checking for its type 
      * @param constraint
      */
     public void addConstraint(Constraint constraint) {
-        if( constraint instanceof AlphaNodeFieldConstraint ) {
+        if ( constraint instanceof AlphaNodeFieldConstraint ) {
             this.addAlphaConstraint( (AlphaNodeFieldConstraint) constraint );
         }
-        if( constraint instanceof BetaNodeFieldConstraint ) {
-            this.addBetaConstraint( (BetaNodeFieldConstraint) constraint ); 
+        if ( constraint instanceof BetaNodeFieldConstraint ) {
+            this.addBetaConstraint( (BetaNodeFieldConstraint) constraint );
         }
     }
 
@@ -94,7 +94,7 @@ public abstract class AbstractCompositeConstraint
      * 
      * @param constraint
      */
-    private void updateRequiredDeclarations(Constraint constraint) {
+    protected void updateRequiredDeclarations(Constraint constraint) {
         Declaration[] decs = constraint.getRequiredDeclarations();
         if ( decs != null && decs.length > 0 ) {
             for ( int i = 0; i < decs.length; i++ ) {
@@ -126,20 +126,22 @@ public abstract class AbstractCompositeConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
-        for( int i = 0; i < this.alphaConstraints.length; i++ ) {
-            this.alphaConstraints[i].replaceDeclaration( oldDecl, newDecl );
+        for ( int i = 0; i < this.alphaConstraints.length; i++ ) {
+            this.alphaConstraints[i].replaceDeclaration( oldDecl,
+                                                         newDecl );
         }
-        for( int i = 0; i < this.betaConstraints.length; i++ ) {
-            this.betaConstraints[i].replaceDeclaration( oldDecl, newDecl );
+        for ( int i = 0; i < this.betaConstraints.length; i++ ) {
+            this.betaConstraints[i].replaceDeclaration( oldDecl,
+                                                        newDecl );
         }
-        for( int i = 0; i < this.requiredDeclarations.length; i++ ) {
-            if( this.requiredDeclarations[i] == oldDecl ) {
+        for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
+            if ( this.requiredDeclarations[i] == oldDecl ) {
                 this.requiredDeclarations[i] = newDecl;
             }
         }
@@ -180,6 +182,8 @@ public abstract class AbstractCompositeConstraint
         super();
     }
 
+    public abstract Object clone();
+
     /**
      * A context entry for composite restrictions
      * 
@@ -189,10 +193,10 @@ public abstract class AbstractCompositeConstraint
         implements
         ContextEntry {
 
-        private static final long    serialVersionUID = 400L;
+        private static final long   serialVersionUID = 400L;
 
         public final ContextEntry[] contexts;
-        public ContextEntry          next;
+        public ContextEntry         next;
 
         public MultiFieldConstraintContextEntry(BetaNodeFieldConstraint[] constraints) {
             contexts = new ContextEntry[constraints.length];

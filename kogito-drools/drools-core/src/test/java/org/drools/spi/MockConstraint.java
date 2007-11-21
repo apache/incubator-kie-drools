@@ -50,6 +50,10 @@ public class MockConstraint
                                    Declaration newDecl) {
     }
 
+    public Object clone() {
+        return this;
+    }
+    
     public ContextEntry getContextEntry() {
         return new ContextEntry() {
             private static final long serialVersionUID = 400L;

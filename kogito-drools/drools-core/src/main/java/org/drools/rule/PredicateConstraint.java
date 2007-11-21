@@ -53,17 +53,17 @@ public class PredicateConstraint
     private final Declaration[]        previousDeclarations;
 
     private final Declaration[]        localDeclarations;
-    
+
     private final String[]             requiredGlobals;
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
-    private static final String[] EMPTY_GLOBALS = new String[0];
+    private static final String[]      EMPTY_GLOBALS      = new String[0];
 
     public PredicateConstraint(final PredicateExpression evaluator) {
         this( evaluator,
               null,
               null,
-              null);
+              null );
     }
 
     public PredicateConstraint(final Declaration[] previousDeclarations,
@@ -71,13 +71,13 @@ public class PredicateConstraint
         this( null,
               previousDeclarations,
               localDeclarations,
-              null);
+              null );
     }
 
     public PredicateConstraint(final PredicateExpression expression,
                                final Declaration[] previousDeclarations,
                                final Declaration[] localDeclarations,
-                               final String[] requiredGlobals ) {
+                               final String[] requiredGlobals) {
 
         this.expression = expression;
 
@@ -123,21 +123,21 @@ public class PredicateConstraint
     public Declaration[] getLocalDeclarations() {
         return this.localDeclarations;
     }
-    
+
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
-        for( int i = 0; i < this.requiredDeclarations.length; i++) {
-            if( this.requiredDeclarations[i] == oldDecl ) {
+        for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
+            if ( this.requiredDeclarations[i].equals( oldDecl ) ) {
                 this.requiredDeclarations[i] = newDecl;
             }
         }
-        for( int i = 0; i < this.previousDeclarations.length; i++) {
-            if( this.previousDeclarations[i] == oldDecl ) {
+        for ( int i = 0; i < this.previousDeclarations.length; i++ ) {
+            if ( this.previousDeclarations[i].equals( oldDecl ) ) {
                 this.previousDeclarations[i] = newDecl;
             }
         }
-        for( int i = 0; i < this.localDeclarations.length; i++) {
-            if( this.localDeclarations[i] == oldDecl ) {
+        for ( int i = 0; i < this.localDeclarations.length; i++ ) {
+            if ( this.localDeclarations[i].equals( oldDecl ) ) {
                 this.localDeclarations[i] = newDecl;
             }
         }
@@ -262,6 +262,23 @@ public class PredicateConstraint
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
                                               e );
         }
+    }
+
+    public Object clone() {
+        Declaration[] previous = new Declaration[this.previousDeclarations.length];
+        for ( int i = 0; i < previous.length; i++ ) {
+            previous[i] = (Declaration) this.previousDeclarations[i].clone();
+        }
+
+        Declaration[] local = new Declaration[this.localDeclarations.length];
+        for ( int i = 0; i < local.length; i++ ) {
+            local[i] = (Declaration) this.localDeclarations[i].clone();
+        }
+
+        return new PredicateConstraint( this.expression,
+                                        previous,
+                                        local,
+                                        this.requiredGlobals );
     }
 
     public static class PredicateContextEntry

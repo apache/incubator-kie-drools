@@ -107,4 +107,10 @@ public class LiteralConstraint
 
         return this.extractor.equals( other.extractor ) && this.restriction.equals( other.restriction );
     }
+
+    public Object clone() {
+        return new LiteralConstraint( this.extractor,
+                                      this.getEvaluator(),
+                                      this.getField() );
+    }
 }

@@ -51,11 +51,11 @@ public class VariableConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();
     }
-    
+
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
         this.restriction.replaceDeclaration( oldDecl,
-                                             newDecl ); 
+                                             newDecl );
     }
 
     public FieldExtractor getFieldExtractor() {
@@ -113,6 +113,11 @@ public class VariableConstraint
         final VariableConstraint other = (VariableConstraint) object;
 
         return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
+    }
+
+    public Object clone() {
+        return new VariableConstraint( this.fieldExtractor,
+                                       (VariableRestriction) this.restriction.clone() );
     }
 
 }

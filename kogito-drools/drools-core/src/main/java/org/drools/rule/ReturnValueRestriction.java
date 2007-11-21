@@ -123,20 +123,24 @@ public class ReturnValueRestriction
         return this.localDeclarations;
     }
     
+    public String[] getRequiredGlobals() {
+        return this.requiredGlobals;
+    }
+    
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
         for( int i = 0; i < this.requiredDeclarations.length; i++) {
-            if( this.requiredDeclarations[i] == oldDecl ) {
+            if( this.requiredDeclarations[i].equals( oldDecl ) ) {
                 this.requiredDeclarations[i] = newDecl;
             }
         }
         for( int i = 0; i < this.previousDeclarations.length; i++) {
-            if( this.previousDeclarations[i] == oldDecl ) {
+            if( this.previousDeclarations[i].equals( oldDecl ) ) {
                 this.previousDeclarations[i] = newDecl;
             }
         }
         for( int i = 0; i < this.localDeclarations.length; i++) {
-            if( this.localDeclarations[i] == oldDecl ) {
+            if( this.localDeclarations[i].equals( oldDecl ) )  {
                 this.localDeclarations[i] = newDecl;
             }
         }
@@ -253,6 +257,24 @@ public class ReturnValueRestriction
 
     public ContextEntry getContextEntry() {
         return this.contextEntry;
+    }
+    
+    public Object clone() {
+        Declaration[] previous = new Declaration[ this.previousDeclarations.length ];
+        for( int i = 0; i < previous.length; i++ ) {
+            previous[i] = (Declaration) this.previousDeclarations[i].clone();
+        }
+        
+        Declaration[] local = new Declaration[ this.localDeclarations.length ];
+        for( int i = 0; i < local.length; i++ ) {
+            local[i] = (Declaration) this.localDeclarations[i].clone();
+        }
+        
+        return new ReturnValueRestriction( this.contextEntry.fieldExtractor,
+                                           previous,
+                                           local,
+                                           this.requiredGlobals,
+                                           this.evaluator );
     }
 
     public static class ReturnValueContextEntry

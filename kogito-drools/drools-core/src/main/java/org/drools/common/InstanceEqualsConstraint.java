@@ -39,7 +39,7 @@ public class InstanceEqualsConstraint
 
     private final Declaration[] declarations     = new Declaration[0];
 
-    private Pattern              otherPattern;
+    private Pattern             otherPattern;
 
     public InstanceEqualsConstraint(final Pattern otherPattern) {
         this.otherPattern = otherPattern;
@@ -48,7 +48,7 @@ public class InstanceEqualsConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.declarations;
     }
-    
+
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
     }
@@ -79,6 +79,11 @@ public class InstanceEqualsConstraint
         return this.otherPattern.hashCode();
     }
 
+    public Object clone() {
+        // don't clone pattern
+        return new InstanceEqualsConstraint( this.otherPattern );
+    }
+
     public boolean equals(final Object object) {
         if ( this == object ) {
             return true;
@@ -101,7 +106,7 @@ public class InstanceEqualsConstraint
         public Object             left;
         public Object             right;
 
-        private Pattern            pattern;
+        private Pattern           pattern;
         private ContextEntry      entry;
 
         public InstanceEqualsConstraintContextEntry(final Pattern pattern) {

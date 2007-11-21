@@ -23,10 +23,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.spi.PatternExtractor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Extractor;
 import org.drools.spi.ObjectType;
+import org.drools.spi.PatternExtractor;
 
 public class Pattern
     implements
@@ -113,7 +113,20 @@ public class Pattern
                 clone.addDeclaration( decl.getIdentifier(),
                                       decl.getExtractor() );
             } else {
-                clone.addConstraint( (Constraint) constr );
+                Constraint constraint = (Constraint) ((Constraint) constr).clone();
+                
+                // we must update pattern references in cloned declarations
+                Declaration[] oldDecl = ((Constraint) constr).getRequiredDeclarations();
+                Declaration[] newDecl = constraint.getRequiredDeclarations();
+                for( int i = 0; i < newDecl.length; i++ ) {
+                    if( newDecl[i].getPattern() == this ) {
+                        newDecl[i].setPattern( clone );
+                        // we still need to call replace because there might be nested declarations to replace
+                        constraint.replaceDeclaration( oldDecl[i], newDecl[i] );
+                    }
+                }
+                
+                clone.addConstraint( constraint );
             }
         }
         return clone;

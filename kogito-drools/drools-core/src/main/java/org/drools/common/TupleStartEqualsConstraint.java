@@ -99,6 +99,10 @@ public class TupleStartEqualsConstraint
         }
         return false;
     }
+    
+    public Object clone() {
+        return INSTANCE; 
+    }
 
     public static class TupleStartEqualsConstraintContextEntry
         implements

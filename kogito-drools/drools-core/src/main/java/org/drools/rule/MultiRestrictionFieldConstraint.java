@@ -88,4 +88,9 @@ public class MultiRestrictionFieldConstraint
                                                        context );
     }
 
+    public Object clone() {
+        return new MultiRestrictionFieldConstraint( this.extractor,
+                                                    (Restriction) this.restrictions.clone() );
+    }
+
 }

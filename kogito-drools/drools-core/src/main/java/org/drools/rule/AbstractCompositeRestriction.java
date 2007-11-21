@@ -85,15 +85,17 @@ public abstract class AbstractCompositeRestriction
         return this.contextEntry;
     }
 
+    public abstract Object clone();
+
     public static class CompositeContextEntry
         implements
         ContextEntry {
 
         private static final long serialVersionUID = -1773986268630111227L;
 
-        public ContextEntry[] contextEntries;
+        public ContextEntry[]     contextEntries;
 
-        private ContextEntry  entry;
+        private ContextEntry      entry;
 
         public CompositeContextEntry(final Restriction[] restrictions) {
             contextEntries = new ContextEntry[restrictions.length];
