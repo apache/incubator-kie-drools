@@ -1237,6 +1237,10 @@ name=MyConfig</programlisting>
       file, you can construct a java.utils.Properties object, and pass it in
       to the RuleBase methods.</para>
 
+      <para>
+	Please also note that the "file" property must contain a full path, it is not relative to the "dir" property.
+      </para>
+
       <para>Referring to the above example, the "keys" in the properties
       are:</para>
 
