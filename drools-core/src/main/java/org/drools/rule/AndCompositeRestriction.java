@@ -47,5 +47,13 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
         }
         return true;
     }
+    
+    public Object clone() {
+        Restriction[] clone = new Restriction[ this.restrictions.length ];
+        for( int i = 0; i < clone.length; i++ ) {
+            clone[i] = (Restriction) this.restrictions[i].clone();
+        }
+        return new AndCompositeRestriction( clone );
+    }
 
 }

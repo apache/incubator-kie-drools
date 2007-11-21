@@ -1,0 +1,11 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test eval with OR"
+when
+    FactA( eval( "something".equals( field1 ) ) )
+    FactB() or FactC()
+then
+    results.add( "Should not have fired" );
+end

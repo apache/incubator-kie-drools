@@ -106,11 +106,11 @@ class LogicTransformer {
             ands = new GroupElement[]{wrapper};
         }
 
-        for( int i = 0; i < ands.length; i++ ) {
+        for ( int i = 0; i < ands.length; i++ ) {
             // fix the cloned declarations
             this.fixClonedDeclarations( ands[i] );
         }
-        
+
         return ands;
     }
 
@@ -122,43 +122,53 @@ class LogicTransformer {
      */
     private void fixClonedDeclarations(GroupElement and) {
         Stack contextStack = new Stack();
-        DeclarationScopeResolver resolver = new DeclarationScopeResolver( new Map[0], contextStack );
+        DeclarationScopeResolver resolver = new DeclarationScopeResolver( new Map[0],
+                                                                          contextStack );
 
         contextStack.push( and );
-        processElement( resolver, contextStack, and );
-        contextStack.pop( );
+        processElement( resolver,
+                        contextStack,
+                        and );
+        contextStack.pop();
     }
-    
+
     /**
      * recurse through the rule condition elements updating the declaration objecs
      * @param resolver
      * @param contextStack
      * @param element
      */
-    private void processElement( final DeclarationScopeResolver resolver, final Stack contextStack, final RuleConditionElement element ) {
-        if( element instanceof Pattern ) {
+    private void processElement(final DeclarationScopeResolver resolver,
+                                final Stack contextStack,
+                                final RuleConditionElement element) {
+        if ( element instanceof Pattern ) {
             Pattern pattern = (Pattern) element;
-            for( Iterator it = pattern.getNestedElements().iterator(); it.hasNext(); ) {
-                processElement( resolver, contextStack, (RuleConditionElement)it.next() );
+            for ( Iterator it = pattern.getNestedElements().iterator(); it.hasNext(); ) {
+                processElement( resolver,
+                                contextStack,
+                                (RuleConditionElement) it.next() );
             }
-            for( Iterator it = pattern.getConstraints().iterator(); it.hasNext(); ) {
+            for ( Iterator it = pattern.getConstraints().iterator(); it.hasNext(); ) {
                 Object next = it.next();
-                if( next instanceof Declaration ) {
+                if ( next instanceof Declaration ) {
                     continue;
                 }
                 Constraint constraint = (Constraint) next;
                 Declaration[] decl = constraint.getRequiredDeclarations();
-                for( int i = 0; i < decl.length; i++ ) {
+                for ( int i = 0; i < decl.length; i++ ) {
                     Declaration resolved = resolver.getDeclaration( decl[i].getIdentifier() );
-                    if( resolved != null && resolved != decl[i] ) {
-                        constraint.replaceDeclaration( decl[i], resolved );
+                    if ( resolved != null && resolved != decl[i] ) {
+                        constraint.replaceDeclaration( decl[i],
+                                                       resolved );
                     }
                 }
             }
         } else {
             contextStack.push( element );
-            for( Iterator it = element.getNestedElements().iterator(); it.hasNext(); ) {
-                processElement( resolver, contextStack, (RuleConditionElement)it.next() );
+            for ( Iterator it = element.getNestedElements().iterator(); it.hasNext(); ) {
+                processElement( resolver,
+                                contextStack,
+                                (RuleConditionElement) it.next() );
             }
             contextStack.pop();
         }
@@ -293,7 +303,7 @@ class LogicTransformer {
                 for ( int j = 0; j < others.length; j++ ) {
                     if ( others[j] != null ) {
                         // always add clone of them to avoid offset conflicts in declarations
-                        
+
                         // HERE IS THE MESSY PROBLEM: need to change further references to the appropriate cloned ref
                         and.getChildren().add( j,
                                                ((RuleConditionElement) others[j]).clone() );

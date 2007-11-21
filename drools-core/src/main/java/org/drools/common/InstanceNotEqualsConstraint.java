@@ -87,6 +87,10 @@ public class InstanceNotEqualsConstraint
         final InstanceNotEqualsConstraint other = (InstanceNotEqualsConstraint) object;
         return this.otherPattern.equals( other.otherPattern );
     }
+    
+    public Object clone() {
+        return new InstanceNotEqualsConstraint( this.otherPattern );
+    }
 
     public static class InstanceNotEqualsConstraintContextEntry
         implements

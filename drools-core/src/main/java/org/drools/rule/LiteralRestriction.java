@@ -29,7 +29,7 @@ public class LiteralRestriction
     implements
     Restriction {
 
-    private static final long          serialVersionUID = 400L;
+    private static final long          serialVersionUID     = 400L;
 
     private final FieldValue           field;
 
@@ -60,21 +60,24 @@ public class LiteralRestriction
                              final InternalWorkingMemory workingMemoiry) {
         return this.evaluator.evaluate( null,
                                         extractor,
-                                        object, this.field );
+                                        object,
+                                        this.field );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final Object object) {
         return this.evaluator.evaluate( null,
                                         ((LiteralContextEntry) context).getFieldExtractor(),
-                                        object, this.field );
+                                        object,
+                                        this.field );
     }
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,
                                         final ContextEntry context) {
         return this.evaluator.evaluate( null,
                                         ((LiteralContextEntry) context).getFieldExtractor(),
-                                        ((LiteralContextEntry) context).getObject(), this.field );
+                                        ((LiteralContextEntry) context).getObject(),
+                                        this.field );
     }
 
     /**
@@ -85,7 +88,7 @@ public class LiteralRestriction
     public Declaration[] getRequiredDeclarations() {
         return LiteralRestriction.requiredDeclarations;
     }
-    
+
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
     }
@@ -118,14 +121,20 @@ public class LiteralRestriction
         return this.contextEntry;
     }
 
+    public Object clone() {
+        return new LiteralRestriction( this.field,
+                                       this.evaluator,
+                                       this.contextEntry.extractor );
+    }
+
     private static class LiteralContextEntry
         implements
         ContextEntry {
 
         private static final long serialVersionUID = 2621864784428098347L;
-        public FieldExtractor extractor;
-        public Object         object;
-        public ContextEntry   next;
+        public FieldExtractor     extractor;
+        public Object             object;
+        public ContextEntry       next;
 
         public LiteralContextEntry(final FieldExtractor extractor) {
             this.extractor = extractor;

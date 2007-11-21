@@ -57,7 +57,7 @@ public class VariableRestriction
 
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
-        if ( this.declaration == oldDecl ) {
+        if ( this.declaration.equals( oldDecl ) ) {
             this.declaration = newDecl;
             this.requiredDeclarations[0] = newDecl;
             this.contextEntry.declaration = newDecl;
@@ -150,6 +150,12 @@ public class VariableRestriction
 
     public ContextEntry getContextEntry() {
         return this.contextEntry;
+    }
+
+    public Object clone() {
+        return new VariableRestriction( this.contextEntry.extractor,
+                                        (Declaration) this.declaration.clone(),
+                                        this.evaluator );
     }
 
     public static abstract class VariableContextEntry

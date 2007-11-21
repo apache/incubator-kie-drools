@@ -75,7 +75,8 @@ import org.drools.spi.Extractor;
  */
 public class Declaration
     implements
-    Serializable {
+    Serializable,
+    Cloneable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -321,6 +322,10 @@ public class Declaration
 
     protected boolean isInternalFact() {
         return internalFact;
+    }
+    
+    public Object clone() {
+        return new Declaration( this.identifier, this.extractor, this.pattern );
     }
 
 }

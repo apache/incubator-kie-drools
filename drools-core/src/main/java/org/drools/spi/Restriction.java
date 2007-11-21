@@ -9,7 +9,8 @@ import org.drools.rule.Declaration;
 
 public interface Restriction
     extends
-    Serializable {
+    Serializable,
+    Cloneable {
     Declaration[] getRequiredDeclarations();
 
     public boolean isAllowed(Extractor extractor,
@@ -23,7 +24,7 @@ public interface Restriction
                                         ContextEntry context);
 
     public ContextEntry getContextEntry();
-    
+
     /**
      * A restriction may be required to replace an old
      * declaration object by a new updated one
@@ -33,6 +34,7 @@ public interface Restriction
      */
     void replaceDeclaration(Declaration oldDecl,
                             Declaration newDecl);
-    
+
+    public Object clone();
 
 }

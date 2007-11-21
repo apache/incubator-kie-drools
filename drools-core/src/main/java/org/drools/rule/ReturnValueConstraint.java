@@ -137,5 +137,9 @@ public class ReturnValueConstraint
                                               e );
         }
     }
+    
+    public Object clone() {
+        return new ReturnValueConstraint( this.fieldExtractor, (ReturnValueRestriction) this.restriction.clone() );
+    }
 
 }

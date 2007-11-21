@@ -20,7 +20,8 @@ import org.drools.rule.Declaration;
 
 public interface Constraint
     extends
-    RuleComponent {
+    RuleComponent,
+    Cloneable {
 
     /**
      * Returns all the declarations required by the given 
@@ -39,4 +40,10 @@ public interface Constraint
      */
     void replaceDeclaration(Declaration oldDecl,
                             Declaration newDecl);
+
+    /**
+     * Clones the constraint
+     * @return
+     */
+    public Object clone();
 }
