@@ -19,13 +19,22 @@ import org.drools.rule.Package;
 import junit.framework.Assert;
 
 /**
- * This generates a large number of rules (complex ones) and then times compiling, serializing etc.
+ * This generates a large number of rules (complex ones) and then times
+ * compiling, serializing etc.
  */
 public class LargeRuleBase {
 
+	private static final int RULE_COUNT = 20000;
+
 	public static void main(String[] args) throws Exception {
-		bigBlobCompile();
-		//smallBlobCompile();
+		System.err.println(Runtime.getRuntime().freeMemory());
+
+		// bigBlobCompile();
+		realisticSmallBlobCompile();
+		System.gc();
+		Thread.sleep(5000);
+		System.err.println(Runtime.getRuntime().freeMemory());
+
 	}
 
 	private static void bigBlobCompile() throws DroolsParserException,
@@ -33,7 +42,7 @@ public class LargeRuleBase {
 		StringBuffer buf = new StringBuffer();
 		buf.append(getHeader());
 
-		for (int i = 0; i < 5000; i++) {
+		for (int i = 0; i < RULE_COUNT; i++) {
 			String name = "x" + i;
 			int status = i;
 
@@ -63,48 +72,83 @@ public class LargeRuleBase {
 
 		rb.addPackage(p);
 
-
-
 		System.err.println("Time taken rete building: "
 				+ (System.currentTimeMillis() - time));
 
 		File f = new File("foo.rulebase");
-		if (f.exists()) f.delete();
-
+		if (f.exists())
+			f.delete();
 
 		time = System.currentTimeMillis();
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
 		out.writeObject(rb);
-		out.flush(); out.close();
+		out.flush();
+		out.close();
 		System.err.println("Time taken serializing rulebase: "
 				+ (System.currentTimeMillis() - time));
 
 		time = System.currentTimeMillis();
-		ObjectInputStream in = new ObjectInputStream(new FileInputStream( f ) );
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream(f));
 		RuleBase rb_ = (RuleBase) in.readObject();
 		System.err.println("Time taken de-serializing rulebase: "
 				+ (System.currentTimeMillis() - time));
-
-
 
 	}
 
 	private static void smallBlobCompile() throws DroolsParserException,
 			IOException, Exception {
 
+		/* love you */long time = System.currentTimeMillis();
+		PackageBuilder b = new PackageBuilder();
+		b.addPackageFromDrl(new StringReader(getHeader()));
+		for (int i = 0; i < RULE_COUNT; i++) {
+			String name = "x" + i;
+			int status = i;
+
+			String r = getTemplate2(name, i, status);
+			b.addPackageFromDrl(new StringReader(r));
+			if (i % 1000 == 0)
+				System.err.println("Rule #" + i);
+
+		}
+
+		Assert.assertFalse(b.getErrors().toString(), b.hasErrors());
+
+		System.err.println("Time taken for compiling: "
+				+ (System.currentTimeMillis() - time));
+		time = System.currentTimeMillis();
+
+		Package p = b.getPackage();
+		RuleBase rb = RuleBaseFactory.newRuleBase();
+
+		rb.addPackage(p);
+
+		System.err.println("Time taken rete building: "
+				+ (System.currentTimeMillis() - time));
+	}
+
+	private static void realisticSmallBlobCompile() throws DroolsParserException,
+			IOException, Exception {
 
 		/* love you */long time = System.currentTimeMillis();
 		PackageBuilder b = new PackageBuilder();
 		b.addPackageFromDrl(new StringReader(getHeader()));
-		for (int i = 0; i < 5000; i++) {
+
+		int count = 0;
+
+		for (int i = 0; i < 2000; i++) {
+
 			String name = "x" + i;
-			int status = i;
+			for (int j = 0; j < 10; j++) {
+				count++;
+				int status = j;
+				String r = getTemplate2(name, count, status);
+				b.addPackageFromDrl(new StringReader(r));
+				if (count % 1000 == 0)
+					System.err.println("Rule #" + count);
+			}
 
-			String r = getTemplate1(name, status);
-			b.addPackageFromDrl(new StringReader(r));
 		}
-
-
 
 		Assert.assertFalse(b.getErrors().toString(), b.hasErrors());
 
@@ -146,6 +190,23 @@ public class LargeRuleBase {
 				+ "		Person( age < ( $age1 ) ) \n "
 				+ "		Person( $age2 : age -> ( $age1 == $age2 ) ) \n "
 				+ "		eval( $age1 == $age2 ) \n " + "   then \n "
+				+ "		list.add( $person ); \n "
+				+ "		$person.setStatus(\"match Person ok\"); \n " + " end \n";
+	}
+
+	private static String getTemplate2(String name, int num,  int status) {
+		return "rule 'match Person "
+				+ num
+				+ "' \n"
+				+ " dialect 'mvel' \n"
+				+ "	when \n "
+				+ " 		$person : Person(name=='"
+				+ name
+				+ "', $age1 : age ) \n "
+				+ "	    cheesery : Cheesery( cheeses contains $person, status == "
+				+ status + " ) \n "
+				+ " Person(age < " + num + ") \n"
+				+ " then \n "
 				+ "		list.add( $person ); \n "
 				+ "		$person.setStatus(\"match Person ok\"); \n " + " end \n";
 	}

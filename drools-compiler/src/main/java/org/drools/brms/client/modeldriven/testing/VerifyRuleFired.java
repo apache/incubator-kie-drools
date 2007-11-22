@@ -6,6 +6,12 @@ public class VerifyRuleFired implements Expectation {
 	public Integer expectedCount;
 
 	/**
+	 * This is a natural language explanation of this verification.
+	 * For reporting purposes.
+	 */
+	public String explanation;
+
+	/**
 	 * If this is true, then we expect it to fire at least once.
 	 * False means it should not fire at all (this is an alternative
 	 * to specifying an expected count).

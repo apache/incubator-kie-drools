@@ -11,6 +11,11 @@ public class VerifyField implements Serializable {
 	public Boolean successResult;
 
 	/**
+	 * This is a natural language explanation of the outcome for reporting purposes.
+	 */
+	public String explanation;
+
+	/**
 	 * Operator is generally "==" or "!="  - an MVEL operator.
 	 */
 	public String operator = "==";
