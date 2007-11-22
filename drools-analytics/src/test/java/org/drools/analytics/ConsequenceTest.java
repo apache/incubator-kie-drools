@@ -27,7 +27,7 @@ public class ConsequenceTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"No action - possibly commented out"));
 
-		AnalyticsDataFactory.getAnalyticsData();
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("ConsequenceTest.drl"));
 
