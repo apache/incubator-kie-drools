@@ -6,6 +6,7 @@ import org.drools.analytics.components.AnalyticsClass;
 import org.drools.analytics.components.AnalyticsEvalDescr;
 import org.drools.analytics.components.AnalyticsPredicateDescr;
 import org.drools.analytics.components.AnalyticsRule;
+import org.drools.analytics.components.Consquence;
 import org.drools.analytics.components.Constraint;
 import org.drools.analytics.components.Field;
 import org.drools.analytics.components.FieldClassLink;
@@ -22,6 +23,8 @@ import org.drools.analytics.components.Variable;
  * @author Toni Rikkola
  */
 public interface AnalyticsData {
+
+	public void save(Consquence consequence);
 
 	public void save(AnalyticsClass clazz);
 

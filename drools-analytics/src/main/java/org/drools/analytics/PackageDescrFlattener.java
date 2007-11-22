@@ -15,6 +15,7 @@ import org.drools.analytics.components.AnalyticsFunctionCallDescr;
 import org.drools.analytics.components.AnalyticsMethodAccessDescr;
 import org.drools.analytics.components.AnalyticsPredicateDescr;
 import org.drools.analytics.components.AnalyticsRule;
+import org.drools.analytics.components.Consquence;
 import org.drools.analytics.components.Constraint;
 import org.drools.analytics.components.Field;
 import org.drools.analytics.components.LiteralRestriction;
@@ -25,6 +26,7 @@ import org.drools.analytics.components.QualifiedIdentifierRestriction;
 import org.drools.analytics.components.ReturnValueRestriction;
 import org.drools.analytics.components.RulePackage;
 import org.drools.analytics.components.RulePossibility;
+import org.drools.analytics.components.TextConsequence;
 import org.drools.analytics.components.Variable;
 import org.drools.analytics.components.VariableRestriction;
 import org.drools.analytics.dao.AnalyticsData;
@@ -197,7 +199,7 @@ public class PackageDescrFlattener {
 	}
 
 	/**
-	 * End
+	 * End leaf
 	 * 
 	 * @param descr
 	 * @return
@@ -214,7 +216,7 @@ public class PackageDescrFlattener {
 	}
 
 	/**
-	 * End
+	 * End leaf
 	 * 
 	 * @param descr
 	 * @return
@@ -237,7 +239,7 @@ public class PackageDescrFlattener {
 	}
 
 	/**
-	 * End
+	 * End leaf
 	 * 
 	 * @param descr
 	 * @return
@@ -260,7 +262,7 @@ public class PackageDescrFlattener {
 	}
 
 	/**
-	 * End
+	 * End leaf
 	 * 
 	 * @param descr
 	 * @return
@@ -321,7 +323,7 @@ public class PackageDescrFlattener {
 	}
 
 	/**
-	 * End
+	 * End leaf
 	 * 
 	 * @param descr
 	 */
@@ -337,7 +339,7 @@ public class PackageDescrFlattener {
 	}
 
 	/**
-	 * End
+	 * End leaf
 	 * 
 	 * @param descr
 	 */
@@ -372,9 +374,11 @@ public class PackageDescrFlattener {
 		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		AnalyticsRule rule = new AnalyticsRule();
+		currentRule = rule;
+
 		rule.setRuleName(descr.getName());
 		rule.setRuleSalience(descr.getSalience());
-		rule.setConsequence(descr.getConsequence().toString());
+		rule.setConsequence(flattenConsequence(rule, descr.getConsequence()));
 		rule.setLineNumber(descr.getLine());
 		rule.setPackageId(currentPackage.getId());
 		rule.setParent(parent);
@@ -382,11 +386,57 @@ public class PackageDescrFlattener {
 		data.save(rule);
 
 		currentPackage.getRules().add(rule);
-		currentRule = rule;
 
 		solvers.startRuleSolver(rule);
 		flatten(descr.getLhs(), rule, 0);
 		solvers.endRuleSolver();
+	}
+
+	/**
+	 * Creates analytics object from rule consequence. Currently only supports
+	 * text based consequences.
+	 * 
+	 * @param o
+	 *            Consequence object.
+	 * @return Analytics object that implements the Consequence interface.
+	 */
+	private Consquence flattenConsequence(AnalyticsComponent parent, Object o) {
+		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+
+		TextConsequence consequence = new TextConsequence();
+
+		String text = o.toString();
+
+		/*
+		 * Strip all comments out of the code.
+		 */
+		StringBuffer buffer = new StringBuffer(text);
+		int commentIndex = buffer.indexOf("//");
+
+		while (commentIndex != -1) {
+			buffer = buffer.delete(commentIndex, buffer.indexOf("\n",
+					commentIndex));
+			commentIndex = buffer.indexOf("//");
+		}
+
+		text = buffer.toString();
+
+		/*
+		 * Strip all useless characters out of the code.
+		 */
+		text = text.replaceAll("\n", "");
+		text = text.replaceAll("\r", "");
+		text = text.replaceAll("\t", "");
+		text = text.replaceAll(" ", "");
+
+		consequence.setText(text);
+		consequence.setRuleId(currentRule.getId());
+		consequence.setRuleName(currentRule.getRuleName());
+		consequence.setParent(parent);
+
+		data.save(consequence);
+
+		return consequence;
 	}
 
 	private void flatten(OrDescr descr, AnalyticsComponent parent,

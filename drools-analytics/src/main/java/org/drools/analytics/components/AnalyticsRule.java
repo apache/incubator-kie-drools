@@ -12,7 +12,7 @@ public class AnalyticsRule extends AnalyticsComponent implements Cause {
 
 	private String ruleSalience;
 	private String ruleAgendaGroup;
-	private String consequence;
+	private Consquence consequence;
 	private int lineNumber;
 
 	private int packageId;
@@ -47,11 +47,11 @@ public class AnalyticsRule extends AnalyticsComponent implements Cause {
 		this.ruleSalience = salience;
 	}
 
-	public String getConsequence() {
+	public Consquence getConsequence() {
 		return consequence;
 	}
 
-	public void setConsequence(String consequence) {
+	public void setConsequence(Consquence consequence) {
 		this.consequence = consequence;
 	}
 

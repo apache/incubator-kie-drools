@@ -15,7 +15,7 @@ rule "Has a consequence 1"
 		System.out.println("Test");
 end
 
-rule "Has consequence 2"
+rule "Missing consequence 2"
 	when
 		Foo()
 	then
