@@ -40,6 +40,7 @@ public class ScenarioRunner {
 
 	final InternalWorkingMemory workingMemory;
 
+
 	/**
 	 * @param scenario
 	 *            The scenario to run.
@@ -157,16 +158,38 @@ public class ScenarioRunner {
 	}
 
 	void verify(VerifyRuleFired assertion, Map<String, Integer> firingCounts) {
+
 		assertion.actualResult = firingCounts.containsKey(assertion.ruleName) ? firingCounts
 				.get(assertion.ruleName)
 				: 0;
 		if (assertion.expectedFire != null) {
-			assertion.successResult = assertion.expectedFire ? assertion.actualResult > 0
-					: assertion.actualResult == 0;
+			if (assertion.expectedFire) {
+				if (assertion.actualResult > 0) {
+					assertion.successResult = true;
+					assertion.explanation = "Rule [" + assertion.ruleName + "] was actived " + assertion.actualResult + " times.";
+				} else {
+					assertion.successResult = false;
+					assertion.explanation = "Rule [" + assertion.ruleName + "] was not activated. Expected it to be activated.";
+				}
+			} else {
+				if (assertion.actualResult == 0) {
+					assertion.successResult = true;
+					assertion.explanation = "Rule [" + assertion.ruleName + "] was not activated.";
+				} else {
+					assertion.successResult = false;
+					assertion.explanation = "Rule [" + assertion.ruleName + "] was activated " + assertion.actualResult + " times, but expected none.";
+				}
+			}
 		}
+
 		if (assertion.expectedCount != null) {
-			assertion.successResult = assertion.actualResult
-					.equals(assertion.expectedCount);
+			if (assertion.actualResult.equals(assertion.expectedCount)) {
+				assertion.successResult = true;
+				assertion.explanation = "Rule [" + assertion.ruleName + "] activated " + assertion.actualResult + " times.";
+			} else {
+				assertion.successResult = false;
+				assertion.explanation = "Rule [" + assertion.ruleName + "] activated " + assertion.actualResult + " times. Expected " + assertion.expectedCount + " times.";
+			}
 		}
 	}
 
@@ -179,11 +202,25 @@ public class ScenarioRunner {
 			Map<String, Object> st = new HashMap<String, Object>();
 			st.put("__fact__", fact);
 			st.put("__expected__", fld.expected);
+
 			fld.successResult = (Boolean) eval("__fact__." + fld.fieldName
 					+ " " + fld.operator  + " __expected__", st);
+
+
 			if (!fld.successResult) {
 				fld.actualResult = eval("__fact__." + fld.fieldName, st).toString();
+				if (fld.operator.equals("==")) {
+					fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was [" + fld.actualResult
+										+ "] expected [" + fld.actualResult + "].";
+				} else {
+					fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was not expected to be [" + fld.actualResult
+					+ "].";
+				}
+			} else {
+
+				fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was [" + fld.expected + "].";
 			}
+
 		}
 	}
 
@@ -207,5 +244,6 @@ public class ScenarioRunner {
 		}
 		return factObject;
 	}
+
 
 }

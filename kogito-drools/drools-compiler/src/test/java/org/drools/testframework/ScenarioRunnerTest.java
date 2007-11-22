@@ -253,6 +253,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		runner.verify(v, firingCounts);
 		assertFalse(v.successResult);
 		assertEquals(2, v.actualResult.intValue());
+		assertNotNull(v.explanation);
 
 		v = new VerifyRuleFired();
 		v.ruleName = "foo";
@@ -595,6 +596,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertFalse(((VerifyField)vf.fieldValues.get(0)).successResult);
         assertEquals("XXX", ((VerifyField)vf.fieldValues.get(0)).expected);
         assertEquals("rule1",((VerifyField) vf.fieldValues.get(0)).actualResult);
+        assertNotNull(((VerifyField) vf.fieldValues.get(0)).explanation);
 
         VerifyRuleFired vr = (VerifyRuleFired) assertions[4];
         assertFalse(vr.successResult);
