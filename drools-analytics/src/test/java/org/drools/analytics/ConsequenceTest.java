@@ -20,16 +20,18 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
  */
 public class ConsequenceTest extends TestBase {
 
-	public void testMissingConsiquence() throws Exception {
+	public void testMissingConsequence() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Consequence.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"No action - possibly commented out"));
 
+		AnalyticsDataFactory.getAnalyticsData();
 		Collection<? extends Object> testData = getTestData(this.getClass()
 				.getResourceAsStream("ConsequenceTest.drl"));
 
+		AnalyticsDataFactory.clearAnalyticsResult();
 		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
