@@ -1,4 +1,4 @@
-package org.drools.analytics;
+package org.drools.analytics.redundancy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
+import org.drools.analytics.TestBase;
 import org.drools.analytics.components.AnalyticsComponent;
 import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.components.LiteralRestriction;
@@ -36,15 +37,14 @@ public class RedundancyTest extends TestBase {
 
 	public void fixmetestPartOfRulePossibilityRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("redundancy/Possibilities.drl"));
+				.getResourceAsStream("Possibilities.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find part of redundant RulePossibility combination"));
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsResult result = AnalyticsDataFactory
-				.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		String ruleName1 = "Rule 1";
@@ -116,15 +116,14 @@ public class RedundancyTest extends TestBase {
 
 	public void fixmetestPossibilityRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("redundancy/Possibilities.drl"));
+				.getResourceAsStream("Possibilities.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Possibilities"));
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsResult result = AnalyticsDataFactory
-				.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		String ruleName1 = "Rule 1";
@@ -159,15 +158,14 @@ public class RedundancyTest extends TestBase {
 
 	public void fixmetestPartOfPatternPossibilityRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("redundancy/Possibilities.drl"));
+				.getResourceAsStream("Possibilities.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find part of redundant PatternPossibility combination"));
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsResult result = AnalyticsDataFactory
-				.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		String ruleName1 = "Rule 1";
@@ -273,7 +271,7 @@ public class RedundancyTest extends TestBase {
 
 	public void fixmetestPatternRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("redundancy/Patterns.drl"));
+				.getResourceAsStream("Patterns.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Pattern shells"));
@@ -281,8 +279,7 @@ public class RedundancyTest extends TestBase {
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("PatternRedundancyTest.drl"));
 
-		AnalyticsResult result = AnalyticsDataFactory
-				.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
@@ -312,9 +309,10 @@ public class RedundancyTest extends TestBase {
 		}
 	}
 
-	public void fixmetestAnalyticsLiteralRestrictionRedundancy() throws Exception {
+	public void fixmetestAnalyticsLiteralRestrictionRedundancy()
+			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("redundancy/Restrictions.drl"));
+				.getResourceAsStream("Restrictions.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant LiteralRestriction"));
@@ -322,8 +320,7 @@ public class RedundancyTest extends TestBase {
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("RedundancyLiteralRestrictionTest.drl"));
 
-		AnalyticsResult result = AnalyticsDataFactory
-				.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
@@ -352,7 +349,7 @@ public class RedundancyTest extends TestBase {
 	public void fixmetestAnalyticsVariableRestrictionRedundancy()
 			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("redundancy/Restrictions.drl"));
+				.getResourceAsStream("Restrictions.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant VariableRestriction"));
@@ -360,8 +357,7 @@ public class RedundancyTest extends TestBase {
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("SubsumptionVariableRestrictionTest.drl"));
 
-		AnalyticsResult result = AnalyticsDataFactory
-				.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
