@@ -12,6 +12,7 @@ import org.drools.analytics.components.AnalyticsClass;
 import org.drools.analytics.components.AnalyticsEvalDescr;
 import org.drools.analytics.components.AnalyticsPredicateDescr;
 import org.drools.analytics.components.AnalyticsRule;
+import org.drools.analytics.components.Consquence;
 import org.drools.analytics.components.Constraint;
 import org.drools.analytics.components.Field;
 import org.drools.analytics.components.FieldClassLink;
@@ -49,6 +50,7 @@ class AnalyticsDataMaps implements AnalyticsData {
 	private Map<Integer, OperatorDescr> operatorsById = new TreeMap<Integer, OperatorDescr>();
 	private Map<Integer, AnalyticsEvalDescr> evalsById = new TreeMap<Integer, AnalyticsEvalDescr>();
 	private Map<Integer, AnalyticsPredicateDescr> predicatesById = new TreeMap<Integer, AnalyticsPredicateDescr>();
+	private Map<Integer, Consquence> consiquencesById = new TreeMap<Integer, Consquence>();
 
 	private Map<String, Variable> variablesByRuleAndVariableName = new TreeMap<String, Variable>();
 
@@ -159,6 +161,7 @@ class AnalyticsDataMaps implements AnalyticsData {
 		objects.addAll(operatorsById.values());
 		objects.addAll(evalsById.values());
 		objects.addAll(predicatesById.values());
+		objects.addAll(consiquencesById.values());
 
 		objects.addAll(patternPossibilitiesById.values());
 		objects.addAll(rulePossibilitiesById.values());
@@ -230,5 +233,9 @@ class AnalyticsDataMaps implements AnalyticsData {
 
 	public void save(AnalyticsPredicateDescr predicate) {
 		predicatesById.put(predicate.getId(), predicate);
+	}
+
+	public void save(Consquence consequence) {
+		consiquencesById.put(consequence.getId(), consequence);
 	}
 }

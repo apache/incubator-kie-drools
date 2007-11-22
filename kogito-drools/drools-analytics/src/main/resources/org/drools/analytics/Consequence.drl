@@ -3,6 +3,7 @@ package org.drools.analytics.consequence
 
 #list any import classes here.
 import org.drools.analytics.components.AnalyticsRule;  
+import org.drools.analytics.components.TextConsequence;  
 import org.drools.analytics.report.components.AnalyticsMessage;  
 import org.drools.analytics.dao.AnalyticsResult;
 
@@ -12,8 +13,12 @@ global AnalyticsResult result;
 
 rule "No action - possibly commented out"
 	when
+		$c :TextConsequence(
+			( text == null || text matches "" )
+		)
+	
 		$r :AnalyticsRule(
-			( consequence == null || consequence matches "" )
+			id == $c.ruleId
 		)
 	then 
 		result.save( new AnalyticsMessage( 

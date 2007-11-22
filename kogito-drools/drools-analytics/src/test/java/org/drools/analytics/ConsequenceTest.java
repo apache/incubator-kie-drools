@@ -46,12 +46,11 @@ public class ConsequenceTest extends TestBase {
 						.getFaulty();
 				rulesThatHadErrors.add(rule.getRuleName());
 			}
-			// System.out.println(o);
 		}
 
 		assertFalse(rulesThatHadErrors.contains("Has a consequence 1"));
-		assertFalse(rulesThatHadErrors.contains("Has a consequence 2"));
 		assertTrue(rulesThatHadErrors.remove("Missing consequence 1"));
+		assertTrue(rulesThatHadErrors.remove("Missing consequence 2"));
 
 		if (!rulesThatHadErrors.isEmpty()) {
 			for (String string : rulesThatHadErrors) {
