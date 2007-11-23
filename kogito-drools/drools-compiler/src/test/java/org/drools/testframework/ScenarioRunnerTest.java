@@ -433,7 +433,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
 
-        assertEquals(3, executionTrace.numberOfRulesFired);
+        assertEquals(3, executionTrace.numberOfRulesFired.intValue());
 
         assertSame(run.scenario, sc);
 
@@ -446,7 +446,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 
         assertTrue((new Date()).after(sc.lastRunResult));
-        assertTrue(executionTrace.executionTimeResult != -1);
+        assertTrue(executionTrace.executionTimeResult != null);
 
 	}
 

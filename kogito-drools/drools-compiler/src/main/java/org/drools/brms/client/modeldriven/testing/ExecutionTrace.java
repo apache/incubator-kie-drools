@@ -26,12 +26,12 @@ public class ExecutionTrace implements Fixture {
 	/**
 	 * The time taken for execution.
 	 */
-	public long executionTimeResult = -1;
+	public Long executionTimeResult;
 
 	/**
 	 * This is pretty obvious really. The total firing count of all rules.
 	 */
-	public long numberOfRulesFired;
+	public Long numberOfRulesFired;
 
 	public ExecutionTrace() {}
 
