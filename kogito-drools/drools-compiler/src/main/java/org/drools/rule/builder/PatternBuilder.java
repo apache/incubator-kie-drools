@@ -19,6 +19,7 @@ package org.drools.rule.builder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
@@ -26,7 +27,7 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.compiler.Dialect;
-import org.drools.compiler.RuleError;
+import org.drools.compiler.DescrBuildError;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
@@ -105,7 +106,7 @@ public class PatternBuilder
         final PatternDescr patternDescr = (PatternDescr) descr;
 
         if ( patternDescr.getObjectType() == null || patternDescr.getObjectType().equals( "" ) ) {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     patternDescr,
                                                     null,
                                                     "ObjectType not correctly defined" ) );
@@ -123,7 +124,7 @@ public class PatternBuilder
                 final Class userProvidedClass = context.getDialect().getTypeResolver().resolveType( patternDescr.getObjectType() );
                 objectType = new ClassObjectType( userProvidedClass );
             } catch ( final ClassNotFoundException e ) {
-                context.getErrors().add( new RuleError( context.getRule(),
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                         patternDescr,
                                                         null,
                                                         "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
@@ -136,7 +137,7 @@ public class PatternBuilder
 
             if ( context.getDeclarationResolver().isDuplicated( patternDescr.getIdentifier() ) ) {
                 // This declaration already  exists, so throw an Exception
-                context.getErrors().add( new RuleError( context.getRule(),
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                         patternDescr,
                                                         null,
                                                         "Duplicate declaration for variable '" + patternDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
@@ -226,7 +227,7 @@ public class PatternBuilder
                 container.addConstraint( or );
             }
         } else {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     (BaseDescr) constraint,
                                                     null,
                                                     "This is a bug: unable to build constraint descriptor: '" + constraint + "' in rule '" + context.getRule().getName() + "'" ) );
@@ -283,7 +284,7 @@ public class PatternBuilder
                 // after building the predicate, we are done, so return
                 return;
             } else {
-                context.getErrors().add( new RuleError( context.getRule(),
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                         fieldConstraintDescr,
                                                         null,
                                                         "Unable to create Field Extractor for '" + fieldName + "' of '"+pattern.getObjectType().toString()+"' in rule '"+context.getRule().getName()+"'" ) );
@@ -316,7 +317,7 @@ public class PatternBuilder
             constraint = new ReturnValueConstraint( extractor,
                                                     (ReturnValueRestriction) restriction );
         } else {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     fieldConstraintDescr,
                                                     null,
                                                     "This is a bug: Unkown restriction type '" + restriction.getClass() + "' for pattern '"+pattern.getObjectType().toString()+"' in rule '"+context.getRule().getName()+"'" ) );
@@ -381,7 +382,7 @@ public class PatternBuilder
                                                           fieldConstraintDescr,
                                                           restrictionDescr );
                 if( restrictions[index] == null ) {
-                    context.getErrors().add( new RuleError( context.getRule(),
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                             fieldConstraintDescr,
                                                             null,
                                                             "Unable to create restriction '" + restrictionDescr.toString() + "' for field '"+ fieldConstraintDescr.getFieldName() +"' in the rule '" + context.getRule().getName() + "'" ) );
@@ -397,7 +398,7 @@ public class PatternBuilder
             } else if ( top.getConnective() == RestrictionConnectiveDescr.OR ) {
                 composite = new OrCompositeRestriction( restrictions );
             } else {
-                context.getErrors().add( new RuleError( context.getRule(),
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                         fieldConstraintDescr,
                                                         null,
                                                         "This is a bug: Impossible to create a composite restriction for connective: " + top.getConnective()+ "' for field '"+ fieldConstraintDescr.getFieldName() +"' in the rule '" + context.getRule().getName() + "'" ) );
@@ -407,7 +408,7 @@ public class PatternBuilder
         } else if ( restrictions.length == 1 ) {
             return restrictions[0];
         }
-        context.getErrors().add( new RuleError( context.getRule(),
+        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                 fieldConstraintDescr,
                                                 null,
                                                 "This is a bug: trying to create a restriction for an empty restriction list for field '"+ fieldConstraintDescr.getFieldName() +"' in the rule '" + context.getRule().getName() + "'" ) );
@@ -420,7 +421,7 @@ public class PatternBuilder
 
         if ( context.getDeclarationResolver().isDuplicated( fieldBindingDescr.getIdentifier() ) ) {
             // This declaration already  exists, so throw an Exception
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     fieldBindingDescr,
                                                     null,
                                                     "Duplicate declaration for variable '" + fieldBindingDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
@@ -447,7 +448,8 @@ public class PatternBuilder
 
         final Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                         predicateDescr,
-                                                                                        predicateDescr.getContent() );
+                                                                                        predicateDescr.getContent(),
+                                                                                        new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
 
         if ( analysis == null ) {
             // something bad happened
@@ -594,7 +596,7 @@ public class PatternBuilder
                                                  final FieldConstraintDescr fieldConstraintDescr,
                                                  final VariableRestrictionDescr variableRestrictionDescr) {
         if ( variableRestrictionDescr.getIdentifier() == null || variableRestrictionDescr.getIdentifier().equals( "" ) ) {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     variableRestrictionDescr,
                                                     null,
                                                     "Identifier not defined for binding field '" + fieldConstraintDescr.getFieldName() + "'" ) );
@@ -612,7 +614,7 @@ public class PatternBuilder
             if ( implicit != null ) {
                 declaration = implicit;
             } else {
-                context.getErrors().add( new RuleError( context.getRule(),
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                         variableRestrictionDescr,
                                                         null,
                                                         "Unable to return Declaration for identifier '" + variableRestrictionDescr.getIdentifier() + "'" ) );
@@ -642,7 +644,7 @@ public class PatternBuilder
             field = FieldFactory.getFieldValue( literalRestrictionDescr.getValue(),
                                                 extractor.getValueType() );
         } catch ( final Exception e ) {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     literalRestrictionDescr,
                                                     e,
                                                     "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
@@ -689,7 +691,7 @@ public class PatternBuilder
                                                                  decl.getPattern() );
 
                     } else {
-                        context.getErrors().add( new RuleError( context.getRule(),
+                        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                 qiRestrictionDescr,
                                                                 "",
                                                                 "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
@@ -724,7 +726,7 @@ public class PatternBuilder
         } catch ( final ClassNotFoundException e ) {
             // nothing to do, as it is not a class name with static field
         } catch ( final Exception e ) {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     qiRestrictionDescr,
                                                     e,
                                                     "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + qiRestrictionDescr.getText() + "'" ) );
@@ -754,7 +756,8 @@ public class PatternBuilder
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   returnValueRestrictionDescr,
-                                                                                  returnValueRestrictionDescr.getContent() );
+                                                                                  returnValueRestrictionDescr.getContent(),
+                                                                                  new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
         final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final List tupleDeclarations = new ArrayList();
@@ -822,7 +825,7 @@ public class PatternBuilder
                                                                                              classloader );
             } catch ( final RuntimeDroolsException e ) {
                 if ( reportError ) {
-                    context.getErrors().add( new RuleError( context.getRule(),
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                             descr,
                                                             e,
                                                             "Unable to create Field Extractor for '" + fieldName + "'" ) );
@@ -841,7 +844,7 @@ public class PatternBuilder
         final Evaluator evaluator = valueType.getEvaluator( Operator.determineOperator( evaluatorString ) );
 
         if ( evaluator == null ) {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     descr,
                                                     null,
                                                     "Unable to determine the Evaluator for  '" + valueType + "' and '" + evaluatorString + "'" ) );

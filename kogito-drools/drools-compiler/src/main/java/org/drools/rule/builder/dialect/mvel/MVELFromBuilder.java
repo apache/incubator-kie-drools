@@ -17,11 +17,12 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.drools.base.dataproviders.MVELDataProvider;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.compiler.Dialect;
-import org.drools.compiler.RuleError;
+import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
@@ -70,7 +71,8 @@ public class MVELFromBuilder
             String text = (String) accessor.toString();
             Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                          descr,
-                                                                         text );
+                                                                         text,
+                                                                         new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
 
             final Serializable expr = dialect.compile( text,
                                                        analysis,
@@ -81,10 +83,10 @@ public class MVELFromBuilder
             dataProvider = new MVELDataProvider( expr,
                                                  factory );
         } catch ( final Exception e ) {
-            context.getErrors().add( new RuleError( context.getRule(),
-                                                    fromDescr,
-                                                    null,
-                                                    "Unable to build expression for 'from' node '" + accessor + "'" ) );
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                          fromDescr,
+                                                          null,
+                                                          "Unable to build expression for 'from' node '" + accessor + "'" ) );
             return null;
         }
 

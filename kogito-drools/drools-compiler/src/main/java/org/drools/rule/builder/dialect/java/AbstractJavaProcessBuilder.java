@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
+import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.util.StringUtils;
@@ -15,16 +16,16 @@ import org.mvel.MVELTemplateRegistry;
 import org.mvel.TemplateInterpreter;
 import org.mvel.TemplateRegistry;
 
-public class AbstractJavaBuilder {
+public class AbstractJavaProcessBuilder {
 
     protected static final TemplateRegistry RULE_REGISTRY    = new MVELTemplateRegistry();
     protected static final TemplateRegistry INVOKER_REGISTRY = new MVELTemplateRegistry();
 
     static {
-        RULE_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaBuilder.class.getResourceAsStream( "javaRule.mvel" ) ) );
-        INVOKER_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaBuilder.class.getResourceAsStream( "javaInvokers.mvel" ) ) );
+        RULE_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaProcessBuilder.class.getResourceAsStream( "javaRule.mvel" ) ) );
+        INVOKER_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaProcessBuilder.class.getResourceAsStream( "javaInvokers.mvel" ) ) );
         MVELDialect.setLanguageLevel( 4 );
-        
+
     }
 
     public TemplateRegistry getRuleTemplateRegistry() {
@@ -37,9 +38,7 @@ public class AbstractJavaBuilder {
 
     public Map createVariableContext(final String className,
                                      final String text,
-                                     final RuleBuildContext context,
-                                     final Declaration[] declarations,
-                                     final Declaration[] localDeclarations,
+                                     final ProcessBuildContext context,
                                      final String[] globals) {
         final Map map = new HashMap();
 
@@ -49,11 +48,11 @@ public class AbstractJavaBuilder {
         map.put( "package",
                  context.getPkg().getName() );
 
-        map.put( "ruleClassName",
-                 StringUtils.ucFirst( context.getRuleDescr().getClassName() ) );
+        map.put( "processClassName",
+                 StringUtils.ucFirst( context.getProcessDescr().getClassName() ) );
 
         map.put( "invokerClassName",
-                 context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
+                 context.getProcessDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
 
         if ( text != null ) {
             map.put( "text",
@@ -61,30 +60,6 @@ public class AbstractJavaBuilder {
 
             map.put( "hashCode",
                      new Integer( text.hashCode() ) );
-        }
-
-        final String[] declarationTypes = new String[declarations.length];
-        for ( int i = 0, size = declarations.length; i < size; i++ ) {
-            declarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( declarations[i] );
-        }
-
-        map.put( "declarations",
-                 declarations );
-
-        map.put( "declarationTypes",
-                 declarationTypes );
-
-        if ( localDeclarations != null ) {
-            final String[] localDeclarationTypes = new String[localDeclarations.length];
-            for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
-                localDeclarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( localDeclarations[i] );
-            }
-
-            map.put( "localDeclarations",
-                     localDeclarations );
-
-            map.put( "localDeclarationTypes",
-                     localDeclarationTypes );
         }
 
         final List globalTypes = new ArrayList( globals.length );
@@ -104,7 +79,7 @@ public class AbstractJavaBuilder {
 
     public void generatTemplates(final String ruleTemplate,
                                  final String invokerTemplate,
-                                 final RuleBuildContext context,
+                                 final ProcessBuildContext context,
                                  final String className,
                                  final Map vars,
                                  final Object invokerLookup,
@@ -116,7 +91,7 @@ public class AbstractJavaBuilder {
                                                              registry ) );
 
         registry = getInvokerTemplateRegistry();
-        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
+        final String invokerClassName = context.getPkg().getName() + "." + context.getProcessDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
         context.getInvokers().put( invokerClassName,
                                    TemplateInterpreter.parse( registry.getTemplate( invokerTemplate ),
                                                               null,

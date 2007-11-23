@@ -7,7 +7,7 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.extractors.ArrayExtractor;
-import org.drools.compiler.RuleError;
+import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Pattern;
@@ -25,7 +25,9 @@ public class QueryBuilder {
                                              objectType,
                                              null );
         ClassLoader classloader = context.getPkg().getPackageCompilationData().getClassLoader();
-        final FieldExtractor extractor = context.getDialect().getClassFieldExtractorCache().getExtractor(  DroolsQuery.class, "name",  classloader );        
+        final FieldExtractor extractor = context.getDialect().getClassFieldExtractorCache().getExtractor( DroolsQuery.class,
+                                                                                                          "name",
+                                                                                                          classloader );
 
         final FieldValue field = FieldFactory.getFieldValue( queryDescr.getName(),
                                                              ValueType.STRING_TYPE );
@@ -42,27 +44,27 @@ public class QueryBuilder {
                                                                                               "arguments",
                                                                                               classloader );
         } catch ( final RuntimeDroolsException e ) {
-            context.getErrors().add( new RuleError( context.getRule(),
-                                                    queryDescr,
-                                                    e,
-                                                    "Unable to create Field Extractor for 'getArguments'" ) );
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                          queryDescr,
+                                                          e,
+                                                          "Unable to create Field Extractor for 'getArguments'" ) );
         }
 
         String[] params = queryDescr.getParameters();
         String[] types = queryDescr.getParameterTypes();
         int i = 0;
         try {
-        for ( i = 0; i < params.length; i++ ) {
-            pattern.addDeclaration( params[i],
-                                    new ArrayExtractor( arrayExtractor,
-                                                        i,
-                                                        context.getDialect().getTypeResolver().resolveType( types[i] ) ) );
-        }
+            for ( i = 0; i < params.length; i++ ) {
+                pattern.addDeclaration( params[i],
+                                        new ArrayExtractor( arrayExtractor,
+                                                            i,
+                                                            context.getDialect().getTypeResolver().resolveType( types[i] ) ) );
+            }
         } catch ( ClassNotFoundException e ) {
-            context.getErrors().add( new RuleError( context.getRule(),
-                                                    queryDescr,
-                                                    e,
-                                                    "Unable to resolve type '" + types[i] + " for parameter" + params[i] ) );            
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                          queryDescr,
+                                                          e,
+                                                          "Unable to resolve type '" + types[i] + " for parameter" + params[i] ) );
         }
         return pattern;
     }

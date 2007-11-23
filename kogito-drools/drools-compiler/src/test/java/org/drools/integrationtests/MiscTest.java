@@ -86,7 +86,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
-import org.drools.compiler.RuleError;
+import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
@@ -1201,7 +1201,7 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         final DroolsError err = builder.getErrors().getErrors()[0];
-        final RuleError ruleErr = (RuleError) err;
+        final DescrBuildError ruleErr = (DescrBuildError) err;
         assertNotNull( ruleErr.getDescr() );
         assertTrue( ruleErr.getLine() != -1 );
 
@@ -1219,7 +1219,7 @@ public class MiscTest extends TestCase {
 
         // now check the RHS, not being too specific yet, as long as it has the
         // rules line number, not zero
-        final RuleError rhs = (RuleError) builder.getErrors().getErrors()[2];
+        final DescrBuildError rhs = (DescrBuildError) builder.getErrors().getErrors()[2];
         assertTrue( rhs.getLine() > 7 ); // not being too specific - may need to
         // change this when we rework the error
         // reporting

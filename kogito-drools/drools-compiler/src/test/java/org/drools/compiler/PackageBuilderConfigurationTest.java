@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -23,11 +24,14 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
+import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
+import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
+import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -301,16 +305,18 @@ public class PackageBuilderConfigurationTest extends TestCase {
             return this.rule;
         }
 
-        public AnalysisResult analyzeBlock(RuleBuildContext context,
+        public AnalysisResult analyzeBlock(PackageBuildContext context,
                                            BaseDescr descr,
-                                           String text) {
+                                           String text,
+                                           Set[] availableIdentifiers) {
             // TODO Auto-generated method stub
             return null;
         }
 
-        public AnalysisResult analyzeExpression(RuleBuildContext context,
+        public AnalysisResult analyzeExpression(PackageBuildContext context,
                                                 BaseDescr descr,
-                                                Object content) {
+                                                Object content,
+                                                Set[] availableIdentifiers) {
             // TODO Auto-generated method stub
             return null;
         }
@@ -339,12 +345,10 @@ public class PackageBuilderConfigurationTest extends TestCase {
         }
 
         public Map getBuilders() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public ClassFieldExtractorCache getClassFieldExtractorCache() {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -357,54 +361,52 @@ public class PackageBuilderConfigurationTest extends TestCase {
         }
 
         public String getExpressionDialectName() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public FromBuilder getFromBuilder() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public PatternBuilder getPatternBuilder() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public PredicateBuilder getPredicateBuilder() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public QueryBuilder getQueryBuilder() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public List getResults() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public ReturnValueBuilder getReturnValueBuilder() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public RuleClassBuilder getRuleClassBuilder() {
-            // TODO Auto-generated method stub
             return null;
         }
+        
+        public ProcessClassBuilder getProcessClassBuilder() {
+            return null;
+        }        
 
         public SalienceBuilder getSalienceBuilder() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public TypeResolver getTypeResolver() {
-            // TODO Auto-generated method stub
             return null;
         }
+        
+        public ActionBuilder getActionBuilder() {
+            return null;
+        }        
 
         public String getId() {
             return "mock";

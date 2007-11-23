@@ -34,14 +34,12 @@ public class JavaRuleClassBuilder
     /* (non-Javadoc)
      * @see org.drools.rule.builder.dialect.java.RuleClassBuilder#buildRule(org.drools.rule.builder.BuildContext, org.drools.rule.builder.dialect.java.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
-    public void buildRule(final RuleBuildContext context) {
-        final JavaDialect dialect = (JavaDialect) context.getDialect();
-
+    public String  buildRule(final RuleBuildContext context) {
         // If there is no compiled code, return
         if ( context.getMethods().isEmpty() ) {
-            dialect.setRuleClass( null );
-            return;
+            return null;
         }
+        
         final String lineSeparator = System.getProperty( "line.separator" );
 
         final StringBuffer buffer = new StringBuffer();
@@ -71,6 +69,6 @@ public class JavaRuleClassBuilder
         buffer.append( context.getMethods().get( context.getMethods().size() - 1 ) + lineSeparator );
         buffer.append( "}" );
 
-        dialect.setRuleClass( buffer.toString() );
+        return buffer.toString();
     }
 }

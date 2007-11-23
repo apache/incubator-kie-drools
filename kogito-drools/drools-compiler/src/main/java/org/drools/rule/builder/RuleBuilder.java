@@ -79,10 +79,5 @@ public class RuleBuilder {
             // It wasn't an integer, so build as an expression
             context.getDialect().getSalienceBuilder().build( context );    
         }              
-
-        RuleClassBuilder classBuilder = context.getDialect().getRuleClassBuilder();
-        if ( classBuilder != null ) {
-            classBuilder.buildRule( context );
-        }
     }
 }

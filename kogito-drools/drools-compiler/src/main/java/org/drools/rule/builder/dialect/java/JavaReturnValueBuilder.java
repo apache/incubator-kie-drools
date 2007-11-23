@@ -9,7 +9,7 @@ import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 
-public class JavaReturnValueBuilder extends AbstractJavaBuilder
+public class JavaReturnValueBuilder extends AbstractJavaRuleBuilder
     implements
     ReturnValueBuilder {
     public void build(final RuleBuildContext context,

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
+import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.mvel.ExpressionCompiler;
 import org.mvel.ParserContext;
@@ -57,7 +58,7 @@ public class MVELExprAnalyzer {
      * @throws RecognitionException 
      *             If an error occurs in the parser.
      */
-    public MVELAnalysisResult analyzeExpression(final RuleBuildContext context,
+    public MVELAnalysisResult analyzeExpression(final PackageBuildContext context,
                                                 final String expr,
                                                 final Set[] availableIdentifiers,
                                                 final Map localTypes) throws RecognitionException {
@@ -67,9 +68,10 @@ public class MVELExprAnalyzer {
 
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
+            // @todo proper source file name
             final ParserContext parserContext = new ParserContext( dialect.getImports(),
                                                                    null,
-                                                                   context.getPkg().getName() + "." + context.getRuleDescr().getClassName() );
+                                                                   "xxx" ); //context.getPkg().getName() + "." + context.getRuleDescr().getClassName() );
 
             if ( dialect.getPackgeImports() != null && !dialect.getPackgeImports().isEmpty() ) {
 	            for ( Iterator it = dialect.getPackgeImports().values().iterator(); it.hasNext(); ) {

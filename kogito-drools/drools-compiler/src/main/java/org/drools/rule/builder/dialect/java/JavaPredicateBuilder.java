@@ -9,7 +9,7 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 
-public class JavaPredicateBuilder extends AbstractJavaBuilder
+public class JavaPredicateBuilder extends AbstractJavaRuleBuilder
     implements
     PredicateBuilder {
 

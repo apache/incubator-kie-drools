@@ -1,82 +1,47 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.base.mvel.MVELAction;
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
+import org.drools.lang.descr.ActionDescr;
+import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.ruleflow.core.impl.ActionNodeImpl;
 import org.mvel.Macro;
 import org.mvel.MacroProcessor;
 
-public class MVELConsequenceBuilder
+public class MVELActionBuilder
     implements
-    ConsequenceBuilder {
+    ActionBuilder {
 
-    //private final Interceptor assertInterceptor;
-    //private final Interceptor modifyInterceptor;
-
-    private static final Map macros = new HashMap( 5 );
-    static {
-        macros.put( "insert",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.insert";
-                        }
-                    } );
-
-        macros.put( "insertLogical",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.insertLogical";
-                        }
-                    } );
-
-        macros.put( "modify",
-                    new Macro() {
-                        public String doMacro() {
-                            return "@Modify with";
-                        }
-                    } );
-
-        macros.put( "update",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.update";
-                        }
-                    } );
-
-        macros.put( "retract",
-                    new Macro() {
-                        public String doMacro() {
-                            return "drools.retract";
-                        }
-                    } );;
-    }
-
-    public MVELConsequenceBuilder() {
+    public MVELActionBuilder() {
 
     }
 
-    public void build(final RuleBuildContext context) {
-        // pushing consequence LHS into the stack for variable resolution
-        context.getBuildStack().push( context.getRule().getLhs() );
+    public void build(final PackageBuildContext context,
+                      final ActionNodeImpl actionNode,
+                      final ActionDescr actionDescr) {
+
+        String text = actionDescr.getText();
 
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect();
 
-            String text = processMacros( (String) context.getRuleDescr().getConsequence() );
-
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
-                                                                    context.getRuleDescr(),
+                                                                    actionDescr,
                                                                     dialect.getInterceptors(),
                                                                     text,
-                                                                    new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
+                                                                    new Set[]{Collections.EMPTY_SET, context.getPkg().getGlobals().keySet()},
                                                                     null );
 
             final Serializable expr = dialect.compile( text,
@@ -85,25 +50,18 @@ public class MVELConsequenceBuilder
                                                        null,
                                                        context );
 
-            final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
+            final DroolsMVELFactory factory = new DroolsMVELFactory( null,
                                                                      null,
                                                                      context.getPkg().getGlobals(),
                                                                      analysis.getBoundIdentifiers() );
-
-            context.getRule().setConsequence( new MVELConsequence( expr,
-                                                                   factory ) );
+            
+            actionNode.setAction( new MVELAction( expr, factory )  );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    context.getRuleDescr(),
-                                                    null,
-                                                    "Unable to build expression for 'consequence' '" + context.getRuleDescr().getConsequence() + "'" ) );
+                                                          actionDescr,
+                                                          null,
+                                                          "Unable to build expression for 'action' '" + actionDescr.getText() + "'" ) );
         }
-    }
-
-    public static String processMacros(String consequence) {
-        MacroProcessor macroProcessor = new MacroProcessor();
-        macroProcessor.setMacros( macros );
-        return macroProcessor.parse( delimitExpressions( consequence ) );
     }
 
     /**

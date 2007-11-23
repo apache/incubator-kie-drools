@@ -19,9 +19,10 @@ package org.drools.rule.builder.dialect.java;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.compiler.Dialect;
-import org.drools.compiler.RuleError;
+import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.ConsequenceBuilder;
@@ -32,7 +33,7 @@ import org.drools.spi.PatternExtractor;
  * @author etirelli
  *
  */
-public class JavaConsequenceBuilder extends AbstractJavaBuilder
+public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
     implements
     ConsequenceBuilder {
 
@@ -50,13 +51,14 @@ public class JavaConsequenceBuilder extends AbstractJavaBuilder
 
         Dialect.AnalysisResult analysis = context.getDialect().analyzeBlock( context,
                                                                              ruleDescr,
-                                                                             (String) ruleDescr.getConsequence() );
-        
-        if( analysis == null ) {
+                                                                             (String) ruleDescr.getConsequence(),
+                                                                             new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+
+        if ( analysis == null ) {
             // not possible to get the analysis results
             return;
         }
-        
+
         final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
         final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
@@ -85,10 +87,10 @@ public class JavaConsequenceBuilder extends AbstractJavaBuilder
             indexes[i] = new Integer( list.indexOf( declarations[i] ) );
             notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? new Boolean( false ) : new Boolean( true );
             if ( (indexes[i]).intValue() == -1 ) {
-                context.getErrors().add( new RuleError( context.getRule(),
-                                                        ruleDescr,
-                                                        null,
-                                                        "Internal Error : Unable to find declaration in list while generating the consequence invoker" ) );
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              ruleDescr,
+                                                              null,
+                                                              "Internal Error : Unable to find declaration in list while generating the consequence invoker" ) );
             }
         }
 

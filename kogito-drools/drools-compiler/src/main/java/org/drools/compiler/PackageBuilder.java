@@ -32,6 +32,7 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
+import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
@@ -40,13 +41,22 @@ import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.ruleflow.common.core.Process;
+import org.drools.ruleflow.common.core.impl.ProcessImpl;
+import org.drools.ruleflow.core.ActionNode;
+import org.drools.ruleflow.core.Node;
+import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.ruleflow.core.impl.ActionNodeImpl;
+import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
 import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
 
@@ -73,12 +83,12 @@ public class PackageBuilder {
 
     private ClassFieldExtractorCache    classFieldExtractorCache;
 
-    private RuleBuilder                 builder;
+    private RuleBuilder                 ruleBuilder;
 
     private Dialect                     dialect;
 
     private DialectRegistry             dialectRegistry;
-    
+
     /**
      * Use this when package is starting from scratch.
      */
@@ -90,6 +100,7 @@ public class PackageBuilder {
     /**
      * This will allow you to merge rules into this pre existing package.
      */
+
     public PackageBuilder(final Package pkg) {
         this( pkg,
               null );
@@ -98,9 +109,9 @@ public class PackageBuilder {
     /**
      * Pass a specific configuration for the PackageBuilder
      * 
-	 * PackageBuilderConfiguration is not thread safe and it also contains state. Once it is created and used 
-	 * in one or more PackageBuilders it should be considered immutable. Do not modify its 
-	 * properties while it is being used by a PackageBuilder.
+     * PackageBuilderConfiguration is not thread safe and it also contains state. Once it is created and used 
+     * in one or more PackageBuilders it should be considered immutable. Do not modify its 
+     * properties while it is being used by a PackageBuilder.
      * 
      * @param configuration
      */
@@ -127,28 +138,26 @@ public class PackageBuilder {
         this.configuration = configuration;
         this.results = new ArrayList();
         this.pkg = pkg;
-        this.classFieldExtractorCache = ClassFieldExtractorCache.getInstance();        
-        
+        this.classFieldExtractorCache = ClassFieldExtractorCache.getInstance();
+
         if ( this.pkg != null ) {
             this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
                                                        this.configuration.getClassLoader() );
             // make an automatic import for the current package
-            this.typeResolver.addImport( this.pkg.getName() + ".*" );            
+            this.typeResolver.addImport( this.pkg.getName() + ".*" );
         } else {
             this.typeResolver = new ClassTypeResolver( new HashSet(),
                                                        this.configuration.getClassLoader() );
         }
-        
+
         this.dialectRegistry = this.configuration.buildDialectRegistry();
-        
+
         this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
-        
+
         this.dialectRegistry.initAll( this );
         if ( this.pkg != null ) {
-            initDialectPackage( pkg );            
-        }        
-        
-        
+            initDialectPackage( pkg );
+        }
 
     }
 
@@ -219,46 +228,74 @@ public class PackageBuilder {
             for ( int i = 0; i < processes.length; i++ ) {
                 pkg.addRuleFlow( processes[i] );
             }
-            this.results.addAll(processBuilder.getErrors());
+            this.results.addAll( processBuilder.getErrors() );
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;
             }
-            this.results.add( new RuleFlowLoadError("Unable to load the rule flow.", e) );
+            this.results.add( new RuleFlowLoadError( "Unable to load the rule flow.",
+                                                     e ) );
         }
+    }
+
+    // @FIXME this is a hack to wire in Actions for now
+    public void buildActions(Process process) {
+        RuleFlowProcess rfp = (RuleFlowProcess) process;
+
+        ProcessDescr processDescr = new ProcessDescr();
+        processDescr.setClassName( rfp.getName() );
+        processDescr.setName( rfp.getPackageName() );
+
+        ProcessBuildContext context = new ProcessBuildContext( this.configuration,
+                                                               pkg,
+                                                               process,
+                                                               processDescr,
+                                                               this.dialectRegistry,
+                                                               this.dialect );        
+
+        for ( Node node : rfp.getNodes() ) {
+            if ( node instanceof ActionNode ) {
+                ActionNodeImpl actionNode = ( ActionNodeImpl ) node;
+                DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
+                ActionDescr actionDescr = new ActionDescr();
+                actionDescr.setText( action.getConsequence() );
+                
+                context.getDialect().getActionBuilder().build( context, actionNode, actionDescr );
+            }
+        }
+        ((JavaDialect)context.getDialect()).addAction( context );
     }
 
     /**
      * This adds a package from a Descr/AST This will also trigger a compile, if
      * there are any generated classes to compile of course.
      */
-    public void addPackage(final PackageDescr packageDescr) {        
+    public void addPackage(final PackageDescr packageDescr) {
         validatePackageName( packageDescr );
         validateUniqueRuleNames( packageDescr );
-        
 
-        String dialectName = null;       
-//MN: not needed as overrides are done in the compiler before here
-//as we can have mixed dialect types - still not quite right here.       
-//        for ( Iterator it = packageDescr.getAttributes().iterator(); it.hasNext(); ) {
-//            AttributeDescr value = ( AttributeDescr ) it.next();
-//            if ( "dialect".equals( value.getName() )) {   
-//                dialectName = value.getValue();
-//                break;
-//            }
-//        }
-        
+        String dialectName = null;
+        //MN: not needed as overrides are done in the compiler before here
+        //as we can have mixed dialect types - still not quite right here.       
+        //        for ( Iterator it = packageDescr.getAttributes().iterator(); it.hasNext(); ) {
+        //            AttributeDescr value = ( AttributeDescr ) it.next();
+        //            if ( "dialect".equals( value.getName() )) {   
+        //                dialectName = value.getValue();
+        //                break;
+        //            }
+        //        }
+
         // The Package does not have a default dialect, so set it
-        if ( dialectName == null && this.dialect == null ) {        	
-                this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
-        } 
-            
-        if ( dialectName != null ) {        	
+        if ( dialectName == null && this.dialect == null ) {
+            this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
+        }
+
+        if ( dialectName != null ) {
             this.dialect = this.dialectRegistry.getDialect( dialectName );
         } else if ( this.dialect == null ) {
             this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
         }
-                   
+
         if ( this.pkg != null ) {
             // mergePackage( packageDescr ) ;
             mergePackage( this.pkg,
@@ -267,36 +304,36 @@ public class PackageBuilder {
             this.pkg = newPackage( packageDescr );
         }
 
-        this.builder = new RuleBuilder();
+        this.ruleBuilder = new RuleBuilder();
 
         // only try to compile if there are no parse errors
         if ( !hasErrors() ) {
             for ( final Iterator it = packageDescr.getFactTemplates().iterator(); it.hasNext(); ) {
                 addFactTemplate( (FactTemplateDescr) it.next() );
             }
-            
+
             if ( !packageDescr.getFunctions().isEmpty() ) {
-	            // add static imports for all functions
-	            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-	                FunctionDescr functionDescr = (FunctionDescr) it.next();
-	                final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
-	                functionDescr.setClassName( functionClassName );
-	                this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
-	            }            	                        
-	
-	            // iterate and compile
-	            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-	                addFunction( (FunctionDescr) it.next() );
-	            }
-            
-	            // We need to compile all the functions, so scripting languages like mvel can find them
-	            this.dialectRegistry.compileAll();
-	            
-	            for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-	                FunctionDescr functionDescr = (FunctionDescr) it.next();
-	                final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
-	                this.dialectRegistry.addStaticImport(functionClassName + "." + functionDescr.getName());
-	            }	            
+                // add static imports for all functions
+                for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+                    FunctionDescr functionDescr = (FunctionDescr) it.next();
+                    final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
+                    functionDescr.setClassName( functionClassName );
+                    this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
+                }
+
+                // iterate and compile
+                for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+                    addFunction( (FunctionDescr) it.next() );
+                }
+
+                // We need to compile all the functions, so scripting languages like mvel can find them
+                this.dialectRegistry.compileAll();
+
+                for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+                    FunctionDescr functionDescr = (FunctionDescr) it.next();
+                    final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
+                    this.dialectRegistry.addStaticImport( functionClassName + "." + functionDescr.getName() );
+                }
             }
 
             // iterate and compile
@@ -306,7 +343,7 @@ public class PackageBuilder {
         }
 
         this.dialectRegistry.compileAll();
-        
+
         // some of the rules and functions may have been redefined
         if ( this.pkg.getPackageCompilationData().isDirty() ) {
             this.pkg.getPackageCompilationData().reload();
@@ -315,14 +352,11 @@ public class PackageBuilder {
     }
 
     private void validatePackageName(final PackageDescr packageDescr) {
-        if ( ( this.pkg == null || this.pkg.getName() == null || this.pkg.getName().equals( "" ) )
-                && ( packageDescr.getName() == null || "".equals( packageDescr.getName() ) ) ) {
+        if ( (this.pkg == null || this.pkg.getName() == null || this.pkg.getName().equals( "" )) && (packageDescr.getName() == null || "".equals( packageDescr.getName() )) ) {
             throw new MissingPackageNameException( "Missing package name for rule package." );
         }
-        if ( this.pkg != null && packageDescr.getName() != null && 
-             ! "".equals( packageDescr.getName() ) && 
-             ! this.pkg.getName().equals( packageDescr.getName() ) ) {
-            throw new PackageMergeException( "Can't merge packages with different names. This package: "+this.pkg.getName()+" - New package: "+packageDescr.getName() ) ;
+        if ( this.pkg != null && packageDescr.getName() != null && !"".equals( packageDescr.getName() ) && !this.pkg.getName().equals( packageDescr.getName() ) ) {
+            throw new PackageMergeException( "Can't merge packages with different names. This package: " + this.pkg.getName() + " - New package: " + packageDescr.getName() );
         }
         return;
     }
@@ -343,22 +377,22 @@ public class PackageBuilder {
 
     private Package newPackage(final PackageDescr packageDescr) {
         final Package pkg = new Package( packageDescr.getName(),
-                                         this.configuration.getClassLoader() );       
+                                         this.configuration.getClassLoader() );
 
-       initDialectPackage( pkg );
+        initDialectPackage( pkg );
 
         mergePackage( pkg,
                       packageDescr );
 
         return pkg;
     }
-    
+
     private void initDialectPackage(Package pkg) {
         for ( Iterator it = this.dialectRegistry.iterator(); it.hasNext(); ) {
-            Dialect dialect = ( Dialect) it.next();
+            Dialect dialect = (Dialect) it.next();
             dialect.init( pkg );
         }
-        
+
     }
 
     private void mergePackage(final Package pkg,
@@ -373,7 +407,7 @@ public class PackageBuilder {
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             String importEntry = ((ImportDescr) it.next()).getTarget();
             pkg.addImport( importEntry );
-            this.typeResolver.addImport( importEntry );            
+            this.typeResolver.addImport( importEntry );
             this.dialectRegistry.addImport( importEntry );
         }
 
@@ -397,7 +431,8 @@ public class PackageBuilder {
                 pkg.addGlobal( identifier,
                                clazz );
             } catch ( final ClassNotFoundException e ) {
-                this.results.add(new GlobalError( identifier, global.getLine() ));
+                this.results.add( new GlobalError( identifier,
+                                                   global.getLine() ) );
             }
         }
     }
@@ -433,7 +468,7 @@ public class PackageBuilder {
 
     private void addRule(final RuleDescr ruleDescr) {
         //this.dialect.init( ruleDescr );
-        
+
         if ( ruleDescr instanceof QueryDescr ) {
             //ruleDescr.getLhs().insertDescr( 0, baseDescr );
         }
@@ -443,7 +478,7 @@ public class PackageBuilder {
                                                          ruleDescr,
                                                          this.dialectRegistry,
                                                          this.dialect );
-        this.builder.build( context );
+        this.ruleBuilder.build( context );
 
         this.results.addAll( context.getErrors() );
 
@@ -477,7 +512,7 @@ public class PackageBuilder {
         }
         return this.pkg;
     }
-    
+
     /**
      * Return the PackageBuilderConfiguration for this PackageBuilder session
      * @return
@@ -488,13 +523,13 @@ public class PackageBuilder {
     }
 
     public DialectRegistry getDialectRegistry() {
-    	return this.dialectRegistry;
+        return this.dialectRegistry;
     }
-    
+
     public Dialect getDefaultDialect() {
-    	return this.dialect;
+        return this.dialect;
     }
-    
+
     /**
      * Return the ClassFieldExtractorCache, this should only be used internally, and is subject to change
      * @return
@@ -614,10 +649,33 @@ public class PackageBuilder {
         }
 
         public DroolsError getError() {
-            return new RuleError( this.rule,
-                                  this.descr,
-                                  collectCompilerProblems(),
-                                  this.message );
+            return new RuleBuildError( this.rule,
+                                       this.descr,
+                                       collectCompilerProblems(),
+                                       this.message );
+        }
+
+    }
+
+    public static class ProcessErrorHandler extends ErrorHandler {
+
+        private BaseDescr descr;
+
+        private Process   process;
+
+        public ProcessErrorHandler(final BaseDescr ruleDescr,
+                                   final Process process,
+                                   final String message) {
+            this.descr = ruleDescr;
+            this.process = process;
+            this.message = message;
+        }
+
+        public DroolsError getError() {
+            return new ProcessBuildError( this.process,
+                                          this.descr,
+                                          collectCompilerProblems(),
+                                          this.message );
         }
 
     }
@@ -632,6 +690,17 @@ public class PackageBuilder {
                                        final String message) {
             super( ruleDescr,
                    rule,
+                   message );
+        }
+    }
+
+    public static class ProcessInvokerErrorHandler extends ProcessErrorHandler {
+
+        public ProcessInvokerErrorHandler(final BaseDescr processDescr,
+                                          final Process process,
+                                          final String message) {
+            super( processDescr,
+                   process,
                    message );
         }
     }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.ruleflow.common.core.Process;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.compilers.CompilationResult;
@@ -19,7 +20,7 @@ import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.RuleError;
+import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.PackageBuilder.ErrorHandler;
 import org.drools.compiler.PackageBuilder.FunctionErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleErrorHandler;
@@ -36,20 +37,25 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.AccumulateBuilder;
+import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.FunctionBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
+import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
+import org.drools.rule.builder.ProcessBuildContext;
+import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -58,6 +64,8 @@ import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
+import org.drools.compiler.PackageBuilder.ProcessInvokerErrorHandler;
+import org.drools.compiler.PackageBuilder.ProcessErrorHandler;
 import org.drools.util.StringUtils;
 
 public class JavaDialect
@@ -76,7 +84,9 @@ public class JavaDialect
     private final JavaPredicateBuilder     predicate               = new JavaPredicateBuilder();
     private final JavaReturnValueBuilder   returnValue             = new JavaReturnValueBuilder();
     private final JavaConsequenceBuilder   consequence             = new JavaConsequenceBuilder();
-    private final JavaRuleClassBuilder     rule                    = new JavaRuleClassBuilder();
+    private final JavaActionBuilder        actionBuilder           = new JavaActionBuilder();
+    private final JavaRuleClassBuilder     ruleClassBuilder        = new JavaRuleClassBuilder();
+    private final JavaProcessClassBuilder  processClassBuilder     = new JavaProcessClassBuilder();
     private final MVELFromBuilder          from                    = new MVELFromBuilder();
     private final JavaFunctionBuilder      function                = new JavaFunctionBuilder();
     private final CollectBuilder           collect                 = new CollectBuilder();
@@ -96,8 +106,7 @@ public class JavaDialect
     private PackageStore                   packageStoreWrapper;
     private Map                            errorHandlers;
     private List                           results;
-    // the class name for the rule
-    private String                         ruleClass;
+
 
     private TypeResolver             typeResolver;
     private ClassFieldExtractorCache classFieldExtractorCache;
@@ -195,26 +204,24 @@ public class JavaDialect
                                                          "java",
                                                          this.src );
         ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
-        ruleDescr.setDialect( this );
     }
 
-    public void setRuleClass(final String ruleClass) {
-        this.ruleClass = ruleClass;
-    }
 
     public String getExpressionDialectName() {
         return EXPRESSION_DIALECT_NAME;
     }
 
-    public AnalysisResult analyzeExpression(final RuleBuildContext context,
+    public AnalysisResult analyzeExpression(final PackageBuildContext context,
                                             final BaseDescr descr,
-                                            final Object content) {
+                                            final Object content,
+                                            final Set[] availableIdentifiers ) {
         JavaAnalysisResult result = null;
         try {
+            //new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()}
             result = this.analyzer.analyzeExpression( (String) content,
-                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                      availableIdentifiers);
         } catch ( final Exception e ) {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     descr,
                                                     e,
                                                     "Unable to determine the used declarations.\n" + e) );
@@ -222,15 +229,17 @@ public class JavaDialect
         return result;
     }
 
-    public AnalysisResult analyzeBlock(final RuleBuildContext context,
+    public AnalysisResult analyzeBlock(final PackageBuildContext context,
                                        final BaseDescr descr,
-                                       final String text) {
+                                       final String text,
+                                       final Set[] availableIdentifiers) {
         JavaAnalysisResult result = null;
         try {
+            // new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} 
             result = this.analyzer.analyzeBlock( text,
-                                                 new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
+                                                 availableIdentifiers);
         } catch ( final Exception e ) {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     descr,
                                                     e,
                                                     "Unable to determine the used declarations.\n" + e) );
@@ -304,11 +313,19 @@ public class JavaDialect
     public ConsequenceBuilder getConsequenceBuilder() {
         return this.consequence;
     }
-
-    public RuleClassBuilder getRuleClassBuilder() {
-        return this.rule;
+    
+    public ActionBuilder getActionBuilder() {
+        return this.actionBuilder;
     }
 
+    public RuleClassBuilder getRuleClassBuilder() {
+        return this.ruleClassBuilder;
+    }
+
+    public ProcessClassBuilder getProcessClassBuilder() {
+        return this.processClassBuilder;
+    }
+    
     public FunctionBuilder getFunctionBuilder() {
         return this.function;
     }
@@ -375,18 +392,21 @@ public class JavaDialect
      * It will not actually call the compiler
      */
     public void addRule(final RuleBuildContext context) {
+        RuleClassBuilder classBuilder = context.getDialect().getRuleClassBuilder();
+       
+        String ruleClass = classBuilder.buildRule( context );
         // return if there is no ruleclass name;
-        if ( this.ruleClass == null ) {
+        if ( ruleClass == null ) {
             return;
-        }
+        }        
 
         final Rule rule = context.getRule();
         final RuleDescr ruleDescr = context.getRuleDescr();
 
-        // The compilation result is for th entire rule, so difficult to associate with any descr
+        // The compilation result is for the entire rule, so difficult to associate with any descr
         addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
                              ruleDescr,
-                             this.ruleClass,
+                             ruleClass,
                              this.src,
                              new RuleErrorHandler( ruleDescr,
                                                    rule,
@@ -425,6 +445,62 @@ public class JavaDialect
                                                                            mapping );
 
     }
+    
+    /**
+     * This will add the rule for compiling later on.
+     * It will not actually call the compiler
+     */
+    public void addAction(final ProcessBuildContext context) {
+        ProcessClassBuilder classBuilder = context.getDialect().getProcessClassBuilder();
+       
+        String processClass = classBuilder.buildRule( context );
+      
+        final Process process = context.getProcess();
+        final ProcessDescr processDescr = context.getProcessDescr();
+
+        // The compilation result is for the entire rule, so difficult to associate with any descr
+        addClassCompileTask( this.pkg.getName() + "." + processDescr.getClassName(),
+                             processDescr,
+                             processClass,
+                             this.src,
+                             new ProcessErrorHandler( processDescr,
+                                                   process,
+                                                   "Rule Compilation error" ) );
+
+        for ( final Iterator it = context.getInvokers().keySet().iterator(); it.hasNext(); ) {
+            final String className = (String) it.next();
+
+            // Check if an invoker - Action has been associated
+            // If so we add it to the PackageCompilationData as it will get wired up on compilation
+            final Object invoker = context.getInvokerLookups().get( className );
+            if ( invoker != null ) {
+                this.pkg.getPackageCompilationData().putInvoker( className,
+                                                                 invoker );
+            }
+            final String text = (String) context.getInvokers().get( className );
+
+            final BaseDescr descr = (BaseDescr) context.getDescrLookups().get( className );
+            addClassCompileTask( className,
+                                 descr,
+                                 text,
+                                 this.src,
+                                 new ProcessInvokerErrorHandler( processDescr,
+                                                              process,
+                                                              "Unable to generate action invoker." ) );
+
+        }
+        
+        // setup the line mappins for this rule
+        // @TODO must setup mappings
+//        final String name = this.pkg.getName() + "." + StringUtils.ucFirst( ruleDescr.getClassName() );
+//        final LineMappings mapping = new LineMappings( name );
+//        mapping.setStartLine( ruleDescr.getConsequenceLine() );
+//        mapping.setOffset( ruleDescr.getConsequenceOffset() );
+//
+//        context.getPkg().getPackageCompilationData().getLineMappings().put( name,
+//                                                                           mapping );
+
+    }    
 
     public void addFunction(final FunctionDescr functionDescr,
                             final TypeResolver typeResolver) {

@@ -20,11 +20,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.compiler.Dialect;
-import org.drools.compiler.RuleError;
+import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
@@ -67,14 +68,15 @@ public class MVELPredicateBuilder
             
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       predicateDescr,
-                                                                                      predicateDescr.getContent() );
+                                                                                      predicateDescr.getContent(),
+                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
             
             final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) predicateDescr.getContent(), analysis, null, null, context );            
             
             predicate.setPredicateExpression( new MVELPredicateExpression( expr,
                                                                            factory ) );
         } catch ( final Exception e ) {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     predicateDescr,
                                                     e,
                                                     "Unable to build expression for 'inline-eval' node '" + predicateDescr.getContent() + "'\n" + e.getMessage() ) );
