@@ -38,6 +38,7 @@ import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.ruleflow.core.impl.ActionNodeImpl;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Consequence;
 import org.drools.spi.EvalExpression;
@@ -265,6 +266,8 @@ public class PackageCompilationData
             ((Rule) invoker).setConsequence( (Consequence) clazz.newInstance() );
         } else if ( invoker instanceof JavaAccumulatorFunctionExecutor ) {
             ((JavaAccumulatorFunctionExecutor) invoker).setExpression( (ReturnValueExpression) clazz.newInstance() );
+        } else if ( invoker instanceof ActionNodeImpl ) {
+            ((ActionNodeImpl) invoker).setAction( clazz.newInstance() );
         }
     }
 

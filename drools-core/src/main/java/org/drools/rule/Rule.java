@@ -41,7 +41,8 @@ import org.drools.spi.Salience;
  */
 public class Rule
     implements
-    Serializable {
+    Serializable,
+    Dialectable {
     /**
      *
      */

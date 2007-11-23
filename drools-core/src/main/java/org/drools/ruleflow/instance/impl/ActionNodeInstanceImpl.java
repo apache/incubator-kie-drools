@@ -31,6 +31,7 @@ import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.ruleflow.core.ActionNode;
 import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
+import org.drools.spi.Action;
 import org.mvel.ExpressionCompiler;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
@@ -41,6 +42,7 @@ import org.mvel.ParserContext;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ActionNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
+    private Action action;
 
     protected ActionNode getActionNode() {
         return (ActionNode) getNode();
