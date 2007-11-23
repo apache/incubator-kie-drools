@@ -20,26 +20,26 @@ import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Rule;
 
-public class RuleError extends DroolsError {
-    private Rule      rule;
+public class DescrBuildError extends DroolsError {
+    private BaseDescr      parentDescr;
     private BaseDescr descr;
     private Object    object;
     private String    message;
     private int[]     errorLines = new int[0];
 
-    public RuleError(final Rule rule,
+    public DescrBuildError(final BaseDescr parentDescr,
                      final BaseDescr descr,
                      final Object object,
                      final String message) {
         super();
-        this.rule = rule;
+        this.parentDescr = parentDescr;
         this.descr = descr;
         this.object = object;
         this.message = message;
     }
 
-    public Rule getRule() {
-        return this.rule;
+    public BaseDescr getParentDescr() {
+        return this.parentDescr;
     }
 
     public BaseDescr getDescr() {
@@ -82,7 +82,7 @@ public class RuleError extends DroolsError {
         final StringBuffer buf = new StringBuffer();
         buf.append( this.message );
         buf.append( " : " );
-        buf.append( this.rule );
+        buf.append( this.parentDescr );
         buf.append( "\n" );
         if ( this.object instanceof CompilationProblem[] ) {
             final CompilationProblem[] problem = (CompilationProblem[]) this.object;

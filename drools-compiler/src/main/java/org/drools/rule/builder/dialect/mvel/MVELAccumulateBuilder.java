@@ -19,6 +19,7 @@ package org.drools.rule.builder.dialect.mvel;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
@@ -87,7 +88,8 @@ public class MVELAccumulateBuilder
             // build an external function executor
             final Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                                accumDescr,
-                                                                               accumDescr.getExpression() );
+                                                                               accumDescr.getExpression(),
+                                                                               new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
 
             int size = analysis.getBoundIdentifiers()[0].size();
             declarations = new Declaration[size];
@@ -110,17 +112,20 @@ public class MVELAccumulateBuilder
             // it is a custom accumulate
             final MVELAnalysisResult initCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
                                                                                                    accumDescr,
-                                                                                                   accumDescr.getInitCode() );
+                                                                                                   accumDescr.getInitCode(),
+                                                                                                   new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
 
             final MVELAnalysisResult actionCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
                                                                                                      accumDescr,
                                                                                                      null,
                                                                                                      accumDescr.getActionCode(),
+                                                                                                     new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
                                                                                                      initCodeAnalysis.getMvelVariables() );
             actionCodeAnalysis.setMvelVariables( initCodeAnalysis.getMvelVariables() );
             final MVELAnalysisResult resultCodeAnalysis = (MVELAnalysisResult) dialect.analyzeExpression( context,
                                                                                                           accumDescr,
                                                                                                           accumDescr.getResultCode(),
+                                                                                                          new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
                                                                                                           initCodeAnalysis.getMvelVariables() );
             resultCodeAnalysis.setMvelVariables( initCodeAnalysis.getMvelVariables() );
 
@@ -131,7 +136,8 @@ public class MVELAccumulateBuilder
             if ( accumDescr.getReverseCode() != null ) {
                 final Dialect.AnalysisResult reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
                                                                                                       accumDescr,
-                                                                                                      accumDescr.getActionCode() );
+                                                                                                      accumDescr.getActionCode(),
+                                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
                 requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers()[0] );
             }
 

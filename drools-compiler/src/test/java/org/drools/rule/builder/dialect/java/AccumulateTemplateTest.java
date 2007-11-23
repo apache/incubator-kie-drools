@@ -287,14 +287,14 @@ public class AccumulateTemplateTest extends TestCase {
 
     private TemplateRegistry getRuleTemplateRegistry() {
         TemplateRegistry ruleRegistry = new MVELTemplateRegistry();
-        ruleRegistry.registerTemplate( new InputStreamReader( AbstractJavaBuilder.class.getResourceAsStream( "javaRule.mvel" ) ) );
+        ruleRegistry.registerTemplate( new InputStreamReader( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ) ) );
 
         return ruleRegistry;
     }
 
     private TemplateRegistry getInvokerTemplateRegistry() {
         TemplateRegistry invokerRegistry = new MVELTemplateRegistry();
-        invokerRegistry.registerTemplate( new InputStreamReader( AbstractJavaBuilder.class.getResourceAsStream( "javaInvokers.mvel" ) ) );
+        invokerRegistry.registerTemplate( new InputStreamReader( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ) ) );
 
         return invokerRegistry;
     }

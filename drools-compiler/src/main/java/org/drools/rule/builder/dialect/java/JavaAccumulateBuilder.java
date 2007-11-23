@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.drools.base.accumulators.AccumulateFunction;
@@ -42,7 +43,7 @@ import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
  * 
  * @author etirelli
  */
-public class JavaAccumulateBuilder extends AbstractJavaBuilder
+public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
     implements
     AccumulateBuilder {
 
@@ -79,7 +80,8 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
 
             final JavaAnalysisResult analysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                         accumDescr,
-                                                                                                        accumDescr.getExpression() );
+                                                                                                        accumDescr.getExpression(),
+                                                                                                        new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
 
             final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
@@ -125,13 +127,16 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
 
             final JavaAnalysisResult initCodeAnalysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                                 accumDescr,
-                                                                                                                accumDescr.getInitCode() );
+                                                                                                                accumDescr.getInitCode(),
+                                                                                                                new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
             final Dialect.AnalysisResult actionCodeAnalysis = context.getDialect().analyzeBlock( context,
                                                                                                  accumDescr,
-                                                                                                 accumDescr.getActionCode() );
+                                                                                                 accumDescr.getActionCode(),
+                                                                                                 new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
             final Dialect.AnalysisResult resultCodeAnalysis = context.getDialect().analyzeExpression( context,
                                                                                                       accumDescr,
-                                                                                                      accumDescr.getResultCode() );
+                                                                                                      accumDescr.getResultCode(),
+                                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
 
             final List requiredDeclarations = new ArrayList( initCodeAnalysis.getBoundIdentifiers()[0] );
             requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers()[0] );
@@ -144,7 +149,8 @@ public class JavaAccumulateBuilder extends AbstractJavaBuilder
             if ( accumDescr.getReverseCode() != null ) {
                 final Dialect.AnalysisResult reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
                                                                                                       accumDescr,
-                                                                                                      accumDescr.getActionCode() );
+                                                                                                      accumDescr.getActionCode(),
+                                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
                 requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers()[0] );
                 requiredGlobals.addAll( reverseCodeAnalysis.getBoundIdentifiers()[1] );
             }

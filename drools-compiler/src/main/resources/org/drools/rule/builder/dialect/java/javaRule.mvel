@@ -73,3 +73,9 @@ public static void @{methodName}(org.drools.spi.KnowledgeHelper drools@if{declar
     @{text}
 }
 >>=::
+
+actionMethod() ::=<<
+public static void @{methodName}(@foreach{globalTypes, globals as type, identifier}  @{type} @{identifier} @end{","} ) throws Exception {
+    @{text}
+}
+>>=::

@@ -20,11 +20,12 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELEvalExpression;
 import org.drools.compiler.Dialect;
-import org.drools.compiler.RuleError;
+import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.rule.Declaration;
@@ -77,7 +78,8 @@ public class MVELEvalBuilder
 
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       evalDescr,
-                                                                                      evalDescr.getContent() );
+                                                                                      evalDescr.getContent(),
+                                                                                      new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
             final List[] usedIdentifiers = analysis.getBoundIdentifiers();
 
             final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
@@ -98,7 +100,7 @@ public class MVELEvalBuilder
 
             return eval;
         } catch ( final Exception e ) {
-            context.getErrors().add( new RuleError( context.getRule(),
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                     evalDescr,
                                                     e,
                                                     "Unable to build expression for 'eval' node '" + evalDescr.getContent() + "'" ) );

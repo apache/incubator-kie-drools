@@ -2,6 +2,7 @@ package org.drools.compiler;
 
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Rule;
 
 import junit.framework.TestCase;
@@ -14,23 +15,23 @@ public class RuleErrorTest extends TestCase {
         probs[1] = new MockCompilationProblem();
         probs[2] = new MockCompilationProblem();
 
-        
-        RuleError err = new RuleError(new Rule("ruleName"), 
-                                      new AndDescr(), 
-                                      probs, 
-                                      "IM IN YR EROR");
-        assertNotNull(err.toString());
+        DescrBuildError err = new DescrBuildError( new RuleDescr( "ruleName" ),
+                                                   new AndDescr(),
+                                                   probs,
+                                                   "IM IN YR EROR" );
+        assertNotNull( err.toString() );
         String msg = err.getMessage();
-        
-        assertTrue(msg.indexOf( "IM IN YR EROR") != -1);
-        System.err.println(msg);        
-        assertEquals("IM IN YR EROR problem\nproblem\nproblem", msg);
 
-        
+        assertTrue( msg.indexOf( "IM IN YR EROR" ) != -1 );
+        System.err.println( msg );
+        assertEquals( "IM IN YR EROR problem\nproblem\nproblem",
+                      msg );
+
     }
-    
-    
-    class MockCompilationProblem implements CompilationProblem {
+
+    class MockCompilationProblem
+        implements
+        CompilationProblem {
 
         public int getEndColumn() {
             return 0;
@@ -59,7 +60,7 @@ public class RuleErrorTest extends TestCase {
         public boolean isError() {
             return true;
         }
-        
+
     }
-    
+
 }

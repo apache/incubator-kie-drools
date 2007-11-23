@@ -38,8 +38,6 @@ public class RuleDescr extends BaseDescr {
 
     private String            className;
 
-	//MVEL: Compiler change
-    private Dialect           dialect;
 
     public RuleDescr(final String name) {
         this( name,
@@ -130,11 +128,4 @@ public class RuleDescr extends BaseDescr {
         return this.consequencePattern;
     }
 
-    public void setDialect(Dialect dialect) {
-        this.dialect = dialect;
-    }
-
-    public Dialect getDialect() {
-        return this.dialect;
-    }
 }

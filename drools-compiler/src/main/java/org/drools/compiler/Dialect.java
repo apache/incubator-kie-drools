@@ -2,6 +2,7 @@ package org.drools.compiler;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
@@ -10,10 +11,13 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
+import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.FromBuilder;
+import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
+import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -58,20 +62,26 @@ public interface Dialect {
     ReturnValueBuilder getReturnValueBuilder();
 
     ConsequenceBuilder getConsequenceBuilder();
+    
+    ActionBuilder getActionBuilder();
 
     RuleClassBuilder getRuleClassBuilder();
+    
+    ProcessClassBuilder getProcessClassBuilder();
 
     FromBuilder getFromBuilder();
 
     RuleConditionBuilder getBuilder(Class clazz);
 
-    AnalysisResult analyzeExpression(final RuleBuildContext context,
+    AnalysisResult analyzeExpression(final PackageBuildContext context,
                                      final BaseDescr descr,
-                                     final Object content);
+                                     final Object content,
+                                     final Set[] availableIdentifiers);
 
-    AnalysisResult analyzeBlock(final RuleBuildContext context,
+    AnalysisResult analyzeBlock(final PackageBuildContext context,
                                 final BaseDescr descr,
-                                final String text);
+                                final String text,
+                                final Set[] availableIdentifiers);
 
     void compileAll();
 

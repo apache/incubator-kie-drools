@@ -42,13 +42,7 @@ import org.drools.spi.DeclarationScopeResolver;
  * 
  * @author etirelli
  */
-public class RuleBuildContext {
-
-    // current package
-    private Package                     pkg;
-
-    // configuration
-    private PackageBuilderConfiguration configuration;
+public class RuleBuildContext extends PackageBuildContext {
 
     // current rule
     private Rule                        rule;
@@ -66,28 +60,6 @@ public class RuleBuildContext {
     // a simple counter for patterns
     private int                         patternId = -1;
 
-    // errors found when building the current context
-    private List                        errors;
-
-    // list of generated methods
-    private List                        methods;
-
-    // map<String invokerClassName, String invokerCode> of generated invokers
-    private Map                         invokers;
-
-    // map<String invokerClassName, ConditionalElement ce> of generated invoker lookups
-    private Map                         invokerLookups;
-
-    // map<String invokerClassName, BaseDescr descr> of descriptor lookups
-    private Map                         descrLookups;
-
-    // a simple counter for generated names
-    private int                         counter;
-
-    private DialectRegistry             dialectRegistry;
-
-    private Dialect                     dialect;
-
     /**
      * Default constructor
      */
@@ -96,16 +68,8 @@ public class RuleBuildContext {
                             final RuleDescr ruleDescr,
                             final DialectRegistry dialectRegistry,
                             final Dialect defaultDialect) {
-        this.configuration = configuration;
-        this.pkg = pkg;
-
-        this.methods = new ArrayList();
-        this.invokers = new HashMap();
-        this.invokerLookups = new HashMap();
-        this.descrLookups = new HashMap();
-        this.errors = new ArrayList();
         this.buildStack = new Stack();
-        this.declarationResolver = new DeclarationScopeResolver( new Map[]{this.pkg.getGlobals()},
+        this.declarationResolver = new DeclarationScopeResolver( new Map[]{pkg.getGlobals()},
                                                                  this.buildStack );
         this.ruleDescr = ruleDescr;
 
@@ -113,48 +77,16 @@ public class RuleBuildContext {
             this.rule = new Query( ruleDescr.getName() );
         } else {
             this.rule = new Rule( ruleDescr.getName() );
-        }
+        }        
 
         // Assign attributes
         setAttributes( this.rule,
                        ruleDescr,
                        ruleDescr.getAttributes() );
-
-        this.dialectRegistry = dialectRegistry;
-        this.dialect = (this.rule.getDialect() != null) ? this.dialectRegistry.getDialect( this.rule.getDialect() ) : defaultDialect;
+        
+        init(configuration, pkg, ruleDescr, dialectRegistry, defaultDialect, this.rule );
 
         getDialect().init( ruleDescr );
-    }
-
-    public Dialect getDialect() {
-        return dialect;
-    }
-
-    /**
-     * Allows the change of the current dialect in the context
-     */
-    public void setDialect(Dialect dialect) {
-        this.dialect = dialect;
-    }
-
-    public Dialect getDialect(String dialectName) {
-        return (Dialect) this.dialectRegistry.getDialect( dialectName );
-    }
-
-    /**
-     * Returns the list of errors found while building the current context
-     * @return
-     */
-    public List getErrors() {
-        return this.errors;
-    }
-
-    /**
-     * Returns the current package being built
-     * @return
-     */
-    public Package getPkg() {
-        return this.pkg;
     }
 
     /**
@@ -187,66 +119,6 @@ public class RuleBuildContext {
      */
     public void setDeclarationResolver(final DeclarationScopeResolver variables) {
         this.declarationResolver = variables;
-    }
-
-    /**
-     * Returns the Map<String invokerClassName, BaseDescr descr> of descriptor lookups
-     * @return
-     */
-    public Map getDescrLookups() {
-        return this.descrLookups;
-    }
-
-    public void setDescrLookups(final Map descrLookups) {
-        this.descrLookups = descrLookups;
-    }
-
-    /**
-     * Returns the Map<String invokerClassName, ConditionalElement ce> of generated invoker lookups
-     * @return
-     */
-    public Map getInvokerLookups() {
-        return this.invokerLookups;
-    }
-
-    public void setInvokerLookups(final Map invokerLookups) {
-        this.invokerLookups = invokerLookups;
-    }
-
-    /**
-     * Returns the Map<String invokerClassName, String invokerCode> of generated invokers
-     * @return
-     */
-    public Map getInvokers() {
-        return this.invokers;
-    }
-
-    public void setInvokers(final Map invokers) {
-        this.invokers = invokers;
-    }
-
-    /**
-     * Returns the list of generated methods
-     * @return
-     */
-    public List getMethods() {
-        return this.methods;
-    }
-
-    public void setMethods(final List methods) {
-        this.methods = methods;
-    }
-
-    /**
-     * Returns current counter value for generated method names
-     * @return
-     */
-    public int getCurrentId() {
-        return this.counter;
-    }
-
-    public int getNextId() {
-        return this.counter++;
     }
 
     public int getPatternId() {
@@ -329,10 +201,6 @@ public class RuleBuildContext {
                 rule.setDialect( attributeDescr.getValue() );
             }
         }
-    }
-
-    public PackageBuilderConfiguration getConfiguration() {
-        return configuration;
     }
 
 }
