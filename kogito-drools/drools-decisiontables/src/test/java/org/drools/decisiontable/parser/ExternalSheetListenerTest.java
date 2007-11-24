@@ -23,6 +23,7 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.common.instance.ProcessInstance;
+import org.drools.ruleflow.common.instance.WorkItemManager;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -242,6 +243,10 @@ public class ExternalSheetListenerTest extends TestCase {
 				public ProcessInstance startProcess(String processId) {
 					return null;
 				}
+				
+				public Collection getProcessInstances() {
+					return null;
+				}
 
                 public Iterator iterateFactHandles() {
                     return null;
@@ -384,6 +389,16 @@ public class ExternalSheetListenerTest extends TestCase {
                 }
 
                 public List getRuleBaseUpdateListeners() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public ProcessInstance getProcessInstance(long id) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public WorkItemManager getWorkItemManager() {
                     // TODO Auto-generated method stub
                     return null;
                 }
