@@ -29,17 +29,24 @@ public interface Join
     extends
     Node {
 
-    int TYPE_UNDEFINED = 0;
+    int TYPE_UNDEFINED     = 0;
     /**
      * The outgoing connection of a join of this type is triggered
      * when all its incoming connections have been triggered.
      */
-    int TYPE_AND       = 1;
+    int TYPE_AND           = 1;
     /**
      * The outgoing connection of a join of this type is triggered
      * when one of its incoming connections has been triggered.
      */
-    int TYPE_XOR       = 2;
+    int TYPE_XOR           = 2;
+    /**
+     * The outgoing connection of a join of this type is triggered
+     * when one of its incoming connections has been triggered. It then
+     * waits until all other incoming connections have been triggered
+     * before allowing 
+     */
+    int TYPE_DISCRIMINATOR = 3;
 
     /**
      * Sets the type of the join.

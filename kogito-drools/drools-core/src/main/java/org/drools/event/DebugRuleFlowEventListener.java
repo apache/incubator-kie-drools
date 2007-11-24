@@ -6,24 +6,58 @@ public class DebugRuleFlowEventListener
     implements
     RuleFlowEventListener {
 
-    public void ruleFlowCompleted(final RuleFlowCompletedEvent event,
-                                  final WorkingMemory workingMemory) {
+    public void beforeRuleFlowCompleted(final RuleFlowCompletedEvent event,
+                                        final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
-    public void ruleFlowGroupActivated(final RuleFlowGroupActivatedEvent event,
+    public void afterRuleFlowCompleted(final RuleFlowCompletedEvent event,
                                        final WorkingMemory workingMemory) {
+        System.err.println(event);
+    }
+
+    public void beforeRuleFlowGroupActivated(
+            final RuleFlowGroupActivatedEvent event,
+            final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
-    public void ruleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
-                                         final WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupActivated(
+            final RuleFlowGroupActivatedEvent event,
+            final WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
-    public void ruleFlowStarted(final RuleFlowStartedEvent event,
-                                final WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupDeactivated(
+            final RuleFlowGroupDeactivatedEvent event,
+            final WorkingMemory workingMemory) {
         System.err.println( event );
+    }
+
+    public void afterRuleFlowGroupDeactivated(
+            final RuleFlowGroupDeactivatedEvent event,
+            final WorkingMemory workingMemory) {
+        System.err.println( event );
+    }
+
+    public void beforeRuleFlowStarted(final RuleFlowStartedEvent event,
+                                      final WorkingMemory workingMemory) {
+        System.err.println( event );
+    }
+
+    public void afterRuleFlowStarted(final RuleFlowStartedEvent event,
+                                     final WorkingMemory workingMemory) {
+        System.err.println(event);
+    }
+
+    public void afterRuleFlowNodeTriggered(final RuleFlowNodeTriggeredEvent event,
+                                           final WorkingMemory workingMemory) {
+        System.err.println(event);
+    }
+
+    public void beforeRuleFlowNodeTriggered(final RuleFlowNodeTriggeredEvent event,
+                                            final WorkingMemory workingMemory) {
+        System.err.println(event);
     }
 
 }

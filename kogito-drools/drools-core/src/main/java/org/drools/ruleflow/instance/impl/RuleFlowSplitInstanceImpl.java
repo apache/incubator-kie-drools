@@ -32,15 +32,13 @@ import org.drools.spi.RuleFlowGroup;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl
-    implements
-    RuleFlowNodeInstance {
+public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl {
 
     protected Split getSplitNode() {
         return (Split) getNode();
     }
 
-    public void trigger(final RuleFlowNodeInstance from) {
+    public void internalTrigger(final RuleFlowNodeInstance from) {
         final Split split = getSplitNode();
         switch ( split.getType() ) {
             case Split.TYPE_AND :

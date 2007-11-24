@@ -37,7 +37,9 @@ import org.drools.event.RuleFlowCompletedEvent;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.event.RuleFlowNodeTriggeredEvent;
 import org.drools.event.RuleFlowStartedEvent;
+import org.drools.ruleflow.common.instance.WorkItem;
 import org.drools.ruleflow.common.instance.impl.ProcessInstanceImpl;
 import org.drools.ruleflow.core.ActionNode;
 import org.drools.ruleflow.core.EndNode;
@@ -49,6 +51,7 @@ import org.drools.ruleflow.core.RuleSetNode;
 import org.drools.ruleflow.core.Split;
 import org.drools.ruleflow.core.StartNode;
 import org.drools.ruleflow.core.SubFlowNode;
+import org.drools.ruleflow.core.WorkItemNode;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 
@@ -160,6 +163,11 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
             result.setNodeId( node.getId() );
             addNodeInstance( result );
             return result;
+        } else if ( node instanceof WorkItemNode ) {
+            final RuleFlowNodeInstance result = new TaskNodeInstanceImpl();
+            result.setNodeId( node.getId() );
+            addNodeInstance( result );
+            return result;
         }
         throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
     }
@@ -175,6 +183,9 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     public void setState(final int state) {
         super.setState(state);
         if (state == ProcessInstanceImpl.STATE_COMPLETED) {
+            ((EventSupport) this.workingMemory)
+                    .getRuleFlowEventSupport()
+                    .fireBeforeRuleFlowProcessCompleted(this, this.workingMemory);
             // deactivate all node instances of this process instance
             while (!nodeInstances.isEmpty()) {
             	RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) nodeInstances.get(0);
@@ -182,8 +193,10 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
             }
             workingMemory.removeEventListener((AgendaEventListener) this);
             workingMemory.removeEventListener((RuleFlowEventListener) this);
-        	((EventSupport) this.workingMemory).getRuleFlowEventSupport()
-        		.fireRuleFlowProcessCompleted(this, this.workingMemory);
+            workingMemory.removeProcessInstance(this);
+        	((EventSupport) this.workingMemory)
+                    .getRuleFlowEventSupport()
+                    .fireAfterRuleFlowProcessCompleted(this, this.workingMemory);
         }
     }
 
@@ -240,19 +253,43 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
 		// Do nothing
 	}
 
-	public void ruleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+	public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
 		// Do nothing
 	}
 
-	public void ruleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+	public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
 		// Do nothing
 	}
 
-	public void ruleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+	public void beforeRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
 		// Do nothing
 	}
 
-	public void ruleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
+    public void afterRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+	public void afterRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
 		// TODO group all subflow related code in subflow instance impl?
 		for (Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
 			RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
@@ -265,4 +302,31 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
 			
 		}
 	}
+
+    public void taskCompleted(WorkItem taskInstance) {
+        for (Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
+            RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
+            if (nodeInstance instanceof TaskNodeInstanceImpl) {
+                TaskNodeInstanceImpl taskNodeInstance = (TaskNodeInstanceImpl) nodeInstance;
+                WorkItem nodeTaskInstance = taskNodeInstance.getTaskInstance();
+                if (nodeTaskInstance != null && nodeTaskInstance.getId() == taskInstance.getId()) {
+                    taskNodeInstance.triggerCompleted();
+                }
+            }
+        }
+    }
+
+    public void taskAborted(WorkItem taskInstance) {
+        for (Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
+            RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
+            if (nodeInstance instanceof TaskNodeInstanceImpl) {
+                TaskNodeInstanceImpl taskNodeInstance = (TaskNodeInstanceImpl) nodeInstance;
+                WorkItem nodeTaskInstance = taskNodeInstance.getTaskInstance();
+                if (nodeTaskInstance != null && nodeTaskInstance.getId() == taskInstance.getId()) {
+                    taskNodeInstance.triggerCompleted();
+                }
+            }
+        }
+    }
+
 }

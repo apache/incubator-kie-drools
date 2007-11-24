@@ -24,29 +24,43 @@ package org.drools.audit.event;
  */
 public class LogEvent {
 
-    public static final int INSERTED            = 1;
-    public static final int UPDATED            = 2;
-    public static final int RETRACTED           = 3;
+public static final int INSERTED                                = 1;
+    public static final int UPDATED                             = 2;
+    public static final int RETRACTED                           = 3;
 
-    public static final int ACTIVATION_CREATED         = 4;
-    public static final int ACTIVATION_CANCELLED       = 5;
-    public static final int BEFORE_ACTIVATION_FIRE     = 6;
-    public static final int AFTER_ACTIVATION_FIRE      = 7;
+    public static final int ACTIVATION_CREATED                  = 4;
+    public static final int ACTIVATION_CANCELLED                = 5;
+    public static final int BEFORE_ACTIVATION_FIRE              = 6;
+    public static final int AFTER_ACTIVATION_FIRE               = 7;
 
-    public static final int RULEFLOW_CREATED           = 8;
-    public static final int RULEFLOW_COMPLETED         = 9;
-    public static final int RULEFLOW_GROUP_ACTIVATED   = 10;
-    public static final int RULEFLOW_GROUP_DEACTIVATED = 11;
+    public static final int BEFORE_RULEFLOW_CREATED             = 8;
+    public static final int AFTER_RULEFLOW_CREATED              = 9;
+    public static final int BEFORE_RULEFLOW_COMPLETED           = 10;
+    public static final int AFTER_RULEFLOW_COMPLETED            = 11;
+    public static final int BEFORE_RULEFLOW_GROUP_ACTIVATED     = 12;
+    public static final int AFTER_RULEFLOW_GROUP_ACTIVATED      = 13;
+    public static final int BEFORE_RULEFLOW_GROUP_DEACTIVATED   = 14;
+    public static final int AFTER_RULEFLOW_GROUP_DEACTIVATED    = 15;
 
-    public static final int BEFORE_PACKAGE_ADDED       = 12;
-    public static final int AFTER_PACKAGE_ADDED        = 13;
-    public static final int BEFORE_PACKAGE_REMOVED     = 14;
-    public static final int AFTER_PACKAGE_REMOVED      = 15;
-    public static final int BEFORE_RULE_ADDED          = 16;
-    public static final int AFTER_RULE_ADDED           = 17;
-    public static final int BEFORE_RULE_REMOVED        = 18;
-    public static final int AFTER_RULE_REMOVED         = 19;
+    public static final int BEFORE_PACKAGE_ADDED                = 16;
+    public static final int AFTER_PACKAGE_ADDED                 = 17;
+    public static final int BEFORE_PACKAGE_REMOVED              = 18;
+    public static final int AFTER_PACKAGE_REMOVED               = 19;
+    public static final int BEFORE_RULE_ADDED                   = 20;
+    public static final int AFTER_RULE_ADDED                    = 21;
+    public static final int BEFORE_RULE_REMOVED                 = 22;
+    public static final int AFTER_RULE_REMOVED                  = 23;
 
+    public static final int BEFORE_RULEFLOW_NODE_TRIGGERED      = 24;
+    public static final int AFTER_RULEFLOW_NODE_TRIGGERED       = 25;
+    public static final int BEFORE_RULEFLOW_NODE_EXITED         = 26;
+    public static final int AFTER_RULEFLOW_NODE_EXITED          = 27;
+    
+    public static final int BEFORE_TASK_INSTANCE_CREATED        = 28;
+    public static final int AFTER_TASK_INSTANCE_CREATED         = 29;
+    public static final int BEFORE_TASK_INSTANCE_COMPLETED      = 30;
+    public static final int AFTER_TASK_INSTANCE_COMPLETED       = 31;
+    
     private int             type;
 
     /**

@@ -48,7 +48,7 @@ public class ActionNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
         return (ActionNode) getNode();
     }
 
-    public void trigger(final RuleFlowNodeInstance from) {
+    public void internalTrigger(final RuleFlowNodeInstance from) {
 		Object action = getActionNode().getAction();
 		if (action instanceof DroolsConsequenceAction) {
 			String actionString = ((DroolsConsequenceAction) action).getConsequence();

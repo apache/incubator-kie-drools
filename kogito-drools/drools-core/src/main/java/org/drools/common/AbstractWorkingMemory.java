@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,6 +57,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.common.core.Process;
 import org.drools.ruleflow.common.instance.ProcessInstance;
+import org.drools.ruleflow.common.instance.WorkItemManager;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.ruleflow.instance.impl.RuleFlowProcessInstanceImpl;
@@ -150,7 +152,11 @@ public abstract class AbstractWorkingMemory
 
     protected boolean                               halt;
 
-    private int                                     processCounter;
+    private Map 						   processInstances								 = new HashMap();
+    
+    private int                            processCounter;
+    
+    private WorkItemManager            taskInstanceManager;
 
     private TimeMachine 							timeMachine = new TimeMachine();
 
@@ -198,6 +204,7 @@ public abstract class AbstractWorkingMemory
         } else {
             this.discardOnLogicalOverride = false;
         }
+        taskInstanceManager = new WorkItemManager(this);
     }
 
     // ------------------------------------------------------------
@@ -1413,17 +1420,35 @@ public abstract class AbstractWorkingMemory
             processInstance.setWorkingMemory( this );
             processInstance.setProcess( process );
             processInstance.setId( ++processCounter );
+            processInstances.put(new Long(processInstance.getId()), processInstance);
+            getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted(
+                    processInstance, this);
             processInstance.start();
-
-            getRuleFlowEventSupport().fireRuleFlowProcessStarted( processInstance,
-                                                                  this );
+            getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted(
+                    processInstance, this);
 
             return processInstance;
         } else {
             throw new IllegalArgumentException( "Unknown process type: " + process.getClass() );
         }
     }
-
+    
+    public Collection getProcessInstances() {
+    	return Collections.unmodifiableCollection(processInstances.values());
+    }
+    
+    public ProcessInstance getProcessInstance(long id) {
+        return (ProcessInstance) processInstances.get(new Long(id));
+    }
+    
+    public void removeProcessInstance(ProcessInstance processInstance) {
+    	processInstances.remove(processInstance);
+    }
+    
+    public WorkItemManager getWorkItemManager() {
+        return taskInstanceManager;
+    }
+    
     public List iterateObjectsToList() {
         List result = new ArrayList();
         Iterator iterator = iterateObjects();

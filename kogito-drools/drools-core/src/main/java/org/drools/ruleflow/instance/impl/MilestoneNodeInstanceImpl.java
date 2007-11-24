@@ -35,7 +35,7 @@ public class MilestoneNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
         return (MilestoneNode) getNode();
     }
 
-    public void trigger(final RuleFlowNodeInstance from) {
+    public void internalTrigger(final RuleFlowNodeInstance from) {
     	RuleFlowGroup systemRuleFlowGroup = getProcessInstance().getAgenda().getRuleFlowGroup("DROOLS_SYSTEM");
     	String rule = "RuleFlow-Milestone-" + getProcessInstance().getProcess().getId()
     		+ "-" + getNode().getId();

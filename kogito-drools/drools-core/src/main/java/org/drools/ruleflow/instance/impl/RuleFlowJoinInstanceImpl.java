@@ -30,9 +30,7 @@ import org.drools.ruleflow.instance.RuleFlowNodeInstance;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowJoinInstanceImpl extends RuleFlowNodeInstanceImpl
-    implements
-    RuleFlowNodeInstance {
+public class RuleFlowJoinInstanceImpl extends RuleFlowNodeInstanceImpl {
 
     private final Map triggers = new HashMap();
 
@@ -40,15 +38,15 @@ public class RuleFlowJoinInstanceImpl extends RuleFlowNodeInstanceImpl
         return (Join) getNode();
     }
 
-    public void trigger(final RuleFlowNodeInstance from) {
+    public void internalTrigger(final RuleFlowNodeInstance from) {
         final Join join = getJoinNode();
         switch ( join.getType() ) {
             case Join.TYPE_XOR :
                 triggerCompleted();
                 break;
             case Join.TYPE_AND :
-                final Node node = getProcessInstance().getRuleFlowProcess().getNode( from.getNodeId() );
-                final Integer count = (Integer) this.triggers.get( node );
+                Node node = getProcessInstance().getRuleFlowProcess().getNode( from.getNodeId() );
+                Integer count = (Integer) this.triggers.get( node );
                 if ( count == null ) {
                     this.triggers.put( node,
                                        new Integer( 1 ) );
@@ -56,22 +54,40 @@ public class RuleFlowJoinInstanceImpl extends RuleFlowNodeInstanceImpl
                     this.triggers.put( node,
                                        new Integer( count.intValue() + 1 ) );
                 }
-                checkActivation();
+                if (checkAllActivated()) {
+                    decreaseAllTriggers();
+                    triggerCompleted();
+                }
+                break;
+            case Join.TYPE_DISCRIMINATOR :
+                boolean triggerCompleted = triggers.isEmpty();
+                node = getProcessInstance().getRuleFlowProcess().getNode( from.getNodeId() );
+                triggers.put( node, new Integer( 1 ) );
+                if (checkAllActivated()) {
+                    resetAllTriggers();
+                }
+                if (triggerCompleted) {
+                    triggerCompleted();
+                }
                 break;
             default :
                 throw new IllegalArgumentException( "Illegal join type " + join.getType() );
         }
     }
 
-    private void checkActivation() {
+    private boolean checkAllActivated() {
         // check whether all parent nodes have been triggered 
         for ( final Iterator it = getJoinNode().getIncomingConnections().iterator(); it.hasNext(); ) {
             final Connection connection = (Connection) it.next();
             if ( this.triggers.get( connection.getFrom() ) == null ) {
-                return;
+                return false;
             }
         }
-        // if true, decrease trigger count for all parents and trigger children
+        return true;
+    }
+    
+    private void decreaseAllTriggers() {
+        // decrease trigger count for all incoming connections
         for ( final Iterator it = getJoinNode().getIncomingConnections().iterator(); it.hasNext(); ) {
             final Connection connection = (Connection) it.next();
             final Integer count = (Integer) this.triggers.get( connection.getFrom() );
@@ -82,7 +98,10 @@ public class RuleFlowJoinInstanceImpl extends RuleFlowNodeInstanceImpl
                                    new Integer( count.intValue() - 1 ) );
             }
         }
-        triggerCompleted();
+    }
+
+    private void resetAllTriggers() {
+        triggers.clear();
     }
 
     public void triggerCompleted() {
