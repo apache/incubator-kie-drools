@@ -204,7 +204,7 @@ public abstract class AbstractWorkingMemory
         } else {
             this.discardOnLogicalOverride = false;
         }
-        taskInstanceManager = new WorkItemManager(this);
+        this.taskInstanceManager = new WorkItemManager(this);
     }
 
     // ------------------------------------------------------------
