@@ -17,6 +17,7 @@ package org.drools.ruleflow.common.instance.impl;
  */
 
 import org.drools.ruleflow.common.core.Process;
+import org.drools.ruleflow.common.instance.WorkItem;
 
 /**
  * Default implementation of a process instance.
@@ -53,6 +54,12 @@ public abstract class ProcessInstanceImpl
 
     public int getState() {
         return this.state;
+    }
+    
+    public void taskCompleted(WorkItem taskInstance) {
+    }
+
+    public void taskAborted(WorkItem taskInstance) {
     }
 
     public String toString() {

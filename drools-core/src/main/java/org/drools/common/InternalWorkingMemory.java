@@ -9,6 +9,7 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
+import org.drools.ruleflow.common.instance.ProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
@@ -67,4 +68,6 @@ public interface InternalWorkingMemory
 	public TimeMachine getTimeMachine();
 
 	public void setTimeMachine(TimeMachine tm);
+    
+    public void removeProcessInstance(ProcessInstance processInstance);
 }

@@ -21,7 +21,6 @@ import org.drools.ruleflow.instance.impl.RuleFlowSequenceNodeInstanceImpl;
 import org.drools.spi.Activation;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
-import org.drools.util.LinkedList.LinkedListIterator;
 
 /**
  * Implementation of a <code>RuleFlowGroup</code> that collects activations
@@ -78,6 +77,8 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
         }
         this.active = active;
         if ( active ) {
+            ((EventSupport) this.workingMemory).getRuleFlowEventSupport()
+                    .fireBeforeRuleFlowGroupActivated(this, this.workingMemory);
             if ( this.list.isEmpty() ) {
                 if ( this.autoDeactivate ) {
                     // if the list of activations is empty and
@@ -88,9 +89,11 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
             } else {
                 triggerActivations();
             }
-            ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireRuleFlowGroupActivated( this,
-                                                                                                      this.workingMemory );
+            ((EventSupport) this.workingMemory).getRuleFlowEventSupport()
+                    .fireAfterRuleFlowGroupActivated(this, this.workingMemory);
         } else {
+            ((EventSupport) this.workingMemory).getRuleFlowEventSupport()
+                    .fireBeforeRuleFlowGroupDeactivated(this, this.workingMemory);
             final Iterator it = this.list.iterator();
             for ( RuleFlowGroupNode node = (RuleFlowGroupNode) it.next(); node != null; node = (RuleFlowGroupNode) it.next() ) {
                 final Activation activation = node.getActivation();
@@ -102,8 +105,8 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
             if ( getProcessInstance() != null ) {
                 triggerCompleted();
             }
-            ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireRuleFlowGroupDeactivated( this,
-                                                                                                        this.workingMemory );
+            ((EventSupport) this.workingMemory).getRuleFlowEventSupport()
+                    .fireAfterRuleFlowGroupDeactivated(this, this.workingMemory);
         }
     }
 
@@ -191,7 +194,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
         return this.name.hashCode();
     }
 
-    public void trigger(final RuleFlowNodeInstance parent) {
+    public void internalTrigger(final RuleFlowNodeInstance parent) {
         setActive( true );
     }
 

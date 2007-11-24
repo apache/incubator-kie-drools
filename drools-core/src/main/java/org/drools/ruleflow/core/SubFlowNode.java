@@ -53,4 +53,22 @@ public interface SubFlowNode
      * @param processId	The process id of the SubFlowNode
      */
     void setProcessId(String processId);
+    
+    /**
+     * Sets whether this node should wait until the sub-flow has been
+     * completed.
+     * 
+     * @param waitForCompletion  whether this node should wait until the sub-flow has been completed
+     */
+    void setWaitForCompletion(boolean waitForCompletion);
+
+    /**
+     * Returns whether this node should wait until the sub-flow has been
+     * completed.
+     * 
+     * @return whether this node should wait until the sub-flow has been
+     * completed.
+     */
+    boolean isWaitForCompletion();
+
 }

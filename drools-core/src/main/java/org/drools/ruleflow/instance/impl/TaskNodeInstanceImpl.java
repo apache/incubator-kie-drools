@@ -16,32 +16,41 @@ package org.drools.ruleflow.instance.impl;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.core.RuleSetNode;
+import org.drools.ruleflow.common.core.Work;
+import org.drools.ruleflow.common.instance.WorkItem;
+import org.drools.ruleflow.common.instance.impl.WorkItemImpl;
+import org.drools.ruleflow.core.WorkItemNode;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
 
 /**
- * Runtime counterpart of a ruleset node.
+ * Runtime counterpart of a task node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowSequenceNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
+public class TaskNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
 
-    protected RuleSetNode getRuleSetNode() {
-        return (RuleSetNode) getNode();
+    private WorkItemImpl taskInstance;
+    
+    protected WorkItemNode getTaskNode() {
+        return (WorkItemNode) getNode();
+    }
+    
+    public WorkItem getTaskInstance() {
+        return taskInstance;
     }
 
     public void internalTrigger(final RuleFlowNodeInstance from) {
-        getProcessInstance().getAgenda().activateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
+		Work task = getTaskNode().getWork();
+		taskInstance = new WorkItemImpl();
+		taskInstance.setName(task.getName());
+		taskInstance.setProcessInstanceId(getProcessInstance().getId());
+		taskInstance.setParameters(task.getParameters());
+		getProcessInstance().getWorkingMemory().getWorkItemManager().executeWorkItem(taskInstance);
     }
 
     public void triggerCompleted() {
-        getProcessInstance().getNodeInstance( getRuleSetNode().getTo().getTo() ).trigger( this );
+        getProcessInstance().getNodeInstance( getTaskNode().getTo().getTo() ).trigger( this );
         getProcessInstance().removeNodeInstance(this);
-    }
-    
-    public void cancel() {
-    	getProcessInstance().getAgenda().deactivateRuleFlowGroup( getRuleSetNode().getRuleFlowGroup() );
-    	super.cancel();
     }
 
 }

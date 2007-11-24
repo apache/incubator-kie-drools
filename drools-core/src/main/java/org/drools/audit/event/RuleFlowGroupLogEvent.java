@@ -55,11 +55,17 @@ public class RuleFlowGroupLogEvent extends LogEvent {
 
         String msg = null;
         switch ( this.getType() ) {
-            case RULEFLOW_GROUP_ACTIVATED :
-                msg = "RULEFLOW GROUP ACTIVATED";
+            case BEFORE_RULEFLOW_GROUP_ACTIVATED :
+                msg = "BEFORE RULEFLOW GROUP ACTIVATED";
                 break;
-            case RULEFLOW_GROUP_DEACTIVATED :
-                msg = "ACTIVATION GROUP DEACTIVATED";
+            case AFTER_RULEFLOW_GROUP_ACTIVATED :
+                msg = "AFTER RULEFLOW GROUP ACTIVATED";
+                break;
+            case BEFORE_RULEFLOW_GROUP_DEACTIVATED :
+                msg = "BEFORE RULEFLOW GROUP DEACTIVATED";
+                break;
+            case AFTER_RULEFLOW_GROUP_DEACTIVATED :
+                msg = "AFTER RULEFLOW GROUP DEACTIVATED";
                 break;
         }
         return msg + " group:" + this.groupName + "[size=" + this.size + "]";

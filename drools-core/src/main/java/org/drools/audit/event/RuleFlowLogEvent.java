@@ -31,7 +31,8 @@ public class RuleFlowLogEvent extends LogEvent {
     /**
      * Create a new ruleflow log event.
      * 
-     * @param type The type of event.  This can only be RULEFLOW_CREATED or RULEFLOW_COMPLETED.
+     * @param type The type of event.  This can only be RULEFLOW_CREATED,
+     *        RULEFLOW_COMPLETED, RULEFLOW_NODE_START or RULEFLOW_NODE_END.
      * @param processId The id of the process
      * @param processName The name of the process
      */
@@ -52,14 +53,19 @@ public class RuleFlowLogEvent extends LogEvent {
     }
 
     public String toString() {
-
         String msg = null;
         switch ( this.getType() ) {
-            case RULEFLOW_CREATED :
-                msg = "RULEFLOW STARTED";
+            case BEFORE_RULEFLOW_CREATED :
+                msg = "BEFORE RULEFLOW STARTED";
                 break;
-            case RULEFLOW_COMPLETED :
-                msg = "ACTIVATION CREATED";
+            case AFTER_RULEFLOW_CREATED :
+                msg = "AFTER RULEFLOW STARTED";
+                break;
+            case BEFORE_RULEFLOW_COMPLETED :
+                msg = "BEFORE RULEFLOW COMPLETED";
+                break;
+            case AFTER_RULEFLOW_COMPLETED :
+                msg = "AFTER RULEFLOW COMPLETED";
                 break;
         }
         return msg + " process:" + this.processName + "[id=" + this.processId + "]";

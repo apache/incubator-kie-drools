@@ -31,6 +31,7 @@ import org.drools.audit.event.ObjectLogEvent;
 import org.drools.audit.event.RuleBaseLogEvent;
 import org.drools.audit.event.RuleFlowGroupLogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
+import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
@@ -62,6 +63,7 @@ import org.drools.event.RuleFlowCompletedEvent;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.event.RuleFlowNodeTriggeredEvent;
 import org.drools.event.RuleFlowStartedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.rule.Declaration;
@@ -319,34 +321,88 @@ public abstract class WorkingMemoryLogger
         // we don't audit this yet        
     }
     
-    public void ruleFlowStarted(RuleFlowStartedEvent event,
-            					WorkingMemory workingMemory) {
-        filterLogEvent( new RuleFlowLogEvent( LogEvent.RULEFLOW_CREATED,
+    public void beforeRuleFlowStarted(RuleFlowStartedEvent event,
+            					      WorkingMemory workingMemory) {
+        filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_CREATED,
         		event.getRuleFlowProcessInstance().getProcess().getId(),
                 event.getRuleFlowProcessInstance().getProcess().getName() ) );
     }
 
-    public void ruleFlowCompleted(RuleFlowCompletedEvent event,
+    public void afterRuleFlowStarted(RuleFlowStartedEvent event,
+                                     WorkingMemory workingMemory) {
+        filterLogEvent(new RuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_CREATED,
+                event.getRuleFlowProcessInstance().getProcess().getId(),
+                event.getRuleFlowProcessInstance().getProcess().getName()));
+    }
+
+    public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event,
               					  WorkingMemory workingMemory) {
-        filterLogEvent( new RuleFlowLogEvent( LogEvent.RULEFLOW_COMPLETED,
+        filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_COMPLETED,
         		event.getRuleFlowProcessInstance().getProcess().getId(),
                 event.getRuleFlowProcessInstance().getProcess().getName() ) );
     }
     
-    public void ruleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-           							   WorkingMemory workingMemory) {
-        filterLogEvent( new RuleFlowGroupLogEvent( LogEvent.RULEFLOW_GROUP_ACTIVATED,
-        		event.getRuleFlowGroup().getName(),
-                event.getRuleFlowGroup().size() ) );
+    public void afterRuleFlowCompleted(RuleFlowCompletedEvent event,
+                                       WorkingMemory workingMemory) {
+        filterLogEvent(new RuleFlowLogEvent(LogEvent.AFTER_RULEFLOW_COMPLETED,
+                event.getRuleFlowProcessInstance().getProcess().getId(),
+                event.getRuleFlowProcessInstance().getProcess().getName()));
     }
 
-    public void ruleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                     					 WorkingMemory workingMemory) {
-        filterLogEvent( new RuleFlowGroupLogEvent( LogEvent.RULEFLOW_GROUP_DEACTIVATED,
-        		event.getRuleFlowGroup().getName(),
-                event.getRuleFlowGroup().size() ) );
+    public void beforeRuleFlowGroupActivated(
+            RuleFlowGroupActivatedEvent event,
+            WorkingMemory workingMemory) {
+        filterLogEvent(new RuleFlowGroupLogEvent(
+                LogEvent.BEFORE_RULEFLOW_GROUP_ACTIVATED, event
+                        .getRuleFlowGroup().getName(), event.getRuleFlowGroup()
+                        .size()));
     }
     
+    public void afterRuleFlowGroupActivated(
+            RuleFlowGroupActivatedEvent event,
+            WorkingMemory workingMemory) {
+        filterLogEvent(new RuleFlowGroupLogEvent(
+                LogEvent.AFTER_RULEFLOW_GROUP_ACTIVATED,
+                event.getRuleFlowGroup().getName(),
+                event.getRuleFlowGroup().size()));
+    }
+
+    public void beforeRuleFlowGroupDeactivated(
+            RuleFlowGroupDeactivatedEvent event, 
+            WorkingMemory workingMemory) {
+        filterLogEvent(new RuleFlowGroupLogEvent(
+                LogEvent.BEFORE_RULEFLOW_GROUP_DEACTIVATED,
+                event.getRuleFlowGroup().getName(),
+                event.getRuleFlowGroup().size()));
+    }
+    
+    public void afterRuleFlowGroupDeactivated(
+            RuleFlowGroupDeactivatedEvent event,
+            WorkingMemory workingMemory) {
+        filterLogEvent(new RuleFlowGroupLogEvent(
+                LogEvent.AFTER_RULEFLOW_GROUP_DEACTIVATED,
+                event.getRuleFlowGroup().getName(),
+                event.getRuleFlowGroup().size()));
+    }
+
+    public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
+                                            WorkingMemory workingMemory) {
+        filterLogEvent(new RuleFlowNodeLogEvent(LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED,
+                event.getRuleFlowNodeInstance().getId() + "",
+                event.getRuleFlowNodeInstance().getProcessInstance().getRuleFlowProcess().getNode(event.getRuleFlowNodeInstance().getNodeId()).getName(),
+                event.getRuleFlowProcessInstance().getProcess().getId(), event
+                        .getRuleFlowProcessInstance().getProcess().getName()));
+    }
+
+    public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
+                                           WorkingMemory workingMemory) {
+        filterLogEvent(new RuleFlowNodeLogEvent(LogEvent.AFTER_RULEFLOW_NODE_TRIGGERED,
+                event.getRuleFlowNodeInstance().getId() + "",
+                event.getRuleFlowNodeInstance().getProcessInstance().getRuleFlowProcess().getNode(event.getRuleFlowNodeInstance().getNodeId()).getName(),
+                event.getRuleFlowProcessInstance().getProcess().getId(), event
+                        .getRuleFlowProcessInstance().getProcess().getName()));
+    }
+
     public void afterPackageAdded(AfterPackageAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_ADDED,
                                               event.getPackage().getName(),

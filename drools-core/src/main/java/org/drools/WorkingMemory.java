@@ -16,9 +16,11 @@ package org.drools;
  * limitations under the License.
  */
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import org.drools.ruleflow.common.instance.ProcessInstance;
+import org.drools.ruleflow.common.instance.WorkItemManager;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -337,6 +339,21 @@ public interface WorkingMemory extends WorkingMemoryEventManager {
      */
     ProcessInstance startProcess(String processId);
 
+    /**
+     * Returns the list of process instances of this working memory.
+     * This list is unmodifiable.
+     * @return the list of process instances
+     */
+    public Collection getProcessInstances();
+    
+    /**
+     * Returns the process instance with the given id.
+     * @return the process instance with the given id
+     */
+    public ProcessInstance getProcessInstance(long id);
+    
+    public WorkItemManager getWorkItemManager();
+    
     /**
      * Stops rule firing after the currect rule finishes executing
      *

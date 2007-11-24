@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.ruleflow.common.core.Work;
 import org.drools.ruleflow.core.ActionNode;
 import org.drools.ruleflow.core.Connection;
 import org.drools.ruleflow.core.EndNode;
@@ -35,6 +36,7 @@ import org.drools.ruleflow.core.RuleSetNode;
 import org.drools.ruleflow.core.Split;
 import org.drools.ruleflow.core.StartNode;
 import org.drools.ruleflow.core.SubFlowNode;
+import org.drools.ruleflow.core.WorkItemNode;
 import org.drools.ruleflow.core.Variable;
 import org.mvel.ExpressionCompiler;
 import org.mvel.ParserContext;
@@ -201,7 +203,24 @@ public class RuleFlowProcessValidatorImpl
                 		}
                 	}
                 }
-            }
+            } else if ( node instanceof WorkItemNode ) {
+                final WorkItemNode taskNode = (WorkItemNode) node;
+                if ( taskNode.getFrom() == null ) {
+                    errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.TASK_NODE_WITHOUT_INCOMING_CONNECTIONS, "name = " + taskNode.getName() ) );
+                }
+
+                if ( taskNode.getTo() == null ) {
+                    errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.TASK_NODE_WITHOUT_OUTGOING_CONNECTIONS, "name = " + taskNode.getName() ) );
+                }
+                if ( taskNode.getWork() == null ) {
+                   errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.TASK_NODE_WITHOUT_TASK, "name = " + taskNode.getName() ) );
+                } else {
+                    Work task = taskNode.getWork();
+                    if (task.getName() == null) {
+                        errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.TASK_NODE_WITH_INVALID_TASK, "name = " + taskNode.getName() ) );
+                    }
+                }
+            } 
         }
         if ( !startNodeFound ) {
             errors.add( new RuleFlowProcessValidationErrorImpl( RuleFlowProcessValidationError.NO_START_NODE ) );

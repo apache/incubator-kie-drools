@@ -19,30 +19,30 @@ package org.drools.ruleflow.core.impl;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.ruleflow.common.core.Work;
 import org.drools.ruleflow.core.Connection;
-import org.drools.ruleflow.core.SubFlowNode;
+import org.drools.ruleflow.core.WorkItemNode;
 
 /**
- * Default implementation of a sub-flow node.
+ * Default implementation of a task node.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubFlowNodeImpl extends NodeImpl
+public class WorkItemNodeImpl extends NodeImpl
     implements
-    SubFlowNode {
+    WorkItemNode {
 
-	private static final long serialVersionUID = 400L;
+	private static final long serialVersionUID = -2899376492708393815L;
 	
-	private String            processId;
-	private boolean           waitForCompletion = true;
+	private Work task;
 
-    public void setProcessId(final String processId) {
-        this.processId = processId;
-    }
+	public Work getWork() {
+		return task;
+	}
 
-    public String getProcessId() {
-        return this.processId;
-    }
+	public void setWork(Work task) {
+		this.task = task;
+	}
 
     public Connection getFrom() {
         final List list = getIncomingConnections();
@@ -63,7 +63,7 @@ public class SubFlowNodeImpl extends NodeImpl
     protected void validateAddIncomingConnection(final Connection connection) {
         super.validateAddIncomingConnection( connection );
         if ( getIncomingConnections().size() > 0 ) {
-            throw new IllegalArgumentException( "A MilestoneNode cannot have more than one incoming node" );
+            throw new IllegalArgumentException( "An ActionNode cannot have more than one incoming node" );
         }
     }
 
@@ -72,17 +72,9 @@ public class SubFlowNodeImpl extends NodeImpl
         for ( final Iterator it = getOutgoingConnections().iterator(); it.hasNext(); ) {
             final Connection conn = (Connection) it.next();
             if ( conn.getType() == connection.getType() ) {
-                throw new IllegalArgumentException( "A MilestoneNode can have at most one outgoing node" );
+                throw new IllegalArgumentException( "An ActionNode can have at most one outgoing node" );
             }
         }
-    }
-
-    public boolean isWaitForCompletion() {
-        return waitForCompletion;
-    }
-
-    public void setWaitForCompletion(boolean waitForCompletion) {
-        this.waitForCompletion = waitForCompletion;
     }
 
 }

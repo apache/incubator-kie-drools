@@ -33,10 +33,11 @@ public class SubFlowNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
         return (SubFlowNode) getNode();
     }
 
-    public void trigger(final RuleFlowNodeInstance from) {
+    public void internalTrigger(final RuleFlowNodeInstance from) {
     	ProcessInstance processInstance = 
     		getProcessInstance().getWorkingMemory().startProcess(getSubFlowNode().getProcessId());
-    	if (processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
+    	if (!getSubFlowNode().isWaitForCompletion()
+    	        || processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
     		triggerCompleted();
     	} else {
     		this.processInstanceId = processInstance.getId();

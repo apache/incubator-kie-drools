@@ -27,16 +27,34 @@ public interface RuleFlowEventListener
     extends
     EventListener {
 
-    void ruleFlowStarted(RuleFlowStartedEvent event,
-                         WorkingMemory workingMemory);
+    void beforeRuleFlowStarted(RuleFlowStartedEvent event,
+                               WorkingMemory workingMemory);
 
-    void ruleFlowCompleted(RuleFlowCompletedEvent event,
-                           WorkingMemory workingMemory);
+    void afterRuleFlowStarted(RuleFlowStartedEvent event,
+                              WorkingMemory workingMemory);
 
-    void ruleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+    void beforeRuleFlowCompleted(RuleFlowCompletedEvent event,
+                                 WorkingMemory workingMemory);
+
+    void afterRuleFlowCompleted(RuleFlowCompletedEvent event,
                                 WorkingMemory workingMemory);
 
-    void ruleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                                  WorkingMemory workingMemory);
+    void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+                                      WorkingMemory workingMemory);
+
+    void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+                                     WorkingMemory workingMemory);
+    
+    void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                                        WorkingMemory workingMemory);
+
+    void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                                       WorkingMemory workingMemory);
+
+    void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
+                                     WorkingMemory workingMemory);
+
+    void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
+                                    WorkingMemory workingMemory);
 
 }

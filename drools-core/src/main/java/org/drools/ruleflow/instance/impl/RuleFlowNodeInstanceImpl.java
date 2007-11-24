@@ -16,6 +16,8 @@ package org.drools.ruleflow.instance.impl;
  * limitations under the License.
  */
 
+import org.drools.common.EventSupport;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
@@ -64,5 +66,13 @@ public abstract class RuleFlowNodeInstanceImpl
     public void cancel() {
     	getProcessInstance().removeNodeInstance(this);
     }
+    
+    public final void trigger(RuleFlowNodeInstance from) {
+        ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireBeforeRuleFlowNodeTriggered(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+        internalTrigger(from);
+        ((EventSupport) getProcessInstance().getWorkingMemory()).getRuleFlowEventSupport().fireAfterRuleFlowNodeTriggered(this, (InternalWorkingMemory) getProcessInstance().getWorkingMemory());
+    }
+    
+    public abstract void internalTrigger(RuleFlowNodeInstance from);
 
 }

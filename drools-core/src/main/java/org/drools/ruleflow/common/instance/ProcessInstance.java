@@ -48,5 +48,9 @@ public interface ProcessInstance
     void setState(int state);
 
     int getState();
+    
+    void taskCompleted(WorkItem taskInstance);
+    
+    void taskAborted(WorkItem taskInstance);
 
 }

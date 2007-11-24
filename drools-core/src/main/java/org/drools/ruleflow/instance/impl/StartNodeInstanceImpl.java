@@ -26,7 +26,7 @@ import org.drools.ruleflow.instance.RuleFlowNodeInstance;
  */
 public class StartNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
 
-    public void trigger(final RuleFlowNodeInstance from) {
+    public void internalTrigger(final RuleFlowNodeInstance from) {
         triggerCompleted();
     }
 
