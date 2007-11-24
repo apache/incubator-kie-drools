@@ -1,5 +1,6 @@
 package org.drools.ruleflow.common.instance;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.Set;
 import org.drools.WorkingMemory;
 import org.drools.ruleflow.common.instance.impl.WorkItemImpl;
 
-public class WorkItemManager {
+public class WorkItemManager implements Serializable {
 
 	private long taskInstanceCounter; 
 	private Map taskInstances = new HashMap();
