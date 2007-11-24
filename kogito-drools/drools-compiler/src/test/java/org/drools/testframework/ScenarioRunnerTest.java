@@ -444,6 +444,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertEquals("rule2", p.getStatus());
         assertEquals(0, p.getAge());
 
+        Thread.sleep(50);
 
         assertTrue((new Date()).after(sc.lastRunResult));
         assertTrue(executionTrace.executionTimeResult != null);
