@@ -1,6 +1,7 @@
 package org.drools.testframework;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.drools.reteoo.LIANodePropagation;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.common.instance.ProcessInstance;
+import org.drools.ruleflow.common.instance.WorkItemManager;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -389,6 +391,26 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public void setRuleBase(InternalRuleBase ruleBase) {
         // TODO Auto-generated method stub
         
+    }
+
+    public void removeProcessInstance(ProcessInstance processInstance) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public ProcessInstance getProcessInstance(long id) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Collection getProcessInstances() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public WorkItemManager getWorkItemManager() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
