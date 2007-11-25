@@ -32,7 +32,7 @@ public class RulePossibility extends AnalyticsComponent implements
 	}
 
 	public CauseType getCauseType() {
-		return Cause.CauseType.POSSIBILITY;
+		return Cause.CauseType.RULE_POSSIBILITY;
 	}
 
 	public Set<Cause> getItems() {

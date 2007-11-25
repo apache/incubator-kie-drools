@@ -15,7 +15,7 @@ import org.drools.analytics.components.AnalyticsFunctionCallDescr;
 import org.drools.analytics.components.AnalyticsMethodAccessDescr;
 import org.drools.analytics.components.AnalyticsPredicateDescr;
 import org.drools.analytics.components.AnalyticsRule;
-import org.drools.analytics.components.Consquence;
+import org.drools.analytics.components.Consequence;
 import org.drools.analytics.components.Constraint;
 import org.drools.analytics.components.Field;
 import org.drools.analytics.components.LiteralRestriction;
@@ -400,7 +400,7 @@ public class PackageDescrFlattener {
 	 *            Consequence object.
 	 * @return Analytics object that implements the Consequence interface.
 	 */
-	private Consquence flattenConsequence(AnalyticsComponent parent, Object o) {
+	private Consequence flattenConsequence(AnalyticsComponent parent, Object o) {
 		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		TextConsequence consequence = new TextConsequence();

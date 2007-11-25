@@ -1,6 +1,6 @@
 package org.drools.analytics.components;
 
-public class TextConsequence extends AnalyticsComponent implements Consquence {
+public class TextConsequence extends AnalyticsComponent implements Consequence {
 
 	private static int index = 0;
 	private String text;
