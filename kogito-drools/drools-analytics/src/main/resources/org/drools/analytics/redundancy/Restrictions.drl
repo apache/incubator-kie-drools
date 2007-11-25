@@ -23,14 +23,6 @@ rule "Find redundant VariableRestriction"
 			left == $right, 
 			right == $left 
 		)
-		
-		# Check that these two variables point to the same object.
-		#$v :Variable( id == $left.variableId )
-		#Variable( 
-		#	id == $right.variableId,
-		#	objectType == $v.objectType,
-		#	objectId == $v.objectId
-		#)
 	then
 		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
 end

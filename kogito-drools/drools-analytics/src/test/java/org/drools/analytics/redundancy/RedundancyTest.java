@@ -156,15 +156,17 @@ public class RedundancyTest extends TestBase {
 		}
 	}
 
-	public void fixmetestPartOfPatternPossibilityRedundancy() throws Exception {
+	public void testPatternPossibilityRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Possibilities.drl"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Find part of redundant PatternPossibility combination"));
+				"Find pattern possibility redundancy"));
 
 		Collection<Object> data = new ArrayList<Object>();
 
+		AnalyticsDataFactory.clearAnalyticsResult();
 		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
@@ -205,30 +207,11 @@ public class RedundancyTest extends TestBase {
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
 
-		Map<String, Set<Redundancy>> map = new HashMap<String, Set<Redundancy>>();
+		Map<String, Set<String>> map = createRedundancyMap(sessionResult
+				.iterateObjects());
 
-		Iterator<Object> iter = sessionResult.iterateObjects();
-		while (iter.hasNext()) {
-			Object o = (Object) iter.next();
-			if (o instanceof PartialRedundancy) {
-				PartialRedundancy pr = (PartialRedundancy) o;
-				AnalyticsComponent left = (AnalyticsComponent) pr.getLeft();
-				AnalyticsComponent right = (AnalyticsComponent) pr.getRight();
-
-				String key = left.getRuleName() + ":" + right.getRuleName();
-				if (map.containsKey(key)) {
-					Set<Redundancy> set = map.get(key);
-					set.add(pr.getRedundancy());
-				} else {
-					Set<Redundancy> set = new HashSet<Redundancy>();
-					set.add(pr.getRedundancy());
-					map.put(key, set);
-				}
-			}
-		}
-
-		assertTrue(RedundancyTest.mapContains(map, ruleName1 + ":" + ruleName2,
-				r1));
+		assertTrue(TestBase.mapContains(map, ruleName1, ruleName2)
+				^ TestBase.mapContains(map, ruleName2, ruleName1));
 
 		if (!map.isEmpty()) {
 			fail("More redundancies than was expected.");
@@ -309,17 +292,18 @@ public class RedundancyTest extends TestBase {
 		}
 	}
 
-	public void fixmetestAnalyticsLiteralRestrictionRedundancy()
-			throws Exception {
+	public void testAnalyticsLiteralRestrictionRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Restrictions.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant LiteralRestriction"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("RedundancyLiteralRestrictionTest.drl"));
 
+		AnalyticsDataFactory.clearAnalyticsResult();
 		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
@@ -346,17 +330,18 @@ public class RedundancyTest extends TestBase {
 		}
 	}
 
-	public void fixmetestAnalyticsVariableRestrictionRedundancy()
-			throws Exception {
+	public void testAnalyticsVariableRestrictionRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Restrictions.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant VariableRestriction"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("SubsumptionVariableRestrictionTest.drl"));
 
+		AnalyticsDataFactory.clearAnalyticsResult();
 		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
@@ -365,8 +350,8 @@ public class RedundancyTest extends TestBase {
 		Map<String, Set<String>> map = createRedundancyMap(sessionResult
 				.iterateObjects());
 
-		assertTrue(TestBase.mapContains(map, "Redundant 1a", "Redundant 1b"));
-		assertTrue(TestBase.mapContains(map, "Redundant 1b", "Redundant 1a"));
+		assertTrue(TestBase.mapContains(map, "Redundant 1a", "Redundant 1b")
+				^ TestBase.mapContains(map, "Redundant 1b", "Redundant 1a"));
 		assertTrue(TestBase.mapContains(map, "Redundant 2a", "Redundant 2a"));
 
 		if (!map.isEmpty()) {

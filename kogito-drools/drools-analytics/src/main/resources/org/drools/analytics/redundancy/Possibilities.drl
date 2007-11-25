@@ -11,48 +11,69 @@ import org.drools.analytics.report.components.Cause.CauseType;
 
 import java.util.ArrayList;
 
-rule "Find part of redundant PatternPossibility combination"
+#
+# Fires when two PatternPossibilities are redundant.
+# Marks these possibilities as redundant.
+# 
+# Example 1: Pattern1( a == b) and Pattern1( a == b)
+# Example 2: Pattern1( a == b || a == c) and Pattern1( a == b)
+rule "Find pattern possibility redundancy"
 	when
-		$patternRedundancy :Redundancy( 
+		$ppr :Redundancy( 
 			type == Redundancy.RedundancyType.WEAK,
-			causeType == Cause.CauseType.PATTERN 
+			left.causeType == Cause.CauseType.PATTERN 
+		)
+
+		# Find two PatternPossibilities.
+		$pp1 :PatternPossibility(
+			eval( id == $ppr.getLeft().getId() )
+		)
+
+		$pp2 :PatternPossibility(
+			eval( id == $ppr.getRight().getId() )
 		)
 		
-		$r1 :Restriction( eval( patternId == $patternRedundancy.getLeft().getId() ) )
-		$r2 :Restriction( eval( patternId == $patternRedundancy.getRight().getId() ) )
-
-		$restrictionRedundancy :Redundancy( 
-			(
-				left == $r1 
+		# For every restriction in $pp1 there is a redundancy to $pp2. 
+		forall(
+			$r :Restriction(
+				patternId == $pp1.patternId,
+				this memberOf $pp1.items
+			)
+			
+			Redundancy(
+				(
+					left == $r
 					&&
-				right == $r2
-			) || (
-				left == $r2 
+					right memberOf $pp2.items
+				) || (
+					left memberOf $pp2.items
 					&&
-				right == $r1
+					right == $r
+				)
 			)
 		)
 		
-		# Find two PatternPossibilities.
-		$pp1 :PatternPossibility( 
-			eval( patternId == $patternRedundancy.getLeft().getId() ),
-			items contains $r1 
-		)
-		$pp2 :PatternPossibility( 
-			eval( patternId == $patternRedundancy.getRight().getId() ),
-			items contains $r2 
-		)
-	
-		not PartialRedundancy(
-			left == $pp1,
-			right == $pp2
-		)
-		not PartialRedundancy(
-			left == $pp2, 
-			right == $pp1 
+		# For every restriction in $pp2 there is a redundancy to $pp1. 
+		forall(
+			$r :Restriction(
+				patternId == $pp2.patternId,
+				this memberOf $pp2.items
+			)
+			
+			Redundancy(
+				(
+					left == $r
+					&&
+					right memberOf $pp1.items
+				) || (
+					left memberOf $pp1.items
+					&&
+					right == $r
+				)
+			)
 		)
 	then
-		insert( new PartialRedundancy( $pp1, $pp2, $restrictionRedundancy ) );
+		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $pp1, $pp2 ) );
 end
 
 /*

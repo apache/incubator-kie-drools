@@ -1,6 +1,6 @@
 package org.drools.analytics.components;
 
-public interface Consquence {
+public interface Consequence {
 
 	public static enum ConsequenceType {
 		TEXT

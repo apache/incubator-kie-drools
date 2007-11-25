@@ -18,8 +18,8 @@ public class Redundancy implements Cause {
 	private static int index = 0;
 
 	private int id = index++;
-	private RedundancyType type = RedundancyType.WEAK; // By default the
-	// redundancy is weak.
+	// By default the redundancy is weak.
+	private RedundancyType type = RedundancyType.WEAK;
 	private Cause left;
 	private Cause right;
 

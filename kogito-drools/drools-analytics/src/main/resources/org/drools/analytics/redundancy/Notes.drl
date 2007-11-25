@@ -11,17 +11,22 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import org.drools.analytics.components.PatternPossibility;
+import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.Redundancy;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.Cause.CauseType;
 
 
 
 rule "Find redundant restrictions from pattern possibilities"
 	salience -100
 	when
-		$r :Redundancy()
+		$r :Redundancy(
+			left.causeType == Cause.CauseType.RESTRICTION
+		)
+		
 		PatternPossibility(
 			items contains $r.left, 
 			items contains $r.right 
@@ -34,5 +39,26 @@ rule "Find redundant restrictions from pattern possibilities"
 		result.save(new AnalyticsMessage( 
 						AnalyticsMessage.Severity.NOTE, AnalyticsMessage.MessageType.REDUNDANCY, 
 						$r, "Same restriction exists twice.", causes ) );
+end
+
+rule "Find redundant pattern possibilities from rule possibilities"
+	salience -100
+	when
+		$r :Redundancy(
+			left.causeType == Cause.CauseType.PATTERN_POSSIBILITY
+		)
+		
+		RulePossibility(
+			items contains $r.left, 
+			items contains $r.right 
+		)
+	then
+		Collection<Cause> causes = new ArrayList<Cause>();
+		causes.add( $r.getLeft() );
+		causes.add( $r.getRight() );
+		
+		result.save(new AnalyticsMessage( 
+						AnalyticsMessage.Severity.NOTE, AnalyticsMessage.MessageType.REDUNDANCY, 
+						$r, "Two pattern possibilities with redundant restrictions exists twice in the same rule.", causes ) );
 end
 
