@@ -252,16 +252,18 @@ public class RedundancyTest extends TestBase {
 	 * if (!map.isEmpty()) { fail("More redundancies than was expected."); } }
 	 */
 
-	public void fixmetestPatternRedundancy() throws Exception {
+	public void testPatternRedundancyWithRestrictions() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Patterns.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Find redundant Pattern shells"));
+				"Find redundant Patterns with restrictions"));
 
+		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<? extends Object> data = getTestData(this.getClass()
 				.getResourceAsStream("PatternRedundancyTest.drl"));
 
+		AnalyticsDataFactory.clearAnalyticsResult();
 		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
@@ -270,22 +272,80 @@ public class RedundancyTest extends TestBase {
 		Map<String, Set<String>> map = createRedundancyMap(sessionResult
 				.iterateObjects());
 
-		assertTrue(TestBase.mapContains(map, "Pattern redundancy 1a",
-				"Pattern redundancy 1b"));
-		assertTrue(TestBase.mapContains(map, "Pattern redundancy 1b",
-				"Pattern redundancy 1a"));
-		assertTrue(TestBase.mapContains(map, "Pattern redundancy 2a",
-				"Pattern redundancy 2b"));
-		assertTrue(TestBase.mapContains(map, "Pattern redundancy 2b",
-				"Pattern redundancy 2a"));
-		assertTrue(TestBase.mapContains(map, "Pattern redundancy 3a",
-				"Pattern redundancy 3b"));
-		assertTrue(TestBase.mapContains(map, "Pattern redundancy 3b",
-				"Pattern redundancy 3a"));
-		assertTrue(TestBase.mapContains(map, "Pattern redundancy 4a",
-				"Pattern redundancy 4b"));
-		assertTrue(TestBase.mapContains(map, "Pattern redundancy 4b",
-				"Pattern redundancy 4a"));
+		assertTrue(TestBase.mapContains(map,
+				"Pattern redundancy with restrictions 1a",
+				"Pattern redundancy with restrictions 1b")
+				^ TestBase.mapContains(map,
+						"Pattern redundancy with restrictions 1b",
+						"Pattern redundancy with restrictions 1a"));
+		assertTrue(TestBase.mapContains(map,
+				"Pattern redundancy with restrictions 2a",
+				"Pattern redundancy with restrictions 2b")
+				^ TestBase.mapContains(map,
+						"Pattern redundancy with restrictions 2b",
+						"Pattern redundancy with restrictions 2a"));
+		assertTrue(TestBase.mapContains(map,
+				"Pattern redundancy with restrictions 3a",
+				"Pattern redundancy with restrictions 3b")
+				^ TestBase.mapContains(map,
+						"Pattern redundancy with restrictions 3b",
+						"Pattern redundancy with restrictions 3a"));
+		assertTrue(TestBase.mapContains(map,
+				"Pattern redundancy with restrictions 4a",
+				"Pattern redundancy with restrictions 4b")
+				^ TestBase.mapContains(map,
+						"Pattern redundancy with restrictions 4b",
+						"Pattern redundancy with restrictions 4a"));
+
+		if (!map.isEmpty()) {
+			fail("More redundancies than was expected.");
+		}
+	}
+
+	public void testPatternRedundancyWithoutRestrictions() throws Exception {
+		StatelessSession session = getStatelessSession(this.getClass()
+				.getResourceAsStream("Patterns.drl"));
+
+		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+				"Find redundant Patterns without restrictions"));
+
+		AnalyticsDataFactory.clearAnalyticsData();
+		Collection<? extends Object> data = getTestData(this.getClass()
+				.getResourceAsStream("PatternRedundancyTest.drl"));
+
+		AnalyticsDataFactory.clearAnalyticsResult();
+		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		session.setGlobal("result", result);
+
+		StatelessSessionResult sessionResult = session.executeWithResults(data);
+
+		Map<String, Set<String>> map = createRedundancyMap(sessionResult
+				.iterateObjects());
+
+		assertTrue(TestBase.mapContains(map,
+				"Pattern redundancy without restrictions 1a",
+				"Pattern redundancy without restrictions 1b")
+				^ TestBase.mapContains(map,
+						"Pattern redundancy without restrictions 1b",
+						"Pattern redundancy without restrictions 1a"));
+		assertTrue(TestBase.mapContains(map,
+				"Pattern redundancy without restrictions 2a",
+				"Pattern redundancy without restrictions 2b")
+				^ TestBase.mapContains(map,
+						"Pattern redundancy without restrictions 2b",
+						"Pattern redundancy without restrictions 2a"));
+		assertTrue(TestBase.mapContains(map,
+				"Pattern redundancy without restrictions 3a",
+				"Pattern redundancy without restrictions 3b")
+				^ TestBase.mapContains(map,
+						"Pattern redundancy without restrictions 3b",
+						"Pattern redundancy without restrictions 3a"));
+		assertTrue(TestBase.mapContains(map,
+				"Pattern redundancy without restrictions 4a",
+				"Pattern redundancy without restrictions 4b")
+				^ TestBase.mapContains(map,
+						"Pattern redundancy without restrictions 4b",
+						"Pattern redundancy without restrictions 4a"));
 
 		if (!map.isEmpty()) {
 			fail("More redundancies than was expected.");

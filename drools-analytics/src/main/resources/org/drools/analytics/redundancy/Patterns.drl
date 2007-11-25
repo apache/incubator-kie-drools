@@ -8,7 +8,7 @@ import org.drools.analytics.report.components.Redundancy;
 # Only checks for redundant pattern specifications, 
 # does not include actual restriction checks.
 #
-rule "Find redundant Pattern shells"
+rule "Find redundant Patterns with restrictions"
 	when
 		# Check that Patterns $left and $right have redundant fields.
 		$left :Pattern()
@@ -25,6 +25,7 @@ rule "Find redundant Pattern shells"
 		
 		# Has possibilities, if the there is no possibilities, 
 		# then the Redundancy type is STRONG.
+		# Because these patterns have no restrictions.
 		exists PatternPossibility( patternId == $left.id )
 		exists PatternPossibility( patternId == $right.id )
 		
