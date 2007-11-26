@@ -8,8 +8,10 @@ import org.drools.Cheese;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.CharacterFactory;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.evaluators.StringFactory;
+import org.drools.base.field.LongFieldImpl;
 import org.drools.base.field.ObjectFieldImpl;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
@@ -217,6 +219,85 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         //this should now be nicely hashed.
         assertNotNull( ad.hashedSinkMap );
         assertNull( ad.hashableSinks );
+
+        //now remove one, check the hashing is undone
+        ad.removeObjectSink( al2 );
+        assertNotNull( ad.hashableSinks );
+        assertEquals( 2,
+                      ad.hashableSinks.size() );
+        assertNull( ad.hashedSinkMap );
+
+    }
+
+    public void testTripleAlphaCharacterConstraint() {
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
+        FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
+                                                                                        "charType",
+                                                                                        this.getClass().getClassLoader() );
+        
+        final LiteralConstraint lit = new LiteralConstraint( extractor,
+                                                             CharacterFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                             new LongFieldImpl( 65 ) ); // chars are handled as integers
+        final AlphaNode al = new AlphaNode( buildContext.getNextId(),
+                                            lit,
+                                            new MockObjectSource( buildContext.getNextId() ),
+                                            buildContext );
+
+        ad.addObjectSink( al );
+
+        assertNull( ad.otherSinks );
+        assertNotNull( ad.hashedFieldIndexes );
+        assertEquals( 1,
+                      ad.hashableSinks.size() );
+        assertEquals( al,
+                      ad.getSinks()[0] );
+
+        final LiteralConstraint lit2 = new LiteralConstraint( extractor,
+                                                              CharacterFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                              new LongFieldImpl( 66 ) );
+        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
+                                             lit2,
+                                             new MockObjectSource( buildContext.getNextId() ),
+                                             buildContext );
+
+        ad.addObjectSink( al2 );
+
+        assertNull( ad.hashedSinkMap );
+        assertEquals( 2,
+                      ad.hashableSinks.size() );
+
+        final LiteralConstraint lit3 = new LiteralConstraint( extractor,
+                                                              CharacterFactory.getInstance().getEvaluator( Operator.EQUAL ),
+                                                              new LongFieldImpl( 67 ) );
+        final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
+                                             lit3,
+                                             new MockObjectSource( buildContext.getNextId() ),
+                                             buildContext );
+        ad.addObjectSink( al3 );
+
+        //this should now be nicely hashed.
+        assertNotNull( ad.hashedSinkMap );
+        assertNull( ad.hashableSinks );
+        
+        // test propagation
+        Cheese cheese = new Cheese();
+        cheese.setCharType( 'B' );
+        CompositeObjectSinkAdapter.HashKey hashKey = new CompositeObjectSinkAdapter.HashKey();
+        
+        // should find this
+        hashKey.setValue( extractor.getIndex(),
+                          cheese,
+                          extractor );
+        ObjectSink sink = (ObjectSink) ad.hashedSinkMap.get( hashKey );
+        assertSame( al2, sink );
+
+        // should not find this one
+        cheese.setCharType( 'X' );
+        hashKey.setValue( extractor.getIndex(),
+                          cheese,
+                          extractor );
+        sink = (ObjectSink) ad.hashedSinkMap.get( hashKey );
+        assertNull( sink );
 
         //now remove one, check the hashing is undone
         ad.removeObjectSink( al2 );

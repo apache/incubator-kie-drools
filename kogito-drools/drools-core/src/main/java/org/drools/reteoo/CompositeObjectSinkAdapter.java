@@ -478,14 +478,14 @@ public class CompositeObjectSinkAdapter
             	} else {
                     this.setHashCode( 0 );
             	}
-            } else if ( vtype.isIntegerNumber() ) {
+            } else if ( vtype.isIntegerNumber() || vtype.isChar() ) {
                 this.type = LONG;
-            	if ( !isNull ) {
-	                this.lvalue = extractor.getLongValue( null, value );
-	                this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
-            	} else {
-            		this.setHashCode( 0 );
-            	}
+                if ( !isNull ) {
+                    this.lvalue = extractor.getLongValue( null, value );
+                    this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
+                } else {
+                    this.setHashCode( 0 );
+                }
             } else if ( vtype.isFloatNumber() ) {
                 this.type = DOUBLE;
             	if ( !isNull ) {                

@@ -31,6 +31,8 @@ public class Cheese
     }
 
     private String       type;
+    
+    private char         charType;
 
     private int          price;
 
@@ -120,5 +122,13 @@ public class Cheese
             }
         }
         return -1;
+    }
+
+    public char getCharType() {
+        return charType;
+    }
+
+    public void setCharType(char charType) {
+        this.charType = charType;
     }
 }
