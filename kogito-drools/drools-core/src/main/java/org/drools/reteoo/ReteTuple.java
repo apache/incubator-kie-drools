@@ -29,8 +29,8 @@ public class ReteTuple
     private int                      hashCode;
 
     private boolean                  fieldIndexed;
-
-    private int                      matches;
+    
+    private InternalFactHandle       match;
 
     private Entry                    next;
 
@@ -38,8 +38,6 @@ public class ReteTuple
     // Constructors
     // ------------------------------------------------------------
     public ReteTuple(final InternalFactHandle handle) {
-        this.index = 0;
-        this.parent = null;
         this.recency = handle.getRecency();
         this.handle = handle;
         int h = handle.hashCode();
@@ -91,14 +89,6 @@ public class ReteTuple
         this.fieldIndexed = fieldIndexed;
     }
 
-    public int getMatches() {
-        return this.matches;
-    }
-
-    public void setMatches(final int matches) {
-        this.matches = matches;
-    }
-
     public InternalFactHandle getLastHandle() {
         return this.handle;
     }
@@ -127,6 +117,15 @@ public class ReteTuple
 
     public long getRecency() {
         return this.recency;
+    }
+        
+
+    public InternalFactHandle getMatch() {
+        return match;
+    }
+
+    public void setMatch(InternalFactHandle match) {
+        this.match = match;
     }
 
     public void setActivation(final Activation activation) {
