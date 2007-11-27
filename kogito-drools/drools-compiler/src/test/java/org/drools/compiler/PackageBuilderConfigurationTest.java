@@ -31,6 +31,7 @@ import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
+import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
@@ -299,6 +300,10 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
         public void addRule(RuleBuildContext context) {
             this.rule = context.getRule();
+        }
+        
+        public void addAction(final ProcessBuildContext context) {
+            
         }
 
         public Rule getRule() {

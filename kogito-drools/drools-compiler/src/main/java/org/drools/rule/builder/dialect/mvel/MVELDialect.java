@@ -47,6 +47,7 @@ import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
+import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
@@ -245,6 +246,10 @@ public class MVELDialect
 
         context.getPkg().getPackageCompilationData().getLineMappings().put( name, mapping );
 
+    }
+    
+    public void addAction(final ProcessBuildContext context) {
+        // @TODO setup line mappings
     }
 
     public void addImport(String importEntry) {

@@ -465,7 +465,7 @@ public class JavaDialect
                              this.src,
                              new ProcessErrorHandler( processDescr,
                                                    process,
-                                                   "Rule Compilation error" ) );
+                                                   "Process Compilation error" ) );
 
         for ( final Iterator it = context.getInvokers().keySet().iterator(); it.hasNext(); ) {
             final String className = (String) it.next();

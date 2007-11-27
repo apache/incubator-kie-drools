@@ -17,6 +17,7 @@ import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
+import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
@@ -86,6 +87,8 @@ public interface Dialect {
     void compileAll();
 
     void addRule(final RuleBuildContext context);
+    
+    void addAction(final ProcessBuildContext context);
 
     void addFunction(final FunctionDescr functionDescr,
                      TypeResolver typeResolver);

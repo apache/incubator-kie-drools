@@ -226,6 +226,7 @@ public class PackageBuilder {
             processBuilder.addProcessFromFile( processSource );
             Process[] processes = processBuilder.getProcesses();
             for ( int i = 0; i < processes.length; i++ ) {
+                buildActions( processes[i] );
                 pkg.addRuleFlow( processes[i] );
             }
             this.results.addAll( processBuilder.getErrors() );
@@ -236,6 +237,14 @@ public class PackageBuilder {
             this.results.add( new RuleFlowLoadError( "Unable to load the rule flow.",
                                                      e ) );
         }
+        
+        this.dialectRegistry.compileAll();
+
+        // some of the rules and functions may have been redefined
+        if ( this.pkg.getPackageCompilationData().isDirty() ) {
+            this.pkg.getPackageCompilationData().reload();
+        }
+        this.results = this.dialectRegistry.addResults( this.results );        
     }
 
     // @FIXME this is a hack to wire in Actions for now
@@ -245,14 +254,7 @@ public class PackageBuilder {
         ProcessDescr processDescr = new ProcessDescr();
         processDescr.setClassName( rfp.getName() );
         processDescr.setName( rfp.getPackageName() );
-
-        ProcessBuildContext context = new ProcessBuildContext( this.configuration,
-                                                               pkg,
-                                                               process,
-                                                               processDescr,
-                                                               this.dialectRegistry,
-                                                               this.dialect );        
-
+       
         for ( Node node : rfp.getNodes() ) {
             if ( node instanceof ActionNode ) {
                 ActionNodeImpl actionNode = ( ActionNodeImpl ) node;
@@ -260,10 +262,20 @@ public class PackageBuilder {
                 ActionDescr actionDescr = new ActionDescr();
                 actionDescr.setText( action.getConsequence() );
                 
-                context.getDialect().getActionBuilder().build( context, actionNode, actionDescr );
+                Dialect dialect = this.dialectRegistry.getDialect( action.getDialect() );
+                
+                ProcessBuildContext context = new ProcessBuildContext( this.configuration,
+                                                                       pkg,
+                                                                       process,
+                                                                       processDescr,
+                                                                       this.dialectRegistry,
+                                                                       dialect ); 
+                
+                dialect.getActionBuilder().build( context, actionNode, actionDescr );
+                dialect.addAction( context );
             }
         }
-        ((JavaDialect)context.getDialect()).addAction( context );
+        
     }
 
     /**
