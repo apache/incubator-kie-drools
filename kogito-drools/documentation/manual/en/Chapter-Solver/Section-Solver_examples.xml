@@ -120,6 +120,93 @@
     </section>
 
     <section>
+      <title>Problem size</title>
+
+      <para>These numbers might give you some insight on the size of this
+      problem.</para>
+
+      <table>
+        <title>NQueens problem size</title>
+
+        <tgroup cols="4">
+          <thead>
+            <row>
+              <entry># queens (n)</entry>
+
+              <entry># possible solutions (each queen it's own column)</entry>
+
+              <entry># feasible solutions (distinct)</entry>
+
+              <entry># optimal solutions (distinct)</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>4</entry>
+
+              <entry>256</entry>
+
+              <entry>2</entry>
+
+              <entry>2</entry>
+            </row>
+
+            <row>
+              <entry>8</entry>
+
+              <entry>16777216</entry>
+
+              <entry>64</entry>
+
+              <entry>64</entry>
+            </row>
+
+            <row>
+              <entry>16</entry>
+
+              <entry>18446744073709551616</entry>
+
+              <entry>14772512</entry>
+
+              <entry>14772512</entry>
+            </row>
+
+            <row>
+              <entry>32</entry>
+
+              <entry>1.46150163733090291820368483e+48</entry>
+
+              <entry>?</entry>
+
+              <entry>?</entry>
+            </row>
+
+            <row>
+              <entry>64</entry>
+
+              <entry>3.94020061963944792122790401e+115</entry>
+
+              <entry>?</entry>
+
+              <entry>?</entry>
+            </row>
+
+            <row>
+              <entry>n</entry>
+
+              <entry>n ^ n</entry>
+
+              <entry>?</entry>
+
+              <entry># feasible solutions</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+
+    <section>
       <title>Class diagram</title>
 
       <para>Use a good domain model and it will be easier to understand and
@@ -357,6 +444,167 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       detailed description as well as several records of this problem
       here.</ulink></para>
     </section>
+
+    <section>
+      <title>Problem size</title>
+
+      <para>These numbers might give you some insight on the size of this
+      problem.</para>
+
+      <table>
+        <title>Traveling tournament problem size</title>
+
+        <tgroup cols="7">
+          <thead>
+            <row>
+              <entry># teams</entry>
+
+              <entry># days</entry>
+
+              <entry># matches</entry>
+
+              <entry># possible solutions (simple)</entry>
+
+              <entry># possible solutions (smart)</entry>
+
+              <entry># feasible solutions</entry>
+
+              <entry># optimal solutions</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>4</entry>
+
+              <entry>6</entry>
+
+              <entry>12</entry>
+
+              <entry>2176782336</entry>
+
+              <entry>&lt;= 518400</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>6</entry>
+
+              <entry>10</entry>
+
+              <entry>30</entry>
+
+              <entry>1000000000000000000000000000000</entry>
+
+              <entry>&lt;= 47784725839872000000</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>8</entry>
+
+              <entry>14</entry>
+
+              <entry>56</entry>
+
+              <entry>1.52464943788290465606136043e+64</entry>
+
+              <entry>&lt;= 5,77608277425558771434498864e+43</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>10</entry>
+
+              <entry>18</entry>
+
+              <entry>90</entry>
+
+              <entry>9,43029892325559280477052413e+112</entry>
+
+              <entry>&lt;= 1,07573451027871200629339068e+79</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>12</entry>
+
+              <entry>22</entry>
+
+              <entry>132</entry>
+
+              <entry>1,58414112478195320415135060e+177</entry>
+
+              <entry>&lt;= 2,01650616733413376416949843e+126</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>14</entry>
+
+              <entry>26</entry>
+
+              <entry>182</entry>
+
+              <entry>3,35080635695103223315189511e+257</entry>
+
+              <entry>&lt;= 1,73513467024013808570420241e+186</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>16</entry>
+
+              <entry>30</entry>
+
+              <entry>240</entry>
+
+              <entry>3,22924601799855400751522483e+354</entry>
+
+              <entry>&lt;= 2,45064610271441678267620602e+259</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>n</entry>
+
+              <entry>2 * (n - 1)</entry>
+
+              <entry>n * (n - 1)</entry>
+
+              <entry>(2 * (n - 1)) ^ (n * (n - 1))</entry>
+
+              <entry>&lt;= (((2 * (n - 1))!) ^ (n / 2))</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
   </section>
 
   <section>
@@ -393,11 +641,136 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
       <title>Problem statement</title>
 
       <para>Schedule exams with the a large number of hard and soft
-      constraints. It uses real-life data of a large university.</para>
+      constraints. It uses real-life data of some large universities.</para>
 
       <para><ulink
       url="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">You
       can find a detailed description of this problem here.</ulink></para>
+    </section>
+
+    <section>
+      <title>Problem size</title>
+
+      <para>These numbers might give you some insight on the size of this
+      problem.</para>
+
+      <table>
+        <title>Examination problem size</title>
+
+        <tgroup cols="8">
+          <thead>
+            <row>
+              <entry>Set</entry>
+
+              <entry># students</entry>
+
+              <entry># exams/topics</entry>
+
+              <entry># periods</entry>
+
+              <entry># rooms</entry>
+
+              <entry># possible solutions</entry>
+
+              <entry># feasible solutions</entry>
+
+              <entry># optimal solutions</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>exam_comp_set1</entry>
+
+              <entry>7883</entry>
+
+              <entry>607</entry>
+
+              <entry>54</entry>
+
+              <entry>7</entry>
+
+              <entry>1,11000574474221096210367623e+1052</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>exam_comp_set2</entry>
+
+              <entry>12484</entry>
+
+              <entry>870</entry>
+
+              <entry>40</entry>
+
+              <entry>49</entry>
+
+              <entry>2,86903028422562597982749122e+5761</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>exam_comp_set3</entry>
+
+              <entry>16365</entry>
+
+              <entry>934</entry>
+
+              <entry>36</entry>
+
+              <entry>48</entry>
+
+              <entry>5,74648299136737635070728795e+5132</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>exam_comp_set4</entry>
+
+              <entry>4421</entry>
+
+              <entry>273</entry>
+
+              <entry>21</entry>
+
+              <entry>1</entry>
+
+              <entry>1,44349601026818742275741580e+51</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>?</entry>
+
+              <entry>s</entry>
+
+              <entry>t</entry>
+
+              <entry>p</entry>
+
+              <entry>r</entry>
+
+              <entry>(t ^ p) ^ r</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
     </section>
   </section>
 </section>
