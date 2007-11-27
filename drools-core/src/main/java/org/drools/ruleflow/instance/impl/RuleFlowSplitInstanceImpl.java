@@ -19,13 +19,10 @@ package org.drools.ruleflow.instance.impl;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.common.RuleFlowGroupNode;
 import org.drools.ruleflow.core.Connection;
 import org.drools.ruleflow.core.Constraint;
 import org.drools.ruleflow.core.Split;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
-import org.drools.spi.Activation;
-import org.drools.spi.RuleFlowGroup;
 
 /**
  * Runtime counterpart of a split node.
@@ -52,49 +49,39 @@ public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl {
                 outgoing = split.getOutgoingConnections();
                 int priority = Integer.MAX_VALUE;
                 Connection selected = null;
-            	RuleFlowGroup systemRuleFlowGroup = getProcessInstance().getAgenda().getRuleFlowGroup("DROOLS_SYSTEM");
                 for ( final Iterator iterator = outgoing.iterator(); iterator.hasNext(); ) {
                     final Connection connection = (Connection) iterator.next();
-                    Constraint constraint = split.getConstraint(connection);
-                    if (constraint != null && constraint.getPriority() < priority) {
-                    	String rule = "RuleFlow-Split-" + getProcessInstance().getProcess().getId() + "-" +
-                		getNode().getId() + "-" + connection.getTo().getId();
-                    	for (Iterator activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
-                    		Activation activation = ((RuleFlowGroupNode) activations.next()).getActivation();
-                    		if (rule.equals(activation.getRule().getName())) {
-                        		selected = connection;
-                        		priority = constraint.getPriority();
-                        		break;
-                    		}
-                    	}
+                    Constraint constraint = split.getConstraint( connection );
+                    if ( constraint != null && constraint.getPriority() < priority ) {
+                        if ( constraint.getConstraintDelegate().evaluate( this,
+                                                                          connection,
+                                                                          constraint ) ) {
+                            selected = connection;
+                            priority = constraint.getPriority();
+                            break;
+                        }
                     }
                 }
-                if (selected == null) {
-                	throw new IllegalArgumentException("XOR split could not find at least one valid outgoing connection for split " + getSplitNode().getName());
+                if ( selected == null ) {
+                    throw new IllegalArgumentException( "XOR split could not find at least one valid outgoing connection for split " + getSplitNode().getName() );
                 }
                 getProcessInstance().getNodeInstance( selected.getTo() ).trigger( this );
                 break;
             case Split.TYPE_OR :
                 outgoing = split.getOutgoingConnections();
                 boolean found = false;
-            	systemRuleFlowGroup = getProcessInstance().getAgenda().getRuleFlowGroup("DROOLS_SYSTEM");
                 for ( final Iterator iterator = outgoing.iterator(); iterator.hasNext(); ) {
                     final Connection connection = (Connection) iterator.next();
-                    Constraint constraint = split.getConstraint(connection);
-                    if (constraint != null) {
-                    	String rule = "RuleFlow-Split-" + getProcessInstance().getProcess().getId() + "-" +
-                    		getNode().getId() + "-" + connection.getTo().getId();
-                    	for (Iterator activations = systemRuleFlowGroup.iterator(); activations.hasNext(); ) {
-                    		Activation activation = ((RuleFlowGroupNode) activations.next()).getActivation();
-                    		if (rule.equals(activation.getRule().getName())) {
-                                getProcessInstance().getNodeInstance( connection.getTo() ).trigger( this );
-                                found = true;
-                        		break;
-                    		}
-                    	}
+                    Constraint constraint = split.getConstraint( connection );
+
+                    if ( constraint != null && constraint.getConstraintDelegate().evaluate( this,
+                                                                                            connection,
+                                                                                            constraint ) ) {
+                        getProcessInstance().getNodeInstance( connection.getTo() ).trigger( this );
+                        found = true;
                     }
-                    if (!found) {
-                    	throw new IllegalArgumentException("OR split could not find at least one valid outgoing connection for split " + getSplitNode().getName());
+                    if ( !found ) {
+                        throw new IllegalArgumentException( "OR split could not find at least one valid outgoing connection for split " + getSplitNode().getName() );
                     }
                 }
                 break;
@@ -102,5 +89,4 @@ public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl {
                 throw new IllegalArgumentException( "Illegal split type " + split.getType() );
         }
     }
-
 }

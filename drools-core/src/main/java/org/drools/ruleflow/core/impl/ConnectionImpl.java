@@ -33,8 +33,8 @@ public class ConnectionImpl
     private static final long serialVersionUID = 400L;
 
     private int               type;
-    private NodeImpl              from;
-    private NodeImpl              to;
+    private NodeImpl          from;
+    private NodeImpl          to;
 
     private ConnectionImpl() {
     }
@@ -48,8 +48,8 @@ public class ConnectionImpl
      * @param type		The connection type
      */
     public ConnectionImpl(final Node from,
-                      final Node to,
-                      final int type) {
+                          final Node to,
+                          final int type) {
         if ( from == null ) {
             throw new IllegalArgumentException( "From node is null!" );
         }
@@ -86,17 +86,17 @@ public class ConnectionImpl
         return this.type;
     }
 
-//    public boolean equals(final Object object) {
-//        if ( object instanceof Connection ) {
-//            final Connection connection = (Connection) object;
-//            return this.type == connection.getType() && getFrom().equals( connection.getFrom() ) && getTo().equals( connection.getTo() );
-//        }
-//        return false;
-//    }
+    //    public boolean equals(final Object object) {
+    //        if ( object instanceof Connection ) {
+    //            final Connection connection = (Connection) object;
+    //            return this.type == connection.getType() && getFrom().equals( connection.getFrom() ) && getTo().equals( connection.getTo() );
+    //        }
+    //        return false;
+    //    }
 
-//    public int hashCode() {
-//        return (getFrom() == null ? 0 : getFrom().hashCode()) + 7 * (getTo() == null ? 0 : getTo().hashCode()) + 19 * getType();
-//    }
+    //    public int hashCode() {
+    //        return (getFrom() == null ? 0 : getFrom().hashCode()) + 7 * (getTo() == null ? 0 : getTo().hashCode()) + 19 * getType();
+    //    }
 
     public String toString() {
         final StringBuffer sb = new StringBuffer( "Connection " );

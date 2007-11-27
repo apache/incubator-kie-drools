@@ -59,7 +59,7 @@ public abstract class RuleFlowNodeInstanceImpl
         return this.processInstance;
     }
 
-    protected Node getNode() {
+    public Node getNode() {
         return this.processInstance.getRuleFlowProcess().getNode( this.nodeId );
     }
     
