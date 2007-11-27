@@ -33,6 +33,8 @@ public class ConstraintImpl
     private String            name;
     private String            constraint;
     private int               priority;
+    private String            dialect;
+    private String            type;
 
     public String getConstraint() {
         return this.constraint;
@@ -61,4 +63,22 @@ public class ConstraintImpl
     public void setPriority(final int priority) {
         this.priority = priority;
     }
+
+    public String getDialect() {
+        return dialect;
+    }
+
+    public void setDialect(String dialect) {
+        this.dialect = dialect;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+    
+    
 }
