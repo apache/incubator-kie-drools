@@ -640,8 +640,8 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
     <section>
       <title>Problem statement</title>
 
-      <para>Schedule exams with the a large number of hard and soft
-      constraints. It uses real-life data of some large universities.</para>
+      <para>Schedule exams with a number of hard and soft constraints. It uses
+      large data sets of real-life universities.</para>
 
       <para><ulink
       url="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">You
