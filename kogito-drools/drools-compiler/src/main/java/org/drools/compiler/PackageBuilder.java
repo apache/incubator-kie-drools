@@ -154,9 +154,9 @@ public class PackageBuilder {
 
         this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
 
-        this.dialectRegistry.initAll( this );
+        
         if ( this.pkg != null ) {
-            initDialectPackage( pkg );
+            this.dialectRegistry.initAll( this );
         }
 
     }
@@ -222,6 +222,7 @@ public class PackageBuilder {
      */
     public void addRuleFlow(Reader processSource) {
         ProcessBuilder processBuilder = new ProcessBuilder( this );
+        
         try {
             processBuilder.addProcessFromFile( processSource );
             Process[] processes = processBuilder.getProcesses();
@@ -238,12 +239,17 @@ public class PackageBuilder {
                                                      e ) );
         }
         
-        this.dialectRegistry.compileAll();
-
-        // some of the rules and functions may have been redefined
-        if ( this.pkg.getPackageCompilationData().isDirty() ) {
-            this.pkg.getPackageCompilationData().reload();
+        if ( this.pkg  != null ) {
+            // we can only do this is this.pkg != null, as otherwise the dialects won't be properly initialised
+            // as the dialects are initialised when the pkg is  first created
+            this.dialectRegistry.compileAll();
+            
+            // some of the rules and functions may have been redefined
+            if ( this.pkg.getPackageCompilationData().isDirty() ) {
+                this.pkg.getPackageCompilationData().reload();
+            }            
         }
+
         this.results = this.dialectRegistry.addResults( this.results );        
     }
 
@@ -309,11 +315,9 @@ public class PackageBuilder {
         }
 
         if ( this.pkg != null ) {
-            // mergePackage( packageDescr ) ;
-            mergePackage( this.pkg,
-                          packageDescr );
+            mergePackage( packageDescr );
         } else {
-            this.pkg = newPackage( packageDescr );
+            newPackage( packageDescr );
         }
 
         this.ruleBuilder = new RuleBuilder();
@@ -387,38 +391,22 @@ public class PackageBuilder {
         }
     }
 
-    private Package newPackage(final PackageDescr packageDescr) {
-        final Package pkg = new Package( packageDescr.getName(),
-                                         this.configuration.getClassLoader() );
+    private void newPackage(final PackageDescr packageDescr) {
+        this.pkg = new Package( packageDescr.getName(),
+                                this.configuration.getClassLoader() );
+        
+        this.typeResolver.addImport( this.pkg.getName() + ".*" );
 
-        initDialectPackage( pkg );
+        this.dialectRegistry.initAll( this );
 
-        mergePackage( pkg,
-                      packageDescr );
-
-        return pkg;
+        mergePackage( packageDescr );
     }
 
-    private void initDialectPackage(Package pkg) {
-        for ( Iterator it = this.dialectRegistry.iterator(); it.hasNext(); ) {
-            Dialect dialect = (Dialect) it.next();
-            dialect.init( pkg );
-        }
-
-    }
-
-    private void mergePackage(final Package pkg,
-                              final PackageDescr packageDescr) {
-
-        // make sure we have initialised this typeResolver with "default" imports
-        if ( this.typeResolver.getImports().isEmpty() ) {
-            this.typeResolver.addImport( pkg.getName() + ".*" );
-        }
-
+    private void mergePackage(final PackageDescr packageDescr) {
         final List imports = packageDescr.getImports();
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             String importEntry = ((ImportDescr) it.next()).getTarget();
-            pkg.addImport( importEntry );
+            this.pkg.addImport( importEntry );
             this.typeResolver.addImport( importEntry );
             this.dialectRegistry.addImport( importEntry );
         }
@@ -426,10 +414,8 @@ public class PackageBuilder {
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
             String importEntry = ((FunctionImportDescr) it.next()).getTarget();
             this.dialectRegistry.addStaticImport( importEntry );
-            pkg.addStaticImport( importEntry );
+            this.pkg.addStaticImport( importEntry );
         }
-
-        ((ClassTypeResolver) this.typeResolver).setClassLoader( pkg.getPackageCompilationData().getClassLoader() );
 
         final List globals = packageDescr.getGlobals();
         for ( final Iterator it = globals.iterator(); it.hasNext(); ) {
@@ -440,7 +426,7 @@ public class PackageBuilder {
             Class clazz;
             try {
                 clazz = typeResolver.resolveType( className );
-                pkg.addGlobal( identifier,
+                this.pkg.addGlobal( identifier,
                                clazz );
             } catch ( final ClassNotFoundException e ) {
                 this.results.add( new GlobalError( identifier,

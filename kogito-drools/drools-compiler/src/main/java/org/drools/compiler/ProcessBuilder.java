@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.lang.descr.PackageDescr;
 import org.drools.ruleflow.common.core.Process;
 import org.drools.ruleflow.core.Connection;
 import org.drools.ruleflow.core.MilestoneNode;
@@ -93,7 +94,8 @@ public class ProcessBuilder {
         final ClassLoader newLoader = this.getClass().getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( newLoader );
-            final RuleFlowProcess process = (RuleFlowProcess) stream.fromXML( reader );
+            final RuleFlowProcess process = (RuleFlowProcess) stream.fromXML( reader );            
+            
             addProcess( process );
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
@@ -102,21 +104,22 @@ public class ProcessBuilder {
     }
     
     private String generateRules(final Process process) {
-    	String result = "";
+        StringBuilder builder = new StringBuilder();
+        
     	if (process instanceof RuleFlowProcessImpl) {
     		RuleFlowProcessImpl ruleFlow = (RuleFlowProcessImpl) process;
-    		result = "package " + ruleFlow.getPackageName() + "\n" + result;
+    		builder.append( "package " + ruleFlow.getPackageName() + "\n" );
     		List imports = ruleFlow.getImports();
     		if (imports != null) {
     			for (Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
-    				result += "import " + iterator.next() + ";\n";
+    			    builder.append( "import " + iterator.next() + ";\n" );
     			}
     		}
     		Map globals = ruleFlow.getGlobals();
     		if (globals != null) {
     			for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext(); ) {
     				Map.Entry entry = (Map.Entry) iterator.next();
-    				result += "global " + entry.getValue() + " " + entry.getKey() + ";\n";
+    				builder.append( "global " + entry.getValue() + " " + entry.getKey() + ";\n" );
     			}
     		}
 
@@ -127,16 +130,16 @@ public class ProcessBuilder {
     				 if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR) {
     					 for (Iterator iterator = split.getOutgoingConnections().iterator(); iterator.hasNext(); ) {
     						 Connection connection = (Connection) iterator.next();
-    						 result += createSplitRule(process, connection, split.getConstraint(connection).getConstraint());
+    						 builder.append( createSplitRule(process, connection, split.getConstraint(connection).getConstraint()) );
     					 }
     				 }
     			 } else if (nodes[i] instanceof MilestoneNode) {
     				 MilestoneNode milestone = (MilestoneNode) nodes[i];
-    				 result += createMilestoneRule(process, milestone);
+    				 builder.append( createMilestoneRule(process, milestone) );
     			 }
     		}
     	}
-    	return result;
+    	return builder.toString();
     }
     
     private String createSplitRule(Process process, Connection connection, String constraint) {
