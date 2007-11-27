@@ -253,6 +253,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
         public void init(PackageBuilder builder) {
             this.builder = builder;
+            this.pkg = builder.getPackage();
 
         }
 

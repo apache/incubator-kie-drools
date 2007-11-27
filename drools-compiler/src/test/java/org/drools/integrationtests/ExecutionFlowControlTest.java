@@ -735,7 +735,7 @@ public class ExecutionFlowControlTest extends TestCase {
     
     public void testActionDialects() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ActionDialects.rfm" ) ) );      
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ActionDialects.rfm" ) ) ); 
         
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );

@@ -8,8 +8,8 @@
             <org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
               <default>
                 <constraint id="4">
-                  <x>67</x>
-                  <y>82</y>
+                  <x>105</x>
+                  <y>78</y>
                   <width>80</width>
                   <height>40</height>
                 </constraint>
@@ -76,8 +76,8 @@
                           <org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
                             <default>
                               <constraint id="26">
-                                <x>67</x>
-                                <y>21</y>
+                                <x>105</x>
+                                <y>17</y>
                                 <width>80</width>
                                 <height>40</height>
                               </constraint>
@@ -110,8 +110,8 @@
                           <org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
                             <default>
                               <constraint id="33">
-                                <x>67</x>
-                                <y>153</y>
+                                <x>105</x>
+                                <y>149</y>
                                 <width>80</width>
                                 <height>40</height>
                               </constraint>
@@ -130,8 +130,8 @@
                                         <org.drools.eclipse.flow.common.editor.core.DefaultElementWrapper>
                                           <default>
                                             <constraint id="39">
-                                              <x>67</x>
-                                              <y>213</y>
+                                              <x>104</x>
+                                              <y>217</y>
                                               <width>80</width>
                                               <height>40</height>
                                             </constraint>

@@ -1001,6 +1001,9 @@ public class PackageBuilderTest extends DroolsTestCase {
     public void testCompilerConfiguration() throws Exception {
         // test default is eclipse jdt core
         PackageBuilder builder = new PackageBuilder();
+        PackageDescr pkgDescr = new PackageDescr( "org.test" );
+        builder.addPackage( pkgDescr );
+        
         final Field dialectField = builder.getClass().getDeclaredField( "dialect" );
         dialectField.setAccessible( true );
         JavaDialect dialect = (JavaDialect) dialectField.get( builder );
@@ -1016,6 +1019,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
         builder = new PackageBuilder( conf );
+        builder.addPackage( pkgDescr );
+        
         dialect = (JavaDialect) dialectField.get( builder );
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( JaninoJavaCompiler.class,
@@ -1026,6 +1031,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         builder = new PackageBuilder( conf );
+        builder.addPackage( pkgDescr );
+        
         dialect = (JavaDialect) dialectField.get( builder );
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( EclipseJavaCompiler.class,
