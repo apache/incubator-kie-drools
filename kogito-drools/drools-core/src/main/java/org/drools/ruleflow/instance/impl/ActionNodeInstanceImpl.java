@@ -49,53 +49,60 @@ public class ActionNodeInstanceImpl extends RuleFlowNodeInstanceImpl {
     }
 
     public void internalTrigger(final RuleFlowNodeInstance from) {
-		Object action = getActionNode().getAction();
-		if (action instanceof DroolsConsequenceAction) {
-			String actionString = ((DroolsConsequenceAction) action).getConsequence();
-    		ExpressionCompiler compiler = new ExpressionCompiler(actionString);
-    		ParserContext parserContext = new ParserContext();
-    		// imports
-    		List imports = getProcessInstance().getRuleFlowProcess().getImports();
-    		Set importSet = new HashSet();
-    		if (imports != null) {
-        		importSet.addAll(imports);
-    			for (Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
-    				String importClassName = (String) iterator.next();
-    				if ( importClassName.endsWith( ".*" ) ) {
-    					importClassName = importClassName.substring(0, importClassName.indexOf(".*"));
-    		            parserContext.addPackageImport(importClassName);
-    		        } else {
-	    				try {
-	    					parserContext.addImport(Class.forName(importClassName));
-	    				} catch (ClassNotFoundException e) {
-	    					// class not found, do nothing
-	    				}
-    		        }
-    			}
-    		}
-    		TypeResolver typeResolver = new ClassTypeResolver(importSet, Thread.currentThread().getContextClassLoader());
-    		// compile expression
-    		Serializable expression = compiler.compile(parserContext);
-    		// globals
-    		Map globalDefs = getProcessInstance().getRuleFlowProcess().getGlobals();
-    		Map globals = new HashMap();
-    		if (globalDefs != null) {
-    			for (Iterator iterator = globalDefs.entrySet().iterator(); iterator.hasNext(); ) {
-    				Map.Entry entry = (Map.Entry) iterator.next();
-    				try {
-    					globals.put(entry.getKey(), typeResolver.resolveType((String) entry.getValue()));
-    				} catch (ClassNotFoundException exc) {
-    					throw new IllegalArgumentException("Could not find type " + entry.getValue() + " of global " + entry.getKey());
-    				}
-    			}
-    		}
-    		// execute
-    		DroolsMVELFactory factory = new DroolsMVELFactory(Collections.EMPTY_MAP, null, globals);
-    		factory.setContext(null, null, null, getProcessInstance().getWorkingMemory(), null);
-    		MVEL.executeExpression(expression, null, factory);
-		} else {
-			throw new RuntimeException("Unknown action: " + action);
+		Action action = (Action) getActionNode().getAction();
+		
+		try {
+	        action.execute( getProcessInstance().getWorkingMemory() );		    
+		} catch (Exception e) {
+		    throw  new RuntimeException("unable to execute Action", e);
 		}
+		
+//		if (action instanceof DroolsConsequenceAction) {
+//			String actionString = ((DroolsConsequenceAction) action).getConsequence();
+//    		ExpressionCompiler compiler = new ExpressionCompiler(actionString);
+//    		ParserContext parserContext = new ParserContext();
+//    		// imports
+//    		List imports = getProcessInstance().getRuleFlowProcess().getImports();
+//    		Set importSet = new HashSet();
+//    		if (imports != null) {
+//        		importSet.addAll(imports);
+//    			for (Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
+//    				String importClassName = (String) iterator.next();
+//    				if ( importClassName.endsWith( ".*" ) ) {
+//    					importClassName = importClassName.substring(0, importClassName.indexOf(".*"));
+//    		            parserContext.addPackageImport(importClassName);
+//    		        } else {
+//	    				try {
+//	    					parserContext.addImport(Class.forName(importClassName));
+//	    				} catch (ClassNotFoundException e) {
+//	    					// class not found, do nothing
+//	    				}
+//    		        }
+//    			}
+//    		}
+//    		TypeResolver typeResolver = new ClassTypeResolver(importSet, Thread.currentThread().getContextClassLoader());
+//    		// compile expression
+//    		Serializable expression = compiler.compile(parserContext);
+//    		// globals
+//    		Map globalDefs = getProcessInstance().getRuleFlowProcess().getGlobals();
+//    		Map globals = new HashMap();
+//    		if (globalDefs != null) {
+//    			for (Iterator iterator = globalDefs.entrySet().iterator(); iterator.hasNext(); ) {
+//    				Map.Entry entry = (Map.Entry) iterator.next();
+//    				try {
+//    					globals.put(entry.getKey(), typeResolver.resolveType((String) entry.getValue()));
+//    				} catch (ClassNotFoundException exc) {
+//    					throw new IllegalArgumentException("Could not find type " + entry.getValue() + " of global " + entry.getKey());
+//    				}
+//    			}
+//    		}
+//    		// execute
+//    		DroolsMVELFactory factory = new DroolsMVELFactory(Collections.EMPTY_MAP, null, globals);
+//    		factory.setContext(null, null, null, getProcessInstance().getWorkingMemory(), null);
+//    		MVEL.executeExpression(expression, null, factory);
+//		} else {
+//			throw new RuntimeException("Unknown action: " + action);
+//		}
     	triggerCompleted();
     }
 
