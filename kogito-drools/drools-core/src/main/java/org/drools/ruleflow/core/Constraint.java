@@ -1,5 +1,7 @@
 package org.drools.ruleflow.core;
 
+import org.drools.ruleflow.nodes.split.ConstraintEvaluator;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -23,9 +25,15 @@ package org.drools.ruleflow.core;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface Constraint {
+    
+    /**
+     * Returns the evaluation delegate for this constraint
+     * @return
+     */
+    ConstraintEvaluator getConstraintDelegate();
 
     /**
-     * Typically this method returns the constraint
+     * Typically this method returns the constraint as a String
      * @return the constraint
      */
     String getConstraint();

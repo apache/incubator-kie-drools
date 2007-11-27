@@ -18,6 +18,9 @@ package org.drools.ruleflow.core.impl;
 
 import java.io.Serializable;
 
+import org.drools.ruleflow.nodes.split.ConstraintEvaluator;
+import org.drools.ruleflow.nodes.split.RuleFlowConstraintEvaluator;
+
 /**
  * Default implementation of a constraint.
  * 
@@ -28,13 +31,14 @@ public class ConstraintImpl
     org.drools.ruleflow.core.Constraint,
     Serializable {
 
-    private static final long serialVersionUID = 400L;
+    private static final long  serialVersionUID = 400L;
 
-    private String            name;
-    private String            constraint;
-    private int               priority;
-    private String            dialect;
-    private String            type;
+    private String             name;
+    private String             constraint;
+    private ConstraintEvaluator delegate  = new RuleFlowConstraintEvaluator();
+    private int                priority;
+    private String             dialect;
+    private String             type;
 
     public String getConstraint() {
         return this.constraint;
@@ -42,6 +46,14 @@ public class ConstraintImpl
 
     public void setConstraint(final String constraint) {
         this.constraint = constraint;
+    }
+
+    public void setDelegate(ConstraintEvaluator delegate) {
+        this.delegate = delegate;
+    }
+
+    public ConstraintEvaluator getConstraintDelegate() {
+        return this.delegate;
     }
 
     public String getName() {
@@ -79,6 +91,5 @@ public class ConstraintImpl
     public void setType(String type) {
         this.type = type;
     }
-    
-    
+
 }

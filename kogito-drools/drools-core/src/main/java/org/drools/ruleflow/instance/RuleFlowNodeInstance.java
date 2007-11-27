@@ -1,5 +1,7 @@
 package org.drools.ruleflow.instance;
 
+import org.drools.ruleflow.core.Node;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -33,6 +35,8 @@ public interface RuleFlowNodeInstance {
     void setNodeId(long nodeId);
 
     long getNodeId();
+    
+    Node getNode();
 
     void setProcessInstance(RuleFlowProcessInstance processInstance);
 
