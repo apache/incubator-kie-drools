@@ -16,6 +16,7 @@ import org.drools.PersonInterface;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalWorkingMemoryActions;
@@ -730,6 +731,24 @@ public class ExecutionFlowControlTest extends TestCase {
         } catch (PackageMergeException e) {
         	// do nothing
         }
+    }
+    
+    public void testActionDialects() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ActionDialects.rfm" ) ) );      
+        
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        
+        StatefulSession session = ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        session.setGlobal( "list", list );
+        
+        session.startProcess( "ActionDialects" );
+        
+        assertEquals( 2, list.size() );
+        assertEquals( "mvel was here", list.get( 0 ) );
+        assertEquals( "java was here", list.get( 1 ) );
     }
 
     public void testLoadingRuleFlowInPackage7() throws Exception {
