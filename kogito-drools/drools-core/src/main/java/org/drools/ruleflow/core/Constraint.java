@@ -25,13 +25,6 @@ import org.drools.ruleflow.nodes.split.ConstraintEvaluator;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface Constraint {
-    
-    /**
-     * Returns the evaluation delegate for this constraint
-     * @return
-     */
-    ConstraintEvaluator getConstraintDelegate();
-
     /**
      * Typically this method returns the constraint as a String
      * @return the constraint
