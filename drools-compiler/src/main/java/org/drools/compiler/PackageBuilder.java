@@ -225,11 +225,6 @@ public class PackageBuilder {
         
         try {
             processBuilder.addProcessFromFile( processSource );
-            Process[] processes = processBuilder.getProcesses();
-            for ( int i = 0; i < processes.length; i++ ) {
-                buildActions( processes[i] );
-                pkg.addRuleFlow( processes[i] );
-            }
             this.results.addAll( processBuilder.getErrors() );
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
@@ -237,51 +232,9 @@ public class PackageBuilder {
             }
             this.results.add( new RuleFlowLoadError( "Unable to load the rule flow.",
                                                      e ) );
-        }
-        
-        if ( this.pkg  != null ) {
-            // we can only do this is this.pkg != null, as otherwise the dialects won't be properly initialised
-            // as the dialects are initialised when the pkg is  first created
-            this.dialectRegistry.compileAll();
-            
-            // some of the rules and functions may have been redefined
-            if ( this.pkg.getPackageCompilationData().isDirty() ) {
-                this.pkg.getPackageCompilationData().reload();
-            }            
-        }
+        } 
 
         this.results = this.dialectRegistry.addResults( this.results );        
-    }
-
-    // @FIXME this is a hack to wire in Actions for now
-    public void buildActions(Process process) {
-        RuleFlowProcess rfp = (RuleFlowProcess) process;
-
-        ProcessDescr processDescr = new ProcessDescr();
-        processDescr.setClassName( rfp.getName() );
-        processDescr.setName( rfp.getPackageName() );
-       
-        for ( Node node : rfp.getNodes() ) {
-            if ( node instanceof ActionNode ) {
-                ActionNodeImpl actionNode = ( ActionNodeImpl ) node;
-                DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
-                ActionDescr actionDescr = new ActionDescr();
-                actionDescr.setText( action.getConsequence() );
-                
-                Dialect dialect = this.dialectRegistry.getDialect( action.getDialect() );
-                
-                ProcessBuildContext context = new ProcessBuildContext( this.configuration,
-                                                                       pkg,
-                                                                       process,
-                                                                       processDescr,
-                                                                       this.dialectRegistry,
-                                                                       dialect ); 
-                
-                dialect.getActionBuilder().build( context, actionNode, actionDescr );
-                dialect.addAction( context );
-            }
-        }
-        
     }
 
     /**
@@ -526,7 +479,7 @@ public class PackageBuilder {
 
     public Dialect getDefaultDialect() {
         return this.dialect;
-    }
+    }   
 
     /**
      * Return the ClassFieldExtractorCache, this should only be used internally, and is subject to change
