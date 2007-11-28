@@ -48,6 +48,7 @@ import org.drools.ruleflow.core.impl.SplitImpl;
 import org.drools.ruleflow.core.impl.StartNodeImpl;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.ruleflow.instance.impl.RuleFlowProcessInstanceImpl;
+import org.drools.ruleflow.nodes.split.ConstraintEvaluator;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
@@ -416,10 +417,10 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         new ConnectionImpl( ruleSet3,
                         end,
                         Connection.TYPE_NORMAL );
-        Constraint constraint1 = new org.drools.ruleflow.core.impl.ConstraintImpl();
+        ConstraintEvaluator constraint1 = new org.drools.ruleflow.core.impl.RuleFlowConstraintEvaluator();
         constraint1.setPriority(1);
         split.setConstraint(out1, constraint1);
-        Constraint constraint2 = new org.drools.ruleflow.core.impl.ConstraintImpl();
+        ConstraintEvaluator constraint2 = new org.drools.ruleflow.core.impl.RuleFlowConstraintEvaluator();
         constraint2.setPriority(2);
         split.setConstraint(out2, constraint2);
 
