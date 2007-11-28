@@ -5,7 +5,7 @@ import org.drools.ruleflow.core.Constraint;
 import org.drools.ruleflow.core.Split;
 import org.drools.ruleflow.instance.impl.RuleFlowSplitInstanceImpl;
 
-public interface ConstraintEvaluator {
+public interface ConstraintEvaluator extends Constraint {
     public boolean evaluate(RuleFlowSplitInstanceImpl instance,
                          Connection connection,
                          Constraint constraint);

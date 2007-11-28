@@ -23,6 +23,7 @@ import org.drools.ruleflow.core.Connection;
 import org.drools.ruleflow.core.Constraint;
 import org.drools.ruleflow.core.Split;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
+import org.drools.ruleflow.nodes.split.ConstraintEvaluator;
 
 /**
  * Runtime counterpart of a split node.
@@ -51,11 +52,11 @@ public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl {
                 Connection selected = null;
                 for ( final Iterator iterator = outgoing.iterator(); iterator.hasNext(); ) {
                     final Connection connection = (Connection) iterator.next();
-                    Constraint constraint = split.getConstraint( connection );
+                    ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint( connection );
                     if ( constraint != null && constraint.getPriority() < priority ) {
-                        if ( constraint.getConstraintDelegate().evaluate( this,
-                                                                          connection,
-                                                                          constraint ) ) {
+                        if ( constraint.evaluate( this,
+                                                  connection,
+                                                  constraint ) ) {
                             selected = connection;
                             priority = constraint.getPriority();
                             break;
@@ -72,11 +73,11 @@ public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl {
                 boolean found = false;
                 for ( final Iterator iterator = outgoing.iterator(); iterator.hasNext(); ) {
                     final Connection connection = (Connection) iterator.next();
-                    Constraint constraint = split.getConstraint( connection );
+                    ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint( connection );
 
-                    if ( constraint != null && constraint.getConstraintDelegate().evaluate( this,
-                                                                                            connection,
-                                                                                            constraint ) ) {
+                    if ( constraint != null && constraint.evaluate( this,
+                                                                    connection,
+                                                                    constraint ) ) {
                         getProcessInstance().getNodeInstance( connection.getTo() ).trigger( this );
                         found = true;
                     }
