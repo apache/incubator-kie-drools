@@ -57,7 +57,7 @@ public interface Constraint {
     void setName(String name);
 
     /**
-     * Returns the priority of the constriant
+     * Returns the priority of the constraint
      * 
      * @return the priority of the constraint
      */
@@ -69,5 +69,37 @@ public interface Constraint {
      * @param priority	the priority of the constraint
      */
     void setPriority(int priority);
+
+    /**
+     * Returns the type of the constraint,
+     * e.g. "eval" or "rule"
+     * 
+     * @return the type of the constraint
+     */
+    String getType();
+
+    /**
+     * Method for setting the type of the constraint,
+     * e.g. "eval" or "rule"
+     * 
+     * @param type  the type of the constraint
+     */
+    void setType(String type);
+
+    /**
+     * Returns the dialect of the constraint,
+     * e.g. "mvel" or "java"
+     * 
+     * @return the dialect of the constraint
+     */
+    String getDialect();
+
+    /**
+     * Method for setting the dialect of the constraint,
+     * e.g. "mvel" or "java"
+     * 
+     * @param type  the dialect of the constraint
+     */
+    void setDialect(String dialect);
 
 }

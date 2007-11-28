@@ -18,6 +18,7 @@ package org.drools.ruleflow.core.impl;
 
 import java.io.Serializable;
 
+import org.drools.ruleflow.core.Constraint;
 import org.drools.ruleflow.nodes.split.ConstraintEvaluator;
 import org.drools.ruleflow.nodes.split.RuleFlowConstraintEvaluator;
 
@@ -28,7 +29,7 @@ import org.drools.ruleflow.nodes.split.RuleFlowConstraintEvaluator;
  */
 public class ConstraintImpl
     implements
-    org.drools.ruleflow.core.Constraint,
+    Constraint,
     Serializable {
 
     private static final long  serialVersionUID = 400L;
