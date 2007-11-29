@@ -29,7 +29,7 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
 	when
 		$r1 :LiteralRestriction(
 			# Not >= and <=, because ( a <=, a >= ) works.
-			# And not < or > because they are handled in a separete rule. 
+			# And not < or > because they are handled in a separate rule. 
 			( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER ) 
 		)
 		
@@ -42,6 +42,8 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
 			# Operator needs to be reversed to what the other one has.
 			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
 		)
+		
+		eval( $r1.compareValues( $r2 ) == 0 )
 		
 		# There is a problem if both of these are in the same PatternPossibility.
 		$pp :PatternPossibility(
@@ -82,12 +84,102 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 			restrictionType == $r1.restrictionType,
 			fieldId == $r1.fieldId,
 			valueType == $r1.valueType,
-			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
+			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS),
+			id != $r1.id
+		)
+
+		eval( $r1.compareValues( $r2 ) == 1 )
+	
+		# There is a problem if both of these are in the same PatternPossibility.
+		$pp :PatternPossibility(
+			 items contains $r1,
+			 items contains $r2
+		)
+
+		$p :Pattern( id == $pp.patternId )
+	then 
+		Collection<Cause> list = new ArrayList<Cause>();
+		list.add( $r1 );
+		list.add( $r2 );
+		
+		result.save( new AnalyticsMessage(
+								AnalyticsMessage.Severity.ERROR, 
+								AnalyticsMessage.MessageType.INCOHERENCE, 
+								$p, 
+								"Restriction " + $r1 + " and " + $r2 + 
+								"are in conflict. Because of this, pattern that contains them can never be satisfied.",
+								list
+								) );
+end
+
+#
+# If two LiteralRestrictions are in conflict.
+# 
+# Type: Error
+# Example: IncorencePattern( a < 1 && a == 10 )
+#
+rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
+	when
+		$r1 :LiteralRestriction( 
+			operator == Operator.EQUAL 
+		)
+	
+		$r2 :LiteralRestriction( 
+			patternId == $r1.patternId,
+			restrictionType == $r1.restrictionType,
+			fieldId == $r1.fieldId,
+			valueType == $r1.valueType,
+			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS || == Operator.EQUAL ),
+			id != $r1.id
+		)
+				
+		eval( $r1.compareValues( $r2 ) == 1 )
+	
+		# There is a problem if both of these are in the same PatternPossibility.
+		$pp :PatternPossibility(
+			 items contains $r1,
+			 items contains $r2
+		)
+	
+		$p :Pattern( id == $pp.patternId )
+	then 
+		Collection<Cause> list = new ArrayList<Cause>();
+		list.add( $r1 );
+		list.add( $r2 );
+		
+		result.save( new AnalyticsMessage(
+								AnalyticsMessage.Severity.ERROR, 
+								AnalyticsMessage.MessageType.INCOHERENCE, 
+								$p, 
+								"Restriction " + $r1 + " and " + $r2 + 
+								"are in conflict. Because of this, pattern that contains them can never be satisfied.",
+								list
+								) );
+end
+
+#
+# If two LiteralRestrictions are in conflict.
+# 
+# Type: Error
+# Example: IncorencePattern( a > 10 && a == 1 )
+#
+rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
+	when
+		$r1 :LiteralRestriction( 
+			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ) 
+		)
+	
+		$r2 :LiteralRestriction( 
+			patternId == $r1.patternId,
+			restrictionType == $r1.restrictionType,
+			fieldId == $r1.fieldId,
+			valueType == $r1.valueType,
+			operator == Operator.EQUAL,
 			id != $r1.id
 		)
 		
 		eval( $r1.compareValues( $r2 ) == 1 )
-	
+
 		# There is a problem if both of these are in the same PatternPossibility.
 		$pp :PatternPossibility(
 			 items contains $r1,
