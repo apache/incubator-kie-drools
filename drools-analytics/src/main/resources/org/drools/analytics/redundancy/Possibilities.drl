@@ -76,126 +76,69 @@ rule "Find pattern possibility redundancy"
 		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $pp1, $pp2 ) );
 end
 
-/*
-rule "Find part of redundant RulePossibility combination"
+#
+# Fires when two PatternPossibilities are redundant.
+# Marks these possibilities as redundant.
+# 
+# Example: rule "1" Pattern( a == b) end
+#		   rule "2" Pattern( a == b) end
+rule "Find rule possibility redundancy"
 	when
-		# PatternPossibility Redundancy.
-		$redundancy :Redundancy()
-		
-		# Check that rules are redundant.
-		$r1 :AnalyticsRule()
-		$r2 :AnalyticsRule( id != $r1.id )
-		Redundancy( 
-			left == $r1, 
-			right == $r2 
+		$redundancy :Redundancy( 
+			type == Redundancy.RedundancyType.WEAK,
+			left.causeType == Cause.CauseType.RULE 
 		)
-		
+
 		# Find two RulePossibilities.
-		$rp1 :RulePossibility( 
-			ruleId == $r1.id,
-			items contains $redundancy.left 
+		$rp1 :RulePossibility(
+			eval( id == $redundancy.getLeft().getId() )
 		)
-		$rp2 :RulePossibility( 
-			ruleId == $r2.id, 
-			items contains $redundancy.right 
-		)
-		
-		not PartialRedundancy(
-			left == $rp1,
-			right == $rp2
-		)
-	then
-		insert( new PartialRedundancy( $rp1, $rp2, $redundancy ) );
-end
 
-
-rule "new rule"
-	when
-		$pr :PartialRedundancy()
-		not PartialRedundancyCollection( 
-			items contains $pr 
+		$rp2 :RulePossibility(
+			eval( id == $redundancy.getRight().getId() )
 		)
 		
-		################################################
-		# XXX: Database!
-		################################################
-	then
-		insert( new PartialRedundancyCollection( $pr ) ); 
-end
-
-#
-# Handles both RulePossibilities and PatternPossibilities.
-#
-rule "Find subsumptant Possibilities"
-	when
-		$p1 :Possibility()
-		$p2 :Possibility( 
-			id != $p1.id,
-			amountOfItems >= $p1.amountOfItems
-		)
-		
-		not Subsumption( 
-				left == $p1, 
-				right == $p2 
-		)
-		
-		# At least one partial redundancy exists between these possibilities.
-		exists( 
-				PartialRedundancy( 
-					left == $p1, 
-					right == $p2 
-				) 
-		)
-		
-		# XXX: What if there is an earlier collection of these, so its only a == comparison.
-		
-		# Collect all the partial redundancies.
-		#$list :ArrayList()
-		#	from collect(
-		#		PartialRedundancy( 
-		#			left == $p1, 
-		#			right == $p2 
-		#		)
-		#	)
+		# For every pattern possibility in $pp1 there is a pattern possibility in $pp2. 
+		forall(
+			$pp :PatternPossibility(
+				patternId == $rp1.ruleId,
+				this memberOf $rp1.items
+			)
 			
-		# If there as much partial redundancies as there is items in $p1,
-		# then $p1 is subsumptant to $p2.
-		#eval( $list.size() == $p1.getAmountOfItems() )
-	then
-		System.out.println( "Find subsumptant Possibilities" );
-		#insert( new Subsumption( $p1, $p2 ) );
-end
-
-
-#
-# If two possibilities are subsumptant to each others, then they are redundant.
-# Since this tests only one possibility, the entire rule or pattern might not be redundant.
-#
-rule "Find redundant Possibilities"
-	when
-		$p1 :Possibility()
-		$p2 :Possibility( id != $p1.id )
-		
-		not Redundancy( 
-			left == $p1, 
-			right == $p2 
+			Redundancy(
+				type == Redundancy.RedundancyType.STRONG,
+				(
+					left == $pp
+					&&
+					right memberOf $rp2.items
+				) || (
+					left memberOf $rp2.items
+					&&
+					right == $pp
+				)
+			)
 		)
 		
-		not Redundancy( 
-			left == $p2, 
-			right == $p1 
-		)
-		
-		Subsumption( 
-				left == $p1, 
-				right == $p2 
-		)
-		
-		Subsumption( 
-				left == $p2, 
-				right == $p1 
+		# For every restriction in $pp2 there is a redundancy to $pp1. 
+		forall(
+			$pp :PatternPossibility(
+				patternId == $rp2.ruleId,
+				this memberOf $rp2.items
+			)
+			
+			Redundancy(
+				type == Redundancy.RedundancyType.STRONG,
+				(
+					left == $pp
+					&&
+					right memberOf $rp1.items
+				) || (
+					left memberOf $rp1.items
+					&&
+					right == $pp
+				)
+			)
 		)
 	then
-		insert( new Redundancy( $p1, $p2 ) );
+		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $rp1, $rp2 ) );
 end
-*/
