@@ -16,6 +16,8 @@ import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.spi.Activation;
+import org.drools.spi.AgendaFilter;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 
@@ -38,43 +40,66 @@ public class TestingEventListener implements AgendaEventListener {
     public TestingEventListener() {
     }
 
-
-
-
-    /**
-     * Exclusive means DO NOT fire the rules mentioned.
-     * For those rules, they will still be counted, just not allowed to activate.
-     * Inclusive means only the rules on the given set are allowed to fire.
-     * The other rules will have their activation counted but not be allowed to fire.
-     */
-	static void stubOutRules(HashSet<String> ruleNames, RuleBase ruleBase,
-			boolean inclusive) {
-		if (ruleNames.size() > 0) {
-	    	if (inclusive) {
-	    		Package[] pkgs = ruleBase.getPackages();
-	    		for (int i = 0; i < pkgs.length; i++) {
-					Rule[] rules = pkgs[i].getRules();
-					for (int j = 0; j < rules.length; j++) {
-						Rule rule = rules[j];
-						if (!ruleNames.contains(rule.getName())) {
-							rule.setConsequence(new NilConsequence());
-						}
+    public AgendaFilter getAgendaFilter(final HashSet<String> ruleNames, final boolean inclusive) {
+    	return new AgendaFilter() {
+			public boolean accept(Activation activation) {
+				if (ruleNames.size() ==0) return true;
+				String ruleName = activation.getRule().getName();
+				if (inclusive) {
+					if (ruleNames.contains(ruleName)) {
+						return true;
+					} else {
+						record(activation.getRule(), firingCounts);
+						return false;
+					}
+				} else {
+					if (!ruleName.contains(ruleName)) {
+						return true;
+					} else {
+						record(activation.getRule(), firingCounts);
+						return false;
 					}
 				}
-	    	} else {
-	    		Package[] pkgs = ruleBase.getPackages();
-	    		for (int i = 0; i < pkgs.length; i++) {
-	    			Package pkg = pkgs[i];
-	    			for (Iterator iter = ruleNames.iterator(); iter.hasNext();) {
-						String name = (String) iter.next();
-						Rule rule = pkg.getRule(name);
-						rule.setConsequence(new NilConsequence());
-					}
+			}
+    	};
+    }
 
-	    		}
-	    	}
-    	}
-	}
+
+
+//    /**
+//     * Exclusive means DO NOT fire the rules mentioned.
+//     * For those rules, they will still be counted, just not allowed to activate.
+//     * Inclusive means only the rules on the given set are allowed to fire.
+//     * The other rules will have their activation counted but not be allowed to fire.
+//     */
+//	static void stubOutRules(HashSet<String> ruleNames, RuleBase ruleBase,
+//			boolean inclusive) {
+//		if (ruleNames.size() > 0) {
+//	    	if (inclusive) {
+//	    		Package[] pkgs = ruleBase.getPackages();
+//	    		for (int i = 0; i < pkgs.length; i++) {
+//					Rule[] rules = pkgs[i].getRules();
+//					for (int j = 0; j < rules.length; j++) {
+//						Rule rule = rules[j];
+//						if (!ruleNames.contains(rule.getName())) {
+//							rule.setConsequence(new NilConsequence());
+//						}
+//					}
+//				}
+//	    	} else {
+//	    		Package[] pkgs = ruleBase.getPackages();
+//	    		for (int i = 0; i < pkgs.length; i++) {
+//	    			Package pkg = pkgs[i];
+//	    			for (Iterator iter = ruleNames.iterator(); iter.hasNext();) {
+//						String name = (String) iter.next();
+//						Rule rule = pkg.getRule(name);
+//						rule.setConsequence(new NilConsequence());
+//					}
+//
+//	    		}
+//	    	}
+//    	}
+//	}
 
 
 

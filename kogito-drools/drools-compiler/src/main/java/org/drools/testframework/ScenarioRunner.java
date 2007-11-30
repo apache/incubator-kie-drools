@@ -64,7 +64,7 @@ public class ScenarioRunner {
 		//stub out any rules we don't want to have the consequences firing of.
 		HashSet<String> ruleList = new HashSet<String>();
 		ruleList.addAll(scenario.rules);
-		TestingEventListener.stubOutRules(ruleList, wm.getRuleBase(), scenario.inclusive);
+		//TestingEventListener.stubOutRules(ruleList, wm.getRuleBase(), scenario.inclusive);
 
 		TestingEventListener listener = null;
 
@@ -112,7 +112,7 @@ public class ScenarioRunner {
 
 				//love you
 				long time = System.currentTimeMillis();
-				wm.fireAllRules(scenario.maxRuleFirings);
+				wm.fireAllRules(listener.getAgendaFilter(ruleList, scenario.inclusive),scenario.maxRuleFirings);
 				executionTrace.executionTimeResult = System.currentTimeMillis() - time;
 				executionTrace.numberOfRulesFired = listener.totalFires;
 
