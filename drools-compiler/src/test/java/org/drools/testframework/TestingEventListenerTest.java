@@ -10,6 +10,8 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
+import org.drools.spi.Activation;
+import org.drools.spi.AgendaFilter;
 
 public class TestingEventListenerTest extends RuleUnit {
 
@@ -21,12 +23,12 @@ public class TestingEventListenerTest extends RuleUnit {
 		StatefulSession session  = getWorkingMemory("test_rules.drl");
 
         TestingEventListener ls = new TestingEventListener();
-        TestingEventListener.stubOutRules(set, session.getRuleBase(), true);
+        //TestingEventListener.stubOutRules(set, session.getRuleBase(), true);
 
         session.addEventListener(ls);
 
         session.insert(new Cheese());
-        session.fireAllRules();
+        session.fireAllRules(ls.getAgendaFilter(set, true));
 
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
@@ -36,7 +38,7 @@ public class TestingEventListenerTest extends RuleUnit {
         assertFalse(ls.firingCounts.containsKey("rule4"));
 
         session.insert(new Cheese());
-        session.fireAllRules();
+        session.fireAllRules(ls.getAgendaFilter(set, true));
         assertEquals(new Integer(2), (Integer) ls.firingCounts.get("rule1"));
         assertEquals(new Integer(2), (Integer) ls.firingCounts.get("rule2"));
         assertEquals(new Integer(2), (Integer) ls.firingCounts.get("rule3"));
@@ -53,12 +55,12 @@ public class TestingEventListenerTest extends RuleUnit {
 		StatefulSession session  = getWorkingMemory("test_rules.drl");
 
         TestingEventListener ls = new TestingEventListener();
-        TestingEventListener.stubOutRules(set, session.getRuleBase(), false);
+        //TestingEventListener.stubOutRules(set, session.getRuleBase(), false);
 
         session.addEventListener(ls);
 
         session.insert(new Cheese());
-        session.fireAllRules();
+        session.fireAllRules(ls.getAgendaFilter(set, false));
 
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));
@@ -77,7 +79,7 @@ public class TestingEventListenerTest extends RuleUnit {
 		StatefulSession session  = getWorkingMemory("test_rules.drl");
 
         TestingEventListener ls = new TestingEventListener();
-        TestingEventListener.stubOutRules(set, session.getRuleBase(), false);
+        //TestingEventListener.stubOutRules(set, session.getRuleBase(), false);
 
         session.addEventListener(ls);
 
@@ -85,7 +87,7 @@ public class TestingEventListenerTest extends RuleUnit {
 
         List<String> list = new ArrayList<String>();
         session.setGlobal("list", list);
-        session.fireAllRules();
+        session.fireAllRules(ls.getAgendaFilter(set, false));
 
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule1"));
         assertEquals(new Integer(1), (Integer) ls.firingCounts.get("rule2"));

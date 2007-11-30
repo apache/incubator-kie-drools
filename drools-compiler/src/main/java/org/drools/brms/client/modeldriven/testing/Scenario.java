@@ -8,13 +8,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.brms.client.modeldriven.brl.PortableObject;
+
 /**
  * This represents a test scenario.
  * It also encapsulates the result of a scenario run.
  *
  * @author Michael Neale
  */
-public class Scenario implements Serializable {
+public class Scenario implements PortableObject {
 
 	/**
 	 * The maximum number of rules to fire so we don't recurse for ever.
