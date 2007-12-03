@@ -32,6 +32,7 @@ public class ScenarioXMLPersistenceTest extends TestCase {
 	    Scenario sc_ = p.unmarshal(s);
 	    assertEquals(sc.globals.size(), sc_.globals.size());
 	    assertEquals(sc.fixtures.size(), sc_.fixtures.size());
+	    assertTrue(s.indexOf("org.drools") == -1); //check we have aliased all
 
 	}
 
