@@ -1,8 +1,8 @@
 package org.drools.brms.client.modeldriven.testing;
 
-import java.io.Serializable;
+import org.drools.brms.client.modeldriven.brl.PortableObject;
 
-public class FieldData implements Serializable {
+public class FieldData implements PortableObject {
 
 	/** the name of the field */
 	public String name;
