@@ -1,8 +1,8 @@
 package org.drools.brms.client.modeldriven.testing;
 
-import java.io.Serializable;
+import org.drools.brms.client.modeldriven.brl.PortableObject;
 
-public class VerifyField implements Serializable {
+public class VerifyField implements PortableObject {
 
 	public String fieldName;
 	public String expected;
