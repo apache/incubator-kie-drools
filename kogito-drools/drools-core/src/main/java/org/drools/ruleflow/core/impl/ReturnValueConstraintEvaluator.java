@@ -17,17 +17,26 @@ package org.drools.ruleflow.core.impl;
  */
 
 import java.io.Serializable;
+import java.util.Iterator;
 
+import org.drools.common.RuleFlowGroupNode;
+import org.drools.ruleflow.core.Connection;
 import org.drools.ruleflow.core.Constraint;
+import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.ruleflow.instance.impl.RuleFlowSplitInstanceImpl;
+import org.drools.ruleflow.nodes.split.ConstraintEvaluator;
+import org.drools.spi.Activation;
+import org.drools.spi.ReturnValueEvaluator;
+import org.drools.spi.RuleFlowGroup;
 
 /**
  * Default implementation of a constraint.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ConstraintImpl
+public class ReturnValueConstraintEvaluator
     implements
-    Constraint,
+    Constraint, ConstraintEvaluator,
     Serializable {
 
     private static final long  serialVersionUID = 400L;
@@ -36,8 +45,10 @@ public class ConstraintImpl
     private String             constraint;
     private int                priority;
     private String             dialect;
-    private String             type;
-
+    private String             type;       
+    
+    private ReturnValueEvaluator evaluator;
+    
     public String getConstraint() {
         return this.constraint;
     }
@@ -81,5 +92,26 @@ public class ConstraintImpl
     public void setType(String type) {
         this.type = type;
     }
+    
+    
+    
+    public void setEvaluator(ReturnValueEvaluator evaluator) {
+        this.evaluator = evaluator;
+    }
+
+    public boolean evaluate(RuleFlowSplitInstanceImpl instance,
+                            Connection connection,
+                            Constraint constraint) {
+        Object value;
+        try {
+            value = this.evaluator.evaluate( instance.getProcessInstance().getWorkingMemory() );
+        } catch ( Exception e ) {
+            throw  new RuntimeException("unable to execute ReturnValueEvaluator", e);
+        }
+        if ( !(value instanceof Boolean) ) {
+            throw new RuntimeException("Constraints must return boolean values" );
+        }
+        return ((Boolean)value).booleanValue();
+    }    
 
 }

@@ -81,10 +81,10 @@ public class RuleFlowSplitInstanceImpl extends RuleFlowNodeInstanceImpl {
                         getProcessInstance().getNodeInstance( connection.getTo() ).trigger( this );
                         found = true;
                     }
-                    if ( !found ) {
-                        throw new IllegalArgumentException( "OR split could not find at least one valid outgoing connection for split " + getSplitNode().getName() );
-                    }
                 }
+                if ( !found ) {
+                    throw new IllegalArgumentException( "OR split could not find at least one valid outgoing connection for split " + getSplitNode().getName() );
+                }                
                 break;
             default :
                 throw new IllegalArgumentException( "Illegal split type " + split.getType() );
