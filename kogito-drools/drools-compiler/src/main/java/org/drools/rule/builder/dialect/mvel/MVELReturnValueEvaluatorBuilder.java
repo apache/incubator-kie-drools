@@ -9,36 +9,41 @@ import java.util.Set;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELAction;
 import org.drools.base.mvel.MVELConsequence;
+import org.drools.base.mvel.MVELReturnValueEvaluator;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.ReturnValueDescr;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.PackageBuildContext;
+import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.ruleflow.core.impl.ActionNodeImpl;
+import org.drools.ruleflow.core.impl.ReturnValueConstraintEvaluator;
+import org.drools.spi.ReturnValueEvaluator;
 import org.mvel.Macro;
 import org.mvel.MacroProcessor;
 
-public class MVELActionBuilder
+public class MVELReturnValueEvaluatorBuilder
     implements
-    ActionBuilder {
+    ReturnValueEvaluatorBuilder {
 
-    public MVELActionBuilder() {
+    public MVELReturnValueEvaluatorBuilder() {
 
     }
 
     public void build(final PackageBuildContext context,
-                      final ActionNodeImpl actionNode,
-                      final ActionDescr actionDescr) {
+                      final ReturnValueConstraintEvaluator constraintNode,
+                      final ReturnValueDescr descr) {
 
-        String text = actionDescr.getText();
+        String text = descr.getText();
 
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
             Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
-                                                                    actionDescr,
+                                                                    descr,
                                                                     dialect.getInterceptors(),
                                                                     text,
                                                                     new Set[]{Collections.EMPTY_SET, context.getPkg().getGlobals().keySet()},
@@ -55,12 +60,12 @@ public class MVELActionBuilder
                                                                      context.getPkg().getGlobals(),
                                                                      analysis.getBoundIdentifiers() );
             
-            actionNode.setAction( new MVELAction( expr, factory )  );
+            constraintNode.setEvaluator( new MVELReturnValueEvaluator( expr, factory ) );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          actionDescr,
+                                                          descr,
                                                           null,
-                                                          "Unable to build expression for 'action' '" + actionDescr.getText() + "'" ) );
+                                                          "Unable to build expression for 'returnValuEvaluator' '" + descr.getText() + "'" ) );
         }
     }
 

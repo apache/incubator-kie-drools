@@ -79,3 +79,9 @@ public static void @{methodName}(@foreach{globalTypes, globals as type, identifi
     @{text}
 }
 >>=::
+
+returnValueEvaluatorMethod() ::=<<
+public static Object @{methodName}(@foreach{globalTypes, globals as type, identifier}  @{type} @{identifier} @end{","} ) throws Exception {
+    @{text}
+}
+>>=::

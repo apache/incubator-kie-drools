@@ -750,6 +750,70 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( "mvel was here", list.get( 0 ) );
         assertEquals( "java was here", list.get( 1 ) );
     }
+    
+    public void testRuleFlowConstraintDialects() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ConstraintDialects.rfm" ) ) );
+        
+        System.err.print( builder.getErrors() );
+        
+        assertEquals( 0, builder.getErrors().getErrors().length );
+        
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        
+        StatefulSession session = ruleBase.newStatefulSession();
+        List inList = new ArrayList();
+        List outList = new ArrayList();
+        session.setGlobal( "inList", inList );
+        session.setGlobal( "outList", outList );
+        
+        inList.add( 1 );
+        inList.add( 3 );
+        inList.add( 6 );
+        inList.add( 25 );
+        
+        FactHandle handle = session.insert( inList );        
+        session.startProcess( "ConstraintDialects" );        
+        assertEquals( 4, outList.size() );
+        assertEquals( "MVELCodeConstraint was here", outList.get( 0 ));
+        assertEquals( "JavaCodeConstraint was here", outList.get( 1 ));
+        assertEquals( "MVELRuleConstraint was here", outList.get( 2 ));
+        assertEquals( "JavaRuleConstraint was here", outList.get( 3 ));
+        
+        outList.clear();
+        inList.remove( new Integer( 1 ) );
+        session.update( handle, inList );
+        session.startProcess( "ConstraintDialects" );
+        assertEquals( 3, outList.size() );
+        assertEquals( "JavaCodeConstraint was here", outList.get( 0 ));
+        assertEquals( "MVELRuleConstraint was here", outList.get( 1 ));
+        assertEquals( "JavaRuleConstraint was here", outList.get( 2 ));      
+        
+        outList.clear();
+        inList.remove( new Integer( 6 ) );
+        session.update( handle, inList );
+        session.startProcess( "ConstraintDialects" );
+        assertEquals( 2, outList.size() );
+        assertEquals( "JavaCodeConstraint was here", outList.get( 0 ));
+        assertEquals( "JavaRuleConstraint was here", outList.get( 1 ));    
+        
+        outList.clear();
+        inList.remove( new Integer( 3 ) );        
+        session.update( handle, inList );
+        session.startProcess( "ConstraintDialects" );
+        assertEquals( 1, outList.size() );
+        assertEquals( "JavaRuleConstraint was here", outList.get( 0 ));          
+        
+        outList.clear();
+        inList.remove( new Integer( 25 ) );
+        session.update( handle, inList );
+        try {
+            session.startProcess( "ConstraintDialects" );
+            fail("This should have thrown an exception" );
+        } catch ( Exception e ) {
+        }                     
+    }    
 
     public void testLoadingRuleFlowInPackage7() throws Exception {
     	// loading a ruleflow with errors
