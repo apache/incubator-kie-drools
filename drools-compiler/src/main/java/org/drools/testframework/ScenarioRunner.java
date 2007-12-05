@@ -56,87 +56,94 @@ public class ScenarioRunner {
 	 *
 	 */
 	public ScenarioRunner(final Scenario scenario, final TypeResolver resolver,
-			final InternalWorkingMemory wm) throws ClassNotFoundException {
+			final InternalWorkingMemory wm, ClassLoader cl) throws ClassNotFoundException {
 		this.scenario = scenario;
 		this.workingMemory = wm;
 		scenario.lastRunResult = new Date();
 
-		//stub out any rules we don't want to have the consequences firing of.
-		HashSet<String> ruleList = new HashSet<String>();
-		ruleList.addAll(scenario.rules);
-		//TestingEventListener.stubOutRules(ruleList, wm.getRuleBase(), scenario.inclusive);
+		ClassLoader current = Thread.currentThread().getContextClassLoader();
 
-		TestingEventListener listener = null;
-
-		for (Iterator iterator = scenario.globals.iterator(); iterator.hasNext();) {
-			FactData fact = (FactData) iterator.next();
-			Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
-			populateFields(fact, globalData, f);
-			globalData.put(fact.name, f);
-			wm.setGlobal(fact.name, f);
+		if (cl != null) {
+			Thread.currentThread().setContextClassLoader(cl);
 		}
 
-		for (Iterator<Fixture> iterator = scenario.fixtures.iterator(); iterator.hasNext();) {
-			Fixture fx = iterator.next();
+		try {
+			//stub out any rules we don't want to have the consequences firing of.
+			HashSet<String> ruleList = new HashSet<String>();
+			ruleList.addAll(scenario.rules);
+			//TestingEventListener.stubOutRules(ruleList, wm.getRuleBase(), scenario.inclusive);
 
-			if (fx instanceof FactData) {
-				//deal with facts and globals
-				FactData fact = (FactData)fx;
-				Object f = (fact.isModify)? this.populatedData.get(fact.name) : eval("new " + resolver.getFullTypeName(fact.type) + "()");
-				if (fact.isModify) {
-					if (!this.factHandles.containsKey(fact.name)) {
-						throw new IllegalArgumentException("Was not a previously inserted fact. [" + fact.name  + "]");
-					}
-					populateFields(fact, populatedData, f);
-					this.workingMemory.update(this.factHandles.get(fact.name), f);
-				} else /* a new one */ {
-					populateFields(fact, populatedData, f);
-					populatedData.put(fact.name, f);
-					this.factHandles.put(fact.name, wm.insert(f));
-				}
-			} else if (fx instanceof RetractFact) {
-				RetractFact f = (RetractFact)fx;
-				this.workingMemory.retract(this.factHandles.get(f.name));
-				this.populatedData.remove(f.name);
-			} else if (fx instanceof ExecutionTrace) {
-				ExecutionTrace executionTrace = (ExecutionTrace)fx;
-				//create the listener to trace rules
+			TestingEventListener listener = null;
 
-				if (listener != null) wm.removeEventListener(listener); //remove the old
-				listener = new TestingEventListener();
-
-				wm.addEventListener(listener);
-
-				//set up the time machine
-				applyTimeMachine(wm, executionTrace);
-
-				//love you
-				long time = System.currentTimeMillis();
-				wm.fireAllRules(listener.getAgendaFilter(ruleList, scenario.inclusive),scenario.maxRuleFirings);
-				executionTrace.executionTimeResult = System.currentTimeMillis() - time;
-				executionTrace.numberOfRulesFired = listener.totalFires;
-
-			} else if (fx instanceof Expectation) {
-					Expectation assertion = (Expectation) fx;
-					if (assertion instanceof VerifyFact) {
-						verify((VerifyFact) assertion);
-					} else if (assertion instanceof VerifyRuleFired) {
-						verify((VerifyRuleFired) assertion,
-								(listener.firingCounts != null) ? listener.firingCounts : new HashMap<String, Integer>());
-					}
-			} else {
-				throw new IllegalArgumentException("Not sure what to do with " + fx);
+			for (Iterator iterator = scenario.globals.iterator(); iterator.hasNext();) {
+				FactData fact = (FactData) iterator.next();
+				Object f = eval("new " + resolver.getFullTypeName(fact.type) + "()");
+				populateFields(fact, globalData, f);
+				globalData.put(fact.name, f);
+				wm.setGlobal(fact.name, f);
 			}
 
+			for (Iterator<Fixture> iterator = scenario.fixtures.iterator(); iterator.hasNext();) {
+				Fixture fx = iterator.next();
+
+				if (fx instanceof FactData) {
+					//deal with facts and globals
+					FactData fact = (FactData)fx;
+					Object f = (fact.isModify)? this.populatedData.get(fact.name) : eval("new " + resolver.getFullTypeName(fact.type) + "()");
+					if (fact.isModify) {
+						if (!this.factHandles.containsKey(fact.name)) {
+							throw new IllegalArgumentException("Was not a previously inserted fact. [" + fact.name  + "]");
+						}
+						populateFields(fact, populatedData, f);
+						this.workingMemory.update(this.factHandles.get(fact.name), f);
+					} else /* a new one */ {
+						populateFields(fact, populatedData, f);
+						populatedData.put(fact.name, f);
+						this.factHandles.put(fact.name, wm.insert(f));
+					}
+				} else if (fx instanceof RetractFact) {
+					RetractFact f = (RetractFact)fx;
+					this.workingMemory.retract(this.factHandles.get(f.name));
+					this.populatedData.remove(f.name);
+				} else if (fx instanceof ExecutionTrace) {
+					ExecutionTrace executionTrace = (ExecutionTrace)fx;
+					//create the listener to trace rules
+
+					if (listener != null) wm.removeEventListener(listener); //remove the old
+					listener = new TestingEventListener();
+
+					wm.addEventListener(listener);
+
+					//set up the time machine
+					applyTimeMachine(wm, executionTrace);
+
+					//love you
+					long time = System.currentTimeMillis();
+					wm.fireAllRules(listener.getAgendaFilter(ruleList, scenario.inclusive),scenario.maxRuleFirings);
+					executionTrace.executionTimeResult = System.currentTimeMillis() - time;
+					executionTrace.numberOfRulesFired = listener.totalFires;
+
+				} else if (fx instanceof Expectation) {
+						Expectation assertion = (Expectation) fx;
+						if (assertion instanceof VerifyFact) {
+							verify((VerifyFact) assertion);
+						} else if (assertion instanceof VerifyRuleFired) {
+							verify((VerifyRuleFired) assertion,
+									(listener.firingCounts != null) ? listener.firingCounts : new HashMap<String, Integer>());
+						}
+				} else {
+					throw new IllegalArgumentException("Not sure what to do with " + fx);
+				}
 
 
+
+			}
+
+		} finally {
+			if (cl != null) {
+				Thread.currentThread().setContextClassLoader(current);
+			}
 		}
-
-
-
-
-
-
 
 	}
 
