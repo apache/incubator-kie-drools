@@ -346,3 +346,22 @@ public class @{invokerClassName} implements org.drools.spi.Action
     }
 }     
 >>=::
+
+returnValueEvaluatorInvoker() ::=<<
+package @{package};
+
+public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator
+{
+    private static final long serialVersionUID  = 400L;
+
+    public Object evaluate(org.drools.WorkingMemory workingMemory) throws Exception {    
+                               
+        @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" ); 
+        @end{}    
+        
+        return @{processClassName}.@{methodName} ( 
+	        @foreach{globals as identifier} @{identifier}
+	        @end{","} );
+    }
+}     
+>>=::

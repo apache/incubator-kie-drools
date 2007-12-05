@@ -35,6 +35,7 @@ import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
+import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
@@ -303,7 +304,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
             this.rule = context.getRule();
         }
         
-        public void addAction(final ProcessBuildContext context) {
+        public void addProcess(final ProcessBuildContext context) {
             
         }
 
@@ -416,6 +417,11 @@ public class PackageBuilderConfigurationTest extends TestCase {
 
         public String getId() {
             return "mock";
+        }
+
+        public ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 

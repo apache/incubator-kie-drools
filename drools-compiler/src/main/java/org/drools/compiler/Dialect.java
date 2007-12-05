@@ -21,6 +21,7 @@ import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
+import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
@@ -65,6 +66,8 @@ public interface Dialect {
     ConsequenceBuilder getConsequenceBuilder();
     
     ActionBuilder getActionBuilder();
+    
+    ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder();
 
     RuleClassBuilder getRuleClassBuilder();
     
@@ -88,7 +91,7 @@ public interface Dialect {
 
     void addRule(final RuleBuildContext context);
     
-    void addAction(final ProcessBuildContext context);
+    void addProcess(final ProcessBuildContext context);
 
     void addFunction(final FunctionDescr functionDescr,
                      TypeResolver typeResolver);

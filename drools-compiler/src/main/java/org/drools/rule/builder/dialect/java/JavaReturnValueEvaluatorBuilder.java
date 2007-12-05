@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.ReturnValueDescr;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
@@ -31,33 +32,35 @@ import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ProcessBuildContext;
+import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.ruleflow.core.impl.ActionNodeImpl;
+import org.drools.ruleflow.core.impl.ReturnValueConstraintEvaluator;
 import org.drools.spi.PatternExtractor;
 
 /**
  * @author etirelli
  *
  */
-public class JavaActionBuilder extends AbstractJavaProcessBuilder
+public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
     implements
-    ActionBuilder {
+    ReturnValueEvaluatorBuilder {
 
     /* (non-Javadoc)
      * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
     public void build(final PackageBuildContext context,
-                      final ActionNodeImpl actionNode,
-                      final ActionDescr actionDescr) {
+                      final ReturnValueConstraintEvaluator constraintNode,
+                      final ReturnValueDescr descr) {
 
-        final String className = "action" + context.getNextId();
+        final String className = "returnValueEvaluator" + context.getNextId();
 
         JavaDialect dialect = (JavaDialect) context.getDialect( "java" );
 
         Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
-                                                                actionDescr,
-                                                                actionDescr.getText(),
+                                                                descr,
+                                                                descr.getText(),
                                                                 new Set[]{Collections.EMPTY_SET, context.getPkg().getGlobals().keySet()} );
 
         if ( analysis == null ) {
@@ -69,19 +72,19 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
 
 
         final Map map = createVariableContext( className,
-                                               actionDescr.getText(),
+                                               descr.getText(),
                                                (ProcessBuildContext) context,
                                                (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
         map.put( "text",
-                 actionDescr.getText() );
+                 descr.getText() );
 
-        generatTemplates( "actionMethod",
-                          "actionInvoker",
+        generatTemplates( "returnValueEvaluatorMethod",
+                          "returnValueEvaluatorInvoker",
                           (ProcessBuildContext)context,
                           className,
                           map,
-                          actionNode,
-                          actionDescr );
+                          constraintNode,
+                          descr );
     }
 
 }

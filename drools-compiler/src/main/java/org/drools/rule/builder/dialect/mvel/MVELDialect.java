@@ -84,6 +84,7 @@ public class MVELDialect
     private final MVELReturnValueBuilder      returnValue             = new MVELReturnValueBuilder();
     private final MVELConsequenceBuilder      consequence             = new MVELConsequenceBuilder();
     private final MVELActionBuilder           actionBuilder           = new MVELActionBuilder();
+    private final MVELReturnValueEvaluatorBuilder returnValueEvaluatorBuilder = new MVELReturnValueEvaluatorBuilder();
     //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
     private final MVELFromBuilder             from                    = new MVELFromBuilder();
     private final JavaFunctionBuilder         function                = new JavaFunctionBuilder();
@@ -248,7 +249,7 @@ public class MVELDialect
 
     }
     
-    public void addAction(final ProcessBuildContext context) {
+    public void addProcess(final ProcessBuildContext context) {
         // @TODO setup line mappings
     }
 
@@ -487,6 +488,10 @@ public class MVELDialect
     
     public ActionBuilder getActionBuilder() {
         return this.actionBuilder;
+    }
+    
+    public MVELReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {
+        return this.returnValueEvaluatorBuilder;
     }
 
     public RuleConditionBuilder getEvalBuilder() {

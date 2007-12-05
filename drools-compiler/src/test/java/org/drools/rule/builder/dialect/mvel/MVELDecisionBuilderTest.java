@@ -1,4 +1,4 @@
-package org.drools.rule.builder.dialect.java;
+package org.drools.rule.builder.dialect.mvel;
 
 import java.io.InputStreamReader;
 import java.io.Serializable;
@@ -31,7 +31,6 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
@@ -39,18 +38,16 @@ import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.PackageBuildContext;
-import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.ruleflow.core.impl.ActionNodeImpl;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 import org.drools.spi.Action;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.mvel.ExpressionCompiler;
 import org.mvel.ParserContext;
 
-public class JavaActionBuilderTest extends TestCase {
+public class MVELDecisionBuilderTest extends TestCase {
 
     public void setUp() {
     }
@@ -59,32 +56,23 @@ public class JavaActionBuilderTest extends TestCase {
         final Package pkg = new Package( "pkg1" );
 
         ActionDescr actionDescr = new ActionDescr();
-        actionDescr.setText( "list.add( \"hello world\" );" );       
+        actionDescr.setText( "list.add( 'hello world' )" );       
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        JavaDialect javaDialect = ( JavaDialect ) pkgBuilder.getDialectRegistry().getDialect( "java" );
+        MVELDialect mvelDialect = ( MVELDialect ) pkgBuilder.getDialectRegistry().getDialect( "mvel" );
 
-        ProcessDescr processDescr = new ProcessDescr();
-        processDescr.setClassName( "Process1" );
-        processDescr.setName( "Process1" );
-        
-        RuleFlowProcessImpl process = new RuleFlowProcessImpl();
-        process.setName( "Process1" );
-        process.setPackageName( "pkg1" );
-
-        ProcessBuildContext context = new ProcessBuildContext(conf, pkgBuilder.getPackage(), null, processDescr, pkgBuilder.getDialectRegistry(), javaDialect);
-        
-        context.init( conf, pkg, null, pkgBuilder.getDialectRegistry(), javaDialect, null);
+        PackageBuildContext context = new PackageBuildContext();
+        context.init( conf, pkg, null, pkgBuilder.getDialectRegistry(), mvelDialect, null);
         
         pkgBuilder.addPackageFromDrl( new StringReader("package pkg1;\nglobal java.util.List list;\n") );        
         
         ActionNodeImpl actionNode = new ActionNodeImpl();
         
-        javaDialect.getActionBuilder().build( context, actionNode, actionDescr );
-        javaDialect.addProcess( context );
-        javaDialect.compileAll();            
-        assertEquals( 0, javaDialect.getResults().size() );
+        final MVELActionBuilder builder = new MVELActionBuilder();
+        builder.build( context,
+                       actionNode,
+                       actionDescr );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( pkgBuilder.getPackage() );
@@ -94,10 +82,9 @@ public class JavaActionBuilderTest extends TestCase {
         wm.setGlobal( "list", list );        
         
         ((Action)actionNode.getAction()).execute( wm );
-       
+        
         assertEquals("hello world", list.get(0) );
     }    
-    
 
 }
 

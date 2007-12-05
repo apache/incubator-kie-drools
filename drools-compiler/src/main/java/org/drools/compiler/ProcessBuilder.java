@@ -29,10 +29,12 @@ import java.util.Map.Entry;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.Package;
+import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.ruleflow.common.core.Process;
 import org.drools.ruleflow.core.ActionNode;
 import org.drools.ruleflow.core.Connection;
+import org.drools.ruleflow.core.Constraint;
 import org.drools.ruleflow.core.MilestoneNode;
 import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
@@ -42,10 +44,12 @@ import org.drools.ruleflow.core.Split;
 import org.drools.ruleflow.core.impl.ActionNodeImpl;
 import org.drools.ruleflow.core.impl.ConstraintImpl;
 import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
+import org.drools.ruleflow.core.impl.ReturnValueConstraintEvaluator;
 import org.drools.ruleflow.core.impl.RuleFlowConstraintEvaluator;
 import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 import org.drools.ruleflow.core.impl.RuleFlowProcessValidatorImpl;
 import org.drools.ruleflow.core.impl.SplitImpl;
+import org.drools.spi.ReturnValueEvaluator;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -113,34 +117,46 @@ public class ProcessBuilder {
         ProcessDescr processDescr = new ProcessDescr();
         processDescr.setClassName( rfp.getName() );
         processDescr.setName( rfp.getPackageName() );
-       
-        for ( Node node : rfp.getNodes() ) {
-            if ( node instanceof ActionNode ) {
-                buildAction(process, processDescr, (ActionNodeImpl) node );
-            } else if ( node instanceof SplitImpl ) {
-            }
-        }        
-    }    
-    
-    public void buildAction(Process process, ProcessDescr processDescr, ActionNodeImpl actionNode) {
-        DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
-        ActionDescr actionDescr = new ActionDescr();
-        actionDescr.setText( action.getConsequence() );
-        
-        Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( action.getDialect() );
+
+        Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( "java" );
         
         ProcessBuildContext context = new ProcessBuildContext( this.packageBuilder.getPackageBuilderConfiguration(),
                                                                this.packageBuilder.getPackage(),
                                                                process,
                                                                processDescr,
                                                                this.packageBuilder.getDialectRegistry(),
-                                                               dialect ); 
+                                                               dialect );         
+        
+        for ( Node node : rfp.getNodes() ) {
+            if ( node instanceof ActionNode ) {
+                buildAction(process, processDescr, context, (ActionNodeImpl) node );
+            } else if ( node instanceof SplitImpl ) {
+                buildSplit(process, processDescr, context, (SplitImpl) node );
+            }
+        }       
+        
+        if ( !context.getErrors().isEmpty() ) {
+            this.errors.addAll( context.getErrors() );
+        }
+        
+        for ( Iterator it = this.packageBuilder.getDialectRegistry().iterator(); it.hasNext(); ) {
+            dialect = ( Dialect ) it.next();
+            dialect.addProcess( context );
+        }
+        
+    }    
+    
+    public void buildAction(Process process, ProcessDescr processDescr, ProcessBuildContext context, ActionNodeImpl actionNode) {
+        DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
+        ActionDescr actionDescr = new ActionDescr();
+        actionDescr.setText( action.getConsequence() );        
+        
+        Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( action.getDialect() );            
         
         dialect.getActionBuilder().build( context, actionNode, actionDescr );
-        dialect.addAction( context );        
     }
     
-    public void buildSplit(Process process, ProcessDescr processDescr, SplitImpl splitNode) {
+    public void buildSplit(Process process, ProcessDescr processDescr, ProcessBuildContext context, SplitImpl splitNode) {
         // we need to clone the map, so we can update the original while iterating.
         Map map = new HashMap( splitNode.getConstraints() );
         for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
@@ -156,7 +172,18 @@ public class ProcessBuilder {
                 ruleConstraint.setPriority( constraint.getPriority() );
                 splitNode.setConstraint( connection, ruleConstraint );
             } else if ( "eval".equals( constraint.getType() ) ) {
+                ReturnValueConstraintEvaluator returnValueConstraint = new ReturnValueConstraintEvaluator();
+                returnValueConstraint.setDialect( constraint.getDialect() );
+                returnValueConstraint.setName( constraint.getName() );
+                returnValueConstraint.setPriority( constraint.getPriority() );
+                returnValueConstraint.setPriority( constraint.getPriority() );
+                splitNode.setConstraint( connection, returnValueConstraint );            
                 
+                ReturnValueDescr returnValueDescr = new ReturnValueDescr();
+                returnValueDescr.setText( constraint.getConstraint() );
+                
+                Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( constraint.getDialect() );                               
+                dialect.getReturnValueEvaluatorBuilder().build( context, returnValueConstraint, returnValueDescr );
             }
         }
     }
@@ -199,12 +226,15 @@ public class ProcessBuilder {
 
     		Node[] nodes = ruleFlow.getNodes();
     		for (int i = 0; i < nodes.length; i++) {
-    			 if (nodes[i] instanceof Split) {
+    			 if (nodes[i] instanceof Split ) {
     				 Split split = (Split) nodes[i];
     				 if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR) {
-    					 for (Iterator iterator = split.getOutgoingConnections().iterator(); iterator.hasNext(); ) {
+    					 for (Iterator iterator = split.getOutgoingConnections().iterator(); iterator.hasNext(); ) {    					     
     						 Connection connection = (Connection) iterator.next();
-    						 builder.append( createSplitRule(process, connection, split.getConstraint(connection).getConstraint()) );
+    						 Constraint constraint = split.getConstraint( connection );
+    						 if (  "rule".equals( constraint.getType() ) ) {
+    						     builder.append( createSplitRule(process, connection, split.getConstraint(connection).getConstraint()) );
+    						 }
     					 }
     				 }
     			 } else if (nodes[i] instanceof MilestoneNode) {
