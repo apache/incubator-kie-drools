@@ -1,6 +1,7 @@
 package org.drools.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -24,7 +25,7 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
     }
 
     public void testThreadSafetyEclipse() {
-        execute( JavaDialectConfiguration.ECLIPSE );        
+        execute( JavaDialectConfiguration.ECLIPSE );
     }
 
     public void testThreadSafetyJanino() {
@@ -33,8 +34,8 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
 
     public void execute(int compiler) {
         final PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
-        ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( compiler );        	
-        
+        ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( compiler );
+
         final List errors = new ArrayList();
         final List exceptions = new ArrayList();
         Thread[] threads = new Thread[_NUMBER_OF_THREADS];
@@ -54,8 +55,8 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
                         PackageDescr packageDescr = new PackageDescr( "MyRulebase" );
                         addImports( packageDescr );
                         addFunctions( packageDescr );
-                        // added some arbitrary sleep statements to encourage 
-                        // context switching and hope this provokes exceptions 
+                        // added some arbitrary sleep statements to encourage
+                        // context switching and hope this provokes exceptions
                         sleep( _SLEEP_TIME_MS );
                         builder.addPackage( packageDescr );
                         sleep( _SLEEP_TIME_MS );
@@ -85,6 +86,12 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
             } catch ( InterruptedException e ) {
                 threads[i].interrupt();
             }
+        }
+        if (!exceptions.isEmpty()) {
+            for (Iterator iterator = exceptions.iterator(); iterator.hasNext();) {
+				Exception name = (Exception) iterator.next();
+				System.err.println(name + name.getMessage());
+			}
         }
         assertTrue( "Exceptions during package compilation (number=" + exceptions.size() + ")",
                     exceptions.isEmpty() );

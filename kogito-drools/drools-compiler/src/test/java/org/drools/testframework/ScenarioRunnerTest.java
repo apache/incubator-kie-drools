@@ -43,7 +43,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		resolver.addImport("org.drools.Cheese");
 		resolver.addImport("org.drools.Person");
 		ScenarioRunner runner = new ScenarioRunner(sc, resolver,
-				new MockWorkingMemory());
+				new MockWorkingMemory(), null);
 
 		assertTrue(runner.populatedData.containsKey("c1"));
 		assertTrue(runner.populatedData.containsKey("p1"));
@@ -73,7 +73,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		resolver.addImport("org.drools.Cheese");
 
 		ScenarioRunner runner = new ScenarioRunner(sc, resolver,
-				new MockWorkingMemory());
+				new MockWorkingMemory(), null);
 
 		assertTrue(runner.populatedData.containsKey("c1"));
 		assertTrue(runner.populatedData.containsKey("c2"));
@@ -92,7 +92,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		TypeResolver resolver = new ClassTypeResolver(new HashSet<Object>(),
 				Thread.currentThread().getContextClassLoader());
 		resolver.addImport("org.drools.Cheese");
-		ScenarioRunner run = new ScenarioRunner(new Scenario(), resolver, new MockWorkingMemory());
+		ScenarioRunner run = new ScenarioRunner(new Scenario(), resolver, new MockWorkingMemory(), null);
 		run.populatedData.clear();
 		Cheese c = new Cheese();
 		c.setType("whee");
@@ -113,7 +113,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 	public void testVerifyFacts() throws Exception {
 
 		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null,
-				new MockWorkingMemory());
+				new MockWorkingMemory(), null);
 		Cheese f1 = new Cheese("cheddar", 42);
 		runner.populatedData.put("f1", f1);
 
@@ -176,7 +176,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testVerifyFactsWithOperator() throws Exception {
 		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null,
-				new MockWorkingMemory());
+				new MockWorkingMemory(), null);
 		Cheese f1 = new Cheese("cheddar", 42);
 		runner.populatedData.put("f1", f1);
 
@@ -219,7 +219,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		resolver.addImport("org.drools.Cheese");
 
 		MockWorkingMemory wm = new MockWorkingMemory();
-		ScenarioRunner runner = new ScenarioRunner(sc, resolver, wm);
+		ScenarioRunner runner = new ScenarioRunner(sc, resolver, wm, null);
 		assertEquals(1, wm.facts.size());
 		assertEquals(runner.populatedData.get("c1"), wm.facts.get(0));
 
@@ -239,7 +239,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		// and baz, we leave out
 
 		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null,
-				new MockWorkingMemory());
+				new MockWorkingMemory(), null);
 		VerifyRuleFired v = new VerifyRuleFired();
 		v.ruleName = "foo";
 		v.expectedFire = true;
@@ -276,7 +276,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		sc.fixtures.add(ext);
 
 		MockWorkingMemory wm = new MockWorkingMemory();
-		ScenarioRunner run = new ScenarioRunner(sc, null, wm);
+		ScenarioRunner run = new ScenarioRunner(sc, null, wm, null);
 		assertEquals(wm, run.workingMemory);
 		assertNotNull(wm.agendaEventListener);
 		assertTrue(wm.agendaEventListener instanceof TestingEventListener);
@@ -300,7 +300,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		resolver.addImport("org.drools.Cheese");
 
 		MockWorkingMemory wm = new MockWorkingMemory();
-		ScenarioRunner run = new ScenarioRunner(sc, resolver, wm);
+		ScenarioRunner run = new ScenarioRunner(sc, resolver, wm, null);
 		assertEquals(1, wm.globals.size());
 		assertEquals(1, run.globalData.size());
 		assertEquals(1, run.populatedData.size());
@@ -318,7 +318,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 	public void testSimulatedDate() throws Exception {
 		Scenario sc = new Scenario();
 		MockWorkingMemory wm = new MockWorkingMemory();
-		ScenarioRunner run = new ScenarioRunner(sc, null, wm);
+		ScenarioRunner run = new ScenarioRunner(sc, null, wm, null);
 		TimeMachine tm = run.workingMemory.getTimeMachine();
 
 		// love you
@@ -331,7 +331,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 		ExecutionTrace ext = new ExecutionTrace();
 		ext.scenarioSimulatedDate = new Date("10-Jul-1974");
 		sc.fixtures.add(ext);
-		run = new ScenarioRunner(sc, null, wm);
+		run = new ScenarioRunner(sc, null, wm, null);
 		tm = run.workingMemory.getTimeMachine();
 
 		long expected = ext.scenarioSimulatedDate.getTime();
@@ -343,7 +343,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	public void testVerifyRuleFired() throws Exception {
 		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null,
-				new MockWorkingMemory());
+				new MockWorkingMemory(), null);
 
 		VerifyRuleFired vr = new VerifyRuleFired("qqq", 42, null);
 		Map<String, Integer> f = new HashMap<String, Integer>();
@@ -431,7 +431,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         WorkingMemory wm = getWorkingMemory("test_rules2.drl");
 
-        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
+        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm, null);
 
         assertEquals(3, executionTrace.numberOfRulesFired.intValue());
 
@@ -468,7 +468,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 
         WorkingMemory wm = getWorkingMemory("test_stateful.drl");
-        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
+        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm, null);
 
         Cheese c1 = (Cheese) run.populatedData.get("c1");
         Cheese c2 = (Cheese) run.populatedData.get("c2");
@@ -502,7 +502,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 
         WorkingMemory wm = getWorkingMemory("test_stateful.drl");
-        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
+        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm, null);
 
         Cheese c1 = (Cheese) run.populatedData.get("c1");
 
@@ -534,7 +534,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 
         WorkingMemory wm = getWorkingMemory("test_stateful.drl");
-        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
+        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm, null);
 
         Cheese c1 = (Cheese) run.populatedData.get("c1");
 
@@ -587,7 +587,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         WorkingMemory wm = getWorkingMemory("test_rules2.drl");
 
-        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm);
+        ScenarioRunner run = new ScenarioRunner(sc, resolver, (InternalWorkingMemory) wm, null);
 
         assertSame(run.scenario, sc);
 
