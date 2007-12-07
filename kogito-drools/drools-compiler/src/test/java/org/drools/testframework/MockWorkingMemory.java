@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 
 import org.drools.Agenda;
 import org.drools.FactException;
@@ -38,7 +39,6 @@ import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
-import org.drools.util.concurrent.locks.Lock;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
 
