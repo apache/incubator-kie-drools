@@ -56,7 +56,7 @@
                                 <constraint>return inList.contains( 3 );</constraint>
                                 <priority>3</priority>
                                 <dialect>java</dialect>
-                                <type>eval</type>
+                                <type>code</type>
                               </org.drools.ruleflow.core.impl.ConstraintImpl>
                             </entry>
                             <entry>
@@ -130,7 +130,7 @@ eval( list.contains( 6 ) )</constraint>
                                 <constraint>return inList.contains( 1 );</constraint>
                                 <priority>1</priority>
                                 <dialect>mvel</dialect>
-                                <type>eval</type>
+                                <type>code</type>
                               </org.drools.ruleflow.core.impl.ConstraintImpl>
                             </entry>
                           </constraints>

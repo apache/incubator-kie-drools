@@ -157,6 +157,10 @@ public class ProcessBuilder {
     }
     
     public void buildSplit(Process process, ProcessDescr processDescr, ProcessBuildContext context, SplitImpl splitNode) {
+        if ( splitNode.getType() == Split.TYPE_AND ) {
+            // we only process or/xor
+            return;
+        }
         // we need to clone the map, so we can update the original while iterating.
         Map map = new HashMap( splitNode.getConstraints() );
         for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
@@ -171,7 +175,7 @@ public class ProcessBuilder {
                 ruleConstraint.setPriority( constraint.getPriority() );
                 ruleConstraint.setPriority( constraint.getPriority() );
                 splitNode.setConstraint( connection, ruleConstraint );
-            } else if ( "eval".equals( constraint.getType() ) ) {
+            } else if ( "code".equals( constraint.getType() ) ) {
                 ReturnValueConstraintEvaluator returnValueConstraint = new ReturnValueConstraintEvaluator();
                 returnValueConstraint.setDialect( constraint.getDialect() );
                 returnValueConstraint.setName( constraint.getName() );
