@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.FactException;
 import org.drools.PackageIntegrationException;
@@ -57,7 +58,6 @@ import org.drools.ruleflow.common.core.Process;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.ObjectHashSet;
-import org.drools.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementation of <code>RuleBase</code>.
