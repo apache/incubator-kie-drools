@@ -458,6 +458,10 @@ public class JavaDialect
         ProcessClassBuilder classBuilder = context.getDialect().getProcessClassBuilder();
 
         String processClass = classBuilder.buildRule( context );
+        if ( processClass == null ) {
+            // nothing to compile.
+            return;
+        }
 
         final Process process = context.getProcess();
         final ProcessDescr processDescr = context.getProcessDescr();
