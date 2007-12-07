@@ -24,6 +24,7 @@ import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.TimeMachine;
+import org.mvel.integration.impl.BaseVariableResolverFactory;
 
 /**
  * This actually runs the test scenarios.
@@ -56,18 +57,13 @@ public class ScenarioRunner {
 	 *
 	 */
 	public ScenarioRunner(final Scenario scenario, final TypeResolver resolver,
-			final InternalWorkingMemory wm, ClassLoader cl) throws ClassNotFoundException {
+			final InternalWorkingMemory wm) throws ClassNotFoundException {
 		this.scenario = scenario;
 		this.workingMemory = wm;
 		scenario.lastRunResult = new Date();
 
-		ClassLoader current = Thread.currentThread().getContextClassLoader();
 
-		if (cl != null) {
-			Thread.currentThread().setContextClassLoader(cl);
-		}
 
-		try {
 			//stub out any rules we don't want to have the consequences firing of.
 			HashSet<String> ruleList = new HashSet<String>();
 			ruleList.addAll(scenario.rules);
@@ -139,11 +135,7 @@ public class ScenarioRunner {
 
 			}
 
-		} finally {
-			if (cl != null) {
-				Thread.currentThread().setContextClassLoader(current);
-			}
-		}
+
 
 	}
 
@@ -202,6 +194,7 @@ public class ScenarioRunner {
 
 
 	void verify(VerifyFact value) {
+
 		Object fact = this.populatedData.get(value.name);
 		if (fact == null) fact = this.globalData.get(value.name);
 		for (int i = 0; i < value.fieldValues.size(); i++) {
@@ -254,3 +247,4 @@ public class ScenarioRunner {
 
 
 }
+
