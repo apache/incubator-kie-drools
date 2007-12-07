@@ -208,10 +208,12 @@ public class ScenarioRunner {
 
 
 			if (!fld.successResult) {
-				fld.actualResult = eval("__fact__." + fld.fieldName, st).toString();
+				Object actual = eval("__fact__." + fld.fieldName, st);
+				fld.actualResult = (actual != null) ? actual.toString() : "";
+
 				if (fld.operator.equals("==")) {
 					fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was [" + fld.actualResult
-										+ "] expected [" + fld.actualResult + "].";
+										+ "] expected [" + fld.expected + "].";
 				} else {
 					fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was not expected to be [" + fld.actualResult
 					+ "].";

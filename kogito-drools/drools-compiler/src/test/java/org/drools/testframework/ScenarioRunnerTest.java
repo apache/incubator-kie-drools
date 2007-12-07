@@ -218,6 +218,26 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	}
 
+	public void testVerifyFieldAndActualIsNull() throws Exception {
+		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null,
+				new MockWorkingMemory());
+		Cheese f1 = new Cheese();
+		f1.setType(null);
+		runner.populatedData.put("f1", f1);
+
+		VerifyFact vf = new VerifyFact();
+		vf.name = "f1";
+		vf.fieldValues.add(new VerifyField("type", "boo", "=="));
+
+		runner.verify(vf);
+		VerifyField vfl = (VerifyField) vf.fieldValues.get(0);
+
+		assertEquals("[f1] field [type] was [] expected [boo].", vfl.explanation);
+		assertEquals("boo", vfl.expected);
+		assertEquals("", vfl.actualResult);
+
+	}
+
 	public void testDummyRunNoRules() throws Exception {
 		Scenario sc = new Scenario();
 		FactData[] facts = new FactData[] { new FactData("Cheese", "c1",
