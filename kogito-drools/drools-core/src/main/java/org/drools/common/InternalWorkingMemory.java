@@ -1,5 +1,7 @@
 package org.drools.common;
 
+import java.util.concurrent.locks.Lock;
+
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -14,7 +16,6 @@ import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
-import org.drools.util.concurrent.locks.Lock;
 
 public interface InternalWorkingMemory
     extends

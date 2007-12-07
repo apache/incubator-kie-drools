@@ -29,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.Agenda;
 import org.drools.FactException;
@@ -72,8 +74,6 @@ import org.drools.util.JavaIteratorAdapter;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.AbstractHashTable.HashTableIterator;
-import org.drools.util.concurrent.locks.Lock;
-import org.drools.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementation of <code>WorkingMemory</code>.

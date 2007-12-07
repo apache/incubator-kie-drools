@@ -4,10 +4,10 @@
 package org.drools.concurrent;
 
 import java.io.Serializable;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.drools.WorkingMemory;
-import org.drools.util.concurrent.locks.BlockingQueue;
-import org.drools.util.concurrent.locks.LinkedBlockingQueue;
 
 /**
  * The CommandExecutor is a Producer/Consumer style classes that provides a queue of Commands
