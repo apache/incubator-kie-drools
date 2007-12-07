@@ -217,8 +217,11 @@ public class ScenarioRunner {
 					+ "].";
 				}
 			} else {
-
-				fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was [" + fld.expected + "].";
+				if (fld.operator.equals("==")) {
+					fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was [" + fld.expected + "].";
+				} else if (fld.operator.equals("!=")){
+					fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was not [" + fld.expected + "].";
+				}
 			}
 
 		}

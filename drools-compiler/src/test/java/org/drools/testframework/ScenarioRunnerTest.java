@@ -198,6 +198,23 @@ public class ScenarioRunnerTest extends RuleUnit {
 		runner.verify(vf);
 		assertFalse(((VerifyField)vf.fieldValues.get(0)).successResult);
 
+	}
+
+	public void testVerifyFactExplanation() throws Exception {
+		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null,
+				new MockWorkingMemory());
+		Cheese f1 = new Cheese();
+		f1.setType(null);
+		runner.populatedData.put("f1", f1);
+
+		VerifyFact vf = new VerifyFact();
+		vf.name = "f1";
+		vf.fieldValues.add(new VerifyField("type", "boo", "!="));
+
+		runner.verify(vf);
+		VerifyField vfl = (VerifyField) vf.fieldValues.get(0);
+		assertEquals("[f1] field [type] was not [boo].", vfl.explanation);
+
 
 	}
 
