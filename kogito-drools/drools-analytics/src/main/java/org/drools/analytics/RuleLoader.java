@@ -32,7 +32,7 @@ class RuleLoader {
 				"redundancy/Restrictions.drl", "redundancy/Notes.drl",
 				"redundancy/Consequence.drl", "redundancy/Patterns.drl",
 				"redundancy/Possibilities.drl", "redundancy/Rules.drl",
-				"reports/RangeCheckReports.drl",
+				"redundancy/Warnings.drl", "reports/RangeCheckReports.drl",
 				// Missing consequence
 				"Consequence.drl", };
 

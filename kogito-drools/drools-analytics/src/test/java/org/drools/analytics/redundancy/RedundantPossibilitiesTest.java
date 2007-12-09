@@ -74,8 +74,8 @@ public class RedundantPossibilitiesTest extends RedundancyTestBase {
 		Map<String, Set<String>> map = createRedundancyMap(sessionResult
 				.iterateObjects());
 
-		assertTrue(TestBase.mapContains(map, ruleName1, ruleName2)
-				^ TestBase.mapContains(map, ruleName2, ruleName1));
+		assertTrue(TestBase.mapContains(map, ruleName1, ruleName2));
+		assertTrue(TestBase.mapContains(map, ruleName2, ruleName1));
 
 		if (!map.isEmpty()) {
 			fail("More redundancies than was expected.");
@@ -137,8 +137,8 @@ public class RedundantPossibilitiesTest extends RedundancyTestBase {
 		Map<String, Set<String>> map = createRedundancyMap(sessionResult
 				.iterateObjects());
 
-		assertTrue(TestBase.mapContains(map, ruleName1, ruleName2)
-				^ TestBase.mapContains(map, ruleName2, ruleName1));
+		assertTrue(TestBase.mapContains(map, ruleName1, ruleName2));
+		assertTrue(TestBase.mapContains(map, ruleName2, ruleName1));
 
 		if (!map.isEmpty()) {
 			fail("More redundancies than was expected.");
