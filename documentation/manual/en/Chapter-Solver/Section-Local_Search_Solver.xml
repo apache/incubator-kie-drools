@@ -414,6 +414,12 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
     <para>Notice that the logging used the <literal>toString()</literal>
     method from our <literal>Move</literal> implementation: <literal>[Queen-1]
     1 @ 0 =&gt; 3</literal>.</para>
+
+    <para>The local search solver solves the 4 queens problem in 3 steps, by
+    evaluating only 37 possible solutions (3 steps with 12 moves each + 1
+    starting solution), which is only fraction of all 256 possible solutions.
+    It solves 16 queens in 31 steps, by evaluating only 7441 out of
+    18446744073709551616 possible solutions.</para>
   </section>
 
   <section>

@@ -128,7 +128,7 @@
       <table>
         <title>NQueens problem size</title>
 
-        <tgroup cols="4">
+        <tgroup cols="5">
           <thead>
             <row>
               <entry># queens (n)</entry>
@@ -138,6 +138,8 @@
               <entry># feasible solutions (distinct)</entry>
 
               <entry># optimal solutions (distinct)</entry>
+
+              <entry># possible / # optimal</entry>
             </row>
           </thead>
 
@@ -150,6 +152,8 @@
               <entry>2</entry>
 
               <entry>2</entry>
+
+              <entry>128</entry>
             </row>
 
             <row>
@@ -160,6 +164,8 @@
               <entry>64</entry>
 
               <entry>64</entry>
+
+              <entry>262144</entry>
             </row>
 
             <row>
@@ -170,12 +176,16 @@
               <entry>14772512</entry>
 
               <entry>14772512</entry>
+
+              <entry>1248720872503</entry>
             </row>
 
             <row>
               <entry>32</entry>
 
               <entry>1.46150163733090291820368483e+48</entry>
+
+              <entry>?</entry>
 
               <entry>?</entry>
 
@@ -190,6 +200,8 @@
               <entry>?</entry>
 
               <entry>?</entry>
+
+              <entry>?</entry>
             </row>
 
             <row>
@@ -200,6 +212,8 @@
               <entry>?</entry>
 
               <entry># feasible solutions</entry>
+
+              <entry>?</entry>
             </row>
           </tbody>
         </tgroup>
@@ -515,7 +529,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>1.52464943788290465606136043e+64</entry>
 
-              <entry>&lt;= 5,77608277425558771434498864e+43</entry>
+              <entry>&lt;= 5.77608277425558771434498864e+43</entry>
 
               <entry>?</entry>
 
@@ -529,9 +543,9 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>90</entry>
 
-              <entry>9,43029892325559280477052413e+112</entry>
+              <entry>9.43029892325559280477052413e+112</entry>
 
-              <entry>&lt;= 1,07573451027871200629339068e+79</entry>
+              <entry>&lt;= 1.07573451027871200629339068e+79</entry>
 
               <entry>?</entry>
 
@@ -545,9 +559,9 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>132</entry>
 
-              <entry>1,58414112478195320415135060e+177</entry>
+              <entry>1.58414112478195320415135060e+177</entry>
 
-              <entry>&lt;= 2,01650616733413376416949843e+126</entry>
+              <entry>&lt;= 2.01650616733413376416949843e+126</entry>
 
               <entry>?</entry>
 
@@ -561,9 +575,9 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>182</entry>
 
-              <entry>3,35080635695103223315189511e+257</entry>
+              <entry>3.35080635695103223315189511e+257</entry>
 
-              <entry>&lt;= 1,73513467024013808570420241e+186</entry>
+              <entry>&lt;= 1.73513467024013808570420241e+186</entry>
 
               <entry>?</entry>
 
@@ -577,9 +591,9 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>240</entry>
 
-              <entry>3,22924601799855400751522483e+354</entry>
+              <entry>3.22924601799855400751522483e+354</entry>
 
-              <entry>&lt;= 2,45064610271441678267620602e+259</entry>
+              <entry>&lt;= 2.45064610271441678267620602e+259</entry>
 
               <entry>?</entry>
 
@@ -690,7 +704,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>7</entry>
 
-              <entry>1,11000574474221096210367623e+1052</entry>
+              <entry>1.11000574474221096210367623e+1052</entry>
 
               <entry>?</entry>
 
@@ -708,7 +722,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>49</entry>
 
-              <entry>2,86903028422562597982749122e+5761</entry>
+              <entry>2.86903028422562597982749122e+5761</entry>
 
               <entry>?</entry>
 
@@ -726,7 +740,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>48</entry>
 
-              <entry>5,74648299136737635070728795e+5132</entry>
+              <entry>5.74648299136737635070728795e+5132</entry>
 
               <entry>?</entry>
 
@@ -744,7 +758,7 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
 
               <entry>1</entry>
 
-              <entry>1,44349601026818742275741580e+51</entry>
+              <entry>1.44349601026818742275741580e+51</entry>
 
               <entry>?</entry>
 

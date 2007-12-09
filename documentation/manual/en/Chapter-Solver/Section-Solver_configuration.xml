@@ -73,8 +73,8 @@
     <section>
       <title>Simplex</title>
 
-      <para>Simplex turns all constraints into a big equation, which it
-      transmutes into a mathematical function without local optima. It then
+      <para>Simplex turns all constraints and data into a big equation, which
+      it transmutes into a mathematical function without local optima. It then
       finds an optimal solution to the planning problem by finding an optima
       of that mathematical function.</para>
 
@@ -287,9 +287,9 @@
 
     <programlisting>public interface Solution {
 
-    Solution cloneSolution();
-
     Collection&lt;? extends Object&gt; getFacts();
+
+    Solution cloneSolution();
 
 }</programlisting>
 
@@ -303,12 +303,28 @@
 
 }</programlisting>
 
-    <para>Most solvers use the <literal>cloneSolution()</literal> method to
-    clone the solution each time they encounter a new best solution. The
-    <literal>NQueens</literal> implementation just clones all
-    <literal>Queen</literal> instances:</para>
+    <section>
+      <title>The getFacts method</title>
 
-    <programlisting>    public NQueens cloneSolution() {
+      <para>All Objects returned by the <literal>getFacts()</literal> method
+      will be asserted into the drools working memory. Those facts can be used
+      by the score rules. For example, <literal>NQueens</literal> just returns
+      all <literal>Queen</literal> instances.</para>
+
+      <programlisting>    public Collection&lt;? extends Object&gt; getFacts() {
+        return queenList;
+    }</programlisting>
+    </section>
+
+    <section>
+      <title>The cloneSolution method</title>
+
+      <para>Most solvers use the <literal>cloneSolution()</literal> method to
+      clone the solution each time they encounter a new best solution. The
+      <literal>NQueens</literal> implementation just clones all
+      <literal>Queen</literal> instances:</para>
+
+      <programlisting>    public NQueens cloneSolution() {
         NQueens clone = new NQueens();
         List&lt;Queen&gt; clonedQueenList = new ArrayList&lt;Queen&gt;(queenList.size());
         for (Queen queen : queenList) {
@@ -318,13 +334,14 @@
         return clone;
     }</programlisting>
 
-    <para>The <literal>cloneSolution()</literal> method should clone no more
-    and no less than the parts of the <literal>Solution</literal> that can
-    change during solving. For example, in the lesson schedule example the
-    lessons are cloned, but teachers, groups and timeslots are not cloned
-    because only a lesson's appointed timeslot changes during solving:</para>
+      <para>The <literal>cloneSolution()</literal> method should clone no more
+      and no less than the parts of the <literal>Solution</literal> that can
+      change during solving. For example, in the lesson schedule example the
+      lessons are cloned, but teachers, groups and timeslots are not cloned
+      because only a lesson's appointed timeslot changes during
+      solving:</para>
 
-    <programlisting>    /**
+      <programlisting>    /**
      * Clone will only deep copy the lessons
      */
     public LessonSchedule cloneSolution() {
@@ -339,15 +356,7 @@
         clone.lessonList = clonedLessonList;
         return clone;
     }</programlisting>
-
-    <para>All Objects returned by the <literal>getFacts()</literal> method
-    will be asserted into the drools working memory. Those facts can be used
-    by the score rules. For example, <literal>NQueens</literal> just returns
-    all <literal>Queen</literal> instances.</para>
-
-    <programlisting>    public Collection&lt;? extends Object&gt; getFacts() {
-        return queenList;
-    }</programlisting>
+    </section>
   </section>
 
   <section>
