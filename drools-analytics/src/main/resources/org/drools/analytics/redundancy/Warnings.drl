@@ -1,0 +1,97 @@
+#created on: 9.12.2007
+package org.drools.analytics.redundancy
+
+#list any import classes here.
+global AnalyticsResult result;
+
+
+
+#declare any global variables here
+import java.util.Collection;
+import java.util.ArrayList;
+
+import org.drools.analytics.components.RulePossibility;
+import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.report.components.Redundancy;
+import org.drools.analytics.report.components.AnalyticsMessage;
+import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.Cause.CauseType;
+
+
+rule "Find redundant rule possibilities from different rules"
+	salience -100
+	when
+		$ruleRedundancy :Redundancy(
+			left.causeType == Cause.CauseType.RULE
+		)
+		
+		$rulePossibilityRedundancy :Redundancy(
+			left.causeType == Cause.CauseType.RULE_POSSIBILITY
+		)
+		
+		# Check that redundant possibilities are from redundant rules
+		exists RulePossibility(
+			this == $rulePossibilityRedundancy.left,
+			eval( ruleId == $ruleRedundancy.getLeft().getId() )
+		)
+		
+		exists RulePossibility(
+			this == $rulePossibilityRedundancy.right,
+			eval( ruleId == $ruleRedundancy.getRight().getId() )
+		)
+		
+		# Check that the possibilties are redundant to each other. 
+		exists Redundancy(
+			left.causeType == Cause.CauseType.RULE_POSSIBILITY,
+			left == $rulePossibilityRedundancy.right,
+			right == $rulePossibilityRedundancy.left
+		)
+		
+	then
+		Collection<Cause> causes = new ArrayList<Cause>();
+		causes.add( $rulePossibilityRedundancy.getLeft() );
+		causes.add( $rulePossibilityRedundancy.getRight() );
+		
+		result.save(new AnalyticsMessage( 
+						AnalyticsMessage.Severity.WARNING, AnalyticsMessage.MessageType.REDUNDANCY, 
+						$rulePossibilityRedundancy, "Rules are redundant.", causes ) );
+end
+
+rule "Find subsumptant rule possibilities from different rules"
+	salience -100
+	when
+		$ruleRedundancy :Redundancy(
+			left.causeType == Cause.CauseType.RULE
+		)
+		
+		$rulePossibilityRedundancy :Redundancy(
+			left.causeType == Cause.CauseType.RULE_POSSIBILITY
+		)
+		
+		# Check that redundant possibilities are from redundant rules
+		exists RulePossibility(
+			this == $rulePossibilityRedundancy.left,
+			eval( ruleId == $ruleRedundancy.getLeft().getId() )
+		)
+		
+		exists RulePossibility(
+			this == $rulePossibilityRedundancy.right,
+			eval( ruleId == $ruleRedundancy.getRight().getId() )
+		)
+		
+		# Check that the left side is redundant to right, but the right side is not redudant to left. 
+		not Redundancy(
+			left.causeType == Cause.CauseType.RULE_POSSIBILITY,
+			left == $rulePossibilityRedundancy.right,
+			right == $rulePossibilityRedundancy.left
+		)
+		
+	then
+		Collection<Cause> causes = new ArrayList<Cause>();
+		causes.add( $rulePossibilityRedundancy.getLeft() );
+		causes.add( $rulePossibilityRedundancy.getRight() );
+		
+		result.save(new AnalyticsMessage( 
+						AnalyticsMessage.Severity.WARNING, AnalyticsMessage.MessageType.REDUNDANCY, 
+						$rulePossibilityRedundancy, "Rules are subsumptant.", causes ) );
+end

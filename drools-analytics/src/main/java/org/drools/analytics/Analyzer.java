@@ -5,7 +5,6 @@ import java.util.Collection;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.analytics.components.Pattern;
 import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.analytics.dao.AnalyticsResult;
