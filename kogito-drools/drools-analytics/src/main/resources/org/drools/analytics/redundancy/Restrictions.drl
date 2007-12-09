@@ -42,7 +42,8 @@ rule "Find redundant LiteralRestriction"
 					booleanValue == $left.booleanValue
 				)
 			or
-				$right :LiteralRestriction( id != $left.id, 
+				$right :LiteralRestriction( 
+					id != $left.id, 
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.STRING,
@@ -106,66 +107,3 @@ rule "Find redundant LiteralRestriction"
 	then
 		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
 end
-
-# TODO: And from and every object.
-//TODO: Also check that patterns and rules are redundant.
-/*
-rule "Find redundant ReturnValueRestriction"
-	when
-		# Check that Restrictions $left and $right have redundant fields.
-		$left :ReturnValueRestriction()
-		$right :ReturnValueRestriction( 
-			id != $left.id,
-			operator == $left.operator,
-			classMethodName matches $left.classMethodName,
-			compareStringArrays( declarations, $left.declarations )
-		)
-					
-		# Check that PatternPossibilities $pp1 and $pp2 have redundant fields
-		# and that they contain $left and $right.
-		$pp1 :PatternPossibility( restriction contains $left ) 
-		$pp2 :PatternPossibility( 
-					id != $pp1.id, 
-					restriction contains $right, 
-					exist == $pp1.exist, 
-					notExist == $pp1.notExist,
-					eval( restrictions.size() == $pp1.getRestrictions().size() ) 
-		)
-		# Check that there is not allready a pair with these values.
-		not RedundantPair( left == $left, right == $right )
-	then
-		insert( new RedundantPair( $pp1, $pp2, $left, $right ) );
-end
-*/
-/*
-XXX: Not sure if this can be done.
-rule "Find redundant QualifiedIdentifierRestriction"
-	when
-		# Check that Restrictions $left and $right have redundant fields.
-		$left :QualifiedIdentifierRestriction()
-		$right :QualifiedIdentifierRestriction( 
-			id != $left.id, 
-			operator == $left.operator 
-		)
-		
-		# Check that these two variables point to the same object.
-		$v :Variable( id == $left.variableId )
-		Variable( 
-			id == $right.variableId,
-			objectType == $v.objectType,
-			objectId == $v.objectId
-		)
-		
-		# Check that there is not already a pair with these values.
-		not Redundancy( 
-			left == $left, 
-			right == $right 
-		)
-		not Redundancy( 
-			left == $right, 
-			right == $left 
-		)
-	then
-		insert( new Redundancy( $left, $right ) );
-end
-*/

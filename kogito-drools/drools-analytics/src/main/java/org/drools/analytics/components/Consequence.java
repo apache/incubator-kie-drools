@@ -1,6 +1,9 @@
 package org.drools.analytics.components;
 
-public interface Consequence {
+import org.drools.analytics.report.components.Cause;
+
+
+public interface Consequence extends Cause{
 
 	public static enum ConsequenceType {
 		TEXT
@@ -9,9 +12,9 @@ public interface Consequence {
 	public int getId();
 
 	public ConsequenceType getConsequenceType();
-	
+
 	public int getRuleId();
 
 	public String getRuleName();
-	
+
 }

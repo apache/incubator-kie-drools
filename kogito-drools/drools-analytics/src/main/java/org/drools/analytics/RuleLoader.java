@@ -12,14 +12,43 @@ import org.drools.rule.Package;
 class RuleLoader {
 
 	public static Collection<Package> loadPackages() {
+
+		String[] fileNames = new String[] {
+				// Incoherence
+				"incoherence/Patterns.drl",
+				"incoherence/Restrictions.drl",
+				// Missing equality
+				"missingEquality/MissingEquality.drl",
+				// Optimization
+				"optimisation/RestrictionOrder.drl",
+				"optimisation/PatternOrder.drl",
+				// Range checks
+				"rangeChecks/Dates.drl", "rangeChecks/Doubles.drl",
+				"rangeChecks/Integers.drl",
+				"rangeChecks/Patterns.drl",
+				"rangeChecks/Variables.drl",
+				"rangeChecks/Clean.drl",
+				// Redundancy
+				"redundancy/Restrictions.drl", "redundancy/Notes.drl",
+				"redundancy/Consequence.drl", "redundancy/Patterns.drl",
+				"redundancy/Possibilities.drl", "redundancy/Rules.drl",
+				"reports/RangeCheckReports.drl",
+				// Missing consequence
+				"Consequence.drl", };
+
 		Collection<Package> packages = new ArrayList<Package>();
 
-		Collection<InputStreamReader> readers = readInputStreamReaders();
-
-		for (InputStreamReader reader : readers) {
+		for (int i = 0; i < fileNames.length; i++) {
 			try {
+				InputStreamReader reader = new InputStreamReader(
+						RuleLoader.class.getResourceAsStream(fileNames[i]));
 				packages.add(loadPackage(reader));
+				reader.close();
 			} catch (DroolsParserException e) {
+				e.printStackTrace();
+			} catch (NullPointerException e) {
+				System.err.println("Error when opening file " + fileNames[i]
+						+ ".");
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -37,45 +66,5 @@ class RuleLoader {
 		builder.addPackageFromDrl(reader);
 
 		return builder.getPackage();
-	}
-
-	private static Collection<InputStreamReader> readInputStreamReaders() {
-		Collection<InputStreamReader> list = new ArrayList<InputStreamReader>();
-
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("rangeChecks/Dates.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("rangeChecks/Doubles.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("rangeChecks/Integers.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("rangeChecks/Patterns.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("rangeChecks/Variables.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("rangeChecks/Clean.drl")));
-
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("Consequence.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("optimisation/RestrictionOrder.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("optimisation/PatternOrder.drl")));
-
-		// list.add(new InputStreamReader(RuleLoader.class
-		// .getResourceAsStream("redundancy/Possibilities.drl")));
-		//
-		// list.add(new InputStreamReader(RuleLoader.class
-		// .getResourceAsStream("redundancy/Patterns.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("redundancy/Restrictions.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("redundancy/Notes.drl")));
-		// list.add(new InputStreamReader(RuleLoader.class
-		// .getResourceAsStream("redundancy/Rules.drl")));
-		list.add(new InputStreamReader(RuleLoader.class
-				.getResourceAsStream("reports/RangeCheckReports.drl")));
-
-		return list;
 	}
 }

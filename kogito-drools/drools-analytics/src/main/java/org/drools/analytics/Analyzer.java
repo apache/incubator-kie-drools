@@ -5,9 +5,10 @@ import java.util.Collection;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.components.Pattern;
 import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.ReportModeller;
 import org.drools.analytics.report.html.ComponentsReportModeller;
 import org.drools.lang.descr.PackageDescr;
@@ -44,7 +45,9 @@ public class Analyzer {
 
 			WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-			for (Object o : data.getAll()) {
+			Collection<? extends Object> c = data.getAll();
+
+			for (Object o : c) {
 				workingMemory.insert(o);
 			}
 

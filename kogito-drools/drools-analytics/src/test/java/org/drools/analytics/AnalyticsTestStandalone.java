@@ -3,6 +3,8 @@ package org.drools.analytics;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.PackageDescr;
@@ -14,48 +16,30 @@ class AnalyticsTestStandalone {
 
 	public static final void main(String[] args) {
 		try {
-			PackageDescr descr = new DrlParser().parse(new InputStreamReader(
-					Analyzer.class
-							.getResourceAsStream("MissingRangesForDates.drl")));
-			PackageDescr descr2 = new DrlParser()
-					.parse(new InputStreamReader(Analyzer.class
-							.getResourceAsStream("MissingRangesForDoubles.drl")));
-			PackageDescr descr3 = new DrlParser().parse(new InputStreamReader(
-					Analyzer.class
-							.getResourceAsStream("MissingRangesForInts.drl")));
-			PackageDescr descr4 = new DrlParser()
-					.parse(new InputStreamReader(
-							Analyzer.class
-									.getResourceAsStream("MissingRangesForVariables.drl")));
-			PackageDescr descr5 = new DrlParser().parse(new InputStreamReader(
-					Analyzer.class.getResourceAsStream("Misc.drl")));
-			PackageDescr descr6 = new DrlParser().parse(new InputStreamReader(
-					Analyzer.class.getResourceAsStream("Misc2.drl")));
-			PackageDescr descr7 = new DrlParser().parse(new InputStreamReader(
-					Analyzer.class.getResourceAsStream("Misc3.drl")));
-			PackageDescr descr8 = new DrlParser().parse(new InputStreamReader(
-					Analyzer.class.getResourceAsStream("ConsequenceTest.drl")));
-			PackageDescr descr9 = new DrlParser()
-					.parse(new InputStreamReader(
-							Analyzer.class
-									.getResourceAsStream("optimisation/OptimisationRestrictionOrderTest.drl")));
-			PackageDescr descr10 = new DrlParser()
-			.parse(new InputStreamReader(
-					Analyzer.class
-					.getResourceAsStream("optimisation/OptimisationPatternOrderTest.drl")));
 
+			Collection<String> fileNames = new ArrayList<String>();
+
+			// Test data
+//			fileNames.add("MissingRangesForDates.drl");
+//			fileNames.add("MissingRangesForDoubles.drl");
+//			fileNames.add("MissingRangesForInts.drl");
+//			fileNames.add("MissingRangesForVariables.drl");
+//			fileNames.add("Misc.drl");
+//			fileNames.add("Misc2.drl");
+			fileNames.add("Misc3.drl");
+//			fileNames.add("ConsequenceTest.drl");
+//			fileNames.add("optimisation/OptimisationRestrictionOrderTest.drl");
+//			fileNames.add("optimisation/OptimisationPatternOrderTest.drl");
+
+			DrlParser parser = new DrlParser();
 			Analyzer a = new Analyzer();
-			// a.addPackageDescr(descr);
-			// a.addPackageDescr(descr2);
-			// a.addPackageDescr(descr3);
-			// a.addPackageDescr(descr4);
-			a.addPackageDescr(descr5);
-			a.addPackageDescr(descr6);
-			a.addPackageDescr(descr7);
-			a.addPackageDescr(descr8);
-			a.addPackageDescr(descr9);
-			a.addPackageDescr(descr10);
-			
+
+			for (String s : fileNames) {
+				PackageDescr descr = parser.parse(new InputStreamReader(
+						Analyzer.class.getResourceAsStream(s)));
+				a.addPackageDescr(descr);
+			}
+
 			a.fireAnalysis();
 			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());

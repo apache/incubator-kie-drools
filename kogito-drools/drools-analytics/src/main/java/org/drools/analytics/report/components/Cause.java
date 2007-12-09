@@ -17,7 +17,8 @@ public interface Cause {
 		REDUNDANCY, 
 		EVAL,
 		PREDICATE, 
-		CONSTRAINT
+		CONSTRAINT, 
+		CONSEQUENCE
 	}
 	
 	public int getId();

@@ -27,7 +27,7 @@ rule "Find redundant restrictions from pattern possibilities"
 			left.causeType == Cause.CauseType.RESTRICTION
 		)
 		
-		PatternPossibility(
+		$pp :PatternPossibility(
 			items contains $r.left, 
 			items contains $r.right 
 		)
