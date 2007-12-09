@@ -9,3 +9,19 @@ rule "Redundant restrictions"
 	then
 		// Something
 end
+
+rule "Redundant rule 1, rules"
+	when
+		RedundancyPattern( a == 1 )
+		RedundancyPattern2( a == 1 )
+	then
+		System.println("TEST");
+end
+
+rule "Redundant rule 2, rules"
+	when
+		RedundancyPattern( a == 1 )
+		RedundancyPattern2( a == 1 )
+	then
+		System.println("TEST");
+end

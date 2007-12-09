@@ -2,6 +2,7 @@ package com.misc.someData
 
 import com.sample.DroolsTest.Message;
 
+
 rule "nro 1."
 	when
 		Foo( bar > 10 )

@@ -26,11 +26,11 @@ rule "Find pattern possibility redundancy"
 
 		# Find two PatternPossibilities.
 		$pp1 :PatternPossibility(
-			eval( id == $ppr.getLeft().getId() )
+			eval( patternId == $ppr.getLeft().getId() )
 		)
 
 		$pp2 :PatternPossibility(
-			eval( id == $ppr.getRight().getId() )
+			eval( patternId == $ppr.getRight().getId() )
 		)
 		
 		# For every restriction in $pp1 there is a redundancy to $pp2. 
@@ -91,11 +91,11 @@ rule "Find rule possibility redundancy"
 
 		# Find two RulePossibilities.
 		$rp1 :RulePossibility(
-			eval( id == $redundancy.getLeft().getId() )
+			eval( ruleId == $redundancy.getLeft().getId() )
 		)
 
 		$rp2 :RulePossibility(
-			eval( id == $redundancy.getRight().getId() )
+			eval( ruleId == $redundancy.getRight().getId() )
 		)
 		
 		# For every pattern possibility in $pp1 there is a pattern possibility in $pp2. 

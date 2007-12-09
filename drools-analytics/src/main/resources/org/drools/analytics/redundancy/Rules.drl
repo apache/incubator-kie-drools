@@ -1,22 +1,25 @@
 #created on: 7.9.2007
 package org.drools.analytics.redundancy.rules
 
-import org.drools.analytics.components.*;
+import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.report.components.Redundancy;
 
 #
 # Only checks for redundant rule specifications, 
 # does not include actual pattern and restriction checks.
 #
-rule "Find redundant Rule shells"
+rule "Find redundant Rules, weak redundancy"
 	when
 		# Check that AnalyticsRule $left and $right have redundant fields.
 		$left :AnalyticsRule()
 		$right :AnalyticsRule( 
 			id != $left.id, 
-			ruleSalience == $left.ruleSalience,
-			ruleAgendaGroup == $left.ruleAgendaGroup,
-			consequence == $left.consequence # TODO: Check for redundancy when MVEL is solved.
+			ruleAgendaGroup == $left.ruleAgendaGroup
+		)
+		
+		exists Redundancy(
+			left == $left.consequence,
+			right == $right.consequence
 		)
 		
 		# Check that there is not already a pair with these values.
@@ -24,45 +27,11 @@ rule "Find redundant Rule shells"
 			left == $left, 
 			right == $right 
 		)
+		not Redundancy( 
+			left == $right, 
+			right == $left 
+		)
 	then
 		insert( new Redundancy( Redundancy.RedundancyType.WEAK, $left, $right ) );
 end
 
-/*
-#
-# When two rules and all theyr possibilities are redundant.
-#
-rule "Find redundant rule"
-	when
-		$r1 :AnalyticsRule()
-		$r2 :AnalyticsRule( id != $r1.id )
-		
-		# If all the patterns in rule 1 are strongly redundant to rule 2, and vice versa.
-		# Then the redundancy is strong.
-		$set1 :HashSet()
-			from collect(
-				Pattern( ruleId == $r1.id )
-			)
-
-		$set2 :HashSet()
-			from collect(
-				Pattern( ruleId == $r2.id )
-			)
-		
-		# Find only strong pattern
-		$redundancyList :ArrayList()
-			from collect(
-				Redundancy( 
-					type == Redundancy.Type.STRONG,
-					eval( $set1.contains( left ) ),
-					eval( $set2.contains( right ) )
-				)
-			)
-		 
-		eval( $set1.size() == $redundancyList.size() )
-		
-	then
-		# Type is set to strong because all the rule possibilities are redundant.
-		insert( new Redundancy( Redundancy.Type.STRONG, $r1, $r2 ) );
-end
-*/

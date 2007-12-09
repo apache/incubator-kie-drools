@@ -18,6 +18,10 @@ public class TextConsequence extends AnalyticsComponent implements Consequence {
 		return AnalyticsComponentType.CONSEQUENCE;
 	}
 
+	public CauseType getCauseType() {
+		return CauseType.CONSEQUENCE;
+	}
+
 	public void setText(String text) {
 		this.text = text;
 	}
