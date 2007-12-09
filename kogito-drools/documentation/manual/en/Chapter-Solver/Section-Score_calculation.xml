@@ -178,7 +178,7 @@ rule "constraintsBroken"
             count($constraintOccurrence)
         );
     then
-        scoreCalculator.setScore(- $constraintCountintValue());
+        scoreCalculator.setScore(- $constraintCount.intValue());
 end</programlisting>
 
     <para>Optionally, you can also weigh your constraints differently, by
