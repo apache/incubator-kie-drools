@@ -71,5 +71,5 @@ public interface StatefulSession
      */
     Future asyncFireAllRules(AgendaFilter agendaFilter);
 
-    public List getRuleBaseUpdateListeners();
+    List getRuleBaseUpdateListeners();
 }

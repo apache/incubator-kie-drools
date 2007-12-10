@@ -1,5 +1,6 @@
 package org.drools.rule;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -65,10 +66,10 @@ public class MultiRestrictionFieldConstraint
         return this.extractor.equals( other.extractor ) && this.restrictions.equals( other.restrictions );
     }
 
-    public boolean isAllowed(final Object object,
+    public boolean isAllowed(final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory) {
         return this.restrictions.isAllowed( this.extractor,
-                                            object,
+                                            handle,
                                             workingMemory );
     }
 
@@ -77,9 +78,9 @@ public class MultiRestrictionFieldConstraint
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final Object object) {
+                                       final InternalFactHandle handle) {
         return this.restrictions.isAllowedCachedLeft( context,
-                                                      object );
+                                                      handle );
     }
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,

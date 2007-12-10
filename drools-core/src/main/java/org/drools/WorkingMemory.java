@@ -25,6 +25,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
+import org.drools.temporal.SessionClock;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.

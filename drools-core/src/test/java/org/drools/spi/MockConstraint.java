@@ -36,7 +36,7 @@ public class MockConstraint
 
     public boolean            isAllowed        = true;
 
-    public boolean isAllowed(final Object object,
+    public boolean isAllowed(final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
         return this.isAllowed;
@@ -78,7 +78,7 @@ public class MockConstraint
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final Object object) {
+                                       final InternalFactHandle handle) {
         return this.isAllowed;
     }
 

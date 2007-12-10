@@ -103,7 +103,7 @@ public class JoinNode extends BetaNode {
                                           leftTuple );
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
             final InternalFactHandle handle = entry.getFactHandle();
-            if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
+            if ( this.constraints.isAllowedCachedLeft( handle ) ) {
                 this.sink.propagateAssertTuple( leftTuple,
                                                 handle,
                                                 context,
@@ -212,7 +212,7 @@ public class JoinNode extends BetaNode {
                                           leftTuple );
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
             final InternalFactHandle handle = entry.getFactHandle();
-            if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
+            if ( this.constraints.isAllowedCachedLeft( handle ) ) {
                 this.sink.propagateRetractTuple( leftTuple,
                                                  handle,
                                                  context,
@@ -237,7 +237,7 @@ public class JoinNode extends BetaNode {
                                               tuple );
             for ( FactEntry entry = (FactEntry) objectIter.next(); entry != null; entry = (FactEntry) objectIter.next() ) {
                 final InternalFactHandle handle = entry.getFactHandle();
-                if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
+                if ( this.constraints.isAllowedCachedLeft( handle ) ) {
                     sink.assertTuple( new ReteTuple( tuple,
                                                      handle ),
                                       context,

@@ -39,6 +39,8 @@ public class MockObjectType
     private static final long serialVersionUID = 400L;
     /** Java object class. */
     private boolean           matches;
+    
+    private boolean           isEvent;
 
     // ------------------------------------------------------------
     // Constructors
@@ -86,6 +88,14 @@ public class MockObjectType
 
     public ValueType getValueType() {
         return ValueType.OBJECT_TYPE;
+    }
+
+    public boolean isEvent() {
+        return isEvent;
+    }
+
+    public void setEvent(boolean isEvent) {
+        this.isEvent = isEvent;
     }
 
 }

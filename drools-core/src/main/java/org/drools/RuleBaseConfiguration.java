@@ -26,9 +26,10 @@ import java.util.Properties;
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
-import org.drools.concurrent.ExecutorService;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
+import org.drools.temporal.SessionClock;
+import org.drools.temporal.SessionPseudoClock;
 import org.drools.util.ChainedProperties;
 
 /**
@@ -66,42 +67,44 @@ import org.drools.util.ChainedProperties;
  * drools.conflictResolver = <qualified class name>
  * drools.consequenceExceptionHandler = <qualified class name>
  * drools.ruleBaseUpdateHandler = <qualified class name>
+ * drools.sessionClock = <qualified class name>
  * 
  */
 public class RuleBaseConfiguration
     implements
     Serializable {
-    private static final long           serialVersionUID = 400L;
+    private static final long              serialVersionUID = 400L;
 
-    private ChainedProperties           chainedProperties;
+    private ChainedProperties              chainedProperties;
 
-    private boolean                     immutable;
+    private boolean                        immutable;
 
-    private boolean                     sequential;
-    private SequentialAgenda            sequentialAgenda;
+    private boolean                        sequential;
+    private SequentialAgenda               sequentialAgenda;
 
-    private boolean                     maintainTms;
-    private boolean                     removeIdentities;
-    private boolean                     shareAlphaNodes;
-    private boolean                     shareBetaNodes;
-    private boolean                     alphaMemory;
-    private int                         alphaNodeHashingThreshold;
-    private int                         compositeKeyDepth;
-    private boolean                     indexLeftBetaMemory;
-    private boolean                     indexRightBetaMemory;
-    private AssertBehaviour             assertBehaviour;
-    private LogicalOverride             logicalOverride;
-    private String                      executorService;
-    private ConsequenceExceptionHandler consequenceExceptionHandler;
-    private String                      ruleBaseUpdateHandler;
+    private boolean                        maintainTms;
+    private boolean                        removeIdentities;
+    private boolean                        shareAlphaNodes;
+    private boolean                        shareBetaNodes;
+    private boolean                        alphaMemory;
+    private int                            alphaNodeHashingThreshold;
+    private int                            compositeKeyDepth;
+    private boolean                        indexLeftBetaMemory;
+    private boolean                        indexRightBetaMemory;
+    private AssertBehaviour                assertBehaviour;
+    private LogicalOverride                logicalOverride;
+    private String                         executorService;
+    private ConsequenceExceptionHandler    consequenceExceptionHandler;
+    private String                         ruleBaseUpdateHandler;
+    private Class< ? extends SessionClock> sessionClockClass;
 
-    private ConflictResolver            conflictResolver;
+    private ConflictResolver               conflictResolver;
 
-    private boolean                     shadowProxy;
-    private Map                         shadowProxyExcludes;
-    private static final String         STAR             = "*";
+    private boolean                        shadowProxy;
+    private Map                            shadowProxyExcludes;
+    private static final String            STAR             = "*";
 
-    private transient ClassLoader       classLoader;
+    private transient ClassLoader          classLoader;
 
     /**
      * Creates a new rulebase configuration using the provided properties
@@ -217,9 +220,9 @@ public class RuleBaseConfiguration
 
         setConsequenceExceptionHandler( RuleBaseConfiguration.determineConsequenceExceptionHandler( this.chainedProperties.getProperty( "drools.consequenceExceptionHandler",
                                                                                                                                         "org.drools.base.DefaultConsequenceExceptionHandler" ) ) );
-        
+
         setRuleBaseUpdateHandler( this.chainedProperties.getProperty( "drools.ruleBaseUpdateHandler",
-                                                                      "org.drools.base.FireAllRulesRuleBaseUpdateListener" ) );        
+                                                                      "org.drools.base.FireAllRulesRuleBaseUpdateListener" ) );
 
         setConflictResolver( RuleBaseConfiguration.determineConflictResolver( this.chainedProperties.getProperty( "drools.conflictResolver",
                                                                                                                   "org.drools.conflict.DepthConflictResolver" ) ) );
@@ -230,6 +233,10 @@ public class RuleBaseConfiguration
 
         setShadowProxyExcludes( this.chainedProperties.getProperty( "drools.shadowProxyExcludes",
                                                                     "" ) );
+
+        setSessionClockClass( this.chainedProperties.getProperty( "drools.sessionClock",
+                                                                  SessionPseudoClock.class.getName() ) );
+
     }
 
     /**
@@ -385,7 +392,7 @@ public class RuleBaseConfiguration
         checkCanChange(); // throws an exception if a change isn't possible;        
         this.consequenceExceptionHandler = consequenceExceptionHandler;
     }
-    
+
     public String getRuleBaseUpdateHandler() {
         return ruleBaseUpdateHandler;
     }
@@ -393,7 +400,52 @@ public class RuleBaseConfiguration
     public void setRuleBaseUpdateHandler(String ruleBaseUpdateHandler) {
         checkCanChange(); // throws an exception if a change isn't possible;        
         this.ruleBaseUpdateHandler = ruleBaseUpdateHandler;
-    }    
+    }
+
+    /**
+     * Returns the actual class that is set to be used as the session clock
+     * for sessions of this rulebase
+     *  
+     * @return
+     */
+    public Class< ? extends SessionClock> getSessionClockClass() {
+        return sessionClockClass;
+    }
+
+    /**
+     * Sets the class whose instance is to be used as the session clock 
+     * for sessions of this rulebase
+     * 
+     * @param sessionClockClass
+     */
+    public void setSessionClockClass(Class< ? extends SessionClock> sessionClockClass) {
+        checkCanChange(); // throws an exception if a change isn't possible;        
+        this.sessionClockClass = sessionClockClass;
+    }
+
+    /**
+     * Sets the class name whose instance is to be used as the session clock
+     * for sessions of this rulebase
+     * 
+     * @param className
+     */
+    public void setSessionClockClass(String className) {
+        Class< ? extends SessionClock> sessionClock;
+        try {
+            ClassLoader cl = this.getClassLoader();
+            if ( cl == null ) {
+                cl = Thread.currentThread().getContextClassLoader();
+                if ( cl == null ) {
+                    cl = this.getClass().getClassLoader();
+                }
+            }
+            sessionClock = (Class< ? extends SessionClock>) cl.loadClass( className );
+        } catch ( Exception ex ) {
+            throw new RuntimeDroolsException( "Not possible to load the session clock class: " + className,
+                                              ex );
+        }
+        setSessionClockClass( sessionClock );
+    }
 
     public AgendaGroupFactory getAgendaGroupFactory() {
         if ( isSequential() ) {
@@ -421,7 +473,7 @@ public class RuleBaseConfiguration
             // sequential never needs shadowing, so always override
             return false;
         }
-        
+
         if ( userValue != null ) {
             return Boolean.valueOf( userValue ).booleanValue();
         } else {
@@ -545,7 +597,7 @@ public class RuleBaseConfiguration
     private static ConsequenceExceptionHandler determineConsequenceExceptionHandler(String className) {
         return (ConsequenceExceptionHandler) instantiateClass( "ConsequenceExceptionHandler",
                                                                className );
-    }   
+    }
 
     private static Object instantiateClass(String type,
                                            String className) {

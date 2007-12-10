@@ -128,10 +128,10 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              0,
                              this.sink.getAsserted().size() );
 
-        this.node.assertTuple( new ReteTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" ) ),
+        this.node.assertTuple( new ReteTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null ) ),
                                this.context,
                                this.workingMemory );
-        this.node.assertTuple( new ReteTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" ) ),
+        this.node.assertTuple( new ReteTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null ) ),
                                this.context,
                                this.workingMemory );
 
@@ -155,7 +155,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * Test method for {@link org.drools.reteoo.AccumulateNode#assertTuple(org.drools.reteoo.ReteTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
     public void testAssertTuple() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
         final ReteTuple tuple0 = new ReteTuple( f0 );
 
         // assert tuple, should add one to left memory
@@ -171,7 +171,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                            this.accumulator.getMatchingObjects().isEmpty() );
 
         // assert tuple, should add left memory 
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
 
         final ReteTuple tuple1 = new ReteTuple( f1 );
         this.node.assertTuple( tuple1,
@@ -195,8 +195,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * Test method for {@link org.drools.reteoo.AccumulateNode#assertTuple(org.drools.reteoo.ReteTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
     public void testAssertTupleWithObjects() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
 
         final ReteTuple tuple0 = new ReteTuple( f0 );
 
@@ -244,7 +244,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * Test method for {@link org.drools.reteoo.AccumulateNode#retractTuple(org.drools.reteoo.ReteTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
     public void testRetractTuple() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
 
         final ReteTuple tuple0 = new ReteTuple( f0 );
 
@@ -275,8 +275,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * Test method for {@link org.drools.reteoo.AccumulateNode#assertObject(InternalFactHandle, org.drools.spi.PropagationContext, InternalWorkingMemory)}.
      */
     public void testAssertObject() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
 
         final ReteTuple tuple0 = new ReteTuple( f0 );
 
@@ -320,8 +320,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * Test method for {@link org.drools.reteoo.AccumulateNode#retractObject(InternalFactHandle, org.drools.spi.PropagationContext, InternalWorkingMemory)}.
      */
     public void testRetractObject() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
 
         final ReteTuple tuple0 = new ReteTuple( f0 );
 
@@ -431,8 +431,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
         
         this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;
 
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
 
         final ReteTuple tuple0 = new ReteTuple( f0 );
 

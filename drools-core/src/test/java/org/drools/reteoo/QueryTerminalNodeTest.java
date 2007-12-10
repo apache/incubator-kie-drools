@@ -34,6 +34,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.reteoo.builder.BuildContext;
@@ -47,6 +48,7 @@ public class QueryTerminalNodeTest extends TestCase {
     private BuildContext     buildContext;
 
     ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    private EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     protected void setUp() throws Exception {
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
@@ -67,7 +69,7 @@ public class QueryTerminalNodeTest extends TestCase {
 
         FieldValue field = FieldFactory.getFieldValue( "query-1" );
 
-        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL );
         LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                               evaluator,
                                                               field );

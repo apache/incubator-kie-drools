@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.ImportDeclaration;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -48,8 +49,8 @@ public class JavaProcessClassBuilder
         final StringBuffer buffer = new StringBuffer();
         buffer.append( "package " + context.getPkg().getName() + ";" + lineSeparator );
 
-        for ( final Iterator it = context.getPkg().getImports().iterator(); it.hasNext(); ) {
-            buffer.append( "import " + it.next() + ";" + lineSeparator );
+        for ( ImportDeclaration decl : context.getPkg().getImports().values() ) {
+            buffer.append( "import " +  ( decl.isEvent() ? "event " : "" ) + decl.getTarget() + ";" + lineSeparator );
         }
 
         for ( final Iterator it = context.getPkg().getStaticImports().iterator(); it.hasNext(); ) {

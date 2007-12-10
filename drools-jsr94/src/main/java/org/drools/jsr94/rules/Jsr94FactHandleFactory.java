@@ -16,10 +16,12 @@ package org.drools.jsr94.rules;
  * limitations under the License.
  */
 
+import org.drools.TemporalSession;
+import org.drools.WorkingMemory;
 import org.drools.common.AbstractFactHandleFactory;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.FactHandleFactory;
+import org.drools.temporal.SessionClock;
 
 /**
  * A factory for creating <code>Handle</code>s.
@@ -27,15 +29,29 @@ import org.drools.spi.FactHandleFactory;
  */
 public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 
+
+    private static final long serialVersionUID = 4964273923122006124L;
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
     protected final InternalFactHandle newFactHandle(final long id,
                                                      final Object object,
-                                                     final long recency) {
-        return new Jsr94FactHandle( id,
-                                    object,
-                                    recency );
+                                                     final long recency,
+                                                     final boolean isEvent,
+                                                     final WorkingMemory workingMemory ) {
+        if ( isEvent ) {
+            SessionClock clock = ((TemporalSession) workingMemory).getSessionClock(); 
+            return new Jsr94EventFactHandle( id,
+                                             object,
+                                             recency,
+                                             clock.getCurrentTime(),
+                                             0 ); // for now, we are only handling primitive events
+        } else {
+            return new Jsr94FactHandle( id,
+                                        object,
+                                        recency );
+        }
     }
 
     /* (non-Javadoc)

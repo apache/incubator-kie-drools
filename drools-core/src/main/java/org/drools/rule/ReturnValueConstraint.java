@@ -17,6 +17,7 @@ package org.drools.rule;
  */
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
@@ -97,11 +98,11 @@ public class ReturnValueConstraint
         return this.restriction.getContextEntry();
     }
 
-    public boolean isAllowed(final Object object,
+    public boolean isAllowed(final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory) {
         try {
             return this.restriction.isAllowed( this.fieldExtractor,
-                                               object,
+                                               handle,
                                                null,
                                                workingMemory );
         } catch ( final Exception e ) {
@@ -111,11 +112,11 @@ public class ReturnValueConstraint
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final Object object) {
+                                       final InternalFactHandle handle) {
         try {
             final ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
             return this.restriction.isAllowed( this.fieldExtractor,
-                                               object,
+                                               handle,
                                                ctx.getTuple(),
                                                ctx.getWorkingMemory() );
         } catch ( final Exception e ) {
@@ -129,7 +130,7 @@ public class ReturnValueConstraint
         try {
             final ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
             return this.restriction.isAllowed( this.fieldExtractor,
-                                               ctx.getObject(),
+                                               ctx.getHandle(),
                                                tuple,
                                                ctx.getWorkingMemory() );
         } catch ( final Exception e ) {

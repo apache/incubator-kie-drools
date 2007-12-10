@@ -19,13 +19,13 @@ import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
-import org.drools.base.evaluators.DateFactory;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.drools.util.DateUtils;
 import org.mvel.MVEL;
 
 public class MVELTest extends TestCase {
@@ -67,7 +67,7 @@ public class MVELTest extends TestCase {
 
         assertEquals( "hello world", list2.get(0));
 
-        Date dt = DateFactory.parseDate( "10-Jul-1974" );
+        Date dt = DateUtils.parseDate( "10-Jul-1974" );
         assertEquals(dt, c.getUsedBy());
 
 

@@ -223,6 +223,7 @@ prolog
 statement
 	:	a=rule_attribute { this.packageDescr.addAttribute( a ); }
 	|	function_import_statement 
+	|	event_import_statement
 	|	import_statement 
 	|	global 
 	|	function 
@@ -230,6 +231,7 @@ statement
 	|	r=rule { this.packageDescr.addRule( $r.rule ); }			
 	|	q=query	{ this.packageDescr.addRule( $q.query ); }
 	;
+	
 package_statement returns [String packageName]
 	@init{
 		$packageName = null;
@@ -268,6 +270,21 @@ function_import_statement
 	            importDecl.setStartCharacter( ((CommonToken)$IMPORT).getStartIndex() );
 		    if (packageDescr != null) {
 			packageDescr.addFunctionImport( importDecl );
+		    }
+	        }
+	        import_name[importDecl] opt_semicolon
+	;
+
+event_import_statement
+        @init {
+        	ImportDescr importDecl = null;
+        }
+	:	IMPORT EVENT 
+	        {
+	            importDecl = factory.createEventImport( );
+	            importDecl.setStartCharacter( ((CommonToken)$IMPORT).getStartIndex() );
+		    if (packageDescr != null) {
+			packageDescr.addImport( importDecl );
 		    }
 	        }
 	        import_name[importDecl] opt_semicolon
@@ -1337,15 +1354,13 @@ field_constraint[ConditionalElementDescr base]
 		    }
 		}
 		(
-			( options {backtrack=true;}
-			: or_restr_connective[top]
+			or_restr_connective[top]
 			{
 				// we must add now as we didn't before
 				if( $ID != null) {
 				    $base.addDescr( fc );
 				}
 			}
-			)
 		|
 			'->' predicate[$base] 
 		)?
@@ -1368,9 +1383,7 @@ field_constraint[ConditionalElementDescr base]
 			$base.addDescr( fc );
 		    }
 		}
-		( options {backtrack=true;}
-		: or_restr_connective[top]
-		)
+		or_restr_connective[top]
 		)
 	;
 	catch[ NoViableAltException nvae ] {
@@ -1394,7 +1407,7 @@ or_restr_connective[ RestrictionConnectiveDescr base ]
 		RestrictionConnectiveDescr or = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
 	}
 	:
-		and_restr_connective[or] 
+		and_restr_connective[or]
 		( 
 			options {backtrack=true;}
 			: DOUBLE_PIPE 
@@ -1417,7 +1430,7 @@ and_restr_connective[ RestrictionConnectiveDescr base ]
 		RestrictionConnectiveDescr and = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
 	}
 	:
-		constraint_expression[and] 
+		constraint_expression[and]
 		(	options {backtrack=true;}
 		:	t=DOUBLE_AMPER 
 			{
@@ -1437,12 +1450,12 @@ and_restr_connective[ RestrictionConnectiveDescr base ]
 constraint_expression[RestrictionConnectiveDescr base]
         :	
 		( compound_operator[$base]
-		| simple_operator[$base]
+		| simple_operator[$base] 
 		| LEFT_PAREN 
 		{
 			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 		}
-		or_restr_connective[$base] 
+		or_restr_connective[$base]
 		RIGHT_PAREN
  		)
 	;	
@@ -1450,6 +1463,8 @@ constraint_expression[RestrictionConnectiveDescr base]
 simple_operator[RestrictionConnectiveDescr base]
 	@init {
 		String op = null;
+		String paramText = null;
+		boolean isNegated = false;
 	}
 	:
 		(	t='=='
@@ -1458,29 +1473,31 @@ simple_operator[RestrictionConnectiveDescr base]
 		|	t='<'
 		|	t='<='
 		|	t='!='
-		|	t=CONTAINS
-		|	n=NOT t=CONTAINS
-		|	t=EXCLUDES
-		|	t=MATCHES
-		|	t=SOUNDSLIKE
-		|	n=NOT t=MATCHES
-		|	t=MEMBEROF
-		|	n=NOT t=MEMBEROF
+                |       t=CONTAINS
+                |       n=NOT t=CONTAINS
+                |       t=EXCLUDES
+                |       t=MATCHES
+                |       t=SOUNDSLIKE
+                |       n=NOT t=MATCHES
+                |       t=MEMBEROF
+                |       n=NOT t=MEMBEROF
+		|	TILDE t=ID param=square_chunk?
+		|	n=NOT TILDE t=ID param=square_chunk?
 		)
 		{
   		    location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);
                     location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, $t.text);
-		    if( $n != null ) {
-		        op = "not "+$t.text;
-		    } else {
-		        op = $t.text;
-		    }
+ 	            op = $t.text;
+ 	            isNegated = $n != null;
+ 	            if( param != null ) {
+                        paramText = safeSubstring( $param.text, 1, $param.text.length()-1 );
+ 	            } 
 		}
-		rd=expression_value[$base, op]
+		rd=expression_value[$base, op, isNegated, paramText]
 	;	
 	finally {
 		if ( $rd.rd == null && op != null ) {
-		        $base.addRestriction( new LiteralRestrictionDescr(op, null) );
+		        $base.addRestriction( new LiteralRestrictionDescr(op, false, null) );
 		}
 	}
 	
@@ -1507,15 +1524,15 @@ compound_operator[RestrictionConnectiveDescr base]
                     	  location.setProperty(Location.LOCATION_PROPERTY_OPERATOR, "in");
 			}	
 		)
-		LEFT_PAREN rd=expression_value[group, op]
-		( COMMA rd=expression_value[group, op]	)* 
+		LEFT_PAREN rd=expression_value[group, op, false, null]
+		( COMMA rd=expression_value[group, op, false, null]	)* 
 		RIGHT_PAREN 
 		{
 			location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_END);
 		}
 	;
 	
-expression_value[RestrictionConnectiveDescr base, String op] returns [RestrictionDescr rd]
+expression_value[RestrictionConnectiveDescr base, String op, boolean isNegated, String paramText] returns [RestrictionDescr rd]
 	@init {
 		$rd = null;
 	}
@@ -1523,18 +1540,18 @@ expression_value[RestrictionConnectiveDescr base, String op] returns [Restrictio
 		(	ap=accessor_path 
 			{ 
 			        if( $ap.text.indexOf( '.' ) > -1 || $ap.text.indexOf( '[' ) > -1) {
-					$rd = new QualifiedIdentifierRestrictionDescr($op, $ap.text);
+					$rd = new QualifiedIdentifierRestrictionDescr($op, $isNegated, $paramText, $ap.text);
 				} else {
-					$rd = new VariableRestrictionDescr($op, $ap.text);
+					$rd = new VariableRestrictionDescr($op, $isNegated, $paramText, $ap.text);
 				}
 			}						
 		|	lc=literal_constraint 
 			{ 
-				$rd  = new LiteralRestrictionDescr($op, $lc.text, $lc.type );
+				$rd  = new LiteralRestrictionDescr($op, $isNegated, $paramText, $lc.text, $lc.type );
 			}
 		|	rvc=paren_chunk 
 			{ 
-				$rd = new ReturnValueRestrictionDescr($op, safeSubstring( $rvc.text, 1, $rvc.text.length()-1) );							
+				$rd = new ReturnValueRestrictionDescr($op, $isNegated, $paramText, safeSubstring( $rvc.text, 1, $rvc.text.length()-1) );							
 			} 
 		)	
 		{
@@ -1664,6 +1681,7 @@ identifier
 	|	FUNCTION
 	|	GLOBAL
 	|	IMPORT  
+	|	EVENT
 	|	RULE
 	|	QUERY 
         |       TEMPLATE        
@@ -1677,12 +1695,11 @@ identifier
         |       ACTION	        
         |       REVERSE	        
         |       RESULT	        
-        |       CONTAINS 	
-        |       EXCLUDES 	
+        |       CONTAINS 
+        |       EXCLUDES 
         |       MEMBEROF
         |       MATCHES 
         |       SOUNDSLIKE        
-//        |       NULL	        
         |       WHEN            
         |       THEN	        
         |       END     
@@ -1753,6 +1770,8 @@ IMPORT	:	'import';
 
 FUNCTION :	'function';
 
+EVENT :		'event';
+
 GLOBAL	:	'global';
 	
 RULE    :	'rule';
@@ -1817,17 +1836,17 @@ OR	:	'or';
 AND	:	'and';
 
 CONTAINS 
-	:	'contains';
-	
+       :       'contains';
+
 EXCLUDES 
-	:	'excludes';
-	
+       :       'excludes';
+
 MEMBEROF
-	:	'memberOf';
+       :       'memberOf';
 
-MATCHES :	'matches';
+MATCHES :      'matches';
 
-SOUNDSLIKE :	'soundslike';
+SOUNDSLIKE :   'soundslike';
 
 IN	:	'in';
 
@@ -1888,6 +1907,8 @@ DOUBLE_AMPER
 DOUBLE_PIPE
 	:	'||'
 	;				
+	
+TILDE	:	'~';	
 	
 SH_STYLE_SINGLE_LINE_COMMENT	
 	:	'#' ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */

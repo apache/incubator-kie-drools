@@ -28,14 +28,14 @@ public class ForallDescr extends BaseDescr
     implements
     ConditionalElementDescr {
 
-    private static final long serialVersionUID = 400L;
+    private static final long   serialVersionUID = 400L;
 
-    private static final String BASE_IDENTIFIER = "$__forallBaseIdentifier";
+    private static final String BASE_IDENTIFIER  = "$__forallBaseIdentifier";
 
-    private List              patterns;
+    private List<BaseDescr>     patterns;
 
     public ForallDescr() {
-        this.patterns = new ArrayList( 2 );
+        this.patterns = new ArrayList<BaseDescr>( 2 );
     }
 
     /* (non-Javadoc)
@@ -45,10 +45,11 @@ public class ForallDescr extends BaseDescr
         // cast to make sure we are adding a pattern descriptor
         this.patterns.add( baseDescr );
     }
-    
-    public void insertBeforeLast(final Class clazz ,final BaseDescr baseDescr ) { 
+
+    public void insertBeforeLast(final Class clazz,
+                                 final BaseDescr baseDescr) {
         throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
-    }    
+    }
 
     /* (non-Javadoc)
      * @see org.drools.lang.descr.ConditionalElementDescr#getDescrs()
@@ -62,9 +63,9 @@ public class ForallDescr extends BaseDescr
      * @return
      */
     public PatternDescr getBasePattern() {
-        if( this.patterns.size() > 1 ) {
+        if ( this.patterns.size() > 1 ) {
             return (PatternDescr) this.patterns.get( 0 );
-        } else if( this.patterns.size() == 1 ) {
+        } else if ( this.patterns.size() == 1 ) {
             // in case there is only one pattern, we do a rewrite, so:
             // forall( Cheese( type == "stilton" ) )
             // becomes
@@ -83,18 +84,21 @@ public class ForallDescr extends BaseDescr
      * @return
      */
     public List getRemainingPatterns() {
-        if( this.patterns.size() > 1 ) {
+        if ( this.patterns.size() > 1 ) {
             return this.patterns.subList( 1,
                                           this.patterns.size() );
-        } else if( this.patterns.size() == 1 ) {
+        } else if ( this.patterns.size() == 1 ) {
             // in case there is only one pattern, we do a rewrite, so:
             // forall( Cheese( type == "stilton" ) )
             // becomes
             // forall( BASE_IDENTIFIER : Cheese() Cheese( this == BASE_IDENTIFIER, type == "stilton" ) )
             PatternDescr original = (PatternDescr) this.patterns.get( 0 );
             PatternDescr remaining = (PatternDescr) original.clone();
-            VariableRestrictionDescr restr = new VariableRestrictionDescr( "==", BASE_IDENTIFIER );
-            FieldConstraintDescr constr = new FieldConstraintDescr("this");
+            VariableRestrictionDescr restr = new VariableRestrictionDescr( "==",
+                                                                           false,
+                                                                           null,
+                                                                           BASE_IDENTIFIER );
+            FieldConstraintDescr constr = new FieldConstraintDescr( "this" );
             constr.addRestriction( restr );
             remaining.addConstraint( constr );
             return Collections.singletonList( remaining );
@@ -103,6 +107,6 @@ public class ForallDescr extends BaseDescr
     }
 
     public void addOrMerge(BaseDescr baseDescr) {
-        this.patterns.add( baseDescr );        
+        this.patterns.add( baseDescr );
     }
 }

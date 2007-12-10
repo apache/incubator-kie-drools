@@ -99,7 +99,7 @@ public class NotNode extends BetaNode {
         
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
             final InternalFactHandle handle = entry.getFactHandle();
-            if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
+            if ( this.constraints.isAllowedCachedLeft( handle ) ) {
                 leftTuple.setMatch( handle );
                 break;
             }
@@ -185,7 +185,7 @@ public class NotNode extends BetaNode {
                     
                     for ( FactEntry entry = (FactEntry) tupleIt.next(); entry != null; entry = (FactEntry) tupleIt.next() ) {
                         final InternalFactHandle rightHandle = entry.getFactHandle();
-                        if ( this.constraints.isAllowedCachedLeft( rightHandle.getObject() ) ) {
+                        if ( this.constraints.isAllowedCachedLeft( rightHandle ) ) {
                             tuple.setMatch( rightHandle );
                             break;
                         }

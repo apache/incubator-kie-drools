@@ -30,6 +30,8 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.ComparableEvaluatorsDefinition;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -47,6 +49,8 @@ import org.drools.spi.Tuple;
 public class FieldConstraintTest extends TestCase {
 
     ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
+    ComparableEvaluatorsDefinition comparables = new ComparableEvaluatorsDefinition();
 
     public FieldConstraintTest() {
         super();
@@ -76,7 +80,7 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
@@ -88,7 +92,7 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+        assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory ) );
 
         final Cheese stilton = new Cheese( "stilton",
@@ -97,7 +101,7 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.insert( stilton );
 
         // check constraint
-        assertFalse( constraint.isAllowed( stiltonHandle.getObject(),
+        assertFalse( constraint.isAllowed( stiltonHandle,
                                            workingMemory ) );
     }
 
@@ -122,7 +126,7 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( 5 );
 
-        final Evaluator evaluator = ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.PINTEGER_TYPE, Operator.EQUAL );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
@@ -134,7 +138,7 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+        assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory ) );
 
         final Cheese stilton = new Cheese( "stilton",
@@ -143,7 +147,7 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.insert( stilton );
 
         // check constraint
-        assertFalse( constraint.isAllowed( stiltonHandle.getObject(),
+        assertFalse( constraint.isAllowed( stiltonHandle,
                                            workingMemory ) );
     }
 
@@ -228,7 +232,7 @@ public class FieldConstraintTest extends TestCase {
         context.updateFromTuple( workingMemory,
                                  tuple );
         assertTrue( constraint1.isAllowedCachedLeft( context,
-                                                     f1.getObject() ) );
+                                                     f1 ) );
     }
 
     /**
@@ -284,7 +288,7 @@ public class FieldConstraintTest extends TestCase {
                                                                                 new Declaration[]{priceDeclaration},
                                                                                 new Declaration[0],
                                                                                 new String[0],
-                                                                                ValueType.INTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
+                                                                                equals.getEvaluator( ValueType.INTEGER_TYPE, Operator.EQUAL ) );
 
         final ReturnValueConstraint constraint1 = new ReturnValueConstraint( priceExtractor,
                                                                              restriction1 );
@@ -294,7 +298,7 @@ public class FieldConstraintTest extends TestCase {
                                                                                 new Declaration[]{priceDeclaration},
                                                                                 new Declaration[0],
                                                                                 new String[0],
-                                                                                ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER ) );
+                                                                                comparables.getEvaluator( ValueType.INTEGER_TYPE, Operator.GREATER ) );
 
         final ReturnValueConstraint constraint2 = new ReturnValueConstraint( priceExtractor,
                                                                              restriction2 );
@@ -315,13 +319,13 @@ public class FieldConstraintTest extends TestCase {
         context1.updateFromTuple( workingMemory,
                                   tuple );
         assertTrue( constraint1.isAllowedCachedLeft( context1,
-                                                     f1.getObject() ) );
+                                                     f1 ) );
 
         final ReturnValueContextEntry context2 = (ReturnValueContextEntry) constraint2.getContextEntry();
         context2.updateFromTuple( workingMemory,
                                   tuple );
         assertFalse( constraint2.isAllowedCachedLeft( context2,
-                                                      f1.getObject() ) );
+                                                      f1 ) );
 
         final Cheese cheddar2 = new Cheese( "cheddar",
                                             11 );
@@ -329,7 +333,7 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle f2 = (InternalFactHandle) workingMemory.insert( cheddar2 );
 
         assertTrue( constraint2.isAllowedCachedLeft( context2,
-                                                     f2.getObject() ) );
+                                                     f2 ) );
     }
 
     /**
@@ -356,7 +360,7 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL );
 
         final LiteralConstraint constraint1 = new LiteralConstraint( extractor,
                                                                      evaluator,
@@ -368,7 +372,7 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue priceField = FieldFactory.getFieldValue( 10 );
 
-        final Evaluator priceEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER );
+        final Evaluator priceEvaluator = comparables.getEvaluator( ValueType.INTEGER_TYPE, Operator.GREATER );
 
         final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
                                                                      priceEvaluator,
@@ -384,22 +388,22 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+        assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory ) );
 
         cheddar.setPrice( 5 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
-        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+        assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory ) );
 
         cheddar.setType( "stilton" );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
-        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+        assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory ) );
 
         cheddar.setPrice( 15 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
-        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+        assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory ) );
     }
 
@@ -426,7 +430,7 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL );
 
         final LiteralConstraint constraint1 = new LiteralConstraint( extractor,
                                                                      evaluator,
@@ -438,7 +442,7 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue priceField = FieldFactory.getFieldValue( 10 );
 
-        final Evaluator priceEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER );
+        final Evaluator priceEvaluator = comparables.getEvaluator( ValueType.INTEGER_TYPE, Operator.GREATER );
 
         final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
                                                                      priceEvaluator,
@@ -454,22 +458,22 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+        assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory ) );
 
         cheddar.setPrice( 5 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
-        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+        assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory ) );
 
         cheddar.setType( "stilton" );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
-        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+        assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory ) );
 
         cheddar.setPrice( 15 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
-        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+        assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory ) );
     }
 
@@ -496,7 +500,7 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue cheddarField = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator stringEqual = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator stringEqual = equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL );
 
         // type == 'cheddar'
         final LiteralConstraint constraint1 = new LiteralConstraint( typeExtractor,
@@ -509,7 +513,7 @@ public class FieldConstraintTest extends TestCase {
 
         final FieldValue field10 = FieldFactory.getFieldValue( 10 );
 
-        final Evaluator integerGreater = ValueType.INTEGER_TYPE.getEvaluator( Operator.GREATER );
+        final Evaluator integerGreater =  comparables.getEvaluator( ValueType.INTEGER_TYPE, Operator.GREATER );
 
         // price > 10
         final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
@@ -527,7 +531,7 @@ public class FieldConstraintTest extends TestCase {
                                                                      stringEqual,
                                                                      stiltonField );
 
-        final Evaluator integerLess = ValueType.INTEGER_TYPE.getEvaluator( Operator.LESS );
+        final Evaluator integerLess =  comparables.getEvaluator( ValueType.INTEGER_TYPE, Operator.LESS );
 
         // price < 10
         final LiteralConstraint constraint4 = new LiteralConstraint( priceExtractor,
@@ -550,22 +554,22 @@ public class FieldConstraintTest extends TestCase {
         final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+        assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory ) );
 
         cheddar.setPrice( 5 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
-        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+        assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory ) );
 
         cheddar.setType( "stilton" );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
-        assertTrue( constraint.isAllowed( cheddarHandle.getObject(),
+        assertTrue( constraint.isAllowed( cheddarHandle,
                                           workingMemory ) );
 
         cheddar.setPrice( 15 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
-        assertFalse( constraint.isAllowed( cheddarHandle.getObject(),
+        assertFalse( constraint.isAllowed( cheddarHandle,
                                            workingMemory ) );
     }
 

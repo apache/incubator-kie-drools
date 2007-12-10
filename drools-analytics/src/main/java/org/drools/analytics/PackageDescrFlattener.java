@@ -83,7 +83,7 @@ public class PackageDescrFlattener {
 		formPossibilities();
 	}
 
-	private void flatten(Collection<Object> descrs, AnalyticsComponent parent) {
+	private void flatten(Collection<?> descrs, AnalyticsComponent parent) {
 
 		int orderNumber = 0;
 
@@ -604,7 +604,7 @@ public class PackageDescrFlattener {
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
 		restriction.setOperator(Operator
-				.determineOperator(descr.getEvaluator()));
+				.determineOperator(descr.getEvaluator(), descr.isNegated()));
 		restriction.setVariable(variable);
 		restriction.setOrderNumber(orderNumber);
 		restriction.setParent(parent);
@@ -634,7 +634,7 @@ public class PackageDescrFlattener {
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
 		restriction.setOperator(Operator
-				.determineOperator(descr.getEvaluator()));
+				.determineOperator(descr.getEvaluator(), descr.isNegated()));
 		restriction.setClassMethodName(descr.getClassMethodName());
 		restriction.setContent(descr.getContent());
 		restriction.setDeclarations(descr.getDeclarations());
@@ -665,7 +665,7 @@ public class PackageDescrFlattener {
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
 		restriction.setOperator(Operator
-				.determineOperator(descr.getEvaluator()));
+				.determineOperator(descr.getEvaluator(), descr.isNegated()));
 		restriction.setValue(descr.getText());
 		restriction.setOrderNumber(orderNumber);
 		restriction.setParent(parent);
@@ -698,7 +698,7 @@ public class PackageDescrFlattener {
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
 		restriction.setOperator(Operator
-				.determineOperator(descr.getEvaluator()));
+				.determineOperator(descr.getEvaluator(), descr.isNegated()));
 		restriction.setVariableId(variable.getId());
 		restriction.setVariableName(text.substring(0, text.indexOf(".")));
 		restriction.setVariablePath(text.substring(text.indexOf(".")));

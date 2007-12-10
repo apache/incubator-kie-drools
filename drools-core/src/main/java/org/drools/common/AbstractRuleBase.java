@@ -49,6 +49,7 @@ import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.objenesis.Objenesis;
 import org.drools.objenesis.ObjenesisStd;
 import org.drools.rule.CompositePackageClassLoader;
+import org.drools.rule.ImportDeclaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
@@ -156,7 +157,7 @@ abstract public class AbstractRuleBase
         this.packageClassLoader = new CompositePackageClassLoader( this.config.getClassLoader() );
         this.classLoader = new MapBackedClassLoader( this.config.getClassLoader() );
         this.packageClassLoader.addClassLoader( this.classLoader );
-        this.pkgs = new HashMap();
+        this.pkgs = new HashMap<String, Package>();
         this.processes = new HashMap();
         this.globals = new HashMap();
         this.statefulSessions = new ObjectHashSet();
@@ -448,7 +449,7 @@ abstract public class AbstractRuleBase
     private void mergePackage(final Package pkg,
                               final Package newPkg) throws PackageIntegrationException {
         final Map globals = pkg.getGlobals();
-        final Set imports = pkg.getImports();
+        final Map<String, ImportDeclaration> imports = pkg.getImports();
 
         // First update the binary files
         // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.
@@ -461,7 +462,7 @@ abstract public class AbstractRuleBase
         }
 
         // Merge imports
-        imports.addAll( newPkg.getImports() );
+        imports.putAll( newPkg.getImports() );
 
         // Add invokers
         compilationData.putAllInvokers( newCompilationData.getInvokers() );
@@ -776,6 +777,15 @@ abstract public class AbstractRuleBase
     public List getRuleBaseEventListeners() {
         // since the event support is thread-safe, no need for locks... right?
         return this.eventSupport.getEventListeners();
+    }
+    
+    public boolean isEvent( Class clazz ) {
+        for( Package pkg : this.pkgs.values() ) {
+            if( pkg.isEvent( clazz ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static class ReloadPackageCompilationData

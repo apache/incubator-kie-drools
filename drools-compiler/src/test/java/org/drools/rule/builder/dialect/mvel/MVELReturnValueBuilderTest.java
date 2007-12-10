@@ -16,7 +16,6 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -29,7 +28,7 @@ import org.drools.rule.ReturnValueRestriction;
 import org.drools.spi.FieldExtractor;
 
 public class MVELReturnValueBuilderTest extends TestCase {
-    
+
     private ClassFieldExtractorCache cache;
 
     public void setUp() {
@@ -42,18 +41,19 @@ public class MVELReturnValueBuilderTest extends TestCase {
 
         PackageBuilder pkgBuilder = new PackageBuilder( pkg );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-        MVELDialect mvelDialect = ( MVELDialect ) pkgBuilder.getDialectRegistry().getDialect( "mvel" );
+        MVELDialect mvelDialect = (MVELDialect) pkgBuilder.getDialectRegistry().getDialect( "mvel" );
 
         final InstrumentedBuildContent context = new InstrumentedBuildContent( conf,
                                                                                pkg,
                                                                                ruleDescr,
                                                                                pkgBuilder.getDialectRegistry(),
                                                                                mvelDialect );
-        
+
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
-        final FieldExtractor extractor = cache.getExtractor( Cheese.class, "price",
-                                                                                getClass().getClassLoader() );
-        
+        final FieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                             "price",
+                                                             getClass().getClassLoader() );
+
         final Pattern patternA = new Pattern( 0,
                                               new ClassObjectType( int.class ) );
 
@@ -92,7 +92,8 @@ public class MVELReturnValueBuilderTest extends TestCase {
                                                                                previousDeclarations,
                                                                                localDeclarations,
                                                                                requiredGlobals,
-                                                                               ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
+                                                                               context.getConfiguration().getEvaluatorRegistry().getEvaluator( ValueType.PINTEGER_TYPE,
+                                                                                                                                               Operator.EQUAL ) );
 
         builder.build( context,
                        usedIdentifiers,
@@ -118,14 +119,17 @@ public class MVELReturnValueBuilderTest extends TestCase {
 
         final Cheese brie = new Cheese( "brie",
                                         20 );
+        final InternalFactHandle f2 = (InternalFactHandle) wm.insert( brie );
+
         assertTrue( returnValue.isAllowed( extractor,
-                                           brie,
+                                           f2,
                                            tuple,
                                            wm ) );
 
         brie.setPrice( 18 );
+        wm.update( f2, brie );
         assertFalse( returnValue.isAllowed( extractor,
-                                            brie,
+                                            f2,
                                             tuple,
                                             wm ) );
     }

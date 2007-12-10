@@ -32,7 +32,6 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
-import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
@@ -41,23 +40,14 @@ import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
-import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.ruleflow.common.core.Process;
-import org.drools.ruleflow.common.core.impl.ProcessImpl;
-import org.drools.ruleflow.core.ActionNode;
-import org.drools.ruleflow.core.Node;
-import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
-import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
-import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlPackageReader;
 import org.drools.xml.XmlProcessReader;
@@ -146,12 +136,12 @@ public class PackageBuilder {
         this.classFieldExtractorCache = ClassFieldExtractorCache.getInstance();
 
         if ( this.pkg != null ) {
-            this.typeResolver = new ClassTypeResolver( this.pkg.getImports(),
+            this.typeResolver = new ClassTypeResolver( new HashSet<String>( this.pkg.getImports().keySet() ),
                                                        this.configuration.getClassLoader() );
             // make an automatic import for the current package
             this.typeResolver.addImport( this.pkg.getName() + ".*" );
         } else {
-            this.typeResolver = new ClassTypeResolver( new HashSet(),
+            this.typeResolver = new ClassTypeResolver( new HashSet<String>(),
                                                        this.configuration.getClassLoader() );
         }
 
@@ -392,10 +382,11 @@ public class PackageBuilder {
     private void mergePackage(final PackageDescr packageDescr) {
         final List imports = packageDescr.getImports();
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
-            String importEntry = ((ImportDescr) it.next()).getTarget();
-            this.pkg.addImport( importEntry );
-            this.typeResolver.addImport( importEntry );
-            this.dialectRegistry.addImport( importEntry );
+            ImportDescr importEntry = (ImportDescr) it.next();
+            ImportDeclaration importDecl = new ImportDeclaration( importEntry.getTarget(), importEntry.isEvent() );
+            pkg.addImport( importDecl );
+            this.typeResolver.addImport( importDecl.getTarget() );            
+            this.dialectRegistry.addImport( importDecl.getTarget() );
         }
 
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {

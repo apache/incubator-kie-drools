@@ -33,22 +33,21 @@ import java.util.StringTokenizer;
 import junit.framework.TestCase;
 
 import org.drools.WorkingMemory;
-import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
-import org.drools.base.ShadowProxyFactory;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.field.BooleanFieldImpl;
 import org.drools.base.field.LongFieldImpl;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.rule.Pattern;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.GroupElementFactory;
 import org.drools.rule.InvalidRuleException;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
+import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -113,12 +112,11 @@ public abstract class BaseMannersTest extends TestCase {
         //shadow = ShadowProxyFactory.getProxy( Chosen.class );
         this.chosenType = new ClassObjectType( Chosen.class );
 
-        this.integerEqualEvaluator = ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL );
-        //this.integerNotEqualEvaluator = ValueType.INTEGER_TYPE.getEvaluator( Operator.NOT_EQUAL );
-        this.objectEqualEvaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
-        this.objectNotEqualEvaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.NOT_EQUAL );
-        this.booleanEqualEvaluator = ValueType.PBOOLEAN_TYPE.getEvaluator( Operator.EQUAL );
-        //this.booleanNotEqualEvaluator = ValueType.BOOLEAN_TYPE.getEvaluator( Operator.NOT_EQUAL );
+        EqualityEvaluatorsDefinition evals = new EqualityEvaluatorsDefinition();
+        this.integerEqualEvaluator = evals.getEvaluator( ValueType.PINTEGER_TYPE, Operator.EQUAL, null );
+        this.objectEqualEvaluator = evals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL, null );
+        this.objectNotEqualEvaluator = evals.getEvaluator( ValueType.OBJECT_TYPE, Operator.NOT_EQUAL, null );
+        this.booleanEqualEvaluator = evals.getEvaluator( ValueType.PBOOLEAN_TYPE, Operator.EQUAL, null );
 
         this.pkg = new Package( "org.drools.examples.manners" );
         this.pkg.addRule( getAssignFirstSeatRule() );

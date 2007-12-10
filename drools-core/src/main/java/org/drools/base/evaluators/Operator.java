@@ -1,6 +1,9 @@
 package org.drools.base.evaluators;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 
@@ -8,65 +11,83 @@ public class Operator
     implements
     Serializable {
 
-    private static final long    serialVersionUID = 400L;
+    private static final long                  serialVersionUID = 400L;
 
-    public static final Operator EQUAL            = new Operator( "==" );
-    public static final Operator NOT_EQUAL        = new Operator( "!=" );
-    public static final Operator LESS             = new Operator( "<" );
-    public static final Operator LESS_OR_EQUAL    = new Operator( "<=" );
-    public static final Operator GREATER          = new Operator( ">" );
-    public static final Operator GREATER_OR_EQUAL = new Operator( ">=" );
-    public static final Operator CONTAINS         = new Operator( "contains" );
-    public static final Operator EXCLUDES         = new Operator( "excludes" );
-    public static final Operator NOT_CONTAINS     = new Operator( "not contains" );
-    public static final Operator MATCHES          = new Operator( "matches" );
-    public static final Operator NOT_MATCHES      = new Operator( "not matches" );
-    public static final Operator MEMBEROF         = new Operator( "memberOf" );
-    public static final Operator NOTMEMBEROF      = new Operator( "not memberOf" );
+    // a static private cache so that pluggable operator can register their implementations
+    // it is automatically initialized with common operator implementations
+    private static final Map<String, Operator> CACHE            = Collections.synchronizedMap( new HashMap<String, Operator>() );
 
-    public static final Operator SOUNDSLIKE       = new Operator("soundslike");
+    // these static operator constants are kept here just to make it easier for the engine
+    // to reference common used operators. The addition of new constants here is not
+    // advisable though.
+    public static final Operator               EQUAL            = addOperatorToRegistry( "==",
+                                                                                         false );
+    public static final Operator               NOT_EQUAL        = addOperatorToRegistry( "!=",
+                                                                                         false );
+    public static final Operator               LESS             = addOperatorToRegistry( "<",
+                                                                                         false );
+    public static final Operator               LESS_OR_EQUAL    = addOperatorToRegistry( "<=",
+                                                                                         false );
+    public static final Operator               GREATER          = addOperatorToRegistry( ">",
+                                                                                         false );
+    public static final Operator               GREATER_OR_EQUAL = addOperatorToRegistry( ">=",
+                                                                                         false );
 
-    private String               operator;
+    /**
+     * Creates a new Operator instance for the given parameters, 
+     * adds it to the registry and return it
+     * 
+     * @param operatorId the identification symbol of the operator
+     * @param isNegated true if it is negated
+     * 
+     * @return the newly created operator
+     */
+    public static Operator addOperatorToRegistry(final String operatorId,
+                                                 final boolean isNegated) {
+        Operator op = new Operator( operatorId,
+                                    isNegated );
+        CACHE.put( getKey( operatorId,
+                           isNegated ),
+                   op );
+        return op;
+    }
 
-    private Operator(final String operator) {
+    /**
+     * Returns the operator instance for the given parameters
+     * 
+     * @param operatorId the identification symbol of the operator
+     * @param isNegated true if it is negated
+     * 
+     * @return the operator in case it exists
+     */
+    public static Operator determineOperator(final String operatorId,
+                                             final boolean isNegated) {
+        Operator op = CACHE.get( getKey( operatorId,
+                                         isNegated ) );
+        if ( op == null ) {
+            throw new RuntimeDroolsException( "unable to determine operator for symbol [" + (isNegated ? "not " : "") + operatorId + "]" );
+        }
+        return op;
+    }
+
+    private static String getKey(final String string,
+                                 final boolean isNegated) {
+        return isNegated + ":" + string;
+    }
+
+    // This class attributes
+    private String  operator;
+    private boolean isNegated;
+
+    private Operator(final String operator,
+                     final boolean isNegated) {
         this.operator = operator;
+        this.isNegated = isNegated;
     }
 
     private Object readResolve() throws java.io.ObjectStreamException {
-        return determineOperator( this.operator );
-    }
-
-    public static Operator determineOperator(final String string) {
-        if ( string.equals( "==" ) ) {
-            return Operator.EQUAL;
-        } else if ( string.equals( "!=" ) ) {
-            return Operator.NOT_EQUAL;
-        } else if ( string.equals( "<" ) ) {
-            return Operator.LESS;
-        } else if ( string.equals( "<=" ) ) {
-            return Operator.LESS_OR_EQUAL;
-        } else if ( string.equals( ">" ) ) {
-            return Operator.GREATER;
-        } else if ( string.equals( ">=" ) ) {
-            return Operator.GREATER_OR_EQUAL;
-        } else if ( string.equals( "contains" ) ) {
-            return Operator.CONTAINS;
-        } else if ( string.equals( "not contains" ) ) {
-            return Operator.NOT_CONTAINS;
-        } else if ( string.equals( "matches" ) ) {
-            return Operator.MATCHES;
-        } else if ( string.equals( "not matches" ) ) {
-            return Operator.NOT_MATCHES;
-        } else if ( string.equals( "excludes" ) ) {
-            return Operator.EXCLUDES;
-        } else if ( string.equals( "memberOf" ) ) {
-            return Operator.MEMBEROF;
-        } else if ( string.equals( "not memberOf" ) ) {
-            return Operator.NOTMEMBEROF;
-        } else if ( string.equals( "soundslike" ) ) {
-            return Operator.SOUNDSLIKE;
-        }
-        throw new RuntimeDroolsException( "unable to determine operator for String [" + string + "]" );
+        return determineOperator( this.operator,
+                                  this.isNegated );
     }
 
     public String toString() {
@@ -76,16 +97,31 @@ public class Operator
     public String getOperatorString() {
         return this.operator;
     }
+    
+    public boolean isNegated() {
+        return this.isNegated;
+    }
 
+    @Override
     public int hashCode() {
-        return this.operator.hashCode();
+        final int PRIME = 31;
+        int result = super.hashCode();
+        result = PRIME * result + (isNegated ? 1231 : 1237);
+        result = PRIME * result + ((operator == null) ? 0 : operator.hashCode());
+        return result;
     }
 
-    public boolean equals(final Object object) {
-        if ( object == this ) {
-            return true;
-        }
-
-        return false;
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        final Operator other = (Operator) obj;
+        if ( isNegated != other.isNegated ) return false;
+        if ( operator == null ) {
+            if ( other.operator != null ) return false;
+        } else if ( !operator.equals( other.operator ) ) return false;
+        return true;
     }
+
 }

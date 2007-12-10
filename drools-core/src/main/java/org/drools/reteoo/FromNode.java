@@ -66,31 +66,30 @@ public class FromNode extends TupleSource
                                                                           context ); it.hasNext(); ) {
             final Object object = it.next();
 
+            final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( object, false, workingMemory );
+
+            boolean isAllowed = true;
             if ( this.alphaConstraints != null ) {
                 // First alpha node filters
-                boolean isAllowed = true;
                 for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
-                    if ( !this.alphaConstraints[i].isAllowed( object,
+                    if ( !this.alphaConstraints[i].isAllowed( handle,
                                                               workingMemory ) ) {
                         // next iteration
                         isAllowed = false;
                         break;
                     }
                 }
-                if ( !isAllowed ) {
-                    continue;
-                }
             }
 
-            if ( this.betaConstraints.isAllowedCachedLeft( object ) ) {
-                final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( object );
-
+            if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( handle ) ) {
                 list.add( new LinkedListEntry( handle ) );
 
                 this.sink.propagateAssertTuple( leftTuple,
                                                 handle,
                                                 context,
                                                 workingMemory );
+            } else {
+                workingMemory.getFactHandleFactory().destroyFactHandle( handle );
             }
         }
         if ( !list.isEmpty() ) {

@@ -28,6 +28,7 @@ import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
@@ -72,7 +73,7 @@ public class RuleBaseEventListenerTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = new EqualityEvaluatorsDefinition().getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL, null );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,

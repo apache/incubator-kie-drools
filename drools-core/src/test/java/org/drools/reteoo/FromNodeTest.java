@@ -17,6 +17,7 @@ import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultFactHandle;
@@ -37,6 +38,7 @@ import org.drools.util.LinkedListEntry;
 
 public class FromNodeTest extends TestCase {
     ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     public void testAlphaNode() {
         final PropagationContext context = new PropagationContextImpl( 0,
@@ -51,7 +53,7 @@ public class FromNodeTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL ),
+                                                                    equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ),
                                                                     field );
 
         final List list = new ArrayList();
@@ -154,7 +156,7 @@ public class FromNodeTest extends TestCase {
 
         final VariableConstraint variableConstraint = new VariableConstraint( priceExtractor,
                                                                               declaration,
-                                                                              ValueType.PINTEGER_TYPE.getEvaluator( Operator.EQUAL ) );
+                                                                              equals.getEvaluator( ValueType.PINTEGER_TYPE, Operator.EQUAL ) );
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
         configuration.setIndexRightBetaMemory( false );
         configuration.setIndexLeftBetaMemory( false );
@@ -248,7 +250,7 @@ public class FromNodeTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "stilton" );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL ),
+                                                                    equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ),
                                                                     field );
 
         final List list = new ArrayList();

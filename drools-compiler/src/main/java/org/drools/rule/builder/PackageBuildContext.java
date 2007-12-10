@@ -17,27 +17,16 @@
 package org.drools.rule.builder;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
-import org.drools.base.evaluators.DateFactory;
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.QueryDescr;
-import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Package;
-import org.drools.rule.Query;
-import org.drools.rule.Rule;
-import org.drools.spi.DeclarationScopeResolver;
 
 /**
  * A context for the current build

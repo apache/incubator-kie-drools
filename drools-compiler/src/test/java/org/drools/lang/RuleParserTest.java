@@ -101,8 +101,9 @@ public class RuleParserTest extends TestCase {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new StringReader( source ) );
         assertFalse( parser.hasErrors() );
-        assertEquals( "foo.bar.baz", pkg.getName() );        
-    }    
+        assertEquals( "foo.bar.baz",
+                      pkg.getName() );
+    }
 
     public void testCompilationUnit() throws Exception {
         final String source = "package foo; import com.foo.Bar; import com.foo.Baz;";
@@ -2579,6 +2580,7 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( "memberOf",
                       restr.getEvaluator() );
+        assertFalse( restr.isNegated() );
         assertEquals( "$cities",
                       restr.getIdentifier() );
     }
@@ -2603,8 +2605,9 @@ public class RuleParserTest extends TestCase {
         FieldConstraintDescr fieldConstr = (FieldConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
         VariableRestrictionDescr restr = (VariableRestrictionDescr) fieldConstr.getRestrictions().get( 0 );
 
-        assertEquals( "not memberOf",
+        assertEquals( "memberOf",
                       restr.getEvaluator() );
+        assertTrue( restr.isNegated() );
         assertEquals( "$cities",
                       restr.getIdentifier() );
     }
@@ -3164,8 +3167,9 @@ public class RuleParserTest extends TestCase {
         FieldConstraintDescr fieldConstr = (FieldConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
         VariableRestrictionDescr restr = (VariableRestrictionDescr) fieldConstr.getRestrictions().get( 0 );
 
-        assertEquals( "not contains",
+        assertEquals( "contains",
                       restr.getEvaluator() );
+        assertTrue( restr.isNegated() );
         assertEquals( "$city",
                       restr.getIdentifier() );
     }
@@ -3188,8 +3192,9 @@ public class RuleParserTest extends TestCase {
         FieldConstraintDescr fieldConstr = (FieldConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
         LiteralRestrictionDescr restr = (LiteralRestrictionDescr) fieldConstr.getRestrictions().get( 0 );
 
-        assertEquals( "not matches",
+        assertEquals( "matches",
                       restr.getEvaluator() );
+        assertTrue( restr.isNegated() );
         assertEquals( "[abc]*",
                       restr.getText() );
     }
@@ -3391,8 +3396,9 @@ public class RuleParserTest extends TestCase {
         FieldConstraintDescr fieldConstr = (FieldConstraintDescr) pat.getConstraint().getDescrs().get( 0 );
         QualifiedIdentifierRestrictionDescr restr = (QualifiedIdentifierRestrictionDescr) fieldConstr.getRestrictions().get( 0 );
 
-        assertEquals( "not matches",
+        assertEquals( "matches",
                       restr.getEvaluator() );
+        assertTrue( restr.isNegated() );
         assertEquals( "$c.property",
                       restr.getText() );
     }
@@ -3590,6 +3596,125 @@ public class RuleParserTest extends TestCase {
         } catch( NullPointerException npe ) {
             fail("Should not raise NPE");
         }
+    }
+
+    public void testPluggableOperators() throws Exception {
+        final DRLParser parser = parseResource( "pluggable_operators.drl" );
+        parser.compilation_unit();
+
+        assertFalse( "Parser should not have raised errors: " + parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        final PackageDescr pack = parser.getPackageDescr();
+        assertEquals( 1,
+                      pack.getRules().size() );
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 5,
+                      rule.getLhs().getDescrs().size() );
+
+        final PatternDescr eventA = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "$a",
+                      eventA.getIdentifier() );
+        assertEquals( "EventA",
+                      eventA.getObjectType() );
+
+        final PatternDescr eventB = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals( "$b",
+                      eventB.getIdentifier() );
+        assertEquals( "EventB",
+                      eventB.getObjectType() );
+        assertEquals( 1,
+                      eventB.getConstraint().getDescrs().size() );
+        final FieldConstraintDescr fcdB = (FieldConstraintDescr) eventB.getConstraint().getDescrs().get( 0 );
+        assertEquals( 1,
+                      fcdB.getRestrictions().size() );
+        assertTrue( fcdB.getRestrictions().get( 0 ) instanceof VariableRestrictionDescr );
+        final VariableRestrictionDescr rb = (VariableRestrictionDescr) fcdB.getRestrictions().get( 0 );
+        assertEquals( "after",
+                      rb.getEvaluator() );
+        assertEquals( "$a",
+                      rb.getText() );
+        assertEquals( "1,10",
+                      rb.getParameterText() );
+        assertFalse( rb.isNegated() );
+
+        final PatternDescr eventC = (PatternDescr) rule.getLhs().getDescrs().get( 2 );
+        assertEquals( "$c",
+                      eventC.getIdentifier() );
+        assertEquals( "EventC",
+                      eventC.getObjectType() );
+        assertEquals( 1,
+                      eventC.getConstraint().getDescrs().size() );
+        final FieldConstraintDescr fcdC = (FieldConstraintDescr) eventC.getConstraint().getDescrs().get( 0 );
+        assertEquals( 1,
+                      fcdC.getRestrictions().size() );
+        assertTrue( fcdC.getRestrictions().get( 0 ) instanceof VariableRestrictionDescr );
+        final VariableRestrictionDescr rc = (VariableRestrictionDescr) fcdC.getRestrictions().get( 0 );
+        assertEquals( "finishes",
+                      rc.getEvaluator() );
+        assertEquals( "$b",
+                      rc.getText() );
+        assertNull( rc.getParameterText() );
+        assertFalse( rc.isNegated() );
+
+        final PatternDescr eventD = (PatternDescr) rule.getLhs().getDescrs().get( 3 );
+        assertEquals( "$d",
+                      eventD.getIdentifier() );
+        assertEquals( "EventD",
+                      eventD.getObjectType() );
+        assertEquals( 1,
+                      eventD.getConstraint().getDescrs().size() );
+        final FieldConstraintDescr fcdD = (FieldConstraintDescr) eventD.getConstraint().getDescrs().get( 0 );
+        assertEquals( 1,
+                      fcdD.getRestrictions().size() );
+        assertTrue( fcdD.getRestrictions().get( 0 ) instanceof VariableRestrictionDescr );
+        final VariableRestrictionDescr rd = (VariableRestrictionDescr) fcdD.getRestrictions().get( 0 );
+        assertEquals( "starts",
+                      rd.getEvaluator() );
+        assertEquals( "$a",
+                      rd.getText() );
+        assertNull( rd.getParameterText() );
+        assertTrue( rd.isNegated() );
+
+        final PatternDescr eventE = (PatternDescr) rule.getLhs().getDescrs().get( 4 );
+        assertEquals( "$e",
+                      eventE.getIdentifier() );
+        assertEquals( "EventE",
+                      eventE.getObjectType() );
+        assertEquals( 1,
+                      eventE.getConstraint().getDescrs().size() );
+        final FieldConstraintDescr fcdE = (FieldConstraintDescr) eventE.getConstraint().getDescrs().get( 0 );
+        assertEquals( 1,
+                      fcdE.getRestrictions().size() );
+        assertTrue( fcdE.getRestrictions().get( 0 ) instanceof VariableRestrictionDescr );
+        final VariableRestrictionDescr re = (VariableRestrictionDescr) fcdE.getRestrictions().get( 0 );
+        assertEquals( "before",
+                      re.getEvaluator() );
+        assertEquals( "$b",
+                      re.getText() );
+        assertEquals( "1, 10",
+                      re.getParameterText() );
+        assertTrue( re.isNegated() );
+    }
+
+    public void testEventImport() throws Exception {
+        final DRLParser parser = parseResource( "import_event.drl" );
+        parser.compilation_unit();
+
+        assertFalse( "Parser should not raise errors: " + parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        final PackageDescr pack = parser.getPackageDescr();
+
+        final List imports = pack.getImports();
+
+        assertEquals( 1,
+                      imports.size() );
+
+        final ImportDescr descr = (ImportDescr) imports.get( 0 );
+
+        assertTrue( descr.isEvent() );
+
     }
 
     private DRLParser parse(final String text) throws Exception {

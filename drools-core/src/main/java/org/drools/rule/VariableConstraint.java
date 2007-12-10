@@ -16,6 +16,7 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -66,17 +67,17 @@ public class VariableConstraint
         return this.restriction.getEvaluator();
     }
 
-    public boolean isAllowed(final Object object,
+    public boolean isAllowed(final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory) {
         return this.restriction.isAllowed( this.fieldExtractor,
-                                           object,
+                                           handle,
                                            workingMemory );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final Object object) {
+                                       final InternalFactHandle handle) {
         return this.restriction.isAllowedCachedLeft( context,
-                                                     object );
+                                                     handle );
     }
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,

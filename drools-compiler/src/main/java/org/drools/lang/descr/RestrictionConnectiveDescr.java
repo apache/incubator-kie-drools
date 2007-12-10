@@ -13,57 +13,74 @@ import java.util.List;
  */
 public class RestrictionConnectiveDescr extends RestrictionDescr {
 
-    private static final long serialVersionUID = 400L;
-    public final static int   AND              = 0;
-    public final static int   OR               = 1;
+    private static final long                     serialVersionUID = 400L;
 
-    private int               connective;
-    private List              restrictions;
+    public final static RestrictionConnectiveType AND              = RestrictionConnectiveType.AND;
+    public final static RestrictionConnectiveType OR               = RestrictionConnectiveType.OR;
 
-    public RestrictionConnectiveDescr(final int connective) {
+    private RestrictionConnectiveType             connective;
+    private List<RestrictionDescr>                restrictions;
+
+    public RestrictionConnectiveDescr(final RestrictionConnectiveType connective) {
         super();
         this.connective = connective;
-        this.restrictions = Collections.EMPTY_LIST;
+        this.restrictions = Collections.emptyList();
     }
 
-    public int getConnective() {
+    public RestrictionConnectiveType getConnective() {
         return this.connective;
     }
-    
-    public void addRestriction( RestrictionDescr restriction ) {
-        if( this.restrictions == Collections.EMPTY_LIST ) {
-            this.restrictions = new ArrayList();
+
+    public void addRestriction(RestrictionDescr restriction) {
+        if ( this.restrictions == Collections.EMPTY_LIST ) {
+            this.restrictions = new ArrayList<RestrictionDescr>();
         }
         this.restrictions.add( restriction );
     }
-    
-    public void addOrMerge( RestrictionDescr restriction ) {
-        if(( restriction instanceof RestrictionConnectiveDescr ) &&
-           ((RestrictionConnectiveDescr)restriction).connective == this.connective ) {
-            if( this.restrictions == Collections.EMPTY_LIST ) {
-                this.restrictions = new ArrayList();
+
+    public void addOrMerge(RestrictionDescr restriction) {
+        if ( (restriction instanceof RestrictionConnectiveDescr) && ((RestrictionConnectiveDescr) restriction).connective == this.connective ) {
+            if ( this.restrictions == Collections.EMPTY_LIST ) {
+                this.restrictions = new ArrayList<RestrictionDescr>();
             }
-            this.restrictions.addAll( ((RestrictionConnectiveDescr)restriction).getRestrictions() );
+            this.restrictions.addAll( ((RestrictionConnectiveDescr) restriction).getRestrictions() );
         } else {
             this.addRestriction( restriction );
         }
     }
-    
-    public List getRestrictions() {
+
+    public List<RestrictionDescr> getRestrictions() {
         return this.restrictions;
     }
-    
+
     public String toString() {
-        final String connectiveStr = this.connective == OR ? " || " : " && ";
         final StringBuffer buf = new StringBuffer();
         buf.append( "( " );
-        for( Iterator it = this.restrictions.iterator(); it.hasNext(); ) {
+        for ( Iterator it = this.restrictions.iterator(); it.hasNext(); ) {
             buf.append( it.next().toString() );
-            if( it.hasNext() ) {
-                buf.append( connectiveStr );
+            if ( it.hasNext() ) {
+                buf.append( this.connective.toString() );
             }
         }
         buf.append( "  )" );
         return buf.toString();
+    }
+
+    /**
+     * The connective types that can be used for a restriction
+     * 
+     * @author etirelli
+     */
+    public static enum RestrictionConnectiveType {
+        AND {
+            public String toString() {
+                return "&&";
+            }
+        },
+        OR {
+            public String toString() {
+                return "||";
+            }
+        };
     }
 }

@@ -16,24 +16,42 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-public class ReturnValueRestrictionDescr extends RestrictionDescr {
-    /**
-     * 
-     */
+public class ReturnValueRestrictionDescr extends EvaluatorBasedRestrictionDescr {
+
     private static final long serialVersionUID = 400L;
-    private String            evaluator;
     private Object            content;
     private String[]          declarations;
-
     private String            classMethodName;
 
-    public ReturnValueRestrictionDescr(final String evaluator) {
-        this.evaluator = evaluator;
+    public ReturnValueRestrictionDescr(final String evaluator ) {
+        super( evaluator,
+               false,
+               null );
+    }
+
+    public ReturnValueRestrictionDescr(final String evaluator, 
+                                       final Object content ) {
+        super( evaluator,
+               false,
+               null );
+        this.content = content;
+    }
+
+    public ReturnValueRestrictionDescr(final String evaluator, 
+                                       final boolean isNegated,
+                                       final String parameterText ) {
+        super( evaluator,
+               isNegated,
+               parameterText );
     }
 
     public ReturnValueRestrictionDescr(final String evaluator,
+                                       final boolean isNegated,
+                                       final String parameterText, 
                                        final Object content) {
-        this.evaluator = evaluator;
+        super( evaluator,
+               isNegated,
+               parameterText );
         this.content = content;
     }
 
@@ -43,10 +61,6 @@ public class ReturnValueRestrictionDescr extends RestrictionDescr {
 
     public void setClassMethodName(final String classMethodName) {
         this.classMethodName = classMethodName;
-    }
-
-    public String getEvaluator() {
-        return this.evaluator;
     }
 
     public Object getContent() {
@@ -66,6 +80,6 @@ public class ReturnValueRestrictionDescr extends RestrictionDescr {
     }
 
     public String toString() {
-        return "[ReturnValue: " + this.evaluator + " " + this.content + "]";
+        return "[ReturnValue: " + super.toString() + " " + this.content + "]";
     }
 }

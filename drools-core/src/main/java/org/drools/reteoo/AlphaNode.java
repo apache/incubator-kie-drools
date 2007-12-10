@@ -129,7 +129,7 @@ public class AlphaNode extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) throws FactException {
-        if ( this.constraint.isAllowed( handle.getObject(),
+        if ( this.constraint.isAllowed( handle,
                                         workingMemory ) ) {
             if ( isObjectMemoryEnabled() ) {
                 final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
@@ -151,7 +151,7 @@ public class AlphaNode extends ObjectSource
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             propagate = memory.remove( handle );
         } else {
-            propagate = this.constraint.isAllowed( handle.getObject(),
+            propagate = this.constraint.isAllowed( handle,
                                                    workingMemory );
         }
         if ( propagate ) {
@@ -311,7 +311,7 @@ public class AlphaNode extends ObjectSource
         public void assertObject(final InternalFactHandle handle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-            if ( this.constraint.isAllowed( handle.getObject(),
+            if ( this.constraint.isAllowed( handle,
                                             workingMemory ) ) {
                 this.sink.assertObject( handle,
                                         context,

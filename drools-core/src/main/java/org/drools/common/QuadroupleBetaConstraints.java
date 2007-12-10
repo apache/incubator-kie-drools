@@ -29,8 +29,8 @@ import org.drools.reteoo.TupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.util.FactHashTable;
 import org.drools.util.FactHandleIndexHashTable;
+import org.drools.util.FactHashTable;
 import org.drools.util.FactList;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
@@ -203,18 +203,18 @@ public class QuadroupleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(final Object object) {
+    public boolean isAllowedCachedLeft(final InternalFactHandle handle) {
         //        return ( this.indexed0 || this.constraint0.isAllowedCachedLeft( context0,
         //                                                                       object ) ) && this.constraint1.isAllowedCachedLeft( context1,
         //                                                                                                       object ) && this.constraint2.isAllowedCachedLeft( context2,
         //                                                                                                                                                         object );
 
         return (this.indexed0 || this.constraint0.isAllowedCachedLeft( this.context0,
-                                                                       object )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( this.context1,
-                                                                                                                                            object )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( this.context2,
-                                                                                                                                                                                                                 object ))
+                                                                       handle )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( this.context1,
+                                                                                                                                            handle )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( this.context2,
+                                                                                                                                                                                                                 handle ))
                && (this.indexed3 || this.constraint3.isAllowedCachedLeft( this.context3,
-                                                                          object ));
+                                                                          handle ));
     }
 
     /* (non-Javadoc)

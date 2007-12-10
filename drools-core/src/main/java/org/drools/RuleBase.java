@@ -94,6 +94,23 @@ public interface RuleBase
      */
     StatefulSession newStatefulSession(InputStream stream) throws IOException,
                                                           ClassNotFoundException;
+    
+    /**
+     * Creates a new temporal session using the defined clock type.
+     * 
+     * @param clockType
+     * @return
+     */
+    TemporalSession newTemporalSession(ClockType clockType);
+
+    /**
+     * Creates a new temporal session using the defined clock type.
+     * 
+     * @param keepReference maintains a reference in the rulebase to the created session
+     * @param clockType
+     * @return
+     */
+    TemporalSession newTemporalSession(boolean keepReference, ClockType clockType);
 
     /**
      * RuleBases handle the returning of a Serialized WorkingMemory

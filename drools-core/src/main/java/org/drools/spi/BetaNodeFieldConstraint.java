@@ -16,6 +16,7 @@ package org.drools.spi;
  * limitations under the License.
  */
 
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.ContextEntry;
 
@@ -24,7 +25,7 @@ public interface BetaNodeFieldConstraint
     Constraint {
 
     public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object);
+                                       InternalFactHandle handle);
 
     public boolean isAllowedCachedRight(ReteTuple tuple,
                                         ContextEntry context);

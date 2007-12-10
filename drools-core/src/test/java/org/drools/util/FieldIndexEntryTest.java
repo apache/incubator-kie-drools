@@ -5,8 +5,9 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
-import org.drools.base.evaluators.StringFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.util.AbstractHashTable.FactEntryImpl;
@@ -16,6 +17,7 @@ import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
 
 public class FieldIndexEntryTest extends TestCase {
     ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     public void testSingleEntry() {
         final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
@@ -24,7 +26,7 @@ public class FieldIndexEntryTest extends TestCase {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
@@ -67,7 +69,7 @@ public class FieldIndexEntryTest extends TestCase {
                                                                   getClass().getClassLoader() );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
@@ -119,7 +121,7 @@ public class FieldIndexEntryTest extends TestCase {
                                                                   getClass().getClassLoader() );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 

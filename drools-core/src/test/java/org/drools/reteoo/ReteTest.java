@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.drools.Cheese;
@@ -35,8 +36,6 @@ import org.drools.base.ShadowProxy;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.reteoo.Rete.ClassObjectTypeConf;
-import org.drools.reteoo.Rete.ObjectTypeConf;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
@@ -135,7 +134,7 @@ public class ReteTest extends DroolsTestCase {
                                                        null ),
                            workingMemory );
 
-        final ObjectHashMap map = (ObjectHashMap) workingMemory.getNodeMemory( rete );
+        final Map map = workingMemory.getObjectTypeConfMap();
         ClassObjectTypeConf conf = (ClassObjectTypeConf) map.get( ArrayList.class );
         assertLength( 3,
                       conf.getObjectTypeNodes() );
@@ -239,7 +238,7 @@ public class ReteTest extends DroolsTestCase {
                     rete.getObjectTypeNodes().get( new ClassObjectType( List.class ) ) );
 
         // ArrayConf should match two ObjectTypenodes for List and ArrayList
-        ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( rete );
+        Map memory = workingMemory.getObjectTypeConfMap();
         ObjectTypeConf arrayConf = (ObjectTypeConf) memory.get( ArrayList.class );
         final ObjectTypeNode arrayOtn = arrayConf.getConcreteObjectTypeNode();
         assertEquals( 2,

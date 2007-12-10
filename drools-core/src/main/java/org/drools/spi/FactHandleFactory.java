@@ -19,6 +19,7 @@ package org.drools.spi;
 import java.io.Serializable;
 
 import org.drools.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 
 /**
@@ -37,7 +38,7 @@ public interface FactHandleFactory
      * 
      * @return The handle.
      */
-    InternalFactHandle newFactHandle(Object object);
+    InternalFactHandle newFactHandle(Object object, boolean isEvent, WorkingMemory workingMemory );
 
     /**
      * Increases the recency of the FactHandle

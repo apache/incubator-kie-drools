@@ -2,7 +2,7 @@ package org.drools.base.mvel;
 
 import java.util.Calendar;
 
-import org.drools.base.evaluators.DateFactory;
+import org.drools.util.DateUtils;
 import org.mvel.ConversionHandler;
 
 public class MVELCalendarCoercion implements ConversionHandler {
@@ -18,7 +18,7 @@ public class MVELCalendarCoercion implements ConversionHandler {
     public Object convertFrom(Object o) {
         if (o instanceof String) {
             Calendar cal = Calendar.getInstance();
-            cal.setTime( DateFactory.parseDate( (String) o) );
+            cal.setTime( DateUtils.parseDate( (String) o) );
             return cal;
         } else {
             return o;

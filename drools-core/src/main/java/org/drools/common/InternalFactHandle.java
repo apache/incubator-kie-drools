@@ -42,4 +42,13 @@ public interface InternalFactHandle
     public boolean isShadowFact();
 
     public void setShadowFact(boolean shadowFact);
+    
+    /**
+     * Returns true if this FactHandle represents
+     * and Event or false if this FactHandle represents
+     * a regular Fact
+     * 
+     * @return
+     */
+    public boolean isEvent();
 }

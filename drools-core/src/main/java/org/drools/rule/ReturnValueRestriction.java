@@ -159,13 +159,13 @@ public class ReturnValueRestriction
     }
 
     public boolean isAllowed(final Extractor extractor,
-                             final Object object,
+                             final InternalFactHandle handle,
                              final Tuple tuple,
                              final WorkingMemory workingMemory) {
         try {
             return this.evaluator.evaluate( null,
                                             extractor,
-                                            object, this.expression.evaluate( object,
+                                            handle.getObject(), this.expression.evaluate( handle.getObject(),
                                                                                               tuple,
                                                                                               this.previousDeclarations,
                                                                                               this.localDeclarations,
@@ -176,13 +176,13 @@ public class ReturnValueRestriction
     }
 
     public boolean isAllowed(final Extractor extractor,
-                             final Object object,
+                             final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemoiry) {
         throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final Object object) {
+                                       final InternalFactHandle handle) {
         throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }
 
@@ -284,7 +284,7 @@ public class ReturnValueRestriction
         private static final long    serialVersionUID = 400L;
 
         public FieldExtractor        fieldExtractor;
-        public Object                object;
+        public InternalFactHandle    handle;
         public ReteTuple             leftTuple;
         public InternalWorkingMemory workingMemory;
         public Declaration[]         previousDeclarations;
@@ -311,7 +311,7 @@ public class ReturnValueRestriction
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
             this.workingMemory = workingMemory;
-            this.object = handle.getObject();
+            this.handle = handle;
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -337,8 +337,8 @@ public class ReturnValueRestriction
         /* (non-Javadoc)
          * @see org.drools.rule.ReturnValueContextEntry#getObject()
          */
-        public Object getObject() {
-            return this.object;
+        public InternalFactHandle getHandle() {
+            return this.handle;
         }
 
         /* (non-Javadoc)

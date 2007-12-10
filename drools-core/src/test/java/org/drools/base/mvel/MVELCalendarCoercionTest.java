@@ -3,9 +3,9 @@ package org.drools.base.mvel;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.drools.base.evaluators.DateFactory;
-
 import junit.framework.TestCase;
+
+import org.drools.util.DateUtils;
 
 public class MVELCalendarCoercionTest extends TestCase {
 
@@ -23,7 +23,7 @@ public class MVELCalendarCoercionTest extends TestCase {
         assertTrue(co.canConvertFrom( Calendar.class ));
 
         String dt = "10-Jul-1974";
-        Date dt_ = DateFactory.parseDate( dt );
+        Date dt_ = DateUtils.parseDate( dt );
         Calendar cal = Calendar.getInstance();
         cal.setTime( dt_ );
         assertEquals(cal, co.convertFrom( dt ));

@@ -104,6 +104,14 @@ public interface InternalRuleBase
     public InternalWorkingMemory[] getWorkingMemories();
     
     public Process getProcess(String id);
+    
+    /**
+     * Returns true if clazz represents an Event class. False otherwise.
+     *  
+     * @param clazz
+     * @return
+     */
+    public boolean isEvent( Class clazz );
 
 	public Objenesis getObjenesis();
 }

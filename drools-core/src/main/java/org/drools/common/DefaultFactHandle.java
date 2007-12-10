@@ -52,10 +52,9 @@ public class DefaultFactHandle
 
     public DefaultFactHandle(final long id,
                              final Object object) {
-        this.id = id;
-        this.recency = id;
-        this.object = object;
-        this.objectHashCode = object.hashCode();
+        this( id,
+              object,
+              id );
     }
 
     /**
@@ -107,7 +106,7 @@ public class DefaultFactHandle
      * @see FactHandle
      */
     public String toExternalForm() {
-        return "[fid:" + this.id + ":" + this.recency + ":" + this.object + "]";
+        return "[fact fid:" + this.id + ":" + this.recency + ":" + this.object + "]";
     }
 
     /**
@@ -162,5 +161,13 @@ public class DefaultFactHandle
      */
     public void setEqualityKey(final EqualityKey key) {
         this.key = key;
+    }
+
+    /**
+     * Always returns false, since the DefaultFactHandle is
+     * only used for regular Facts, and not for Events
+     */
+    public boolean isEvent() {
+        return false;
     }
 }

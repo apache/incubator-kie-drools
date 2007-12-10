@@ -53,7 +53,11 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.facttemplates.Fact;
+import org.drools.reteoo.ClassObjectTypeConf;
+import org.drools.reteoo.FactTemplateTypeConf;
 import org.drools.reteoo.LIANodePropagation;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
@@ -70,6 +74,7 @@ import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
+import org.drools.temporal.SessionClock;
 import org.drools.util.JavaIteratorAdapter;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.PrimitiveLongMap;
@@ -90,75 +95,79 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
-    protected static final Class[]                  ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    protected static final Class[]         ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected long                                  id;
+    protected long                         id;
 
     /** The arguments used when adding/removing a property change listener. */
-    protected final Object[]                        addRemovePropertyChangeListenerArgs           = new Object[]{this};
+    protected final Object[]               addRemovePropertyChangeListenerArgs           = new Object[]{this};
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected final PrimitiveLongMap                nodeMemories                                  = new PrimitiveLongMap( 32,
-                                                                                                                          8 );
+    protected final PrimitiveLongMap       nodeMemories                                  = new PrimitiveLongMap( 32,
+                                                                                                                 8 );
     /** Object-to-handle mapping. */
-    private final ObjectHashMap                     assertMap;
-    private final ObjectHashMap                     identityMap;
+    private final ObjectHashMap            assertMap;
+    private final ObjectHashMap            identityMap;
 
-    protected Map                                   queryResults                                  = Collections.EMPTY_MAP;
+    protected Map                          queryResults                                  = Collections.EMPTY_MAP;
 
     /** Global values which are associated with this memory. */
-    protected GlobalResolver                        globalResolver;
+    protected GlobalResolver               globalResolver;
 
-    protected static final Object                   NULL                                          = new Serializable() {
-                                                                                                      private static final long serialVersionUID = 400L;
-                                                                                                  };
+    protected static final Object          NULL                                          = new Serializable() {
+                                                                                             private static final long serialVersionUID = 400L;
+                                                                                         };
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport             workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
+    protected WorkingMemoryEventSupport    workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
 
-    protected AgendaEventSupport                    agendaEventSupport                            = new AgendaEventSupport();
+    protected AgendaEventSupport           agendaEventSupport                            = new AgendaEventSupport();
 
-    protected RuleFlowEventSupport                  ruleFlowEventSupport                          = new RuleFlowEventSupport();
+    protected RuleFlowEventSupport         ruleFlowEventSupport                          = new RuleFlowEventSupport();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected transient InternalRuleBase            ruleBase;
+    protected transient InternalRuleBase   ruleBase;
 
-    protected final FactHandleFactory               handleFactory;
+    protected final FactHandleFactory      handleFactory;
 
-    protected final TruthMaintenanceSystem          tms;
+    protected final TruthMaintenanceSystem tms;
 
     /** Rule-firing agenda. */
-    protected DefaultAgenda                         agenda;
+    protected DefaultAgenda                agenda;
 
-    protected final List                            actionQueue                                   = new ArrayList();
+    protected final List                   actionQueue                                   = new ArrayList();
 
-    protected final ReentrantLock                   lock                                          = new ReentrantLock();
+    protected final ReentrantLock          lock                                          = new ReentrantLock();
 
-    protected final boolean                         discardOnLogicalOverride;
+    protected final boolean                discardOnLogicalOverride;
 
-    protected long                                  propagationIdCounter;
+    protected long                         propagationIdCounter;
 
-    private final boolean                           maintainTms;
+    private final boolean                  maintainTms;
 
-    private final boolean                           sequential;
+    private final boolean                  sequential;
 
-    private List                                    liaPropagations                               = Collections.EMPTY_LIST;
+    private List                           liaPropagations                               = Collections.EMPTY_LIST;
 
     /** Flag to determine if a rule is currently being fired. */
-    protected boolean                               firing;
+    protected boolean                      firing;
 
-    protected boolean                               halt;
+    protected boolean                      halt;
 
-    private Map 						   processInstances								 = new HashMap();
-    
+    private Map                            processInstances                              = new HashMap();
+
     private int                            processCounter;
-    
-    private WorkItemManager            taskInstanceManager;
 
-    private TimeMachine 							timeMachine = new TimeMachine();
+    private WorkItemManager                taskInstanceManager;
+
+    private TimeMachine                    timeMachine                                   = new TimeMachine();
+
+    private Map<Object, ObjectTypeConf>    typeConfMap;
+
+    private SessionClock                   sessionClock;
 
     // ------------------------------------------------------------
     // Constructors
@@ -204,7 +213,10 @@ public abstract class AbstractWorkingMemory
         } else {
             this.discardOnLogicalOverride = false;
         }
-        this.taskInstanceManager = new WorkItemManager(this);
+
+        this.taskInstanceManager = new WorkItemManager( this );
+
+        this.typeConfMap = new HashMap<Object, ObjectTypeConf>();
     }
 
     // ------------------------------------------------------------
@@ -392,7 +404,7 @@ public abstract class AbstractWorkingMemory
     public long getId() {
         return this.id;
     }
-    
+
     public void setId(long id) {
         this.id = id;
     }
@@ -716,10 +728,14 @@ public abstract class AbstractWorkingMemory
             return null;
         }
 
+        ObjectTypeConf typeConf = getObjectTypeConf( object );
+
         InternalFactHandle handle = null;
 
         if ( isSequential() ) {
-            handle = this.handleFactory.newFactHandle( object );
+            handle = this.handleFactory.newFactHandle( object,
+                                                       typeConf.isEvent(),
+                                                       this );
             addHandleToMaps( handle );
             insert( handle,
                     object,
@@ -771,7 +787,9 @@ public abstract class AbstractWorkingMemory
                 if ( key == null ) {
                     // key is also null, so treat as a totally new stated/logical
                     // assert
-                    handle = this.handleFactory.newFactHandle( object );
+                    handle = this.handleFactory.newFactHandle( object,
+                                                               typeConf.isEvent(),
+                                                               this );
                     addHandleToMaps( handle );
 
                     key = new EqualityKey( handle );
@@ -825,7 +843,9 @@ public abstract class AbstractWorkingMemory
                         } else {
                             // override, then instantiate new handle for assertion
                             key.setStatus( EqualityKey.STATED );
-                            handle = this.handleFactory.newFactHandle( object );
+                            handle = this.handleFactory.newFactHandle( object,
+                                                                       typeConf.isEvent(),
+                                                                       this );
                             handle.setEqualityKey( key );
                             key.addFactHandle( handle );
                             addHandleToMaps( handle );
@@ -833,7 +853,9 @@ public abstract class AbstractWorkingMemory
                         }
 
                     } else {
-                        handle = this.handleFactory.newFactHandle( object );
+                        handle = this.handleFactory.newFactHandle( object,
+                                                                   typeConf.isEvent(),
+                                                                   this );
                         addHandleToMaps( handle );
                         key.addFactHandle( handle );
                         handle.setEqualityKey( key );
@@ -860,7 +882,9 @@ public abstract class AbstractWorkingMemory
                 if ( handle != null ) {
                     return handle;
                 }
-                handle = this.handleFactory.newFactHandle( object );
+                handle = this.handleFactory.newFactHandle( object,
+                                                           typeConf.isEvent(),
+                                                           this );
                 addHandleToMaps( handle );
 
             }
@@ -1420,35 +1444,36 @@ public abstract class AbstractWorkingMemory
             processInstance.setWorkingMemory( this );
             processInstance.setProcess( process );
             processInstance.setId( ++processCounter );
-            processInstances.put(new Long(processInstance.getId()), processInstance);
-            getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted(
-                    processInstance, this);
+            processInstances.put( new Long( processInstance.getId() ),
+                                  processInstance );
+            getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance,
+                                                                        this );
             processInstance.start();
-            getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted(
-                    processInstance, this);
+            getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted( processInstance,
+                                                                       this );
 
             return processInstance;
         } else {
             throw new IllegalArgumentException( "Unknown process type: " + process.getClass() );
         }
     }
-    
+
     public Collection getProcessInstances() {
-    	return Collections.unmodifiableCollection(processInstances.values());
+        return Collections.unmodifiableCollection( processInstances.values() );
     }
-    
+
     public ProcessInstance getProcessInstance(long id) {
-        return (ProcessInstance) processInstances.get(new Long(id));
+        return (ProcessInstance) processInstances.get( new Long( id ) );
     }
-    
+
     public void removeProcessInstance(ProcessInstance processInstance) {
-    	processInstances.remove(processInstance);
+        processInstances.remove( processInstance );
     }
-    
+
     public WorkItemManager getWorkItemManager() {
         return taskInstanceManager;
     }
-    
+
     public List iterateObjectsToList() {
         List result = new ArrayList();
         Iterator iterator = iterateObjects();
@@ -1489,16 +1514,63 @@ public abstract class AbstractWorkingMemory
     /**
      * The time machine tells you what time it is.
      */
-	public TimeMachine getTimeMachine() {
-		return timeMachine;
-	}
+    public TimeMachine getTimeMachine() {
+        return timeMachine;
+    }
 
-	/**
-	 * The time machine defaults to returning the current time when asked. However, you can use tell it to go back in time.
-	 * @param timeMachine
-	 */
-	public void setTimeMachine(TimeMachine timeMachine) {
-		this.timeMachine = timeMachine;
-	}
+    /**
+     * The time machine defaults to returning the current time when asked. However, you can use tell it to go back in time.
+     * @param timeMachine
+     */
+    public void setTimeMachine(TimeMachine timeMachine) {
+        this.timeMachine = timeMachine;
+    }
+
+    /**
+     * Returns the ObjectTypeConfiguration object for the given object
+     * or creates a new one if none is found in the cache
+     * 
+     * @param object
+     * @return
+     */
+    public ObjectTypeConf getObjectTypeConf(Object object) {
+        ObjectTypeConf objectTypeConf;
+
+        if ( object instanceof Fact ) {
+            String key = ((Fact) object).getFactTemplate().getName();
+            objectTypeConf = (ObjectTypeConf) this.typeConfMap.get( key );
+            if ( objectTypeConf == null ) {
+                objectTypeConf = new FactTemplateTypeConf( ((Fact) object).getFactTemplate(),
+                                                           this.ruleBase );
+                this.typeConfMap.put( key,
+                                      objectTypeConf );
+            }
+            object = key;
+        } else {
+            Class cls = null;
+            if ( object instanceof ShadowProxy ) {
+                cls = ((ShadowProxy) object).getShadowedObject().getClass();
+            } else {
+                cls = object.getClass();
+            }
+
+            objectTypeConf = (ObjectTypeConf) this.typeConfMap.get( cls );
+            if ( objectTypeConf == null ) {
+
+                final boolean isEvent = this.ruleBase.isEvent( cls );
+                objectTypeConf = new ClassObjectTypeConf( cls,
+                                                          isEvent,
+                                                          this.ruleBase );
+                this.typeConfMap.put( cls,
+                                      objectTypeConf );
+            }
+
+        }
+        return objectTypeConf;
+    }
+
+    public Map<Object, ObjectTypeConf> getObjectTypeConfMap() {
+        return this.typeConfMap;
+    }
 
 }

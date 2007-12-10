@@ -33,7 +33,13 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.ComparableEvaluatorsDefinition;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
+import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
+import org.drools.base.evaluators.SetEvaluatorsDefinition;
+import org.drools.base.evaluators.SoundslikeEvaluatorsDefinition;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -47,6 +53,16 @@ import org.drools.spi.KnowledgeHelper;
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
 public class AgendaEventSupportTest extends TestCase {
+
+    public static EvaluatorRegistry registry = new EvaluatorRegistry();
+    static {
+        registry.addEvaluatorDefinition( new EqualityEvaluatorsDefinition() );
+        registry.addEvaluatorDefinition( new ComparableEvaluatorsDefinition() );
+        registry.addEvaluatorDefinition( new SetEvaluatorsDefinition() );
+        registry.addEvaluatorDefinition( new MatchesEvaluatorsDefinition() );
+        registry.addEvaluatorDefinition( new SoundslikeEvaluatorsDefinition() );
+    }
+
     public void testIsSerializable() {
         assertTrue( Serializable.class.isAssignableFrom( AgendaEventSupport.class ) );
     }
@@ -68,7 +84,9 @@ public class AgendaEventSupportTest extends TestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = registry.getEvaluator( ValueType.STRING_TYPE,
+                                                           Operator.EQUAL,
+                                                           null );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,

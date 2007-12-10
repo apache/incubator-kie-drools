@@ -33,7 +33,8 @@ public class QueryBuilder {
                                                              ValueType.STRING_TYPE );
 
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
-                                                                    ValueType.STRING_TYPE.getEvaluator( Operator.EQUAL ),
+                                                                    context.getConfiguration().getEvaluatorRegistry().getEvaluator( ValueType.STRING_TYPE,
+                                                                                                                                    Operator.EQUAL ),
                                                                     field );
         // adds appropriate constraint to the pattern
         pattern.addConstraint( constraint );

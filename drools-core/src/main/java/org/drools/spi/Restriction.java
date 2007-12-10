@@ -2,6 +2,7 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.ContextEntry;
@@ -14,11 +15,11 @@ public interface Restriction
     Declaration[] getRequiredDeclarations();
 
     public boolean isAllowed(Extractor extractor,
-                             Object object,
+                             InternalFactHandle handle,
                              InternalWorkingMemory workingMemory);
 
     public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object);
+                                       InternalFactHandle handle);
 
     public boolean isAllowedCachedRight(ReteTuple tuple,
                                         ContextEntry context);

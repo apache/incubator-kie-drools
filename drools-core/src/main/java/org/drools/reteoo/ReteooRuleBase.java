@@ -22,12 +22,14 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Iterator;
 
+import org.drools.ClockType;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
+import org.drools.TemporalSession;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
@@ -37,8 +39,8 @@ import org.drools.concurrent.ExecutorService;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.InvalidPatternException;
-import org.drools.rule.Rule;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
@@ -218,10 +220,22 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                  workingMemory );
     }
 
+    public synchronized StatefulSession newStatefulSession( final boolean keepReference ) {
+        return newStatefulSession( keepReference, null );
+    }
+    
+    public synchronized TemporalSession newTemporalSession( final ClockType clockType ) {
+        return (TemporalSession) newStatefulSession( true, clockType);
+    }
+    
+    public synchronized TemporalSession newTemporalSession( final boolean keepReference, final ClockType clockType ) {
+        return (TemporalSession) newStatefulSession( keepReference, clockType );
+    }
+    
     /**
      * @see RuleBase
      */
-    public synchronized StatefulSession newStatefulSession(final boolean keepReference) {
+    private StatefulSession newStatefulSession( final boolean keepReference, final ClockType clockType ) {
         if ( this.config.isSequential() ) {
             throw new RuntimeException( "Cannot have a stateful rule session, with sequential configuration set to true" );
         }
@@ -229,9 +243,16 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
         synchronized ( this.pkgs ) {
             ExecutorService executor = ExecutorServiceFactory.createExecutorService(  this.config.getExecutorService() );;
-            session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
-                                                 this,
-                                                 executor );
+            if( clockType == null ) {
+                session = new ReteooStatefulSession( nextWorkingMemoryCounter(),
+                                                     this,
+                                                     executor );
+            } else {
+                session = new ReteooTemporalSession( nextWorkingMemoryCounter(),
+                                                             this,
+                                                             executor,
+                                                             clockType.createInstance() );
+            }
 
             executor.setCommandExecutor( new CommandExecutor( session ) );
 
@@ -242,7 +263,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
                 }
             }
 
-            final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
+            final InitialFactHandle handle = new InitialFactHandle( session.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject(), false, session ) );
 
             session.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
                                                                                  false,
@@ -280,4 +301,5 @@ public class ReteooRuleBase extends AbstractRuleBase {
         Serializable {
         private static final long serialVersionUID = 400L;
     }
+    
 }

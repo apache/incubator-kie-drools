@@ -22,33 +22,21 @@ package org.drools.lang.descr;
  * field of a pattern. 
  * The "text" contains the content. 
  */
-public class QualifiedIdentifierRestrictionDescr extends RestrictionDescr {
-    /**
-     * 
-     */
+public class QualifiedIdentifierRestrictionDescr extends EvaluatorBasedRestrictionDescr {
+
     private static final long serialVersionUID = 400L;
-    private String            evaluator;
-    private String            text;
 
     public QualifiedIdentifierRestrictionDescr(final String evaluator,
-                                   final String text) {
-        this.text = text;
-        this.evaluator = evaluator;
-    }
-    
-    public void setText(String text) {
-        this.text = text;
-    }
-    
-    public String getEvaluator() {
-        return this.evaluator;
-    }
-
-    public String getText() {
-        return this.text;
+                                               final boolean isNegated,
+                                               final String parameterText,
+                                               final String text) {
+        super( evaluator,
+               isNegated,
+               parameterText );
+        this.setText( text );
     }
 
     public String toString() {
-        return "[QualifiedIndentifierRestr: " + this.evaluator + " " + this.text + " ]";
+        return "[QualifiedIndentifierRestr: " + super.toString() + " " + this.getText() + " ]";
     }
 }
