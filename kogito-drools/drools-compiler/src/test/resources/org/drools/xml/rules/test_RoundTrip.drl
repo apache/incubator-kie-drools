@@ -1,0 +1,61 @@
+package foo;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.utilArrayList;
+
+global HashMap m;
+global HashSet s;
+global org.drools.Person p;
+
+import function org.drools.xml.DumperTest.testStaticMethod1;
+import function org.drools.xml.DumperTest.testStaticMethod2;
+import function org.drools.xml.DumperTest.testStaticMethod3;
+
+rule "simple_rule"
+  salience 10
+  no-loop true
+  agenda-group "agenda-group"
+  activation-group "activation-group"
+  ruleflow-group "xxx"
+  lock-on-active true
+  auto-focus true
+  date-effective "01-Jan-2007"
+  date-expires "01-Feb-2007"    
+  when
+    foo2 : Bar( a ( > 60 && < 70 ) || ( > 50 && < 55 ) && a3 == "black" || a == 40 && a3 == "pink" || a == 12 && a3 == "yellow" || a3 == "blue")
+    foo3 : Bar( a == 3 || == 4, a3 == "hello", a4 == null )    
+    foo4 : Bar( a4 : a != 4 && != 5)
+    foo5 : Bar( b == (a4 + 1) || > a4)    
+    foo6 : Bar( a4 : a, b == 6)    
+    foo7 : Bar( a4 : a, b4 : b)    
+    $cheeseList  : ArrayList(size > 2) from collect( Cheese( type == $likes ) );    
+    Baz()
+  then
+  if ( a == b ) {
+    assert( foo3 );
+  } else {
+    retract( foo4 );
+  } 
+  System.out.println( a4 );
+  testStaticMethod1();
+  testStaticMethod2();
+  testStaticMethod3();
+end
+
+rule "simple_rule2"
+  salience (10 + a)
+  dialect "mvel"    
+  when    
+    foo4 : Bar( a4 : a != 4 && != 5)
+  then
+  if ( a == b ) {
+    assert( foo3 );
+  } else {
+    retract( foo4 );
+  } 
+  System.out.println( a4 );
+  testStaticMethod1();  
+  testStaticMethod2();
+  testStaticMethod3();  
+end
