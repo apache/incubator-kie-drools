@@ -54,6 +54,10 @@ public class XmlPackageReader {
         }      
         this.parser.setSemanticModules( modules );
     }
+    
+    public ExtensibleXmlParser getParser() {
+        return this.parser;
+    }
 
     /**
      * Read a <code>RuleSet</code> from a <code>Reader</code>.
