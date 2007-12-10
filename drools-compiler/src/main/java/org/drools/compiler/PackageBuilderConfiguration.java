@@ -16,7 +16,13 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -26,6 +32,8 @@ import java.util.Map.Entry;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.util.ChainedProperties;
+import org.drools.xml.SemanticModule;
+import org.drools.xml.SemanticModules;
 
 /**
  * This class configures the package compiler. 
@@ -60,6 +68,8 @@ public class PackageBuilderConfiguration {
     private ChainedProperties   chainedProperties;
 
     private Map                 accumulateFunctions;
+    
+    private SemanticModules     semanticModules;   
 
     /**
      * Constructor that sets the parent class loader for the package being built/compiled
@@ -197,6 +207,128 @@ public class PackageBuilderConfiguration {
             this.classLoader = classLoader;
         }
     }
+    
+//    public void addSemanticModule(SemanticModule module) {
+//        if ( this.semanticModules == null ) {
+//            initSemanticModules();
+//        }
+//        this.semanticModules.addSemanticModule( module );
+//    }
+//    
+//    public SemanticModules getSemanticModules() {
+//        if ( this.semanticModules == null ) {
+//            initSemanticModules();
+//        }        
+//        return this.semanticModules;
+//    }
+//    
+//    public void initSemanticModules() {
+//        this.semanticModules = new SemanticModules();
+//        // split on each space
+//        String locations[] = this.chainedProperties.getProperty( "semanticModues", "" ).split( "\\s" );
+//        
+//        int i = 0;
+//        // load each SemanticModule
+//        for ( String moduleLocation : locations ) {
+//            // trim leading/trailing spaces and quotes
+//            moduleLocation = moduleLocation.trim();
+//            if ( moduleLocation.startsWith( "\"" ) ) {
+//                moduleLocation = moduleLocation.substring( 1 );
+//            }
+//            if ( moduleLocation.endsWith( "\"" ) ) {
+//                moduleLocation = moduleLocation.substring( 0, moduleLocation.length() -1 );
+//            }
+//            loadSemanticModule(moduleLocation);
+//        }
+//    }
+//        
+//        public void loadSemanticModule(String moduleLocation) {
+//            ChainedProperties properties = new ChainedProperties(this.classLoader, moduleLocation );
+//            String uri = properties.getProperty( "uri", null );
+//            if ( uri == null || uri.trim().equals( "" ) ) {
+//                throw new RuntimeException( "Semantic Module URI property must not be empty" );
+//            }
+//        
+//            if ( classLoader == null ) {
+//                classLoader = Thread.currentThread().getContextClassLoader();
+//                if ( classLoader == null ) {
+//                    classLoader = this.getClass().getClassLoader();
+//                }
+//            }
+//
+//
+//            // User home properties file
+//            loadProperties( System.getProperty( "user.home" ) + moduleLocation );
+//
+//            // Working directory properties file
+//            loadProperties( moduleLocation );
+//
+//            // check META-INF directories for all known ClassLoaders
+//            ClassLoader confClassLoader = classLoader;
+//            if ( confClassLoader != null ) {
+//                loadProperties( getResources( "META-INF/" + moduleLocation,
+//                                              confClassLoader ) );
+//            }
+//
+//            confClassLoader = getClass().getClassLoader();
+//            if ( confClassLoader != null && confClassLoader != classLoader ) {
+//                loadProperties( getResources( "META-INF/drools." + moduleLocation,
+//                                              confClassLoader ),
+//                                this.props );
+//            }
+//
+//            confClassLoader = Thread.currentThread().getContextClassLoader();
+//            if ( confClassLoader != null && confClassLoader != classLoader ) {
+//                loadProperties( getResources( "META-INF/drools." + confFileName,
+//                                              confClassLoader ),
+//                                this.props );
+//            }
+//
+//            confClassLoader = ClassLoader.getSystemClassLoader();
+//            if ( confClassLoader != null && confClassLoader != classLoader ) {
+//                loadProperties( getResources( "META-INF/drools." + confFileName,
+//                                              confClassLoader ),
+//                                this.props );
+//            }
+//        }
+//
+//        private Properties loadProperties(String fileName) {
+//            Properties properties = null;
+//            if ( fileName != null ) {
+//                File file = new File( fileName );
+//                if ( file != null && file.exists() ) {
+//                    try {
+//                        properties = loadProperties( file.toURL() );
+//                    } catch ( MalformedURLException e ) {
+//                        throw new IllegalArgumentException( "file.toURL() failed for drools.packagebuilder.conf properties value '" + file + "'" );
+//                    }
+//                } else {
+//                    throw new IllegalArgumentException( fileName + " is specified but cannot be found '" + file + "'" );
+//                }
+//            }
+//            return properties;
+//        }
+//
+//        private Properties loadProperties(URL confURL) {
+//            Properties properties = new Properties();
+//            try {
+//                properties.load( confURL.openStream() );
+//            } catch ( IOException e ) {
+//                throw new IllegalArgumentException( "Invalid URL to properties file '" + confURL.toExternalForm() + "'" );
+//            }
+//            return properties;
+//        }        
+//        
+//        private Enumeration getResources(String name,
+//                                         ClassLoader classLoader) {
+//            Enumeration enumeration = null;
+//            try {
+//                enumeration = classLoader.getResources( name );
+//            } catch ( IOException e ) {
+//                e.printStackTrace();
+//            }
+//            return enumeration;
+//        }
 
     private void buildAccumulateFunctionsMap() {
         this.accumulateFunctions = new HashMap();
