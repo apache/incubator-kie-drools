@@ -8,6 +8,7 @@ import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
@@ -105,6 +106,8 @@ public interface Dialect {
     void init(Package pkg);
 
     void init(RuleDescr ruleDescr);
+    
+    void init(ProcessDescr processDescr);
 
     /**
      * An interface with the results from the expression/block analysis

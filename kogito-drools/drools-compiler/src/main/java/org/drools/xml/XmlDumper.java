@@ -48,6 +48,8 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.util.ReflectiveVisitor;
+import org.drools.xml.rules.RestrictionConnectiveHandler;
+
 
 /**
  * This utility will take a AST of a rule package, and emit XML.

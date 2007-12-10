@@ -18,6 +18,7 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -422,6 +423,11 @@ public class PackageBuilderConfigurationTest extends TestCase {
         public ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {
             // TODO Auto-generated method stub
             return null;
+        }
+
+        public void init(ProcessDescr processDescr) {
+            // TODO Auto-generated method stub
+            
         }
     }
 

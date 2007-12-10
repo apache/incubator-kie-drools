@@ -203,9 +203,19 @@ public class JavaDialect
         final String ruleClassName = getUniqueLegalName( this.pkg.getName(),
                                                          ruleDescr.getName(),
                                                          "java",
+                                                         "Rule",
                                                          this.src );
         ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
     }    
+    
+    public void init(final ProcessDescr processDescr) {
+        final String processDescrClassName = getUniqueLegalName( this.pkg.getName(),
+                                                         processDescr.getName(),
+                                                         "java",
+                                                         "Process",
+                                                         this.src );
+        processDescr.setClassName( StringUtils.ucFirst( processDescrClassName ) );
+    }      
 
     public String getExpressionDialectName() {
         return EXPRESSION_DIALECT_NAME;
@@ -611,9 +621,10 @@ public class JavaDialect
     public static String getUniqueLegalName(final String packageName,
                                             final String name,
                                             final String ext,
+                                            final String prefix,
                                             final ResourceReader src) {
         // replaces all non alphanumeric or $ chars with _
-        String newName = "Rule_" + name.replaceAll( "[[^\\w]$]",
+        String newName = prefix + "_" + name.replaceAll( "[[^\\w]$]",
                                                     "_" );
 
         // make sure the class name does not exist, if it does increase the counter

@@ -32,6 +32,7 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
@@ -71,45 +72,45 @@ public class MVELDialect
     implements
     Dialect {
 
-    public final static String                ID 					  = "mvel";
+    public final static String                    ID                          = "mvel";
 
-    private final static String               EXPRESSION_DIALECT_NAME = "MVEL";
+    private final static String                   EXPRESSION_DIALECT_NAME     = "MVEL";
 
-    private final PatternBuilder              pattern                 = new PatternBuilder();
-    private final QueryBuilder                query                   = new QueryBuilder();
-    private final MVELAccumulateBuilder       accumulate              = new MVELAccumulateBuilder();
-    private final SalienceBuilder             salience                = new MVELSalienceBuilder();
-    private final MVELEvalBuilder             eval                    = new MVELEvalBuilder();
-    private final MVELPredicateBuilder        predicate               = new MVELPredicateBuilder();
-    private final MVELReturnValueBuilder      returnValue             = new MVELReturnValueBuilder();
-    private final MVELConsequenceBuilder      consequence             = new MVELConsequenceBuilder();
-    private final MVELActionBuilder           actionBuilder           = new MVELActionBuilder();
+    private final PatternBuilder                  pattern                     = new PatternBuilder();
+    private final QueryBuilder                    query                       = new QueryBuilder();
+    private final MVELAccumulateBuilder           accumulate                  = new MVELAccumulateBuilder();
+    private final SalienceBuilder                 salience                    = new MVELSalienceBuilder();
+    private final MVELEvalBuilder                 eval                        = new MVELEvalBuilder();
+    private final MVELPredicateBuilder            predicate                   = new MVELPredicateBuilder();
+    private final MVELReturnValueBuilder          returnValue                 = new MVELReturnValueBuilder();
+    private final MVELConsequenceBuilder          consequence                 = new MVELConsequenceBuilder();
+    private final MVELActionBuilder               actionBuilder               = new MVELActionBuilder();
     private final MVELReturnValueEvaluatorBuilder returnValueEvaluatorBuilder = new MVELReturnValueEvaluatorBuilder();
     //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
-    private final MVELFromBuilder             from                    = new MVELFromBuilder();
-    private final JavaFunctionBuilder         function                = new JavaFunctionBuilder();
-    private final CollectBuilder              collect                 = new CollectBuilder();
-    private final ForallBuilder               forall                  = new ForallBuilder();
+    private final MVELFromBuilder                 from                        = new MVELFromBuilder();
+    private final JavaFunctionBuilder             function                    = new JavaFunctionBuilder();
+    private final CollectBuilder                  collect                     = new CollectBuilder();
+    private final ForallBuilder                   forall                      = new ForallBuilder();
 
-    private Map                               interceptors;
+    private Map                                   interceptors;
 
-    private List                              results;
+    private List                                  results;
     //private final JavaFunctionBuilder             function    = new JavaFunctionBuilder();
 
-    private MemoryResourceReader                    src;
+    private MemoryResourceReader                  src;
 
-    private Package                           pkg;
-    private MVELDialectConfiguration          configuration;
-    private TypeResolver                      typeResolver;
-    private ClassFieldExtractorCache          classFieldExtractorCache;
-    private MVELExprAnalyzer                  analyzer;
+    private Package                               pkg;
+    private MVELDialectConfiguration              configuration;
+    private TypeResolver                          typeResolver;
+    private ClassFieldExtractorCache              classFieldExtractorCache;
+    private MVELExprAnalyzer                      analyzer;
 
-    private Map                               imports;
-    private Map                               packageImports;
+    private Map                                   imports;
+    private Map                                   packageImports;
 
-    private boolean                           strictMode;
-    
-    private static Boolean                           languageSet = new Boolean( false );
+    private boolean                               strictMode;
+
+    private static Boolean                        languageSet                 = new Boolean( false );
 
     public void addFunction(FunctionDescr functionDescr,
                             TypeResolver typeResolver) {
@@ -122,7 +123,7 @@ public class MVELDialect
 
     public MVELDialect() {
     }
-    
+
     public static void setLanguageLevel(int level) {
         synchronized ( languageSet ) {
             // this synchronisation is needed as setLanguageLevel is now thread safe
@@ -144,8 +145,8 @@ public class MVELDialect
         this.strictMode = this.configuration.isStrict();
 
         // we currently default to reflective optimisation
-        OptimizerFactory.setDefaultOptimizer("reflective");
-        
+        OptimizerFactory.setDefaultOptimizer( "reflective" );
+
         MVEL.setThreadSafe( true );
 
         this.analyzer = new MVELExprAnalyzer();
@@ -208,14 +209,14 @@ public class MVELDialect
 
         this.builders.put( FunctionDescr.class,
                            this.function );
-   }
+    }
 
     public void init(Package pkg) {
         this.pkg = pkg;
         this.results = new ArrayList();
         this.src = new MemoryResourceReader();
-        if( this.pkg != null ) {
-            this.addImport( this.pkg.getName()+".*" );
+        if ( this.pkg != null ) {
+            this.addImport( this.pkg.getName() + ".*" );
         }
     }
 
@@ -223,12 +224,22 @@ public class MVELDialect
         //MVEL:test null to Fix failing test on org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
 
         // @todo: why is this here, MVEL doesn't compile anything? mdp
-        String pkgName = this.pkg == null? "": this.pkg.getName();
+        String pkgName = this.pkg == null ? "" : this.pkg.getName();
         final String ruleClassName = JavaDialect.getUniqueLegalName( pkgName,
-        															 ruleDescr.getName(),
-        															 "mvel",
-        															 this.src );
+                                                                     ruleDescr.getName(),
+                                                                     "mvel",
+                                                                     "Rule",
+                                                                     this.src );
         ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
+    }
+
+    public void init(final ProcessDescr processDescr) {
+        final String processDescrClassName = JavaDialect.getUniqueLegalName( this.pkg.getName(),
+                                                                             processDescr.getName(),
+                                                                             "mvel",
+                                                                             "Process",
+                                                                             this.src );
+        processDescr.setClassName( StringUtils.ucFirst( processDescrClassName ) );
     }
 
     public String getExpressionDialectName() {
@@ -236,7 +247,7 @@ public class MVELDialect
     }
 
     public void addRule(RuleBuildContext context) {
-    	//MVEL: Compiler change
+        //MVEL: Compiler change
         final RuleDescr ruleDescr = context.getRuleDescr();
 
         // setup the line mappins for this rule
@@ -245,24 +256,29 @@ public class MVELDialect
         mapping.setStartLine( ruleDescr.getConsequenceLine() );
         mapping.setOffset( ruleDescr.getConsequenceOffset() );
 
-        context.getPkg().getPackageCompilationData().getLineMappings().put( name, mapping );
+        context.getPkg().getPackageCompilationData().getLineMappings().put( name,
+                                                                            mapping );
 
     }
-    
+
     public void addProcess(final ProcessBuildContext context) {
         // @TODO setup line mappings
     }
 
     public void addImport(String importEntry) {
         if ( importEntry.endsWith( ".*" ) ) {
-            importEntry = importEntry.substring( 0, importEntry.length()-2  );
-            this.packageImports.put( importEntry, importEntry );
+            importEntry = importEntry.substring( 0,
+                                                 importEntry.length() - 2 );
+            this.packageImports.put( importEntry,
+                                     importEntry );
         } else {
             try {
                 Class cls = this.typeResolver.resolveType( importEntry );
-                this.imports.put( ParseTools.getSimpleClassName( cls ), cls );
+                this.imports.put( ParseTools.getSimpleClassName( cls ),
+                                  cls );
             } catch ( ClassNotFoundException e ) {
-                this.results.add( new ImportError( importEntry, 1 ) );
+                this.results.add( new ImportError( importEntry,
+                                                   1 ) );
             }
         }
     }
@@ -290,12 +306,14 @@ public class MVELDialect
             Method[] methods = cls.getDeclaredMethods();
             for ( int i = 0; i < methods.length; i++ ) {
                 if ( methods[i].getName().equals( methodName ) ) {
-                    this.imports.put( methodName, methods[i] );
+                    this.imports.put( methodName,
+                                      methods[i] );
                     break;
                 }
             }
         } catch ( ClassNotFoundException e ) {
-            this.results.add( new ImportError( staticImportEntry, -1 ) );
+            this.results.add( new ImportError( staticImportEntry,
+                                               -1 ) );
         }
     }
 
@@ -327,7 +345,7 @@ public class MVELDialect
                                                     final Set[] availableIdentifiers,
                                                     Map localTypes) {
         //new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()},
-        
+
         Dialect.AnalysisResult result = null;
         try {
             result = this.analyzer.analyzeExpression( context,
@@ -336,9 +354,9 @@ public class MVELDialect
                                                       localTypes );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    descr,
-                                                    null,
-                                                    "Unable to determine the used declarations.\n" + e.getMessage()) );
+                                                          descr,
+                                                          null,
+                                                          "Unable to determine the used declarations.\n" + e.getMessage() ) );
         }
         return result;
     }
@@ -362,7 +380,7 @@ public class MVELDialect
                                                final Set[] availableIdentifiers,
                                                Map localTypes) {
         //new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()}
-        
+
         Dialect.AnalysisResult result = null;
         try {
             result = this.analyzer.analyzeExpression( context,
@@ -371,24 +389,26 @@ public class MVELDialect
                                                       localTypes );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    descr,
-                                                    e,
-                                                    "Unable to determine the used declarations.\n" + e.getMessage()) );
+                                                          descr,
+                                                          e,
+                                                          "Unable to determine the used declarations.\n" + e.getMessage() ) );
         }
         return result;
-    }  
-    
+    }
+
     public Serializable compile(final String text,
                                 final Dialect.AnalysisResult analysis,
                                 final Map interceptors,
                                 final Map outerDeclarations,
                                 final PackageBuildContext context) {
-        final ParserContext parserContext = getParserContext(analysis, outerDeclarations, context );
+        final ParserContext parserContext = getParserContext( analysis,
+                                                              outerDeclarations,
+                                                              context );
 
         ExpressionCompiler compiler = new ExpressionCompiler( text.trim() );
 
-        if (MVELDebugHandler.isDebugMode()) {
-        	System.out.println("Source before MVEL Compilation:\n"+text.trim());
+        if ( MVELDebugHandler.isDebugMode() ) {
+            System.out.println( "Source before MVEL Compilation:\n" + text.trim() );
             compiler.setDebugSymbols( true );
         }
 
@@ -396,15 +416,16 @@ public class MVELDialect
         return expr;
     }
 
-    public ParserContext getParserContext(final Dialect.AnalysisResult analysis, final Map outerDeclarations, final PackageBuildContext context) {
+    public ParserContext getParserContext(final Dialect.AnalysisResult analysis,
+                                          final Map outerDeclarations,
+                                          final PackageBuildContext context) {
         // @todo proper source file name
         final ParserContext parserContext = new ParserContext( this.imports,
                                                                null,
                                                                "xxx" );//context.getPkg().getName()+"."+context.getRuleDescr().getClassName() );
-        
 
         for ( Iterator it = this.packageImports.values().iterator(); it.hasNext(); ) {
-            String packageImport = ( String ) it.next();
+            String packageImport = (String) it.next();
             parserContext.addPackageImport( packageImport );
         }
 
@@ -413,13 +434,13 @@ public class MVELDialect
         if ( interceptors != null ) {
             parserContext.setInterceptors( interceptors );
         }
-        
+
         List list[] = analysis.getBoundIdentifiers();
-        
+
         // @TODO yuck, we don't want conditions for configuration :(
         if ( context instanceof RuleBuildContext ) {
             //FIXME: analysis can be null, throws an NPE
-            DeclarationScopeResolver resolver = ((RuleBuildContext)context).getDeclarationResolver();
+            DeclarationScopeResolver resolver = ((RuleBuildContext) context).getDeclarationResolver();
             for ( Iterator it = list[0].iterator(); it.hasNext(); ) {
                 String identifier = (String) it.next();
                 Class cls = resolver.getDeclaration( identifier ).getExtractor().getExtractToClass();
@@ -485,11 +506,11 @@ public class MVELDialect
     public ConsequenceBuilder getConsequenceBuilder() {
         return this.consequence;
     }
-    
+
     public ActionBuilder getActionBuilder() {
         return this.actionBuilder;
     }
-    
+
     public MVELReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {
         return this.returnValueEvaluatorBuilder;
     }
@@ -523,12 +544,12 @@ public class MVELDialect
     }
 
     public RuleClassBuilder getRuleClassBuilder() {
-        throw new UnsupportedOperationException("MVELDialect.getRuleClassBuilder is not supported" );
+        throw new UnsupportedOperationException( "MVELDialect.getRuleClassBuilder is not supported" );
     }
-    
+
     public ProcessClassBuilder getProcessClassBuilder() {
-        throw new UnsupportedOperationException("MVELDialect.getProcessClassBuilder is not supported" );
-    }    
+        throw new UnsupportedOperationException( "MVELDialect.getProcessClassBuilder is not supported" );
+    }
 
     public TypeResolver getTypeResolver() {
         return this.typeResolver;
@@ -541,7 +562,5 @@ public class MVELDialect
     public String getId() {
         return ID;
     }
-
-
 
 }
