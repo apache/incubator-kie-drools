@@ -18,15 +18,17 @@ package org.drools.xml;
 
 import java.util.Set;
 
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+
 /**
  * @author mproctor
  * 
  */
-abstract class BaseAbstractHandler {
-    protected XmlPackageReader xmlPackageReader;
-    protected Set              validPeers;
-    protected Set              validParents;
-    protected boolean          allowNesting;
+public abstract class BaseAbstractHandler {
+    protected Set     validPeers;
+    protected Set     validParents;
+    protected boolean allowNesting;
 
     public Set getValidParents() {
         return this.validParents;
@@ -38,5 +40,24 @@ abstract class BaseAbstractHandler {
 
     public boolean allowNesting() {
         return this.allowNesting;
+    }
+
+    public void emptyAttributeCheck(final String element,
+                                    final String attributeName,
+                                    final String attribute,
+                                    final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+        if ( attribute == null || attribute.trim().equals( "" ) ) {
+            throw new SAXParseException( "<" + element + "> requires a '" + attributeName + "' attribute",
+                                         xmlPackageReader.getLocator() );
+        }
+    }
+
+    public void emptyContentCheck(final String element,
+                                  final String content,
+                                  final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+        if ( content == null || content.trim().equals( "" ) ) {
+            throw new SAXParseException( "<" + element + "> requires content",
+                                         xmlPackageReader.getLocator() );
+        }
     }
 }

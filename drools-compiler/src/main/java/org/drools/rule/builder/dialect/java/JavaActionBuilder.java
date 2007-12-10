@@ -51,7 +51,7 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
                       final ActionNodeImpl actionNode,
                       final ActionDescr actionDescr) {
 
-        final String className = "action" + context.getNextId();
+        final String className = "action" + context.getNextId();               
 
         JavaDialect dialect = (JavaDialect) context.getDialect( "java" );
 

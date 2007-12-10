@@ -25,14 +25,16 @@ import org.xml.sax.SAXException;
  * @author mproctor
  * 
  */
-interface Handler {
+public interface Handler {
 
     Object start(String uri,
                  String localName,
-                 Attributes attrs) throws SAXException;
+                 Attributes attrs,
+                 ExtensibleXmlParser xmlPackageReader) throws SAXException;
 
     Object end(String uri,
-               String localName) throws SAXException;
+               String localName,
+               ExtensibleXmlParser xmlPackageReader) throws SAXException;
 
     Set getValidParents();
 

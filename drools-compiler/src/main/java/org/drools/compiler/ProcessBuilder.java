@@ -115,10 +115,10 @@ public class ProcessBuilder {
         RuleFlowProcess rfp = (RuleFlowProcess) process;
 
         ProcessDescr processDescr = new ProcessDescr();
-        processDescr.setClassName( rfp.getName() );
         processDescr.setName( rfp.getPackageName() );
-
+        
         Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( "java" );
+        dialect.init( processDescr );
         
         ProcessBuildContext context = new ProcessBuildContext( this.packageBuilder.getPackageBuilderConfiguration(),
                                                                this.packageBuilder.getPackage(),
@@ -149,7 +149,7 @@ public class ProcessBuilder {
     public void buildAction(Process process, ProcessDescr processDescr, ProcessBuildContext context, ActionNodeImpl actionNode) {
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
         ActionDescr actionDescr = new ActionDescr();
-        actionDescr.setText( action.getConsequence() );        
+        actionDescr.setText( action.getConsequence() );   
         
         Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( action.getDialect() );            
         

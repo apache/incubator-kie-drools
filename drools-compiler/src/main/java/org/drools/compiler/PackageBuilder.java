@@ -57,6 +57,7 @@ import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.impl.ActionNodeImpl;
 import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
+import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.XmlPackageReader;
 import org.xml.sax.SAXException;
 
@@ -235,6 +236,23 @@ public class PackageBuilder {
         } 
 
         this.results = this.dialectRegistry.addResults( this.results );        
+    }
+    
+    public void addProcess(Process process) {
+        ProcessBuilder processBuilder = new ProcessBuilder( this );
+        
+        try {
+            processBuilder.buildProcess( process );
+            this.results.addAll( processBuilder.getErrors() );
+        } catch ( Exception e ) {
+            if ( e instanceof RuntimeException ) {
+                throw (RuntimeException) e;
+            }
+            this.results.add( new RuleFlowLoadError( "Unable to load the rule flow.",
+                                                     e ) );
+        } 
+
+        this.results = this.dialectRegistry.addResults( this.results );          
     }
 
     /**
