@@ -11,16 +11,16 @@ import org.drools.analytics.components.AnalyticsComponent;
 import org.drools.analytics.report.components.Redundancy;
 
 /**
- * 
+ *
  * @author Toni Rikkola
- * 
+ *
  */
 public class RedundancyTestBase extends TestBase {
 
 	/**
 	 * Creates redundancy map from Redundancy objects, one rule may have several
 	 * redundancy dependencies.
-	 * 
+	 *
 	 * @param iter
 	 * @return
 	 */
@@ -48,9 +48,13 @@ public class RedundancyTestBase extends TestBase {
 		return map;
 	}
 
+	public void testDummy() {
+		//this is needed as eclipse will try to run this and produce a failure if its not here.
+	}
+
 	/**
 	 * Returns true if map contains redundancy where key is redundant to value.
-	 * 
+	 *
 	 * @param map
 	 * @param key
 	 * @param value
