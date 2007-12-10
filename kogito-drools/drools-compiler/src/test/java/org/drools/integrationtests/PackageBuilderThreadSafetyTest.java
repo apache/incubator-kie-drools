@@ -6,7 +6,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.PackageBuilderErrors;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -36,8 +38,8 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
         final PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
         ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( compiler );
 
-        final List errors = new ArrayList();
-        final List exceptions = new ArrayList();
+        final List<PackageBuilderErrors> errors = new ArrayList<PackageBuilderErrors>();
+        final List<Exception> exceptions = new ArrayList<Exception>();
         Thread[] threads = new Thread[_NUMBER_OF_THREADS];
         for ( int i = 0; i < _NUMBER_OF_THREADS; i++ ) {
             final int ID = i;
@@ -87,15 +89,34 @@ public class PackageBuilderThreadSafetyTest extends TestCase {
                 threads[i].interrupt();
             }
         }
+        StringBuffer exceptionBuf = new StringBuffer();
         if (!exceptions.isEmpty()) {
-            for (Iterator iterator = exceptions.iterator(); iterator.hasNext();) {
-				Exception name = (Exception) iterator.next();
-				System.err.println(name + name.getMessage());
+        	System.err.println("------->EXCEPTION(s) DURING THREAD TEST : <-------------------");
+            for (Iterator<Exception> iterator = exceptions.iterator(); iterator.hasNext();) {
+				Exception name = iterator.next();
+				exceptionBuf.append(name + name.getMessage() + "\n");
 			}
         }
-        assertTrue( "Exceptions during package compilation (number=" + exceptions.size() + ")",
+
+        StringBuffer errorBuf = new StringBuffer();
+        if (!errors.isEmpty()) {
+        	System.err.println("------->ERROR(s) DURING THREAD TEST : <-------------------");
+            for (Iterator<PackageBuilderErrors> iterator = errors.iterator(); iterator.hasNext();) {
+				PackageBuilderErrors e = iterator.next();
+				for (int i = 0; i < e.getErrors().length; i++) {
+					DroolsError de = e.getErrors()[i];
+					errorBuf.append(de.getMessage() + "\n");
+				}
+
+			}
+        }
+
+
+
+
+        assertTrue( "Exceptions during package compilation : \n" + exceptionBuf.toString(),
                     exceptions.isEmpty() );
-        assertTrue( "PackageBuilderErrors during package compilation (number=" + errors.size() + ")",
+        assertTrue( "PackageBuilderErrors during package compilation : \n" + errorBuf.toString(),
                     errors.isEmpty() );
     }
 
