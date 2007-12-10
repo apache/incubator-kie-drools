@@ -15,11 +15,10 @@ import org.drools.xml.XmlProcessReader;
 
 public class ActionNodeTest extends TestCase {
     public void testSingleActionNode() throws Exception {        
-        XmlProcessReader reader = new XmlProcessReader( );
-        Process process = reader.read( new InputStreamReader( ActionNodeTest.class.getResourceAsStream( "ActionNodeTest.xml" ) ) );
+
         
         PackageBuilder builder = new PackageBuilder();
-        builder.addProcess( process );
+        builder.addProcessFromXml( new InputStreamReader( ActionNodeTest.class.getResourceAsStream( "ActionNodeTest.xml" ) ) );
         
         System.out.println( builder.getErrors() );
         

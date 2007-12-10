@@ -59,6 +59,7 @@ import org.drools.ruleflow.core.impl.ActionNodeImpl;
 import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.XmlPackageReader;
+import org.drools.xml.XmlProcessReader;
 import org.xml.sax.SAXException;
 
 /**
@@ -238,12 +239,13 @@ public class PackageBuilder {
         this.results = this.dialectRegistry.addResults( this.results );        
     }
     
-    public void addProcess(Process process) {
+    public void addProcessFromXml(Reader reader) {
         ProcessBuilder processBuilder = new ProcessBuilder( this );
-        
+        XmlProcessReader xmlReader = new XmlProcessReader( );
         try {
+            Process process = xmlReader.read(  reader );
             processBuilder.buildProcess( process );
-            this.results.addAll( processBuilder.getErrors() );
+            this.results.addAll( processBuilder.getErrors() );            
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;
@@ -252,7 +254,7 @@ public class PackageBuilder {
                                                      e ) );
         } 
 
-        this.results = this.dialectRegistry.addResults( this.results );          
+        this.results = this.dialectRegistry.addResults( this.results ); 
     }
 
     /**
