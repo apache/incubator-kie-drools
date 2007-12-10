@@ -58,6 +58,7 @@ import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.core.impl.ActionNodeImpl;
 import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
 import org.drools.xml.ExtensibleXmlParser;
+import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlPackageReader;
 import org.drools.xml.XmlProcessReader;
 import org.xml.sax.SAXException;
@@ -90,6 +91,8 @@ public class PackageBuilder {
     private Dialect                     dialect;
 
     private DialectRegistry             dialectRegistry;
+    
+    private SemanticModules             semanticModules;
 
     /**
      * Use this when package is starting from scratch.
@@ -187,7 +190,10 @@ public class PackageBuilder {
      */
     public void addPackageFromXml(final Reader reader) throws DroolsParserException,
                                                       IOException {
-        final XmlPackageReader xmlReader = new XmlPackageReader();
+        if ( semanticModules == null ) {
+            semanticModules = new SemanticModules();
+        }
+        final XmlPackageReader xmlReader = new XmlPackageReader( semanticModules );
 
         try {
             xmlReader.read( reader );
@@ -240,8 +246,12 @@ public class PackageBuilder {
     }
     
     public void addProcessFromXml(Reader reader) {
+        if ( semanticModules == null ) {
+            semanticModules = new SemanticModules();
+        }
+        
         ProcessBuilder processBuilder = new ProcessBuilder( this );
-        XmlProcessReader xmlReader = new XmlProcessReader( );
+        XmlProcessReader xmlReader = new XmlProcessReader( semanticModules );
         try {
             Process process = xmlReader.read(  reader );
             processBuilder.buildProcess( process );
@@ -255,6 +265,10 @@ public class PackageBuilder {
         } 
 
         this.results = this.dialectRegistry.addResults( this.results ); 
+    }
+    
+    private void addSemanticModules() {
+        //this.configuration.getSemanticModules();
     }
 
     /**

@@ -3,7 +3,8 @@ package org.drools.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
 
@@ -32,28 +33,26 @@ import org.drools.xml.rules.RestrictionConnectiveHandler;
 import org.drools.xml.rules.ReturnValueRestrictionHandler;
 import org.drools.xml.rules.RuleHandler;
 import org.drools.xml.rules.VariableRestrictionsHandler;
-import org.drools.ruleflow.common.core.Process;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 
-public class XmlProcessReader {
+public class XmlPackageReader {
     private ExtensibleXmlParser parser;
 
-    private Process        process;
+    private PackageDescr        packageDescr;
 
-    public XmlProcessReader(final SemanticModules modules) {
+    public XmlPackageReader(final SemanticModules modules) {
         this( modules, null );
     }
 
-    public XmlProcessReader(final SemanticModules modules, final SAXParser parser) {
+    public XmlPackageReader(final SemanticModules modules, final SAXParser parser) {
         if ( parser == null ) {
             this.parser = new ExtensibleXmlParser();
         } else {
             this.parser = new ExtensibleXmlParser( parser );
         }      
         this.parser.setSemanticModules( modules );
-        this.parser.setData( new ProcessBuildData() );
     }
 
     /**
@@ -64,10 +63,10 @@ public class XmlProcessReader {
      *
      * @return The rule-set.
      */
-    public Process read(final Reader reader) throws SAXException,
+    public PackageDescr read(final Reader reader) throws SAXException,
                                                  IOException {
-        this.process = ((ProcessBuildData) this.parser.read( reader )).getProcess();
-        return this.process;
+        this.packageDescr = (PackageDescr) this.parser.read( reader );
+        return this.packageDescr;
     }
 
     /**
@@ -78,10 +77,10 @@ public class XmlProcessReader {
      *
      * @return The rule-set.
      */
-    public Process read(final InputStream inputStream) throws SAXException,
+    public PackageDescr read(final InputStream inputStream) throws SAXException,
                                                            IOException {
-        this.process = ((ProcessBuildData) this.parser.read( inputStream )).getProcess();
-        return this.process;
+        this.packageDescr = (PackageDescr) this.parser.read( inputStream );
+        return this.packageDescr;
     }
 
     /**
@@ -92,17 +91,17 @@ public class XmlProcessReader {
      *
      * @return The rule-set.
      */
-    public Process read(final InputSource in) throws SAXException,
+    public PackageDescr read(final InputSource in) throws SAXException,
                                                   IOException {
-        this.process = ((ProcessBuildData)this.parser.read( in )).getProcess();
-        return this.process;
+        this.packageDescr = (PackageDescr) this.parser.read( in );
+        return this.packageDescr;
     }
 
-    void setProcess(final Process packageDescr) {
-        this.process = process;
+    void setPackageDescr(final PackageDescr packageDescr) {
+        this.packageDescr = packageDescr;
     }
 
-    public Process getProcess() {
-        return this.process;
+    public PackageDescr getPackageDescr() {
+        return this.packageDescr;
     }
 }
