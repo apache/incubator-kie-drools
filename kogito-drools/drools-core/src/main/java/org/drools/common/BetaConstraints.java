@@ -17,7 +17,7 @@ public interface BetaConstraints
     public void updateFromFactHandle(InternalWorkingMemory workingMemory,
                                      InternalFactHandle handle);
 
-    public boolean isAllowedCachedLeft(Object object);
+    public boolean isAllowedCachedLeft(InternalFactHandle handle);
 
     public boolean isAllowedCachedRight(ReteTuple tuple);
 

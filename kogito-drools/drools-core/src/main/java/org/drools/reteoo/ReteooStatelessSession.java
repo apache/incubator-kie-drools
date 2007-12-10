@@ -60,7 +60,7 @@ public class ReteooStatelessSession
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setRuleFlowEventSupport( ruleFlowEventSupport );
 
-            final InitialFactHandle handle = new InitialFactHandle( wm.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject() ) );
+            final InitialFactHandle handle = new InitialFactHandle( wm.getFactHandleFactory().newFactHandle( new InitialFactHandleDummyObject(), false, wm ) );
 
             wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
                                                                             false,

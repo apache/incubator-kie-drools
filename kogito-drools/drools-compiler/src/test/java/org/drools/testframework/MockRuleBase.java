@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.drools.ClockType;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.StatelessSession;
+import org.drools.TemporalSession;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.rule.Package;
 
@@ -113,5 +115,16 @@ public class MockRuleBase implements RuleBase {
 		// TODO Auto-generated method stub
 
 	}
+
+    public TemporalSession newTemporalSession(ClockType clockType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public TemporalSession newTemporalSession(boolean keepReference,
+                                              ClockType clockType) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -119,7 +119,7 @@ public class AccumulateNode extends BetaNode {
 
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
             InternalFactHandle handle = entry.getFactHandle();
-            if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
+            if ( this.constraints.isAllowedCachedLeft( handle ) ) {
                 if ( this.unwrapRightObject ) {
                     // if there is a subnetwork, handle must be unwrapped
                     ReteTuple tuple = (ReteTuple) handle.getObject(); 
@@ -150,8 +150,10 @@ public class AccumulateNode extends BetaNode {
 
         // First alpha node filters
         boolean isAllowed = true;
+        final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result, false, workingMemory ); // so far, result is not an event
+
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
-            if ( !this.resultConstraints[i].isAllowed( result,
+            if ( !this.resultConstraints[i].isAllowed( handle,
                                                        workingMemory ) ) {
                 isAllowed = false;
                 break;
@@ -160,15 +162,18 @@ public class AccumulateNode extends BetaNode {
         if ( isAllowed ) {
             this.resultBinder.updateFromTuple( workingMemory,
                                                leftTuple );
-            if ( this.resultBinder.isAllowedCachedLeft( result ) ) {
-                final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result );
+            if ( this.resultBinder.isAllowedCachedLeft( handle ) ) {
                 accresult.handle = handle;
 
                 this.sink.propagateAssertTuple( leftTuple,
                                                 handle,
                                                 context,
                                                 workingMemory );
+            } else {
+                workingMemory.getFactHandleFactory().destroyFactHandle( handle );
             }
+        } else {
+            workingMemory.getFactHandleFactory().destroyFactHandle( handle );
         }
 
     }
@@ -368,8 +373,9 @@ public class AccumulateNode extends BetaNode {
 
         // First alpha node filters
         boolean isAllowed = true;
+        final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result, false, workingMemory ); // so far, result is not an event
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
-            if ( !this.resultConstraints[i].isAllowed( result,
+            if ( !this.resultConstraints[i].isAllowed( createdHandle,
                                                        workingMemory ) ) {
                 isAllowed = false;
                 break;
@@ -378,15 +384,18 @@ public class AccumulateNode extends BetaNode {
         if ( isAllowed ) {
             this.resultBinder.updateFromTuple( workingMemory,
                                                leftTuple );
-            if ( this.resultBinder.isAllowedCachedLeft( result ) ) {
-                final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result );
+            if ( this.resultBinder.isAllowedCachedLeft( createdHandle ) ) {
                 accresult.handle = createdHandle;
 
                 this.sink.propagateAssertTuple( leftTuple,
                                                 createdHandle,
                                                 context,
                                                 workingMemory );
+            } else {
+                workingMemory.getFactHandleFactory().destroyFactHandle( createdHandle );
             }
+        } else {
+            workingMemory.getFactHandleFactory().destroyFactHandle( createdHandle );
         }
     }
 

@@ -19,6 +19,7 @@ package org.drools.rule;
 
 import java.util.Arrays;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -40,11 +41,11 @@ public class AndConstraint extends AbstractCompositeConstraint {
     /**
      * {@inheritDoc}
      */
-    public boolean isAllowed(Object object,
+    public boolean isAllowed(InternalFactHandle handle,
                              InternalWorkingMemory workingMemory) {
         if ( this.alphaConstraints.length > 0 ) {
             for ( int i = 0; i < this.alphaConstraints.length; i++ ) {
-                if ( !this.alphaConstraints[i].isAllowed( object,
+                if ( !this.alphaConstraints[i].isAllowed( handle,
                                                           workingMemory ) ) {
                     return false;
                 }
@@ -57,11 +58,11 @@ public class AndConstraint extends AbstractCompositeConstraint {
      * {@inheritDoc}
      */
     public boolean isAllowedCachedLeft(ContextEntry context,
-                                       Object object) {
+                                       InternalFactHandle handle) {
         if ( this.betaConstraints.length > 0 ) {
             for ( int i = 0; i < this.betaConstraints.length; i++ ) {
                 if ( !this.betaConstraints[i].isAllowedCachedLeft( ((MultiFieldConstraintContextEntry)context).contexts[i],
-                                                                   object ) ) {
+                                                                   handle ) ) {
                     return false;
                 }
             }

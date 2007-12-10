@@ -32,14 +32,14 @@ public class ClassObjectType
     /**
      * 
      */
-    private static final long              serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;
 
     /** Java object class. */
-    protected Class                        objectTypeClass;
+    protected Class           objectTypeClass;
 
-    protected ValueType                    valueType;
+    protected ValueType       valueType;
 
-
+    private boolean           isEvent;
 
     // ------------------------------------------------------------
     // Constructors
@@ -52,9 +52,21 @@ public class ClassObjectType
      *            Java object class.
      */
     public ClassObjectType(final Class objectTypeClass) {
+        this( objectTypeClass, false );
+    }
+
+    /**
+     * Creates a new class object type
+     * 
+     * @param objectTypeClass the class represented by this class object type
+     * @param isEvent true if it is an event class, false otherwise
+     */
+    public ClassObjectType(final Class objectTypeClass, final boolean isEvent) {
         this.objectTypeClass = objectTypeClass;
+        this.isEvent = isEvent;
         this.valueType = ValueType.determineValueType( objectTypeClass );
     }
+
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
@@ -99,25 +111,33 @@ public class ClassObjectType
     public boolean matches(final Object object) {
         return getClassType().isInstance( object );
     }
-    
+
     public boolean isAssignableFrom(Object object) {
         return this.objectTypeClass.isAssignableFrom( (Class) object );
     }
 
     public boolean isAssignableFrom(ObjectType objectType) {
-        if ( !( objectType instanceof ClassObjectType ) ) {
+        if ( !(objectType instanceof ClassObjectType) ) {
             return false;
         } else {
             return this.objectTypeClass.isAssignableFrom( ((ClassObjectType) objectType).getClassType() );
         }
-    }    
-    
+    }
+
     public ValueType getValueType() {
         return this.valueType;
     }
 
+    public boolean isEvent() {
+        return isEvent;
+    }
+
+    public void setEvent(boolean isEvent) {
+        this.isEvent = isEvent;
+    }
+
     public String toString() {
-        return "[ClassObjectType class=" + getClassType().getName() + "]";
+        return "[ClassObjectType "+( this.isEvent ? "event=" : "class=" )+ getClassType().getName() + "]";
     }
 
     /**
@@ -137,7 +157,7 @@ public class ClassObjectType
         if ( object == null || object.getClass() != ClassObjectType.class ) {
             return false;
         }
-
+        
         return this.objectTypeClass == ((ClassObjectType) object).objectTypeClass;
     }
 

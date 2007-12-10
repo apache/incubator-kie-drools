@@ -25,7 +25,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.Operator;
+import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
 import org.drools.facttemplates.FactTemplate;
@@ -107,9 +107,9 @@ public class PatternBuilder
 
         if ( patternDescr.getObjectType() == null || patternDescr.getObjectType().equals( "" ) ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    patternDescr,
-                                                    null,
-                                                    "ObjectType not correctly defined" ) );
+                                                          patternDescr,
+                                                          null,
+                                                          "ObjectType not correctly defined" ) );
             return null;
         }
 
@@ -122,12 +122,14 @@ public class PatternBuilder
         } else {
             try {
                 final Class userProvidedClass = context.getDialect().getTypeResolver().resolveType( patternDescr.getObjectType() );
-                objectType = new ClassObjectType( userProvidedClass );
+                final boolean isEvent = context.getPkg().isEvent( userProvidedClass );
+                objectType = new ClassObjectType( userProvidedClass,
+                                                  isEvent );
             } catch ( final ClassNotFoundException e ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                        patternDescr,
-                                                        null,
-                                                        "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
+                                                              patternDescr,
+                                                              null,
+                                                              "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
                 return null;
             }
         }
@@ -138,16 +140,16 @@ public class PatternBuilder
             if ( context.getDeclarationResolver().isDuplicated( patternDescr.getIdentifier() ) ) {
                 // This declaration already  exists, so throw an Exception
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                        patternDescr,
-                                                        null,
-                                                        "Duplicate declaration for variable '" + patternDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
+                                                              patternDescr,
+                                                              null,
+                                                              "Duplicate declaration for variable '" + patternDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
             }
 
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
                                    objectType,
                                    patternDescr.getIdentifier(),
-                                   patternDescr.isInternalFact());
+                                   patternDescr.isInternalFact() );
         } else {
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
@@ -228,9 +230,9 @@ public class PatternBuilder
             }
         } else {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    (BaseDescr) constraint,
-                                                    null,
-                                                    "This is a bug: unable to build constraint descriptor: '" + constraint + "' in rule '" + context.getRule().getName() + "'" ) );
+                                                          (BaseDescr) constraint,
+                                                          null,
+                                                          "This is a bug: unable to build constraint descriptor: '" + constraint + "' in rule '" + context.getRule().getName() + "'" ) );
         }
     }
 
@@ -274,7 +276,7 @@ public class PatternBuilder
                                                             fieldName,
                                                             false );
         if ( extractor == null ) {
-            if( fieldConstraintDescr.getFieldName().startsWith( "this." ) ) {
+            if ( fieldConstraintDescr.getFieldName().startsWith( "this." ) ) {
                 // it may still be MVEL special syntax, like map key syntax, so try eval
                 rewriteToEval( context,
                                pattern,
@@ -285,9 +287,9 @@ public class PatternBuilder
                 return;
             } else {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                        fieldConstraintDescr,
-                                                        null,
-                                                        "Unable to create Field Extractor for '" + fieldName + "' of '"+pattern.getObjectType().toString()+"' in rule '"+context.getRule().getName()+"'" ) );
+                                                              fieldConstraintDescr,
+                                                              null,
+                                                              "Unable to create Field Extractor for '" + fieldName + "' of '" + pattern.getObjectType().toString() + "' in rule '" + context.getRule().getName() + "'" ) );
                 return;
             }
         }
@@ -318,9 +320,9 @@ public class PatternBuilder
                                                     (ReturnValueRestriction) restriction );
         } else {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    fieldConstraintDescr,
-                                                    null,
-                                                    "This is a bug: Unkown restriction type '" + restriction.getClass() + "' for pattern '"+pattern.getObjectType().toString()+"' in rule '"+context.getRule().getName()+"'" ) );
+                                                          fieldConstraintDescr,
+                                                          null,
+                                                          "This is a bug: Unkown restriction type '" + restriction.getClass() + "' for pattern '" + pattern.getObjectType().toString() + "' in rule '" + context.getRule().getName() + "'" ) );
         }
 
         if ( container == null ) {
@@ -377,15 +379,15 @@ public class PatternBuilder
 
             } else {
                 restrictions[index] = buildRestriction( context,
-                                                          pattern,
-                                                          extractor,
-                                                          fieldConstraintDescr,
-                                                          restrictionDescr );
-                if( restrictions[index] == null ) {
+                                                        pattern,
+                                                        extractor,
+                                                        fieldConstraintDescr,
+                                                        restrictionDescr );
+                if ( restrictions[index] == null ) {
                     context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                            fieldConstraintDescr,
-                                                            null,
-                                                            "Unable to create restriction '" + restrictionDescr.toString() + "' for field '"+ fieldConstraintDescr.getFieldName() +"' in the rule '" + context.getRule().getName() + "'" ) );
+                                                                  fieldConstraintDescr,
+                                                                  null,
+                                                                  "Unable to create restriction '" + restrictionDescr.toString() + "' for field '" + fieldConstraintDescr.getFieldName() + "' in the rule '" + context.getRule().getName() + "'" ) );
                 }
                 index++;
             }
@@ -399,9 +401,10 @@ public class PatternBuilder
                 composite = new OrCompositeRestriction( restrictions );
             } else {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                        fieldConstraintDescr,
-                                                        null,
-                                                        "This is a bug: Impossible to create a composite restriction for connective: " + top.getConnective()+ "' for field '"+ fieldConstraintDescr.getFieldName() +"' in the rule '" + context.getRule().getName() + "'" ) );
+                                                              fieldConstraintDescr,
+                                                              null,
+                                                              "This is a bug: Impossible to create a composite restriction for connective: " + top.getConnective() + "' for field '" + fieldConstraintDescr.getFieldName() + "' in the rule '"
+                                                                      + context.getRule().getName() + "'" ) );
             }
 
             return composite;
@@ -409,9 +412,9 @@ public class PatternBuilder
             return restrictions[0];
         }
         context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                fieldConstraintDescr,
-                                                null,
-                                                "This is a bug: trying to create a restriction for an empty restriction list for field '"+ fieldConstraintDescr.getFieldName() +"' in the rule '" + context.getRule().getName() + "'" ) );
+                                                      fieldConstraintDescr,
+                                                      null,
+                                                      "This is a bug: trying to create a restriction for an empty restriction list for field '" + fieldConstraintDescr.getFieldName() + "' in the rule '" + context.getRule().getName() + "'" ) );
         return null;
     }
 
@@ -422,9 +425,9 @@ public class PatternBuilder
         if ( context.getDeclarationResolver().isDuplicated( fieldBindingDescr.getIdentifier() ) ) {
             // This declaration already  exists, so throw an Exception
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    fieldBindingDescr,
-                                                    null,
-                                                    "Duplicate declaration for variable '" + fieldBindingDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
+                                                          fieldBindingDescr,
+                                                          null,
+                                                          "Duplicate declaration for variable '" + fieldBindingDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
             return;
         }
 
@@ -597,9 +600,9 @@ public class PatternBuilder
                                                  final VariableRestrictionDescr variableRestrictionDescr) {
         if ( variableRestrictionDescr.getIdentifier() == null || variableRestrictionDescr.getIdentifier().equals( "" ) ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    variableRestrictionDescr,
-                                                    null,
-                                                    "Identifier not defined for binding field '" + fieldConstraintDescr.getFieldName() + "'" ) );
+                                                          variableRestrictionDescr,
+                                                          null,
+                                                          "Identifier not defined for binding field '" + fieldConstraintDescr.getFieldName() + "'" ) );
             return null;
         }
 
@@ -615,9 +618,9 @@ public class PatternBuilder
                 declaration = implicit;
             } else {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                        variableRestrictionDescr,
-                                                        null,
-                                                        "Unable to return Declaration for identifier '" + variableRestrictionDescr.getIdentifier() + "'" ) );
+                                                              variableRestrictionDescr,
+                                                              null,
+                                                              "Unable to return Declaration for identifier '" + variableRestrictionDescr.getIdentifier() + "'" ) );
                 return null;
             }
         }
@@ -625,7 +628,9 @@ public class PatternBuilder
         final Evaluator evaluator = getEvaluator( context,
                                                   variableRestrictionDescr,
                                                   extractor.getValueType(),
-                                                  variableRestrictionDescr.getEvaluator() );
+                                                  variableRestrictionDescr.getEvaluator(),
+                                                  variableRestrictionDescr.isNegated(),
+                                                  variableRestrictionDescr.getParameterText() );
         if ( evaluator == null ) {
             return null;
         }
@@ -645,9 +650,9 @@ public class PatternBuilder
                                                 extractor.getValueType() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    literalRestrictionDescr,
-                                                    e,
-                                                    "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
+                                                          literalRestrictionDescr,
+                                                          e,
+                                                          "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
         }
 
         if ( field == null ) {
@@ -657,7 +662,9 @@ public class PatternBuilder
         final Evaluator evaluator = getEvaluator( context,
                                                   literalRestrictionDescr,
                                                   extractor.getValueType(),
-                                                  literalRestrictionDescr.getEvaluator() );
+                                                  literalRestrictionDescr.getEvaluator(),
+                                                  literalRestrictionDescr.isNegated(),
+                                                  literalRestrictionDescr.getParameterText() );
         if ( evaluator == null ) {
             return null;
         }
@@ -692,19 +699,21 @@ public class PatternBuilder
 
                     } else {
                         context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                qiRestrictionDescr,
-                                                                "",
-                                                                "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
+                                                                      qiRestrictionDescr,
+                                                                      "",
+                                                                      "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
                         return null;
                     }
                 }
             }
-            
-            if( implicit != null ) {
+
+            if ( implicit != null ) {
                 final Evaluator evaluator = getEvaluator( context,
                                                           qiRestrictionDescr,
                                                           extractor.getValueType(),
-                                                          qiRestrictionDescr.getEvaluator() );
+                                                          qiRestrictionDescr.getEvaluator(),
+                                                          qiRestrictionDescr.isNegated(),
+                                                          qiRestrictionDescr.getParameterText() );
                 if ( evaluator == null ) {
                     return null;
                 }
@@ -727,9 +736,9 @@ public class PatternBuilder
             // nothing to do, as it is not a class name with static field
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    qiRestrictionDescr,
-                                                    e,
-                                                    "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + qiRestrictionDescr.getText() + "'" ) );
+                                                          qiRestrictionDescr,
+                                                          e,
+                                                          "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + qiRestrictionDescr.getText() + "'" ) );
         }
 
         if ( field == null ) {
@@ -739,7 +748,9 @@ public class PatternBuilder
         final Evaluator evaluator = getEvaluator( context,
                                                   qiRestrictionDescr,
                                                   extractor.getValueType(),
-                                                  qiRestrictionDescr.getEvaluator() );
+                                                  qiRestrictionDescr.getEvaluator(),
+                                                  qiRestrictionDescr.isNegated(),
+                                                  qiRestrictionDescr.getParameterText() );
         if ( evaluator == null ) {
             return null;
         }
@@ -779,7 +790,9 @@ public class PatternBuilder
         final Evaluator evaluator = getEvaluator( context,
                                                   returnValueRestrictionDescr,
                                                   extractor.getValueType(),
-                                                  returnValueRestrictionDescr.getEvaluator() );
+                                                  returnValueRestrictionDescr.getEvaluator(),
+                                                  returnValueRestrictionDescr.isNegated(),
+                                                  returnValueRestrictionDescr.getParameterText() );
         if ( evaluator == null ) {
             return null;
         }
@@ -826,9 +839,9 @@ public class PatternBuilder
             } catch ( final RuntimeDroolsException e ) {
                 if ( reportError ) {
                     context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                            descr,
-                                                            e,
-                                                            "Unable to create Field Extractor for '" + fieldName + "'" ) );
+                                                                  descr,
+                                                                  e,
+                                                                  "Unable to create Field Extractor for '" + fieldName + "'" ) );
                 }
             }
         }
@@ -839,15 +852,28 @@ public class PatternBuilder
     private Evaluator getEvaluator(final RuleBuildContext context,
                                    final BaseDescr descr,
                                    final ValueType valueType,
-                                   final String evaluatorString) {
+                                   final String evaluatorString,
+                                   final boolean isNegated,
+                                   final String parameterText) {
 
-        final Evaluator evaluator = valueType.getEvaluator( Operator.determineOperator( evaluatorString ) );
+        final EvaluatorDefinition def = context.getConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( evaluatorString );
+        if ( def == null ) {
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                          descr,
+                                                          null,
+                                                          "Unable to determine the Evaluator for  ID '" + evaluatorString + "'" ) );
+        }
+
+        final Evaluator evaluator = def.getEvaluator( valueType,
+                                                      evaluatorString,
+                                                      isNegated,
+                                                      parameterText );
 
         if ( evaluator == null ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                    descr,
-                                                    null,
-                                                    "Unable to determine the Evaluator for  '" + valueType + "' and '" + evaluatorString + "'" ) );
+                                                          descr,
+                                                          null,
+                                                          "Evaluator '" + (isNegated ? "not " : "") + evaluatorString + "' does not support type '" + valueType ) );
         }
 
         return evaluator;

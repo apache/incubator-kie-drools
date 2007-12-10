@@ -113,9 +113,9 @@ public class SingleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(final Object object) {
+    public boolean isAllowedCachedLeft(final InternalFactHandle handle) {
         return this.indexed || this.constraint.isAllowedCachedLeft( this.context,
-                                                                    object );
+                                                                    handle );
     }
 
     /* (non-Javadoc)

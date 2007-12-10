@@ -16,10 +16,14 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import org.drools.TemporalSession;
+import org.drools.WorkingMemory;
 import org.drools.common.AbstractFactHandleFactory;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.spi.FactHandleFactory;
+import org.drools.temporal.SessionClock;
 
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
 
@@ -30,10 +34,21 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
      */
     protected final InternalFactHandle newFactHandle(final long id,
                                                      final Object object,
-                                                     final long recency) {
-        return new DefaultFactHandle( id,
-                                      object,
-                                      recency );
+                                                     final long recency,
+                                                     final boolean isEvent,
+                                                     final WorkingMemory workingMemory ) {
+        if ( isEvent ) {
+            SessionClock clock = ((TemporalSession) workingMemory).getSessionClock(); 
+            return new EventFactHandle( id,
+                                        object,
+                                        recency,
+                                        clock.getCurrentTime(),
+                                        0 );  // primitive events have 0 duration
+        } else {
+            return new DefaultFactHandle( id,
+                                          object,
+                                          recency );
+        }
     }
 
     /* (non-Javadoc)

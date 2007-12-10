@@ -42,6 +42,10 @@ public class DescrFactory {
         return new FunctionImportDescr();
     }
 
+    public ImportDescr createEventImport() {
+        return new ImportDescr( true ); // import is an event
+    }
+
     public QueryDescr createQuery(final String queryName) {
         return new QueryDescr( queryName,
                                "" );

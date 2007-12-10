@@ -1,0 +1,16 @@
+package org.drools;
+
+import event org.drools.OrderEvent;
+
+global java.util.List results;
+
+rule "average over threshold"
+when
+    Number( $avg : intValue >= 50 ) from accumulate(
+              OrderEvent( $amt : total ),
+              average( $amt ) )
+then
+    //System.out.println( "Over threshold: "+$avg );
+    results.add( $avg );
+end
+

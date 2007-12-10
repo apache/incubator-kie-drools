@@ -58,8 +58,8 @@ public class InstanceNotEqualsConstraint
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final Object object) {
-        return ((InstanceNotEqualsConstraintContextEntry) context).left != object;
+                                       final InternalFactHandle handle) {
+        return ((InstanceNotEqualsConstraintContextEntry) context).left != handle.getObject();
     }
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,

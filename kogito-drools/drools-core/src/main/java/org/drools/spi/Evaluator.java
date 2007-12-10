@@ -20,17 +20,55 @@ import java.io.Serializable;
 
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 
+/**
+ * A public interface to be implemented by all evaluators
+ */
 public interface Evaluator
     extends
     Serializable {
 
+    /**
+     * Returns the type of the values this evaluator operates upon.
+     * 
+     * @return
+     */
     public ValueType getValueType();
 
+    /**
+     * Returns the operator representation object for this evaluator
+     * 
+     * @return
+     */
     public Operator getOperator();
+    
+    /**
+     * Returns the value type this evaluator will coerce
+     * operands to, during evaluation. This is useful for
+     * operators like "memberOf", that always convert to
+     * Object when evaluating, independently of the source
+     * operand value type.
+     * 
+     * @return
+     */
+    public ValueType getCoercedValueType();
 
+    /**
+     * There are evaluators that operate on fact attributes and
+     * there are evaluators that operato on fact handle attributes
+     * (metadata). 
+     * 
+     * This method allows the evaluator to prepare the object
+     * to be evaluated. That includes, unwrapping the object if needed.
+     *  
+     * @param handle
+     * @return
+     */
+    public Object prepareObject( InternalFactHandle handle );
+    
     /**
      * This method will extract the value from the object1 using the 
      * extractor and compare it with the object2.

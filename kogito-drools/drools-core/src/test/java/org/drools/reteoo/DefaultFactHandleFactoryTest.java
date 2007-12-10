@@ -27,21 +27,21 @@ public class DefaultFactHandleFactoryTest extends TestCase {
      */
     public void testNewFactHandle() {
         final ReteooFactHandleFactory factory = new ReteooFactHandleFactory();
-        DefaultFactHandle handle = (DefaultFactHandle) factory.newFactHandle( "cheese" );
+        DefaultFactHandle handle = (DefaultFactHandle) factory.newFactHandle( "cheese", false, null );
         assertEquals( 0,
                       handle.getId() );
         assertEquals( 0,
                       handle.getRecency() );
 
         // issue  new handle
-        handle = (DefaultFactHandle) factory.newFactHandle( "cheese" );
+        handle = (DefaultFactHandle) factory.newFactHandle( "cheese", false, null );
         assertEquals( 1,
                       handle.getId() );
         assertEquals( 1,
                       handle.getRecency() );
 
         // issue  new handle, under a different reference so we  can destroy later        
-        final DefaultFactHandle handle2 = (DefaultFactHandle) factory.newFactHandle( "cheese" );
+        final DefaultFactHandle handle2 = (DefaultFactHandle) factory.newFactHandle( "cheese", false, null );
         assertEquals( 2,
                       handle2.getId() );
         assertEquals( 2,
@@ -53,7 +53,7 @@ public class DefaultFactHandleFactoryTest extends TestCase {
                       handle.getRecency() );
 
         // issue new handle and make sure  recency is still inline
-        handle = (DefaultFactHandle) factory.newFactHandle( "cheese" );
+        handle = (DefaultFactHandle) factory.newFactHandle( "cheese", false, null );
         assertEquals( 3,
                       handle.getId() );
         assertEquals( 4,
@@ -63,14 +63,14 @@ public class DefaultFactHandleFactoryTest extends TestCase {
         factory.destroyFactHandle( handle2 );
 
         // issue  new  fact handle and  make sure it  recycled the  id=2
-        handle = (DefaultFactHandle) factory.newFactHandle( "cheese" );
+        handle = (DefaultFactHandle) factory.newFactHandle( "cheese", false, null );
         assertEquals( 2,
                       handle.getId() );
         assertEquals( 5,
                       handle.getRecency() );
 
         // issue new  handle  making  sure it correctly resumes  ids  and recency
-        handle = (DefaultFactHandle) factory.newFactHandle( "cheese" );
+        handle = (DefaultFactHandle) factory.newFactHandle( "cheese", false, null );
         assertEquals( 4,
                       handle.getId() );
         assertEquals( 6,

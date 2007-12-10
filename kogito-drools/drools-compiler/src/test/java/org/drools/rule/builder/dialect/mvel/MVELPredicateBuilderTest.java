@@ -14,7 +14,6 @@ import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.PredicateDescr;
@@ -105,20 +104,21 @@ public class MVELPredicateBuilderTest extends TestCase {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
+        final InternalFactHandle f1 = (InternalFactHandle) wm.insert( stilton );
         final ReteTuple tuple = new ReteTuple( f0 );
 
         final PredicateContextEntry predicateContext = new PredicateContextEntry();
         predicateContext.leftTuple = tuple;
 
         assertTrue( predicate.isAllowedCachedLeft( predicateContext,
-                                                   stilton ) );
+                                                   f1 ) );
 
         cheddar.setPrice( 9 );
         wm.update( f0,
                    cheddar );
 
         assertFalse( predicate.isAllowedCachedLeft( predicateContext,
-                                                    stilton ) );
+                                                    f1 ) );
     }
 
 }

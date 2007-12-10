@@ -2,9 +2,9 @@ package org.drools.base.mvel;
 
 import java.util.Date;
 
-import org.drools.base.evaluators.DateFactory;
-
 import junit.framework.TestCase;
+
+import org.drools.util.DateUtils;
 
 public class MVELDateCoercionTest extends TestCase {
 
@@ -22,7 +22,7 @@ public class MVELDateCoercionTest extends TestCase {
         assertTrue(co.canConvertFrom( Date.class ));
 
         String dt = "10-Jul-1974";
-        Date dt_ = DateFactory.parseDate( dt );
+        Date dt_ = DateUtils.parseDate( dt );
         assertEquals(dt_, co.convertFrom( dt ));
     }
 

@@ -17,6 +17,7 @@ package org.drools.base;
  */
 
 import org.drools.base.evaluators.Operator;
+import org.drools.common.InternalFactHandle;
 import org.drools.spi.Evaluator;
 
 /**
@@ -47,6 +48,14 @@ public abstract class BaseEvaluator
         return this.type;
     }
 
+    public ValueType getCoercedValueType() {
+        return this.type;
+    }
+
+    public Object prepareObject(InternalFactHandle handle) {
+        return handle.getObject();
+    }
+    
     public boolean equals(final Object object) {
         if ( this == object ) {
             return true;

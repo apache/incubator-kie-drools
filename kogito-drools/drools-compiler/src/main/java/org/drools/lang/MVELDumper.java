@@ -55,7 +55,7 @@ public class MVELDumper extends ReflectiveVisitor {
     }
 
     public void visitVariableRestrictionDescr(final VariableRestrictionDescr descr) {
-        this.template = processRestriction( descr.getEvaluator(), descr.getIdentifier() );
+        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), descr.getIdentifier() );
     }
 
     public void visitFieldBindingDescr(final FieldBindingDescr descr) {
@@ -75,11 +75,11 @@ public class MVELDumper extends ReflectiveVisitor {
         } else if( descr.getType() == LiteralRestrictionDescr.TYPE_STRING ) {
             text = "\"" + text + "\"";
         }
-        this.template = processRestriction( descr.getEvaluator(), text );
+        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), text );
     }
 
     public void visitQualifiedIdentifierRestrictionDescr(final QualifiedIdentifierRestrictionDescr descr) {
-        this.template = processRestriction( descr.getEvaluator(), descr.getText() );
+        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), descr.getText() );
     }
 
     public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
@@ -91,7 +91,7 @@ public class MVELDumper extends ReflectiveVisitor {
     }
 
     public void visitReturnValueRestrictionDescr(final ReturnValueRestrictionDescr descr) {
-        this.template = processRestriction( descr.getEvaluator(), "( "+descr.getContent().toString()+" )" );
+        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(),  "( "+descr.getContent().toString()+" )" );
     }
 
     private String processFieldConstraint(final RestrictionConnectiveDescr restriction) {
@@ -115,33 +115,34 @@ public class MVELDumper extends ReflectiveVisitor {
     }
 
     private String processRestriction(String evaluator,
+                                      boolean isNegated,
                                       String value) {
-        Operator op = Operator.determineOperator( evaluator );
-        if( op == Operator.MEMBEROF ) {
+        Operator op = Operator.determineOperator( evaluator, isNegated );
+        if( op == Operator.determineOperator( "memberOf", false ) ) {
             evaluator = "contains";
             return evaluatorPrefix( evaluator ) + 
                    value + " " + 
                    evaluator( evaluator ) + " " + 
                    this.fieldName + evaluatorSufix( evaluator );
-        } else if(op == Operator.NOTMEMBEROF) {
+        } else if(op == Operator.determineOperator( "memberOf", true )) {
             evaluator = "not contains";
             return evaluatorPrefix( evaluator ) + 
                    value + " " + 
                    evaluator( evaluator ) + " " + 
                    this.fieldName + evaluatorSufix( evaluator );
-        } else if(op == Operator.EXCLUDES) {
+        } else if(op == Operator.determineOperator( "excludes", false ) ) {
             evaluator = "not contains";
             return evaluatorPrefix( evaluator ) + 
                    this.fieldName + " " + 
                    evaluator( evaluator ) + " " + 
                    value + evaluatorSufix( evaluator );
-        } else if(op == Operator.MATCHES) {
+        } else if(op == Operator.determineOperator( "matches", false )) {
             evaluator = "~=";
             return evaluatorPrefix( evaluator ) + 
                    this.fieldName + " " + 
                    evaluator( evaluator ) + " " + 
                    value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
-        } else if(op == Operator.NOT_MATCHES) {
+        } else if(op == Operator.determineOperator( "matches", true )) {
             evaluator = "not ~=";
             return evaluatorPrefix( evaluator ) + 
                    this.fieldName + " " + 

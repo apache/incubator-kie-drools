@@ -1,5 +1,6 @@
 package org.drools.common;
 
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.FactException;
@@ -9,6 +10,7 @@ import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.LIANodePropagation;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.common.instance.ProcessInstance;
@@ -71,4 +73,21 @@ public interface InternalWorkingMemory
 	public void setTimeMachine(TimeMachine tm);
     
     public void removeProcessInstance(ProcessInstance processInstance);
+    
+    /**
+     * Returns the ObjectTypeConfiguration object for the given object
+     * or creates a new one if none is found in the cache
+     * 
+     * @param object
+     * @return
+     */
+    public ObjectTypeConf getObjectTypeConf(Object object);
+    
+    /**
+     * Returns the Map<Object key, ObjectTypeConf conf> of object type
+     * confs in this working memory
+     *  
+     * @return
+     */
+    public Map<Object, ObjectTypeConf> getObjectTypeConfMap();
 }

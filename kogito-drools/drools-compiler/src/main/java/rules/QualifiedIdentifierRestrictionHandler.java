@@ -17,8 +17,6 @@ package org.drools.xml.rules;
  */
 
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.ListIterator;
 
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -32,7 +30,6 @@ import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * @author fmeyer
@@ -67,10 +64,16 @@ public class QualifiedIdentifierRestrictionHandler extends BaseAbstractHandler
         xmlPackageReader.startConfiguration( localName,
                                                   attrs );
 
-        final String evaluator = attrs.getValue( "evaluator" );
+        String evaluator = attrs.getValue( "evaluator" );
         emptyAttributeCheck( localName, "evaluator", evaluator, xmlPackageReader );
+        boolean isNegated = evaluator.startsWith( "not " );
+        if( isNegated ) {
+            evaluator = evaluator.substring( 4 );
+        }
 
         final QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestricionDescr = new QualifiedIdentifierRestrictionDescr( evaluator,
+                                                                                                                                isNegated,
+                                                                                                                                null,
                                                                                                                                 null );
 
         return qualifiedIdentifierRestricionDescr;

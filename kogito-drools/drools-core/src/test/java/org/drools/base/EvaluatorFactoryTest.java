@@ -29,7 +29,7 @@ import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.drools.base.evaluators.Operator;
+import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
@@ -49,6 +49,8 @@ import org.drools.spi.FieldValue;
  * @author Michael Neale
  */
 public class EvaluatorFactoryTest extends TestCase {
+
+    private EvaluatorRegistry registry = new EvaluatorRegistry();
 
     public void testObject() {
 
@@ -588,7 +590,9 @@ public class EvaluatorFactoryTest extends TestCase {
         final Extractor extractor = new MockExtractor();
         for ( int i = 0; i < data.length; i++ ) {
             final Object[] row = data[i];
-            final Evaluator evaluator = valueType.getEvaluator( Operator.determineOperator( (String) row[1] ) );
+            boolean isNegated = ((String) row[1]).startsWith("not ");
+            String evaluatorStr =  isNegated ? ((String)row[1]).substring( 4 ) : (String)row[1];
+            final Evaluator evaluator = registry.getEvaluatorDefinition( evaluatorStr ).getEvaluator( valueType, evaluatorStr, isNegated, null );
             checkEvaluatorMethodWithFieldValue( valueType,
                                                 extractor,
                                                 row,
@@ -723,105 +727,91 @@ public class EvaluatorFactoryTest extends TestCase {
         final Declaration declaration = new Declaration( "test",
                                                    extractor,
                                                    null );
+        final ValueType coerced = evaluator.getCoercedValueType();
+        
+        if ( coerced.isIntegerNumber() ) {
+            final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
+                                                                             declaration,
+                                                                             evaluator );
 
-        if( Operator.MEMBEROF.equals( evaluator.getOperator() ) ||
-            Operator.NOTMEMBEROF.equals( evaluator.getOperator() ) ) {
-
-            final ObjectVariableContextEntry context = new ObjectVariableContextEntry( extractor,
-                                                                                       declaration );
             if (row[2] == null) {
-               context.leftNull = true;
+                context.leftNull = true;
             } else {
-               context.left = row[2];
+                context.left = ((Number) row[2]).longValue();
             }
 
             if (row[0] == null) {
-               context.rightNull = true;
+                context.rightNull = true;
             } else {
-               context.right = row[0];
+                context.right = ((Number) row[0]).longValue();
             }
             return context;
+        } else if ( coerced.isChar() ) {
+            final CharVariableContextEntry context = new CharVariableContextEntry( extractor,
+                                                                                   declaration,
+                                                                                   evaluator );
 
-        } else {
-            if ( valueType.isIntegerNumber() ) {
-                final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
-                                                                                 declaration );
-
-                if (row[2] == null) {
-                    context.leftNull = true;
-                } else {
-                    context.left = ((Number) row[2]).longValue();
-                }
-
-                if (row[0] == null) {
-                    context.rightNull = true;
-                } else {
-                    context.right = ((Number) row[0]).longValue();
-                }
-                return context;
-            } else if ( valueType.isChar() ) {
-                final CharVariableContextEntry context = new CharVariableContextEntry( extractor,
-                                                                                       declaration );
-
-                if (row[2] == null) {
-                    context.leftNull = true;
-                } else {
-                    context.left = ((Character) row[2]).charValue();
-                }
-
-                if (row[0] == null) {
-                    context.rightNull = true;
-                } else {
-                    context.right = ((Character) row[0]).charValue();
-                }
-                return context;
-            } else if ( valueType.isBoolean() ) {
-                final BooleanVariableContextEntry context = new BooleanVariableContextEntry( extractor,
-                                                                                       declaration );
-
-                if (row[2] == null) {
-                    context.leftNull = true;
-                } else {
-                    context.left = ((Boolean) row[2]).booleanValue();
-                }
-
-                if (row[0] == null) {
-                    context.rightNull = true;
-                } else {
-                    context.right = ((Boolean) row[0]).booleanValue();
-                }
-                return context;
-            } else if ( valueType.isFloatNumber() ) {
-                final DoubleVariableContextEntry context = new DoubleVariableContextEntry( extractor,
-                                                                                     declaration );
-                if (row[2] == null) {
-                    context.leftNull = true;
-                } else {
-                    context.left = ((Number) row[2]).doubleValue();
-                }
-
-                if (row[0] == null) {
-                    context.rightNull = true;
-                } else {
-                    context.right = ((Number) row[0]).doubleValue();
-                }
-                return context;
+            if (row[2] == null) {
+                context.leftNull = true;
             } else {
-                final ObjectVariableContextEntry context = new ObjectVariableContextEntry( extractor,
-                                                                                     declaration );
-                if (row[2] == null) {
-                    context.leftNull = true;
-                } else {
-                    context.left = row[2];
-                }
-
-                if (row[0] == null) {
-                    context.rightNull = true;
-                } else {
-                    context.right = row[0];
-                }
-                return context;
+                context.left = ((Character) row[2]).charValue();
             }
+
+            if (row[0] == null) {
+                context.rightNull = true;
+            } else {
+                context.right = ((Character) row[0]).charValue();
+            }
+            return context;
+        } else if ( coerced.isBoolean() ) {
+            final BooleanVariableContextEntry context = new BooleanVariableContextEntry( extractor,
+                                                                                   declaration,
+                                                                                   evaluator );
+
+            if (row[2] == null) {
+                context.leftNull = true;
+            } else {
+                context.left = ((Boolean) row[2]).booleanValue();
+            }
+
+            if (row[0] == null) {
+                context.rightNull = true;
+            } else {
+                context.right = ((Boolean) row[0]).booleanValue();
+            }
+            return context;
+        } else if ( coerced.isFloatNumber() ) {
+            final DoubleVariableContextEntry context = new DoubleVariableContextEntry( extractor,
+                                                                                 declaration,
+                                                                                 evaluator );
+            if (row[2] == null) {
+                context.leftNull = true;
+            } else {
+                context.left = ((Number) row[2]).doubleValue();
+            }
+
+            if (row[0] == null) {
+                context.rightNull = true;
+            } else {
+                context.right = ((Number) row[0]).doubleValue();
+            }
+            return context;
+        } else {
+            final ObjectVariableContextEntry context = new ObjectVariableContextEntry( extractor,
+                                                                                 declaration,
+                                                                                 evaluator );
+            if (row[2] == null) {
+                context.leftNull = true;
+            } else {
+                context.left = row[2];
+            }
+
+            if (row[0] == null) {
+                context.rightNull = true;
+            } else {
+                context.right = row[0];
+            }
+            return context;
         }
     }
 

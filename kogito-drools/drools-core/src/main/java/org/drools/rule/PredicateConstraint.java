@@ -214,10 +214,10 @@ public class PredicateConstraint
         return new PredicateContextEntry();
     }
 
-    public boolean isAllowed(final Object object,
+    public boolean isAllowed(final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory) {
         try {
-            return this.expression.evaluate( object,
+            return this.expression.evaluate( handle.getObject(),
                                              null,
                                              this.previousDeclarations,
                                              this.localDeclarations,
@@ -229,16 +229,16 @@ public class PredicateConstraint
     }
 
     public boolean isAllowed(Extractor extractor,
-                             Object object,
+                             InternalFactHandle handle,
                              InternalWorkingMemory workingMemory) {
         throw new UnsupportedOperationException("Method not supported. Please contact development team.");
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final Object object) {
+                                       final InternalFactHandle handle) {
         try {
             final PredicateContextEntry ctx = (PredicateContextEntry) context;
-            return this.expression.evaluate( object,
+            return this.expression.evaluate( handle.getObject(),
                                              ctx.leftTuple,
                                              this.previousDeclarations,
                                              this.localDeclarations,

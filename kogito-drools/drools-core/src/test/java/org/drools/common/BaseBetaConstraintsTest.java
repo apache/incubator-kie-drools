@@ -3,11 +3,18 @@ package org.drools.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
+import org.drools.base.evaluators.ComparableEvaluatorsDefinition;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
+import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
-import org.drools.base.evaluators.StringFactory;
+import org.drools.base.evaluators.SetEvaluatorsDefinition;
+import org.drools.base.evaluators.SoundslikeEvaluatorsDefinition;
 import org.drools.reteoo.BetaMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
@@ -24,9 +31,16 @@ import org.drools.util.TupleIndexHashTable;
 import org.drools.util.AbstractHashTable.FieldIndex;
 import org.drools.util.AbstractHashTable.Index;
 
-import junit.framework.TestCase;
-
 public abstract class BaseBetaConstraintsTest extends TestCase {
+    
+    public static EvaluatorRegistry registry = new EvaluatorRegistry();
+    static {
+        registry.addEvaluatorDefinition( new EqualityEvaluatorsDefinition() );
+        registry.addEvaluatorDefinition( new ComparableEvaluatorsDefinition() );
+        registry.addEvaluatorDefinition( new SetEvaluatorsDefinition() );
+        registry.addEvaluatorDefinition( new MatchesEvaluatorsDefinition() );
+        registry.addEvaluatorDefinition( new SoundslikeEvaluatorsDefinition() );
+    }
 
     protected BetaNodeFieldConstraint getConstraint(String identifier,
                                                     Operator operator,
@@ -39,7 +53,10 @@ public abstract class BaseBetaConstraintsTest extends TestCase {
                                                    extractor,
                                                    new Pattern( 0,
                                                                 new ClassObjectType( clazz ) ) );
-        Evaluator evaluator = StringFactory.getInstance().getEvaluator( operator );
+        Evaluator evaluator = registry.getEvaluatorDefinition( operator.getOperatorString() ).getEvaluator( extractor.getValueType(), 
+                                                                                                            operator.getOperatorString(), 
+                                                                                                            operator.isNegated(), 
+                                                                                                            null );
         return new VariableConstraint( extractor,
                                        declaration,
                                        evaluator );

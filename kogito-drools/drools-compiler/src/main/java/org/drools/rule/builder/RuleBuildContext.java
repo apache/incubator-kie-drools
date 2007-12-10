@@ -24,9 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.drools.base.evaluators.DateFactory;
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
@@ -36,6 +34,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.DeclarationScopeResolver;
+import org.drools.util.DateUtils;
 
 /**
  * A context for the current build
@@ -191,11 +190,11 @@ public class RuleBuildContext extends PackageBuildContext {
                 }
             } else if ( name.equals( "date-effective" ) ) {
                 final Calendar cal = Calendar.getInstance();
-                cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
+                cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
                 rule.setDateEffective( cal );
             } else if ( name.equals( "date-expires" ) ) {
                 final Calendar cal = Calendar.getInstance();
-                cal.setTime( DateFactory.parseDate( attributeDescr.getValue() ) );
+                cal.setTime( DateUtils.parseDate( attributeDescr.getValue() ) );
                 rule.setDateExpires( cal );
             } else if ( name.equals( "dialect" ) ) {
                 rule.setDialect( attributeDescr.getValue() );

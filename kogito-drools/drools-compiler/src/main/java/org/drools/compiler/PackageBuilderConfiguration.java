@@ -31,6 +31,8 @@ import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.accumulators.AccumulateFunction;
+import org.drools.base.evaluators.EvaluatorDefinition;
+import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.util.ChainedProperties;
 import org.drools.xml.SemanticModule;
 import org.drools.xml.SemanticModules;
@@ -46,6 +48,7 @@ import org.drools.xml.SemanticModules;
  * 
  * drools.dialect.default = <String>
  * drools.accumulate.function.<function name> = <qualified class>
+ * drools.evaluator.<ident> = <qualified class>
  * 
  * default dialect is java.
  * Available preconfigured Accumulate functions are:
@@ -59,6 +62,8 @@ public class PackageBuilderConfiguration {
 
     private static final String ACCUMULATE_FUNCTION_PREFIX = "drools.accumulate.function.";
     
+    private static final String EVALUATOR_DEFINITION_PREFIX = "drools.evaluator.";
+    
     private Map                 dialectConfigurations;
 
     private String              defaultDialect;
@@ -67,7 +72,9 @@ public class PackageBuilderConfiguration {
 
     private ChainedProperties   chainedProperties;
 
-    private Map                 accumulateFunctions;
+    private Map<String, String> accumulateFunctions;
+    
+    private EvaluatorRegistry   evaluatorRegistry;
     
     private SemanticModules     semanticModules;   
 
@@ -127,6 +134,8 @@ public class PackageBuilderConfiguration {
         buildDialectConfigurationMap();
 
         buildAccumulateFunctionsMap();
+        
+        buildEvaluatorRegistry();
     }
 
     public ChainedProperties getChainedProperties() {
@@ -331,7 +340,7 @@ public class PackageBuilderConfiguration {
 //        }
 
     private void buildAccumulateFunctionsMap() {
-        this.accumulateFunctions = new HashMap();
+        this.accumulateFunctions = new HashMap<String, String>();
         Map temp = new HashMap();
         this.chainedProperties.mapStartsWith( temp,
                                               ACCUMULATE_FUNCTION_PREFIX,
@@ -340,11 +349,11 @@ public class PackageBuilderConfiguration {
             Map.Entry entry = (Map.Entry) it.next();
             String identifier = ((String) entry.getKey()).trim().substring( ACCUMULATE_FUNCTION_PREFIX.length() );
             this.accumulateFunctions.put( identifier,
-                                          entry.getValue() );
+                                          (String) entry.getValue() );
         }
     }
 
-    public Map getAccumulateFunctionsMap() {
+    public Map<String, String> getAccumulateFunctionsMap() {
         return Collections.unmodifiableMap( this.accumulateFunctions );
     }
 
@@ -361,7 +370,7 @@ public class PackageBuilderConfiguration {
     }
 
     public AccumulateFunction getAccumulateFunction(String identifier) {
-        String className = (String) this.accumulateFunctions.get( identifier );
+        String className = this.accumulateFunctions.get( identifier );
         if ( className == null ) {
             throw new RuntimeDroolsException( "No accumulator function found for identifier: " + identifier );
         }
@@ -372,12 +381,59 @@ public class PackageBuilderConfiguration {
             throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Class " + className + " not found",
                                               e );
         } catch ( InstantiationException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Class " + className + " not found",
+            throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Instantiation failed for class " + className,
                                               e );
         } catch ( IllegalAccessException e ) {
-            throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Class " + className + " not found",
+            throw new RuntimeDroolsException( "Error loading accumulator function for identifier " + identifier + ". Illegal access to class " + className,
                                               e );
         }
+    }
+
+    private void buildEvaluatorRegistry() {
+        this.evaluatorRegistry = new EvaluatorRegistry( this.classLoader );
+        Map temp = new HashMap();
+        this.chainedProperties.mapStartsWith( temp,
+                                              EVALUATOR_DEFINITION_PREFIX,
+                                              true );
+        for ( Iterator it = temp.values().iterator(); it.hasNext(); ) {
+            String className = (String) it.next();
+            this.evaluatorRegistry.addEvaluatorDefinition( className );
+        }
+    }
+
+    /**
+     * Returns the evaluator registry for this package builder configuration
+     * @return
+     */
+    public EvaluatorRegistry getEvaluatorRegistry() {
+        return this.evaluatorRegistry;
+    }
+
+    /**
+     * Adds an evaluator definition class to the registry using the
+     * evaluator class name. The class will be loaded and the corresponting
+     * evaluator ID will be added to the registry. In case there exists
+     * an implementation for that ID already, the new implementation will
+     * replace the previous one.
+     * 
+     * @param className the name of the class for the implementation definition.
+     *                  The class must implement the EvaluatorDefinition interface.
+     * 
+     */
+    public void addEvaluatorDefinition( String className ) {
+        this.evaluatorRegistry.addEvaluatorDefinition( className );
+    }
+
+    /**
+     * Adds an evaluator definition class to the registry. In case there exists
+     * an implementation for that evaluator ID already, the new implementation will
+     * replace the previous one.
+     * 
+     * @param def the evaluator definition to be added.
+     * 
+     */
+    public void addEvaluatorDefinition( EvaluatorDefinition def ) {
+        this.evaluatorRegistry.addEvaluatorDefinition( def );
     }
 
 }

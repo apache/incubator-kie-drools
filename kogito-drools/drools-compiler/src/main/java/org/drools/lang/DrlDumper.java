@@ -514,8 +514,8 @@ public class DrlDumper extends ReflectiveVisitor
         String importList = "";
 
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
-            final String importString = ((ImportDescr) it.next()).getTarget();
-            final String importTemplate = "import " + importString + ";" + DrlDumper.eol;
+            final ImportDescr importDescr = (ImportDescr) it.next(); 
+            final String importTemplate = "import " + ( importDescr.isEvent() ? "event " : "" ) + importDescr.getTarget() + ";" + DrlDumper.eol;
             importList += importTemplate;
         }
         return importList + DrlDumper.eol;

@@ -92,7 +92,7 @@ public class RightInputAdapterNode extends ObjectSource
                             final InternalWorkingMemory workingMemory) {
 
         // creating a dummy fact handle to wrap the tuple
-        final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple );
+        final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple, false, workingMemory );
         
         if ( this.tupleMemoryEnabled ) {
             final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );

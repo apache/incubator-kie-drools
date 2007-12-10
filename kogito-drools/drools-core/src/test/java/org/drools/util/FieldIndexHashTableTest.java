@@ -9,9 +9,9 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
-import org.drools.base.evaluators.ObjectFactory;
+import org.drools.base.ValueType;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
-import org.drools.base.evaluators.StringFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
@@ -25,6 +25,7 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class FieldIndexHashTableTest extends TestCase {
     ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     public void testSingleEntry() throws Exception {
         final FieldExtractor extractor = cache.getExtractor( Cheese.class,
@@ -40,7 +41,7 @@ public class FieldIndexHashTableTest extends TestCase {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
         final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -89,7 +90,7 @@ public class FieldIndexHashTableTest extends TestCase {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
         final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -146,7 +147,7 @@ public class FieldIndexHashTableTest extends TestCase {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
         final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -203,7 +204,7 @@ public class FieldIndexHashTableTest extends TestCase {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      ObjectFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+                                                      equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL ) );
 
         final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -250,7 +251,7 @@ public class FieldIndexHashTableTest extends TestCase {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
         final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -317,7 +318,7 @@ public class FieldIndexHashTableTest extends TestCase {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
         final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
 
@@ -534,7 +535,7 @@ public class FieldIndexHashTableTest extends TestCase {
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       declaration,
-                                                      StringFactory.getInstance().getEvaluator( Operator.EQUAL ) );
+                                                      equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ) );
 
         final FactHandleIndexHashTable map = new FactHandleIndexHashTable( new FieldIndex[]{fieldIndex} );
 

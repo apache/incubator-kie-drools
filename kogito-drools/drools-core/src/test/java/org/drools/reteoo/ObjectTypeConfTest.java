@@ -1,6 +1,5 @@
 package org.drools.reteoo;
 
-import org.drools.reteoo.Rete.ClassObjectTypeConf;
 
 import junit.framework.TestCase;
 

@@ -45,7 +45,7 @@ public class JavaRuleClassBuilder
         final StringBuffer buffer = new StringBuffer();
         buffer.append( "package " + context.getPkg().getName() + ";" + lineSeparator );
 
-        for ( final Iterator it = context.getPkg().getImports().iterator(); it.hasNext(); ) {
+        for ( final Iterator it = context.getPkg().getImports().keySet().iterator(); it.hasNext(); ) {
             buffer.append( "import " + it.next() + ";" + lineSeparator );
         }
 

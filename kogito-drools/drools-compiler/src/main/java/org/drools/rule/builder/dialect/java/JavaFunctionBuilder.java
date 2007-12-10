@@ -48,7 +48,7 @@ public class JavaFunctionBuilder
                   pkg.getName() );
 
         vars.put( "imports",
-                  pkg.getImports() );
+                  pkg.getImports().keySet() );
 
         final List staticImports = new LinkedList();
         for( Iterator it = pkg.getStaticImports().iterator(); it.hasNext(); ) {

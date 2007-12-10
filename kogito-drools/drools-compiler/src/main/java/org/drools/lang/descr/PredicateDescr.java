@@ -21,37 +21,18 @@ public class PredicateDescr extends RestrictionDescr {
      * 
      */
     private static final long serialVersionUID = 400L;
-    //private final String fieldName;
     private Object            content;
 
-    //private final String declaration;
     private String[]          declarations;
 
     private String            classMethodName;
 
-    //    public PredicateDescr(final String fieldName,
-    //                          final String declaration) {
-    //        this.fieldName = fieldName;
-    //        this.declaration = declaration;
-    //    }
-    //
-    //    public PredicateDescr(final String fieldName,
-    //                          final String declaration,
-    //                          final String text) {
-    //        this.fieldName = fieldName;
-    //        this.declaration = declaration;
-    //        this.text = text;
-    //    }
     public PredicateDescr(final Object text) {
         this.content = text;
     }
 
     public PredicateDescr() {
     }
-
-    //    public String getFieldName() {
-    //        return this.fieldName;
-    //    }
 
     public String getClassMethodName() {
         return this.classMethodName;
@@ -68,10 +49,6 @@ public class PredicateDescr extends RestrictionDescr {
     public void setContent(final Object text) {
         this.content = text;
     }
-
-    //    public String getDeclaration() {
-    //        return this.declaration;
-    //    }
 
     public void setDeclarations(final String[] declarations) {
         this.declarations = declarations;

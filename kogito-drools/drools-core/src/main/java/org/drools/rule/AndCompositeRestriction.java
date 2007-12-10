@@ -1,5 +1,6 @@
 package org.drools.rule;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Extractor;
@@ -14,11 +15,11 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
     }
 
     public boolean isAllowed(final Extractor extractor,
-                             final Object object,
+                             final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory) {
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
             if ( !this.restrictions[i].isAllowed( extractor,
-                                                  object,
+                                                  handle,
                                                   workingMemory ) ) {
                 return false;
             }
@@ -27,10 +28,10 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final Object object) {
+                                       final InternalFactHandle handle) {
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
             if ( !this.restrictions[i].isAllowedCachedLeft( this.contextEntry.contextEntries[i],
-                                                            object ) ) {
+                                                            handle ) ) {
                 return false;
             }
         }

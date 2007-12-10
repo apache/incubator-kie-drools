@@ -29,8 +29,8 @@ import org.drools.reteoo.TupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.util.FactHashTable;
 import org.drools.util.FactHandleIndexHashTable;
+import org.drools.util.FactHashTable;
 import org.drools.util.FactList;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
@@ -67,7 +67,7 @@ public class DoubleBetaConstraints
     public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                  final RuleBaseConfiguration conf,
                                  final boolean disableIndexing) {
-        if ( disableIndexing || ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) ) {
+        if ( disableIndexing || (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) ) {
             this.indexed0 = false;
             this.indexed1 = false;
         } else {
@@ -115,7 +115,7 @@ public class DoubleBetaConstraints
         } else {
             return false;
         }
-    }   
+    }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
@@ -142,10 +142,10 @@ public class DoubleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(final Object object) {
+    public boolean isAllowedCachedLeft(final InternalFactHandle handle) {
         return (this.indexed0 || this.constraint0.isAllowedCachedLeft( this.context0,
-                                                                       object )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( this.context1,
-                                                                                                                                            object ));
+                                                                       handle )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( this.context1,
+                                                                                                                                            handle ));
     }
 
     /* (non-Javadoc)
@@ -160,7 +160,7 @@ public class DoubleBetaConstraints
     public boolean isIndexed() {
         return this.indexed0;
     }
-    
+
     public int getIndexCount() {
         int count = 0;
         if ( this.indexed0 ) {
@@ -168,9 +168,9 @@ public class DoubleBetaConstraints
         }
         if ( this.indexed1 ) {
             count++;
-        }    
-        return count;    
-    }    
+        }
+        return count;
+    }
 
     public boolean isEmpty() {
         return false;

@@ -57,37 +57,37 @@ public class Package
     /**
      *
      */
-    private static final long      serialVersionUID = 400L;
+    private static final long              serialVersionUID = 400L;
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /** Name of the pkg. */
-    private String                 name;
+    private String                         name;
 
     /** Set of all rule-names in this <code>Package</code>. */
-    private Map                    rules;
+    private Map                            rules;
 
-    private Set                    imports;
+    private Map<String, ImportDeclaration> imports;
 
-    private List                   functions;
+    private List                           functions;
 
-    private Set                    staticImports;
+    private Set                            staticImports;
 
-    private Map                    globals;
+    private Map                            globals;
 
-    private Map                    factTemplates;
+    private Map                            factTemplates;
 
-    private Map                    ruleFlows;
+    private Map                            ruleFlows;
 
-    private PackageCompilationData packageCompilationData;
+    private PackageCompilationData         packageCompilationData;
 
     /** This is to indicate the the package has no errors during the compilation/building phase */
-    private boolean                valid            = true;
+    private boolean                        valid            = true;
 
     /** This will keep a summary error message as to why this package is not valid */
-    private String                 errorSummary;
+    private String                         errorSummary;
 
     // ------------------------------------------------------------
     // Constructors
@@ -121,7 +121,7 @@ public class Package
     public Package(final String name,
                    ClassLoader parentClassLoader) {
         this.name = name;
-        this.imports = new HashSet();
+        this.imports = new HashMap<String, ImportDeclaration>();
         this.staticImports = Collections.EMPTY_SET;
         this.rules = new LinkedHashMap();
         this.ruleFlows = Collections.EMPTY_MAP;
@@ -150,11 +150,10 @@ public class Package
         stream.writeObject( this.imports );
         stream.writeObject( this.staticImports );
         stream.writeObject( this.functions );
-        stream.writeObject( this.factTemplates );        
+        stream.writeObject( this.factTemplates );
         stream.writeObject( this.ruleFlows );
         stream.writeObject( this.globals );
         stream.writeBoolean( this.valid );
-
 
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
@@ -175,11 +174,11 @@ public class Package
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         this.packageCompilationData = (PackageCompilationData) stream.readObject();
         this.name = (String) stream.readObject();
-        this.imports = (Set) stream.readObject();
+        this.imports = (Map<String, ImportDeclaration>) stream.readObject();
         this.staticImports = (Set) stream.readObject();
         this.functions = (List) stream.readObject();
         this.factTemplates = (Map) stream.readObject();
-        this.ruleFlows = (Map) stream.readObject();        
+        this.ruleFlows = (Map) stream.readObject();
         this.globals = (Map) stream.readObject();
         this.valid = stream.readBoolean();
 
@@ -189,7 +188,6 @@ public class Package
         //  Use a custom ObjectInputStream that can resolve against a given classLoader
         final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ),
                                                                                       this.packageCompilationData.getClassLoader() );
-        
 
         this.rules = (Map) streamWithLoader.readObject();
     }
@@ -207,15 +205,15 @@ public class Package
         return this.name;
     }
 
-    public void addImport(final String importEntry) {
-        this.imports.add( importEntry );
+    public void addImport(final ImportDeclaration importDecl) {
+        this.imports.put( importDecl.getTarget(), importDecl );
     }
 
     public void removeImport(final String importEntry) {
         this.imports.remove( importEntry );
     }
 
-    public Set getImports() {
+    public Map<String, ImportDeclaration> getImports() {
         return this.imports;
     }
 
@@ -264,7 +262,7 @@ public class Package
     }
 
     public PackageCompilationData removeFunction(final String functionName) {
-        if ( !this.functions.remove( functionName )) {
+        if ( !this.functions.remove( functionName ) ) {
             return null;
         }
         this.packageCompilationData.remove( this.name + "." + StringUtils.ucFirst( functionName ) );
@@ -449,15 +447,44 @@ public class Package
     public int hashCode() {
         return this.name.hashCode();
     }
+    
+    /**
+     * Returns true if clazz is imported as an Event class in this package 
+     * @param clazz
+     * @return
+     */
+    public boolean isEvent( Class clazz ) {
+        if( clazz == null ) {
+            return false;
+        }
+        // check if clazz is resolved by any of the import declarations
+        for( ImportDeclaration imp : this.imports.values() ) {
+            if( imp.isEvent() && imp.matches( clazz ) ) {
+                return true;
+            }
+        }
+        // if it is not resolved, try superclass 
+        if( this.isEvent( clazz.getSuperclass() ) ) {
+            return true;
+        }
+        
+        // if it is no resolved, try interfaces
+        for( Class interf : clazz.getInterfaces() ) {
+            if( this.isEvent( interf ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void clear() {
         this.rules.clear();
         this.packageCompilationData.clear();
-        this.ruleFlows.clear();       
+        this.ruleFlows.clear();
         this.imports.clear();
         this.functions.clear();
         this.staticImports.clear();
         this.globals.clear();
-        this.factTemplates.clear();        
+        this.factTemplates.clear();
     }
 }

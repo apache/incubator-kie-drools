@@ -31,21 +31,9 @@ public abstract class MissingRange implements Comparable<MissingRange> {
 			return Operator.LESS;
 		} else if (e.equals(Operator.LESS_OR_EQUAL)) {
 			return Operator.GREATER;
-		} else if (e.equals(Operator.MATCHES)) {
-			return Operator.NOT_MATCHES;
-		} else if (e.equals(Operator.NOT_MATCHES)) {
-			return Operator.MATCHES;
-		} else if (e.equals(Operator.CONTAINS)) {
-			return Operator.NOT_CONTAINS;
-		} else if (e.equals(Operator.NOT_CONTAINS)) {
-			return Operator.CONTAINS;
-		} else if (e.equals(Operator.MEMBEROF)) {
-			return Operator.NOTMEMBEROF;
-		} else if (e.equals(Operator.NOTMEMBEROF)) {
-			return Operator.MEMBEROF;
-		}
-
-		return e;
+		} else {
+            return Operator.determineOperator( e.getOperatorString(), !e.isNegated() );
+        }
 	}
 
 	public int compareTo(MissingRange another) {

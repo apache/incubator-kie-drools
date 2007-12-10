@@ -16,6 +16,7 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import org.drools.WorkingMemory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.PrimitiveLongStack;
 
@@ -39,24 +40,32 @@ public abstract class AbstractFactHandleFactory
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
      */
-    public final InternalFactHandle newFactHandle(final Object object) {
+    public final InternalFactHandle newFactHandle( final Object object, final boolean isEvent, final WorkingMemory workingMemory ) {
         if ( !this.factHandlePool.isEmpty() ) {
             return newFactHandle( this.factHandlePool.pop(),
-                                  object );
+                                  object, 
+                                  isEvent,
+                                  workingMemory );
         }
 
         return newFactHandle( this.id++,
-                              object );
+                              object,
+                              isEvent,
+                              workingMemory );
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
     protected final InternalFactHandle newFactHandle(final long id,
-                                                     final Object object) {
+                                                     final Object object,
+                                                     final boolean isEvent, 
+                                                     final WorkingMemory workingMemory ) {
         return newFactHandle( id,
                               object,
-                              this.counter++ );
+                              this.counter++,
+                              isEvent,
+                              workingMemory );
     }
 
     /* (non-Javadoc)
@@ -64,7 +73,9 @@ public abstract class AbstractFactHandleFactory
      */
     protected abstract InternalFactHandle newFactHandle(final long id,
                                                         final Object object,
-                                                        final long recency);
+                                                        final long recency,
+                                                        final boolean isEvent, 
+                                                        final WorkingMemory workingMemory );
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)

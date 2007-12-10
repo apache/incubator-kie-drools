@@ -29,6 +29,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
+import org.drools.temporal.SessionClock;
 
 public class ExternalSheetListenerTest extends TestCase {
 
@@ -402,6 +403,12 @@ public class ExternalSheetListenerTest extends TestCase {
                     // TODO Auto-generated method stub
                     return null;
                 }
+
+                public SessionClock getSessionClock() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
 			};
 		}
 	}

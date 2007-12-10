@@ -169,16 +169,16 @@ public class TripleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(final Object object) {
+    public boolean isAllowedCachedLeft(final InternalFactHandle handle) {
         //        return ( this.indexed0 || this.constraint0.isAllowedCachedLeft( context0,
         //                                                                       object ) ) && this.constraint1.isAllowedCachedLeft( context1,
         //                                                                                                       object ) && this.constraint2.isAllowedCachedLeft( context2,
         //                                                                                                                                                         object );
 
         return (this.indexed0 || this.constraint0.isAllowedCachedLeft( this.context0,
-                                                                       object )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( this.context1,
-                                                                                                                                            object )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( this.context2,
-                                                                                                                                                                                                                 object ));
+                                                                       handle )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( this.context1,
+                                                                                                                                            handle )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( this.context2,
+                                                                                                                                                                                                                 handle ));
     }
 
     /* (non-Javadoc)
@@ -194,7 +194,7 @@ public class TripleBetaConstraints
     public boolean isIndexed() {
         return this.indexed0;
     }
-    
+
     public int getIndexCount() {
         int count = 0;
         if ( this.indexed0 ) {
@@ -205,9 +205,9 @@ public class TripleBetaConstraints
         }
         if ( this.indexed2 ) {
             count++;
-        }   
-        return count;    
-    }  
+        }
+        return count;
+    }
 
     public boolean isEmpty() {
         return false;

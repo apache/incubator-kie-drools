@@ -16,29 +16,34 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-public class VariableRestrictionDescr extends RestrictionDescr {
-    /**
-     * 
-     */
+public class VariableRestrictionDescr extends EvaluatorBasedRestrictionDescr {
+
     private static final long serialVersionUID = 400L;
-    private String            evaluator;
-    private String            declarationIdentifier;
 
     public VariableRestrictionDescr(final String evaluator,
-                                    final String identifier) {
-        this.declarationIdentifier = identifier;
-        this.evaluator = evaluator;
+                                    final String identifier ) {
+        super( evaluator,
+               false,
+               null );
+        this.setText( identifier );
     }
 
-    public String getEvaluator() {
-        return this.evaluator;
+    public VariableRestrictionDescr(final String evaluator,
+                                    final boolean isNegated,
+                                    final String parameterText,
+                                    final String identifier ) {
+        super( evaluator,
+               isNegated,
+               parameterText );
+        this.setText( identifier );
     }
 
     public String getIdentifier() {
-        return this.declarationIdentifier;
+        return this.getText();
     }
     
     public String toString() {
-        return "[VariableRestriction: " + evaluator + " " + declarationIdentifier + " ]";
+        return "[VariableRestriction: " + super.toString() + " " + this.getText() + " ]";
     }
+
 }

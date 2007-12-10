@@ -30,11 +30,9 @@ import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
-import org.drools.util.Entry;
-import org.drools.util.FactHashTable;
 import org.drools.util.FactHandleIndexHashTable;
+import org.drools.util.FactHashTable;
 import org.drools.util.FactList;
-import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
@@ -155,14 +153,14 @@ public class DefaultBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(final Object object) {
+    public boolean isAllowedCachedLeft(final InternalFactHandle handle) {
         // skip the indexed constraints
         LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed );
 
         ContextEntry context = findContext( this.indexed );
         while ( entry != null ) {
             if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedLeft( context,
-                                                                                     object ) ) {
+                                                                                     handle ) ) {
                 return false;
             }
             entry = (LinkedListEntry) entry.getNext();

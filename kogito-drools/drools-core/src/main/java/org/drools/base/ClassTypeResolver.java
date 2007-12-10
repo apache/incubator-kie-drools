@@ -16,12 +16,10 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,7 +28,7 @@ import org.drools.RuntimeDroolsException;
 public class ClassTypeResolver
     implements
     TypeResolver {
-    private Set              imports          = Collections.EMPTY_SET;
+    private Set<String>      imports          = Collections.emptySet();
 
     private ClassLoader      classLoader;
 
@@ -56,7 +54,7 @@ public class ClassTypeResolver
                               "C" );
     }
 
-    public ClassTypeResolver(final Set imports,
+    public ClassTypeResolver(final Set<String> imports,
                              final ClassLoader classLoader) {
         this.imports = imports;
 
@@ -79,7 +77,7 @@ public class ClassTypeResolver
     /* (non-Javadoc)
      * @see org.drools.semantics.java.TypeResolver#getImports()
      */
-    public Set getImports() {
+    public Set<String> getImports() {
         return this.imports;
     }
 
@@ -93,7 +91,7 @@ public class ClassTypeResolver
      */
     public void addImport(final String importEntry) {
         if ( this.imports == Collections.EMPTY_SET ) {
-            this.imports = new HashSet();
+            this.imports = new HashSet<String>();
         }
         this.imports.add( importEntry );
     }

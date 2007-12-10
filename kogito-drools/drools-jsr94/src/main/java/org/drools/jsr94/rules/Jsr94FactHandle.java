@@ -61,6 +61,9 @@ import org.drools.common.DefaultFactHandle;
 public class Jsr94FactHandle extends DefaultFactHandle
     implements
     Handle {
+
+    private static final long serialVersionUID = 7664394510847222696L;
+
     /**
      * Constructs a new <code>Handle</code>.
      *

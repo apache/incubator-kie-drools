@@ -125,10 +125,10 @@ public class CollectNodeTest extends DroolsTestCase {
                              0,
                              this.sink.getAsserted().size() );
 
-        this.node.assertTuple( new ReteTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" ) ),
+        this.node.assertTuple( new ReteTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null ) ),
                                this.contextAssert,
                                this.workingMemory );
-        this.node.assertTuple( new ReteTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" ) ),
+        this.node.assertTuple( new ReteTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null ) ),
                                this.contextAssert,
                                this.workingMemory );
 
@@ -149,7 +149,7 @@ public class CollectNodeTest extends DroolsTestCase {
     }
 
     public void testAssertTuple() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
         final ReteTuple tuple0 = new ReteTuple( f0 );
 
         // assert tuple, should add one to left memory
@@ -165,7 +165,7 @@ public class CollectNodeTest extends DroolsTestCase {
                            ((Collection) ((DefaultFactHandle) ((Tuple) ((Object[]) this.sink.getAsserted().get( 0 ))[0]).get( 1 )).getObject()).isEmpty() );
 
         // assert tuple, should add left memory 
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
 
         final ReteTuple tuple1 = new ReteTuple( f1 );
         this.node.assertTuple( tuple1,
@@ -185,8 +185,8 @@ public class CollectNodeTest extends DroolsTestCase {
     }
 
     public void testAssertTupleWithObjects() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
 
         final ReteTuple tuple0 = new ReteTuple( f0 );
 
@@ -230,7 +230,7 @@ public class CollectNodeTest extends DroolsTestCase {
     }
 
     public void testRetractTuple() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
 
         final ReteTuple tuple0 = new ReteTuple( f0 );
 
@@ -258,8 +258,8 @@ public class CollectNodeTest extends DroolsTestCase {
     }
 
     public void testAssertObject() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
 
         final ReteTuple tuple0 = new ReteTuple( f0 );
 
@@ -302,8 +302,8 @@ public class CollectNodeTest extends DroolsTestCase {
     }
 
     public void testRetractObject() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
 
         final ReteTuple tuple0 = new ReteTuple( f0 );
 
@@ -395,8 +395,8 @@ public class CollectNodeTest extends DroolsTestCase {
         this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
         this.node.setTupleMemoryEnabled( false );
 
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese" );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese" );
+        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese", false, null );
+        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese", false, null );
 
         final ReteTuple tuple0 = new ReteTuple( f0 );
 

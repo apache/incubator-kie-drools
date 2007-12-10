@@ -56,19 +56,19 @@ public class LiteralRestriction
     }
 
     public boolean isAllowed(final Extractor extractor,
-                             final Object object,
+                             final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemoiry) {
         return this.evaluator.evaluate( null,
                                         extractor,
-                                        object,
+                                        handle.getObject(),
                                         this.field );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
-                                       final Object object) {
+                                       final InternalFactHandle handle) {
         return this.evaluator.evaluate( null,
                                         ((LiteralContextEntry) context).getFieldExtractor(),
-                                        object,
+                                        handle.getObject(),
                                         this.field );
     }
 

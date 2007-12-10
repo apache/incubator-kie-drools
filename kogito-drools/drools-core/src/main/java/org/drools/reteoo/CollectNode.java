@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.drools.common.BetaConstraints;
-import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.BuildContext;
@@ -107,7 +106,7 @@ public class CollectNode extends BetaNode
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         final Collection result = this.collect.instantiateResultObject();
-        final InternalFactHandle resultHandle = workingMemory.getFactHandleFactory().newFactHandle( result );
+        final InternalFactHandle resultHandle = workingMemory.getFactHandleFactory().newFactHandle( result, false, workingMemory );
         CollectResult colresult = new CollectResult();
         colresult.handle = resultHandle;
         colresult.propagated = false;
@@ -127,7 +126,7 @@ public class CollectNode extends BetaNode
 
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
             InternalFactHandle handle = entry.getFactHandle();
-            if ( this.constraints.isAllowedCachedLeft( handle.getObject() ) ) {
+            if ( this.constraints.isAllowedCachedLeft( handle ) ) {
                 if( this.unwrapRightObject ) {
                     handle = ((ReteTuple) handle.getObject()).getLastHandle(); 
                 }
@@ -138,7 +137,7 @@ public class CollectNode extends BetaNode
         // First alpha node filters
         boolean isAllowed = true;
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
-            if ( !this.resultConstraints[i].isAllowed( result,
+            if ( !this.resultConstraints[i].isAllowed( resultHandle,
                                                        workingMemory ) ) {
                 isAllowed = false;
                 break;
@@ -147,7 +146,7 @@ public class CollectNode extends BetaNode
         if ( isAllowed ) {
             this.resultsBinder.updateFromTuple( workingMemory,
                                                 leftTuple );
-            if ( this.resultsBinder.isAllowedCachedLeft( result ) ) {
+            if ( this.resultsBinder.isAllowedCachedLeft( resultHandle ) ) {
                 colresult.propagated = true;
                 this.sink.propagateAssertTuple( leftTuple,
                                                 resultHandle,
@@ -301,7 +300,7 @@ public class CollectNode extends BetaNode
         // First alpha node filters
         boolean isAllowed = true;
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
-            if ( !this.resultConstraints[i].isAllowed( result.handle.getObject(),
+            if ( !this.resultConstraints[i].isAllowed( result.handle,
                                                        workingMemory ) ) {
                 isAllowed = false;
                 break;
@@ -310,7 +309,7 @@ public class CollectNode extends BetaNode
         if ( isAllowed ) {
             this.resultsBinder.updateFromTuple( workingMemory,
                                                 leftTuple );
-            if ( this.resultsBinder.isAllowedCachedLeft( result.handle.getObject() ) ) {
+            if ( this.resultsBinder.isAllowedCachedLeft( result.handle ) ) {
                 result.propagated = true;
                 this.sink.propagateAssertTuple( leftTuple,
                                                 result.handle,

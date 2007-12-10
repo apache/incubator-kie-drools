@@ -24,57 +24,48 @@ import java.text.ParseException;
  * a constraint on a single field of a pattern. 
  * The "text" contains the content. 
  */
-public class LiteralRestrictionDescr extends RestrictionDescr {
+public class LiteralRestrictionDescr extends EvaluatorBasedRestrictionDescr {
     public static final int   TYPE_NULL        = 1;
     public static final int   TYPE_NUMBER      = 2;
     public static final int   TYPE_STRING      = 3;
     public static final int   TYPE_BOOLEAN     = 4;
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 400L;
-    private String            evaluator;
     private int               type;
 
     public LiteralRestrictionDescr(final String evaluator,
                                    final String text) {
         this( evaluator,
+              false,
+              null,
               text,
               TYPE_STRING );// default type is string if not specified
     }
 
     public LiteralRestrictionDescr(final String evaluator,
+                                   final boolean isNegated,
+                                   final String text) {
+        this( evaluator,
+              isNegated,
+              null,
+              text,
+              TYPE_STRING );// default type is string if not specified
+    }
+
+    public LiteralRestrictionDescr(final String evaluator,
+                                   final boolean isNegated,
+                                   final String parameterText,
                                    final String text,
                                    final int type) {
+        super( evaluator,
+               isNegated,
+               parameterText );
         this.setText( text );
-        this.evaluator = evaluator;
         this.type = type;
     }
 
-    public String getEvaluator() {
-        return this.evaluator;
-    }
-
-    public Object getValue() {
-        switch( this.type ) {
-            case TYPE_NUMBER:
-                try {
-                    return DecimalFormat.getInstance().parse( this.getText() );
-                } catch ( ParseException e ) {
-                    // return String anyway
-                    return this.getText();
-                }
-            case TYPE_BOOLEAN:
-                return Boolean.valueOf( this.getText() );
-            default:
-                return this.getText();
-        }
-    }
-
     public String toString() {
-        return "[LiteralRestriction: " + this.evaluator + " " + this.getText() + "]";
-
+        return "[LiteralRestriction: " + super.toString() + " " + this.getText() + "]";
     }
 
     public int getType() {
@@ -83,5 +74,21 @@ public class LiteralRestrictionDescr extends RestrictionDescr {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public Object getValue() {
+        switch ( this.type ) {
+            case TYPE_NUMBER :
+                try {
+                    return DecimalFormat.getInstance().parse( this.getText() );
+                } catch ( ParseException e ) {
+                    // return String anyway
+                    return this.getText();
+                }
+            case TYPE_BOOLEAN :
+                return Boolean.valueOf( this.getText() );
+            default :
+                return this.getText();
+        }
     }
 }

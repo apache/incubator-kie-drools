@@ -1,29 +1,8 @@
 package org.drools.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.Cheese;
-import org.drools.RuleBaseConfiguration;
-import org.drools.base.ClassFieldExtractorCache;
-import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.Operator;
-import org.drools.base.evaluators.StringFactory;
-import org.drools.reteoo.BetaMemory;
-import org.drools.rule.Declaration;
-import org.drools.rule.Pattern;
 import org.drools.rule.VariableConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.Evaluator;
-import org.drools.spi.FieldExtractor;
-import org.drools.util.FactHandleIndexHashTable;
-import org.drools.util.FactHashTable;
-import org.drools.util.TupleHashTable;
-import org.drools.util.TupleIndexHashTable;
-import org.drools.util.AbstractHashTable.FieldIndex;
-import org.drools.util.AbstractHashTable.Index;
-
-import junit.framework.TestCase;
 
 public class TripleBetaConstraintsTest extends BaseBetaConstraintsTest {
     

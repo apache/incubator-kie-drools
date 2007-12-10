@@ -27,6 +27,7 @@ import org.drools.base.ClassFieldExtractor;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
+import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
@@ -42,6 +43,7 @@ import org.drools.util.FactHashTable;
 public class AlphaNodeTest extends DroolsTestCase {
 
     ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     public void testMemory() {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
@@ -83,7 +85,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -170,7 +172,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -233,7 +235,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -320,7 +322,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -407,7 +409,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -475,7 +477,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -559,7 +561,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -647,7 +649,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -731,7 +733,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = ValueType.OBJECT_TYPE.getEvaluator( Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );

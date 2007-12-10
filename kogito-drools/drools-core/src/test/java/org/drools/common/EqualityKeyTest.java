@@ -10,13 +10,13 @@ public class EqualityKeyTest extends TestCase {
     public void test1() {
         ReteooFactHandleFactory factory = new ReteooFactHandleFactory();
         
-        InternalFactHandle ch1 = factory.newFactHandle( new Cheese ("c", 10) );
+        InternalFactHandle ch1 = factory.newFactHandle( new Cheese ("c", 10), false, null );
         EqualityKey key = new EqualityKey( ch1 );
         
         assertSame( ch1, key.getFactHandle() );
         assertNull( key.getOtherFactHandle() );
         
-        InternalFactHandle ch2 = factory.newFactHandle( new Cheese ("c", 10) );
+        InternalFactHandle ch2 = factory.newFactHandle( new Cheese ("c", 10), false, null );
         key.addFactHandle( ch2 );
         
         assertEquals( 1, key.getOtherFactHandle().size() );

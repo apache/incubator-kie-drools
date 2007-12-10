@@ -16,6 +16,7 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
@@ -77,10 +78,10 @@ public class LiteralConstraint
                                              newDecl );
     }
 
-    public boolean isAllowed(final Object object,
+    public boolean isAllowed(final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory) {
         return this.restriction.isAllowed( this.extractor,
-                                           object,
+                                           handle,
                                            workingMemory );
     }
 

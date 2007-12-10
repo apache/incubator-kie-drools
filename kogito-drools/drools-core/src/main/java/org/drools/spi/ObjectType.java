@@ -18,7 +18,6 @@ package org.drools.spi;
 
 import java.io.Serializable;
 
-import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 
 /**
@@ -45,7 +44,14 @@ public interface ObjectType
     
     boolean isAssignableFrom(Object object);
     
-    boolean isAssignableFrom(ObjectType objectType);    
+    boolean isAssignableFrom(ObjectType objectType);
+    
+    /**
+     * Returns true if the object type represented by this object
+     * is an event object type. False otherwise.
+     * @return
+     */
+    boolean isEvent();
 
     ValueType getValueType();
 }

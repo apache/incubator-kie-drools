@@ -1,0 +1,13 @@
+package org.drools;
+
+import event org.drools.StockTick;
+
+global java.util.List results;
+
+rule "after operator"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this ~after[5,10] $a )
+then
+    results.add( $b );
+end

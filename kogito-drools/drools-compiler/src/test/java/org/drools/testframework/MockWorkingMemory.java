@@ -27,6 +27,7 @@ import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.LIANodePropagation;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.common.instance.ProcessInstance;
@@ -409,6 +410,16 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public WorkItemManager getWorkItemManager() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public ObjectTypeConf getObjectTypeConf(Object object) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Map<Object, ObjectTypeConf> getObjectTypeConfMap() {
         // TODO Auto-generated method stub
         return null;
     }
