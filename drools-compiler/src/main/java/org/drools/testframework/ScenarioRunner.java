@@ -201,28 +201,34 @@ public class ScenarioRunner {
 			VerifyField fld = (VerifyField) value.fieldValues.get(i);
 			Map<String, Object> st = new HashMap<String, Object>();
 			st.put("__fact__", fact);
-			st.put("__expected__", fld.expected);
-
-			fld.successResult = (Boolean) eval("__fact__." + fld.fieldName
-					+ " " + fld.operator  + " __expected__", st);
-
-
-			if (!fld.successResult) {
-				Object actual = eval("__fact__." + fld.fieldName, st);
-				fld.actualResult = (actual != null) ? actual.toString() : "";
-
-				if (fld.operator.equals("==")) {
-					fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was [" + fld.actualResult
-										+ "] expected [" + fld.expected + "].";
-				} else {
-					fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was not expected to be [" + fld.actualResult
-					+ "].";
+			if (fld.expected != null) {
+				Object expectedVal = fld.expected.trim();
+				if (fld.expected.startsWith("=")) {
+					expectedVal = eval(fld.expected.substring(1), this.populatedData);
 				}
-			} else {
-				if (fld.operator.equals("==")) {
-					fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was [" + fld.expected + "].";
-				} else if (fld.operator.equals("!=")){
-					fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was not [" + fld.expected + "].";
+				st.put("__expected__", expectedVal);
+
+				fld.successResult = (Boolean) eval("__fact__." + fld.fieldName
+						+ " " + fld.operator  + " __expected__", st);
+
+
+				if (!fld.successResult) {
+					Object actual = eval("__fact__." + fld.fieldName, st);
+					fld.actualResult = (actual != null) ? actual.toString() : "";
+
+					if (fld.operator.equals("==")) {
+						fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was [" + fld.actualResult
+											+ "] expected [" + fld.expected + "].";
+					} else {
+						fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was not expected to be [" + fld.actualResult
+						+ "].";
+					}
+				} else {
+					if (fld.operator.equals("==")) {
+						fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was [" + fld.expected + "].";
+					} else if (fld.operator.equals("!=")){
+						fld.explanation = "[" + value.name + "] field [" + fld.fieldName + "] was not [" + fld.expected + "].";
+					}
 				}
 			}
 
