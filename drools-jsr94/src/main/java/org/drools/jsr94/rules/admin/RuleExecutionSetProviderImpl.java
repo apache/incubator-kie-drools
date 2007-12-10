@@ -37,6 +37,7 @@ import javax.xml.transform.sax.SAXResult;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlPackageReader;
 import org.w3c.dom.Element;
 
@@ -77,9 +78,9 @@ public class RuleExecutionSetProviderImpl
             //    		 Prepare the DOM source
             final Source source = new DOMSource( ruleExecutionSetElement );
 
-            final XmlPackageReader xmlPackageReader = new XmlPackageReader();
+            final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
             // Prepare the result
-            final SAXResult result = new SAXResult( xmlPackageReader );
+            final SAXResult result = new SAXResult( xmlPackageReader.getParser() );
 
             // Create a transformer
             final Transformer xformer = TransformerFactory.newInstance().newTransformer();
