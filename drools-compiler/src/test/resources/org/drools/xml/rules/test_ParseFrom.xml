@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package name="com.sample"
+         xmlns="http://drools.org/drools-4.0"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-4.0 drools-4.0.xsd">
+
+	<import name="import java.util.List"/>
+	<import name="org.drools.Cheese" />
+	<import name="org.drools.Cheesery" />
+
+	<global identifier="cheesery" type="Cheesery" />		
+	<global identifier="list1" type="List" />
+
+<rule name="simple_rule">
+	<rule-attribute name="salience" value="10" />
+	<rule-attribute name="no-loop" value="true" />
+	<rule-attribute name="agenda-group" value="agenda-group" />
+	<rule-attribute name="activation-group" value="activation-group" />
+
+	<lhs>
+        <pattern identifier="cheese" object-type="Cheese" >
+            <from>
+                <expression>
+                    cheesery.getCheeses(i+4)
+                 </expression>
+            </from>
+        </pattern>
+    </lhs>
+	<rhs>
+		list1.add( $cheese );
+	</rhs>
+</rule>
+
+</package>
