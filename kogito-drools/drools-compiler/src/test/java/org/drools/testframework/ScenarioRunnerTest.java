@@ -200,6 +200,22 @@ public class ScenarioRunnerTest extends RuleUnit {
 
 	}
 
+	public void testVerifyFactsWithExpression() throws Exception {
+		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null,
+				new MockWorkingMemory());
+		Cheese f1 = new Cheese("cheddar", 42);
+		runner.populatedData.put("f1", f1);
+		f1.setPrice(42);
+		// test all true
+		VerifyFact vf = new VerifyFact();
+		vf.name = "f1";
+		vf.fieldValues = ls(
+				new VerifyField("price", "= 40 + 2", "==") );
+		runner.verify(vf);
+
+		assertTrue(((VerifyField)vf.fieldValues.get(0)).successResult);
+	}
+
 	public void testVerifyFactExplanation() throws Exception {
 		ScenarioRunner runner = new ScenarioRunner(new Scenario(), null,
 				new MockWorkingMemory());
