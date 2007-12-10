@@ -37,15 +37,15 @@ public class RuleFlowProcessImpl extends ProcessImpl
     implements
     RuleFlowProcess {
 
-    public static final String RULEFLOW_TYPE    = "RuleFlow";
+    public static final String  RULEFLOW_TYPE    = "RuleFlow";
 
-    private static final long  serialVersionUID = 400L;
+    private static final long   serialVersionUID = 400L;
 
-    private Map                nodes;
-    private List               variables;
-    private long               lastNodeId;
-    private List 			   imports;
-    private Map				   globals;
+    private Map                 nodes;
+    private List                variables;
+    private long                lastNodeId;
+    private List<String>        imports;
+    private Map<String, String> globals;
 
     public RuleFlowProcessImpl() {
         super();
@@ -76,15 +76,15 @@ public class RuleFlowProcessImpl extends ProcessImpl
         return (Node) this.nodes.get( idLong );
     }
 
-//    private EndNode getEnd() {
-//        for ( final Iterator it = this.nodes.values().iterator(); it.hasNext(); ) {
-//            final Node node = (Node) it.next();
-//            if ( node instanceof EndNode ) {
-//                return (EndNode) node;
-//            }
-//        }
-//        return null;
-//    }
+    //    private EndNode getEnd() {
+    //        for ( final Iterator it = this.nodes.values().iterator(); it.hasNext(); ) {
+    //            final Node node = (Node) it.next();
+    //            if ( node instanceof EndNode ) {
+    //                return (EndNode) node;
+    //            }
+    //        }
+    //        return null;
+    //    }
 
     public void removeNode(final Node node) {
         if ( node == null ) {
@@ -109,10 +109,10 @@ public class RuleFlowProcessImpl extends ProcessImpl
 
     public String[] getVariableNames() {
         final String[] result = new String[this.variables.size()];
-        if (this.variables != null) {
-	        for ( int i = 0; i < this.variables.size(); i++ ) {
-	            result[i] = ((Variable) this.variables.get( i )).getName();
-	        }
+        if ( this.variables != null ) {
+            for ( int i = 0; i < this.variables.size(); i++ ) {
+                result[i] = ((Variable) this.variables.get( i )).getName();
+            }
         }
         return result;
     }
@@ -130,35 +130,35 @@ public class RuleFlowProcessImpl extends ProcessImpl
         if ( (node instanceof StartNode) && (getStart() != null) ) {
             throw new IllegalArgumentException( "A ruleflow process cannot have more than one start node!" );
         }
-//        if ( (node instanceof EndNode) && (getEnd() != null) ) {
-//            throw new IllegalArgumentException( "A ruleflow process cannot have more than one end node!" );
-//        }
+        //        if ( (node instanceof EndNode) && (getEnd() != null) ) {
+        //            throw new IllegalArgumentException( "A ruleflow process cannot have more than one end node!" );
+        //        }
     }
 
-	public List getImports() {
-		return imports;
-	}
+    public List<String> getImports() {
+        return imports;
+    }
 
-	public void setImports(List imports) {
-		this.imports = imports;
-	}
-	
-	public Map getGlobals() {
-		return globals;
-	}
+    public void setImports(List imports) {
+        this.imports = imports;
+    }
 
-	public void setGlobals(Map globals) {
-		this.globals = globals;
-	}
+    public Map<String, String> getGlobals() {
+        return globals;
+    }
+
+    public void setGlobals(Map globals) {
+        this.globals = globals;
+    }
 
     public String[] getGlobalNames() {
         final List result = new ArrayList();
-        if (this.globals != null) {
-	        for ( Iterator iterator = this.globals.keySet().iterator(); iterator.hasNext(); ) {
-	            result.add((String) iterator.next());
-	        }
+        if ( this.globals != null ) {
+            for ( Iterator iterator = this.globals.keySet().iterator(); iterator.hasNext(); ) {
+                result.add( (String) iterator.next() );
+            }
         }
-        return (String[]) result.toArray(new String[result.size()]);
+        return (String[]) result.toArray( new String[result.size()] );
     }
 
 }
