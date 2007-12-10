@@ -59,13 +59,14 @@ import org.drools.spi.PropagationContext;
 
 public class RuleFlowGroupTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
-    private BuildContext buildContext;
-    
+    private BuildContext   buildContext;
+
     protected void setUp() throws Exception {
-        ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
-        buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        buildContext = new BuildContext( ruleBase,
+                                         ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
     }
-    
+
     public void testRuleFlowGroup() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -95,7 +96,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule0,
                                                              rule0.getLhs(),
-                                                             buildContext);
+                                                             buildContext );
 
         final Rule rule1 = new Rule( "test-rule1" );
         rule1.setRuleFlowGroup( "rule-flow-group-1" );
@@ -150,29 +151,29 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         final EndNode end = new EndNodeImpl();
         // connections
         new ConnectionImpl( start,
-                        ruleSet0,
-                        Connection.TYPE_NORMAL );
+                            ruleSet0,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( ruleSet0,
-                        split,
-                        Connection.TYPE_NORMAL );
+                            split,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( split,
-                        ruleSet1,
-                        Connection.TYPE_NORMAL );
+                            ruleSet1,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( split,
-                        ruleSet2,
-                        Connection.TYPE_NORMAL );
+                            ruleSet2,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( ruleSet1,
-                        join,
-                        Connection.TYPE_NORMAL );
+                            join,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( ruleSet2,
-                        join,
-                        Connection.TYPE_NORMAL );
+                            join,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( join,
-                        ruleSet3,
-                        Connection.TYPE_NORMAL );
+                            ruleSet3,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( ruleSet3,
-                        end,
-                        Connection.TYPE_NORMAL );
+                            end,
+                            Connection.TYPE_NORMAL );
 
         // process
         final RuleFlowProcess process = new RuleFlowProcessImpl();
@@ -308,7 +309,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         assertEquals( ProcessInstance.STATE_COMPLETED,
                       processInstance.getState() );
     }
-    
+
     /** XOR split and join */
     public void testRuleFlowGroup2() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
@@ -394,35 +395,37 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         final EndNode end = new EndNodeImpl();
         // connections
         new ConnectionImpl( start,
-                        ruleSet0,
-                        Connection.TYPE_NORMAL );
+                            ruleSet0,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( ruleSet0,
-                        split,
-                        Connection.TYPE_NORMAL );
+                            split,
+                            Connection.TYPE_NORMAL );
         Connection out1 = new ConnectionImpl( split,
-                        ruleSet1,
-                        Connection.TYPE_NORMAL );
+                                              ruleSet1,
+                                              Connection.TYPE_NORMAL );
         Connection out2 = new ConnectionImpl( split,
-                        ruleSet2,
-                        Connection.TYPE_NORMAL );
+                                              ruleSet2,
+                                              Connection.TYPE_NORMAL );
         new ConnectionImpl( ruleSet1,
-                        join,
-                        Connection.TYPE_NORMAL );
+                            join,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( ruleSet2,
-                        join,
-                        Connection.TYPE_NORMAL );
+                            join,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( join,
-                        ruleSet3,
-                        Connection.TYPE_NORMAL );
+                            ruleSet3,
+                            Connection.TYPE_NORMAL );
         new ConnectionImpl( ruleSet3,
-                        end,
-                        Connection.TYPE_NORMAL );
+                            end,
+                            Connection.TYPE_NORMAL );
         ConstraintEvaluator constraint1 = new org.drools.ruleflow.core.impl.RuleFlowConstraintEvaluator();
-        constraint1.setPriority(1);
-        split.setConstraint(out1, constraint1);
+        constraint1.setPriority( 1 );
+        split.setConstraint( out1,
+                             constraint1 );
         ConstraintEvaluator constraint2 = new org.drools.ruleflow.core.impl.RuleFlowConstraintEvaluator();
-        constraint2.setPriority(2);
-        split.setConstraint(out2, constraint2);
+        constraint2.setPriority( 2 );
+        split.setConstraint( out2,
+                             constraint2 );
 
         // process
         final RuleFlowProcess process = new RuleFlowProcessImpl();
@@ -437,24 +440,24 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         process.addNode( end );
 
         // rules for split
-        final Rule splitRule1 = new Rule( "RuleFlow-Split-1-" + split.getId() + "-" + ruleSet1.getId());
+        final Rule splitRule1 = new Rule( "RuleFlow-Split-1-" + split.getId() + "-" + ruleSet1.getId() );
         splitRule1.setRuleFlowGroup( "DROOLS_SYSTEM" );
         splitRule1.setConsequence( consequence );
 
         final RuleTerminalNode splitNode1 = new RuleTerminalNode( 7,
-                                                             	  new MockTupleSource( 2 ),
-                                                             	  splitRule1,
-                                                             	  splitRule1.getLhs(),
+                                                                  new MockTupleSource( 2 ),
+                                                                  splitRule1,
+                                                                  splitRule1.getLhs(),
                                                                   buildContext );
 
-        final Rule splitRule2 = new Rule( "RuleFlow-Split-1-" + split.getId() + "-" + ruleSet2.getId());
+        final Rule splitRule2 = new Rule( "RuleFlow-Split-1-" + split.getId() + "-" + ruleSet2.getId() );
         splitRule2.setRuleFlowGroup( "DROOLS_SYSTEM" );
         splitRule2.setConsequence( consequence );
 
         final RuleTerminalNode splitNode2 = new RuleTerminalNode( 8,
-                                                             	  new MockTupleSource( 2 ),
-                                                             	  splitRule2,
-                                                             	  splitRule2.getLhs(),
+                                                                  new MockTupleSource( 2 ),
+                                                                  splitRule2,
+                                                                  splitRule2.getLhs(),
                                                                   buildContext );
 
         // proces instance
@@ -500,20 +503,18 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                            workingMemory );
 
         final ReteTuple splitTuple1 = new ReteTuple( new DefaultFactHandle( 1,
-        															   	    "cheese" ) );
-		splitNode1.assertTuple( splitTuple1,
-							    context0,
-							    workingMemory );
+                                                                            "cheese" ) );
+        splitNode1.assertTuple( splitTuple1,
+                                context0,
+                                workingMemory );
 
         final ReteTuple splitTuple2 = new ReteTuple( new DefaultFactHandle( 1,
-		   															        "cheese" ) );
-    	splitNode2.assertTuple( splitTuple2,
-    							context0,
-								workingMemory );
+                                                                            "cheese" ) );
+        splitNode2.assertTuple( splitTuple2,
+                                context0,
+                                workingMemory );
 
         final RuleFlowGroupImpl systemRuleFlowGroup = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "DROOLS_SYSTEM" );
-        
-        
 
         // RuleFlowGroups should be populated, but the agenda shouldn't
         assertEquals( 2,
@@ -525,7 +526,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         assertEquals( 1,
                       ruleFlowGroup3.size() );
         assertEquals( 2,
-          	  	      systemRuleFlowGroup.size() );
+                      systemRuleFlowGroup.size() );
         assertEquals( 0,
                       agenda.agendaSize() );
 
@@ -564,9 +565,9 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         assertEquals( 0,
                       ruleFlowGroup1.size() );
         assertEquals( 1,
-                	  ruleFlowGroup2.size() );
+                      ruleFlowGroup2.size() );
         assertEquals( 1,
-                	  ruleFlowGroup3.size() );
+                      ruleFlowGroup3.size() );
         assertEquals( 1,
                       agenda.agendaSize() );
 
