@@ -14,9 +14,7 @@ import org.drools.ruleflow.common.core.Process;
 import org.drools.xml.XmlProcessReader;
 
 public class ActionNodeTest extends TestCase {
-    public void testSingleActionNode() throws Exception {        
-
-        
+    public void testSingleActionNode() throws Exception {                
         PackageBuilder builder = new PackageBuilder();
         builder.addProcessFromXml( new InputStreamReader( ActionNodeTest.class.getResourceAsStream( "ActionNodeTest.xml" ) ) );
         
@@ -32,7 +30,6 @@ public class ActionNodeTest extends TestCase {
         session.startProcess( "process name" );
         
         assertEquals( 1, list.size() );
-        assertEquals( "action node was here", list.get(0) );
-        
+        assertEquals( "action node was here", list.get(0) );        
     }
 }

@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -52,7 +53,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParseFrom() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseFrom.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -70,7 +71,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testAccumulate() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseAccumulate.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -113,7 +114,7 @@ public class XmlPackageReaderTest extends TestCase {
     
     
     public void testAccumulateMultiPattern() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseAccumulate.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -144,7 +145,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
     
     public void testParseForall() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseForall.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -166,7 +167,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParseExists() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseExists.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -192,7 +193,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParseCollect() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseCollect.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
 
@@ -246,7 +247,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParsePackageName() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParsePackageName.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -255,7 +256,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParseImport() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseImport.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -277,7 +278,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParseGlobal() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseGlobal.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -308,7 +309,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParseFunction() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseFunction.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -355,7 +356,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParseRule() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRule.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -424,7 +425,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParseLhs() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseLhs.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -563,7 +564,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParseRhs() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRhs.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -619,7 +620,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
 
     public void testParseQuery() throws Exception {
-        final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseQuery.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
@@ -675,5 +676,11 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals( "Foo",
                       patternDescr.getObjectType() );
 
+    }
+    
+    private XmlPackageReader getXmReader() {
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        
+        return new XmlPackageReader( conf.getSemanticModules() );        
     }
 }

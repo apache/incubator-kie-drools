@@ -474,7 +474,12 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     Handler getHandler(final String uri,
                        final String localName) {
-        return (Handler) this.modules.getSemanticModule( uri ).getHandler( localName );
+        SemanticModule module = this.modules.getSemanticModule( uri );
+        if ( module != null ) {
+            return module.getHandler( localName );
+        } else {
+            return null;
+        }
     }
 
     /**

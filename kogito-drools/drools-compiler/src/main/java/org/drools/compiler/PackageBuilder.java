@@ -80,9 +80,7 @@ public class PackageBuilder {
 
     private Dialect                     dialect;
 
-    private DialectRegistry             dialectRegistry;
-    
-    private SemanticModules             semanticModules;
+    private DialectRegistry             dialectRegistry;    
 
     /**
      * Use this when package is starting from scratch.
@@ -180,10 +178,7 @@ public class PackageBuilder {
      */
     public void addPackageFromXml(final Reader reader) throws DroolsParserException,
                                                       IOException {
-        if ( semanticModules == null ) {
-            semanticModules = new SemanticModules();
-        }
-        final XmlPackageReader xmlReader = new XmlPackageReader( semanticModules );
+        final XmlPackageReader xmlReader = new XmlPackageReader(  this.configuration.getSemanticModules() );
 
         try {
             xmlReader.read( reader );
@@ -235,13 +230,9 @@ public class PackageBuilder {
         this.results = this.dialectRegistry.addResults( this.results );        
     }
     
-    public void addProcessFromXml(Reader reader) {
-        if ( semanticModules == null ) {
-            semanticModules = new SemanticModules();
-        }
-        
+    public void addProcessFromXml(Reader reader) {        
         ProcessBuilder processBuilder = new ProcessBuilder( this );
-        XmlProcessReader xmlReader = new XmlProcessReader( semanticModules );
+        XmlProcessReader xmlReader = new XmlProcessReader( this.configuration.getSemanticModules() );
         try {
             Process process = xmlReader.read(  reader );
             processBuilder.buildProcess( process );
@@ -483,7 +474,7 @@ public class PackageBuilder {
         if ( this.pkg != null && this.pkg.getPackageCompilationData() != null && this.pkg.getPackageCompilationData().isDirty() ) {
             this.pkg.getPackageCompilationData().reload();
         }
-        if ( hasErrors() ) {
+        if ( hasErrors() && this.pkg != null ) {
             this.pkg.setError( getErrors().toString() );
         }
         return this.pkg;

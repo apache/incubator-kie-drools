@@ -34,6 +34,10 @@ import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.util.ChainedProperties;
+import org.drools.xml.DefaultSemanticModule;
+import org.drools.xml.Handler;
+import org.drools.xml.ProcessSemanticModule;
+import org.drools.xml.RulesSemanticModule;
 import org.drools.xml.SemanticModule;
 import org.drools.xml.SemanticModules;
 
@@ -61,7 +65,7 @@ import org.drools.xml.SemanticModules;
 public class PackageBuilderConfiguration {
 
     private static final String ACCUMULATE_FUNCTION_PREFIX = "drools.accumulate.function.";
-    
+
     private static final String EVALUATOR_DEFINITION_PREFIX = "drools.evaluator.";
     
     private Map                 dialectConfigurations;
@@ -82,7 +86,7 @@ public class PackageBuilderConfiguration {
      * Constructor that sets the parent class loader for the package being built/compiled
      * @param classLoader
      */
-    public PackageBuilderConfiguration(ClassLoader classLoader ) {
+    public PackageBuilderConfiguration(ClassLoader classLoader) {
         init( classLoader,
               null );
     }
@@ -128,9 +132,9 @@ public class PackageBuilderConfiguration {
         if ( properties != null ) {
             this.chainedProperties.addProperties( properties );
         }
-        
+
         this.dialectConfigurations = new HashMap();
-        
+
         buildDialectConfigurationMap();
 
         buildAccumulateFunctionsMap();
@@ -149,42 +153,46 @@ public class PackageBuilderConfiguration {
                                               "drools.dialect",
                                               false );
         setDefaultDialect( (String) dialectProperties.remove( "drools.dialect.default" ) );
-        
+
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         for ( Iterator it = dialectProperties.entrySet().iterator(); it.hasNext(); ) {
             Entry entry = (Entry) it.next();
             String str = (String) entry.getKey();
             String dialectName = str.substring( str.lastIndexOf( "." ) + 1 );
             String dialectClass = (String) entry.getValue();
-            addDialect( dialectName, dialectClass);
+            addDialect( dialectName,
+                        dialectClass );
         }
     }
-    
-    public void addDialect(String dialectName, String dialectClass) {
+
+    public void addDialect(String dialectName,
+                           String dialectClass) {
         try {
             Class cls = classLoader.loadClass( dialectClass );
             DialectConfiguration dialectConf = (DialectConfiguration) cls.newInstance();
             dialectConf.init( this );
-            addDialect( dialectName, 
-            		    dialectConf);
+            addDialect( dialectName,
+                        dialectConf );
         } catch ( Exception e ) {
             throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + "'",
                                               e );
-        }    	
+        }
     }
 
-    public void addDialect(String dialectName, DialectConfiguration dialectConf) {
+    public void addDialect(String dialectName,
+                           DialectConfiguration dialectConf) {
         dialectConfigurations.put( dialectName,
-                				   dialectConf );    	
+                                   dialectConf );
     }
-    
+
     public DialectRegistry buildDialectRegistry() {
-    	DialectRegistry registry = new DialectRegistry();
-    	for ( Iterator it = this.dialectConfigurations.values().iterator(); it.hasNext(); ) {
-    		DialectConfiguration conf = ( DialectConfiguration ) it.next();
-    		Dialect dialect = conf.getDialect();
-    		registry.addDialect( conf.getDialect().getId(), dialect );
-    	}
+        DialectRegistry registry = new DialectRegistry();
+        for ( Iterator it = this.dialectConfigurations.values().iterator(); it.hasNext(); ) {
+            DialectConfiguration conf = (DialectConfiguration) it.next();
+            Dialect dialect = conf.getDialect();
+            registry.addDialect( conf.getDialect().getId(),
+                                 dialect );
+        }
         return registry;
     }
 
@@ -216,128 +224,205 @@ public class PackageBuilderConfiguration {
             this.classLoader = classLoader;
         }
     }
-    
-//    public void addSemanticModule(SemanticModule module) {
-//        if ( this.semanticModules == null ) {
-//            initSemanticModules();
-//        }
-//        this.semanticModules.addSemanticModule( module );
-//    }
-//    
-//    public SemanticModules getSemanticModules() {
-//        if ( this.semanticModules == null ) {
-//            initSemanticModules();
-//        }        
-//        return this.semanticModules;
-//    }
-//    
-//    public void initSemanticModules() {
-//        this.semanticModules = new SemanticModules();
-//        // split on each space
-//        String locations[] = this.chainedProperties.getProperty( "semanticModues", "" ).split( "\\s" );
-//        
-//        int i = 0;
-//        // load each SemanticModule
-//        for ( String moduleLocation : locations ) {
-//            // trim leading/trailing spaces and quotes
-//            moduleLocation = moduleLocation.trim();
-//            if ( moduleLocation.startsWith( "\"" ) ) {
-//                moduleLocation = moduleLocation.substring( 1 );
-//            }
-//            if ( moduleLocation.endsWith( "\"" ) ) {
-//                moduleLocation = moduleLocation.substring( 0, moduleLocation.length() -1 );
-//            }
-//            loadSemanticModule(moduleLocation);
-//        }
-//    }
-//        
-//        public void loadSemanticModule(String moduleLocation) {
-//            ChainedProperties properties = new ChainedProperties(this.classLoader, moduleLocation );
-//            String uri = properties.getProperty( "uri", null );
-//            if ( uri == null || uri.trim().equals( "" ) ) {
-//                throw new RuntimeException( "Semantic Module URI property must not be empty" );
-//            }
-//        
-//            if ( classLoader == null ) {
-//                classLoader = Thread.currentThread().getContextClassLoader();
-//                if ( classLoader == null ) {
-//                    classLoader = this.getClass().getClassLoader();
-//                }
-//            }
-//
-//
-//            // User home properties file
-//            loadProperties( System.getProperty( "user.home" ) + moduleLocation );
-//
-//            // Working directory properties file
-//            loadProperties( moduleLocation );
-//
-//            // check META-INF directories for all known ClassLoaders
-//            ClassLoader confClassLoader = classLoader;
-//            if ( confClassLoader != null ) {
-//                loadProperties( getResources( "META-INF/" + moduleLocation,
-//                                              confClassLoader ) );
-//            }
-//
-//            confClassLoader = getClass().getClassLoader();
-//            if ( confClassLoader != null && confClassLoader != classLoader ) {
-//                loadProperties( getResources( "META-INF/drools." + moduleLocation,
-//                                              confClassLoader ),
-//                                this.props );
-//            }
-//
-//            confClassLoader = Thread.currentThread().getContextClassLoader();
-//            if ( confClassLoader != null && confClassLoader != classLoader ) {
-//                loadProperties( getResources( "META-INF/drools." + confFileName,
-//                                              confClassLoader ),
-//                                this.props );
-//            }
-//
-//            confClassLoader = ClassLoader.getSystemClassLoader();
-//            if ( confClassLoader != null && confClassLoader != classLoader ) {
-//                loadProperties( getResources( "META-INF/drools." + confFileName,
-//                                              confClassLoader ),
-//                                this.props );
-//            }
-//        }
-//
-//        private Properties loadProperties(String fileName) {
-//            Properties properties = null;
-//            if ( fileName != null ) {
-//                File file = new File( fileName );
-//                if ( file != null && file.exists() ) {
-//                    try {
-//                        properties = loadProperties( file.toURL() );
-//                    } catch ( MalformedURLException e ) {
-//                        throw new IllegalArgumentException( "file.toURL() failed for drools.packagebuilder.conf properties value '" + file + "'" );
-//                    }
-//                } else {
-//                    throw new IllegalArgumentException( fileName + " is specified but cannot be found '" + file + "'" );
-//                }
-//            }
-//            return properties;
-//        }
-//
-//        private Properties loadProperties(URL confURL) {
-//            Properties properties = new Properties();
-//            try {
-//                properties.load( confURL.openStream() );
-//            } catch ( IOException e ) {
-//                throw new IllegalArgumentException( "Invalid URL to properties file '" + confURL.toExternalForm() + "'" );
-//            }
-//            return properties;
-//        }        
-//        
-//        private Enumeration getResources(String name,
-//                                         ClassLoader classLoader) {
-//            Enumeration enumeration = null;
-//            try {
-//                enumeration = classLoader.getResources( name );
-//            } catch ( IOException e ) {
-//                e.printStackTrace();
-//            }
-//            return enumeration;
-//        }
+
+    public void addSemanticModule(SemanticModule module) {
+        if ( this.semanticModules == null ) {
+            initSemanticModules();
+        }
+        this.semanticModules.addSemanticModule( module );
+    }
+
+    public SemanticModules getSemanticModules() {
+        if ( this.semanticModules == null ) {
+            initSemanticModules();
+        }
+        return this.semanticModules;
+    }
+
+    public void initSemanticModules() {
+        this.semanticModules = new SemanticModules();
+        
+        this.semanticModules.addSemanticModule( new ProcessSemanticModule() );
+        this.semanticModules.addSemanticModule( new RulesSemanticModule() );
+        
+        // split on each space
+        String locations[] = this.chainedProperties.getProperty( "semanticModules",
+                                                                 "" ).split( "\\s" );
+
+        int i = 0;
+        // load each SemanticModule
+        for ( String moduleLocation : locations ) {
+            // trim leading/trailing spaces and quotes
+            moduleLocation = moduleLocation.trim();
+            if ( moduleLocation.startsWith( "\"" ) ) {
+                moduleLocation = moduleLocation.substring( 1 );
+            }
+            if ( moduleLocation.endsWith( "\"" ) ) {
+                moduleLocation = moduleLocation.substring( 0,
+                                                           moduleLocation.length() - 1 );
+            }
+            if ( !moduleLocation.equals( "" ) ) {
+                loadSemanticModule( moduleLocation );    
+            }
+        }
+    }
+
+    public void loadSemanticModule(String moduleLocation) {
+        // initialise default classloader, if it does not exist
+        if ( classLoader == null ) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+            if ( classLoader == null ) {
+                classLoader = this.getClass().getClassLoader();
+            }
+        }
+
+        Properties properties = null;
+
+        // User home 
+        String userHome = System.getProperty( "user.home" );
+        if ( userHome.endsWith( "\\" ) || userHome.endsWith( "/" ) ) {
+            properties = loadProperties( userHome + moduleLocation );
+        } else {
+            properties = loadProperties( userHome + "/" + moduleLocation );
+        }
+
+        if ( properties == null ) {
+            // Working directory 
+            properties = loadProperties( moduleLocation );
+        }
+
+        // check META-INF directories for all known ClassLoaders
+
+        if ( properties == null ) {
+            ClassLoader confClassLoader = classLoader;
+            if ( confClassLoader != null ) {
+                properties = loadProperties( confClassLoader.getResource( "META-INF/" + moduleLocation ) );
+            }
+        }
+
+        if ( properties == null ) {
+            ClassLoader confClassLoader = getClass().getClassLoader();
+            if ( confClassLoader != null && confClassLoader != classLoader ) {
+                properties = loadProperties( confClassLoader.getResource( "META-INF/" + moduleLocation ) );
+            }
+        }
+
+        if ( properties == null ) {
+            ClassLoader confClassLoader = Thread.currentThread().getContextClassLoader();
+            if ( confClassLoader != null && confClassLoader != classLoader ) {
+                properties = loadProperties( confClassLoader.getResource( "META-INF/" + moduleLocation ) );
+            }
+        }
+
+        if ( properties == null ) {
+            ClassLoader confClassLoader = ClassLoader.getSystemClassLoader();
+            if ( confClassLoader != null && confClassLoader != classLoader ) {
+                properties = loadProperties( confClassLoader.getResource( "META-INF/" + moduleLocation ) );
+            }
+        }
+
+        if ( properties == null ) {
+            throw new IllegalArgumentException( moduleLocation + " is specified but cannot be found.'" );
+        }
+
+        loadSemanticModule( properties );
+    }
+
+    public void loadSemanticModule(Properties properties) {
+        String uri = properties.getProperty( "uri",
+                                             null );
+        if ( uri == null || uri.trim().equals( "" ) ) {
+            throw new RuntimeException( "Semantic Module URI property must not be empty" );
+        }
+
+        DefaultSemanticModule module = new DefaultSemanticModule( uri );
+
+        for ( Entry<Object, Object> entry : properties.entrySet() ) {
+            String elementName = (String) entry.getKey();
+            
+            //uri is processed above, so skip
+            if ( "uri".equals( elementName ) ) {
+                continue;
+            }
+            
+            if ( elementName == null || elementName.trim().equals( "" ) ) {
+                throw new RuntimeException( "Element name must be specified for Semantic Module handler" );
+            }
+            String handlerName = (String) entry.getValue();
+            if ( handlerName == null || handlerName.trim().equals( "" ) ) {
+                throw new RuntimeException( "Handler name must be specified for Semantic Module" );
+            }
+
+            Handler handler = null;
+
+            try {
+                handler = (Handler) this.classLoader.loadClass( handlerName ).newInstance();
+            } catch ( Exception e ) {
+                //swallow
+            }
+
+            if ( handler == null ) {
+                try {
+                    handler = (Handler) getClass().getClassLoader().loadClass( handlerName ).newInstance();
+                } catch ( Exception e ) {
+                    //swallow
+                }
+            }
+
+            if ( handler == null ) {
+                try {
+                    handler = (Handler) Thread.currentThread().getContextClassLoader().loadClass( handlerName ).newInstance();
+                } catch ( Exception e ) {
+                    //swallow
+                }
+            }
+
+            if ( handler == null ) {
+                try {
+                    handler = (Handler) ClassLoader.getSystemClassLoader().loadClass( handlerName ).newInstance();
+                } catch ( Exception e ) {
+                    //swallow
+                }
+            }
+
+            if ( handler == null ) {
+                throw new RuntimeException( "Unable to load Semantic Module handler '" + elementName + ":" + handlerName + "'" );
+            } else {
+                module.addHandler( elementName,
+                                   handler );
+            }
+        }
+        this.semanticModules.addSemanticModule( module );
+    }
+
+    private Properties loadProperties(String fileName) {
+        Properties properties = null;
+        if ( fileName != null ) {
+            File file = new File( fileName );
+            if ( file != null && file.exists() ) {
+                try {
+                    properties = loadProperties( file.toURL() );
+                } catch ( MalformedURLException e ) {
+                    throw new IllegalArgumentException( "file.toURL() failed for '" + file + "'" );
+                }
+            } 
+        }
+        return properties;
+    }
+
+    private Properties loadProperties(URL confURL) {
+        if ( confURL == null ) {
+            return null;
+        }
+        
+        Properties properties = new Properties();
+        try {
+            properties.load( confURL.openStream() );
+        } catch ( IOException e ) {
+            throw new IllegalArgumentException( "Invalid URL to properties file '" + confURL.toExternalForm() + "'" );
+        }
+        return properties;
+    }
 
     private void buildAccumulateFunctionsMap() {
         this.accumulateFunctions = new HashMap<String, String>();
