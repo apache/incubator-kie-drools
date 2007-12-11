@@ -3,6 +3,8 @@ package org.drools.analytics.missingEquality
 
 #list any import classes here.
 import org.drools.base.evaluators.Operator;
+import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
+import org.drools.base.evaluators.SetEvaluatorsDefinition;
 
 import org.drools.analytics.components.VariableRestriction;
 import org.drools.analytics.components.LiteralRestriction;	
@@ -53,25 +55,25 @@ rule "Missing restriction in LiteralRestrictions"
 		#
 		) or (
 				$r :LiteralRestriction(
-					operator == Operator.MATCHES,
+					operator == MatchesEvaluatorsDefinition.MATCHES,
 					valueAsString matches $r.valueAsString
 				)
 			and
 				not LiteralRestriction(
 					fieldId == $r.fieldId,
-					operator == Operator.NOT_MATCHES,
+					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
 					patternIsNot == $r.patternIsNot,
 					valueAsString matches $r.valueAsString
 				)
 		) or (
 				$r :LiteralRestriction(
-					operator == Operator.NOT_MATCHES,
+					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
 					valueAsString matches $r.valueAsString
 				)
 			and
 				not LiteralRestriction(
 					fieldId == $r.fieldId,
-					operator == Operator.MATCHES,
+					operator == MatchesEvaluatorsDefinition.MATCHES,
 					patternIsNot == $r.patternIsNot,
 					valueAsString matches $r.valueAsString
 				)
@@ -128,24 +130,24 @@ rule "Missing restriction in VariableRestrictions"
 		#
 		) or (
 				$r :VariableRestriction(
-					operator == Operator.MATCHES 
+					operator == MatchesEvaluatorsDefinition.MATCHES 
 				)
 			and
 				not VariableRestriction(
 					fieldId == $r.fieldId,
-					operator == Operator.NOT_MATCHES,
+					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
 					patternIsNot == $r.patternIsNot,
 					variable.objectId == $r.variable.objectId,
 					variable.objectType == $r.variable.objectType
 				)
 		) or (
 				$r :VariableRestriction(
-					operator == Operator.NOT_MATCHES
+					operator == MatchesEvaluatorsDefinition.NOT_MATCHES
 				)
 			and
 				not VariableRestriction(
 					fieldId == $r.fieldId,
-					operator == Operator.MATCHES,
+					operator == MatchesEvaluatorsDefinition.MATCHES,
 					patternIsNot == $r.patternIsNot,
 					variable.objectId == $r.variable.objectId,
 					variable.objectType == $r.variable.objectType 
@@ -155,24 +157,24 @@ rule "Missing restriction in VariableRestrictions"
 		#
 		) or (
 				$r :VariableRestriction(
-					operator == Operator.MEMBEROF
+					operator == SetEvaluatorsDefinition.MEMBEROF
 				)
 			and
 				not VariableRestriction(
 					fieldId == $r.fieldId,
-					operator == Operator.NOTMEMBEROF,
+					operator == SetEvaluatorsDefinition.NOT_MEMBEROF,
 					patternIsNot == $r.patternIsNot,
 					variable.objectId == $r.variable.objectId,
 					variable.objectType == $r.variable.objectType
 				)
 		) or (
 				$r :VariableRestriction(
-					operator == Operator.NOTMEMBEROF
+					operator == SetEvaluatorsDefinition.NOT_MEMBEROF
 				)
 			and
 				not VariableRestriction(
 					fieldId == $r.fieldId,
-					operator == Operator.MEMBEROF,
+					operator == SetEvaluatorsDefinition.MEMBEROF,
 					patternIsNot == $r.patternIsNot,
 					variable.objectId == $r.variable.objectId,
 					variable.objectType == $r.variable.objectType
@@ -182,24 +184,24 @@ rule "Missing restriction in VariableRestrictions"
 		#
 		) or (
 				$r :VariableRestriction(
-					operator == Operator.CONTAINS
+					operator == SetEvaluatorsDefinition.CONTAINS
 				)
 			and
 				not VariableRestriction(
 					fieldId == $r.fieldId,
-					operator == Operator.NOT_CONTAINS,
+					operator == SetEvaluatorsDefinition.NOT_CONTAINS,
 					patternIsNot == $r.patternIsNot,
 					variable.objectId == $r.variable.objectId,
 					variable.objectType == $r.variable.objectType
 				)
 		) or (
 				$r :VariableRestriction(
-					operator == Operator.NOT_CONTAINS
+					operator == SetEvaluatorsDefinition.NOT_CONTAINS
 				)
 			and
 				not VariableRestriction(
 					fieldId == $r.fieldId,
-					operator == Operator.CONTAINS,
+					operator == SetEvaluatorsDefinition.CONTAINS,
 					patternIsNot == $r.patternIsNot,
 					variable.objectId == $r.variable.objectId,
 					variable.objectType == $r.variable.objectType
