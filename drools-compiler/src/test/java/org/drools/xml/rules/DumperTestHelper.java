@@ -10,6 +10,7 @@ import java.io.StringReader;
 import junit.framework.Assert;
 
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.xml.SemanticModules;
@@ -24,8 +25,9 @@ import org.drools.xml.XmlPackageReader;
 public class DumperTestHelper extends Assert {
     
     public static void XmlFile(String filename) throws Exception {
-
-        XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        
+        XmlPackageReader xmlPackageReader = new XmlPackageReader( conf.getSemanticModules() );
         xmlPackageReader.read( new InputStreamReader( DumperTestHelper.class.getResourceAsStream( filename ) ) );
         final PackageDescr pkgOriginal = xmlPackageReader.getPackageDescr();
 
