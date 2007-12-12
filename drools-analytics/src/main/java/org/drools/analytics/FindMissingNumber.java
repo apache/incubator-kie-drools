@@ -1,4 +1,4 @@
-package org.drools.analytics.accumulateFunction;
+package org.drools.analytics;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

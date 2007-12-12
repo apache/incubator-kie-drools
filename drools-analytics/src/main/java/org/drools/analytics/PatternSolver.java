@@ -8,7 +8,7 @@ import org.drools.analytics.components.Pattern;
  * 
  * @author Toni Rikkola
  */
-public class PatternSolver extends Solver {
+class PatternSolver extends Solver {
 
 	private Pattern pattern;
 

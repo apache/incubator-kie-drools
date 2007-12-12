@@ -7,7 +7,7 @@ import org.drools.StatelessSession;
 import org.drools.analytics.TestBase;
 import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.components.RulePossibility;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
@@ -51,8 +51,7 @@ public class WarningsTest extends TestBase {
 		objects.add(rulePossibilityRedundancy1);
 		objects.add(rulePossibilityRedundancy2);
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(objects);
@@ -98,8 +97,7 @@ public class WarningsTest extends TestBase {
 		objects.add(rp2);
 		objects.add(rulePossibilityRedundancy1);
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(objects);

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.Gap;
 import org.drools.base.RuleNameMatchesAgendaFilter;
@@ -27,12 +27,11 @@ public class RangeCheckIntegersTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Range check for integers, if smaller than or equal is missing"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingRangesForInts.drl"));
+				.getResourceAsStream("MissingRangesForInts.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
@@ -67,12 +66,11 @@ public class RangeCheckIntegersTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Range check for integers, if greater than or equal is missing"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingRangesForInts.drl"));
+				.getResourceAsStream("MissingRangesForInts.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
@@ -106,12 +104,11 @@ public class RangeCheckIntegersTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for integers, equal and greater than"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingRangesForInts.drl"));
+				.getResourceAsStream("MissingRangesForInts.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
@@ -146,12 +143,11 @@ public class RangeCheckIntegersTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Range check for integers, equal and smaller than"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingRangesForInts.drl"));
+				.getResourceAsStream("MissingRangesForInts.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session

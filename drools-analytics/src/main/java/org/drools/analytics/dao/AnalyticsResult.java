@@ -20,6 +20,8 @@ public interface AnalyticsResult {
 
 	public void save(MissingNumberPattern missingNumberPattern);
 
+	public AnalyticsData getAnalyticsData();
+
 	public Collection<RangeCheckCause> getRangeCheckCauses();
 
 	public Collection<RangeCheckCause> getRangeCheckCausesByFieldId(int id);

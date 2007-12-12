@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.analytics.components.AnalyticsRule;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
@@ -27,12 +27,12 @@ public class ConsequenceTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"No action - possibly commented out"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
-		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("ConsequenceTest.drl"));
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		Collection<? extends Object> testData = getTestData(this.getClass()
+				.getResourceAsStream("ConsequenceTest.drl"), result
+				.getAnalyticsData());
+
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);

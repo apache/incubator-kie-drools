@@ -8,7 +8,7 @@ import org.drools.analytics.TestBase;
 import org.drools.analytics.components.LiteralRestriction;
 import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.RulePossibility;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
@@ -42,8 +42,7 @@ public class NotesTest extends TestBase {
 		objects.add(redundancy);
 		objects.add(possibility);
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(objects);
@@ -84,8 +83,7 @@ public class NotesTest extends TestBase {
 		objects.add(redundancy);
 		objects.add(possibility);
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(objects);

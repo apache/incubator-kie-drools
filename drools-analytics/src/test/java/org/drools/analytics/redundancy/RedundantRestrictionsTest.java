@@ -7,7 +7,7 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.analytics.TestBase;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
@@ -20,12 +20,11 @@ public class RedundantRestrictionsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant LiteralRestriction"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> data = getTestData(this.getClass()
-				.getResourceAsStream("RedundancyLiteralRestrictionTest.drl"));
+				.getResourceAsStream("RedundancyLiteralRestrictionTest.drl"),
+				result.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
@@ -58,12 +57,11 @@ public class RedundantRestrictionsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant VariableRestriction"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> data = getTestData(this.getClass()
-				.getResourceAsStream("SubsumptionVariableRestrictionTest.drl"));
+				.getResourceAsStream("SubsumptionVariableRestrictionTest.drl"),
+				result.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);

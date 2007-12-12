@@ -10,7 +10,7 @@ import org.drools.StatelessSessionResult;
 import org.drools.analytics.TestBase;
 import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.components.TextConsequence;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.Redundancy;
 import org.drools.base.RuleNameMatchesAgendaFilter;
@@ -24,7 +24,6 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Rules, weak redundancy"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
 		Collection<Object> data = new ArrayList<Object>();
 
 		String ruleName1 = "Rule 1";
@@ -50,8 +49,7 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		data.add(r1);
 		data.add(r2);
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
@@ -74,12 +72,11 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Patterns with restrictions"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> data = getTestData(this.getClass()
-				.getResourceAsStream("PatternRedundancyTest.drl"));
+				.getResourceAsStream("PatternRedundancyTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
@@ -124,12 +121,11 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant Patterns without restrictions"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> data = getTestData(this.getClass()
-				.getResourceAsStream("PatternRedundancyTest.drl"));
+				.getResourceAsStream("PatternRedundancyTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);

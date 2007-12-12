@@ -10,12 +10,11 @@ import org.drools.analytics.components.Field;
 import org.drools.analytics.components.Restriction;
 import org.drools.analytics.components.RulePackage;
 import org.drools.analytics.dao.AnalyticsData;
-import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.RangeCheckCause;
 import org.mvel.TemplateInterpreter;
 
-public class ComponentsReportVisitor extends ReportVisitor {
+class ComponentsReportVisitor extends ReportVisitor {
 
 	public static String getCss(String fileName) {
 		return readFile(fileName);
@@ -50,8 +49,8 @@ public class ComponentsReportVisitor extends ReportVisitor {
 		return TemplateInterpreter.evalToString(myTemplate, map);
 	}
 
-	public static String visitRule(String sourceFolder, AnalyticsRule rule) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+	public static String visitRule(String sourceFolder, AnalyticsRule rule,
+			AnalyticsData data) {
 		Collection<AnalyticsClass> objectTypes = data.getClassesByRuleName(rule
 				.getRuleName());
 
@@ -68,8 +67,7 @@ public class ComponentsReportVisitor extends ReportVisitor {
 	}
 
 	public static String visitObjectType(String sourceFolder,
-			AnalyticsClass objectType) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+			AnalyticsClass objectType, AnalyticsData data) {
 		Collection<AnalyticsRule> rules = data.getRulesByClassId(objectType
 				.getId());
 
@@ -86,9 +84,9 @@ public class ComponentsReportVisitor extends ReportVisitor {
 		return TemplateInterpreter.evalToString(myTemplate, map);
 	}
 
-	public static String visitField(String sourceFolder, Field field) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+	public static String visitField(String sourceFolder, Field field,
+			AnalyticsResult result) {
+		AnalyticsData data = result.getAnalyticsData();
 		AnalyticsClass objectType = data.getClassById(field.getClassId());
 		Collection<AnalyticsRule> rules = data.getRulesByFieldId(field.getId());
 

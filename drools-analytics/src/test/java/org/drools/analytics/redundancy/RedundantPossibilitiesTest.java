@@ -13,7 +13,7 @@ import org.drools.analytics.components.LiteralRestriction;
 import org.drools.analytics.components.Pattern;
 import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.RulePossibility;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.Redundancy;
 import org.drools.base.RuleNameMatchesAgendaFilter;
@@ -24,14 +24,12 @@ public class RedundantPossibilitiesTest extends RedundancyTestBase {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Possibilities.drl"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find pattern possibility redundancy"));
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		String ruleName1 = "Rule 1";
@@ -86,14 +84,12 @@ public class RedundantPossibilitiesTest extends RedundancyTestBase {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Possibilities.drl"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find rule possibility redundancy"));
 
 		Collection<Object> data = new ArrayList<Object>();
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		String ruleName1 = "Rule 1";

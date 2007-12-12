@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.AnalyticsRangeCheckMessage;
@@ -15,7 +16,7 @@ import org.mvel.TemplateInterpreter;
  * 
  * @author Toni Rikkola
  */
-public class AnalyticsMessagesVisitor extends ReportVisitor {
+class AnalyticsMessagesVisitor extends ReportVisitor {
 
 	private static String ANALYSIS_MESSAGES_TEMPLATE = "analyticsMessages.htm";
 	private static String ANALYSIS_MESSAGE_TEMPLATE = "analyticsMessage.htm";
@@ -25,13 +26,13 @@ public class AnalyticsMessagesVisitor extends ReportVisitor {
 	public static String ERRORS = "Errors";
 
 	public static String visitAnalyticsMessagesCollection(String title,
-			Collection<AnalyticsMessageBase> messages) {
+			Collection<AnalyticsMessageBase> messages, AnalyticsData data) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Collection<String> messageTemplates = new ArrayList<String>();
 		String myTemplate = readFile(ANALYSIS_MESSAGES_TEMPLATE);
 
 		for (AnalyticsMessageBase message : messages) {
-			messageTemplates.add(visitAnalyticsMessage(message));
+			messageTemplates.add(visitAnalyticsMessage(message, data));
 		}
 
 		map.put("title", title);
@@ -40,9 +41,11 @@ public class AnalyticsMessagesVisitor extends ReportVisitor {
 		return TemplateInterpreter.evalToString(myTemplate, map);
 	}
 
-	public static String visitAnalyticsMessage(AnalyticsMessageBase message) {
+	public static String visitAnalyticsMessage(AnalyticsMessageBase message,
+			AnalyticsData data) {
 		if (message instanceof AnalyticsRangeCheckMessage) {
-			return visitAnalyticsMessage((AnalyticsRangeCheckMessage) message);
+			return visitAnalyticsMessage((AnalyticsRangeCheckMessage) message,
+					data);
 		} else if (message instanceof AnalyticsMessage) {
 			return visitAnalyticsMessage((AnalyticsMessage) message);
 		}
@@ -51,10 +54,10 @@ public class AnalyticsMessagesVisitor extends ReportVisitor {
 	}
 
 	public static String visitAnalyticsMessage(
-			AnalyticsRangeCheckMessage message) {
+			AnalyticsRangeCheckMessage message, AnalyticsData data) {
 
 		return MissingRangesReportVisitor.visitRangeCheckMessage(
-				UrlFactory.THIS_FOLDER, message);
+				UrlFactory.THIS_FOLDER, message, data);
 	}
 
 	public static String visitAnalyticsMessage(AnalyticsMessage message) {

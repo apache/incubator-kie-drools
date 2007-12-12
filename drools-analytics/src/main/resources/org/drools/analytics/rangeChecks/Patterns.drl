@@ -5,12 +5,10 @@ package org.drools.analytics.rangeChecks.patterns;
 import org.drools.base.evaluators.Operator;
 
 import org.drools.analytics.components.*;
-import org.drools.analytics.accumulateFunction.ValidatePattern;
-import org.drools.analytics.accumulateFunction.ValidatePatternResult;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.MissingNumberPattern;
 import org.drools.analytics.report.components.Cause;
-import org.drools.analytics.accumulateFunction.FindMissingNumber;
+import org.drools.analytics.FindMissingNumber;
 
 import java.util.ArrayList;
 import java.util.List;

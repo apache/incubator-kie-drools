@@ -10,14 +10,13 @@ import org.drools.analytics.components.Field;
 import org.drools.analytics.components.LiteralRestriction;
 import org.drools.analytics.components.Restriction;
 import org.drools.analytics.dao.AnalyticsData;
-import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.analytics.dao.DataTree;
 import org.drools.analytics.report.components.AnalyticsRangeCheckMessage;
 import org.drools.analytics.report.components.RangeCheckCause;
 import org.drools.base.evaluators.Operator;
 import org.mvel.TemplateInterpreter;
 
-public class MissingRangesReportVisitor extends ReportVisitor {
+class MissingRangesReportVisitor extends ReportVisitor {
 
 	public static Collection<String> visitRestrictionsCollection(
 			String sourceFolder, Collection<Restriction> restrictions,
@@ -122,8 +121,7 @@ public class MissingRangesReportVisitor extends ReportVisitor {
 	}
 
 	public static String visitRangeCheckMessage(String sourceFolder,
-			AnalyticsRangeCheckMessage message) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+			AnalyticsRangeCheckMessage message, AnalyticsData data) {
 		Collection<Restriction> restrictions = data
 				.getRestrictionsByFieldId(message.getFaulty().getId());
 		Field field = (Field) message.getFaulty();

@@ -7,7 +7,7 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.analytics.TestBase;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
@@ -20,12 +20,11 @@ public class RedundantConsequencesTest extends RedundancyTestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Find redundant TextConsequences"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> data = getTestData(this.getClass()
-				.getResourceAsStream("ConsequenceRedundancyTest.drl"));
+				.getResourceAsStream("ConsequenceRedundancyTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session.executeWithResults(data);

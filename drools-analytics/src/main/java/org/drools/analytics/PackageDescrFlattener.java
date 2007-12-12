@@ -30,7 +30,6 @@ import org.drools.analytics.components.TextConsequence;
 import org.drools.analytics.components.Variable;
 import org.drools.analytics.components.VariableRestriction;
 import org.drools.analytics.dao.AnalyticsData;
-import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.base.evaluators.Operator;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
@@ -65,9 +64,11 @@ import org.drools.lang.descr.VariableRestrictionDescr;
  * @author Toni Rikkola
  * 
  */
-public class PackageDescrFlattener {
+class PackageDescrFlattener {
 
 	private Solvers solvers = new Solvers();
+
+	private AnalyticsData data;
 
 	private RulePackage currentPackage = null;
 	private AnalyticsRule currentRule = null;
@@ -76,7 +77,18 @@ public class PackageDescrFlattener {
 	private AnalyticsClass currentClass = null;
 	private Field currentField = null;
 
-	public void insert(PackageDescr packageDescr) {
+	/**
+	 * Adds packageDescr to given AnalyticsData object
+	 * 
+	 * @param packageDescr
+	 *            PackageDescr that will be flattened.
+	 * @param data
+	 *            AnalyticsData where the flattened objects are added.
+	 */
+	public void addPackageDescrToData(PackageDescr packageDescr,
+			AnalyticsData data) {
+
+		this.data = data;
 
 		flatten(packageDescr);
 
@@ -223,7 +235,6 @@ public class PackageDescrFlattener {
 	 */
 	private AnalyticsPredicateDescr flatten(PredicateDescr descr,
 			AnalyticsComponent parent, int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		AnalyticsPredicateDescr predicate = new AnalyticsPredicateDescr();
 		predicate.setRuleName(currentRule.getRuleName());
@@ -246,7 +257,6 @@ public class PackageDescrFlattener {
 	 */
 	private AnalyticsEvalDescr flatten(EvalDescr descr,
 			AnalyticsComponent parent, int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		AnalyticsEvalDescr eval = new AnalyticsEvalDescr();
 		eval.setRuleId(currentRule.getId());
@@ -355,7 +365,6 @@ public class PackageDescrFlattener {
 	}
 
 	private void flatten(PackageDescr descr) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 		RulePackage rulePackage = data.getRulePackageByName(descr.getName());
 
 		if (rulePackage == null) {
@@ -371,7 +380,6 @@ public class PackageDescrFlattener {
 	}
 
 	private void flatten(RuleDescr descr, AnalyticsComponent parent) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		AnalyticsRule rule = new AnalyticsRule();
 		currentRule = rule;
@@ -401,7 +409,6 @@ public class PackageDescrFlattener {
 	 * @return Analytics object that implements the Consequence interface.
 	 */
 	private Consequence flattenConsequence(AnalyticsComponent parent, Object o) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		TextConsequence consequence = new TextConsequence();
 
@@ -441,7 +448,6 @@ public class PackageDescrFlattener {
 
 	private void flatten(OrDescr descr, AnalyticsComponent parent,
 			int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 		OperatorDescr operatorDescr = new OperatorDescr(OperatorDescr.Type.OR);
 		operatorDescr.setOrderNumber(orderNumber);
 		operatorDescr.setParent(parent);
@@ -455,7 +461,6 @@ public class PackageDescrFlattener {
 
 	private void flatten(AndDescr descr, AnalyticsComponent parent,
 			int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 		OperatorDescr operatorDescr = new OperatorDescr(OperatorDescr.Type.AND);
 		operatorDescr.setOrderNumber(orderNumber);
 		operatorDescr.setParent(parent);
@@ -469,7 +474,6 @@ public class PackageDescrFlattener {
 
 	private int flatten(PatternDescr descr, AnalyticsComponent parent,
 			int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		AnalyticsClass clazz = data.getClassByPackageAndName(descr
 				.getObjectType());
@@ -525,7 +529,6 @@ public class PackageDescrFlattener {
 
 	private void flatten(FieldConstraintDescr descr, AnalyticsComponent parent,
 			int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		Field field = data.getFieldByClassAndFieldName(currentClass.getName(),
 				descr.getFieldName());
@@ -567,7 +570,6 @@ public class PackageDescrFlattener {
 	 */
 	private void flatten(FieldBindingDescr descr, AnalyticsComponent parent,
 			int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		Variable variable = new Variable();
 		variable.setRuleId(currentRule.getId());
@@ -591,7 +593,6 @@ public class PackageDescrFlattener {
 	 */
 	private void flatten(VariableRestrictionDescr descr,
 			AnalyticsComponent parent, int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		Variable variable = data.getVariableByRuleAndVariableName(currentRule
 				.getRuleName(), descr.getIdentifier());
@@ -603,8 +604,8 @@ public class PackageDescrFlattener {
 		restriction.setPatternIsNot(currentPattern.isPatternNot());
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
-		restriction.setOperator(Operator
-				.determineOperator(descr.getEvaluator(), descr.isNegated()));
+		restriction.setOperator(Operator.determineOperator(
+				descr.getEvaluator(), descr.isNegated()));
 		restriction.setVariable(variable);
 		restriction.setOrderNumber(orderNumber);
 		restriction.setParent(parent);
@@ -623,7 +624,6 @@ public class PackageDescrFlattener {
 	 */
 	private void flatten(ReturnValueRestrictionDescr descr,
 			AnalyticsComponent parent, int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		ReturnValueRestriction restriction = new ReturnValueRestriction();
 
@@ -633,8 +633,8 @@ public class PackageDescrFlattener {
 		restriction.setPatternIsNot(currentPattern.isPatternNot());
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
-		restriction.setOperator(Operator
-				.determineOperator(descr.getEvaluator(), descr.isNegated()));
+		restriction.setOperator(Operator.determineOperator(
+				descr.getEvaluator(), descr.isNegated()));
 		restriction.setClassMethodName(descr.getClassMethodName());
 		restriction.setContent(descr.getContent());
 		restriction.setDeclarations(descr.getDeclarations());
@@ -653,7 +653,6 @@ public class PackageDescrFlattener {
 	 */
 	private void flatten(LiteralRestrictionDescr descr,
 			AnalyticsComponent parent, int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		LiteralRestriction restriction = new LiteralRestriction();
 
@@ -664,8 +663,8 @@ public class PackageDescrFlattener {
 		restriction.setPatternIsNot(currentPattern.isPatternNot());
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
-		restriction.setOperator(Operator
-				.determineOperator(descr.getEvaluator(), descr.isNegated()));
+		restriction.setOperator(Operator.determineOperator(
+				descr.getEvaluator(), descr.isNegated()));
 		restriction.setValue(descr.getText());
 		restriction.setOrderNumber(orderNumber);
 		restriction.setParent(parent);
@@ -684,7 +683,6 @@ public class PackageDescrFlattener {
 	 */
 	private void flatten(QualifiedIdentifierRestrictionDescr descr,
 			AnalyticsComponent parent, int orderNumber) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		String text = descr.getText();
 		Variable variable = data.getVariableByRuleAndVariableName(currentRule
@@ -697,8 +695,8 @@ public class PackageDescrFlattener {
 		restriction.setPatternIsNot(currentPattern.isPatternNot());
 		restriction.setConstraintId(currentConstraint.getId());
 		restriction.setFieldId(currentConstraint.getFieldId());
-		restriction.setOperator(Operator
-				.determineOperator(descr.getEvaluator(), descr.isNegated()));
+		restriction.setOperator(Operator.determineOperator(
+				descr.getEvaluator(), descr.isNegated()));
 		restriction.setVariableId(variable.getId());
 		restriction.setVariableName(text.substring(0, text.indexOf(".")));
 		restriction.setVariablePath(text.substring(text.indexOf(".")));
@@ -727,7 +725,6 @@ public class PackageDescrFlattener {
 	}
 
 	private void formPossibilities() {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
 
 		for (PatternPossibility possibility : solvers.getPatternPossibilities()) {
 			data.save(possibility);

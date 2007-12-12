@@ -1,10 +1,12 @@
-package org.drools.analytics.accumulateFunction;
+package org.drools.analytics;
 
 import java.math.BigDecimal;
 
+import org.drools.analytics.FindMissingNumber;
+
 import junit.framework.TestCase;
 
-public class ValidatePatternTest extends TestCase {
+public class FindMissingNumberTest extends TestCase {
 
 	public void testfindSumPattern() {
 		// Sum +2 missing number 4
