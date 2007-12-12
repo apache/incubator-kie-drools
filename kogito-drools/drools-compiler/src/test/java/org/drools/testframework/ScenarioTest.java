@@ -10,6 +10,7 @@ import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.RetractFact;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
+import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 
 import junit.framework.TestCase;
@@ -163,6 +164,32 @@ public class ScenarioTest extends TestCase {
 
 		sc = new Scenario();
 		assertFalse(sc.isFactNameExisting("w"));
+	}
+
+	public void testCountSuccessFailures() {
+		Scenario sc = new Scenario();
+		sc.fixtures.add(new FactData());
+		sc.fixtures.add(new ExecutionTrace());
+		VerifyRuleFired vr = new VerifyRuleFired();
+		vr.successResult = false;
+		sc.fixtures.add(vr);
+
+		VerifyField vf = new VerifyField();
+		vf.successResult = true;
+		VerifyField vf2 = new VerifyField();
+		vf2.successResult = false;
+		VerifyFact vfact = new VerifyFact();
+		vfact.fieldValues.add(vf);
+		vfact.fieldValues.add(vf2);
+		sc.fixtures.add(vfact);
+
+
+		int[] totals = sc.countFailuresTotal();
+		assertEquals(2, totals[0]);
+		assertEquals(3, totals[1]);
+
+
+
 	}
 
 }
