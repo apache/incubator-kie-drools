@@ -27,6 +27,8 @@ class AnalyticsResultNormal implements AnalyticsResult {
 	private List<AnalyticsMessageBase> messages = new ArrayList<AnalyticsMessageBase>();
 	private DataTree<AnalyticsMessageBase.Severity, AnalyticsMessageBase> messagesBySeverity = new DataTree<AnalyticsMessageBase.Severity, AnalyticsMessageBase>();
 
+	private AnalyticsData data = new AnalyticsDataMaps();
+
 	public void save(AnalyticsMessageBase message) {
 		messages.add(message);
 		messagesBySeverity.put(message.getSeverity(), message);
@@ -87,5 +89,9 @@ class AnalyticsResultNormal implements AnalyticsResult {
 		result.addAll(missingNumberPatternsByFieldId.getBranch(id));
 
 		return result;
+	}
+
+	public AnalyticsData getAnalyticsData() {
+		return data;
 	}
 }

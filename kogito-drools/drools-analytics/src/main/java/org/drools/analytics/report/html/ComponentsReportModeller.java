@@ -7,14 +7,13 @@ import org.drools.analytics.components.AnalyticsClass;
 import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.components.Field;
 import org.drools.analytics.dao.AnalyticsData;
-import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 
 public class ComponentsReportModeller extends ReportModeller {
 
-	public static void writeHTML(String path) {
-		AnalyticsData data = AnalyticsDataFactory.getAnalyticsData();
+	public static void writeHTML(String path, AnalyticsResult result) {
+		AnalyticsData data = result.getAnalyticsData();
 
 		// Source folder
 		File sourceFolder = new File(path + UrlFactory.SOURCE_FOLDER);
@@ -43,7 +42,7 @@ public class ComponentsReportModeller extends ReportModeller {
 			writeToFile(ruleFolder + File.separator + rule.getId() + ".htm",
 					formPage(UrlFactory.PREVIOUS_FOLDER,
 							ComponentsReportVisitor.visitRule(
-									UrlFactory.PREVIOUS_FOLDER, rule)));
+									UrlFactory.PREVIOUS_FOLDER, rule, data)));
 		}
 
 		// ObjectTypes
@@ -55,7 +54,7 @@ public class ComponentsReportModeller extends ReportModeller {
 			writeToFile(objectTypeFolder + File.separator + objectType.getId()
 					+ ".htm", formPage(UrlFactory.PREVIOUS_FOLDER,
 					ComponentsReportVisitor.visitObjectType(
-							UrlFactory.PREVIOUS_FOLDER, objectType)));
+							UrlFactory.PREVIOUS_FOLDER, objectType, data)));
 		}
 
 		// Fields
@@ -67,11 +66,11 @@ public class ComponentsReportModeller extends ReportModeller {
 			writeToFile(fieldFolder + File.separator + field.getId() + ".htm",
 					formPage(UrlFactory.PREVIOUS_FOLDER,
 							ComponentsReportVisitor.visitField(
-									UrlFactory.PREVIOUS_FOLDER, field)));
+									UrlFactory.PREVIOUS_FOLDER, field, result)));
 		}
 
 		// Analytics messages
-		writeMessages(path);
+		writeMessages(path, result);
 
 		// css files
 		String cssFolder = path + UrlFactory.SOURCE_FOLDER + File.separator
@@ -96,20 +95,24 @@ public class ComponentsReportModeller extends ReportModeller {
 		}
 	}
 
-	private static void writeMessages(String path) {
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+	private static void writeMessages(String path, AnalyticsResult result) {
+		AnalyticsData data = result.getAnalyticsData();
+
 		String errors = AnalyticsMessagesVisitor
 				.visitAnalyticsMessagesCollection(
-						AnalyticsMessage.Severity.ERROR.getTuple(), result
-								.getBySeverity(AnalyticsMessage.Severity.ERROR));
+						AnalyticsMessage.Severity.ERROR.getTuple(),
+						result.getBySeverity(AnalyticsMessage.Severity.ERROR),
+						data);
 		String warnings = AnalyticsMessagesVisitor
 				.visitAnalyticsMessagesCollection(
 						AnalyticsMessage.Severity.WARNING.getTuple(),
-						result.getBySeverity(AnalyticsMessage.Severity.WARNING));
+						result.getBySeverity(AnalyticsMessage.Severity.WARNING),
+						data);
 		String notes = AnalyticsMessagesVisitor
 				.visitAnalyticsMessagesCollection(
 						AnalyticsMessage.Severity.NOTE.getTuple(), result
-								.getBySeverity(AnalyticsMessage.Severity.NOTE));
+								.getBySeverity(AnalyticsMessage.Severity.NOTE),
+						data);
 
 		writeToFile(path + UrlFactory.SOURCE_FOLDER + File.separator
 				+ UrlFactory.HTML_FILE_ANALYTICS_MESSAGES, formPage(

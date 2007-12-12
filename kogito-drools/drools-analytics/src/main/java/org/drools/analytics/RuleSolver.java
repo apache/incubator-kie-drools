@@ -8,7 +8,7 @@ import org.drools.analytics.components.OperatorDescr;
  * 
  * @author Toni Rikkola
  */
-public class RuleSolver extends Solver {
+class RuleSolver extends Solver {
 
 	private AnalyticsRule rule;
 

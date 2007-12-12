@@ -8,7 +8,7 @@ import org.drools.StatelessSession;
 import org.drools.analytics.TestBase;
 import org.drools.analytics.components.LiteralRestriction;
 import org.drools.analytics.components.VariableRestriction;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
@@ -24,14 +24,11 @@ public class MissingEqualityTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Missing restriction in LiteralRestrictions"));
 
-		// Clear data so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingEqualityTest.drl"));
+				.getResourceAsStream("MissingEqualityTest.drl"), result
+				.getAnalyticsData());
 
-		// Clear result so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -67,14 +64,11 @@ public class MissingEqualityTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Missing restriction in VariableRestrictions"));
 
-		// Clear data so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingEqualityTest.drl"));
+				.getResourceAsStream("MissingEqualityTest.drl"), result
+				.getAnalyticsData());
 
-		// Clear result so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);

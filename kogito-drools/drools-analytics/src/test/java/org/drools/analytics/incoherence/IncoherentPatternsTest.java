@@ -8,7 +8,7 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.analytics.TestBase;
 import org.drools.analytics.components.AnalyticsRule;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
@@ -28,12 +28,11 @@ public class IncoherentPatternsTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Incoherent Patterns in rule possibility"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("PatternsTest.drl"));
+				.getResourceAsStream("PatternsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -70,12 +69,11 @@ public class IncoherentPatternsTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Incoherent Patterns in rule possibility, variables"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("PatternsTest.drl"));
+				.getResourceAsStream("PatternsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -114,12 +112,11 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with lesser value"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("PatternsTest.drl"));
+				.getResourceAsStream("PatternsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -156,12 +153,11 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with greater value"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("PatternsTest.drl"));
+				.getResourceAsStream("PatternsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -198,12 +194,11 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with equal or unequal value"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("PatternsTest.drl"));
+				.getResourceAsStream("PatternsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -240,12 +235,11 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with equal or unequal variables"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("PatternsTest.drl"));
+				.getResourceAsStream("PatternsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -281,12 +275,11 @@ public class IncoherentPatternsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent Patterns in rule possibility, ranges when not conflicts with equal value"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("PatternsTest.drl"));
+				.getResourceAsStream("PatternsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -312,41 +305,40 @@ public class IncoherentPatternsTest extends TestBase {
 			}
 		}
 	}
-	
+
 	public void testIncoherentPatternsInRulePossibilityRangesEqualVariable()
-	throws Exception {
+			throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Patterns.drl"));
-		
+
 		session
-		.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Incoherent Patterns in rule possibility, ranges when not conflicts with equal variable"));
-		
-		AnalyticsDataFactory.clearAnalyticsData();
+				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+						"Incoherent Patterns in rule possibility, ranges when not conflicts with equal variable"));
+
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("PatternsTest.drl"));
-		
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+				.getResourceAsStream("PatternsTest.drl"), result
+				.getAnalyticsData());
+
 		session.setGlobal("result", result);
-		
+
 		session.executeWithResults(testData);
-		
+
 		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
 				AnalyticsMessageBase.Severity.WARNING).iterator();
-		
+
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
 			if (o instanceof AnalyticsMessage) {
 				AnalyticsRule rule = (AnalyticsRule) ((AnalyticsMessage) o)
-				.getFaulty();
+						.getFaulty();
 				rulesThatHadErrors.add(rule.getRuleName());
 			}
 		}
-		
+
 		assertTrue(rulesThatHadErrors.remove("Incoherent patterns 13"));
-		
+
 		if (!rulesThatHadErrors.isEmpty()) {
 			for (String string : rulesThatHadErrors) {
 				fail("Rule " + string + " caused an error.");

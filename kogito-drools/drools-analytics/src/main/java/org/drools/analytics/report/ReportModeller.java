@@ -3,7 +3,6 @@ package org.drools.analytics.report;
 import java.util.Collection;
 
 import org.drools.analytics.components.LiteralRestriction;
-import org.drools.analytics.dao.AnalyticsDataFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
@@ -18,8 +17,7 @@ import com.thoughtworks.xstream.XStream;
  */
 public class ReportModeller {
 
-	public static String writeXML() {
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+	public static String writeXML(AnalyticsResult result) {
 		XStream xstream = new XStream();
 
 		xstream.alias("result", AnalyticsResult.class);
@@ -35,8 +33,7 @@ public class ReportModeller {
 		return "<?xml version=\"1.0\"?>\n" + xstream.toXML(result);
 	}
 
-	public static String writePlainText() {
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+	public static String writePlainText(AnalyticsResult result) {
 
 		StringBuffer str = new StringBuffer();
 

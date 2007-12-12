@@ -32,14 +32,21 @@ public abstract class MissingRange implements Comparable<MissingRange> {
 		} else if (e.equals(Operator.LESS_OR_EQUAL)) {
 			return Operator.GREATER;
 		} else {
-            return Operator.determineOperator( e.getOperatorString(), !e.isNegated() );
-        }
+			return Operator.determineOperator(e.getOperatorString(), !e
+					.isNegated());
+		}
 	}
 
 	public int compareTo(MissingRange another) {
-		MissingRange anotherMissingRange = ((MissingRange) another);
+		int value = this.id - another.getId();
 
-		return this.id - anotherMissingRange.getId();
+		if (value > 0) {
+			return 1;
+		} else if (value < 0) {
+			return -1;
+		} else {
+			return 0;
+		}
 	}
 
 	public int getId() {

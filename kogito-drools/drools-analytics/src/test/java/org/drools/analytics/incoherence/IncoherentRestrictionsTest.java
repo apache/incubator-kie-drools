@@ -8,7 +8,7 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.analytics.TestBase;
 import org.drools.analytics.components.Pattern;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
@@ -29,12 +29,11 @@ public class IncoherentRestrictionsTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Incoherent LiteralRestrictions in pattern possibility"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("RestrictionsTest.drl"));
+				.getResourceAsStream("RestrictionsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -70,12 +69,11 @@ public class IncoherentRestrictionsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent LiteralRestrictions with ranges in pattern possibility, impossible ranges"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("RestrictionsTest.drl"));
+				.getResourceAsStream("RestrictionsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -110,12 +108,11 @@ public class IncoherentRestrictionsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("RestrictionsTest.drl"));
+				.getResourceAsStream("RestrictionsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -151,12 +148,11 @@ public class IncoherentRestrictionsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality greater"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("RestrictionsTest.drl"));
+				.getResourceAsStream("RestrictionsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -191,12 +187,11 @@ public class IncoherentRestrictionsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent LiteralRestrictions with ranges in pattern possibility, impossible range"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("RestrictionsTest.drl"));
+				.getResourceAsStream("RestrictionsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -230,12 +225,11 @@ public class IncoherentRestrictionsTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Incoherent VariableRestrictions in pattern possibility"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("RestrictionsTest.drl"));
+				.getResourceAsStream("RestrictionsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -272,12 +266,11 @@ public class IncoherentRestrictionsTest extends TestBase {
 				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 						"Incoherent VariableRestrictions in pattern possibility, impossible range"));
 
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("RestrictionsTest.drl"));
+				.getResourceAsStream("RestrictionsTest.drl"), result
+				.getAnalyticsData());
 
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);

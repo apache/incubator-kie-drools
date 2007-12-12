@@ -11,7 +11,7 @@ import org.drools.StatelessSessionResult;
 import org.drools.analytics.components.AnalyticsComponent;
 import org.drools.analytics.components.Field;
 import org.drools.analytics.components.LiteralRestriction;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.Gap;
 import org.drools.base.RuleNameMatchesAgendaFilter;
@@ -83,7 +83,7 @@ public class RangeCheckCleanTest extends TestBase {
 		higher.setValue("100");
 		testData.add(higher);
 
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
@@ -178,7 +178,7 @@ public class RangeCheckCleanTest extends TestBase {
 		higher.setValue("100");
 		testData.add(higher);
 
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
@@ -273,7 +273,7 @@ public class RangeCheckCleanTest extends TestBase {
 		higher.setValue("100.0");
 		testData.add(higher);
 
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
@@ -368,7 +368,7 @@ public class RangeCheckCleanTest extends TestBase {
 		higher.setValue("100.0");
 		testData.add(higher);
 
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
@@ -463,7 +463,7 @@ public class RangeCheckCleanTest extends TestBase {
 		higher.setValue("20-Oct-2007");
 		testData.add(higher);
 
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session
@@ -558,7 +558,7 @@ public class RangeCheckCleanTest extends TestBase {
 		higher.setValue("20-Oct-2007");
 		testData.add(higher);
 
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		StatelessSessionResult sessionResult = session

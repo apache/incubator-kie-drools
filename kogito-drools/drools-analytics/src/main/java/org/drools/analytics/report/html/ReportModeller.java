@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.mvel.TemplateInterpreter;
 
-public abstract class ReportModeller {
+abstract class ReportModeller {
 
 	protected static String formPage(String sourceFolder, String content) {
 		Map<String, Object> map = new HashMap<String, Object>();

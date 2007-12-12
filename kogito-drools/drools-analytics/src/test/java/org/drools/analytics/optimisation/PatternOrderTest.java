@@ -7,7 +7,7 @@ import java.util.Iterator;
 import org.drools.StatelessSession;
 import org.drools.analytics.TestBase;
 import org.drools.analytics.components.AnalyticsComponent;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
@@ -22,14 +22,11 @@ public class PatternOrderTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Optimise evals inside pattern"));
 
-		// Clear data so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("OptimisationPatternOrderTest.drl"));
+				.getResourceAsStream("OptimisationPatternOrderTest.drl"),
+				result.getAnalyticsData());
 
-		// Clear result so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);

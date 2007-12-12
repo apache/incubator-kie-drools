@@ -13,7 +13,7 @@ import org.drools.analytics.components.LiteralRestriction;
 import org.drools.analytics.components.OperatorDescr;
 import org.drools.analytics.components.Pattern;
 import org.drools.analytics.components.Restriction;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
@@ -30,14 +30,11 @@ public class RestrictionOrderTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Optimise restrictions inside operator"));
 
-		// Clear data so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("OptimisationRestrictionOrderTest.drl"));
+				.getResourceAsStream("OptimisationRestrictionOrderTest.drl"),
+				result.getAnalyticsData());
 
-		// Clear result so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -132,9 +129,7 @@ public class RestrictionOrderTest extends TestBase {
 		r6.setOrderNumber(3);
 		testData.add(r6);
 
-		// Clear result so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);
@@ -174,14 +169,11 @@ public class RestrictionOrderTest extends TestBase {
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
 				"Optimise predicates inside operator"));
 
-		// Clear data so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsData();
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("OptimisationRestrictionOrderTest.drl"));
+				.getResourceAsStream("OptimisationRestrictionOrderTest.drl"),
+				result.getAnalyticsData());
 
-		// Clear result so that test data doesn't mix.
-		AnalyticsDataFactory.clearAnalyticsResult();
-		AnalyticsResult result = AnalyticsDataFactory.getAnalyticsResult();
 		session.setGlobal("result", result);
 
 		session.executeWithResults(testData);

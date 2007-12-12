@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
-import org.drools.analytics.dao.AnalyticsDataFactory;
+import org.drools.analytics.dao.AnalyticsData;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
@@ -29,9 +29,6 @@ abstract public class TestBase extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		System.setProperty("drools.accumulate.function.validatePattern",
-				"com.analytics.accumulateFunction.ValidatePattern");
-		
 		System.setProperty("drools.dateformat", "dd-MMM-yyyy");
 	}
 
@@ -76,16 +73,16 @@ abstract public class TestBase extends TestCase {
 		return false;
 	}
 
-	public Collection<? extends Object> getTestData(InputStream stream)
-			throws Exception {
+	public Collection<? extends Object> getTestData(InputStream stream,
+			AnalyticsData data) throws Exception {
 		Reader drlReader = new InputStreamReader(stream);
 		PackageDescr descr = new DrlParser().parse(drlReader);
 
 		PackageDescrFlattener ruleFlattener = new PackageDescrFlattener();
 
-		ruleFlattener.insert(descr);
+		ruleFlattener.addPackageDescrToData(descr, data);
 
 		// Rules with relations
-		return AnalyticsDataFactory.getAnalyticsData().getAll();
+		return data.getAll();
 	}
 }

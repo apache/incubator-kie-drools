@@ -16,7 +16,7 @@ import org.drools.analytics.components.RulePossibility;
  * 
  * @author Toni Rikkola
  */
-public class Solvers {
+ class Solvers {
 
 	private RuleSolver ruleSolver = null;
 	private PatternSolver patternSolver = null;
