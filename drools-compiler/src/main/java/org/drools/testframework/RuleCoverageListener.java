@@ -18,7 +18,7 @@ import org.drools.event.BeforeActivationFiredEvent;
  */
 public class RuleCoverageListener implements AgendaEventListener {
 
-	private final Set<String> rules;
+	final Set<String> rules;
 	private int totalCount;
 
 	/**
@@ -58,8 +58,8 @@ public class RuleCoverageListener implements AgendaEventListener {
 	/**
 	 * @return A set of rules that were not fired.
 	 */
-	public Set<String> getUnfiredRules() {
-		return this.rules;
+	public String[] getUnfiredRules() {
+		return rules.toArray(new String[rules.size()]);
 	}
 
 	public int getPercentCovered() {

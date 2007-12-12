@@ -25,30 +25,30 @@ public class RuleCoverageListenerTest extends TestCase {
 		rules.add("rule3");
 
 		RuleCoverageListener ls = new RuleCoverageListener(rules);
-		assertEquals(3, ls.getUnfiredRules().size());
+		assertEquals(3, ls.rules.size());
 		assertEquals(0, ls.getPercentCovered());
 
 		ls.afterActivationFired(new AfterActivationFiredEvent(new MockActivation("rule1")), null);
-		assertEquals(2, ls.getUnfiredRules().size());
-		assertTrue(ls.getUnfiredRules().contains("rule2"));
-		assertTrue(ls.getUnfiredRules().contains("rule3"));
-		assertFalse(ls.getUnfiredRules().contains("rule1"));
+		assertEquals(2, ls.rules.size());
+		assertTrue(ls.rules.contains("rule2"));
+		assertTrue(ls.rules.contains("rule3"));
+		assertFalse(ls.rules.contains("rule1"));
 		assertEquals(33, ls.getPercentCovered());
 
 		ls.afterActivationFired(new AfterActivationFiredEvent(new MockActivation("rule2")), null);
-		assertEquals(1, ls.getUnfiredRules().size());
-		assertFalse(ls.getUnfiredRules().contains("rule2"));
-		assertFalse(ls.getUnfiredRules().contains("rule1"));
-		assertTrue(ls.getUnfiredRules().contains("rule3"));
+		assertEquals(1, ls.rules.size());
+		assertFalse(ls.rules.contains("rule2"));
+		assertFalse(ls.rules.contains("rule1"));
+		assertTrue(ls.rules.contains("rule3"));
 
 		assertEquals(66, ls.getPercentCovered());
 
 
 		ls.afterActivationFired(new AfterActivationFiredEvent(new MockActivation("rule3")), null);
-		assertEquals(0, ls.getUnfiredRules().size());
-		assertFalse(ls.getUnfiredRules().contains("rule2"));
-		assertFalse(ls.getUnfiredRules().contains("rule1"));
-		assertFalse(ls.getUnfiredRules().contains("rule3"));
+		assertEquals(0, ls.rules.size());
+		assertFalse(ls.rules.contains("rule2"));
+		assertFalse(ls.rules.contains("rule1"));
+		assertFalse(ls.rules.contains("rule3"));
 
 		assertEquals(100, ls.getPercentCovered());
 

@@ -187,6 +187,36 @@ public class Scenario implements PortableObject {
 	}
 
 
+	/**
+	 *
+	 * @return int[0] = failures, int[1] = total;
+	 */
+	public int[] countFailuresTotal() {
+		int total = 0;
+		int failures = 0;
+		for (Iterator iterator = fixtures.iterator(); iterator.hasNext();) {
+			Fixture f = (Fixture) iterator.next();
+			if (f instanceof VerifyRuleFired) {
+				total++;
+				VerifyRuleFired vr = (VerifyRuleFired) f;
+				if (vr.successResult != null && !vr.successResult.booleanValue()) {
+					failures++;
+				}
+			} else if (f instanceof VerifyFact) {
+				VerifyFact vf = (VerifyFact) f;
+				for (Iterator it = vf.fieldValues.iterator(); it
+						.hasNext();) {
+					VerifyField vfl = (VerifyField) it.next();
+					if (vfl.successResult != null && !vfl.successResult.booleanValue()) {
+						failures++;
+					}
+					total++;
+				}
+			}
+		}
+		return new int[] {failures, total};
+	}
+
 }
 
 
