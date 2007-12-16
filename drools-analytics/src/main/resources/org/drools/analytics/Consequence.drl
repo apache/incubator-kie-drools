@@ -21,7 +21,7 @@ rule "No action - possibly commented out"
 			id == $c.ruleId
 		)
 	then 
-		result.save( new AnalyticsMessage( 
+		result.add( new AnalyticsMessage( 
 								AnalyticsMessage.Severity.WARNING,
 								AnalyticsMessage.MessageType.MISSING_COMPONENT,
 								$r, 

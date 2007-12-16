@@ -54,7 +54,7 @@ rule "Range check for number patterns"
 		Number number = FindMissingNumber.testForPattern( $list );
 		if( number != null ){
 			MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.EQUAL, $f.getFieldType(), number.toString() );
-			result.save( mnp );
+			result.add( mnp );
 		}
 end
 
@@ -94,6 +94,6 @@ rule "Range check for number patterns, !="
 		Number number = FindMissingNumber.testForPattern( $list );
 		if( number != null ){
 			MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.NOT_EQUAL, $f.getFieldType(), number.toString() );
-			result.save( mnp );
+			result.add( mnp );
 		}
 end

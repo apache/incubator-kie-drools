@@ -14,11 +14,11 @@ import org.drools.analytics.report.components.AnalyticsMessageBase.Severity;
  */
 public interface AnalyticsResult {
 
-	public void save(Gap gap);
+	public void add(Gap gap);
 
 	public void remove(Gap gap);
 
-	public void save(MissingNumberPattern missingNumberPattern);
+	public void add(MissingNumberPattern missingNumberPattern);
 
 	public AnalyticsData getAnalyticsData();
 
@@ -28,7 +28,7 @@ public interface AnalyticsResult {
 
 	public Collection<Gap> getGapsByFieldId(int fieldId);
 
-	public void save(AnalyticsMessageBase note);
+	public void add(AnalyticsMessageBase note);
 
 	/**
 	 * Return all the items that have given severity value.

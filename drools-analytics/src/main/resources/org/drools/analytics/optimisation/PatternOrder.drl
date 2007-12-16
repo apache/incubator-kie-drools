@@ -49,7 +49,7 @@ rule "Optimise evals inside pattern"
 		Collection list = new ArrayList();
 		list.add( $eval );
 		list.add( $other );
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.NOTE, 
 								AnalyticsMessage.MessageType.OPTIMISATION, 
 								$rule, 

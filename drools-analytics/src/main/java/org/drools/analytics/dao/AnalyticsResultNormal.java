@@ -29,7 +29,7 @@ class AnalyticsResultNormal implements AnalyticsResult {
 
 	private AnalyticsData data = new AnalyticsDataMaps();
 
-	public void save(AnalyticsMessageBase message) {
+	public void add(AnalyticsMessageBase message) {
 		messages.add(message);
 		messagesBySeverity.put(message.getSeverity(), message);
 	}
@@ -46,10 +46,10 @@ class AnalyticsResultNormal implements AnalyticsResult {
 		}
 	}
 
-	public void save(Gap gap) {
+	public void add(Gap gap) {
 		gapsById.put(gap.getId(), gap);
 
-		// Save by field id.
+		// Put by field id.
 		gapsByFieldId.put(gap.getField().getId(), gap);
 	}
 
@@ -72,11 +72,11 @@ class AnalyticsResultNormal implements AnalyticsResult {
 		return result;
 	}
 
-	public void save(MissingNumberPattern missingNumberPattern) {
+	public void add(MissingNumberPattern missingNumberPattern) {
 		missingNumberPatternsById.put(missingNumberPattern.getId(),
 				missingNumberPattern);
 
-		// Save by field id.
+		// Put by field id.
 		missingNumberPatternsByFieldId.put(missingNumberPattern.getField()
 				.getId(), missingNumberPattern);
 	}

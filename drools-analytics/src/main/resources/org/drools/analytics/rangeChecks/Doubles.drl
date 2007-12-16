@@ -42,7 +42,7 @@ rule "Range check for doubles, if smaller than or equal is missing"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		result.save( gap );
+		result.add( gap );
 		insert( gap );
 end
 
@@ -74,7 +74,7 @@ rule "Range check for doubles, if greater than or equal is missing"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		result.save( gap );
+		result.add( gap );
 		insert( gap );
 end
 
@@ -107,7 +107,7 @@ rule "Range check for doubles, equal and greater than"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		result.save( gap );
+		result.add( gap );
 		insert( gap );
 end
 
@@ -140,6 +140,6 @@ rule "Range check for doubles, equal and smaller than"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		result.save( gap );
+		result.add( gap );
 		insert( gap );
 end

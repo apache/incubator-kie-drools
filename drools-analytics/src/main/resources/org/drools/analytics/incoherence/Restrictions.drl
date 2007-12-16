@@ -57,7 +57,7 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
 		list.add( $r1 );
 		list.add( $r2 );
 		
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.ERROR, 
 								AnalyticsMessage.MessageType.INCOHERENCE, 
 								$p, 
@@ -102,7 +102,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		list.add( $r1 );
 		list.add( $r2 );
 		
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.ERROR, 
 								AnalyticsMessage.MessageType.INCOHERENCE, 
 								$p, 
@@ -147,7 +147,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		list.add( $r1 );
 		list.add( $r2 );
 		
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.ERROR, 
 								AnalyticsMessage.MessageType.INCOHERENCE, 
 								$p, 
@@ -192,7 +192,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		list.add( $r1 );
 		list.add( $r2 );
 		
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.ERROR, 
 								AnalyticsMessage.MessageType.INCOHERENCE, 
 								$p, 
@@ -237,7 +237,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 		list.add( $r1 );
 		list.add( $r2 );
 		
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.ERROR, 
 								AnalyticsMessage.MessageType.INCOHERENCE, 
 								$p, 
@@ -283,7 +283,7 @@ rule "Incoherent VariableRestrictions in pattern possibility"
 		list.add( $r1 );
 		list.add( $r2 );
 		
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.ERROR, 
 								AnalyticsMessage.MessageType.INCOHERENCE, 
 								$p, 
@@ -326,7 +326,7 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 		list.add( $r1 );
 		list.add( $r2 );
 		
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.ERROR, 
 								AnalyticsMessage.MessageType.INCOHERENCE, 
 								$p, 
