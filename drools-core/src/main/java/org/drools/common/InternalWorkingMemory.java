@@ -11,6 +11,7 @@ import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.common.instance.ProcessInstance;
@@ -81,7 +82,7 @@ public interface InternalWorkingMemory
      * @param object
      * @return
      */
-    public ObjectTypeConf getObjectTypeConf(Object object);
+    public ObjectTypeConf getObjectTypeConf(EntryPoint entryPoint, Object object);
     
     /**
      * Returns the Map<Object key, ObjectTypeConf conf> of object type
@@ -89,5 +90,5 @@ public interface InternalWorkingMemory
      *  
      * @return
      */
-    public Map<Object, ObjectTypeConf> getObjectTypeConfMap();
+    public Map<Object, ObjectTypeConf> getObjectTypeConfMap(EntryPoint entryPoint);
 }

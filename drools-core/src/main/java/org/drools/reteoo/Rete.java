@@ -19,6 +19,8 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
@@ -27,12 +29,14 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
+import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
+import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * The Rete-OO network.
@@ -64,11 +68,11 @@ public class Rete extends ObjectSource
     /**
      *
      */
-    private static final long          serialVersionUID = 400L;
-    /** The <code>Map</code> of <code>ObjectTypeNodes</code>. */
-    private final ObjectHashMap        objectTypeNodes;
+    private static final long                    serialVersionUID = 400L;
 
-    private transient InternalRuleBase ruleBase;
+    private final Map<EntryPoint, ObjectHashMap> entryPoints;
+
+    private transient InternalRuleBase           ruleBase;
 
     // ------------------------------------------------------------
     // Constructors
@@ -76,7 +80,9 @@ public class Rete extends ObjectSource
 
     public Rete(InternalRuleBase ruleBase) {
         super( 0 );
-        this.objectTypeNodes = new ObjectHashMap();
+        this.entryPoints = new HashMap<EntryPoint, ObjectHashMap>();
+        this.entryPoints.put( EntryPoint.DEFAULT,
+                              new ObjectHashMap() );
         this.ruleBase = ruleBase;
     }
 
@@ -106,7 +112,8 @@ public class Rete extends ObjectSource
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
 
-        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( handle.getObject() );
+        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( context.getEntryPoint(),
+                                                                         handle.getObject() );
 
         // checks if shadow is enabled
         if ( objectTypeConf.isShadowEnabled() ) {
@@ -143,7 +150,8 @@ public class Rete extends ObjectSource
                               final InternalWorkingMemory workingMemory) {
         final Object object = handle.getObject();
 
-        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( object );
+        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( context.getEntryPoint(),
+                                                                         object );
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {
@@ -159,23 +167,30 @@ public class Rete extends ObjectSource
     }
 
     /**
-     * Adds the <code>TupleSink</code> so that it may receive
-     * <code>Tuples</code> propagated from this <code>TupleSource</code>.
+     * Adds the <code>ObjectSink</code> so that it may receive
+     * <code>Objects</code> propagated from this <code>ObjectSource</code>.
      *
-     * @param tupleSink
-     *            The <code>TupleSink</code> to receive propagated
-     *            <code>Tuples</code>.
+     * @param objectSink
+     *            The <code>ObjectSink</code> to receive propagated
+     *            <code>Objects</code>. Rete only accepts <code>ObjectTypeNode</code>s
+     *            as parameters to this method, though.
      */
     protected void addObjectSink(final ObjectSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
-        this.objectTypeNodes.put( node.getObjectType(),
-                                  node,
-                                  true );
+        ObjectHashMap map = this.entryPoints.get( node.getEntryPoint() );
+        if ( map == null ) {
+            map = new ObjectHashMap();
+            this.entryPoints.put( node.getEntryPoint(),
+                                  map );
+        }
+        map.put( node.getObjectType(),
+                 node,
+                 true );
     }
 
     protected void removeObjectSink(final ObjectSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
-        this.objectTypeNodes.remove( node.getObjectType() );
+        this.entryPoints.get( node.getEntryPoint() ).remove( node.getObjectType() );
     }
 
     public void attach() {
@@ -196,8 +211,19 @@ public class Rete extends ObjectSource
         }
     }
 
-    public ObjectHashMap getObjectTypeNodes() {
-        return this.objectTypeNodes;
+    public Map<ObjectType, ObjectTypeNode> getObjectTypeNodes() {
+        Map<ObjectType, ObjectTypeNode> allNodes = new HashMap<ObjectType, ObjectTypeNode>();
+        for( ObjectHashMap map : this.entryPoints.values() ) {
+            Iterator it = map.iterator();
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                allNodes.put( (ObjectType) entry.getKey(), (ObjectTypeNode) entry.getValue() );
+            }
+        }
+        return allNodes;
+    }
+
+    public ObjectHashMap getObjectTypeNodes(EntryPoint entryPoint) {
+        return this.entryPoints.get( entryPoint );
     }
 
     public InternalRuleBase getRuleBase() {
@@ -205,7 +231,7 @@ public class Rete extends ObjectSource
     }
 
     public int hashCode() {
-        return this.objectTypeNodes.hashCode();
+        return this.entryPoints.hashCode();
     }
 
     public boolean equals(final Object object) {
@@ -218,7 +244,7 @@ public class Rete extends ObjectSource
         }
 
         final Rete other = (Rete) object;
-        return this.objectTypeNodes.equals( other.objectTypeNodes );
+        return this.entryPoints.equals( other.entryPoints );
     }
 
     public void updateSink(final ObjectSink sink,
@@ -228,7 +254,7 @@ public class Rete extends ObjectSource
         final ObjectTypeNode node = (ObjectTypeNode) sink;
         final ObjectType newObjectType = node.getObjectType();
 
-        for ( ObjectTypeConf objectTypeConf : workingMemory.getObjectTypeConfMap().values() ) {
+        for ( ObjectTypeConf objectTypeConf : workingMemory.getObjectTypeConfMap( context.getEntryPoint() ).values() ) {
             if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
@@ -242,13 +268,13 @@ public class Rete extends ObjectSource
             }
         }
     }
-    
+
     public boolean isObjectMemoryEnabled() {
-        throw new UnsupportedOperationException("Rete has no Object memory");
+        throw new UnsupportedOperationException( "Rete has no Object memory" );
     }
 
     public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
-        throw new UnsupportedOperationException("ORete has no Object memory");
+        throw new UnsupportedOperationException( "ORete has no Object memory" );
     }
 
 }

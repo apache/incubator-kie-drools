@@ -18,6 +18,7 @@ package org.drools.spi;
 
 import java.io.Serializable;
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 
 public interface PropagationContext
@@ -51,5 +52,7 @@ public interface PropagationContext
     public void clearRetractedTuples();
     
     public void releaseResources();
+    
+    public EntryPoint getEntryPoint();
 
 }

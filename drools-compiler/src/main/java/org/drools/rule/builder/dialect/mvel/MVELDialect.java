@@ -24,6 +24,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ForallDescr;
@@ -42,6 +43,7 @@ import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
@@ -72,7 +74,7 @@ public class MVELDialect
     implements
     Dialect {
 
-    public final static String                    ID                          = "mvel";
+    public final static String           ID                      = "mvel";
 
     private final static String                   EXPRESSION_DIALECT_NAME     = "MVEL";
 
@@ -87,17 +89,18 @@ public class MVELDialect
     private final MVELActionBuilder               actionBuilder               = new MVELActionBuilder();
     private final MVELReturnValueEvaluatorBuilder returnValueEvaluatorBuilder = new MVELReturnValueEvaluatorBuilder();
     //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
-    private final MVELFromBuilder                 from                        = new MVELFromBuilder();
-    private final JavaFunctionBuilder             function                    = new JavaFunctionBuilder();
-    private final CollectBuilder                  collect                     = new CollectBuilder();
-    private final ForallBuilder                   forall                      = new ForallBuilder();
+    private final MVELFromBuilder        from                    = new MVELFromBuilder();
+    private final JavaFunctionBuilder    function                = new JavaFunctionBuilder();
+    private final CollectBuilder         collect                 = new CollectBuilder();
+    private final ForallBuilder          forall                  = new ForallBuilder();
+    private final EntryPointBuilder      entrypoint              = new EntryPointBuilder();
 
-    private Map                                   interceptors;
+    private Map                          interceptors;
 
-    private List                                  results;
+    private List                         results;
     //private final JavaFunctionBuilder             function    = new JavaFunctionBuilder();
 
-    private MemoryResourceReader                  src;
+    private MemoryResourceReader         src;
 
     private Package                               pkg;
     private MVELDialectConfiguration              configuration;
@@ -209,6 +212,9 @@ public class MVELDialect
 
         this.builders.put( FunctionDescr.class,
                            this.function );
+        
+        this.builders.put( EntryPointDescr.class,
+                           this.entrypoint );
     }
 
     public void init(Package pkg) {
@@ -521,6 +527,10 @@ public class MVELDialect
 
     public FromBuilder getFromBuilder() {
         return this.from;
+    }
+
+    public EntryPointBuilder getEntryPointBuilder() {
+        return this.entrypoint;
     }
 
     public PredicateBuilder getPredicateBuilder() {

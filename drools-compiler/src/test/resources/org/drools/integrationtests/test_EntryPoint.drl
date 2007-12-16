@@ -1,0 +1,12 @@
+package org.drools;
+
+import event org.drools.StockTick;
+
+global java.util.List results;
+
+rule "Test entry point"
+when
+    $st : StockTick( company == "ACME", price > 10 ) from entry-point StockStream
+then
+    results.add( $st );
+end

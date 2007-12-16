@@ -22,7 +22,6 @@ import java.util.List;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
-import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
@@ -91,7 +90,7 @@ abstract class BetaNode extends TupleSource
         this.constraints = constraints;
 
         if ( this.constraints == null ) {
-            throw new RuntimeException( "cannot have null constraints, must atleast be an instanceof EmptyBetaCosntraints" );
+            throw new RuntimeException( "cannot have null constraints, must at least be an instance of EmptyBetaConstraints" );
         }
     }
 

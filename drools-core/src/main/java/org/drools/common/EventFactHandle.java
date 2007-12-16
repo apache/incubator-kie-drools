@@ -49,7 +49,7 @@ public class EventFactHandle extends DefaultFactHandle {
      * @param id this event fact handle ID
      * @param object the event object encapsulated in this event fact handle
      * @param recency the recency of this event fact handle
-     * @param timestamp the timestamp of the occurence of this event
+     * @param timestamp the timestamp of the occurrence of this event
      * @param duration the duration of this event. May be 0 (zero) in case this is a primitive event.
      */
     public EventFactHandle( final long id, 

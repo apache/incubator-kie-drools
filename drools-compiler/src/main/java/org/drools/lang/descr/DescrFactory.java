@@ -64,4 +64,8 @@ public class DescrFactory {
     public FieldTemplateDescr createFieldTemplate() {
         return new FieldTemplateDescr();
     }
+
+    public EntryPointDescr createEntryPoint() {
+        return new EntryPointDescr();
+    }
 }

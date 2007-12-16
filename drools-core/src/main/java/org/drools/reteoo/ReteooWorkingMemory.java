@@ -32,6 +32,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.RuleBaseEventListener;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -84,12 +85,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     public QueryResults getQueryResults(final String query) {
         return getQueryResults( query, null );
     }
+    
     public QueryResults getQueryResults(final String query, final Object[] arguments) {
 
         Object object = new DroolsQuery( query, arguments );
         InternalFactHandle handle = this.handleFactory.newFactHandle( object, false, this );
         
-        insert( handle,
+        insert( EntryPoint.DEFAULT, // query dummy objects always use default entry point
+                handle,
                 object,
                 null,
                 null );

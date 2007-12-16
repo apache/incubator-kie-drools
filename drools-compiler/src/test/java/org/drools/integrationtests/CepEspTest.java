@@ -119,10 +119,24 @@ public class CepEspTest extends TestCase {
         final SessionPseudoClock clock = wm.getSessionClock();
 
         clock.setStartupTime( 1000 );
-        final List results = new ArrayList();
+        final List results_coincides = new ArrayList();
+        final List results_before = new ArrayList();
+        final List results_after = new ArrayList();
+        final List results_meets = new ArrayList();
+        final List results_met_by = new ArrayList();
+        final List results_overlaps = new ArrayList();
+        final List results_overlapped_by = new ArrayList();
 
-        wm.setGlobal( "results",
-                      results );
+        wm.setGlobal( "results_coincides",
+                results_coincides );
+        wm.setGlobal( "results_before",
+                results_before );
+        wm.setGlobal( "results_after",
+                      results_after );
+        wm.setGlobal( "results_meets",
+                results_meets );
+        wm.setGlobal( "results_met_by",
+                      results_met_by );
 
         StockTick tick1 = new StockTick( 1,
                                          "DROO",
@@ -140,6 +154,10 @@ public class CepEspTest extends TestCase {
                                          "DROO",
                                          50,
                                          System.currentTimeMillis() );
+        StockTick tick5 = new StockTick( 5,
+                						 "ACME",
+                						 10,
+                						 System.currentTimeMillis() );
 
         InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
         clock.advanceTime( 4 );
@@ -148,24 +166,53 @@ public class CepEspTest extends TestCase {
         InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
         clock.advanceTime( 4 );
         InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
+        InternalFactHandle handle5 = (InternalFactHandle) wm.insert( tick5 );
 
         assertNotNull( handle1 );
         assertNotNull( handle2 );
         assertNotNull( handle3 );
         assertNotNull( handle4 );
+        assertNotNull( handle5 );
 
         assertTrue( handle1.isEvent() );
         assertTrue( handle2.isEvent() );
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
+        assertTrue( handle5.isEvent() );
 
         wm.fireAllRules();
 
         assertEquals( 1,
-                      results.size() );
+                results_coincides.size() );
+        assertEquals( tick5,
+                results_coincides.get( 0 ) );
+        
+        assertEquals( 1,
+                results_before.size() );
+        assertEquals( tick2,
+                results_before.get( 0 ) );
+        
+        assertEquals( 1,
+                      results_after.size() );
         assertEquals( tick3,
-                      results.get( 0 ) );
-
+                      results_after.get( 0 ) );
+        
+        assertEquals( 2,
+                results_meets.size() );
+        assertEquals( tick5,
+                results_meets.get( 0 ) );
+        assertEquals( tick3,
+                results_meets.get( 1 ) );
+        
+        assertEquals( 1,
+                      results_met_by.size() );
+        assertEquals( tick2,
+                      results_met_by.get( 0 ) );
+        
+        assertEquals( 1,
+                results_met_by.size() );
+        assertEquals( tick2,
+                results_met_by.get( 0 ) );
     }
 
     public void testSimpleTimeWindow() throws Exception {

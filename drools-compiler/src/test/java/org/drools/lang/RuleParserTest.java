@@ -41,6 +41,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FactTemplateDescr;
@@ -3026,7 +3027,7 @@ public class RuleParserTest extends TestCase {
 
     public void testRestrictionConnectives() throws Exception {
 
-        // the bellow expression must generate the following tree:
+        // the expression bellow must generate the following tree:
         //
         //                       AND
         //                        |
@@ -3744,6 +3745,28 @@ public class RuleParserTest extends TestCase {
 
         assertTrue( descr.isEvent() );
 
+    }
+
+    public void testEntryPoint() throws Exception {
+        final String text = "StockTick( symbol==\"ACME\") from entry-point StreamA";
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+
+        PatternDescr pattern = (PatternDescr) parser.pattern_source();
+        assertFalse( parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        FieldConstraintDescr fcd = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "symbol",
+                      fcd.getFieldName() );
+        
+        assertNotNull( pattern.getSource() );
+        EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
+        assertEquals( "StreamA", entry.getEntryId() );
     }
 
     private DRLParser parse(final String text) throws Exception {

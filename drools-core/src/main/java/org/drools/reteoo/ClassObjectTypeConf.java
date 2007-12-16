@@ -38,6 +38,7 @@ import org.drools.objenesis.ObjenesisStd;
 import org.drools.objenesis.instantiator.ObjectInstantiator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
+import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap.ObjectEntry;
@@ -58,17 +59,23 @@ public class ClassObjectTypeConf
     protected transient ObjectInstantiator instantiator;
 
     private ObjectTypeNode                 concreteObjectTypeNode;
-    
-    public ClassObjectTypeConf(final Class clazz, final boolean isEvent,
+    private EntryPoint                     entryPoint;
+
+    public ClassObjectTypeConf(final EntryPoint entryPoint,
+                               final Class clazz,
+                               final boolean isEvent,
                                final InternalRuleBase ruleBase) {
         this.cls = clazz;
         this.ruleBase = ruleBase;
+        this.entryPoint = entryPoint;
 
-        ObjectType objectType = new ClassObjectType( clazz, isEvent );
-        this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes().get( objectType );
+        ObjectType objectType = new ClassObjectType( clazz,
+                                                     isEvent );
+        this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         if ( this.concreteObjectTypeNode == null ) {
             BuildContext context = new BuildContext( ruleBase,
                                                      ((ReteooRuleBase) ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator() );
+            context.setCurrentEntryPoint( entryPoint );
             if ( DroolsQuery.class == clazz ) {
                 context.setTupleMemoryEnabled( false );
                 context.setObjectTypeNodeMemoryEnabled( false );
@@ -277,7 +284,7 @@ public class ClassObjectTypeConf
     private ObjectTypeNode[] getMatchingObjectTypes(final Class clazz) throws FactException {
         final List cache = new ArrayList();
 
-        final Iterator it = ruleBase.getRete().getObjectTypeNodes().newIterator();
+        final Iterator it = ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).newIterator();
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             final ObjectTypeNode node = (ObjectTypeNode) entry.getValue();
             if ( node.isAssignableFrom( clazz ) ) {
@@ -291,7 +298,7 @@ public class ClassObjectTypeConf
     public boolean isActive() {
         return getConcreteObjectTypeNode().getSinkPropagator().getSinks().length > 0;
     }
-    
+
     public boolean isEvent() {
         return this.concreteObjectTypeNode.getObjectType().isEvent();
     }

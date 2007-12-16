@@ -37,6 +37,7 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Collect;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Pattern;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Forall;
@@ -73,6 +74,8 @@ public class ReteooRuleBuilder {
                                new AccumulateBuilder() );
         this.utils.addBuilder( Forall.class,
                                new ForallBuilder() );
+        this.utils.addBuilder( EntryPoint.class,
+                               new EntryPointBuilder() );
     }
 
     /**

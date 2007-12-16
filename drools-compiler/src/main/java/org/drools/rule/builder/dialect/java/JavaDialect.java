@@ -29,6 +29,7 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ForallDescr;
@@ -40,6 +41,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -47,6 +49,7 @@ import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.ForallBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.FunctionBuilder;
@@ -93,6 +96,7 @@ public class JavaDialect
     private final JavaFunctionBuilder         function                    = new JavaFunctionBuilder();
     private final CollectBuilder              collect                     = new CollectBuilder();
     private final ForallBuilder               forall                      = new ForallBuilder();
+    private final EntryPointBuilder        entrypoint              = new EntryPointBuilder();
 
     //
     private KnowledgeHelperFixer              knowledgeHelperFixer;
@@ -178,6 +182,9 @@ public class JavaDialect
 
         this.builders.put( EvalDescr.class,
                            getEvalBuilder() );
+
+        this.builders.put( EntryPointDescr.class,
+                           getEntryPointBuilder() );
     }
 
     public Map getBuilders() {
@@ -346,6 +353,10 @@ public class JavaDialect
 
     public FromBuilder getFromBuilder() {
         return this.from;
+    }
+
+    public EntryPointBuilder getEntryPointBuilder() {
+        return this.entrypoint;
     }
 
     /**

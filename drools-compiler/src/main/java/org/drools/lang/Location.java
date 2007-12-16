@@ -52,6 +52,7 @@ public class Location {
     public static final int LOCATION_LHS_FROM_ACCUMULATE_REVERSE_INSIDE = 308;
     public static final int LOCATION_LHS_FROM_ACCUMULATE_RESULT = 309;
     public static final int LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE = 310;
+    public static final int LOCATION_LHS_FROM_ENTRY_POINT = 311;
     
     public static final int LOCATION_RHS = 1000;
     public static final int LOCATION_RULE_HEADER = 2000;

@@ -29,6 +29,7 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.TupleSource;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.RuleConditionElement;
 
 /**
@@ -68,6 +69,9 @@ public class BuildContext {
     // alpha constraints from the last pattern attached
     private List                      alphaConstraints;
     
+    // the current entry point
+    private EntryPoint                currentEntryPoint;
+    
     private boolean                   tupleMemoryEnabled;
     
     private boolean                   objectTypeNodeMemoryEnabled;    
@@ -96,6 +100,8 @@ public class BuildContext {
         this.tupleMemoryEnabled = true;
         
         this.objectTypeNodeMemoryEnabled = true;
+        
+        this.currentEntryPoint = EntryPoint.DEFAULT;
     }
 
     /**
@@ -327,6 +333,20 @@ public class BuildContext {
     
     public boolean isAlphaMemoryAllowed() {
         return this.alphaNodeMemoryAllowed;
+    }
+
+    /**
+     * @return the currentEntryPoint
+     */
+    public EntryPoint getCurrentEntryPoint() {
+        return currentEntryPoint;
+    }
+
+    /**
+     * @param currentEntryPoint the currentEntryPoint to set
+     */
+    public void setCurrentEntryPoint(EntryPoint currentEntryPoint) {
+        this.currentEntryPoint = currentEntryPoint;
     }
         
 }

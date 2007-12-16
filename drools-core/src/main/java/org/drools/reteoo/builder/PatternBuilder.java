@@ -28,6 +28,7 @@ import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.Declaration;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
@@ -79,15 +80,7 @@ public class PatternBuilder
         // Create BetaConstraints object
         context.setBetaconstraints( betaConstraints );
 
-        if ( pattern.getSource() == null ) {
-            // pattern is selected from working memory, so 
-            // Attach alpha nodes
-            attachAlphaNodes( context,
-                              utils,
-                              pattern,
-                              alphaConstraints );
-
-        } else {
+        if ( pattern.getSource() != null ) {
             context.setAlphaConstraints( alphaConstraints );
             final int currentOffset = context.getCurrentPatternOffset();
 
@@ -100,8 +93,17 @@ public class PatternBuilder
                            source );
             // restoring offset
             context.setCurrentPatternOffset( currentOffset );
+            
         }
         
+        if( pattern.getSource() == null || context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
+            attachAlphaNodes( context,
+                              utils,
+                              pattern,
+                              alphaConstraints );
+            context.setCurrentEntryPoint( EntryPoint.DEFAULT );
+        }
+
         // last thing to do is increment the offset, since if the pattern has a source,
         // offset must be overriden
         context.incrementCurrentPatternOffset();

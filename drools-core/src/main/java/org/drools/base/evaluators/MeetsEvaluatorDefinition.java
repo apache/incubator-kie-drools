@@ -34,22 +34,22 @@ import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
 
 /**
- * The implementation of the 'after' evaluator definition
+ * The implementation of the 'meets' evaluator definition
  * 
- * @author etirelli
+ * @author mgroch
  */
-public class AfterEvaluatorDefinition
+public class MeetsEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator   AFTER         = Operator.addOperatorToRegistry( "after",
-                                                                                   false );
-    public static final Operator   NOT_AFTER     = Operator.addOperatorToRegistry( "after",
-                                                                                   true );
-
-    private static final String[]  SUPPORTED_IDS = {AFTER.getOperatorString()};
-
-    private Map<String, Evaluator> cache         = Collections.emptyMap();
+    public static final Operator  MEETS       = Operator.addOperatorToRegistry( "meets",
+                                                                                  false );
+    public static final Operator  MEETS_NOT   = Operator.addOperatorToRegistry( "meets",
+                                                                                  true );
+    
+    private static final String[] SUPPORTED_IDS = { MEETS.getOperatorString() };
+    
+    private Map<String, MeetsEvaluator> cache        = Collections.emptyMap();
 
     /**
      * @inheridDoc
@@ -82,12 +82,12 @@ public class AfterEvaluatorDefinition
                                   final boolean isNegated,
                                   final String parameterText) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, Evaluator>();
+            this.cache = new HashMap<String, MeetsEvaluator>();
         }
         String key = isNegated + ":" + parameterText;
-        Evaluator eval = this.cache.get( key );
+        MeetsEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            eval = new AfterEvaluator( type,
+            eval = new MeetsEvaluator( type,
                                        isNegated,
                                        parameterText );
             this.cache.put( key,
@@ -127,71 +127,74 @@ public class AfterEvaluatorDefinition
     }
 
     /**
-     * Implements the 'after' evaluator itself
+     * Implements the 'meets' evaluator itself
      */
-    public static class AfterEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = -4833205637340977934L;
+    public static class MeetsEvaluator extends BaseEvaluator {
+		private static final long serialVersionUID = 9091548399308812447L;
+		
+		private long                  finalRange;
 
-        private long              initRange;
-        private long              finalRange;
-
-        public AfterEvaluator(final ValueType type,
+        public MeetsEvaluator(final ValueType type,
                               final boolean isNegated,
                               final String parameters) {
             super( type,
-                   isNegated ? NOT_AFTER : AFTER );
+                   isNegated ? MEETS_NOT : MEETS );
             this.parseParameters( parameters );
         }
-
+        
         @Override
         public Object prepareObject(InternalFactHandle handle) {
             return handle;
         }
-
+        
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
-            throw new RuntimeDroolsException( "The 'after' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeDroolsException( "The 'meets' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context,
-                                           final Object left) {
-            if ( context.rightNull ) {
-                return false;
-            }
-            long dist = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp() - ((EventFactHandle) left).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange ); 
-        }
-
-        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context,
-                                          final Object right) {
-            if ( context.extractor.isNullValue( workingMemory,
-                                                right ) ) {
-                return false;
-            }
-            long dist = ((EventFactHandle) right).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
-
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
-        }
-
-        public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final Extractor extractor1,
-                                final Object object1,
-                                final Extractor extractor2,
-                                final Object object2) {
-            if ( extractor1.isNullValue( workingMemory,
-                                         object1 ) ) {
-                return false;
-            }
-            long dist = ((EventFactHandle) object1).getStartTimestamp() - ((EventFactHandle) object2).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
-        }
+                final VariableContextEntry context,
+                final Object left) {
+			if ( context.rightNull ) {
+			return false;
+			}
+			long leftStartTS = ((EventFactHandle) left ).getStartTimestamp();
+			long dist = Math.abs(leftStartTS - 
+						((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp());
+			return this.getOperator().isNegated() ^ ( ((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp() <= leftStartTS 
+					&& dist <= this.finalRange );
+		}
+			
+		public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+			               final VariableContextEntry context,
+			               final Object right) {
+			if ( context.extractor.isNullValue( workingMemory,
+			                     right ) ) {
+			return false;
+			}
+			long leftStartTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp();
+			long dist = Math.abs(leftStartTS - ((EventFactHandle) right ).getEndTimestamp());
+			return this.getOperator().isNegated() ^ ( ((EventFactHandle) right ).getStartTimestamp() <= leftStartTS && dist <= this.finalRange);
+		}
+			
+		public boolean evaluate(InternalWorkingMemory workingMemory,
+			     final Extractor extractor1,
+			     final Object object1,
+			     final Extractor extractor2,
+			     final Object object2) {
+			if ( extractor1.isNullValue( workingMemory,
+			              object1 ) ) {
+			return false;
+			}
+			long obj2StartTS = ((EventFactHandle) object2 ).getStartTimestamp();
+			long dist = Math.abs(obj2StartTS - ((EventFactHandle) object1 ).getEndTimestamp());
+			return this.getOperator().isNegated() ^ ( ((EventFactHandle) object1 ).getStartTimestamp() <= obj2StartTS && dist <= this.finalRange);
+		}
 
         public String toString() {
-            return this.getOperator().toString()+ "[" + initRange + ", " + finalRange + "]";
+            return "meets[" + finalRange + "]";
         }
 
         /* (non-Javadoc)
@@ -202,7 +205,6 @@ public class AfterEvaluatorDefinition
             final int PRIME = 31;
             int result = super.hashCode();
             result = PRIME * result + (int) (finalRange ^ (finalRange >>> 32));
-            result = PRIME * result + (int) (initRange ^ (initRange >>> 32));
             return result;
         }
 
@@ -214,8 +216,8 @@ public class AfterEvaluatorDefinition
             if ( this == obj ) return true;
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            final AfterEvaluator other = (AfterEvaluator) obj;
-            return finalRange == other.finalRange && initRange == other.initRange;
+            final MeetsEvaluator other = (MeetsEvaluator) obj;
+            return finalRange == other.finalRange;
         }
 
         /**
@@ -226,27 +228,21 @@ public class AfterEvaluatorDefinition
          */
         private void parseParameters(String parameters) {
             if ( parameters == null || parameters.trim().length() == 0 ) {
-                // open bounded range
-                this.initRange = 1;
-                this.finalRange = Long.MAX_VALUE;
+                // exact meet
+                this.finalRange = 0;
                 return;
             }
 
             try {
                 String[] ranges = parameters.split( "," );
                 if ( ranges.length == 1 ) {
-                    // deterministic point in time
-                    this.initRange = Long.parseLong( ranges[0] );
-                    this.finalRange = this.initRange;
-                } else if ( ranges.length == 2 ) {
-                    // regular range
-                    this.initRange = Long.parseLong( ranges[0] );
-                    this.finalRange = Long.parseLong( ranges[1] );
+                	// limit of tolerance for overlap or gap, respectively
+                    this.finalRange = Long.parseLong( ranges[0] );
                 } else {
-                    throw new RuntimeDroolsException( "[After Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
+                    throw new RuntimeDroolsException( "[Meets Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
                 }
             } catch ( NumberFormatException e ) {
-                throw new RuntimeDroolsException( "[After Evaluator]: Not possible to parse parameters: '" + parameters + "'",
+                throw new RuntimeDroolsException( "[Meets Evaluator]: Not possible to parse parameters: '" + parameters + "'",
                                                   e );
             }
         }

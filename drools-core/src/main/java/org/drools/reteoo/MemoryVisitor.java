@@ -1,18 +1,17 @@
 package org.drools.reteoo;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.RuleTerminalNode.TerminalNodeMemory;
+import org.drools.spi.ObjectType;
 import org.drools.util.AbstractHashTable;
 import org.drools.util.Entry;
-import org.drools.util.FactHashTable;
 import org.drools.util.FactHandleIndexHashTable;
-import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap;
+import org.drools.util.FactHashTable;
 import org.drools.util.ReflectiveVisitor;
 import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class MemoryVisitor extends ReflectiveVisitor {
     private InternalWorkingMemory workingMemory;
@@ -36,11 +35,10 @@ public class MemoryVisitor extends ReflectiveVisitor {
      * Rete visits each of its ObjectTypeNodes.
      */
     public void visitRete(final Rete rete) {
-        final ObjectHashMap map = rete.getObjectTypeNodes();
+        final Map<ObjectType, ObjectTypeNode> map = rete.getObjectTypeNodes();
 
-        final Iterator it = map.newIterator();
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            visit( entry.getValue() );
+        for( ObjectTypeNode node : map.values() ) {
+            visit( node );
         }
     }
 

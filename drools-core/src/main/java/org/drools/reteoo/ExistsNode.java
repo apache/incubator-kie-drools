@@ -28,11 +28,11 @@ import org.drools.util.Iterator;
  * <code>ExistsNode</code> extends <code>BetaNode</code> to perform tests for
  * the existence of a Fact plus one or more conditions. Where existence
  * is found the left ReteTuple is copied and propagated. Further to this it
- * maintains the "truth" by cancelling any
+ * maintains the "truth" by canceling any
  * <code>Activation<code>s that are no longer 
  * considered true by the retraction of ReteTuple's or FactHandleImpl.  
  * Tuples are considered to be asserted from the left input and facts from the right input.
- * The <code>BetaNode</code> provides the BetaMemory to store assserted ReteTuples and 
+ * The <code>BetaNode</code> provides the BetaMemory to store asserted ReteTuples and 
  * <code>FactHandleImpl<code>s. Each fact handle is stored in the right 
  * memory.
  * 
@@ -53,14 +53,14 @@ public class ExistsNode extends BetaNode {
     /**
      * Construct.
      * 
-     * @paran id
+     * @param id
      *            The unique id for this node.
      * @param leftInput
      *            The left input <code>TupleSource</code>.
      * @param rightInput
      *            The right input <code>ObjectSource</code>.
      * @param joinNodeBinder
-     *            The constraints to be aplied to the right objects
+     *            The constraints to be applied to the right objects
      */
     public ExistsNode(final int id,
                       final TupleSource leftInput,
@@ -84,7 +84,7 @@ public class ExistsNode extends BetaNode {
      * @param context
      *            The <code>PropagationContext</code>
      * @param workingMemory
-     *            The working memory seesion.
+     *            The working memory session.
      */
     public void assertTuple(final ReteTuple leftTuple,
                             final PropagationContext context,
@@ -123,7 +123,7 @@ public class ExistsNode extends BetaNode {
      * @param context
      *            The <code>PropagationContext</code>
      * @param workingMemory
-     *            The working memory seesion.
+     *            The working memory session.
      */
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
@@ -159,7 +159,7 @@ public class ExistsNode extends BetaNode {
      * @param context
      *            The <code>PropagationContext</code>
      * @param workingMemory
-     *            The working memory seesion.
+     *            The working memory session.
      */
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
@@ -211,7 +211,7 @@ public class ExistsNode extends BetaNode {
      * @param context
      *            The <code>PropagationContext</code>
      * @param workingMemory
-     *            The working memory seesion.
+     *            The working memory session.
      */
     public void retractTuple(final ReteTuple leftTuple,
                              final PropagationContext context,

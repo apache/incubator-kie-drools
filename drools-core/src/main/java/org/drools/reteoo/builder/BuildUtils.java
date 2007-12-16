@@ -40,6 +40,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.util.ObjectHashMap;
 
 /**
  * Utility functions for reteoo build
@@ -90,9 +91,12 @@ public class BuildUtils {
         if( candidate instanceof ObjectTypeNode ) {
             // object type nodes are always shared
             ObjectTypeNode otn = (ObjectTypeNode) candidate;
-            otn = (ObjectTypeNode) context.getRuleBase().getRete().getObjectTypeNodes().get( otn.getObjectType() );
-            if ( otn != null ) {
-                node = otn;
+            ObjectHashMap map = context.getRuleBase().getRete().getObjectTypeNodes( context.getCurrentEntryPoint() );
+            if( map != null ) {
+                otn = (ObjectTypeNode) map.get( otn.getObjectType() );
+                if ( otn != null ) {
+                    node = otn;
+                }
             }
         } else if( isSharingEnabledForNode( context, candidate ) ) {
             if ( (context.getTupleSource() != null) && ( candidate instanceof TupleSink ) ) {

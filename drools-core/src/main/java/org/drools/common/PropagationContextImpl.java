@@ -17,28 +17,33 @@ package org.drools.common;
  */
 
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
-import org.drools.util.TupleHashTable;
 
 public class PropagationContextImpl
     implements
     PropagationContext {
-    private final int        type;
 
-    private Rule       rule;
+    private static final long serialVersionUID = 8400185220119865618L;
 
-    private Activation activation;
+    private final int    type;
 
-    private final long       propagationNumber;
+    private Rule         rule;
 
-    public final int         activeActivations;
+    private Activation   activation;
 
-    public final int         dormantActivations;
+    private final long   propagationNumber;
 
-    public ObjectHashMap     retracted;
+    public final int     activeActivations;
+
+    public final int     dormantActivations;
+
+    public ObjectHashMap retracted;
+
+    private EntryPoint   entryPoint;
 
     public PropagationContextImpl(final long number,
                                   final int type,
@@ -50,6 +55,7 @@ public class PropagationContextImpl
         this.propagationNumber = number;
         this.activeActivations = 0;
         this.dormantActivations = 0;
+        this.entryPoint = EntryPoint.DEFAULT;
     }
 
     public PropagationContextImpl(final long number,
@@ -57,13 +63,15 @@ public class PropagationContextImpl
                                   final Rule rule,
                                   final Activation activation,
                                   final int activeActivations,
-                                  final int dormantActivations) {
+                                  final int dormantActivations,
+                                  final EntryPoint entryPoint) {
         this.type = type;
         this.rule = rule;
         this.activation = activation;
         this.propagationNumber = number;
         this.activeActivations = activeActivations;
         this.dormantActivations = dormantActivations;
+        this.entryPoint = entryPoint;
     }
 
     public long getPropagationNumber() {
@@ -110,8 +118,8 @@ public class PropagationContextImpl
         if ( this.retracted == null ) {
             this.retracted = new ObjectHashMap();
         }
-        
-        ReteTuple tuple = ( ReteTuple) activation.getTuple();
+
+        ReteTuple tuple = (ReteTuple) activation.getTuple();
 
         ObjectHashMap tuples = (ObjectHashMap) this.retracted.get( rule );
         if ( tuples == null ) {
@@ -119,18 +127,19 @@ public class PropagationContextImpl
             this.retracted.put( rule,
                                 tuples );
         }
-        tuples.put( tuple, activation );
+        tuples.put( tuple,
+                    activation );
     }
 
     public Activation removeRetractedTuple(final Rule rule,
-                                          final ReteTuple tuple) {
+                                           final ReteTuple tuple) {
         if ( this.retracted == null ) {
             return null;
         }
 
         final ObjectHashMap tuples = (ObjectHashMap) this.retracted.get( rule );
-        if  ( tuples != null ) {
-            return ( Activation ) tuples.remove( tuple );
+        if ( tuples != null ) {
+            return (Activation) tuples.remove( tuple );
         } else {
             return null;
         }
@@ -144,5 +153,19 @@ public class PropagationContextImpl
         this.activation = null;
         this.retracted = null;
         this.rule = null;
+    }
+
+    /**
+     * @return the entryPoint
+     */
+    public EntryPoint getEntryPoint() {
+        return entryPoint;
+    }
+
+    /**
+     * @param entryPoint the entryPoint to set
+     */
+    public void setEntryPoint(EntryPoint entryPoint) {
+        this.entryPoint = entryPoint;
     }
 }
