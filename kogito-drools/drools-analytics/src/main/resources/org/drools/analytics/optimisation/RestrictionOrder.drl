@@ -113,7 +113,7 @@ rule "Optimise restrictions inside operator"
 		Collection list = new ArrayList();
 		list.add( $r1 ); 
 		list.add( $r2 ); 
-		result.save( new AnalyticsMessage( 
+		result.add( new AnalyticsMessage( 
 								AnalyticsMessage.Severity.NOTE, 
 								AnalyticsMessage.MessageType.OPTIMISATION, 
 								$pattern, 
@@ -172,7 +172,7 @@ rule "Optimise restrictions inside constraint"
 		Collection list = new ArrayList();
 		list.add( $r1 ); 
 		list.add( $r2 ); 
-		result.save( new AnalyticsMessage( 
+		result.add( new AnalyticsMessage( 
 								AnalyticsMessage.Severity.NOTE, 
 								AnalyticsMessage.MessageType.OPTIMISATION, 
 								$pattern, 
@@ -211,7 +211,7 @@ rule "Optimise predicates inside operator"
 		Collection list = new ArrayList();
 		list.add( $predicate );
 		list.add( $other );
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.NOTE, 
 								AnalyticsMessage.MessageType.OPTIMISATION, 
 								$rule, 

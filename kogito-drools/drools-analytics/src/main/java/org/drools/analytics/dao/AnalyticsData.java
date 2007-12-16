@@ -24,29 +24,29 @@ import org.drools.analytics.components.Variable;
  */
 public interface AnalyticsData {
 
-	public void save(Consequence consequence);
+	public void add(Consequence consequence);
 
-	public void save(AnalyticsClass clazz);
+	public void add(AnalyticsClass clazz);
 
-	public void save(Field field);
+	public void add(Field field);
 
-	public void save(Variable variable);
+	public void add(Variable variable);
 
-	public void save(AnalyticsRule rule);
+	public void add(AnalyticsRule rule);
 
-	public void save(Pattern pattern);
+	public void add(Pattern pattern);
 
-	public void save(Constraint constraint);
+	public void add(Constraint constraint);
 
-	public void save(Restriction restriction);
+	public void add(Restriction restriction);
 
-	public void save(FieldClassLink link);
+	public void add(FieldClassLink link);
 
-	public void save(PatternPossibility possibility);
+	public void add(PatternPossibility possibility);
 
-	public void save(RulePossibility possibility);
+	public void add(RulePossibility possibility);
 
-	public void save(RulePackage rulePackage);
+	public void add(RulePackage rulePackage);
 
 	public AnalyticsClass getClassByPackageAndName(String name);
 
@@ -81,9 +81,9 @@ public interface AnalyticsData {
 
 	public Collection<Restriction> getRestrictionsByFieldId(int id);
 
-	public void save(OperatorDescr operatorDescr);
+	public void add(OperatorDescr operatorDescr);
 
-	public void save(AnalyticsEvalDescr eval);
+	public void add(AnalyticsEvalDescr eval);
 
-	public void save(AnalyticsPredicateDescr predicate);
+	public void add(AnalyticsPredicateDescr predicate);
 }

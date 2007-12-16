@@ -52,7 +52,7 @@ rule "Find redundant rule possibilities from different rules"
 		causes.add( $rulePossibilityRedundancy.getLeft() );
 		causes.add( $rulePossibilityRedundancy.getRight() );
 		
-		result.save(new AnalyticsMessage( 
+		result.add(new AnalyticsMessage( 
 						AnalyticsMessage.Severity.WARNING, AnalyticsMessage.MessageType.REDUNDANCY, 
 						$rulePossibilityRedundancy, "Rules are redundant.", causes ) );
 end
@@ -91,7 +91,7 @@ rule "Find subsumptant rule possibilities from different rules"
 		causes.add( $rulePossibilityRedundancy.getLeft() );
 		causes.add( $rulePossibilityRedundancy.getRight() );
 		
-		result.save(new AnalyticsMessage( 
+		result.add(new AnalyticsMessage( 
 						AnalyticsMessage.Severity.WARNING, AnalyticsMessage.MessageType.REDUNDANCY, 
 						$rulePossibilityRedundancy, "Rules are subsumptant.", causes ) );
 end

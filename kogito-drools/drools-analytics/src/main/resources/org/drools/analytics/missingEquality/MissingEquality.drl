@@ -79,7 +79,7 @@ rule "Missing restriction in LiteralRestrictions"
 				)
 		)
 	then
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.WARNING, 
 								AnalyticsMessage.MessageType.MISSING_EQUALITY, 
 								$r, 
@@ -208,7 +208,7 @@ rule "Missing restriction in VariableRestrictions"
 				)
 		)
 	then
-		result.save( new AnalyticsMessage(
+		result.add( new AnalyticsMessage(
 								AnalyticsMessage.Severity.WARNING, 
 								AnalyticsMessage.MessageType.MISSING_EQUALITY, 
 								$r, 

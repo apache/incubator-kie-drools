@@ -21,7 +21,7 @@ rule "Collect gaps"
 				MissingRange( field == $f )
 			)
 	then
-		result.save( new AnalyticsRangeCheckMessage( 
+		result.add( new AnalyticsRangeCheckMessage( 
 								AnalyticsRangeCheckMessage.Severity.WARNING, $f, 
 								$f + " has one or more gaps.", $list ) );
 end

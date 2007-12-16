@@ -244,7 +244,7 @@ class PackageDescrFlattener {
 		predicate.setOrderNumber(orderNumber);
 		predicate.setParent(parent);
 
-		data.save(predicate);
+		data.add(predicate);
 
 		return predicate;
 	}
@@ -266,7 +266,7 @@ class PackageDescrFlattener {
 		eval.setOrderNumber(orderNumber);
 		eval.setParent(parent);
 
-		data.save(eval);
+		data.add(eval);
 
 		return eval;
 	}
@@ -371,7 +371,7 @@ class PackageDescrFlattener {
 			rulePackage = new RulePackage();
 
 			rulePackage.setName(descr.getName());
-			data.save(rulePackage);
+			data.add(rulePackage);
 		}
 
 		currentPackage = rulePackage;
@@ -391,7 +391,7 @@ class PackageDescrFlattener {
 		rule.setPackageId(currentPackage.getId());
 		rule.setParent(parent);
 
-		data.save(rule);
+		data.add(rule);
 
 		currentPackage.getRules().add(rule);
 
@@ -441,7 +441,7 @@ class PackageDescrFlattener {
 		consequence.setRuleName(currentRule.getRuleName());
 		consequence.setParent(parent);
 
-		data.save(consequence);
+		data.add(consequence);
 
 		return consequence;
 	}
@@ -452,7 +452,7 @@ class PackageDescrFlattener {
 		operatorDescr.setOrderNumber(orderNumber);
 		operatorDescr.setParent(parent);
 
-		data.save(operatorDescr);
+		data.add(operatorDescr);
 
 		solvers.startOperator(operatorDescr);
 		flatten(descr.getDescrs(), operatorDescr);
@@ -465,7 +465,7 @@ class PackageDescrFlattener {
 		operatorDescr.setOrderNumber(orderNumber);
 		operatorDescr.setParent(parent);
 
-		data.save(operatorDescr);
+		data.add(operatorDescr);
 
 		solvers.startOperator(operatorDescr);
 		flatten(descr.getDescrs(), operatorDescr);
@@ -480,7 +480,7 @@ class PackageDescrFlattener {
 		if (clazz == null) {
 			clazz = new AnalyticsClass();
 			clazz.setName(descr.getObjectType());
-			data.save(clazz);
+			data.add(clazz);
 		}
 		currentClass = clazz;
 
@@ -495,7 +495,7 @@ class PackageDescrFlattener {
 		pattern.setOrderNumber(orderNumber);
 		pattern.setParent(parent);
 
-		data.save(pattern);
+		data.add(pattern);
 		currentPattern = pattern;
 
 		if (descr.getIdentifier() != null) {
@@ -508,7 +508,7 @@ class PackageDescrFlattener {
 			variable.setObjectId(clazz.getId());
 			variable.setObjectName(descr.getObjectType());
 
-			data.save(variable);
+			data.add(variable);
 		}
 
 		// flatten source.
@@ -535,7 +535,7 @@ class PackageDescrFlattener {
 		if (field == null) {
 			field = createField(descr.getFieldName(), descr.getLine(),
 					currentClass.getId(), currentClass.getName());
-			data.save(field);
+			data.add(field);
 		}
 		currentField = field;
 
@@ -550,7 +550,7 @@ class PackageDescrFlattener {
 		constraint.setOrderNumber(orderNumber);
 		constraint.setParent(parent);
 
-		data.save(constraint);
+		data.add(constraint);
 
 		currentConstraint = constraint;
 
@@ -580,7 +580,7 @@ class PackageDescrFlattener {
 
 		variable.setObjectType(AnalyticsComponentType.FIELD);
 
-		data.save(variable);
+		data.add(variable);
 	}
 
 	/**
@@ -613,7 +613,7 @@ class PackageDescrFlattener {
 		// Set field value, if it is unset.
 		currentField.setFieldType(Field.FieldType.VARIABLE);
 
-		data.save(restriction);
+		data.add(restriction);
 		solvers.addRestriction(restriction);
 	}
 
@@ -641,7 +641,7 @@ class PackageDescrFlattener {
 		restriction.setOrderNumber(orderNumber);
 		restriction.setParent(parent);
 
-		data.save(restriction);
+		data.add(restriction);
 		solvers.addRestriction(restriction);
 
 	}
@@ -672,7 +672,7 @@ class PackageDescrFlattener {
 		// Set field value, if it is unset.
 		currentField.setFieldType(restriction.getValueType());
 
-		data.save(restriction);
+		data.add(restriction);
 		solvers.addRestriction(restriction);
 	}
 
@@ -708,7 +708,7 @@ class PackageDescrFlattener {
 
 		variable.setObjectType(AnalyticsComponentType.FIELD);
 
-		data.save(restriction);
+		data.add(restriction);
 		solvers.addRestriction(restriction);
 	}
 
@@ -727,10 +727,10 @@ class PackageDescrFlattener {
 	private void formPossibilities() {
 
 		for (PatternPossibility possibility : solvers.getPatternPossibilities()) {
-			data.save(possibility);
+			data.add(possibility);
 		}
 		for (RulePossibility possibility : solvers.getRulePossibilities()) {
-			data.save(possibility);
+			data.add(possibility);
 		}
 	}
 }

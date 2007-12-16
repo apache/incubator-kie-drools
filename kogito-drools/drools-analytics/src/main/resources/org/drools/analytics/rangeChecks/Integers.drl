@@ -39,7 +39,7 @@ rule "Range check for integers, if smaller than or equal is missing"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		result.save( gap );
+		result.add( gap );
 		insert( gap );
 end
 
@@ -71,7 +71,7 @@ rule "Range check for integers, if greater than or equal is missing"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		result.save( gap );
+		result.add( gap );
 		insert( gap );
 end
 
@@ -112,7 +112,7 @@ rule "Range check for integers, equal and greater than"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		result.save( gap );
+		result.add( gap );
 		insert( gap );
 end
 
@@ -153,6 +153,6 @@ rule "Range check for integers, equal and smaller than"
 		
 		gap.setFiredRuleName( drools.getRule().getName() );
 		
-		result.save( gap );
+		result.add( gap );
 		insert( gap );
 end

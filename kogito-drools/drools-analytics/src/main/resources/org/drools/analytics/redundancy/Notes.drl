@@ -36,7 +36,7 @@ rule "Find redundant restrictions from pattern possibilities"
 		causes.add( $r.getLeft() );
 		causes.add( $r.getRight() );
 		
-		result.save(new AnalyticsMessage( 
+		result.add(new AnalyticsMessage( 
 						AnalyticsMessage.Severity.NOTE, AnalyticsMessage.MessageType.REDUNDANCY, 
 						$r, "Same restriction exists twice.", causes ) );
 end
@@ -57,7 +57,7 @@ rule "Find redundant pattern possibilities from rule possibilities"
 		causes.add( $r.getLeft() );
 		causes.add( $r.getRight() );
 		
-		result.save(new AnalyticsMessage( 
+		result.add(new AnalyticsMessage( 
 						AnalyticsMessage.Severity.NOTE, AnalyticsMessage.MessageType.REDUNDANCY, 
 						$r, "Two pattern possibilities with redundant restrictions exists twice in the same rule.", causes ) );
 end

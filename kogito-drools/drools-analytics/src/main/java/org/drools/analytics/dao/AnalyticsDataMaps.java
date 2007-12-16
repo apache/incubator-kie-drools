@@ -57,12 +57,12 @@ class AnalyticsDataMaps implements AnalyticsData {
 	private Map<Integer, PatternPossibility> patternPossibilitiesById = new TreeMap<Integer, PatternPossibility>();
 	private Map<Integer, RulePossibility> rulePossibilitiesById = new TreeMap<Integer, RulePossibility>();
 
-	public void save(AnalyticsClass clazz) {
+	public void add(AnalyticsClass clazz) {
 		classesById.put(Integer.valueOf(clazz.getId()), clazz);
 		classesByName.put(clazz.getName(), clazz);
 	}
 
-	public void save(Field field) {
+	public void add(Field field) {
 		AnalyticsClass clazz = classesById.get(Integer.valueOf(field
 				.getClassId()));
 		fieldsByClassAndFieldName.put(clazz.getName() + "." + field.getName(),
@@ -73,33 +73,33 @@ class AnalyticsDataMaps implements AnalyticsData {
 		fieldsByClassId.put(field.getClassId(), field);
 	}
 
-	public void save(Variable variable) {
+	public void add(Variable variable) {
 		variablesByRuleAndVariableName.put(variable.getRuleName() + "."
 				+ variable.getName(), variable);
 	}
 
-	public void save(AnalyticsRule rule) {
+	public void add(AnalyticsRule rule) {
 		rulesById.put(Integer.valueOf(rule.getId()), rule);
 	}
 
-	public void save(Pattern pattern) {
+	public void add(Pattern pattern) {
 		patternsById.put(Integer.valueOf(pattern.getId()), pattern);
 
 		patternsByClassId.put(pattern.getClassId(), pattern);
 		patternsByRuleName.put(pattern.getRuleName(), pattern);
 	}
 
-	public void save(Constraint constraint) {
+	public void add(Constraint constraint) {
 		constraintsById.put(Integer.valueOf(constraint.getId()), constraint);
 	}
 
-	public void save(Restriction restriction) {
+	public void add(Restriction restriction) {
 		restrictionsById.put(restriction.getId(), restriction);
 
 		restrictionsByFieldId.put(restriction.getFieldId(), restriction);
 	}
 
-	public void save(FieldClassLink link) {
+	public void add(FieldClassLink link) {
 		fieldClassLinkByIds.put(link.getFieldId() + "." + link.getClassId(),
 				link);
 	}
@@ -126,11 +126,11 @@ class AnalyticsDataMaps implements AnalyticsData {
 		return rulesById.values();
 	}
 
-	public void save(PatternPossibility possibility) {
+	public void add(PatternPossibility possibility) {
 		patternPossibilitiesById.put(possibility.getId(), possibility);
 	}
 
-	public void save(RulePossibility possibility) {
+	public void add(RulePossibility possibility) {
 		rulePossibilitiesById.put(possibility.getId(), possibility);
 	}
 
@@ -210,7 +210,7 @@ class AnalyticsDataMaps implements AnalyticsData {
 		return packagesById.values();
 	}
 
-	public void save(RulePackage rulePackage) {
+	public void add(RulePackage rulePackage) {
 		packagesById.put(rulePackage.getId(), rulePackage);
 		packagesByName.put(rulePackage.getName(), rulePackage);
 	}
@@ -223,19 +223,19 @@ class AnalyticsDataMaps implements AnalyticsData {
 		return restrictionsByFieldId.getBranch(id);
 	}
 
-	public void save(OperatorDescr operatorDescr) {
+	public void add(OperatorDescr operatorDescr) {
 		operatorsById.put(operatorDescr.getId(), operatorDescr);
 	}
 
-	public void save(AnalyticsEvalDescr eval) {
+	public void add(AnalyticsEvalDescr eval) {
 		evalsById.put(eval.getId(), eval);
 	}
 
-	public void save(AnalyticsPredicateDescr predicate) {
+	public void add(AnalyticsPredicateDescr predicate) {
 		predicatesById.put(predicate.getId(), predicate);
 	}
 
-	public void save(Consequence consequence) {
+	public void add(Consequence consequence) {
 		consiquencesById.put(consequence.getId(), consequence);
 	}
 }

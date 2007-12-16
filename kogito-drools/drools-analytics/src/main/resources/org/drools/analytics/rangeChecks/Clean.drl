@@ -38,7 +38,7 @@ rule "Merge gaps"
 											$g1.getField().getFieldType(), 
 											$g1.getValueAsString() );
 		mnp.setFiredRuleName( drools.getRule().getName() );
-		result.save( mnp );
+		result.add( mnp );
 		insert( mnp );
 end
 
