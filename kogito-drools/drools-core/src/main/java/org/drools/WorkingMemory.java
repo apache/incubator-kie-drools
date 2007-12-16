@@ -361,4 +361,13 @@ public interface WorkingMemory extends WorkingMemoryEventManager {
      */
     public void halt();
     
+    /**
+     * Returns the interface instance for a given entry point, so
+     * that the application can manage entry-point-scoped facts.
+     *  
+     * @param id the id of the entry point, as defined in the rules file
+     * @return
+     */
+    public EntryPointInterface getEntryPoint( String id );
+    
 }

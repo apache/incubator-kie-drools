@@ -10,6 +10,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.drools.Agenda;
+import org.drools.EntryPointInterface;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.ObjectFilter;
@@ -245,10 +246,6 @@ public class ExternalSheetListenerTest extends TestCase {
 					return null;
 				}
 				
-				public Collection getProcessInstances() {
-					return null;
-				}
-
                 public Iterator iterateFactHandles() {
                     return null;
                 }
@@ -409,6 +406,15 @@ public class ExternalSheetListenerTest extends TestCase {
                     return null;
                 }
 
+                public EntryPointInterface getEntryPoint(String id) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public Collection getProcessInstances() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
 			};
 		}
 	}

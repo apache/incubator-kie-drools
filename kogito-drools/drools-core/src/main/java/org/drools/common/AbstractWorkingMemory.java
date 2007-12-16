@@ -33,6 +33,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.Agenda;
+import org.drools.EntryPointInterface;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.ObjectFilter;
@@ -59,6 +60,7 @@ import org.drools.reteoo.FactTemplateTypeConf;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.Declaration;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.common.core.Process;
@@ -95,79 +97,79 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
-    protected static final Class[]         ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    protected static final Class[]                       ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected long                         id;
+    protected long                                       id;
 
     /** The arguments used when adding/removing a property change listener. */
-    protected final Object[]               addRemovePropertyChangeListenerArgs           = new Object[]{this};
+    protected final Object[]                             addRemovePropertyChangeListenerArgs           = new Object[]{this};
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected final PrimitiveLongMap       nodeMemories                                  = new PrimitiveLongMap( 32,
-                                                                                                                 8 );
+    protected final PrimitiveLongMap                     nodeMemories                                  = new PrimitiveLongMap( 32,
+                                                                                                                               8 );
     /** Object-to-handle mapping. */
-    private final ObjectHashMap            assertMap;
-    private final ObjectHashMap            identityMap;
+    private final ObjectHashMap                          assertMap;
+    private final ObjectHashMap                          identityMap;
 
-    protected Map                          queryResults                                  = Collections.EMPTY_MAP;
+    protected Map                                        queryResults                                  = Collections.EMPTY_MAP;
 
     /** Global values which are associated with this memory. */
-    protected GlobalResolver               globalResolver;
+    protected GlobalResolver                             globalResolver;
 
-    protected static final Object          NULL                                          = new Serializable() {
-                                                                                             private static final long serialVersionUID = 400L;
-                                                                                         };
+    protected static final Object                        NULL                                          = new Serializable() {
+                                                                                                           private static final long serialVersionUID = 400L;
+                                                                                                       };
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport    workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
+    protected WorkingMemoryEventSupport                  workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
 
-    protected AgendaEventSupport           agendaEventSupport                            = new AgendaEventSupport();
+    protected AgendaEventSupport                         agendaEventSupport                            = new AgendaEventSupport();
 
-    protected RuleFlowEventSupport         ruleFlowEventSupport                          = new RuleFlowEventSupport();
+    protected RuleFlowEventSupport                       ruleFlowEventSupport                          = new RuleFlowEventSupport();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected transient InternalRuleBase   ruleBase;
+    protected transient InternalRuleBase                 ruleBase;
 
-    protected final FactHandleFactory      handleFactory;
+    protected final FactHandleFactory                    handleFactory;
 
-    protected final TruthMaintenanceSystem tms;
+    protected final TruthMaintenanceSystem               tms;
 
     /** Rule-firing agenda. */
-    protected DefaultAgenda                agenda;
+    protected DefaultAgenda                              agenda;
 
-    protected final List                   actionQueue                                   = new ArrayList();
+    protected final List                                 actionQueue                                   = new ArrayList();
 
-    protected final ReentrantLock          lock                                          = new ReentrantLock();
+    protected final ReentrantLock                        lock                                          = new ReentrantLock();
 
-    protected final boolean                discardOnLogicalOverride;
+    protected final boolean                              discardOnLogicalOverride;
 
-    protected long                         propagationIdCounter;
+    protected long                                       propagationIdCounter;
 
-    private final boolean                  maintainTms;
+    private final boolean                                maintainTms;
 
-    private final boolean                  sequential;
+    private final boolean                                sequential;
 
-    private List                           liaPropagations                               = Collections.EMPTY_LIST;
+    private List                                         liaPropagations                               = Collections.EMPTY_LIST;
 
     /** Flag to determine if a rule is currently being fired. */
-    protected boolean                      firing;
+    protected boolean                                    firing;
 
-    protected boolean                      halt;
+    protected boolean                                    halt;
 
-    private Map                            processInstances                              = new HashMap();
+    private Map                                          processInstances                              = new HashMap();
 
-    private int                            processCounter;
+    private int                                          processCounter;
 
-    private WorkItemManager                taskInstanceManager;
+    private WorkItemManager                              taskInstanceManager;
 
-    private TimeMachine                    timeMachine                                   = new TimeMachine();
+    private TimeMachine                                  timeMachine                                   = new TimeMachine();
 
-    private Map<Object, ObjectTypeConf>    typeConfMap;
+    private Map<EntryPoint, Map<Object, ObjectTypeConf>> typeConfMap;
 
-    private SessionClock                   sessionClock;
+    private SessionClock                                 sessionClock;
 
     // ------------------------------------------------------------
     // Constructors
@@ -216,7 +218,7 @@ public abstract class AbstractWorkingMemory
 
         this.taskInstanceManager = new WorkItemManager( this );
 
-        this.typeConfMap = new HashMap<Object, ObjectTypeConf>();
+        this.typeConfMap = new HashMap<EntryPoint, Map<Object, ObjectTypeConf>>();
     }
 
     // ------------------------------------------------------------
@@ -723,12 +725,28 @@ public abstract class AbstractWorkingMemory
                              boolean logical,
                              final Rule rule,
                              final Activation activation) throws FactException {
+        return this.insert( EntryPoint.DEFAULT,
+                            object,
+                            dynamic,
+                            logical,
+                            rule,
+                            activation );
+
+    }
+
+    protected FactHandle insert(final EntryPoint entryPoint,
+                                final Object object,
+                                final boolean dynamic,
+                                boolean logical,
+                                final Rule rule,
+                                final Activation activation) throws FactException {
         if ( object == null ) {
             // you cannot assert a null object
             return null;
         }
 
-        ObjectTypeConf typeConf = getObjectTypeConf( object );
+        ObjectTypeConf typeConf = getObjectTypeConf( entryPoint,
+                                                     object );
 
         InternalFactHandle handle = null;
 
@@ -737,7 +755,8 @@ public abstract class AbstractWorkingMemory
                                                        typeConf.isEvent(),
                                                        this );
             addHandleToMaps( handle );
-            insert( handle,
+            insert( entryPoint,
+                    handle,
                     object,
                     rule,
                     activation );
@@ -893,7 +912,8 @@ public abstract class AbstractWorkingMemory
                 addPropertyChangeListener( object );
             }
 
-            insert( handle,
+            insert( entryPoint,
+                    handle,
                     object,
                     rule,
                     activation );
@@ -904,10 +924,11 @@ public abstract class AbstractWorkingMemory
         return handle;
     }
 
-    protected void insert(InternalFactHandle handle,
-                          Object object,
-                          Rule rule,
-                          Activation activation) {
+    protected void insert(final EntryPoint entryPoint,
+                          final InternalFactHandle handle,
+                          final Object object,
+                          final Rule rule,
+                          final Activation activation) {
         this.ruleBase.executeQueuedActions();
 
         if ( activation != null ) {
@@ -919,7 +940,8 @@ public abstract class AbstractWorkingMemory
                                                                                   rule,
                                                                                   activation,
                                                                                   this.agenda.getActiveActivations(),
-                                                                                  this.agenda.getDormantActivations() );
+                                                                                  this.agenda.getDormantActivations(),
+                                                                                  entryPoint );
 
         doInsert( handle,
                   object,
@@ -1012,6 +1034,21 @@ public abstract class AbstractWorkingMemory
                         final boolean updateEqualsMap,
                         final Rule rule,
                         final Activation activation) throws FactException {
+        this.retract( EntryPoint.DEFAULT,
+                      factHandle,
+                      removeLogical,
+                      updateEqualsMap,
+                      rule,
+                      activation );
+
+    }
+
+    protected void retract(final EntryPoint entryPoint,
+                           final FactHandle factHandle,
+                           final boolean removeLogical,
+                           final boolean updateEqualsMap,
+                           final Rule rule,
+                           final Activation activation) throws FactException {
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
@@ -1032,7 +1069,8 @@ public abstract class AbstractWorkingMemory
                                                                                       rule,
                                                                                       activation,
                                                                                       this.agenda.getActiveActivations(),
-                                                                                      this.agenda.getDormantActivations() );
+                                                                                      this.agenda.getDormantActivations(),
+                                                                                      entryPoint );
 
             doRetract( handle,
                        propagationContext );
@@ -1103,6 +1141,13 @@ public abstract class AbstractWorkingMemory
     public void modifyRetract(final FactHandle factHandle,
                               final Rule rule,
                               final Activation activation) {
+
+    }
+
+    protected void modifyRetract(final EntryPoint entryPoint,
+                                 final FactHandle factHandle,
+                                 final Rule rule,
+                                 final Activation activation) {
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
@@ -1130,7 +1175,8 @@ public abstract class AbstractWorkingMemory
                                                                                       rule,
                                                                                       activation,
                                                                                       this.agenda.getActiveActivations(),
-                                                                                      this.agenda.getDormantActivations() );
+                                                                                      this.agenda.getDormantActivations(),
+                                                                                      entryPoint );
             doRetract( handle,
                        propagationContext );
 
@@ -1162,6 +1208,18 @@ public abstract class AbstractWorkingMemory
                              final Object object,
                              final Rule rule,
                              final Activation activation) {
+        this.modifyInsert( EntryPoint.DEFAULT,
+                           factHandle,
+                           object,
+                           rule,
+                           activation );
+    }
+
+    protected void modifyInsert(final EntryPoint entryPoint,
+                                final FactHandle factHandle,
+                                final Object object,
+                                final Rule rule,
+                                final Activation activation) {
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
@@ -1197,7 +1255,8 @@ public abstract class AbstractWorkingMemory
                                                                                       rule,
                                                                                       activation,
                                                                                       this.agenda.getActiveActivations(),
-                                                                                      this.agenda.getDormantActivations() );
+                                                                                      this.agenda.getDormantActivations(),
+                                                                                      entryPoint );
 
             doInsert( handle,
                       object,
@@ -1237,6 +1296,19 @@ public abstract class AbstractWorkingMemory
                        final Object object,
                        final Rule rule,
                        final Activation activation) throws FactException {
+        this.update( EntryPoint.DEFAULT,
+                     factHandle,
+                     object,
+                     rule,
+                     activation );
+
+    }
+
+    protected void update(final EntryPoint entryPoint,
+                          final FactHandle factHandle,
+                          final Object object,
+                          final Rule rule,
+                          final Activation activation) throws FactException {
         try {
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
@@ -1265,7 +1337,8 @@ public abstract class AbstractWorkingMemory
                                                                                       rule,
                                                                                       activation,
                                                                                       this.agenda.getActiveActivations(),
-                                                                                      this.agenda.getDormantActivations() );
+                                                                                      this.agenda.getDormantActivations(),
+                                                                                      entryPoint );
             doRetract( handle,
                        propagationContext );
 
@@ -1533,17 +1606,26 @@ public abstract class AbstractWorkingMemory
      * @param object
      * @return
      */
-    public ObjectTypeConf getObjectTypeConf(Object object) {
+    public ObjectTypeConf getObjectTypeConf(EntryPoint entrypoint,
+                                            Object object) {
+        Map<Object, ObjectTypeConf> map = this.typeConfMap.get( entrypoint );
+        if ( map == null ) {
+            map = new HashMap<Object, ObjectTypeConf>();
+            this.typeConfMap.put( entrypoint,
+                                  map );
+        }
         ObjectTypeConf objectTypeConf;
 
         if ( object instanceof Fact ) {
             String key = ((Fact) object).getFactTemplate().getName();
-            objectTypeConf = (ObjectTypeConf) this.typeConfMap.get( key );
+            objectTypeConf = map.get( key );
             if ( objectTypeConf == null ) {
-                objectTypeConf = new FactTemplateTypeConf( ((Fact) object).getFactTemplate(),
+                objectTypeConf = new FactTemplateTypeConf( entrypoint,
+                                                           ((Fact) object).getFactTemplate(),
                                                            this.ruleBase );
-                this.typeConfMap.put( key,
-                                      objectTypeConf );
+                this.addObjectTypeConf( entrypoint,
+                                        key,
+                                        objectTypeConf );
             }
             object = key;
         } else {
@@ -1554,23 +1636,118 @@ public abstract class AbstractWorkingMemory
                 cls = object.getClass();
             }
 
-            objectTypeConf = (ObjectTypeConf) this.typeConfMap.get( cls );
+            objectTypeConf = map.get( cls );
             if ( objectTypeConf == null ) {
 
                 final boolean isEvent = this.ruleBase.isEvent( cls );
-                objectTypeConf = new ClassObjectTypeConf( cls,
+                objectTypeConf = new ClassObjectTypeConf( entrypoint,
+                                                          cls,
                                                           isEvent,
                                                           this.ruleBase );
-                this.typeConfMap.put( cls,
-                                      objectTypeConf );
+                this.addObjectTypeConf( entrypoint,
+                                        cls,
+                                        objectTypeConf );
             }
 
         }
         return objectTypeConf;
     }
 
-    public Map<Object, ObjectTypeConf> getObjectTypeConfMap() {
-        return this.typeConfMap;
+    public Map<Object, ObjectTypeConf> getObjectTypeConfMap(EntryPoint entryPoint) {
+        Map<Object, ObjectTypeConf> map = this.typeConfMap.get( entryPoint );
+        if ( map == null ) {
+            map = Collections.emptyMap();
+        }
+        return map;
+    }
+
+    private void addObjectTypeConf(EntryPoint entryPoint,
+                                   Object key,
+                                   ObjectTypeConf conf) {
+        Map<Object, ObjectTypeConf> map = this.typeConfMap.get( entryPoint );
+        if ( map == null ) {
+            map = new HashMap<Object, ObjectTypeConf>();
+            this.typeConfMap.put( entryPoint,
+                                  map );
+        }
+        map.put( key,
+                 conf );
+    }
+
+    public EntryPointInterface getEntryPoint(String id) {
+        EntryPoint ep = new EntryPoint( id );
+        return new EntryPointInterfaceImpl( ep,
+                                            this );
+    }
+
+    protected static class EntryPointInterfaceImpl
+        implements
+        EntryPointInterface {
+
+        private static final long           serialVersionUID = 2917871170743358801L;
+
+        private final EntryPoint            entryPoint;
+        private final AbstractWorkingMemory wm;
+
+        public EntryPointInterfaceImpl(EntryPoint entryPoint,
+                                       AbstractWorkingMemory wm) {
+            this.entryPoint = entryPoint;
+            this.wm = wm;
+        }
+
+        public FactHandle insert(Object object) throws FactException {
+            return wm.insert( this.entryPoint,
+                              object, /* Not-Dynamic */
+                              false,
+                              false,
+                              null,
+                              null );
+        }
+
+        public FactHandle insert(Object object,
+                                 boolean dynamic) throws FactException {
+            return wm.insert( this.entryPoint,
+                              object, /* Not-Dynamic */
+                              dynamic,
+                              false,
+                              null,
+                              null );
+        }
+
+        public void modifyInsert(FactHandle factHandle,
+                                 Object object) {
+            wm.modifyInsert( this.entryPoint,
+                             factHandle,
+                             object,
+                             null,
+                             null );
+        }
+
+        public void modifyRetract(FactHandle factHandle) {
+            wm.modifyRetract( this.entryPoint,
+                              factHandle,
+                              null,
+                              null );
+        }
+
+        public void retract(FactHandle handle) throws FactException {
+            wm.retract( this.entryPoint,
+                        handle,
+                        true,
+                        true,
+                        null,
+                        null );
+        }
+
+        public void update(FactHandle handle,
+                           Object object) throws FactException {
+            wm.update( this.entryPoint,
+                       handle,
+                       object,
+                       null,
+                       null );
+        }
+
     }
 
 }

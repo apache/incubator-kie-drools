@@ -34,22 +34,22 @@ import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
 
 /**
- * The implementation of the 'after' evaluator definition
+ * The implementation of the 'coincides' evaluator definition
  * 
- * @author etirelli
+ * @author mgroch
  */
-public class AfterEvaluatorDefinition
+public class CoincidesEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator   AFTER         = Operator.addOperatorToRegistry( "after",
-                                                                                   false );
-    public static final Operator   NOT_AFTER     = Operator.addOperatorToRegistry( "after",
-                                                                                   true );
-
-    private static final String[]  SUPPORTED_IDS = {AFTER.getOperatorString()};
-
-    private Map<String, Evaluator> cache         = Collections.emptyMap();
+    public static final Operator  COINCIDES       = Operator.addOperatorToRegistry( "coincides",
+                                                                                  false );
+    public static final Operator  COINCIDES_NOT   = Operator.addOperatorToRegistry( "coincides",
+                                                                                  true );
+    
+    private static final String[] SUPPORTED_IDS = { COINCIDES.getOperatorString() };
+    
+    private Map<String, CoincidesEvaluator> cache        = Collections.emptyMap();
 
     /**
      * @inheridDoc
@@ -82,12 +82,12 @@ public class AfterEvaluatorDefinition
                                   final boolean isNegated,
                                   final String parameterText) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, Evaluator>();
+            this.cache = new HashMap<String, CoincidesEvaluator>();
         }
         String key = isNegated + ":" + parameterText;
-        Evaluator eval = this.cache.get( key );
+        CoincidesEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            eval = new AfterEvaluator( type,
+            eval = new CoincidesEvaluator( type,
                                        isNegated,
                                        parameterText );
             this.cache.put( key,
@@ -127,32 +127,32 @@ public class AfterEvaluatorDefinition
     }
 
     /**
-     * Implements the 'after' evaluator itself
+     * Implements the 'coincides' evaluator itself
      */
-    public static class AfterEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = -4833205637340977934L;
+    public static class CoincidesEvaluator extends BaseEvaluator {		
+		private static final long serialVersionUID = 6031520837249122183L;
+		
+		private long                  startDev;
+        private long                  endDev;
 
-        private long              initRange;
-        private long              finalRange;
-
-        public AfterEvaluator(final ValueType type,
+        public CoincidesEvaluator(final ValueType type,
                               final boolean isNegated,
                               final String parameters) {
             super( type,
-                   isNegated ? NOT_AFTER : AFTER );
+                   isNegated ? COINCIDES_NOT : COINCIDES );
             this.parseParameters( parameters );
         }
-
+        
         @Override
         public Object prepareObject(InternalFactHandle handle) {
             return handle;
         }
-
+        
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
-            throw new RuntimeDroolsException( "The 'after' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeDroolsException( "The 'coincides' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -161,8 +161,11 @@ public class AfterEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long dist = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp() - ((EventFactHandle) left).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange ); 
+            long distStart = Math.abs(((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp() - 
+                        	 ((EventFactHandle) left ).getStartTimestamp());
+            long distEnd = Math.abs(((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp() - 
+       	 				   ((EventFactHandle) left ).getEndTimestamp());
+            return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd <= this.endDev);
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -172,9 +175,11 @@ public class AfterEvaluatorDefinition
                                                 right ) ) {
                 return false;
             }
-            long dist = ((EventFactHandle) right).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
-
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
+            long distStart = Math.abs(((EventFactHandle) right ).getStartTimestamp() - 
+                        	 ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp());
+            long distEnd = Math.abs(((EventFactHandle) right ).getEndTimestamp() - 
+               	 		   ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp());
+            return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd <= this.endDev );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -186,12 +191,13 @@ public class AfterEvaluatorDefinition
                                          object1 ) ) {
                 return false;
             }
-            long dist = ((EventFactHandle) object1).getStartTimestamp() - ((EventFactHandle) object2).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
+            long distStart = Math.abs(((EventFactHandle) object1 ).getStartTimestamp() - ((EventFactHandle) object2 ).getStartTimestamp());
+            long distEnd = Math.abs(((EventFactHandle) object1 ).getEndTimestamp() - ((EventFactHandle) object2 ).getEndTimestamp());
+            return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd <= this.endDev );
         }
 
         public String toString() {
-            return this.getOperator().toString()+ "[" + initRange + ", " + finalRange + "]";
+            return "coincides[" + startDev + ", " + endDev + "]";
         }
 
         /* (non-Javadoc)
@@ -201,8 +207,8 @@ public class AfterEvaluatorDefinition
         public int hashCode() {
             final int PRIME = 31;
             int result = super.hashCode();
-            result = PRIME * result + (int) (finalRange ^ (finalRange >>> 32));
-            result = PRIME * result + (int) (initRange ^ (initRange >>> 32));
+            result = PRIME * result + (int) (endDev ^ (endDev >>> 32));
+            result = PRIME * result + (int) (startDev ^ (startDev >>> 32));
             return result;
         }
 
@@ -214,8 +220,8 @@ public class AfterEvaluatorDefinition
             if ( this == obj ) return true;
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            final AfterEvaluator other = (AfterEvaluator) obj;
-            return finalRange == other.finalRange && initRange == other.initRange;
+            final CoincidesEvaluator other = (CoincidesEvaluator) obj;
+            return endDev == other.endDev && startDev == other.startDev;
         }
 
         /**
@@ -226,27 +232,27 @@ public class AfterEvaluatorDefinition
          */
         private void parseParameters(String parameters) {
             if ( parameters == null || parameters.trim().length() == 0 ) {
-                // open bounded range
-                this.initRange = 1;
-                this.finalRange = Long.MAX_VALUE;
+                // exact matching
+                this.startDev = 0;
+                this.endDev = 0;
                 return;
             }
 
             try {
                 String[] ranges = parameters.split( "," );
                 if ( ranges.length == 1 ) {
-                    // deterministic point in time
-                    this.initRange = Long.parseLong( ranges[0] );
-                    this.finalRange = this.initRange;
+                    // same max. deviation at start and end of interval
+                    this.startDev = Long.parseLong( ranges[0] );
+                    this.endDev = this.startDev;
                 } else if ( ranges.length == 2 ) {
-                    // regular range
-                    this.initRange = Long.parseLong( ranges[0] );
-                    this.finalRange = Long.parseLong( ranges[1] );
+                    // different max. deviation at start and end of interval
+                    this.startDev = Long.parseLong( ranges[0] );
+                    this.endDev = Long.parseLong( ranges[1] );
                 } else {
-                    throw new RuntimeDroolsException( "[After Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
+                    throw new RuntimeDroolsException( "[Coincides Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
                 }
             } catch ( NumberFormatException e ) {
-                throw new RuntimeDroolsException( "[After Evaluator]: Not possible to parse parameters: '" + parameters + "'",
+                throw new RuntimeDroolsException( "[Coincides Evaluator]: Not possible to parse parameters: '" + parameters + "'",
                                                   e );
             }
         }

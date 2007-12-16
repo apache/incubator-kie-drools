@@ -34,22 +34,22 @@ import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
 
 /**
- * The implementation of the 'after' evaluator definition
+ * The implementation of the 'metby' evaluator definition
  * 
- * @author etirelli
+ * @author mgroch
  */
-public class AfterEvaluatorDefinition
+public class MetByEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator   AFTER         = Operator.addOperatorToRegistry( "after",
-                                                                                   false );
-    public static final Operator   NOT_AFTER     = Operator.addOperatorToRegistry( "after",
-                                                                                   true );
-
-    private static final String[]  SUPPORTED_IDS = {AFTER.getOperatorString()};
-
-    private Map<String, Evaluator> cache         = Collections.emptyMap();
+    public static final Operator  MET_BY       = Operator.addOperatorToRegistry( "metby",
+                                                                                  false );
+    public static final Operator  NOT_MET_BY   = Operator.addOperatorToRegistry( "metby",
+                                                                                  true );
+    
+    private static final String[] SUPPORTED_IDS = { MET_BY.getOperatorString() };
+    
+    private Map<String, MetByEvaluator> cache        = Collections.emptyMap();
 
     /**
      * @inheridDoc
@@ -82,12 +82,12 @@ public class AfterEvaluatorDefinition
                                   final boolean isNegated,
                                   final String parameterText) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, Evaluator>();
+            this.cache = new HashMap<String, MetByEvaluator>();
         }
         String key = isNegated + ":" + parameterText;
-        Evaluator eval = this.cache.get( key );
+        MetByEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            eval = new AfterEvaluator( type,
+            eval = new MetByEvaluator( type,
                                        isNegated,
                                        parameterText );
             this.cache.put( key,
@@ -127,32 +127,31 @@ public class AfterEvaluatorDefinition
     }
 
     /**
-     * Implements the 'after' evaluator itself
+     * Implements the 'metby' evaluator itself
      */
-    public static class AfterEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = -4833205637340977934L;
+    public static class MetByEvaluator extends BaseEvaluator {
+		private static final long serialVersionUID = 7907908401657594347L;
+		
+		private long                  finalRange;
 
-        private long              initRange;
-        private long              finalRange;
-
-        public AfterEvaluator(final ValueType type,
+        public MetByEvaluator(final ValueType type,
                               final boolean isNegated,
                               final String parameters) {
             super( type,
-                   isNegated ? NOT_AFTER : AFTER );
+                   isNegated ? NOT_MET_BY : MET_BY );
             this.parseParameters( parameters );
         }
-
+        
         @Override
         public Object prepareObject(InternalFactHandle handle) {
             return handle;
         }
-
+        
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
-            throw new RuntimeDroolsException( "The 'after' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeDroolsException( "The 'metby' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -161,8 +160,9 @@ public class AfterEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long dist = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp() - ((EventFactHandle) left).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange ); 
+            long rightStartTS = ((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp();
+            long dist = Math.abs(rightStartTS - ((EventFactHandle) left ).getEndTimestamp());
+            return this.getOperator().isNegated() ^ ( ((EventFactHandle) left ).getStartTimestamp() < rightStartTS && dist <= this.finalRange );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -172,9 +172,11 @@ public class AfterEvaluatorDefinition
                                                 right ) ) {
                 return false;
             }
-            long dist = ((EventFactHandle) right).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
+            long rightStartTS = ((EventFactHandle) right ).getStartTimestamp();
+            long dist = Math.abs(rightStartTS - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp());
 
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
+            return this.getOperator().isNegated() ^ ( ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() <= rightStartTS && 
+            	    dist <= this.finalRange );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -186,12 +188,13 @@ public class AfterEvaluatorDefinition
                                          object1 ) ) {
                 return false;
             }
-            long dist = ((EventFactHandle) object1).getStartTimestamp() - ((EventFactHandle) object2).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
+            long obj1StartTS = ((EventFactHandle) object1 ).getStartTimestamp();
+            long dist = Math.abs(obj1StartTS - ((EventFactHandle) object2 ).getEndTimestamp());
+            return this.getOperator().isNegated() ^ ( ((EventFactHandle) object2 ).getStartTimestamp() <= obj1StartTS && dist <= this.finalRange );
         }
 
         public String toString() {
-            return this.getOperator().toString()+ "[" + initRange + ", " + finalRange + "]";
+            return "metby[" + finalRange + "]";
         }
 
         /* (non-Javadoc)
@@ -202,7 +205,6 @@ public class AfterEvaluatorDefinition
             final int PRIME = 31;
             int result = super.hashCode();
             result = PRIME * result + (int) (finalRange ^ (finalRange >>> 32));
-            result = PRIME * result + (int) (initRange ^ (initRange >>> 32));
             return result;
         }
 
@@ -214,8 +216,8 @@ public class AfterEvaluatorDefinition
             if ( this == obj ) return true;
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            final AfterEvaluator other = (AfterEvaluator) obj;
-            return finalRange == other.finalRange && initRange == other.initRange;
+            final MetByEvaluator other = (MetByEvaluator) obj;
+            return finalRange == other.finalRange;
         }
 
         /**
@@ -226,27 +228,21 @@ public class AfterEvaluatorDefinition
          */
         private void parseParameters(String parameters) {
             if ( parameters == null || parameters.trim().length() == 0 ) {
-                // open bounded range
-                this.initRange = 1;
-                this.finalRange = Long.MAX_VALUE;
+                // exact metby
+                this.finalRange = 0;
                 return;
             }
 
             try {
                 String[] ranges = parameters.split( "," );
                 if ( ranges.length == 1 ) {
-                    // deterministic point in time
-                    this.initRange = Long.parseLong( ranges[0] );
-                    this.finalRange = this.initRange;
-                } else if ( ranges.length == 2 ) {
-                    // regular range
-                    this.initRange = Long.parseLong( ranges[0] );
-                    this.finalRange = Long.parseLong( ranges[1] );
+                    // limit of tolerance for overlap or gap, respectively
+                    this.finalRange = Long.parseLong( ranges[0] );
                 } else {
-                    throw new RuntimeDroolsException( "[After Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
+                    throw new RuntimeDroolsException( "[Metby Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
                 }
             } catch ( NumberFormatException e ) {
-                throw new RuntimeDroolsException( "[After Evaluator]: Not possible to parse parameters: '" + parameters + "'",
+                throw new RuntimeDroolsException( "[Metby Evaluator]: Not possible to parse parameters: '" + parameters + "'",
                                                   e );
             }
         }

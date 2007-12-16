@@ -34,22 +34,22 @@ import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
 
 /**
- * The implementation of the 'after' evaluator definition
+ * The implementation of the 'before' evaluator definition
  * 
- * @author etirelli
+ * @author mgroch
  */
-public class AfterEvaluatorDefinition
+public class BeforeEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator   AFTER         = Operator.addOperatorToRegistry( "after",
-                                                                                   false );
-    public static final Operator   NOT_AFTER     = Operator.addOperatorToRegistry( "after",
-                                                                                   true );
-
-    private static final String[]  SUPPORTED_IDS = {AFTER.getOperatorString()};
-
-    private Map<String, Evaluator> cache         = Collections.emptyMap();
+    public static final Operator  BEFORE       = Operator.addOperatorToRegistry( "before",
+                                                                                  false );
+    public static final Operator  NOT_BEFORE   = Operator.addOperatorToRegistry( "before",
+                                                                                  true );
+    
+    private static final String[] SUPPORTED_IDS = { BEFORE.getOperatorString() };
+    
+    private Map<String, BeforeEvaluator> cache        = Collections.emptyMap();
 
     /**
      * @inheridDoc
@@ -82,12 +82,12 @@ public class AfterEvaluatorDefinition
                                   final boolean isNegated,
                                   final String parameterText) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, Evaluator>();
+            this.cache = new HashMap<String, BeforeEvaluator>();
         }
         String key = isNegated + ":" + parameterText;
-        Evaluator eval = this.cache.get( key );
+        BeforeEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            eval = new AfterEvaluator( type,
+            eval = new BeforeEvaluator( type,
                                        isNegated,
                                        parameterText );
             this.cache.put( key,
@@ -127,32 +127,32 @@ public class AfterEvaluatorDefinition
     }
 
     /**
-     * Implements the 'after' evaluator itself
+     * Implements the 'before' evaluator itself
      */
-    public static class AfterEvaluator extends BaseEvaluator {
-        private static final long serialVersionUID = -4833205637340977934L;
+    public static class BeforeEvaluator extends BaseEvaluator {
+		private static final long serialVersionUID = -4778826341073034320L;
+		
+		private long                  initRange;
+        private long                  finalRange;
 
-        private long              initRange;
-        private long              finalRange;
-
-        public AfterEvaluator(final ValueType type,
+        public BeforeEvaluator(final ValueType type,
                               final boolean isNegated,
                               final String parameters) {
             super( type,
-                   isNegated ? NOT_AFTER : AFTER );
+                   isNegated ? NOT_BEFORE : BEFORE );
             this.parseParameters( parameters );
         }
-
+        
         @Override
         public Object prepareObject(InternalFactHandle handle) {
             return handle;
         }
-
+        
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
                                 final Object object1,
                                 final FieldValue object2) {
-            throw new RuntimeDroolsException( "The 'after' operator can only be used to compare one event to another, and never to compare to literal constraints." );
+            throw new RuntimeDroolsException( "The 'before' operator can only be used to compare one event to another, and never to compare to literal constraints." );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -161,8 +161,9 @@ public class AfterEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long dist = ((EventFactHandle) ((ObjectVariableContextEntry) context).right).getStartTimestamp() - ((EventFactHandle) left).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange ); 
+            long dist = ((EventFactHandle) left ).getStartTimestamp() - 
+            			((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp();
+            return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -172,9 +173,10 @@ public class AfterEvaluatorDefinition
                                                 right ) ) {
                 return false;
             }
-            long dist = ((EventFactHandle) right).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
+            long dist = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() - 
+            			((EventFactHandle) right ).getEndTimestamp();
 
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
+            return this.getOperator().isNegated() ^ (  dist >= this.initRange && dist <= this.finalRange );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -186,12 +188,12 @@ public class AfterEvaluatorDefinition
                                          object1 ) ) {
                 return false;
             }
-            long dist = ((EventFactHandle) object1).getStartTimestamp() - ((EventFactHandle) object2).getEndTimestamp();
-            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
+            long dist = ((EventFactHandle) object2 ).getStartTimestamp() - ((EventFactHandle) object1 ).getEndTimestamp();
+            return this.getOperator().isNegated() ^ (  dist >= this.initRange && dist <= this.finalRange ) ;
         }
 
         public String toString() {
-            return this.getOperator().toString()+ "[" + initRange + ", " + finalRange + "]";
+            return this.getOperator().toString() + "[" + initRange + ", " + finalRange + "]";
         }
 
         /* (non-Javadoc)
@@ -214,7 +216,7 @@ public class AfterEvaluatorDefinition
             if ( this == obj ) return true;
             if ( !super.equals( obj ) ) return false;
             if ( getClass() != obj.getClass() ) return false;
-            final AfterEvaluator other = (AfterEvaluator) obj;
+            final BeforeEvaluator other = (BeforeEvaluator) obj;
             return finalRange == other.finalRange && initRange == other.initRange;
         }
 
@@ -243,10 +245,10 @@ public class AfterEvaluatorDefinition
                     this.initRange = Long.parseLong( ranges[0] );
                     this.finalRange = Long.parseLong( ranges[1] );
                 } else {
-                    throw new RuntimeDroolsException( "[After Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
+                    throw new RuntimeDroolsException( "[Before Evaluator]: Not possible to parse parameters: '" + parameters + "'" );
                 }
             } catch ( NumberFormatException e ) {
-                throw new RuntimeDroolsException( "[After Evaluator]: Not possible to parse parameters: '" + parameters + "'",
+                throw new RuntimeDroolsException( "[Before Evaluator]: Not possible to parse parameters: '" + parameters + "'",
                                                   e );
             }
         }

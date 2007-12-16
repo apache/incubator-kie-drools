@@ -38,6 +38,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.EntryPoint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
 
@@ -72,9 +73,7 @@ public class ReteTest extends DroolsTestCase {
                                                                   buildContext );
         stringTypeNode.attach();
 
-        final Field field = Rete.class.getDeclaredField( "objectTypeNodes" );
-        field.setAccessible( true );
-        final ObjectHashMap map = (ObjectHashMap) field.get( rete );
+        final Map map = rete.getObjectTypeNodes();
 
         // Check the ObjectTypeNodes are correctly added to Rete
         assertEquals( 2,
@@ -134,7 +133,7 @@ public class ReteTest extends DroolsTestCase {
                                                        null ),
                            workingMemory );
 
-        final Map map = workingMemory.getObjectTypeConfMap();
+        final Map map = workingMemory.getObjectTypeConfMap( EntryPoint.DEFAULT );
         ClassObjectTypeConf conf = (ClassObjectTypeConf) map.get( ArrayList.class );
         assertLength( 3,
                       conf.getObjectTypeNodes() );
@@ -238,7 +237,7 @@ public class ReteTest extends DroolsTestCase {
                     rete.getObjectTypeNodes().get( new ClassObjectType( List.class ) ) );
 
         // ArrayConf should match two ObjectTypenodes for List and ArrayList
-        Map memory = workingMemory.getObjectTypeConfMap();
+        Map memory = workingMemory.getObjectTypeConfMap( EntryPoint.DEFAULT );
         ObjectTypeConf arrayConf = (ObjectTypeConf) memory.get( ArrayList.class );
         final ObjectTypeNode arrayOtn = arrayConf.getConcreteObjectTypeNode();
         assertEquals( 2,

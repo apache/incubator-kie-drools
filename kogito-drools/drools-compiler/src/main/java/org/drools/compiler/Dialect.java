@@ -14,6 +14,7 @@ import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
@@ -75,6 +76,8 @@ public interface Dialect {
     ProcessClassBuilder getProcessClassBuilder();
 
     FromBuilder getFromBuilder();
+
+    EntryPointBuilder getEntryPointBuilder();
 
     RuleConditionBuilder getBuilder(Class clazz);
 

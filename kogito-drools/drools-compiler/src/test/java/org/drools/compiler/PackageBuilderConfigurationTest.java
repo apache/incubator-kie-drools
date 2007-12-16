@@ -27,6 +27,7 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.PackageBuildContext;
@@ -428,6 +429,11 @@ public class PackageBuilderConfigurationTest extends TestCase {
         public void init(ProcessDescr processDescr) {
             // TODO Auto-generated method stub
             
+        }
+
+        public EntryPointBuilder getEntryPointBuilder() {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 

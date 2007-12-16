@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.Agenda;
+import org.drools.EntryPointInterface;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.ObjectFilter;
@@ -28,6 +29,7 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.common.instance.ProcessInstance;
@@ -420,6 +422,22 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public Map<Object, ObjectTypeConf> getObjectTypeConfMap() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public ObjectTypeConf getObjectTypeConf(EntryPoint entryPoint,
+                                            Object object) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public Map<Object, ObjectTypeConf> getObjectTypeConfMap(EntryPoint entryPoint) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public EntryPointInterface getEntryPoint(String id) {
         // TODO Auto-generated method stub
         return null;
     }

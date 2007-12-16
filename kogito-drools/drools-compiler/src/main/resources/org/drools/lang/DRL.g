@@ -833,14 +833,19 @@ pattern_source returns [BaseDescr d]
 	:	
 		u=lhs_pattern { $d = $u.d; } 
 		(
+		        // THIS IS SIMPLY DUMB IMO, but it was the only way I could make it work... :( not sure if it is an 
+		        // ANTLR bug or if I'm doing something wrong.
+		        ( (FROM ENTRY_POINT) => FROM ep=entrypoint_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $ep.d); })
+		        |
 			FROM 
 		        {
 				location.setType(Location.LOCATION_LHS_FROM);
 				location.setProperty(Location.LOCATION_FROM_CONTENT, "");
 		        }
-		        ( options { k=1; } :
-		            ( ac=accumulate_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $ac.d); })
+		        ( options { k=1; backtrack=true;} :
+		          ( ac=accumulate_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $ac.d); })
 		          | ( cs=collect_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $cs.d); }) 
+		          //| ( ep=entrypoint_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $ep.d); })
 		          | ( fm=from_statement { if( $d != null ) ((PatternDescr)$d).setSource((PatternSourceDescr) $fm.d); }) 
 		        )
 		)?
@@ -1043,7 +1048,9 @@ accumulate_statement returns [AccumulateDescr d]
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 			d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
 		} 
-	; from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
+	; 
+	
+from_source[FromDescr from] returns [DeclarativeInvokerDescr ds]
 	@init {
 		$ds = null;
 		AccessorDescr ad = null;
@@ -1089,9 +1096,6 @@ accumulate_statement returns [AccumulateDescr d]
 			location.setProperty(Location.LOCATION_FROM_CONTENT, ad.toString() );
 		}
 	}
-	
-
-
 	
 expression_chain[FromDescr from, AccessorDescr as] 
 	@init {
@@ -1150,6 +1154,25 @@ collect_statement returns [CollectDescr d]
 		{
 		        $d.setInputPattern( (PatternDescr) $pattern.d );
 			$d.setEndCharacter( ((CommonToken)$RIGHT_PAREN).getStopIndex() );
+			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+		}
+	; 		
+
+entrypoint_statement returns [EntryPointDescr d]
+	@init {
+		$d = factory.createEntryPoint();
+	}
+	:
+	        ENTRY_POINT 
+		{ 
+			$d.setLocation( offset($ENTRY_POINT.line), $ENTRY_POINT.pos );
+			$d.setStartCharacter( ((CommonToken)$ENTRY_POINT).getStartIndex() );
+			location.setType( Location.LOCATION_LHS_FROM_ENTRY_POINT );
+		}	
+		id=name
+		{
+		        $d.setEntryId( $id.name );
+			$d.setEndCharacter( ((CommonToken)$id.stop).getStopIndex() );
 			location.setType( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
 		}
 	; 		
@@ -1409,8 +1432,8 @@ or_restr_connective[ RestrictionConnectiveDescr base ]
 	:
 		and_restr_connective[or]
 		( 
-			options {backtrack=true;}
-			: DOUBLE_PIPE 
+			options {backtrack=true;} : 
+			DOUBLE_PIPE 
 			{
 				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 			}
@@ -1830,6 +1853,8 @@ REVERSE	:	'reverse';
 RESULT	:	'result';
 
 COLLECT :	'collect';
+
+ENTRY_POINT :	'entry-point';
 
 OR	:	'or';
 

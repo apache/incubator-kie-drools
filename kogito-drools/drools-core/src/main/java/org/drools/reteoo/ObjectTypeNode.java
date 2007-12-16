@@ -26,6 +26,7 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
+import org.drools.rule.EntryPoint;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -78,6 +79,8 @@ public class ObjectTypeNode extends ObjectSource
 
     private boolean           objectMemoryEnabled;
 
+    private final EntryPoint  entryPoint;
+
     /**
      * Construct given a semantic <code>ObjectType</code> and the provided
      * unique id. All <code>ObjectTypdeNode</code> have node memory.
@@ -96,6 +99,7 @@ public class ObjectTypeNode extends ObjectSource
         this.rete = (Rete) this.objectSource;
         this.objectType = objectType;
         setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
+        this.entryPoint = context.getCurrentEntryPoint() == null ? EntryPoint.DEFAULT : context.getCurrentEntryPoint();
     }
 
     /**
@@ -144,7 +148,7 @@ public class ObjectTypeNode extends ObjectSource
             return;
         }
 
-        if ( this.objectMemoryEnabled) {
+        if ( this.objectMemoryEnabled ) {
             final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
             memory.add( handle,
                         false );
@@ -210,10 +214,11 @@ public class ObjectTypeNode extends ObjectSource
         // to working memories
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null );
+            final PropagationContextImpl propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                          PropagationContext.RULE_ADDITION,
+                                                                                          null,
+                                                                                          null );
+            propagationContext.setEntryPoint( this.entryPoint );
             this.rete.updateSink( this,
                                   propagationContext,
                                   workingMemory );
@@ -260,14 +265,14 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public String toString() {
-        return "[ObjectTypeNode(" + this.id + ") objectType=" + this.objectType + "]";
+        return "[ObjectTypeNode(" + this.id + ") " + this.entryPoint + " objectType=" + this.objectType + "]";
     }
 
     /**
      * Uses he hashCode() of the underlying ObjectType implementation.
      */
     public int hashCode() {
-        return this.objectType.hashCode();
+        return this.objectType.hashCode() ^ this.entryPoint.hashCode();
     }
 
     public boolean equals(final Object object) {
@@ -281,7 +286,7 @@ public class ObjectTypeNode extends ObjectSource
 
         final ObjectTypeNode other = (ObjectTypeNode) object;
 
-        return this.objectType.equals( other.objectType );
+        return this.objectType.equals( other.objectType ) && this.entryPoint.equals( other.entryPoint );
     }
 
     /** 
@@ -342,5 +347,12 @@ public class ObjectTypeNode extends ObjectSource
             usesDecl = (declarations[j].getPattern().getObjectType() == this.objectType);
         }
         return usesDecl;
+    }
+
+    /**
+     * @return the entryPoint
+     */
+    public EntryPoint getEntryPoint() {
+        return entryPoint;
     }
 }

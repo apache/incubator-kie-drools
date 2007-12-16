@@ -2,12 +2,121 @@ package org.drools;
 
 import event org.drools.StockTick;
 
-global java.util.List results;
+global java.util.List results_coincides;
+global java.util.List results_after;
+global java.util.List results_before;
+global java.util.List results_meets;
+global java.util.List results_met_by;
+/*global java.util.List results_overlaps;
+global java.util.List results_overlapped_by;
+global java.util.List results_during;
+global java.util.List results_includes;
+global java.util.List results_starts;
+global java.util.List results_started_by;
+global java.util.List results_finishes;
+global java.util.List results_finished_by;*/
+
+rule "coincides operator"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this ~coincides[2] $a )
+then
+    results_coincides.add( $b );
+end
+
+rule "before operator"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this ~before[5,10] $a )
+then
+    results_before.add( $b );
+end
 
 rule "after operator"
 when
     $a : StockTick( company == "DROO" )
     $b : StockTick( company == "ACME", this ~after[5,10] $a )
 then
-    results.add( $b );
+    results_after.add( $b );
 end
+
+rule "meets operator"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this ~meets[4] $a )
+then
+    results_meets.add( $b );
+end
+
+rule "met-by operator"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this ~metby[4] $a )
+then
+    results_met_by.add( $b );
+end
+
+/*
+rule "overlaps operator"
+when
+    $a : StockTick( company == "ACME" )
+    $b : StockTick( company == "DROO", this ~overlaps[4] $a )
+then
+    results_overlaps.add( $b );
+end
+
+rule "overlapped-by operator"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this ~overlappedby[4] $a )
+then
+    results_overlapped_by.add( $b );
+end
+
+rule "during operator"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this ~during[2,0] $a )
+then
+    results_during.add( $b );
+end
+
+rule "includes operator"
+when
+    $a : StockTick( company == "ACME" )
+    $b : StockTick( company == "DROO", this ~includes[2,0] $a )
+then
+    results_includes.add( $b );
+end
+
+rule "starts operator"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this ~starts[2,0,1] $a )
+then
+    results_starts.add( $b );
+end
+
+rule "started-by operator"
+when
+    $a : StockTick( company == "ACME" )
+    $b : StockTick( company == "DROO", this ~startedby[2,0,1] $a )
+then
+    results_started_by.add( $b );
+end
+
+rule "finishes operator"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company == "ACME", this ~finishes[2] $a )
+then
+    results_finishes.add( $b );
+end
+
+rule "finished-by operator"
+when
+    $a : StockTick( company == "ACME" )
+    $b : StockTick( company == "DROO", this ~finishedby[2] $a )
+then
+    results_finished_by.add( $b );
+end*/

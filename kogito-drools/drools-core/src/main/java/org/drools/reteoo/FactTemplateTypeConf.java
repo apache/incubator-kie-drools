@@ -25,6 +25,7 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
+import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 
 public class FactTemplateTypeConf
@@ -35,13 +36,17 @@ public class FactTemplateTypeConf
     private FactTemplate     factTemplate;
     private ObjectTypeNode   concreteObjectTypeNode;
     private ObjectTypeNode[] cache;
+    private EntryPoint       entryPoint;
 
-    public FactTemplateTypeConf(FactTemplate factTemplate,
-                                InternalRuleBase ruleBase) {
+    public FactTemplateTypeConf(final EntryPoint entryPoint,
+                                final FactTemplate factTemplate,
+                                final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
         this.factTemplate = factTemplate;
+        this.entryPoint = entryPoint;
+
         ObjectType objectType = new FactTemplateObjectType( factTemplate );
-        this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes().get( objectType );
+        this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         if ( this.concreteObjectTypeNode == null ) {
             BuildContext context = new BuildContext( ruleBase,
                                                      ((ReteooRuleBase) ruleBase.getRete().getRuleBase()).getReteooBuilder().getIdGenerator() );
@@ -92,7 +97,7 @@ public class FactTemplateTypeConf
     public boolean isActive() {
         return true;
     }
-    
+
     public boolean isEvent() {
         return false;
     }

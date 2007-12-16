@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
@@ -35,6 +36,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactHashTable;
@@ -64,9 +66,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertEquals( id,
                       objectTypeNode.getId() );
 
-        final Field field = Rete.class.getDeclaredField( "objectTypeNodes" );
-        field.setAccessible( true );
-        final ObjectHashMap map = (ObjectHashMap) field.get( source );
+        ObjectHashMap map = source.getObjectTypeNodes( EntryPoint.DEFAULT );
 
         assertEquals( 0,
                       map.size() );
