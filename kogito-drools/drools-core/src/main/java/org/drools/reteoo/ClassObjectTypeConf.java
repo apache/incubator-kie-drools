@@ -47,8 +47,6 @@ public class ClassObjectTypeConf
     implements
     ObjectTypeConf,
     Serializable {
-    // Objenesis instance without cache (false)
-    private static final Objenesis         OBJENESIS = new ObjenesisStd( false );
 
     private final Class                    cls;
     private transient InternalRuleBase     ruleBase;
@@ -235,7 +233,7 @@ public class ClassObjectTypeConf
      *
      */
     private void setInstantiator() {
-        this.instantiator = OBJENESIS.getInstantiatorOf( this.shadowClass );
+        this.instantiator = this.ruleBase.getObjenesis().getInstantiatorOf( this.shadowClass );
     }
 
     public Object getShadow(final Object fact) throws RuntimeDroolsException {
