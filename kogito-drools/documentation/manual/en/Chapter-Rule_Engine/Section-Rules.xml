@@ -275,7 +275,7 @@ public void cheddarCheese(Cheese cheese) {
 
     <programlisting>
       
-      Person( eyeColour == "blue"||"green" )
+      Person( eyeColour == "blue"|| == "green" )
       
     </programlisting>
 
