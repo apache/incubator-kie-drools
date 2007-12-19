@@ -90,6 +90,8 @@ options {k=2; backtrack=true; memoize=true;}
 	public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
 	private List errors = new ArrayList();
 	private int localVariableLevel = 0;
+	private List modifyBlocks = new ArrayList();
+	public List getModifyBlocks() { return modifyBlocks; }
 	
 	private String source = "unknown";
 	
@@ -676,10 +678,32 @@ statement
     | 'throw' expression ';'
     | 'break' Identifier? ';'
     | 'continue' Identifier? ';'
+    // adding support to drools modify block
+    | modifyStatement
     | ';'
     | statementExpression ';'
     | Identifier ':' statement
 	;
+	
+modifyStatement
+	@init {
+	    JavaModifyBlockDescr d = null;
+	}
+	: s='modify' parExpression 
+	{
+	    d = new JavaModifyBlockDescr( $parExpression.text );
+	    d.setStart( ((CommonToken)$s).getStartIndex() );
+	    this.modifyBlocks.add( d );
+	    
+	}
+	'{' ( e = expression { d.getExpressions().add( $e.text ); }
+	       (',' e=expression { d.getExpressions().add( $e.text ); } )*
+	    )? 
+	c='}' 
+        {
+            d.setEnd( ((CommonToken)$c).getStopIndex() ); 
+        }
+	;	
 	
 catches
 	:	catchClause (catchClause)*

@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g 2007-10-31 14:52:30
+// $ANTLR 3.0.1 /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g 2007-12-19 16:46:02
 
 	package org.drools.rule.builder.dialect.java.parser;
 
@@ -16,6 +16,7 @@ public class JavaLexer extends Lexer {
     public static final int T85=85;
     public static final int T102=102;
     public static final int Letter=19;
+    public static final int T114=114;
     public static final int T103=103;
     public static final int T32=32;
     public static final int T81=81;
@@ -114,7 +115,7 @@ public class JavaLexer extends Lexer {
     public static final int EOF=-1;
     public static final int T104=104;
     public static final int T47=47;
-    public static final int Tokens=114;
+    public static final int Tokens=115;
     public static final int T53=53;
     public static final int OctalEscape=18;
     public static final int T99=99;
@@ -1315,10 +1316,10 @@ public class JavaLexer extends Lexer {
     public final void mT87() throws RecognitionException {
         try {
             int _type = T87;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:73:5: ( 'catch' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:73:7: 'catch'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:73:5: ( 'modify' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:73:7: 'modify'
             {
-            match("catch"); 
+            match("modify"); 
 
 
             }
@@ -1334,10 +1335,10 @@ public class JavaLexer extends Lexer {
     public final void mT88() throws RecognitionException {
         try {
             int _type = T88;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:74:5: ( 'case' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:74:7: 'case'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:74:5: ( 'catch' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:74:7: 'catch'
             {
-            match("case"); 
+            match("catch"); 
 
 
             }
@@ -1353,10 +1354,10 @@ public class JavaLexer extends Lexer {
     public final void mT89() throws RecognitionException {
         try {
             int _type = T89;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:75:5: ( '+=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:75:7: '+='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:75:5: ( 'case' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:75:7: 'case'
             {
-            match("+="); 
+            match("case"); 
 
 
             }
@@ -1372,10 +1373,10 @@ public class JavaLexer extends Lexer {
     public final void mT90() throws RecognitionException {
         try {
             int _type = T90;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:76:5: ( '-=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:76:7: '-='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:76:5: ( '+=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:76:7: '+='
             {
-            match("-="); 
+            match("+="); 
 
 
             }
@@ -1391,10 +1392,10 @@ public class JavaLexer extends Lexer {
     public final void mT91() throws RecognitionException {
         try {
             int _type = T91;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:77:5: ( '*=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:77:7: '*='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:77:5: ( '-=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:77:7: '-='
             {
-            match("*="); 
+            match("-="); 
 
 
             }
@@ -1410,10 +1411,10 @@ public class JavaLexer extends Lexer {
     public final void mT92() throws RecognitionException {
         try {
             int _type = T92;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:78:5: ( '/=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:78:7: '/='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:78:5: ( '*=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:78:7: '*='
             {
-            match("/="); 
+            match("*="); 
 
 
             }
@@ -1429,10 +1430,10 @@ public class JavaLexer extends Lexer {
     public final void mT93() throws RecognitionException {
         try {
             int _type = T93;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:79:5: ( '&=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:79:7: '&='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:79:5: ( '/=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:79:7: '/='
             {
-            match("&="); 
+            match("/="); 
 
 
             }
@@ -1448,10 +1449,10 @@ public class JavaLexer extends Lexer {
     public final void mT94() throws RecognitionException {
         try {
             int _type = T94;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:80:5: ( '|=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:80:7: '|='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:80:5: ( '&=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:80:7: '&='
             {
-            match("|="); 
+            match("&="); 
 
 
             }
@@ -1467,10 +1468,10 @@ public class JavaLexer extends Lexer {
     public final void mT95() throws RecognitionException {
         try {
             int _type = T95;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:81:5: ( '^=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:81:7: '^='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:81:5: ( '|=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:81:7: '|='
             {
-            match("^="); 
+            match("|="); 
 
 
             }
@@ -1486,10 +1487,10 @@ public class JavaLexer extends Lexer {
     public final void mT96() throws RecognitionException {
         try {
             int _type = T96;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:82:5: ( '%=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:82:7: '%='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:82:5: ( '^=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:82:7: '^='
             {
-            match("%="); 
+            match("^="); 
 
 
             }
@@ -1505,10 +1506,10 @@ public class JavaLexer extends Lexer {
     public final void mT97() throws RecognitionException {
         try {
             int _type = T97;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:83:5: ( '||' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:83:7: '||'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:83:5: ( '%=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:83:7: '%='
             {
-            match("||"); 
+            match("%="); 
 
 
             }
@@ -1524,10 +1525,10 @@ public class JavaLexer extends Lexer {
     public final void mT98() throws RecognitionException {
         try {
             int _type = T98;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:84:5: ( '&&' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:84:7: '&&'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:84:5: ( '||' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:84:7: '||'
             {
-            match("&&"); 
+            match("||"); 
 
 
             }
@@ -1543,10 +1544,11 @@ public class JavaLexer extends Lexer {
     public final void mT99() throws RecognitionException {
         try {
             int _type = T99;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:85:5: ( '|' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:85:7: '|'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:85:5: ( '&&' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:85:7: '&&'
             {
-            match('|'); 
+            match("&&"); 
+
 
             }
 
@@ -1561,10 +1563,10 @@ public class JavaLexer extends Lexer {
     public final void mT100() throws RecognitionException {
         try {
             int _type = T100;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:86:6: ( '^' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:86:8: '^'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:86:6: ( '|' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:86:8: '|'
             {
-            match('^'); 
+            match('|'); 
 
             }
 
@@ -1579,11 +1581,10 @@ public class JavaLexer extends Lexer {
     public final void mT101() throws RecognitionException {
         try {
             int _type = T101;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:87:6: ( '==' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:87:8: '=='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:87:6: ( '^' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:87:8: '^'
             {
-            match("=="); 
-
+            match('^'); 
 
             }
 
@@ -1598,10 +1599,10 @@ public class JavaLexer extends Lexer {
     public final void mT102() throws RecognitionException {
         try {
             int _type = T102;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:88:6: ( '!=' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:88:8: '!='
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:88:6: ( '==' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:88:8: '=='
             {
-            match("!="); 
+            match("=="); 
 
 
             }
@@ -1617,10 +1618,10 @@ public class JavaLexer extends Lexer {
     public final void mT103() throws RecognitionException {
         try {
             int _type = T103;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:89:6: ( 'instanceof' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:89:8: 'instanceof'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:89:6: ( '!=' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:89:8: '!='
             {
-            match("instanceof"); 
+            match("!="); 
 
 
             }
@@ -1636,10 +1637,11 @@ public class JavaLexer extends Lexer {
     public final void mT104() throws RecognitionException {
         try {
             int _type = T104;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:90:6: ( '+' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:90:8: '+'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:90:6: ( 'instanceof' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:90:8: 'instanceof'
             {
-            match('+'); 
+            match("instanceof"); 
+
 
             }
 
@@ -1654,10 +1656,10 @@ public class JavaLexer extends Lexer {
     public final void mT105() throws RecognitionException {
         try {
             int _type = T105;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:91:6: ( '-' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:91:8: '-'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:91:6: ( '+' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:91:8: '+'
             {
-            match('-'); 
+            match('+'); 
 
             }
 
@@ -1672,10 +1674,10 @@ public class JavaLexer extends Lexer {
     public final void mT106() throws RecognitionException {
         try {
             int _type = T106;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:92:6: ( '/' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:92:8: '/'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:92:6: ( '-' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:92:8: '-'
             {
-            match('/'); 
+            match('-'); 
 
             }
 
@@ -1690,10 +1692,10 @@ public class JavaLexer extends Lexer {
     public final void mT107() throws RecognitionException {
         try {
             int _type = T107;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:93:6: ( '%' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:93:8: '%'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:93:6: ( '/' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:93:8: '/'
             {
-            match('%'); 
+            match('/'); 
 
             }
 
@@ -1708,11 +1710,10 @@ public class JavaLexer extends Lexer {
     public final void mT108() throws RecognitionException {
         try {
             int _type = T108;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:94:6: ( '++' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:94:8: '++'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:94:6: ( '%' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:94:8: '%'
             {
-            match("++"); 
-
+            match('%'); 
 
             }
 
@@ -1727,10 +1728,10 @@ public class JavaLexer extends Lexer {
     public final void mT109() throws RecognitionException {
         try {
             int _type = T109;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:95:6: ( '--' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:95:8: '--'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:95:6: ( '++' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:95:8: '++'
             {
-            match("--"); 
+            match("++"); 
 
 
             }
@@ -1746,10 +1747,11 @@ public class JavaLexer extends Lexer {
     public final void mT110() throws RecognitionException {
         try {
             int _type = T110;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:96:6: ( '~' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:96:8: '~'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:96:6: ( '--' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:96:8: '--'
             {
-            match('~'); 
+            match("--"); 
+
 
             }
 
@@ -1764,10 +1766,10 @@ public class JavaLexer extends Lexer {
     public final void mT111() throws RecognitionException {
         try {
             int _type = T111;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:97:6: ( '!' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:97:8: '!'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:97:6: ( '~' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:97:8: '~'
             {
-            match('!'); 
+            match('~'); 
 
             }
 
@@ -1782,11 +1784,10 @@ public class JavaLexer extends Lexer {
     public final void mT112() throws RecognitionException {
         try {
             int _type = T112;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:98:6: ( 'this' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:98:8: 'this'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:98:6: ( '!' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:98:8: '!'
             {
-            match("this"); 
-
+            match('!'); 
 
             }
 
@@ -1801,10 +1802,10 @@ public class JavaLexer extends Lexer {
     public final void mT113() throws RecognitionException {
         try {
             int _type = T113;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:99:6: ( 'new' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:99:8: 'new'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:99:6: ( 'this' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:99:8: 'this'
             {
-            match("new"); 
+            match("this"); 
 
 
             }
@@ -1816,12 +1817,31 @@ public class JavaLexer extends Lexer {
     }
     // $ANTLR end T113
 
+    // $ANTLR start T114
+    public final void mT114() throws RecognitionException {
+        try {
+            int _type = T114;
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:100:6: ( 'new' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:100:8: 'new'
+            {
+            match("new"); 
+
+
+            }
+
+            this.type = _type;
+        }
+        finally {
+        }
+    }
+    // $ANTLR end T114
+
     // $ANTLR start HexLiteral
     public final void mHexLiteral() throws RecognitionException {
         try {
             int _type = HexLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:12: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:14: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:12: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:14: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
             {
             match('0'); 
             if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
@@ -1834,7 +1854,7 @@ public class JavaLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:28: ( HexDigit )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:28: ( HexDigit )+
             int cnt1=0;
             loop1:
             do {
@@ -1848,7 +1868,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:28: HexDigit
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:28: HexDigit
             	    {
             	    mHexDigit(); 
 
@@ -1864,7 +1884,7 @@ public class JavaLexer extends Lexer {
                 cnt1++;
             } while (true);
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:38: ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:38: ( IntegerTypeSuffix )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -1873,7 +1893,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:936:38: IntegerTypeSuffix
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:960:38: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -1896,10 +1916,10 @@ public class JavaLexer extends Lexer {
     public final void mDecimalLiteral() throws RecognitionException {
         try {
             int _type = DecimalLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:16: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:18: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:16: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:18: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
             {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -1911,23 +1931,23 @@ public class JavaLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("938:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )", 4, 0, input);
+                    new NoViableAltException("962:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )", 4, 0, input);
 
                 throw nvae;
             }
             switch (alt4) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:19: '0'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:19: '0'
                     {
                     match('0'); 
 
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:25: '1' .. '9' ( '0' .. '9' )*
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:25: '1' .. '9' ( '0' .. '9' )*
                     {
                     matchRange('1','9'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:34: ( '0' .. '9' )*
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:34: ( '0' .. '9' )*
                     loop3:
                     do {
                         int alt3=2;
@@ -1940,7 +1960,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt3) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:34: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:34: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -1958,7 +1978,7 @@ public class JavaLexer extends Lexer {
 
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:45: ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:45: ( IntegerTypeSuffix )?
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -1967,7 +1987,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:938:45: IntegerTypeSuffix
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:45: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -1990,11 +2010,11 @@ public class JavaLexer extends Lexer {
     public final void mOctalLiteral() throws RecognitionException {
         try {
             int _type = OctalLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:14: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:16: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:14: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:16: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
             {
             match('0'); 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:20: ( '0' .. '7' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:20: ( '0' .. '7' )+
             int cnt6=0;
             loop6:
             do {
@@ -2008,7 +2028,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:21: '0' .. '7'
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:21: '0' .. '7'
             	    {
             	    matchRange('0','7'); 
 
@@ -2024,7 +2044,7 @@ public class JavaLexer extends Lexer {
                 cnt6++;
             } while (true);
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:32: ( IntegerTypeSuffix )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:32: ( IntegerTypeSuffix )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -2033,7 +2053,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt7) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:940:32: IntegerTypeSuffix
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:964:32: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -2055,8 +2075,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start HexDigit
     public final void mHexDigit() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:943:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:943:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:967:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:967:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -2080,8 +2100,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start IntegerTypeSuffix
     public final void mIntegerTypeSuffix() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:946:19: ( ( 'l' | 'L' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:946:21: ( 'l' | 'L' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:970:19: ( ( 'l' | 'L' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:970:21: ( 'l' | 'L' )
             {
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
@@ -2106,14 +2126,14 @@ public class JavaLexer extends Lexer {
     public final void mFloatingPointLiteral() throws RecognitionException {
         try {
             int _type = FloatingPointLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix )
             int alt19=4;
             alt19 = dfa19.predict(input);
             switch (alt19) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
                     {
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:9: ( '0' .. '9' )+
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:9: ( '0' .. '9' )+
                     int cnt8=0;
                     loop8:
                     do {
@@ -2127,7 +2147,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt8) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:10: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2144,7 +2164,7 @@ public class JavaLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:25: ( '0' .. '9' )*
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:25: ( '0' .. '9' )*
                     loop9:
                     do {
                         int alt9=2;
@@ -2157,7 +2177,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:26: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:26: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2169,7 +2189,7 @@ public class JavaLexer extends Lexer {
                         }
                     } while (true);
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:37: ( Exponent )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:37: ( Exponent )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -2178,7 +2198,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt10) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:37: Exponent
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:37: Exponent
                             {
                             mExponent(); 
 
@@ -2187,7 +2207,7 @@ public class JavaLexer extends Lexer {
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:47: ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:47: ( FloatTypeSuffix )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -2196,7 +2216,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt11) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:949:47: FloatTypeSuffix
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:47: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2209,10 +2229,10 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:974:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
                     {
                     match('.'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:13: ( '0' .. '9' )+
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:974:13: ( '0' .. '9' )+
                     int cnt12=0;
                     loop12:
                     do {
@@ -2226,7 +2246,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt12) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:14: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:974:14: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2242,7 +2262,7 @@ public class JavaLexer extends Lexer {
                         cnt12++;
                     } while (true);
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:25: ( Exponent )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:974:25: ( Exponent )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -2251,7 +2271,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt13) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:25: Exponent
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:974:25: Exponent
                             {
                             mExponent(); 
 
@@ -2260,7 +2280,7 @@ public class JavaLexer extends Lexer {
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:35: ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:974:35: ( FloatTypeSuffix )?
                     int alt14=2;
                     int LA14_0 = input.LA(1);
 
@@ -2269,7 +2289,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt14) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:950:35: FloatTypeSuffix
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:974:35: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2282,9 +2302,9 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:951:9: ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:975:9: ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )?
                     {
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:951:9: ( '0' .. '9' )+
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:975:9: ( '0' .. '9' )+
                     int cnt15=0;
                     loop15:
                     do {
@@ -2298,7 +2318,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt15) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:951:10: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:975:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2315,7 +2335,7 @@ public class JavaLexer extends Lexer {
                     } while (true);
 
                     mExponent(); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:951:30: ( FloatTypeSuffix )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:975:30: ( FloatTypeSuffix )?
                     int alt16=2;
                     int LA16_0 = input.LA(1);
 
@@ -2324,7 +2344,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt16) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:951:30: FloatTypeSuffix
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:975:30: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2337,9 +2357,9 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:952:9: ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:9: ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix
                     {
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:952:9: ( '0' .. '9' )+
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:9: ( '0' .. '9' )+
                     int cnt17=0;
                     loop17:
                     do {
@@ -2353,7 +2373,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt17) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:952:10: '0' .. '9'
+                    	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2369,7 +2389,7 @@ public class JavaLexer extends Lexer {
                         cnt17++;
                     } while (true);
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:952:21: ( Exponent )?
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:21: ( Exponent )?
                     int alt18=2;
                     int LA18_0 = input.LA(1);
 
@@ -2378,7 +2398,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt18) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:952:21: Exponent
+                            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:976:21: Exponent
                             {
                             mExponent(); 
 
@@ -2403,8 +2423,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start Exponent
     public final void mExponent() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:956:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:956:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -2416,7 +2436,7 @@ public class JavaLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:956:22: ( '+' | '-' )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:22: ( '+' | '-' )?
             int alt20=2;
             int LA20_0 = input.LA(1);
 
@@ -2443,7 +2463,7 @@ public class JavaLexer extends Lexer {
 
             }
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:956:33: ( '0' .. '9' )+
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:33: ( '0' .. '9' )+
             int cnt21=0;
             loop21:
             do {
@@ -2457,7 +2477,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt21) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:956:34: '0' .. '9'
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:34: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -2485,8 +2505,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start FloatTypeSuffix
     public final void mFloatTypeSuffix() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:959:17: ( ( 'f' | 'F' | 'd' | 'D' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:959:19: ( 'f' | 'F' | 'd' | 'D' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:983:17: ( ( 'f' | 'F' | 'd' | 'D' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:983:19: ( 'f' | 'F' | 'd' | 'D' )
             {
             if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
                 input.consume();
@@ -2511,11 +2531,11 @@ public class JavaLexer extends Lexer {
     public final void mCharacterLiteral() throws RecognitionException {
         try {
             int _type = CharacterLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\'' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\''
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:986:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\'' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:986:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\''
             {
             match('\''); 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:986:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -2527,20 +2547,20 @@ public class JavaLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("962:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )", 22, 0, input);
+                    new NoViableAltException("986:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )", 22, 0, input);
 
                 throw nvae;
             }
             switch (alt22) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:16: EscapeSequence
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:986:16: EscapeSequence
                     {
                     mEscapeSequence(); 
 
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:962:33: ~ ( '\\'' | '\\\\' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:986:33: ~ ( '\\'' | '\\\\' )
                     {
                     if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                         input.consume();
@@ -2573,11 +2593,11 @@ public class JavaLexer extends Lexer {
     public final void mStringLiteral() throws RecognitionException {
         try {
             int _type = StringLiteral;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:966:5: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:966:8: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:990:5: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:990:8: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:966:12: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:990:12: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
             loop23:
             do {
                 int alt23=3;
@@ -2593,14 +2613,14 @@ public class JavaLexer extends Lexer {
 
                 switch (alt23) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:966:14: EscapeSequence
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:990:14: EscapeSequence
             	    {
             	    mEscapeSequence(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:966:31: ~ ( '\\\\' | '\"' )
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:990:31: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
             	        input.consume();
@@ -2635,7 +2655,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start EscapeSequence
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:971:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:995:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape )
             int alt24=3;
             int LA24_0 = input.LA(1);
 
@@ -2672,7 +2692,7 @@ public class JavaLexer extends Lexer {
                     break;
                 default:
                     NoViableAltException nvae =
-                        new NoViableAltException("969:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 24, 1, input);
+                        new NoViableAltException("993:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 24, 1, input);
 
                     throw nvae;
                 }
@@ -2680,13 +2700,13 @@ public class JavaLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("969:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 24, 0, input);
+                    new NoViableAltException("993:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 24, 0, input);
 
                 throw nvae;
             }
             switch (alt24) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:971:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:995:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); 
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -2703,14 +2723,14 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:972:9: UnicodeEscape
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:996:9: UnicodeEscape
                     {
                     mUnicodeEscape(); 
 
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:973:9: OctalEscape
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:997:9: OctalEscape
                     {
                     mOctalEscape(); 
 
@@ -2727,7 +2747,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start OctalEscape
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1002:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt25=3;
             int LA25_0 = input.LA(1);
 
@@ -2760,38 +2780,38 @@ public class JavaLexer extends Lexer {
                 }
                 else {
                     NoViableAltException nvae =
-                        new NoViableAltException("976:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 25, 1, input);
+                        new NoViableAltException("1000:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 25, 1, input);
 
                     throw nvae;
                 }
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("976:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 25, 0, input);
+                    new NoViableAltException("1000:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 25, 0, input);
 
                 throw nvae;
             }
             switch (alt25) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1002:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:14: ( '0' .. '3' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:15: '0' .. '3'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1002:14: ( '0' .. '3' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1002:15: '0' .. '3'
                     {
                     matchRange('0','3'); 
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:25: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:26: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1002:25: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1002:26: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:36: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:978:37: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1002:36: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1002:37: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2801,18 +2821,18 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:979:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1003:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:979:14: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:979:15: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1003:14: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1003:15: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:979:25: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:979:26: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1003:25: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1003:26: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2822,11 +2842,11 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:9: '\\\\' ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1004:9: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:14: ( '0' .. '7' )
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:980:15: '0' .. '7'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1004:14: ( '0' .. '7' )
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1004:15: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -2846,8 +2866,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start UnicodeEscape
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:985:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:985:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1009:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1009:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); 
             match('u'); 
@@ -2868,8 +2888,8 @@ public class JavaLexer extends Lexer {
     public final void mENUM() throws RecognitionException {
         try {
             int _type = ENUM;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:988:5: ( 'enum' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:988:7: 'enum'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1012:5: ( 'enum' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1012:7: 'enum'
             {
             match("enum"); 
 
@@ -2888,11 +2908,11 @@ public class JavaLexer extends Lexer {
     public final void mIdentifier() throws RecognitionException {
         try {
             int _type = Identifier;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:992:5: ( Letter ( Letter | JavaIDDigit )* )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:992:9: Letter ( Letter | JavaIDDigit )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1016:5: ( Letter ( Letter | JavaIDDigit )* )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1016:9: Letter ( Letter | JavaIDDigit )*
             {
             mLetter(); 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:992:16: ( Letter | JavaIDDigit )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1016:16: ( Letter | JavaIDDigit )*
             loop26:
             do {
                 int alt26=2;
@@ -2939,7 +2959,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start Letter
     public final void mLetter() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1000:5: ( '\\u0024' | '\\u0041' .. '\\u005a' | '\\u005f' | '\\u0061' .. '\\u007a' | '\\u00c0' .. '\\u00d6' | '\\u00d8' .. '\\u00f6' | '\\u00f8' .. '\\u00ff' | '\\u0100' .. '\\u1fff' | '\\u3040' .. '\\u318f' | '\\u3300' .. '\\u337f' | '\\u3400' .. '\\u3d2d' | '\\u4e00' .. '\\u9fff' | '\\uf900' .. '\\ufaff' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1024:5: ( '\\u0024' | '\\u0041' .. '\\u005a' | '\\u005f' | '\\u0061' .. '\\u007a' | '\\u00c0' .. '\\u00d6' | '\\u00d8' .. '\\u00f6' | '\\u00f8' .. '\\u00ff' | '\\u0100' .. '\\u1fff' | '\\u3040' .. '\\u318f' | '\\u3300' .. '\\u337f' | '\\u3400' .. '\\u3d2d' | '\\u4e00' .. '\\u9fff' | '\\uf900' .. '\\ufaff' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:
             {
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00D6')||(input.LA(1)>='\u00D8' && input.LA(1)<='\u00F6')||(input.LA(1)>='\u00F8' && input.LA(1)<='\u1FFF')||(input.LA(1)>='\u3040' && input.LA(1)<='\u318F')||(input.LA(1)>='\u3300' && input.LA(1)<='\u337F')||(input.LA(1)>='\u3400' && input.LA(1)<='\u3D2D')||(input.LA(1)>='\u4E00' && input.LA(1)<='\u9FFF')||(input.LA(1)>='\uF900' && input.LA(1)<='\uFAFF') ) {
@@ -2964,7 +2984,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start JavaIDDigit
     public final void mJavaIDDigit() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1017:5: ( '\\u0030' .. '\\u0039' | '\\u0660' .. '\\u0669' | '\\u06f0' .. '\\u06f9' | '\\u0966' .. '\\u096f' | '\\u09e6' .. '\\u09ef' | '\\u0a66' .. '\\u0a6f' | '\\u0ae6' .. '\\u0aef' | '\\u0b66' .. '\\u0b6f' | '\\u0be7' .. '\\u0bef' | '\\u0c66' .. '\\u0c6f' | '\\u0ce6' .. '\\u0cef' | '\\u0d66' .. '\\u0d6f' | '\\u0e50' .. '\\u0e59' | '\\u0ed0' .. '\\u0ed9' | '\\u1040' .. '\\u1049' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1041:5: ( '\\u0030' .. '\\u0039' | '\\u0660' .. '\\u0669' | '\\u06f0' .. '\\u06f9' | '\\u0966' .. '\\u096f' | '\\u09e6' .. '\\u09ef' | '\\u0a66' .. '\\u0a6f' | '\\u0ae6' .. '\\u0aef' | '\\u0b66' .. '\\u0b6f' | '\\u0be7' .. '\\u0bef' | '\\u0c66' .. '\\u0c6f' | '\\u0ce6' .. '\\u0cef' | '\\u0d66' .. '\\u0d6f' | '\\u0e50' .. '\\u0e59' | '\\u0ed0' .. '\\u0ed9' | '\\u1040' .. '\\u1049' )
             // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='\u0660' && input.LA(1)<='\u0669')||(input.LA(1)>='\u06F0' && input.LA(1)<='\u06F9')||(input.LA(1)>='\u0966' && input.LA(1)<='\u096F')||(input.LA(1)>='\u09E6' && input.LA(1)<='\u09EF')||(input.LA(1)>='\u0A66' && input.LA(1)<='\u0A6F')||(input.LA(1)>='\u0AE6' && input.LA(1)<='\u0AEF')||(input.LA(1)>='\u0B66' && input.LA(1)<='\u0B6F')||(input.LA(1)>='\u0BE7' && input.LA(1)<='\u0BEF')||(input.LA(1)>='\u0C66' && input.LA(1)<='\u0C6F')||(input.LA(1)>='\u0CE6' && input.LA(1)<='\u0CEF')||(input.LA(1)>='\u0D66' && input.LA(1)<='\u0D6F')||(input.LA(1)>='\u0E50' && input.LA(1)<='\u0E59')||(input.LA(1)>='\u0ED0' && input.LA(1)<='\u0ED9')||(input.LA(1)>='\u1040' && input.LA(1)<='\u1049') ) {
@@ -2990,8 +3010,8 @@ public class JavaLexer extends Lexer {
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1034:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1034:8: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1058:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1058:8: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -3018,12 +3038,12 @@ public class JavaLexer extends Lexer {
     public final void mCOMMENT() throws RecognitionException {
         try {
             int _type = COMMENT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1038:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1038:9: '/*' ( options {greedy=false; } : . )* '*/'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1062:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1062:9: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1038:14: ( options {greedy=false; } : . )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1062:14: ( options {greedy=false; } : . )*
             loop27:
             do {
                 int alt27=2;
@@ -3048,7 +3068,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt27) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1038:42: .
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1062:42: .
             	    {
             	    matchAny(); 
 
@@ -3077,12 +3097,12 @@ public class JavaLexer extends Lexer {
     public final void mLINE_COMMENT() throws RecognitionException {
         try {
             int _type = LINE_COMMENT;
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1066:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1066:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
             {
             match("//"); 
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:12: (~ ( '\\n' | '\\r' ) )*
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1066:12: (~ ( '\\n' | '\\r' ) )*
             loop28:
             do {
                 int alt28=2;
@@ -3095,7 +3115,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt28) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:12: ~ ( '\\n' | '\\r' )
+            	    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1066:12: ~ ( '\\n' | '\\r' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFE') ) {
             	        input.consume();
@@ -3116,7 +3136,7 @@ public class JavaLexer extends Lexer {
                 }
             } while (true);
 
-            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:26: ( '\\r' )?
+            // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1066:26: ( '\\r' )?
             int alt29=2;
             int LA29_0 = input.LA(1);
 
@@ -3125,7 +3145,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt29) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1042:26: '\\r'
+                    // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1066:26: '\\r'
                     {
                     match('\r'); 
 
@@ -3147,8 +3167,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR end LINE_COMMENT
 
     public void mTokens() throws RecognitionException {
-        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:8: ( T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | T44 | T45 | T46 | T47 | T48 | T49 | T50 | T51 | T52 | T53 | T54 | T55 | T56 | T57 | T58 | T59 | T60 | T61 | T62 | T63 | T64 | T65 | T66 | T67 | T68 | T69 | T70 | T71 | T72 | T73 | T74 | T75 | T76 | T77 | T78 | T79 | T80 | T81 | T82 | T83 | T84 | T85 | T86 | T87 | T88 | T89 | T90 | T91 | T92 | T93 | T94 | T95 | T96 | T97 | T98 | T99 | T100 | T101 | T102 | T103 | T104 | T105 | T106 | T107 | T108 | T109 | T110 | T111 | T112 | T113 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT )
-        int alt30=101;
+        // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:8: ( T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | T44 | T45 | T46 | T47 | T48 | T49 | T50 | T51 | T52 | T53 | T54 | T55 | T56 | T57 | T58 | T59 | T60 | T61 | T62 | T63 | T64 | T65 | T66 | T67 | T68 | T69 | T70 | T71 | T72 | T73 | T74 | T75 | T76 | T77 | T78 | T79 | T80 | T81 | T82 | T83 | T84 | T85 | T86 | T87 | T88 | T89 | T90 | T91 | T92 | T93 | T94 | T95 | T96 | T97 | T98 | T99 | T100 | T101 | T102 | T103 | T104 | T105 | T106 | T107 | T108 | T109 | T110 | T111 | T112 | T113 | T114 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT )
+        int alt30=102;
         alt30 = dfa30.predict(input);
         switch (alt30) {
             case 1 :
@@ -3782,77 +3802,84 @@ public class JavaLexer extends Lexer {
                 }
                 break;
             case 91 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:384: HexLiteral
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:384: T114
+                {
+                mT114(); 
+
+                }
+                break;
+            case 92 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:389: HexLiteral
                 {
                 mHexLiteral(); 
 
                 }
                 break;
-            case 92 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:395: DecimalLiteral
+            case 93 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:400: DecimalLiteral
                 {
                 mDecimalLiteral(); 
 
                 }
                 break;
-            case 93 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:410: OctalLiteral
+            case 94 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:415: OctalLiteral
                 {
                 mOctalLiteral(); 
 
                 }
                 break;
-            case 94 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:423: FloatingPointLiteral
+            case 95 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:428: FloatingPointLiteral
                 {
                 mFloatingPointLiteral(); 
 
                 }
                 break;
-            case 95 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:444: CharacterLiteral
+            case 96 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:449: CharacterLiteral
                 {
                 mCharacterLiteral(); 
 
                 }
                 break;
-            case 96 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:461: StringLiteral
+            case 97 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:466: StringLiteral
                 {
                 mStringLiteral(); 
 
                 }
                 break;
-            case 97 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:475: ENUM
+            case 98 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:480: ENUM
                 {
                 mENUM(); 
 
                 }
                 break;
-            case 98 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:480: Identifier
+            case 99 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:485: Identifier
                 {
                 mIdentifier(); 
 
                 }
                 break;
-            case 99 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:491: WS
+            case 100 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:496: WS
                 {
                 mWS(); 
 
                 }
                 break;
-            case 100 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:494: COMMENT
+            case 101 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:499: COMMENT
                 {
                 mCOMMENT(); 
 
                 }
                 break;
-            case 101 :
-                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:502: LINE_COMMENT
+            case 102 :
+                // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/semantics/java/parser/Java.g:1:507: LINE_COMMENT
                 {
                 mLINE_COMMENT(); 
 
@@ -3921,199 +3948,198 @@ public class JavaLexer extends Lexer {
             this.transition = DFA19_transition;
         }
         public String getDescription() {
-            return "948:1: FloatingPointLiteral : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix );";
+            return "972:1: FloatingPointLiteral : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix );";
         }
     }
     static final String DFA30_eotS =
-        "\1\uffff\1\55\1\uffff\2\55\1\73\1\76\2\55\3\uffff\1\110\2\uffff"+
-        "\1\55\2\uffff\1\55\1\115\6\55\5\uffff\2\55\1\141\1\144\1\150\1\153"+
-        "\1\155\1\157\1\161\1\uffff\2\164\4\uffff\3\55\1\172\7\55\5\uffff"+
-        "\7\55\3\uffff\3\55\2\uffff\16\55\1\u00a2\2\55\24\uffff\1\u00a5\1"+
-        "\uffff\1\164\4\55\1\uffff\1\55\1\u00ac\21\55\1\u00bf\11\55\1\u00c9"+
-        "\1\55\1\u00cb\7\55\1\uffff\2\55\1\uffff\6\55\1\uffff\10\55\1\u00e3"+
-        "\1\55\1\u00e5\2\55\1\u00e8\1\55\1\u00ea\1\55\1\u00ec\1\uffff\1\u00ed"+
-        "\2\55\1\u00f0\5\55\1\uffff\1\55\1\uffff\1\u00f7\1\55\1\u00f9\1\55"+
-        "\1\u00fb\20\55\1\u010c\1\u010d\1\uffff\1\u010e\1\uffff\1\u010f\1"+
-        "\55\1\uffff\1\55\1\uffff\1\55\2\uffff\1\55\1\u0115\1\uffff\2\55"+
-        "\1\u0118\1\u011a\1\u011b\1\55\1\uffff\1\55\1\uffff\1\u011e\1\uffff"+
-        "\2\55\1\u0121\2\55\1\u0124\4\55\1\u0129\2\55\1\u012c\1\u012d\1\55"+
-        "\4\uffff\4\55\1\u0133\1\uffff\1\55\1\u0135\1\uffff\1\55\2\uffff"+
-        "\1\u0137\1\55\1\uffff\1\55\1\u013a\1\uffff\1\u013b\1\u013c\1\uffff"+
-        "\1\u013d\3\55\1\uffff\2\55\2\uffff\2\55\1\u0145\2\55\1\uffff\1\55"+
-        "\1\uffff\1\u0149\1\uffff\1\u014a\1\u014b\4\uffff\5\55\1\u0151\1"+
-        "\u0152\1\uffff\1\u0153\1\55\1\u0155\3\uffff\1\u0156\1\55\1\u0158"+
-        "\2\55\3\uffff\1\u015b\2\uffff\1\u015c\1\uffff\1\u015d\1\55\3\uffff"+
-        "\1\55\1\u0160\1\uffff";
+        "\1\uffff\1\56\1\uffff\2\56\1\74\1\77\2\56\3\uffff\1\111\2\uffff"+
+        "\1\56\2\uffff\1\56\1\116\6\56\5\uffff\3\56\1\143\1\146\1\152\1\155"+
+        "\1\157\1\161\1\163\1\uffff\2\165\4\uffff\3\56\1\174\7\56\5\uffff"+
+        "\7\56\3\uffff\3\56\2\uffff\16\56\1\u00a4\3\56\25\uffff\1\u00a8\1"+
+        "\165\4\56\1\uffff\1\u00ae\23\56\1\u00c3\10\56\1\u00cc\1\56\1\u00ce"+
+        "\7\56\1\uffff\3\56\1\uffff\5\56\1\uffff\11\56\1\u00e7\1\56\1\u00e9"+
+        "\2\56\1\u00ec\1\u00ed\1\56\1\u00ef\1\56\1\u00f1\1\uffff\1\56\1\u00f3"+
+        "\6\56\1\uffff\1\u00fa\1\uffff\3\56\1\u00fe\1\u00ff\20\56\1\u0110"+
+        "\1\56\1\u0112\1\uffff\1\u0113\1\uffff\1\u0114\1\56\2\uffff\1\56"+
+        "\1\uffff\1\56\1\uffff\1\56\1\uffff\1\u011a\2\56\1\u011d\1\u011f"+
+        "\1\u0120\1\uffff\2\56\1\u0123\2\uffff\2\56\1\u0126\4\56\1\u012b"+
+        "\3\56\1\u012f\2\56\1\u0132\1\u0133\1\uffff\1\56\3\uffff\4\56\1\u0139"+
+        "\1\uffff\1\u013a\1\56\1\uffff\1\56\2\uffff\1\u013d\1\56\1\uffff"+
+        "\1\56\1\u0140\1\uffff\1\u0141\1\u0142\1\u0143\1\56\1\uffff\1\u0145"+
+        "\2\56\1\uffff\2\56\2\uffff\2\56\1\u014c\2\56\2\uffff\1\56\1\u0150"+
+        "\1\uffff\1\u0151\1\u0152\4\uffff\1\56\1\uffff\3\56\1\u0157\1\56"+
+        "\1\u0159\1\uffff\1\u015a\1\56\1\u015c\3\uffff\1\u015d\1\u015e\2"+
+        "\56\1\uffff\1\56\2\uffff\1\u0162\3\uffff\1\u0163\1\u0164\1\56\3"+
+        "\uffff\1\56\1\u0167\1\uffff";
     static final String DFA30_eofS =
-        "\u0161\uffff";
+        "\u0168\uffff";
     static final String DFA30_minS =
         "\1\11\1\141\1\uffff\1\146\1\150\1\56\1\75\1\141\1\154\3\uffff\1"+
         "\46\2\uffff\1\157\2\uffff\1\150\1\75\1\142\2\141\2\157\1\145\5\uffff"+
-        "\1\150\1\145\1\53\1\55\1\52\4\75\1\uffff\2\56\4\uffff\1\143\1\142"+
-        "\1\151\1\44\1\163\1\160\1\156\1\151\1\141\1\160\1\157\5\uffff\1"+
-        "\163\2\141\1\156\1\163\1\164\1\165\3\uffff\1\151\1\141\1\151\2\uffff"+
-        "\2\163\1\157\1\156\1\154\1\162\1\164\1\167\1\154\1\157\1\164\1\145"+
-        "\1\156\1\146\1\44\1\151\1\164\24\uffff\1\56\1\uffff\1\56\1\153\1"+
-        "\154\1\166\1\164\1\uffff\1\164\1\44\1\154\1\143\2\164\1\151\1\145"+
-        "\1\162\1\145\1\143\1\162\1\163\1\164\2\145\1\155\1\141\1\144\1\44"+
-        "\1\145\1\156\1\157\1\163\1\164\1\145\2\141\1\163\1\44\1\151\1\44"+
-        "\2\154\1\145\1\141\1\147\1\141\1\142\1\uffff\1\154\1\165\1\uffff"+
-        "\1\141\1\151\1\141\1\145\1\141\1\162\1\uffff\1\162\1\145\1\150\1"+
-        "\143\1\151\1\143\1\162\1\164\1\44\1\150\1\44\1\163\1\151\1\44\1"+
-        "\156\1\44\1\164\1\44\1\uffff\1\44\1\163\1\167\1\44\2\162\1\164\1"+
-        "\154\1\145\1\uffff\1\166\1\uffff\1\44\1\145\1\44\1\153\1\44\1\165"+
-        "\1\154\1\145\1\162\1\147\1\143\1\164\1\143\1\156\1\146\1\164\1\155"+
-        "\1\162\1\150\1\143\1\164\2\44\1\uffff\1\44\1\uffff\1\44\1\156\1"+
-        "\uffff\1\144\1\uffff\1\151\2\uffff\1\151\1\44\1\uffff\1\141\1\164"+
-        "\3\44\1\145\1\uffff\1\141\1\uffff\1\44\1\uffff\1\154\1\145\1\44"+
-        "\1\156\1\145\1\44\1\145\1\164\1\143\1\141\1\44\1\145\1\157\2\44"+
-        "\1\146\4\uffff\1\165\1\163\1\154\1\145\1\44\1\uffff\1\143\1\44\1"+
-        "\uffff\1\171\2\uffff\1\44\1\156\1\uffff\1\164\1\44\1\uffff\2\44"+
-        "\1\uffff\1\44\2\145\1\143\1\uffff\2\156\2\uffff\1\160\1\145\1\44"+
-        "\1\145\1\156\1\uffff\1\164\1\uffff\1\44\1\uffff\2\44\4\uffff\1\144"+
-        "\1\157\1\145\1\164\1\151\2\44\1\uffff\1\44\1\164\1\44\3\uffff\1"+
-        "\44\1\146\1\44\1\163\1\172\3\uffff\1\44\2\uffff\1\44\1\uffff\1\44"+
-        "\1\145\3\uffff\1\144\1\44\1\uffff";
+        "\1\150\1\145\1\157\1\53\1\55\1\52\4\75\1\uffff\2\56\4\uffff\1\151"+
+        "\1\142\1\143\1\44\1\163\1\160\1\141\1\151\1\157\1\156\1\160\5\uffff"+
+        "\1\141\1\163\1\141\1\156\1\163\1\165\1\164\3\uffff\1\151\1\141\1"+
+        "\151\2\uffff\2\163\1\154\1\156\1\157\1\162\1\154\1\167\1\164\1\157"+
+        "\1\145\1\164\1\156\1\146\1\44\1\151\1\164\1\144\25\uffff\2\56\1"+
+        "\166\1\164\1\154\1\153\1\uffff\1\44\1\164\1\154\1\151\2\164\1\162"+
+        "\1\143\1\145\1\162\1\143\1\145\1\163\1\164\1\145\1\155\1\145\1\144"+
+        "\1\141\1\145\1\44\1\156\1\163\1\157\1\145\1\164\1\163\2\141\1\44"+
+        "\1\154\1\44\1\151\1\154\1\141\1\145\1\147\1\141\1\142\1\uffff\1"+
+        "\154\1\165\1\151\1\uffff\1\141\1\145\1\151\1\141\1\162\1\uffff\1"+
+        "\141\1\162\1\145\1\143\1\151\1\143\1\164\1\150\1\162\1\44\1\150"+
+        "\1\44\1\163\1\151\2\44\1\156\1\44\1\164\1\44\1\uffff\1\163\1\44"+
+        "\1\167\2\162\1\145\1\154\1\164\1\uffff\1\44\1\uffff\1\166\1\145"+
+        "\1\153\2\44\1\165\1\154\1\145\1\162\1\146\1\164\2\143\1\147\1\146"+
+        "\1\156\1\164\1\155\1\164\1\143\1\150\1\44\1\162\1\44\1\uffff\1\44"+
+        "\1\uffff\1\44\1\156\2\uffff\1\144\1\uffff\1\151\1\uffff\1\151\1"+
+        "\uffff\1\44\1\164\1\141\3\44\1\uffff\1\145\1\141\1\44\2\uffff\1"+
+        "\154\1\145\1\44\1\156\1\171\1\145\1\164\1\44\1\145\1\141\1\143\1"+
+        "\44\1\145\1\146\2\44\1\uffff\1\157\3\uffff\1\165\1\163\1\154\1\145"+
+        "\1\44\1\uffff\1\44\1\143\1\uffff\1\171\2\uffff\1\44\1\156\1\uffff"+
+        "\1\164\1\44\1\uffff\3\44\1\145\1\uffff\1\44\1\143\1\145\1\uffff"+
+        "\1\156\1\160\2\uffff\1\156\1\145\1\44\1\145\1\156\2\uffff\1\164"+
+        "\1\44\1\uffff\2\44\4\uffff\1\144\1\uffff\1\145\1\157\1\164\1\44"+
+        "\1\151\1\44\1\uffff\1\44\1\164\1\44\3\uffff\2\44\1\146\1\163\1\uffff"+
+        "\1\172\2\uffff\1\44\3\uffff\2\44\1\145\3\uffff\1\144\1\44\1\uffff";
     static final String DFA30_maxS =
         "\1\ufaff\1\165\1\uffff\1\156\1\171\1\71\1\75\1\157\1\170\3\uffff"+
         "\1\75\2\uffff\1\157\2\uffff\1\162\1\75\1\163\1\157\1\165\1\171\2"+
-        "\157\5\uffff\1\150\1\145\3\75\1\174\3\75\1\uffff\1\170\1\146\4\uffff"+
-        "\1\143\1\142\1\157\1\ufaff\1\164\1\160\1\156\1\151\1\162\1\160\1"+
-        "\157\5\uffff\1\164\2\141\1\156\1\163\1\164\1\165\3\uffff\1\154\1"+
-        "\171\1\162\2\uffff\2\163\1\157\1\156\1\154\1\162\1\164\1\167\1\154"+
-        "\1\157\1\164\1\145\1\156\1\146\1\ufaff\1\151\1\164\24\uffff\1\146"+
-        "\1\uffff\1\146\1\153\1\154\1\166\1\164\1\uffff\1\164\1\ufaff\1\157"+
-        "\1\143\2\164\1\151\1\145\1\162\1\145\1\143\1\162\1\163\1\164\2\145"+
-        "\1\155\1\141\1\144\1\ufaff\1\145\1\156\1\157\1\163\1\164\1\145\2"+
-        "\141\1\163\1\ufaff\1\151\1\ufaff\2\154\1\145\1\141\1\147\1\141\1"+
-        "\142\1\uffff\1\154\1\165\1\uffff\1\141\1\151\1\141\1\145\1\141\1"+
-        "\162\1\uffff\1\162\1\145\1\150\1\143\1\151\1\143\1\162\1\164\1\ufaff"+
-        "\1\150\1\ufaff\1\163\1\151\1\ufaff\1\156\1\ufaff\1\164\1\ufaff\1"+
-        "\uffff\1\ufaff\1\163\1\167\1\ufaff\2\162\1\164\1\154\1\145\1\uffff"+
-        "\1\166\1\uffff\1\ufaff\1\145\1\ufaff\1\153\1\ufaff\1\165\1\154\1"+
-        "\145\1\162\1\147\1\143\1\164\1\143\1\156\1\146\1\164\1\155\1\162"+
-        "\1\150\1\143\1\164\2\ufaff\1\uffff\1\ufaff\1\uffff\1\ufaff\1\156"+
-        "\1\uffff\1\144\1\uffff\1\151\2\uffff\1\151\1\ufaff\1\uffff\1\141"+
-        "\1\164\3\ufaff\1\145\1\uffff\1\141\1\uffff\1\ufaff\1\uffff\1\154"+
-        "\1\145\1\ufaff\1\156\1\145\1\ufaff\1\145\1\164\1\143\1\141\1\ufaff"+
-        "\1\145\1\157\2\ufaff\1\146\4\uffff\1\165\1\163\1\154\1\145\1\ufaff"+
-        "\1\uffff\1\143\1\ufaff\1\uffff\1\171\2\uffff\1\ufaff\1\156\1\uffff"+
-        "\1\164\1\ufaff\1\uffff\2\ufaff\1\uffff\1\ufaff\2\145\1\143\1\uffff"+
-        "\2\156\2\uffff\1\160\1\145\1\ufaff\1\145\1\156\1\uffff\1\164\1\uffff"+
-        "\1\ufaff\1\uffff\2\ufaff\4\uffff\1\144\1\157\1\145\1\164\1\151\2"+
-        "\ufaff\1\uffff\1\ufaff\1\164\1\ufaff\3\uffff\1\ufaff\1\146\1\ufaff"+
-        "\1\163\1\172\3\uffff\1\ufaff\2\uffff\1\ufaff\1\uffff\1\ufaff\1\145"+
-        "\3\uffff\1\144\1\ufaff\1\uffff";
+        "\157\5\uffff\1\150\1\145\1\157\3\75\1\174\3\75\1\uffff\1\170\1\146"+
+        "\4\uffff\1\157\1\142\1\143\1\ufaff\1\164\1\160\1\162\1\151\1\157"+
+        "\1\156\1\160\5\uffff\1\141\1\164\1\141\1\156\1\163\1\165\1\164\3"+
+        "\uffff\1\154\1\171\1\162\2\uffff\2\163\1\154\1\156\1\157\1\162\1"+
+        "\154\1\167\1\164\1\157\1\145\1\164\1\156\1\146\1\ufaff\1\151\1\164"+
+        "\1\144\25\uffff\2\146\1\166\1\164\1\154\1\153\1\uffff\1\ufaff\1"+
+        "\164\1\157\1\151\2\164\1\162\1\143\1\145\1\162\1\143\1\145\1\163"+
+        "\1\164\1\145\1\155\1\145\1\144\1\141\1\145\1\ufaff\1\156\1\163\1"+
+        "\157\1\145\1\164\1\163\2\141\1\ufaff\1\154\1\ufaff\1\151\1\154\1"+
+        "\141\1\145\1\147\1\141\1\142\1\uffff\1\154\1\165\1\151\1\uffff\1"+
+        "\141\1\145\1\151\1\141\1\162\1\uffff\1\141\1\162\1\145\1\143\1\151"+
+        "\1\143\1\164\1\150\1\162\1\ufaff\1\150\1\ufaff\1\163\1\151\2\ufaff"+
+        "\1\156\1\ufaff\1\164\1\ufaff\1\uffff\1\163\1\ufaff\1\167\2\162\1"+
+        "\145\1\154\1\164\1\uffff\1\ufaff\1\uffff\1\166\1\145\1\153\2\ufaff"+
+        "\1\165\1\154\1\145\1\162\1\146\1\164\2\143\1\147\1\146\1\156\1\164"+
+        "\1\155\1\164\1\143\1\150\1\ufaff\1\162\1\ufaff\1\uffff\1\ufaff\1"+
+        "\uffff\1\ufaff\1\156\2\uffff\1\144\1\uffff\1\151\1\uffff\1\151\1"+
+        "\uffff\1\ufaff\1\164\1\141\3\ufaff\1\uffff\1\145\1\141\1\ufaff\2"+
+        "\uffff\1\154\1\145\1\ufaff\1\156\1\171\1\145\1\164\1\ufaff\1\145"+
+        "\1\141\1\143\1\ufaff\1\145\1\146\2\ufaff\1\uffff\1\157\3\uffff\1"+
+        "\165\1\163\1\154\1\145\1\ufaff\1\uffff\1\ufaff\1\143\1\uffff\1\171"+
+        "\2\uffff\1\ufaff\1\156\1\uffff\1\164\1\ufaff\1\uffff\3\ufaff\1\145"+
+        "\1\uffff\1\ufaff\1\143\1\145\1\uffff\1\156\1\160\2\uffff\1\156\1"+
+        "\145\1\ufaff\1\145\1\156\2\uffff\1\164\1\ufaff\1\uffff\2\ufaff\4"+
+        "\uffff\1\144\1\uffff\1\145\1\157\1\164\1\ufaff\1\151\1\ufaff\1\uffff"+
+        "\1\ufaff\1\164\1\ufaff\3\uffff\2\ufaff\1\146\1\163\1\uffff\1\172"+
+        "\2\uffff\1\ufaff\3\uffff\2\ufaff\1\145\3\uffff\1\144\1\ufaff\1\uffff";
     static final String DFA30_acceptS =
         "\2\uffff\1\2\6\uffff\1\12\1\13\1\14\1\uffff\1\16\1\17\1\uffff\1"+
-        "\22\1\23\10\uffff\1\50\1\52\1\53\1\60\1\63\11\uffff\1\127\2\uffff"+
-        "\1\137\1\140\1\142\1\143\13\uffff\1\54\1\5\1\136\1\104\1\6\7\uffff"+
-        "\1\106\1\113\1\15\3\uffff\1\116\1\25\21\uffff\1\125\1\102\1\121"+
-        "\1\103\1\126\1\122\1\144\1\105\1\145\1\123\1\112\1\107\1\114\1\110"+
-        "\1\115\1\111\1\124\1\117\1\130\1\133\1\uffff\1\134\5\uffff\1\64"+
-        "\47\uffff\1\70\2\uffff\1\135\6\uffff\1\44\22\uffff\1\71\11\uffff"+
-        "\1\66\1\uffff\1\132\27\uffff\1\101\1\uffff\1\41\2\uffff\1\65\1\uffff"+
-        "\1\141\1\uffff\1\21\1\56\2\uffff\1\131\6\uffff\1\55\1\uffff\1\42"+
-        "\1\uffff\1\45\20\uffff\1\51\1\43\1\100\1\7\5\uffff\1\75\2\uffff"+
-        "\1\46\1\uffff\1\32\1\57\2\uffff\1\76\2\uffff\1\67\2\uffff\1\26\4"+
-        "\uffff\1\3\2\uffff\1\73\1\4\5\uffff\1\24\1\uffff\1\62\1\uffff\1"+
-        "\33\2\uffff\1\47\1\74\1\1\1\30\7\uffff\1\10\3\uffff\1\72\1\40\1"+
-        "\61\5\uffff\1\37\1\77\1\36\1\uffff\1\31\1\27\1\uffff\1\20\2\uffff"+
-        "\1\35\1\120\1\11\2\uffff\1\34";
+        "\22\1\23\10\uffff\1\50\1\52\1\53\1\60\1\63\12\uffff\1\130\2\uffff"+
+        "\1\140\1\141\1\143\1\144\13\uffff\1\54\1\5\1\137\1\105\1\6\7\uffff"+
+        "\1\114\1\107\1\15\3\uffff\1\117\1\25\22\uffff\1\103\1\126\1\122"+
+        "\1\104\1\127\1\123\1\106\1\146\1\145\1\124\1\110\1\113\1\115\1\111"+
+        "\1\116\1\112\1\125\1\120\1\131\1\134\1\135\6\uffff\1\64\47\uffff"+
+        "\1\70\3\uffff\1\136\5\uffff\1\44\24\uffff\1\71\10\uffff\1\66\1\uffff"+
+        "\1\133\30\uffff\1\41\1\uffff\1\102\2\uffff\1\65\1\142\1\uffff\1"+
+        "\21\1\uffff\1\56\1\uffff\1\132\6\uffff\1\55\3\uffff\1\42\1\45\20"+
+        "\uffff\1\43\1\uffff\1\51\1\101\1\7\5\uffff\1\75\2\uffff\1\57\1\uffff"+
+        "\1\32\1\46\2\uffff\1\76\2\uffff\1\67\4\uffff\1\26\3\uffff\1\3\2"+
+        "\uffff\1\4\1\73\5\uffff\1\24\1\62\2\uffff\1\33\2\uffff\1\47\1\74"+
+        "\1\100\1\30\1\uffff\1\1\6\uffff\1\10\3\uffff\1\72\1\40\1\61\4\uffff"+
+        "\1\37\1\uffff\1\77\1\36\1\uffff\1\31\1\27\1\20\3\uffff\1\35\1\121"+
+        "\1\11\2\uffff\1\34";
     static final String DFA30_specialS =
-        "\u0161\uffff}>";
+        "\u0168\uffff}>";
     static final String[] DFA30_transitionS = {
-            "\2\56\1\uffff\2\56\22\uffff\1\56\1\47\1\54\1\uffff\1\55\1\46"+
-            "\1\14\1\53\1\33\1\34\1\6\1\41\1\12\1\42\1\5\1\43\1\51\11\52"+
-            "\1\36\1\2\1\11\1\23\1\13\1\32\1\35\32\55\1\20\1\uffff\1\21\1"+
-            "\45\1\55\1\uffff\1\24\1\27\1\7\1\31\1\10\1\25\2\55\1\3\2\55"+
-            "\1\30\1\55\1\26\1\55\1\1\1\55\1\40\1\4\1\22\1\55\1\17\1\37\3"+
-            "\55\1\15\1\44\1\16\1\50\101\uffff\27\55\1\uffff\37\55\1\uffff"+
-            "\u1f08\55\u1040\uffff\u0150\55\u0170\uffff\u0080\55\u0080\uffff"+
-            "\u092e\55\u10d2\uffff\u5200\55\u5900\uffff\u0200\55",
-            "\1\57\20\uffff\1\61\2\uffff\1\60",
+            "\2\57\1\uffff\2\57\22\uffff\1\57\1\50\1\55\1\uffff\1\56\1\47"+
+            "\1\14\1\54\1\33\1\34\1\6\1\42\1\12\1\43\1\5\1\44\1\52\11\53"+
+            "\1\36\1\2\1\11\1\23\1\13\1\32\1\35\32\56\1\20\1\uffff\1\21\1"+
+            "\46\1\56\1\uffff\1\24\1\27\1\7\1\31\1\10\1\25\2\56\1\3\2\56"+
+            "\1\30\1\41\1\26\1\56\1\1\1\56\1\40\1\4\1\22\1\56\1\17\1\37\3"+
+            "\56\1\15\1\45\1\16\1\51\101\uffff\27\56\1\uffff\37\56\1\uffff"+
+            "\u1f08\56\u1040\uffff\u0150\56\u0170\uffff\u0080\56\u0080\uffff"+
+            "\u092e\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56",
+            "\1\62\20\uffff\1\60\2\uffff\1\61",
             "",
-            "\1\62\6\uffff\1\64\1\63",
-            "\1\71\13\uffff\1\67\1\70\1\uffff\1\66\1\uffff\1\65",
-            "\1\72\1\uffff\12\74",
-            "\1\75",
-            "\1\77\6\uffff\1\100\3\uffff\1\101\2\uffff\1\102",
-            "\1\103\1\uffff\1\105\11\uffff\1\104",
-            "",
-            "",
-            "",
-            "\1\107\26\uffff\1\106",
-            "",
-            "",
-            "\1\111",
-            "",
-            "",
-            "\1\113\11\uffff\1\112",
-            "\1\114",
-            "\1\116\20\uffff\1\117",
-            "\1\122\7\uffff\1\121\2\uffff\1\120\2\uffff\1\123",
-            "\1\124\3\uffff\1\125\17\uffff\1\126",
-            "\1\127\2\uffff\1\131\6\uffff\1\130",
-            "\1\132",
-            "\1\133\11\uffff\1\134",
+            "\1\63\6\uffff\1\65\1\64",
+            "\1\70\13\uffff\1\66\1\72\1\uffff\1\67\1\uffff\1\71",
+            "\1\73\1\uffff\12\75",
+            "\1\76",
+            "\1\101\6\uffff\1\100\3\uffff\1\102\2\uffff\1\103",
+            "\1\104\1\uffff\1\105\11\uffff\1\106",
             "",
             "",
             "",
+            "\1\107\26\uffff\1\110",
             "",
             "",
-            "\1\135",
+            "\1\112",
+            "",
+            "",
+            "\1\114\11\uffff\1\113",
+            "\1\115",
+            "\1\120\20\uffff\1\117",
+            "\1\121\7\uffff\1\122\2\uffff\1\123\2\uffff\1\124",
+            "\1\127\3\uffff\1\126\17\uffff\1\125",
+            "\1\130\2\uffff\1\131\6\uffff\1\132",
+            "\1\133",
+            "\1\134\11\uffff\1\135",
+            "",
+            "",
+            "",
+            "",
+            "",
             "\1\136",
-            "\1\137\21\uffff\1\140",
-            "\1\143\17\uffff\1\142",
-            "\1\145\4\uffff\1\147\15\uffff\1\146",
-            "\1\152\76\uffff\1\151",
-            "\1\154",
+            "\1\137",
+            "\1\140",
+            "\1\142\21\uffff\1\141",
+            "\1\145\17\uffff\1\144",
+            "\1\151\4\uffff\1\150\15\uffff\1\147",
+            "\1\153\76\uffff\1\154",
             "\1\156",
             "\1\160",
+            "\1\162",
             "",
-            "\1\74\1\uffff\10\163\2\74\12\uffff\3\74\21\uffff\1\162\13\uffff"+
-            "\3\74\21\uffff\1\162",
-            "\1\74\1\uffff\12\165\12\uffff\3\74\35\uffff\3\74",
+            "\1\75\1\uffff\10\166\2\75\12\uffff\3\75\21\uffff\1\164\13\uffff"+
+            "\3\75\21\uffff\1\164",
+            "\1\75\1\uffff\12\167\12\uffff\3\75\35\uffff\3\75",
             "",
             "",
             "",
             "",
-            "\1\166",
-            "\1\167",
             "\1\170\5\uffff\1\171",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\173\1\174",
-            "\1\175",
-            "\1\176",
+            "\1\172",
+            "\1\173",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\176\1\175",
             "\1\177",
-            "\1\u0080\20\uffff\1\u0081",
+            "\1\u0081\20\uffff\1\u0080",
             "\1\u0082",
             "\1\u0083",
+            "\1\u0084",
+            "\1\u0085",
             "",
             "",
             "",
             "",
             "",
-            "\1\u0084\1\u0085",
             "\1\u0086",
-            "\1\u0087",
-            "\1\u0088",
+            "\1\u0088\1\u0087",
             "\1\u0089",
             "\1\u008a",
             "\1\u008b",
+            "\1\u008c",
+            "\1\u008d",
             "",
             "",
             "",
-            "\1\u008d\2\uffff\1\u008c",
-            "\1\u0090\23\uffff\1\u008f\3\uffff\1\u008e",
-            "\1\u0092\10\uffff\1\u0091",
+            "\1\u008e\2\uffff\1\u008f",
+            "\1\u0092\23\uffff\1\u0090\3\uffff\1\u0091",
+            "\1\u0093\10\uffff\1\u0094",
             "",
             "",
-            "\1\u0093",
-            "\1\u0094",
             "\1\u0095",
             "\1\u0096",
             "\1\u0097",
@@ -4126,49 +4152,49 @@ public class JavaLexer extends Lexer {
             "\1\u009e",
             "\1\u009f",
             "\1\u00a0",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\24\55"+
-            "\1\u00a1\5\55\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55"+
-            "\u1040\uffff\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e"+
-            "\55\u10d2\uffff\u5200\55\u5900\uffff\u0200\55",
-            "\1\u00a3",
-            "\1\u00a4",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "\1\74\1\uffff\10\163\2\74\12\uffff\3\74\35\uffff\3\74",
-            "",
-            "\1\74\1\uffff\12\165\12\uffff\3\74\35\uffff\3\74",
+            "\1\u00a1",
+            "\1\u00a2",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\24\56"+
+            "\1\u00a3\5\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56"+
+            "\u1040\uffff\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e"+
+            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56",
+            "\1\u00a5",
             "\1\u00a6",
             "\1\u00a7",
-            "\1\u00a8",
-            "\1\u00a9",
             "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "\1\75\1\uffff\10\166\2\75\12\uffff\3\75\35\uffff\3\75",
+            "\1\75\1\uffff\12\167\12\uffff\3\75\35\uffff\3\75",
+            "\1\u00a9",
             "\1\u00aa",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\4\55"+
-            "\1\u00ab\25\55\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55"+
-            "\u1040\uffff\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e"+
-            "\55\u10d2\uffff\u5200\55\u5900\uffff\u0200\55",
-            "\1\u00ae\2\uffff\1\u00ad",
+            "\1\u00ab",
+            "\1\u00ac",
+            "",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\4\56"+
+            "\1\u00ad\25\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56"+
+            "\u1040\uffff\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e"+
+            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56",
             "\1\u00af",
-            "\1\u00b0",
-            "\1\u00b1",
+            "\1\u00b1\2\uffff\1\u00b0",
             "\1\u00b2",
             "\1\u00b3",
             "\1\u00b4",
@@ -4182,116 +4208,116 @@ public class JavaLexer extends Lexer {
             "\1\u00bc",
             "\1\u00bd",
             "\1\u00be",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u00bf",
             "\1\u00c0",
             "\1\u00c1",
             "\1\u00c2",
-            "\1\u00c3",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u00c4",
             "\1\u00c5",
             "\1\u00c6",
             "\1\u00c7",
             "\1\u00c8",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u00c9",
             "\1\u00ca",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\u00cc",
+            "\1\u00cb",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u00cd",
-            "\1\u00ce",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u00cf",
             "\1\u00d0",
             "\1\u00d1",
             "\1\u00d2",
-            "",
             "\1\u00d3",
             "\1\u00d4",
-            "",
             "\1\u00d5",
+            "",
             "\1\u00d6",
             "\1\u00d7",
             "\1\u00d8",
+            "",
             "\1\u00d9",
             "\1\u00da",
-            "",
             "\1\u00db",
             "\1\u00dc",
             "\1\u00dd",
+            "",
             "\1\u00de",
             "\1\u00df",
             "\1\u00e0",
             "\1\u00e1",
             "\1\u00e2",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u00e3",
             "\1\u00e4",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u00e5",
             "\1\u00e6",
-            "\1\u00e7",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\u00e9",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\u00e8",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\u00ea",
             "\1\u00eb",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u00ee",
-            "\1\u00ef",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\u00f1",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\u00f0",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "",
             "\1\u00f2",
-            "\1\u00f3",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u00f4",
             "\1\u00f5",
-            "",
             "\1\u00f6",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u00f7",
             "\1\u00f8",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\u00fa",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u00f9",
+            "",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "",
+            "\1\u00fb",
             "\1\u00fc",
             "\1\u00fd",
-            "\1\u00fe",
-            "\1\u00ff",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u0100",
             "\1\u0101",
             "\1\u0102",
@@ -4304,238 +4330,249 @@ public class JavaLexer extends Lexer {
             "\1\u0109",
             "\1\u010a",
             "\1\u010b",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\u0110",
-            "",
+            "\1\u010c",
+            "\1\u010d",
+            "\1\u010e",
+            "\1\u010f",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u0111",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "",
-            "\1\u0112",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\u0115",
             "",
-            "\1\u0113",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\22\55"+
-            "\1\u0114\7\55\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55"+
-            "\u1040\uffff\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e"+
-            "\55\u10d2\uffff\u5200\55\u5900\uffff\u0200\55",
             "",
             "\1\u0116",
+            "",
             "\1\u0117",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\13\55"+
-            "\1\u0119\16\55\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55"+
-            "\u1040\uffff\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e"+
-            "\55\u10d2\uffff\u5200\55\u5900\uffff\u0200\55",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "",
+            "\1\u0118",
+            "",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\22\56"+
+            "\1\u0119\7\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56"+
+            "\u1040\uffff\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e"+
+            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56",
+            "\1\u011b",
             "\1\u011c",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\13\56"+
+            "\1\u011e\16\56\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56"+
+            "\u1040\uffff\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e"+
+            "\56\u10d2\uffff\u5200\56\u5900\uffff\u0200\56",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "",
-            "\1\u011d",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "",
-            "\1\u011f",
-            "\1\u0120",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u0121",
             "\1\u0122",
-            "\1\u0123",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "",
+            "",
+            "\1\u0124",
             "\1\u0125",
-            "\1\u0126",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u0127",
             "\1\u0128",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u0129",
             "\1\u012a",
-            "\1\u012b",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\u012c",
+            "\1\u012d",
             "\1\u012e",
-            "",
-            "",
-            "",
-            "",
-            "\1\u012f",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u0130",
             "\1\u0131",
-            "\1\u0132",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "",
             "\1\u0134",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
             "",
+            "",
+            "",
+            "\1\u0135",
             "\1\u0136",
-            "",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u0137",
             "\1\u0138",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "",
-            "\1\u0139",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\u013b",
             "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u013c",
             "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u013e",
+            "",
             "\1\u013f",
-            "\1\u0140",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "",
-            "\1\u0141",
-            "\1\u0142",
-            "",
-            "",
-            "\1\u0143",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u0144",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u0146",
             "\1\u0147",
             "",
             "\1\u0148",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u0149",
             "",
             "",
-            "",
-            "",
-            "\1\u014c",
+            "\1\u014a",
+            "\1\u014b",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u014d",
             "\1\u014e",
+            "",
+            "",
             "\1\u014f",
-            "\1\u0150",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "",
+            "",
+            "",
+            "",
+            "\1\u0153",
+            "",
             "\1\u0154",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u0155",
+            "\1\u0156",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\u0158",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\u015b",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "",
             "",
             "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\u0157",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\u0159",
-            "\1\u015a",
-            "",
-            "",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
-            "\1\u015e",
-            "",
-            "",
-            "",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             "\1\u015f",
-            "\1\55\13\uffff\12\55\7\uffff\32\55\4\uffff\1\55\1\uffff\32\55"+
-            "\105\uffff\27\55\1\uffff\37\55\1\uffff\u1f08\55\u1040\uffff"+
-            "\u0150\55\u0170\uffff\u0080\55\u0080\uffff\u092e\55\u10d2\uffff"+
-            "\u5200\55\u5900\uffff\u0200\55",
+            "\1\u0160",
+            "",
+            "\1\u0161",
+            "",
+            "",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "",
+            "",
+            "",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
+            "\1\u0165",
+            "",
+            "",
+            "",
+            "\1\u0166",
+            "\1\56\13\uffff\12\56\7\uffff\32\56\4\uffff\1\56\1\uffff\32\56"+
+            "\105\uffff\27\56\1\uffff\37\56\1\uffff\u1f08\56\u1040\uffff"+
+            "\u0150\56\u0170\uffff\u0080\56\u0080\uffff\u092e\56\u10d2\uffff"+
+            "\u5200\56\u5900\uffff\u0200\56",
             ""
     };
 
@@ -4569,7 +4606,7 @@ public class JavaLexer extends Lexer {
             this.transition = DFA30_transition;
         }
         public String getDescription() {
-            return "1:1: Tokens : ( T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | T44 | T45 | T46 | T47 | T48 | T49 | T50 | T51 | T52 | T53 | T54 | T55 | T56 | T57 | T58 | T59 | T60 | T61 | T62 | T63 | T64 | T65 | T66 | T67 | T68 | T69 | T70 | T71 | T72 | T73 | T74 | T75 | T76 | T77 | T78 | T79 | T80 | T81 | T82 | T83 | T84 | T85 | T86 | T87 | T88 | T89 | T90 | T91 | T92 | T93 | T94 | T95 | T96 | T97 | T98 | T99 | T100 | T101 | T102 | T103 | T104 | T105 | T106 | T107 | T108 | T109 | T110 | T111 | T112 | T113 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT );";
+            return "1:1: Tokens : ( T24 | T25 | T26 | T27 | T28 | T29 | T30 | T31 | T32 | T33 | T34 | T35 | T36 | T37 | T38 | T39 | T40 | T41 | T42 | T43 | T44 | T45 | T46 | T47 | T48 | T49 | T50 | T51 | T52 | T53 | T54 | T55 | T56 | T57 | T58 | T59 | T60 | T61 | T62 | T63 | T64 | T65 | T66 | T67 | T68 | T69 | T70 | T71 | T72 | T73 | T74 | T75 | T76 | T77 | T78 | T79 | T80 | T81 | T82 | T83 | T84 | T85 | T86 | T87 | T88 | T89 | T90 | T91 | T92 | T93 | T94 | T95 | T96 | T97 | T98 | T99 | T100 | T101 | T102 | T103 | T104 | T105 | T106 | T107 | T108 | T109 | T110 | T111 | T112 | T113 | T114 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT );";
         }
     }
  
