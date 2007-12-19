@@ -13,10 +13,15 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 
 /**
- * 
+ * This is the main user class for analysis.
+ * This will use rules to validate rules, caching the "knowledge base" of analysis rules.
+ *
  * @author Toni Rikkola
  */
 public class Analyzer {
+
+	static RuleBase analysisKnowledgeBase;
+
 
 	private AnalyticsResult result = AnalyticsResultFactory
 			.createAnalyticsResult();
@@ -34,13 +39,28 @@ public class Analyzer {
 		}
 	}
 
+
+	/**
+	 * As the analyzer uses rules itself, this will reload the knowledge base.
+	 * @throws Exception
+	 */
+	public synchronized void reloadAnalysisKnowledgeBase() throws Exception {
+		analysisKnowledgeBase = createRuleBase();
+	}
+
+	/**
+	 * This will run the analysis.
+	 */
 	public void fireAnalysis() {
 		try {
 
-			// load up the rule base
-			RuleBase ruleBase = createRuleBase();
+			if (this.analysisKnowledgeBase == null) {
+				synchronized (this.getClass()) {
+					analysisKnowledgeBase = createRuleBase();
+				}
+			}
 
-			WorkingMemory workingMemory = ruleBase.newStatefulSession();
+			WorkingMemory workingMemory = analysisKnowledgeBase.newStatefulSession();
 
 			Collection<? extends Object> c = result.getAnalyticsData().getAll();
 
@@ -59,7 +79,7 @@ public class Analyzer {
 
 	/**
 	 * Returns the analysis results as plain text.
-	 * 
+	 *
 	 * @return Analysis results as plain text.
 	 */
 	public String getResultAsPlainText() {
@@ -68,7 +88,7 @@ public class Analyzer {
 
 	/**
 	 * Returns the analysis results as XML.
-	 * 
+	 *
 	 * @return Analysis results as XML
 	 */
 	public String getResultAsXML() {
@@ -77,7 +97,7 @@ public class Analyzer {
 
 	/**
 	 * Returns the analysis results as HTML.
-	 * 
+	 *
 	 * @return Analysis results as HTML
 	 */
 	public void writeComponentsHTML(String path) {
@@ -86,7 +106,7 @@ public class Analyzer {
 
 	/**
 	 * Returns the analysis results as <code>AnalysisResult</code> object.
-	 * 
+	 *
 	 * @return Analysis result
 	 */
 	public AnalyticsResult getResult() {
