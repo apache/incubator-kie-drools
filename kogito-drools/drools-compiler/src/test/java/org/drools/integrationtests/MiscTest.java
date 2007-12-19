@@ -4668,4 +4668,29 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    public void testModifyRetractAndModifyInsert() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyRetractInsert.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        Person bob = new Person( "Bob" );
+        bob.setStatus( "hungry" );
+        workingMemory.insert( bob );
+        workingMemory.insert( new Cheese() );
+        workingMemory.insert( new Cheese() );
+
+        workingMemory.fireAllRules( 2 );
+
+        assertEquals( "should have fired only once", 
+                      1,
+                      list.size() );
+    }
 }
