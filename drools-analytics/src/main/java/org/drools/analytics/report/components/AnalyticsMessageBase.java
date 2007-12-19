@@ -1,9 +1,10 @@
 package org.drools.analytics.report.components;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
- * 
+ *
  * @author Toni Rikkola
  */
 abstract public class AnalyticsMessageBase implements Serializable,
@@ -125,4 +126,6 @@ abstract public class AnalyticsMessageBase implements Serializable,
 
 		return str.toString();
 	}
+
+	public abstract Collection<? extends Cause> getCauses();
 }
