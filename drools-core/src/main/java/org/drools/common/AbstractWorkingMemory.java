@@ -84,7 +84,7 @@ import org.drools.util.AbstractHashTable.HashTableIterator;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
- *
+ * 
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
@@ -177,7 +177,7 @@ public abstract class AbstractWorkingMemory
 
     /**
      * Construct.
-     *
+     * 
      * @param ruleBase
      *            The backing rule-base.
      */
@@ -496,11 +496,12 @@ public abstract class AbstractWorkingMemory
                 }
             } finally {
                 this.firing = false;
-                // @todo (mproctor) disabling Otherwise management for now, not happy with the current implementation
-                //                if ( noneFired ) {
-                //                    doOtherwise( agendaFilter,
-                //                                 fireLimit );
-                //                }
+                // @todo (mproctor) disabling Otherwise management for now, not
+                // happy with the current implementation
+                // if ( noneFired ) {
+                // doOtherwise( agendaFilter,
+                // fireLimit );
+                // }
 
             }
         }
@@ -515,9 +516,9 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * This does the "otherwise" phase of processing.
-     * If no items are fired, then it will assert a temporary "Otherwise"
-     * fact and allow any rules to fire to handle "otherwise" cases.
+     * This does the "otherwise" phase of processing. If no items are fired,
+     * then it will assert a temporary "Otherwise" fact and allow any rules to
+     * fire to handle "otherwise" cases.
      */
     private void doOtherwise(final AgendaFilter agendaFilter,
                              int fireLimit) {
@@ -534,43 +535,45 @@ public abstract class AbstractWorkingMemory
     }
 
     //
-    //        MN: The following is the traditional fireAllRules (without otherwise).
-    //            Purely kept here as this implementation of otherwise is still experimental.
+    // MN: The following is the traditional fireAllRules (without otherwise).
+    // Purely kept here as this implementation of otherwise is still
+    // experimental.
     //
-    //    public synchronized void fireAllRules(final AgendaFilter agendaFilter) throws FactException {
-    //        // If we're already firing a rule, then it'll pick up
-    //        // the firing for any other assertObject(..) that get
-    //        // nested inside, avoiding concurrent-modification
-    //        // exceptions, depending on code paths of the actions.
+    // public synchronized void fireAllRules(final AgendaFilter agendaFilter)
+    // throws FactException {
+    // // If we're already firing a rule, then it'll pick up
+    // // the firing for any other assertObject(..) that get
+    // // nested inside, avoiding concurrent-modification
+    // // exceptions, depending on code paths of the actions.
     //
-    //        if ( !this.factQueue.isEmpty() ) {
-    //            propagateQueuedActions();
-    //        }
+    // if ( !this.factQueue.isEmpty() ) {
+    // propagateQueuedActions();
+    // }
     //
-    //        if ( !this.firing ) {
-    //            try {
-    //                this.firing = true;
+    // if ( !this.firing ) {
+    // try {
+    // this.firing = true;
     //
-    //                while ( this.agenda.fireNextItem( agendaFilter ) ) {
-    //                    ;
-    //                }
-    //            } finally {
-    //                this.firing = false;
-    //            }
-    //        }
-    //    }
+    // while ( this.agenda.fireNextItem( agendaFilter ) ) {
+    // ;
+    // }
+    // } finally {
+    // this.firing = false;
+    // }
+    // }
+    // }
 
     /**
      * Returns the fact Object for the given <code>FactHandle</code>. It
      * actually attemps to return the value from the handle, before retrieving
      * it from objects map.
-     *
+     * 
      * @see WorkingMemory
-     *
+     * 
      * @param handle
      *            The <code>FactHandle</code> reference for the
      *            <code>Object</code> lookup
-     *
+     * 
      */
     public Object getObject(final FactHandle handle) {
         try {
@@ -621,7 +624,8 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * This class is not thread safe, changes to the working memory during iteration may give unexpected results
+     * This class is not thread safe, changes to the working memory during
+     * iteration may give unexpected results
      */
     public Iterator iterateObjects() {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
@@ -631,7 +635,8 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * This class is not thread safe, changes to the working memory during iteration may give unexpected results
+     * This class is not thread safe, changes to the working memory during
+     * iteration may give unexpected results
      */
     public Iterator iterateObjects(ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
@@ -642,7 +647,8 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * This class is not thread safe, changes to the working memory during iteration may give unexpected results
+     * This class is not thread safe, changes to the working memory during
+     * iteration may give unexpected results
      */
     public Iterator iterateFactHandles() {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
@@ -652,7 +658,8 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * This class is not thread safe, changes to the working memory during iteration may give unexpected results
+     * This class is not thread safe, changes to the working memory during
+     * iteration may give unexpected results
      */
     public Iterator iterateFactHandles(ObjectFilter filter) {
         HashTableIterator iterator = new HashTableIterator( this.assertMap );
@@ -776,7 +783,8 @@ public abstract class AbstractWorkingMemory
                     // lets see if the object is already logical asserted
                     key = this.tms.get( object );
                 } else {
-                    // Object is already asserted, so check and possibly correct its
+                    // Object is already asserted, so check and possibly correct
+                    // its
                     // status and then return the handle
                     key = handle.getEqualityKey();
 
@@ -804,7 +812,8 @@ public abstract class AbstractWorkingMemory
 
                 // At this point we know the handle is null
                 if ( key == null ) {
-                    // key is also null, so treat as a totally new stated/logical
+                    // key is also null, so treat as a totally new
+                    // stated/logical
                     // assert
                     handle = this.handleFactory.newFactHandle( object,
                                                                typeConf.isEvent(),
@@ -825,7 +834,8 @@ public abstract class AbstractWorkingMemory
                     }
                 } else if ( !logical ) {
                     if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                        // Its previous justified, so switch to stated and remove
+                        // Its previous justified, so switch to stated and
+                        // remove
                         // logical dependencies
                         final InternalFactHandle justifiedHandle = key.getFactHandle();
                         this.tms.removeLogicalDependencies( justifiedHandle );
@@ -837,9 +847,12 @@ public abstract class AbstractWorkingMemory
                             handle = key.getFactHandle();
 
                             if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.IDENTITY ) {
-                                // as assertMap may be using an "identity" equality comparator,
-                                // we need to remove the handle from the map, before replacing the object
-                                // and then re-add the handle. Otherwise we may end up with a leak.
+                                // as assertMap may be using an "identity"
+                                // equality comparator,
+                                // we need to remove the handle from the map,
+                                // before replacing the object
+                                // and then re-add the handle. Otherwise we may
+                                // end up with a leak.
                                 this.assertMap.remove( handle );
                                 Object oldObject = handle.getObject();
                                 if ( oldObject instanceof ShadowProxy ) {
@@ -860,7 +873,8 @@ public abstract class AbstractWorkingMemory
                             }
                             return handle;
                         } else {
-                            // override, then instantiate new handle for assertion
+                            // override, then instantiate new handle for
+                            // assertion
                             key.setStatus( EqualityKey.STATED );
                             handle = this.handleFactory.newFactHandle( object,
                                                                        typeConf.isEvent(),
@@ -883,7 +897,8 @@ public abstract class AbstractWorkingMemory
 
                 } else {
                     if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                        // only add as logical dependency if this wasn't previously
+                        // only add as logical dependency if this wasn't
+                        // previously
                         // stated
                         this.tms.addLogicalDependency( key.getFactHandle(),
                                                        activation,
@@ -1080,7 +1095,8 @@ public abstract class AbstractWorkingMemory
                 // FactHandles
                 final EqualityKey key = handle.getEqualityKey();
 
-                // Its justified so attempt to remove any logical dependencies for
+                // Its justified so attempt to remove any logical dependencies
+                // for
                 // the handle
                 if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                     this.tms.removeLogicalDependencies( handle );
@@ -1141,7 +1157,10 @@ public abstract class AbstractWorkingMemory
     public void modifyRetract(final FactHandle factHandle,
                               final Rule rule,
                               final Activation activation) {
-
+        this.modifyRetract( EntryPoint.DEFAULT,
+                            factHandle,
+                            rule,
+                            activation );
     }
 
     protected void modifyRetract(final EntryPoint entryPoint,
@@ -1152,16 +1171,20 @@ public abstract class AbstractWorkingMemory
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
 
-            // only needed if we maintain tms, but either way we must get it before we do the retract
+            // only needed if we maintain tms, but either way we must get it
+            // before we do the retract
             int status = -1;
             if ( this.maintainTms ) {
                 status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
             }
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
-            //final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
+            // final Object originalObject = (handle.isShadowFact()) ?
+            // ((ShadowProxy) handle.getObject()).getShadowedObject() :
+            // handle.getObject();
 
             if ( handle.getId() == -1 ) {
-                // the handle is invalid, most likely already  retracted, so return
+                // the handle is invalid, most likely already retracted, so
+                // return
                 return;
             }
 
@@ -1169,7 +1192,7 @@ public abstract class AbstractWorkingMemory
                 // release resources so that they can be GC'ed
                 activation.getPropagationContext().releaseResources();
             }
-            // Nowretract any trace  of the original fact
+            // Nowretract any trace of the original fact
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
@@ -1182,7 +1205,8 @@ public abstract class AbstractWorkingMemory
 
             if ( this.maintainTms ) {
 
-                // the hashCode and equality has changed, so we must update the EqualityKey
+                // the hashCode and equality has changed, so we must update the
+                // EqualityKey
                 EqualityKey key = handle.getEqualityKey();
                 key.removeFactHandle( handle );
 
@@ -1230,7 +1254,8 @@ public abstract class AbstractWorkingMemory
             if ( this.maintainTms ) {
                 EqualityKey key = handle.getEqualityKey();
 
-                // now use an  existing  EqualityKey, if it exists, else create a new one
+                // now use an existing EqualityKey, if it exists, else create a
+                // new one
                 key = this.tms.get( object );
                 if ( key == null ) {
                     key = new EqualityKey( handle,
@@ -1249,7 +1274,7 @@ public abstract class AbstractWorkingMemory
                 // release resources so that they can be GC'ed
                 activation.getPropagationContext().releaseResources();
             }
-            // Nowretract any trace  of the original fact
+            // Nowretract any trace of the original fact
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
@@ -1289,7 +1314,7 @@ public abstract class AbstractWorkingMemory
     /**
      * modify is implemented as half way retract / assert due to the truth
      * maintenance issues.
-     *
+     * 
      * @see WorkingMemory
      */
     public void update(final FactHandle factHandle,
@@ -1313,7 +1338,8 @@ public abstract class AbstractWorkingMemory
             this.lock.lock();
             this.ruleBase.executeQueuedActions();
 
-            // only needed if we maintain tms, but either way we must get it before we do the retract
+            // only needed if we maintain tms, but either way we must get it
+            // before we do the retract
             int status = -1;
             if ( this.maintainTms ) {
                 status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
@@ -1322,7 +1348,8 @@ public abstract class AbstractWorkingMemory
             final Object originalObject = (handle.isShadowFact()) ? ((ShadowProxy) handle.getObject()).getShadowedObject() : handle.getObject();
 
             if ( handle.getId() == -1 || object == null ) {
-                // the handle is invalid, most likely already  retracted, so return
+                // the handle is invalid, most likely already retracted, so
+                // return
                 // and we cannot assert a null object
                 return;
             }
@@ -1331,7 +1358,7 @@ public abstract class AbstractWorkingMemory
                 // release resources so that they can be GC'ed
                 activation.getPropagationContext().releaseResources();
             }
-            // Nowretract any trace  of the original fact
+            // Nowretract any trace of the original fact
             final PropagationContext propagationContext = new PropagationContextImpl( this.propagationIdCounter++,
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
@@ -1352,7 +1379,8 @@ public abstract class AbstractWorkingMemory
 
             if ( this.maintainTms ) {
 
-                // the hashCode and equality has changed, so we must update the EqualityKey
+                // the hashCode and equality has changed, so we must update the
+                // EqualityKey
                 EqualityKey key = handle.getEqualityKey();
                 key.removeFactHandle( handle );
 
@@ -1361,7 +1389,8 @@ public abstract class AbstractWorkingMemory
                     this.tms.remove( key );
                 }
 
-                // now use an  existing  EqualityKey, if it exists, else create a new one
+                // now use an existing EqualityKey, if it exists, else create a
+                // new one
                 key = this.tms.get( object );
                 if ( key == null ) {
                     key = new EqualityKey( handle,
@@ -1402,11 +1431,12 @@ public abstract class AbstractWorkingMemory
             actionQueue.remove( 0 );
             action.execute( this );
         }
-        //        for ( final Iterator it = this.actionQueue.iterator(); it.hasNext(); ) {
-        //            final WorkingMemoryAction action = (WorkingMemoryAction) it.next();
-        //            it.remove();
-        //            action.execute( this );
-        //        }
+        // for ( final Iterator it = this.actionQueue.iterator(); it.hasNext();
+        // ) {
+        // final WorkingMemoryAction action = (WorkingMemoryAction) it.next();
+        // it.remove();
+        // action.execute( this );
+        // }
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
@@ -1426,10 +1456,10 @@ public abstract class AbstractWorkingMemory
     /**
      * Retrieve the <code>JoinMemory</code> for a particular
      * <code>JoinNode</code>.
-     *
+     * 
      * @param node
      *            The <code>JoinNode</code> key.
-     *
+     * 
      * @return The node's memory.
      */
     public Object getNodeMemory(final NodeMemory node) {
@@ -1464,7 +1494,7 @@ public abstract class AbstractWorkingMemory
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
      * Scheduler used for duration rules.
-     *
+     * 
      * @param handler
      */
     public void setAsyncExceptionHandler(final AsyncExceptionHandler handler) {
@@ -1592,7 +1622,9 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * The time machine defaults to returning the current time when asked. However, you can use tell it to go back in time.
+     * The time machine defaults to returning the current time when asked.
+     * However, you can use tell it to go back in time.
+     * 
      * @param timeMachine
      */
     public void setTimeMachine(TimeMachine timeMachine) {
@@ -1600,8 +1632,8 @@ public abstract class AbstractWorkingMemory
     }
 
     /**
-     * Returns the ObjectTypeConfiguration object for the given object
-     * or creates a new one if none is found in the cache
+     * Returns the ObjectTypeConfiguration object for the given object or
+     * creates a new one if none is found in the cache
      * 
      * @param object
      * @return

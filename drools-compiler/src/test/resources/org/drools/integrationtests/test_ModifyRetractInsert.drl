@@ -1,0 +1,15 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test modify retract insert"
+when
+    $p: Person( status == "hungry" )
+    $c: Cheese( )
+then
+    results.add( $c );
+    retract( $c );
+    modifyRetract( $p );
+    $p.setStatus( "full" );
+    modifyInsert( $p );
+end

@@ -235,6 +235,9 @@ public abstract class BaseMannersTest extends TestCase {
 
                     drools.modifyRetract( context );;
                     context.setState( Context.ASSIGN_SEATS );
+//                    drools.update( tuple.get( contextDeclaration ),
+//                            context );
+                    
                     drools.modifyInsert( context );
 
                     System.err.println( "assign first seat :  " + seating + " : " + path );
