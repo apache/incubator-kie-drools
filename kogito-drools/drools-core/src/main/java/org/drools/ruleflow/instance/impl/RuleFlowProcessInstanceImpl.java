@@ -52,8 +52,25 @@ import org.drools.ruleflow.core.Split;
 import org.drools.ruleflow.core.StartNode;
 import org.drools.ruleflow.core.SubFlowNode;
 import org.drools.ruleflow.core.WorkItemNode;
+import org.drools.ruleflow.core.impl.ActionNodeImpl;
+import org.drools.ruleflow.core.impl.EndNodeImpl;
+import org.drools.ruleflow.core.impl.JoinImpl;
+import org.drools.ruleflow.core.impl.MilestoneNodeImpl;
+import org.drools.ruleflow.core.impl.RuleSetNodeImpl;
+import org.drools.ruleflow.core.impl.SplitImpl;
+import org.drools.ruleflow.core.impl.StartNodeImpl;
+import org.drools.ruleflow.core.impl.SubFlowNodeImpl;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.ruleflow.instance.impl.configuration.ActionNodeConf;
+import org.drools.ruleflow.instance.impl.configuration.EndNodeConf;
+import org.drools.ruleflow.instance.impl.configuration.JoinNodeConf;
+import org.drools.ruleflow.instance.impl.configuration.MilestoneNodeConf;
+import org.drools.ruleflow.instance.impl.configuration.RuleSetNodeConf;
+import org.drools.ruleflow.instance.impl.configuration.SplitNodeConf;
+import org.drools.ruleflow.instance.impl.configuration.StartNodeConf;
+import org.drools.ruleflow.instance.impl.configuration.SubFlowNodeConf;
+import org.drools.ruleflow.instance.impl.configuration.TaskNodeConf;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -114,62 +131,34 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     
     public WorkingMemory getWorkingMemory() {
     	return this.workingMemory;
+    }    
+    
+    private static PvmNodeRegistry nodeRegistry = new PvmNodeRegistry();
+    static {
+    	nodeRegistry.register(RuleSetNodeImpl.class, new RuleSetNodeConf() );
+    	nodeRegistry.register(SplitImpl.class, new SplitNodeConf() );
+    	nodeRegistry.register(JoinImpl.class, new JoinNodeConf() );
+    	nodeRegistry.register(StartNodeImpl.class, new StartNodeConf() );
+    	nodeRegistry.register(EndNodeImpl.class, new EndNodeConf() );
+    	nodeRegistry.register(MilestoneNodeImpl.class, new MilestoneNodeConf() );    	    
+    	nodeRegistry.register(SubFlowNodeImpl.class, new SubFlowNodeConf() );
+    	nodeRegistry.register(ActionNodeImpl.class, new ActionNodeConf() );
+    	nodeRegistry.register(WorkItemNode.class, new TaskNodeConf() );
+    	
     }
 
     public RuleFlowNodeInstance getNodeInstance(final Node node) {
-        if ( node instanceof RuleSetNode ) {
-            final RuleFlowNodeInstance result = (RuleFlowNodeInstance) getAgenda().getRuleFlowGroup( ((RuleSetNode) node).getRuleFlowGroup() );
-            result.setNodeId( node.getId() );
-            addNodeInstance( result );
-            return result;
-        } else if ( node instanceof Split ) {
-            RuleFlowNodeInstance result = getFirstNodeInstance( node.getId() );
-            if ( result == null ) {
-                result = new RuleFlowSplitInstanceImpl();
-                result.setNodeId( node.getId() );
-                addNodeInstance( result );
-            }
-            return result;
-        } else if ( node instanceof Join ) {
-            RuleFlowNodeInstance result = getFirstNodeInstance( node.getId() );
-            if ( result == null ) {
-                result = new RuleFlowJoinInstanceImpl();
-                result.setNodeId( node.getId() );
-                addNodeInstance( result );
-            }
-            return result;
-        } else if ( node instanceof StartNode ) {
-            final RuleFlowNodeInstance result = new StartNodeInstanceImpl();
-            result.setNodeId( node.getId() );
-            addNodeInstance( result );
-            return result;
-        } else if ( node instanceof EndNode ) {
-            final RuleFlowNodeInstance result = new EndNodeInstanceImpl();
-            result.setNodeId( node.getId() );
-            addNodeInstance( result );
-            return result;
-        } else if ( node instanceof MilestoneNode ) {
-            final RuleFlowNodeInstance result = new MilestoneNodeInstanceImpl();
-            result.setNodeId( node.getId() );
-            addNodeInstance( result );
-            return result;
-        } else if ( node instanceof SubFlowNode ) {
-            final RuleFlowNodeInstance result = new SubFlowNodeInstanceImpl();
-            result.setNodeId( node.getId() );
-            addNodeInstance( result );
-            return result;
-        } else if ( node instanceof ActionNode ) {
-            final RuleFlowNodeInstance result = new ActionNodeInstanceImpl();
-            result.setNodeId( node.getId() );
-            addNodeInstance( result );
-            return result;
-        } else if ( node instanceof WorkItemNode ) {
-            final RuleFlowNodeInstance result = new TaskNodeInstanceImpl();
-            result.setNodeId( node.getId() );
-            addNodeInstance( result );
-            return result;
-        }
-        throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
+    	PvmNodeConf conf = this.nodeRegistry.getRuleFlowNodeConf( node );
+    	if ( conf == null ) {
+    		throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
+    	}
+    	
+    	RuleFlowNodeInstance nodeInstance = conf.getNodeInstance( node, this );
+    	
+    	if  ( nodeInstance == null ) {
+    		throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
+    	}
+    	return nodeInstance;    	
     }
 
     public void start() {
