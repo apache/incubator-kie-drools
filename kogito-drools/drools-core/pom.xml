@@ -44,14 +44,14 @@
         <includes>
           <include>**/*Test.java</include>
         </includes>
-        <excludes>
+        <!--excludes>
           <exclude>**/LogicTransformerTest.java</exclude>
           <exclude>**/LeapsMannersTest.java</exclude>          
           <exclude>**/ReteooMannersTest.java</exclude>                    
           <exclude>**/LeapsWaltzTest.java</exclude>          
           <exclude>**/ReteooWaltzTest.java</exclude>             
           <exclude>**/TableTest.java</exclude>                       
-        </excludes>
+        </excludes-->
       </configuration>
     </plugin>      
     </plugins>
