@@ -11,9 +11,11 @@ import org.drools.rule.Declaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.util.StringUtils;
+import org.mvel.MVEL;
 import org.mvel.MVELTemplateRegistry;
 import org.mvel.TemplateInterpreter;
 import org.mvel.TemplateRegistry;
+import org.mvel.optimizers.OptimizerFactory;
 
 public class AbstractJavaRuleBuilder {
 
@@ -21,9 +23,11 @@ public class AbstractJavaRuleBuilder {
     protected static final TemplateRegistry INVOKER_REGISTRY = new MVELTemplateRegistry();
 
     static {
+        MVEL.setThreadSafe( true );
+        MVELDialect.setLanguageLevel( 4 );   
+        OptimizerFactory.setDefaultOptimizer( "reflective" );
         RULE_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ) ) );
         INVOKER_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ) ) );
-        MVELDialect.setLanguageLevel( 4 );
         
     }
 
