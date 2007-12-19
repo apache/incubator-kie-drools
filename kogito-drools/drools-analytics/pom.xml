@@ -31,12 +31,7 @@
   </build>
 
   <dependencies>
-    <!-- Internal dependencies -->
-    
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>          
-    </dependency>        
+    <!-- Internal dependencies -->          
 
     <dependency>
       <groupId>org.drools</groupId>

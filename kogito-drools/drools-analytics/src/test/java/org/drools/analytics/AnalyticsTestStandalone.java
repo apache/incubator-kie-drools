@@ -6,9 +6,11 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 
-import javax.print.attribute.standard.Severity;
-
+import org.drools.analytics.components.AnalyticsClass;
+import org.drools.analytics.components.AnalyticsRule;
+import org.drools.analytics.components.Field;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
@@ -101,6 +103,21 @@ class AnalyticsTestStandalone {
 
 
 
+			Collection<AnalyticsClass> classes = result.getAnalyticsData().getAllClasses();
+			for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
+				AnalyticsClass c = (AnalyticsClass) iterator.next();
+
+				Collection<AnalyticsRule> cr =  result.getAnalyticsData().getRulesByClassId(c.getId());
+				System.err.println("Class rules:" + cr);
+				Set<Field> flds = c.getFields();
+				for (Iterator iterator2 = flds.iterator(); iterator2.hasNext();) {
+					Field f = (Field) iterator2.next();
+					cr = result.getAnalyticsData().getRulesByFieldId(f.getId());
+					System.err.println("Field rules: " + cr);
+
+
+				}
+			}
 
 			//System.err.println(a.getResultAsPlainText());
             //System.out.println(result.toString());
