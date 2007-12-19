@@ -37,6 +37,7 @@ public class JavaAnalysisResult implements AnalysisResult {
     private List identifiers = Collections.EMPTY_LIST;
     private Map localVariables = Collections.EMPTY_MAP;
     private List notBoundedIdentifiers = Collections.EMPTY_LIST;
+    private List modifyBlocks = Collections.EMPTY_LIST;
     
     public List[] getBoundIdentifiers() {
         return boundIdentifiers;
@@ -67,5 +68,11 @@ public class JavaAnalysisResult implements AnalysisResult {
     }
     public void setNotBoundedIdentifiers(List notBoundedIdentifiers) {
         this.notBoundedIdentifiers = notBoundedIdentifiers;
+    }
+    public List getModifyBlocks() {
+        return modifyBlocks;
+    }
+    public void setModifyBlocks(List modifyBlocks) {
+        this.modifyBlocks = modifyBlocks;
     }
 }

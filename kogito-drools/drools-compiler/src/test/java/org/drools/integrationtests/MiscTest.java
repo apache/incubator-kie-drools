@@ -4693,4 +4693,34 @@ public class MiscTest extends TestCase {
                       1,
                       list.size() );
     }
+    
+    // this test requires mvel 1.2.19. Leaving it commented until mvel is released.
+    public void FIXME_testJavaModifyBlock() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_JavaModifyBlock.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        Person bob = new Person( "Bob", 30 );
+        bob.setStatus( "hungry" );
+        workingMemory.insert( bob );
+        workingMemory.insert( new Cheese() );
+        workingMemory.insert( new Cheese() );
+
+        workingMemory.fireAllRules( 2 );
+
+        assertEquals( "should have fired only once", 
+                      1,
+                      list.size() );
+        assertEquals( "full", bob.getStatus() );
+        assertEquals( 31, bob.getAge() );
+    }
+    
 }
