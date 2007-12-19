@@ -5,8 +5,17 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
+import javax.print.attribute.standard.Severity;
+
+import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.report.components.AnalyticsMessage;
+import org.drools.analytics.report.components.AnalyticsMessageBase;
+import org.drools.analytics.report.components.AnalyticsRangeCheckMessage;
+import org.drools.analytics.report.components.Cause;
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.Dialect.AnalysisResult;
 import org.drools.lang.descr.PackageDescr;
 
 /**
@@ -44,8 +53,58 @@ class AnalyticsTestStandalone {
 			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());
 			// a.writeComponentsHTML("/stash/");
-			a.writeComponentsHTML("C:\\");
-		} catch (Throwable t) {
+			a.writeComponentsHTML("/Users/michaelneale/foo.html");
+
+
+			AnalyticsResult result = a.getResult();
+			Collection<AnalyticsMessageBase> msgs = result.getBySeverity(AnalyticsMessageBase.Severity.ERROR);
+
+			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
+				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator.next();
+				System.out.println("ERR: " + msg.getMessage());
+			}
+
+			msgs = result.getBySeverity(AnalyticsMessageBase.Severity.WARNING);
+			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
+				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator.next();
+				System.out.println("WARN (" + msg.getClass().getSimpleName() +"): " + msg.getMessage());
+				System.out.println("\t FAULT: [" + msg.getClass().getSimpleName() + "] " + msg.getFaulty());
+				if (msg instanceof AnalyticsMessage) {
+					System.out.println("\t CAUSES (message):");
+						AnalyticsMessage amsg = (AnalyticsMessage) msg;
+						for (Iterator iterator2 = amsg.getCauses().iterator(); iterator2
+								.hasNext();) {
+							Cause c = (Cause) iterator2.next();
+							System.out.println("\t\t [" + c.getClass().getSimpleName() + "]" + c);
+
+						}
+
+				} else if (msg instanceof AnalyticsRangeCheckMessage)  {
+					System.out.println("\t CAUSES (range):");
+					AnalyticsRangeCheckMessage amsg = (AnalyticsRangeCheckMessage) msg;
+					for (Iterator iterator2 = amsg.getCauses().iterator(); iterator2
+							.hasNext();) {
+						Cause c = (Cause) iterator2.next();
+						System.out.println("\t\t" + c);
+
+					}
+
+				}
+			}
+
+			msgs = result.getBySeverity(AnalyticsMessageBase.Severity.NOTE);
+			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
+				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator.next();
+				System.out.println("NOTE: " + msg.getMessage());
+				System.out.println("\t" + msg.getFaulty());
+			}
+
+
+
+
+			//System.err.println(a.getResultAsPlainText());
+            //System.out.println(result.toString());
+        } catch (Throwable t) {
 			t.printStackTrace();
 		}
 	}

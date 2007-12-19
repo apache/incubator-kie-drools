@@ -5,7 +5,7 @@ import org.drools.analytics.components.LiteralRestriction;
 import org.drools.base.evaluators.Operator;
 
 /**
- * 
+ *
  * @author Toni Rikkola
  */
 public class Gap extends MissingRange implements RangeCheckCause,
@@ -22,7 +22,7 @@ public class Gap extends MissingRange implements RangeCheckCause,
 	}
 
 	/**
-	 * 
+	 *
 	 * @param field
 	 *            Field from where the value is missing.
 	 * @param evaluator
@@ -59,6 +59,6 @@ public class Gap extends MissingRange implements RangeCheckCause,
 	@Override
 	public String toString() {
 		return "Gap: (" + field + ") " + getOperator() + " "
-				+ getValueAsString();
+				+ getValueAsString() + " from rule: [" + getRuleName() + "]";
 	}
 }
