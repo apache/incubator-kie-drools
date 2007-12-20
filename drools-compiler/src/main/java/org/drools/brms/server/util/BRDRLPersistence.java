@@ -155,15 +155,9 @@ public class BRDRLPersistence
                 buf.append( ">" );
             }
             if ( CompositeFactPattern.COMPOSITE_TYPE_EXISTS.equals( pattern.type ) ) {
-                buf.append( pattern.type );
-                buf.append( " " );
-                renderSubPattern( pattern, 0 );
-                buf.append( "\n" );
+                renderCompositeFOL(pattern);
             } else if ( CompositeFactPattern.COMPOSITE_TYPE_NOT.equals( pattern.type ) ) {
-                buf.append( pattern.type );
-                buf.append( " " );
-                renderSubPattern( pattern, 0 );
-                buf.append( "\n" );
+                renderCompositeFOL(pattern);
             } else if ( CompositeFactPattern.COMPOSITE_TYPE_OR.equals( pattern.type ) ) {
                 buf.append( "( " );
                 if (pattern.patterns != null ) {
@@ -179,6 +173,24 @@ public class BRDRLPersistence
                 buf.append( " )\n" );
             }
         }
+
+		private void renderCompositeFOL(CompositeFactPattern pattern) {
+			buf.append( pattern.type );
+			if (pattern.patterns != null && pattern.patterns.length > 1) {
+				buf.append(" (");
+				for (int i = 0; i < pattern.patterns.length; i++) {
+					renderSubPattern(pattern, i);
+					if (i != pattern.patterns.length -1) {
+						buf.append(" and ");
+					}
+				}
+				buf.append(") \n");
+			} else {
+				buf.append( " " );
+				renderSubPattern( pattern, 0 );
+				buf.append( "\n" );
+			}
+		}
 
         private void renderSubPattern(CompositeFactPattern pattern, int subIndex) {
             if (pattern.patterns == null || pattern.patterns.length == 0) return;
