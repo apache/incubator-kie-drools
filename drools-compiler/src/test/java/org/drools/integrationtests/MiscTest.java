@@ -42,6 +42,7 @@ import org.drools.Address;
 import org.drools.Attribute;
 import org.drools.Cell;
 import org.drools.Cheese;
+import org.drools.CheeseEqual;
 import org.drools.Cheesery;
 import org.drools.Child;
 import org.drools.FactA;
@@ -4723,4 +4724,55 @@ public class MiscTest extends TestCase {
         assertEquals( 31, bob.getAge() );
     }
     
+    public void testOrCE() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrCE.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+        
+        workingMemory.insert( new Cheese( "brie", 10 ) );
+        workingMemory.insert( new Person( "bob" ) );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( "should have fired once", 
+                      1,
+                      list.size() );
+    }
+    
+    public void testGetFactHandleEqualityBehavior() throws Exception {
+        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
+
+        final StatefulSession session = ruleBase.newStatefulSession();
+
+        CheeseEqual cheese = new CheeseEqual("stilton", 10);
+        session.insert(cheese);
+        FactHandle fh = session.getFactHandle(new CheeseEqual("stilton", 10));
+        assertNotNull(fh);
+    }    
+
+    public void testGetFactHandleIdentityBehavior() throws Exception {
+        final RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.IDENTITY );
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
+
+        final StatefulSession session = ruleBase.newStatefulSession();
+
+        CheeseEqual cheese = new CheeseEqual("stilton", 10);
+        session.insert(cheese);
+        FactHandle fh1 = session.getFactHandle(new Cheese("stilton", 10));
+        assertNull(fh1);
+        FactHandle fh2 = session.getFactHandle( cheese );
+        assertNotNull(fh2);
+    }    
+
 }

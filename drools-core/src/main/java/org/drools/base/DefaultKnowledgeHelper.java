@@ -88,7 +88,7 @@ public class DefaultKnowledgeHelper
     }
 
     public void update(final Object object) throws FactException {
-        FactHandle handle = this.workingMemory.getFactHandle( object );
+        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
         if ( handle == null ) {
             throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
@@ -108,7 +108,7 @@ public class DefaultKnowledgeHelper
     }
 
     public void retract(final Object object) throws FactException {
-        FactHandle handle = this.workingMemory.getFactHandle( object );
+        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
         if ( handle == null ) {
             throw new FactException( "Retract error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
@@ -120,7 +120,7 @@ public class DefaultKnowledgeHelper
     }
 
     public void modifyRetract(final Object object) {
-        FactHandle handle = this.workingMemory.getFactHandle( object );
+        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
         this.workingMemory.modifyRetract( handle, rule, activation );
     }
 
@@ -129,7 +129,7 @@ public class DefaultKnowledgeHelper
     }
 
     public void modifyInsert(final Object object) {
-        FactHandle handle = this.workingMemory.getFactHandle( object );
+        FactHandle handle = this.workingMemory.getFactHandleByIdentity( object );
         this.workingMemory.modifyInsert( handle, object, rule, activation );
     }
 

@@ -608,6 +608,20 @@ public abstract class AbstractWorkingMemory
     public FactHandle getFactHandle(final Object object) {
         try {
             this.lock.lock();
+            final FactHandle factHandle = (FactHandle) this.assertMap.get( object );
+
+            return factHandle;
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    /**
+     * @see InternalWorkingMemory
+     */
+    public FactHandle getFactHandleByIdentity(final Object object) {
+        try {
+            this.lock.lock();
             final FactHandle factHandle = (FactHandle) this.identityMap.get( object );
 
             return factHandle;
