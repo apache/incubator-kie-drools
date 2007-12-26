@@ -52,6 +52,16 @@ public interface InternalWorkingMemory
     public void queueWorkingMemoryAction(final WorkingMemoryAction action);
 
     public FactHandleFactory getFactHandleFactory();
+    
+    /**
+     * Looks for the fact handle associated to the given object
+     * by looking up the object IDENTITY (==), even if rule base
+     * is configured to AssertBehavior.EQUALITY.
+     * 
+     * @param object
+     * @return null if fact handle not found
+     */
+    public FactHandle getFactHandleByIdentity(final Object object);
 
     public void removeLogicalDependencies(final Activation activation,
                                           final PropagationContext context,

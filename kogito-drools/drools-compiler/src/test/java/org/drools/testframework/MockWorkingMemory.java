@@ -442,4 +442,9 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
+    public FactHandle getFactHandleByIdentity(Object object) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
