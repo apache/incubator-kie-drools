@@ -1,0 +1,20 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test or CE"
+when
+    $c : Cheese( type == "stilton" )
+    or
+    (
+        $c2 : Cheese( type == "brie" )
+        and
+        (
+            $p : Person( likes == "stilton" )
+            or
+            $p : Person( name == "bob" )
+        )
+    ) 
+then
+    results.add(" OK " );
+end
