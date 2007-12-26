@@ -127,12 +127,13 @@ public class GroupElement extends ConditionalElement {
                 this.children.addAll( group.getChildren() );
             }
         }
+        
     }
 
     /**
      * @param parent
      */
-    private void pack(final GroupElement parent) {
+    public void pack(final GroupElement parent) {
         if ( this.children.size() == 0 ) {
             // if there is no child, just remove this node
             parent.children.remove( this );

@@ -191,21 +191,23 @@ class LogicTransformer {
 
         boolean hasChildOr = false;
 
-        // first we eliminicate any redundancy
+        // first we elimininate any redundancy
         ce.pack();
 
-        for ( final ListIterator it = ce.getChildren().listIterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            if ( object instanceof GroupElement ) {
-                final GroupElement child = (GroupElement) object;
+        Object[] children = (Object[]) ce.getChildren().toArray(); 
+        for ( int i = 0; i < children.length; i++ ) {
+            if ( children[i] instanceof GroupElement ) {
+                final GroupElement child = (GroupElement) children[i];
 
                 processTree( child );
-
-                if ( child.isOr() ) {
+                if( ( child.isOr() || child.isAnd() ) && child.getType() == ce.getType() ) {
+                    child.pack( ce );
+                } else if ( child.isOr() ) {
                     hasChildOr = true;
                 }
             }
         }
+        
         if ( hasChildOr ) {
             applyOrTransformation( ce );
         }
