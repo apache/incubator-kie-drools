@@ -22,7 +22,7 @@ public class RedundantRulesAndPatternsTest extends RedundancyTestBase {
 				.getResourceAsStream("Rules.drl"));
 
 		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Find redundant Rules, weak redundancy"));
+				"Find redundant Rules, strong redundancy"));
 
 		Collection<Object> data = new ArrayList<Object>();
 

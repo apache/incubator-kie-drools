@@ -13,6 +13,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
 import org.drools.analytics.dao.AnalyticsData;
+import org.drools.analytics.report.components.Cause;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
@@ -67,6 +68,30 @@ abstract public class TestBase extends TestCase {
 			// If set is empty remove key from map.
 			if (set.isEmpty()) {
 				map.remove(ruleName1);
+			}
+			return exists;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns true if map contains redundancy where cause1 is redundant to
+	 * cause2.
+	 * 
+	 * @param map
+	 * @param cause1
+	 * @param cause2
+	 * @return True if redundancy exists.
+	 */
+	protected static boolean causeMapContains(Map<Cause, Set<Cause>> map,
+			Cause cause1, Cause cause2) {
+		if (map.containsKey(cause1)) {
+			Set<Cause> set = map.get(cause1);
+			boolean exists = set.remove(cause2);
+
+			// If set is empty remove key from map.
+			if (set.isEmpty()) {
+				map.remove(cause1);
 			}
 			return exists;
 		}

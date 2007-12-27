@@ -5,10 +5,10 @@ import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.report.components.Redundancy;
 
 #
-# Only checks for redundant rule specifications, 
+# Only checks for redundant rule specifications where consequences are not redundant, 
 # does not include actual pattern and restriction checks.
 #
-rule "Find redundant Rules, strong redundancy"
+rule "Find equivalent Rules"
 	when
 		# Check that AnalyticsRule $left and $right have redundant fields.
 		$left :AnalyticsRule()
@@ -17,7 +17,7 @@ rule "Find redundant Rules, strong redundancy"
 			ruleAgendaGroup == $left.ruleAgendaGroup
 		)
 		
-		exists Redundancy(
+		not Redundancy(
 			left == $left.consequence,
 			right == $right.consequence
 		)
@@ -32,6 +32,6 @@ rule "Find redundant Rules, strong redundancy"
 		#	right == $left 
 		#)
 	then
-		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
+		insert( new Redundancy( Redundancy.RedundancyType.WEAK, $left, $right ) );
 end
 
