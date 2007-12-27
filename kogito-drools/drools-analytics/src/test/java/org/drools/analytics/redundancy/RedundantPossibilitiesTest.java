@@ -15,6 +15,7 @@ import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.report.components.Cause;
 import org.drools.analytics.report.components.Redundancy;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
@@ -92,6 +93,9 @@ public class RedundantPossibilitiesTest extends RedundancyTestBase {
 		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
+		/*
+		 * First rules. These are redundant,
+		 */
 		String ruleName1 = "Rule 1";
 		String ruleName2 = "Rule 2";
 
@@ -128,13 +132,61 @@ public class RedundantPossibilitiesTest extends RedundancyTestBase {
 		data.add(rp1);
 		data.add(rp2);
 
+		/*
+		 * These two rules are not redundant
+		 */
+		String ruleName3 = "Rule 3";
+		String ruleName4 = "Rule 4";
+
+		AnalyticsRule r3 = new AnalyticsRule();
+		r3.setRuleName(ruleName3);
+		AnalyticsRule r4 = new AnalyticsRule();
+		r4.setRuleName(ruleName4);
+
+		PatternPossibility pp3 = new PatternPossibility();
+		pp3.setRuleId(r3.getId());
+		pp3.setRuleName(ruleName3);
+		PatternPossibility pp4 = new PatternPossibility();
+		pp4.setRuleId(r4.getId());
+		pp4.setRuleName(ruleName4);
+		// This possibility makes them different
+		PatternPossibility pp5 = new PatternPossibility();
+		pp5.setRuleId(r4.getId());
+		pp5.setRuleName(ruleName4);
+
+		RulePossibility rp3 = new RulePossibility();
+		rp3.setRuleId(r3.getId());
+		rp3.setRuleName(ruleName3);
+		rp3.add(pp3);
+
+		RulePossibility rp4 = new RulePossibility();
+		rp4.setRuleId(r4.getId());
+		rp4.setRuleName(ruleName4);
+		rp4.add(pp4);
+		rp4.add(pp5);
+
+		Redundancy possibilityredundancy2 = new Redundancy(
+				Redundancy.RedundancyType.STRONG, pp3, pp4);
+		Redundancy ruleRedundancy2 = new Redundancy(r3, r4);
+
+		data.add(r3);
+		data.add(r4);
+		data.add(pp3);
+		data.add(pp4);
+		data.add(pp5);
+		data.add(possibilityredundancy2);
+		data.add(ruleRedundancy2);
+		data.add(rp3);
+		data.add(rp4);
+
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
 
-		Map<String, Set<String>> map = createRedundancyMap(sessionResult
-				.iterateObjects());
+		Map<Cause, Set<Cause>> map = createRedundancyCauseMap(
+				Cause.CauseType.RULE_POSSIBILITY, sessionResult
+						.iterateObjects());
 
-		assertTrue(TestBase.mapContains(map, ruleName1, ruleName2));
-		assertTrue(TestBase.mapContains(map, ruleName2, ruleName1));
+		assertTrue(TestBase.causeMapContains(map, rp1, rp2));
+		assertFalse(TestBase.causeMapContains(map, rp3, rp4));
 
 		if (!map.isEmpty()) {
 			fail("More redundancies than was expected.");

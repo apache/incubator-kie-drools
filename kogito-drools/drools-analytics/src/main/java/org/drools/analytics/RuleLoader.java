@@ -14,6 +14,8 @@ class RuleLoader {
 	public static Collection<Package> loadPackages() {
 
 		String[] fileNames = new String[] {
+				// Equivalence
+				"equivalence/Rules.drl",
 				// Incoherence
 				"incoherence/Patterns.drl",
 				"incoherence/Restrictions.drl",

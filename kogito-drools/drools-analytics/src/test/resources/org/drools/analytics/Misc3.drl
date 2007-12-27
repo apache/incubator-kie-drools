@@ -15,7 +15,7 @@ rule "Redundant rule 1, rules"
 		RedundancyPattern( a == 1 )
 		RedundancyPattern2( a == 1 )
 	then
-		System.println("TEST");
+		System.out.println("TEST");
 end
 
 rule "Redundant rule 2, rules"
@@ -23,5 +23,13 @@ rule "Redundant rule 2, rules"
 		RedundancyPattern( a == 1 )
 		RedundancyPattern2( a == 1 )
 	then
-		System.println("TEST");
+		System.out.println("TEST");
+end
+
+rule "Equivalent rule"
+	when
+		RedundancyPattern( a == 1 )
+		RedundancyPattern2( a == 1 )
+	then
+		System.out.println("NOT A TEST");
 end

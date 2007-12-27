@@ -52,9 +52,16 @@ rule "Find redundant rule possibilities from different rules"
 		causes.add( $rulePossibilityRedundancy.getLeft() );
 		causes.add( $rulePossibilityRedundancy.getRight() );
 		
+		String message;
+		if( $ruleRedundancy.getType() == Redundancy.RedundancyType.WEAK ) {
+			message = "Rules are equivalent.";
+		} else {
+			message = "Rules are redundant.";
+		}
+		
 		result.add(new AnalyticsMessage( 
 						AnalyticsMessage.Severity.WARNING, AnalyticsMessage.MessageType.REDUNDANCY, 
-						$rulePossibilityRedundancy, "Rules are redundant.", causes ) );
+						$rulePossibilityRedundancy, message, causes ) );
 end
 
 rule "Find subsumptant rule possibilities from different rules"

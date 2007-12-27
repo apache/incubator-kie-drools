@@ -31,16 +31,16 @@ class AnalyticsTestStandalone {
 			Collection<String> fileNames = new ArrayList<String>();
 
 			// Test data
-//			fileNames.add("MissingRangesForDates.drl");
-//			fileNames.add("MissingRangesForDoubles.drl");
-//			fileNames.add("MissingRangesForInts.drl");
-//			fileNames.add("MissingRangesForVariables.drl");
-//			fileNames.add("Misc.drl");
-//			fileNames.add("Misc2.drl");
+			// fileNames.add("MissingRangesForDates.drl");
+			// fileNames.add("MissingRangesForDoubles.drl");
+			// fileNames.add("MissingRangesForInts.drl");
+			// fileNames.add("MissingRangesForVariables.drl");
+			// fileNames.add("Misc.drl");
+			// fileNames.add("Misc2.drl");
 			fileNames.add("Misc3.drl");
-//			fileNames.add("ConsequenceTest.drl");
-//			fileNames.add("optimisation/OptimisationRestrictionOrderTest.drl");
-//			fileNames.add("optimisation/OptimisationPatternOrderTest.drl");
+			// fileNames.add("ConsequenceTest.drl");
+			// fileNames.add("optimisation/OptimisationRestrictionOrderTest.drl");
+			// fileNames.add("optimisation/OptimisationPatternOrderTest.drl");
 
 			DrlParser parser = new DrlParser();
 			Analyzer a = new Analyzer();
@@ -55,33 +55,40 @@ class AnalyticsTestStandalone {
 			// System.out.print(a.getResultAsPlainText());
 			// System.out.print(a.getResultAsXML());
 			// a.writeComponentsHTML("/stash/");
-			a.writeComponentsHTML("/Users/michaelneale/foo.html");
-
+			// a.writeComponentsHTML("/Users/michaelneale/foo.html");
+			a.writeComponentsHTML("c:/");
 
 			AnalyticsResult result = a.getResult();
-			Collection<AnalyticsMessageBase> msgs = result.getBySeverity(AnalyticsMessageBase.Severity.ERROR);
+			Collection<AnalyticsMessageBase> msgs = result
+					.getBySeverity(AnalyticsMessageBase.Severity.ERROR);
 
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator.next();
+				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator
+						.next();
 				System.out.println("ERR: " + msg.getMessage());
 			}
 
 			msgs = result.getBySeverity(AnalyticsMessageBase.Severity.WARNING);
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator.next();
-				System.out.println("WARN (" + msg.getClass().getSimpleName() +"): " + msg.getMessage());
-				System.out.println("\t FAULT: [" + msg.getClass().getSimpleName() + "] " + msg.getFaulty());
+				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator
+						.next();
+				System.out.println("WARN (" + msg.getClass().getSimpleName()
+						+ "): " + msg.getMessage());
+				System.out.println("\t FAULT: ["
+						+ msg.getClass().getSimpleName() + "] "
+						+ msg.getFaulty());
 				if (msg instanceof AnalyticsMessage) {
 					System.out.println("\t CAUSES (message):");
-						AnalyticsMessage amsg = (AnalyticsMessage) msg;
-						for (Iterator iterator2 = amsg.getCauses().iterator(); iterator2
-								.hasNext();) {
-							Cause c = (Cause) iterator2.next();
-							System.out.println("\t\t [" + c.getClass().getSimpleName() + "]" + c);
+					AnalyticsMessage amsg = (AnalyticsMessage) msg;
+					for (Iterator iterator2 = amsg.getCauses().iterator(); iterator2
+							.hasNext();) {
+						Cause c = (Cause) iterator2.next();
+						System.out.println("\t\t ["
+								+ c.getClass().getSimpleName() + "]" + c);
 
-						}
+					}
 
-				} else if (msg instanceof AnalyticsRangeCheckMessage)  {
+				} else if (msg instanceof AnalyticsRangeCheckMessage) {
 					System.out.println("\t CAUSES (range):");
 					AnalyticsRangeCheckMessage amsg = (AnalyticsRangeCheckMessage) msg;
 					for (Iterator iterator2 = amsg.getCauses().iterator(); iterator2
@@ -96,18 +103,19 @@ class AnalyticsTestStandalone {
 
 			msgs = result.getBySeverity(AnalyticsMessageBase.Severity.NOTE);
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
-				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator.next();
+				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator
+						.next();
 				System.out.println("NOTE: " + msg.getMessage());
 				System.out.println("\t" + msg.getFaulty());
 			}
 
-
-
-			Collection<AnalyticsClass> classes = result.getAnalyticsData().getAllClasses();
+			Collection<AnalyticsClass> classes = result.getAnalyticsData()
+					.getAllClasses();
 			for (Iterator iterator = classes.iterator(); iterator.hasNext();) {
 				AnalyticsClass c = (AnalyticsClass) iterator.next();
 
-				Collection<AnalyticsRule> cr =  result.getAnalyticsData().getRulesByClassId(c.getId());
+				Collection<AnalyticsRule> cr = result.getAnalyticsData()
+						.getRulesByClassId(c.getId());
 				System.err.println("Class rules:" + cr);
 				Set<Field> flds = c.getFields();
 				for (Iterator iterator2 = flds.iterator(); iterator2.hasNext();) {
@@ -115,13 +123,12 @@ class AnalyticsTestStandalone {
 					cr = result.getAnalyticsData().getRulesByFieldId(f.getId());
 					System.err.println("Field rules: " + cr);
 
-
 				}
 			}
 
-			//System.err.println(a.getResultAsPlainText());
-            //System.out.println(result.toString());
-        } catch (Throwable t) {
+			// System.err.println(a.getResultAsPlainText());
+			// System.out.println(result.toString());
+		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 	}
