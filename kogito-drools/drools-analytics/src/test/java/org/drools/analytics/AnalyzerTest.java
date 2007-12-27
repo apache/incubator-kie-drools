@@ -44,6 +44,7 @@ public class AnalyzerTest extends TestCase {
 		result = anal.getResult();
 		assertNotNull(result);
 		assertEquals(0, result.getBySeverity(AnalyticsMessageBase.Severity.ERROR).size());
+		// These row has a problem
 		assertEquals( 17, result.getBySeverity(AnalyticsMessageBase.Severity.WARNING).size());
 		assertEquals(1, result.getBySeverity(AnalyticsMessageBase.Severity.NOTE).size());
 
