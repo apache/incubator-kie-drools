@@ -4,6 +4,9 @@ package org.drools.analytics.redundancy.restrictions
 import org.drools.analytics.components.*;
 import org.drools.analytics.report.components.Redundancy;
 
+#
+# Depandencies: None
+#
 rule "Find redundant VariableRestriction"
 	when
 		# Check that Restrictions $left and $right have redundant fields.
@@ -27,7 +30,9 @@ rule "Find redundant VariableRestriction"
 		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
 end
 
-
+#
+# Depandencies: None
+#
 rule "Find redundant LiteralRestriction"
 	when
 		# Check that Restrictions $left and $right have redundant fields.

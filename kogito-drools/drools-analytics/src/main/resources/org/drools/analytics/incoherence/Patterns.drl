@@ -25,6 +25,7 @@ global AnalyticsResult result;
 # If two Patterns are in conflict.
 # 
 # Type: Warning
+# Depandencies: None
 # Example: 
 #		IncorencePattern( a == 1 ) 
 #		not IncorencePattern( a == 1 ) 
@@ -60,7 +61,6 @@ rule "Incoherent Patterns in rule possibility"
 			 items contains $pp2
 		)
 		
-		
 		$p1 :Pattern(
 			id == $r1.patternId 
 		)
@@ -91,6 +91,7 @@ end
 # If two Patterns are in conflict.
 # 
 # Type: Warning
+# Depandencies: None
 # Example: 
 #		$var :Object()
 #		IncorencePattern( a == $var ) 
@@ -156,6 +157,7 @@ end
 # If two Patterns are in conflict.
 # 
 # Type: Warning
+# Depandencies: None
 # Example: 
 #		IncorencePattern8( a > 11 ) 
 #		not IncorencePattern8( a > 1 ) 
@@ -220,6 +222,7 @@ end
 # If two Patterns are in conflict.
 # 
 # Type: Warning
+# Depandencies: None
 # Example: 
 #		IncorencePattern( a < 1 ) 
 #		not IncorencePattern( a < 11 ) 
@@ -284,6 +287,7 @@ end
 # If two Patterns are in conflict.
 # 
 # Type: Warning
+# Depandencies: None
 # Example: 
 #		IncoherencePattern( a >= 1 ) 
 #		not IncoherencePattern( a != 1 )  
@@ -349,6 +353,7 @@ end
 # If two Patterns are in conflict.
 # 
 # Type: Warning
+# Depandencies: None
 # Example: 
 #		IncoherencePattern15( a >= $var ) 
 #		not IncoherencePattern15( a != $var )  
@@ -414,6 +419,7 @@ end
 # If two Patterns are in conflict.
 # 
 # Type: Warning
+# Depandencies: None
 # Example: 
 #		IncoherencePattern13( a == $var ) 
 #		not IncoherencePattern13( a >= $var )  
@@ -478,6 +484,7 @@ end
 # If two Patterns are in conflict.
 # 
 # Type: Warning
+# Depandencies: None
 # Example: 
 #		IncoherencePattern13( a == $var ) 
 #		not IncoherencePattern13( a >= $var )  

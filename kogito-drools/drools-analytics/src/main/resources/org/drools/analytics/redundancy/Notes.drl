@@ -19,7 +19,14 @@ import org.drools.analytics.report.components.Cause;
 import org.drools.analytics.report.components.Cause.CauseType;
 
 
-
+#
+# Dependencies: 
+#
+#	Needs at least one rule from following rules:
+#		package org.drools.analytics.redundancy.restrictions
+#			rule "Find redundant VariableRestriction"
+#			rule "Find redundant LiteralRestriction"
+#
 rule "Find redundant restrictions from pattern possibilities"
 	salience -100
 	when
@@ -41,6 +48,12 @@ rule "Find redundant restrictions from pattern possibilities"
 						$r, "Same restriction exists twice.", causes ) );
 end
 
+#
+# Dependencies: 
+#
+#		package org.drools.analytics.redundancy.possibilities
+#			rule "Find pattern possibility redundancy"
+#
 rule "Find redundant pattern possibilities from rule possibilities"
 	salience -100
 	when

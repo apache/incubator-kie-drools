@@ -9,6 +9,9 @@ import org.drools.analytics.report.components.Redundancy;
 
 
 
+#
+# Dependencies: None
+#
 rule "Find redundant TextConsequences"
 	when
 		# Check that AnalyticsRule $left and $right have redundant fields.
@@ -22,10 +25,6 @@ rule "Find redundant TextConsequences"
 		not Redundancy( 
 			left == $left, 
 			right == $right 
-		)
-		not Redundancy( 
-			left == $right, 
-			right == $left 
 		)
 	then
 		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );

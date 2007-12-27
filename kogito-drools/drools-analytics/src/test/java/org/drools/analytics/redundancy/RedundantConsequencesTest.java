@@ -33,19 +33,19 @@ public class RedundantConsequencesTest extends RedundancyTestBase {
 				.iterateObjects());
 
 		assertTrue(TestBase.mapContains(map, "Redundant consiquence 1a",
-				"Redundant consiquence 1b")
-				^ TestBase.mapContains(map, "Redundant consiquence 1b",
-						"Redundant consiquence 1a"));
+				"Redundant consiquence 1b"));
+		assertTrue(TestBase.mapContains(map, "Redundant consiquence 1b",
+				"Redundant consiquence 1a"));
 
 		assertTrue(TestBase.mapContains(map, "Redundant consiquence 2a",
-				"Redundant consiquence 2b")
-				^ TestBase.mapContains(map, "Redundant consiquence 2b",
-						"Redundant consiquence 2a"));
+				"Redundant consiquence 2b"));
+		assertTrue(TestBase.mapContains(map, "Redundant consiquence 2b",
+				"Redundant consiquence 2a"));
 
 		assertTrue(TestBase.mapContains(map, "Redundant consiquence 3a",
-				"Redundant consiquence 3b")
-				^ TestBase.mapContains(map, "Redundant consiquence 3b",
-						"Redundant consiquence 3a"));
+				"Redundant consiquence 3b"));
+		assertTrue(TestBase.mapContains(map, "Redundant consiquence 3b",
+				"Redundant consiquence 3a"));
 
 		if (!map.isEmpty()) {
 			fail("More redundancies than was expected.");

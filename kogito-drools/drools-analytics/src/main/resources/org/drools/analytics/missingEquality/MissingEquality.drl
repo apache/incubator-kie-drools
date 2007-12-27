@@ -21,6 +21,7 @@ global AnalyticsResult result;
 # Informs that there are inequalities, but not equality being catered for.
 # 
 # Type: Warning
+# Dependencies: None
 # Example: val != 10 when val == 10 is missing. 
 #
 rule "Missing restriction in LiteralRestrictions"
@@ -94,6 +95,7 @@ end
 # Informs that there are inequalities, but not equality being catered for.
 # 
 # Type: Warning
+# Dependencies: None
 # Example: val != $var when val == $var is missing. 
 #
 rule "Missing restriction in VariableRestrictions"

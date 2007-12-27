@@ -8,6 +8,8 @@ import org.drools.analytics.report.components.Redundancy;
 # Only checks for redundant pattern specifications, 
 # does not include actual restriction checks.
 #
+# Depandencies: None
+#
 rule "Find redundant Patterns with restrictions"
 	when
 		# Check that Patterns $left and $right have redundant fields.
@@ -44,6 +46,8 @@ end
 
 #
 # Checks for redundant pattern specifications when the patterns have no possibilities.
+#
+# Depandencies: None
 #
 rule "Find redundant Patterns without restrictions"
 	when

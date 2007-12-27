@@ -17,7 +17,19 @@ import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.Cause;
 import org.drools.analytics.report.components.Cause.CauseType;
 
-
+#
+# Dependencies: 
+#
+#	Needs at least one rule from these packages:
+#		package org.drools.analytics.equivalency.rules
+#			rule "Find equivalent Rules"
+#		package org.drools.analytics.redundancy.rules
+#			rule "Find redundant Rules, strong redundancy"
+#
+#	And this rule:
+#		package org.drools.analytics.redundancy.possibilities
+#			rule "Find rule possibility redundancy"
+#
 rule "Find redundant rule possibilities from different rules"
 	salience -100
 	when
@@ -64,6 +76,19 @@ rule "Find redundant rule possibilities from different rules"
 						$rulePossibilityRedundancy, message, causes ) );
 end
 
+#
+# Dependencies: 
+#
+#	Needs at least one rule from these packages:
+#		package org.drools.analytics.equivalency.rules
+#			rule "Find equivalent Rules"
+#		package org.drools.analytics.redundancy.rules
+#			rule "Find redundant Rules, strong redundancy"
+#
+#	And this rule:
+#		package org.drools.analytics.redundancy.possibilities
+#			rule "Find rule possibility redundancy"
+#
 rule "Find subsumptant rule possibilities from different rules"
 	salience -100
 	when

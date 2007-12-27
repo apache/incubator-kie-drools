@@ -1,5 +1,5 @@
 #created on: 7.9.2007
-package org.drools.analytics.redundancy.rules
+package org.drools.analytics.equivalency.rules
 
 import org.drools.analytics.components.AnalyticsRule;
 import org.drools.analytics.report.components.Redundancy;
@@ -7,6 +7,8 @@ import org.drools.analytics.report.components.Redundancy;
 #
 # Only checks for redundant rule specifications where consequences are not redundant, 
 # does not include actual pattern and restriction checks.
+#
+# Depandencies: None
 #
 rule "Find equivalent Rules"
 	when
@@ -27,10 +29,6 @@ rule "Find equivalent Rules"
 			left == $left, 
 			right == $right 
 		)
-		#not Redundancy( 
-		#	left == $right, 
-		#	right == $left 
-		#)
 	then
 		insert( new Redundancy( Redundancy.RedundancyType.WEAK, $left, $right ) );
 end

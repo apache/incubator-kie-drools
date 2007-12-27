@@ -25,6 +25,7 @@ global AnalyticsResult result;
 # was after fact patterns.
 # 
 # Type: Note
+# Dependencies: None
 # Example: eval(function( $something )) Pattern() 
 #
 rule "Optimise evals inside pattern"

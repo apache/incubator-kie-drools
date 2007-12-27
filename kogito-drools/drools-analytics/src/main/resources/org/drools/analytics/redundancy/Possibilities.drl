@@ -15,8 +15,18 @@ import java.util.ArrayList;
 # Fires when two PatternPossibilities are redundant.
 # Marks these possibilities as redundant.
 # 
+# Depandencies: Needs at least one rule from both packages.
+# 
+#		package org.drools.analytics.redundancy.patterns
+#			rule "Find redundant Patterns with restrictions"
+#			rule "Find redundant Patterns without restrictions"
+#		package org.drools.analytics.redundancy.restrictions
+#			rule "Find redundant VariableRestriction"
+#			rule "Find redundant LiteralRestriction"
+#
 # Example 1: Pattern1( a == b ) and Pattern1( a == b )
 # Example 2: Pattern1( a == b || a == c ) and Pattern1( a == b )
+#
 rule "Find pattern possibility redundancy"
 	when
 		$redundancy :Redundancy( 
@@ -90,8 +100,21 @@ end
 # Fires when two PatternPossibilities are redundant.
 # Marks these possibilities as redundant.
 # 
+# Depandencies: 
+#
+#	Needs at least one rule from these packages:
+#		package org.drools.analytics.equivalency.rules
+#			rule "Find equivalent Rules"
+#		package org.drools.analytics.redundancy.rules
+#			rule "Find redundant Rules, strong redundancy"
+#
+#	And this rule:
+#		package org.drools.analytics.redundancy.possibilities
+#			rule "Find pattern possibility redundancy"
+#
 # Example: rule "1" Pattern( a == b) end
 #		   rule "2" Pattern( a == b) end
+#
 rule "Find rule possibility redundancy"
 	when
 		$redundancy :Redundancy( 
