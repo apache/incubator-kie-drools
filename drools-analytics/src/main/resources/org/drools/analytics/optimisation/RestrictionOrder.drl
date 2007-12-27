@@ -26,6 +26,7 @@ global AnalyticsResult result;
 # component was on the left side.
 # 
 # Type: Note
+# Dependencies: None
 # Example: { a:bar } < { baz == 1 } < { baz > 1 || < 1 } < { baz != 1 }
 #
 rule "Optimise restrictions inside operator"
@@ -129,6 +130,7 @@ end
 # component was on the left side.
 # 
 # Type: Note
+# Dependencies: None
 # Example: { a:bar } < { baz == 1 } < { baz > 1 || < 1 } < { baz != 1 }
 #
 rule "Optimise restrictions inside constraint"
@@ -187,6 +189,7 @@ end
 # AnalyticsPredicateDescr should be last.
 # 
 # Type: Note
+# Dependencies: None
 # Example: Foo( eval( bar == 1), bar == 1 ) 
 #
 rule "Optimise predicates inside operator"

@@ -8,6 +8,11 @@ import org.drools.analytics.report.components.Redundancy;
 # Only checks for redundant rule specifications, 
 # does not include actual pattern and restriction checks.
 #
+# Depandencies:
+#
+#		package org.drools.analytics.redundancy.consequences
+#			rule "Find redundant TextConsequences"
+#
 rule "Find redundant Rules, strong redundancy"
 	when
 		# Check that AnalyticsRule $left and $right have redundant fields.
@@ -27,10 +32,6 @@ rule "Find redundant Rules, strong redundancy"
 			left == $left, 
 			right == $right 
 		)
-		#not Redundancy( 
-		#	left == $right, 
-		#	right == $left 
-		#)
 	then
 		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
 end
