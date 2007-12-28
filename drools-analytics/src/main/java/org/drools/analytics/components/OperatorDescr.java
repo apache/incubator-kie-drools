@@ -11,8 +11,15 @@ public class OperatorDescr extends AnalyticsComponent implements Serializable {
 
 	private static int index = 0;
 
-	public static enum Type {
-		AND, OR
+	public static class Type {
+		public static final Type AND = new Type(0);
+		public static final Type OR = new Type(1);
+
+		private final int index;
+
+		private Type(int i) {
+			index = i;
+		}
 	};
 
 	private Type type;

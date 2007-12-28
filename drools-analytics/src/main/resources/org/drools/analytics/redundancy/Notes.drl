@@ -39,7 +39,7 @@ rule "Find redundant restrictions from pattern possibilities"
 			items contains $r.right 
 		)
 	then
-		Collection<Cause> causes = new ArrayList<Cause>();
+		Collection causes = new ArrayList();
 		causes.add( $r.getLeft() );
 		causes.add( $r.getRight() );
 		
@@ -66,7 +66,7 @@ rule "Find redundant pattern possibilities from rule possibilities"
 			items contains $r.right 
 		)
 	then
-		Collection<Cause> causes = new ArrayList<Cause>();
+		Collection causes = new ArrayList();
 		causes.add( $r.getLeft() );
 		causes.add( $r.getRight() );
 		

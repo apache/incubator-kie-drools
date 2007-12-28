@@ -60,7 +60,7 @@ rule "Find redundant rule possibilities from different rules"
 		)
 		
 	then
-		Collection<Cause> causes = new ArrayList<Cause>();
+		Collection causes = new ArrayList();
 		causes.add( $rulePossibilityRedundancy.getLeft() );
 		causes.add( $rulePossibilityRedundancy.getRight() );
 		
@@ -119,7 +119,7 @@ rule "Find subsumptant rule possibilities from different rules"
 		)
 		
 	then
-		Collection<Cause> causes = new ArrayList<Cause>();
+		Collection causes = new ArrayList();
 		causes.add( $rulePossibilityRedundancy.getLeft() );
 		causes.add( $rulePossibilityRedundancy.getRight() );
 		

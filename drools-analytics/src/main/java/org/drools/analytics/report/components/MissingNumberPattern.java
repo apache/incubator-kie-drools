@@ -46,10 +46,9 @@ public class MissingNumberPattern extends MissingRange implements
 	}
 
 	public Object getValueAsObject() {
-		switch (valueType) {
-		case BOOLEAN:
+		if (valueType == Field.FieldType.BOOLEAN) {
 			return Boolean.valueOf(value);
-		case DATE:
+		} else if (valueType == Field.FieldType.DATE) {
 			try {
 				String fmt = System.getProperty("drools.dateformat");
 				if (fmt == null) {
@@ -60,14 +59,13 @@ public class MissingNumberPattern extends MissingRange implements
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-		case DOUBLE:
+		} else if (valueType == Field.FieldType.DOUBLE) {
 			return Double.valueOf(value);
-		case INT:
+		} else if (valueType == Field.FieldType.INT) {
 			return Integer.valueOf(value);
-
-		default:
-			return value;
 		}
+
+		return value;
 	}
 
 	public Field.FieldType getValueType() {

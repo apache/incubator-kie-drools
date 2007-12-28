@@ -8,18 +8,23 @@ import org.drools.analytics.report.components.Cause;
  */
 public class Field extends AnalyticsComponent implements Cause {
 
-	public static enum FieldType {
-		BOOLEAN("boolean"), STRING("String"), INT("int"), DOUBLE("double"), DATE(
-				"Date"), VARIABLE("Variable"), OBJECT("Object");
+	public static class FieldType {
+		public static final FieldType BOOLEAN = new FieldType("boolean");
+		public static final FieldType STRING = new FieldType( "String");
+		public static final FieldType INT = new FieldType( "int");
+		public static final FieldType DOUBLE = new FieldType( "double");
+		public static final FieldType DATE = new FieldType( "Date");
+		public static final FieldType VARIABLE = new FieldType( "Variable");
+		public static final FieldType OBJECT = new FieldType( "Object");
 
-		private String string;
+		private final String string;
 
 		private FieldType(String string) {
 			this.string = string;
 		}
 
 		@Override
-		public String toString() {
+		public   String toString() {
 			return string;
 		}
 	}

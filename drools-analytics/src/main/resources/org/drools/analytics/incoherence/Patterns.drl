@@ -73,7 +73,7 @@ rule "Incoherent Patterns in rule possibility"
 			id == $rp.ruleId
 		)
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $p1 );
 		list.add( $p2 );
 		
@@ -139,7 +139,7 @@ rule "Incoherent Patterns in rule possibility, variables"
 			id == $rp.ruleId
 		)
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $p1 );
 		list.add( $p2 );
 		
@@ -204,7 +204,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with le
 			id == $rp.ruleId
 		)
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $p1 );
 		list.add( $p2 );
 		
@@ -269,7 +269,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with gr
 			id == $rp.ruleId
 		)
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $p1 );
 		list.add( $p2 );
 		
@@ -335,7 +335,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 			id == $rp.ruleId
 		)
 then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $p1 );
 		list.add( $p2 );
 		
@@ -401,7 +401,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 			id == $rp.ruleId
 		)
 then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $p1 );
 		list.add( $p2 );
 		
@@ -466,7 +466,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 			id == $rp.ruleId
 		)
 then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $p1 );
 		list.add( $p2 );
 		
@@ -532,7 +532,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
 			id == $rp.ruleId
 		)
 then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $p1 );
 		list.add( $p2 );
 		

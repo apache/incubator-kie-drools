@@ -9,8 +9,19 @@ import org.drools.base.evaluators.Operator;
  */
 public abstract class Restriction extends AnalyticsComponent implements Cause {
 
-	public static enum RestrictionType {
-		LITERAL, VARIABLE, QUALIFIED_IDENTIFIER, RETURN_VALUE_RESTRICTION
+	public static class RestrictionType {
+		public static final RestrictionType LITERAL = new RestrictionType(0);
+		public static final RestrictionType VARIABLE = new RestrictionType(1);
+		public static final RestrictionType QUALIFIED_IDENTIFIER = new RestrictionType(
+				2);
+		public static final RestrictionType RETURN_VALUE_RESTRICTION = new RestrictionType(
+				3);
+
+		private final int index;
+
+		private RestrictionType(int i) {
+			index = i;
+		}
 	}
 
 	private static int index = 0;
