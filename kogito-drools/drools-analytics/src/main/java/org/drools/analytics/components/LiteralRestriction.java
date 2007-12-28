@@ -47,10 +47,10 @@ public class LiteralRestriction extends Restriction implements Cause {
 							+ restriction.getValueType() + " was compared to "
 							+ valueType);
 		}
-		switch (valueType) {
-		case DATE:
+
+		if (valueType == Field.FieldType.DATE) {
 			return dateValue.compareTo(restriction.getDateValue());
-		case DOUBLE:
+		} else if (valueType == Field.FieldType.DOUBLE) {
 			if (doubleValue > restriction.getDoubleValue()) {
 				return 1;
 			} else if (doubleValue < restriction.getDoubleValue()) {
@@ -58,7 +58,7 @@ public class LiteralRestriction extends Restriction implements Cause {
 			} else {
 				return 0;
 			}
-		case INT:
+		} else if (valueType == Field.FieldType.INT) {
 			if (intValue > restriction.getIntValue()) {
 				return 1;
 			} else if (intValue < restriction.getIntValue()) {
@@ -66,30 +66,25 @@ public class LiteralRestriction extends Restriction implements Cause {
 			} else {
 				return 0;
 			}
-		case STRING:
+		} else if (valueType == Field.FieldType.STRING) {
 			return stringValue.compareTo(restriction.getValueAsString());
-		default:
-			throw new DataFormatException(
-					"Value types did not match. Value type "
-							+ restriction.getValueType() + " was compared to "
-							+ valueType);
 		}
+
+		throw new DataFormatException("Value types did not match. Value type "
+				+ restriction.getValueType() + " was compared to " + valueType);
 	}
 
 	public Object getValueAsObject() {
-		switch (valueType) {
-		case BOOLEAN:
+		if (valueType == Field.FieldType.BOOLEAN) {
 			return Boolean.valueOf(booleanValue);
-		case DATE:
+		} else if (valueType == Field.FieldType.DATE) {
 			return dateValue;
-		case DOUBLE:
+		} else if (valueType == Field.FieldType.DOUBLE) {
 			return Double.valueOf(doubleValue);
-		case INT:
+		} else if (valueType == Field.FieldType.INT) {
 			return Integer.valueOf(intValue);
-
-		default:
-			return stringValue;
 		}
+		return stringValue;
 	}
 
 	public String getValueAsString() {

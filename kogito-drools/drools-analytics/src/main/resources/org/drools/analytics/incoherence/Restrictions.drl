@@ -54,7 +54,7 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
 		
 		$p :Pattern( id == $pp.patternId )
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 		
@@ -100,7 +100,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 
 		$p :Pattern( id == $pp.patternId )
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 		
@@ -146,7 +146,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 	
 		$p :Pattern( id == $pp.patternId )
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 		
@@ -192,7 +192,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 
 		$p :Pattern( id == $pp.patternId )
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 		
@@ -238,7 +238,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 	
 		$p :Pattern( id == $pp.patternId )
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 		
@@ -285,7 +285,7 @@ rule "Incoherent VariableRestrictions in pattern possibility"
 		
 		$p :Pattern( id == $pp.patternId )
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 		
@@ -329,7 +329,7 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 	
 		$p :Pattern( id == $pp.patternId )
 	then 
-		Collection<Cause> list = new ArrayList<Cause>();
+		Collection list = new ArrayList();
 		list.add( $r1 );
 		list.add( $r2 );
 		

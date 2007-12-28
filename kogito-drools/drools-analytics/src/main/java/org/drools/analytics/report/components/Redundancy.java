@@ -11,8 +11,15 @@ package org.drools.analytics.report.components;
  */
 public class Redundancy implements Cause {
 
-	public enum RedundancyType {
-		WEAK, STRONG
+	public static class RedundancyType {
+		public static final RedundancyType WEAK = new RedundancyType(0);
+		public static final RedundancyType STRONG = new RedundancyType(0);
+
+		private final int index;
+
+		private RedundancyType(int i) {
+			index = i;
+		}
 	}
 
 	private static int index = 0;
