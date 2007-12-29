@@ -12,10 +12,23 @@ import org.drools.ruleflow.instance.impl.RuleFlowSplitInstanceImpl;
 import org.drools.ruleflow.instance.impl.StartNodeInstanceImpl;
 import org.drools.ruleflow.instance.impl.SubFlowNodeInstanceImpl;
 
-public class ActionNodeConf implements PvmNodeConf {
-
+public class CreateNewNodeConf implements PvmNodeConf {
+    public final Class<? extends RuleFlowNodeInstance> cls;
+    
+    public CreateNewNodeConf(Class<? extends RuleFlowNodeInstance> cls){
+        this.cls = cls;
+//        if ( RuleFlowNodeInstance.class.isAssignableFrom( this.cls ) ) {
+//            throw new IllegalArgumentException("Node must be of the type RuleFlowNodeInstance." );
+//        }
+    }
+    
 	public RuleFlowNodeInstance getNodeInstance(Node node, RuleFlowProcessInstanceImpl processInstance ) {    	  	
-        final RuleFlowNodeInstance result = new ActionNodeInstanceImpl();
+        RuleFlowNodeInstance result;
+        try {
+            result = this.cls.newInstance();
+        } catch ( Exception e ) {
+            throw new RuntimeException("Unable  to instance RuleFlow Node: '" + this.cls.getName() );
+        }
         result.setNodeId( node.getId() );
         processInstance.addNodeInstance( result );
         return result;
