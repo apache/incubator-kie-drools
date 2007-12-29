@@ -41,16 +41,8 @@ import org.drools.event.RuleFlowNodeTriggeredEvent;
 import org.drools.event.RuleFlowStartedEvent;
 import org.drools.ruleflow.common.instance.WorkItem;
 import org.drools.ruleflow.common.instance.impl.ProcessInstanceImpl;
-import org.drools.ruleflow.core.ActionNode;
-import org.drools.ruleflow.core.EndNode;
-import org.drools.ruleflow.core.Join;
-import org.drools.ruleflow.core.MilestoneNode;
 import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.ruleflow.core.RuleSetNode;
-import org.drools.ruleflow.core.Split;
-import org.drools.ruleflow.core.StartNode;
-import org.drools.ruleflow.core.SubFlowNode;
 import org.drools.ruleflow.core.WorkItemNode;
 import org.drools.ruleflow.core.impl.ActionNodeImpl;
 import org.drools.ruleflow.core.impl.EndNodeImpl;
@@ -62,15 +54,9 @@ import org.drools.ruleflow.core.impl.StartNodeImpl;
 import org.drools.ruleflow.core.impl.SubFlowNodeImpl;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
-import org.drools.ruleflow.instance.impl.configuration.ActionNodeConf;
-import org.drools.ruleflow.instance.impl.configuration.EndNodeConf;
-import org.drools.ruleflow.instance.impl.configuration.JoinNodeConf;
-import org.drools.ruleflow.instance.impl.configuration.MilestoneNodeConf;
+import org.drools.ruleflow.instance.impl.configuration.CreateNewNodeConf;
+import org.drools.ruleflow.instance.impl.configuration.ReuseNodeConf;
 import org.drools.ruleflow.instance.impl.configuration.RuleSetNodeConf;
-import org.drools.ruleflow.instance.impl.configuration.SplitNodeConf;
-import org.drools.ruleflow.instance.impl.configuration.StartNodeConf;
-import org.drools.ruleflow.instance.impl.configuration.SubFlowNodeConf;
-import org.drools.ruleflow.instance.impl.configuration.TaskNodeConf;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -79,12 +65,14 @@ import org.drools.ruleflow.instance.impl.configuration.TaskNodeConf;
  */
 public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     implements
-    RuleFlowProcessInstance, AgendaEventListener, RuleFlowEventListener {
+    RuleFlowProcessInstance,
+    AgendaEventListener,
+    RuleFlowEventListener {
 
-    private static final long serialVersionUID = 400L;
+    private static final long     serialVersionUID = 400L;
 
-    private InternalWorkingMemory 	workingMemory;
-    private final List      nodeInstances    = new ArrayList();
+    private InternalWorkingMemory workingMemory;
+    private final List            nodeInstances    = new ArrayList();
 
     public RuleFlowProcess getRuleFlowProcess() {
         return (RuleFlowProcess) getProcess();
@@ -100,7 +88,7 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     }
 
     public Collection getNodeInstances() {
-        return Collections.unmodifiableCollection( new ArrayList(this.nodeInstances) );
+        return Collections.unmodifiableCollection( new ArrayList( this.nodeInstances ) );
     }
 
     public RuleFlowNodeInstance getFirstNodeInstance(final long nodeId) {
@@ -114,51 +102,71 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     }
 
     public Agenda getAgenda() {
-    	if (this.workingMemory == null) {
-    		return null;
-    	}
+        if ( this.workingMemory == null ) {
+            return null;
+        }
         return this.workingMemory.getAgenda();
     }
 
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
-    	if (this.workingMemory != null) {
-    		throw new IllegalArgumentException("A working memory can only be set once.");
-    	}
+        if ( this.workingMemory != null ) {
+            throw new IllegalArgumentException( "A working memory can only be set once." );
+        }
         this.workingMemory = workingMemory;
-        workingMemory.addEventListener((AgendaEventListener) this);
-        workingMemory.addEventListener((RuleFlowEventListener) this);
+        workingMemory.addEventListener( (AgendaEventListener) this );
+        workingMemory.addEventListener( (RuleFlowEventListener) this );
     }
-    
+
     public WorkingMemory getWorkingMemory() {
-    	return this.workingMemory;
-    }    
-    
+        return this.workingMemory;
+    }
+
     private static PvmNodeRegistry nodeRegistry = new PvmNodeRegistry();
     static {
-    	nodeRegistry.register(RuleSetNodeImpl.class, new RuleSetNodeConf() );
-    	nodeRegistry.register(SplitImpl.class, new SplitNodeConf() );
-    	nodeRegistry.register(JoinImpl.class, new JoinNodeConf() );
-    	nodeRegistry.register(StartNodeImpl.class, new StartNodeConf() );
-    	nodeRegistry.register(EndNodeImpl.class, new EndNodeConf() );
-    	nodeRegistry.register(MilestoneNodeImpl.class, new MilestoneNodeConf() );    	    
-    	nodeRegistry.register(SubFlowNodeImpl.class, new SubFlowNodeConf() );
-    	nodeRegistry.register(ActionNodeImpl.class, new ActionNodeConf() );
-    	nodeRegistry.register(WorkItemNode.class, new TaskNodeConf() );
-    	
+        //    	nodeRegistry.register(RuleSetNodeImpl.class, new RuleSetNodeConf() );
+        //    	nodeRegistry.register(SplitImpl.class, new SplitNodeConf() );
+        //    	nodeRegistry.register(JoinImpl.class, new JoinNodeConf() );
+        //    	nodeRegistry.register(StartNodeImpl.class, new StartNodeConf() );
+        //    	nodeRegistry.register(EndNodeImpl.class, new EndNodeConf() );
+        //    	nodeRegistry.register(MilestoneNodeImpl.class, new MilestoneNodeConf() );    	    
+        //    	nodeRegistry.register(SubFlowNodeImpl.class, new SubFlowNodeConf() );
+        //    	nodeRegistry.register(ActionNodeImpl.class, new ActionNodeConf() );
+        //    	nodeRegistry.register(WorkItemNode.class, new TaskNodeConf() );
+
+        nodeRegistry.register( RuleSetNodeImpl.class,
+                               new RuleSetNodeConf() );
+        nodeRegistry.register( SplitImpl.class,
+                               new ReuseNodeConf( RuleFlowSplitInstanceImpl.class ) );
+        nodeRegistry.register( JoinImpl.class,
+                               new ReuseNodeConf( RuleFlowJoinInstanceImpl.class ) );
+        nodeRegistry.register( StartNodeImpl.class,
+                               new CreateNewNodeConf( StartNodeInstanceImpl.class ) );
+        nodeRegistry.register( EndNodeImpl.class,
+                               new CreateNewNodeConf( EndNodeInstanceImpl.class ) );
+        nodeRegistry.register( MilestoneNodeImpl.class,
+                               new CreateNewNodeConf( MilestoneNodeInstanceImpl.class ) );
+        nodeRegistry.register( SubFlowNodeImpl.class,
+                               new CreateNewNodeConf( SubFlowNodeInstanceImpl.class ) );
+        nodeRegistry.register( ActionNodeImpl.class,
+                               new CreateNewNodeConf( ActionNodeInstanceImpl.class ) );
+        nodeRegistry.register( WorkItemNode.class,
+                               new CreateNewNodeConf( TaskNodeInstanceImpl.class ) );
+
     }
 
     public RuleFlowNodeInstance getNodeInstance(final Node node) {
-    	PvmNodeConf conf = this.nodeRegistry.getRuleFlowNodeConf( node );
-    	if ( conf == null ) {
-    		throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
-    	}
-    	
-    	RuleFlowNodeInstance nodeInstance = conf.getNodeInstance( node, this );
-    	
-    	if  ( nodeInstance == null ) {
-    		throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
-    	}
-    	return nodeInstance;    	
+        PvmNodeConf conf = this.nodeRegistry.getRuleFlowNodeConf( node );
+        if ( conf == null ) {
+            throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
+        }
+
+        RuleFlowNodeInstance nodeInstance = conf.getNodeInstance( node,
+                                                                  this );
+
+        if ( nodeInstance == null ) {
+            throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
+        }
+        return nodeInstance;
     }
 
     public void start() {
@@ -168,24 +176,22 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
         setState( ProcessInstanceImpl.STATE_ACTIVE );
         getNodeInstance( getRuleFlowProcess().getStart() ).trigger( null );
     }
-    
+
     public void setState(final int state) {
-        super.setState(state);
-        if (state == ProcessInstanceImpl.STATE_COMPLETED) {
-            ((EventSupport) this.workingMemory)
-                    .getRuleFlowEventSupport()
-                    .fireBeforeRuleFlowProcessCompleted(this, this.workingMemory);
+        super.setState( state );
+        if ( state == ProcessInstanceImpl.STATE_COMPLETED ) {
+            ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowProcessCompleted( this,
+                                                                                                              this.workingMemory );
             // deactivate all node instances of this process instance
-            while (!nodeInstances.isEmpty()) {
-            	RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) nodeInstances.get(0);
-            	nodeInstance.cancel();
+            while ( !nodeInstances.isEmpty() ) {
+                RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) nodeInstances.get( 0 );
+                nodeInstance.cancel();
             }
-            workingMemory.removeEventListener((AgendaEventListener) this);
-            workingMemory.removeEventListener((RuleFlowEventListener) this);
-            workingMemory.removeProcessInstance(this);
-        	((EventSupport) this.workingMemory)
-                    .getRuleFlowEventSupport()
-                    .fireAfterRuleFlowProcessCompleted(this, this.workingMemory);
+            workingMemory.removeEventListener( (AgendaEventListener) this );
+            workingMemory.removeEventListener( (RuleFlowEventListener) this );
+            workingMemory.removeProcessInstance( this );
+            ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowProcessCompleted( this,
+                                                                                                             this.workingMemory );
         }
     }
 
@@ -200,105 +206,120 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
         return sb.toString();
     }
 
-	public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory) {
-		// TODO group all milestone related code in milestone instance impl?
-		// check whether this activation is from the DROOLS_SYSTEM agenda group
-		String ruleFlowGroup = event.getActivation().getRule().getRuleFlowGroup();
-		if ("DROOLS_SYSTEM".equals(ruleFlowGroup)) {
-			// new activations of the rule associate with a milestone node
-			// trigger node instances of that milestone node
-			String ruleName = event.getActivation().getRule().getName();
-			for (Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
-				RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
-				if (nodeInstance instanceof MilestoneNodeInstanceImpl) {
-					String milestoneName = "RuleFlow-Milestone-" + getProcess().getId()
-		    			+ "-" + nodeInstance.getNodeId();
-					if (milestoneName.equals(ruleName)) {
-						((MilestoneNodeInstanceImpl) nodeInstance).triggerCompleted();
-					}
-				}
-				
-			}
-		}
-	}
+    public void activationCreated(ActivationCreatedEvent event,
+                                  WorkingMemory workingMemory) {
+        // TODO group all milestone related code in milestone instance impl?
+        // check whether this activation is from the DROOLS_SYSTEM agenda group
+        String ruleFlowGroup = event.getActivation().getRule().getRuleFlowGroup();
+        if ( "DROOLS_SYSTEM".equals( ruleFlowGroup ) ) {
+            // new activations of the rule associate with a milestone node
+            // trigger node instances of that milestone node
+            String ruleName = event.getActivation().getRule().getName();
+            for ( Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
+                RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
+                if ( nodeInstance instanceof MilestoneNodeInstanceImpl ) {
+                    String milestoneName = "RuleFlow-Milestone-" + getProcess().getId() + "-" + nodeInstance.getNodeId();
+                    if ( milestoneName.equals( ruleName ) ) {
+                        ((MilestoneNodeInstanceImpl) nodeInstance).triggerCompleted();
+                    }
+                }
 
-	public void activationCancelled(ActivationCancelledEvent event, WorkingMemory workingMemory) {
-		// Do nothing
-	}
+            }
+        }
+    }
 
-	public void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory) {
-		// Do nothing
-	}
-
-	public void agendaGroupPopped(AgendaGroupPoppedEvent event, WorkingMemory workingMemory) {
-		// Do nothing
-	}
-
-	public void agendaGroupPushed(AgendaGroupPushedEvent event, WorkingMemory workingMemory) {
-		// Do nothing
-	}
-
-	public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
-		// Do nothing
-	}
-
-	public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-		// Do nothing
-	}
-
-    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+    public void activationCancelled(ActivationCancelledEvent event,
+                                    WorkingMemory workingMemory) {
         // Do nothing
     }
 
-	public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-		// Do nothing
-	}
-
-    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+    public void afterActivationFired(AfterActivationFiredEvent event,
+                                     WorkingMemory workingMemory) {
         // Do nothing
     }
 
-	public void beforeRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
-		// Do nothing
-	}
-
-    public void afterRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
+                                  WorkingMemory workingMemory) {
         // Do nothing
     }
 
-    public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
+    public void agendaGroupPushed(AgendaGroupPushedEvent event,
+                                  WorkingMemory workingMemory) {
         // Do nothing
     }
 
-    public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+    public void beforeActivationFired(BeforeActivationFiredEvent event,
+                                      WorkingMemory workingMemory) {
         // Do nothing
     }
 
-    public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+                                             WorkingMemory workingMemory) {
         // Do nothing
     }
 
-	public void afterRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
-		// TODO group all subflow related code in subflow instance impl?
-		for (Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
-			RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
-			if (nodeInstance instanceof SubFlowNodeInstanceImpl) {
-				SubFlowNodeInstanceImpl subFlowInstance = (SubFlowNodeInstanceImpl) nodeInstance;
-				if (event.getRuleFlowProcessInstance().getId() == subFlowInstance.getProcessInstanceId()) {
-					subFlowInstance.triggerCompleted();
-				}
-			}
-			
-		}
-	}
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+                                            WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                                               WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                                              WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void beforeRuleFlowStarted(RuleFlowStartedEvent event,
+                                      WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void afterRuleFlowStarted(RuleFlowStartedEvent event,
+                                     WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event,
+                                        WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
+                                            WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
+                                           WorkingMemory workingMemory) {
+        // Do nothing
+    }
+
+    public void afterRuleFlowCompleted(RuleFlowCompletedEvent event,
+                                       WorkingMemory workingMemory) {
+        // TODO group all subflow related code in subflow instance impl?
+        for ( Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
+            RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
+            if ( nodeInstance instanceof SubFlowNodeInstanceImpl ) {
+                SubFlowNodeInstanceImpl subFlowInstance = (SubFlowNodeInstanceImpl) nodeInstance;
+                if ( event.getRuleFlowProcessInstance().getId() == subFlowInstance.getProcessInstanceId() ) {
+                    subFlowInstance.triggerCompleted();
+                }
+            }
+
+        }
+    }
 
     public void taskCompleted(WorkItem taskInstance) {
-        for (Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
+        for ( Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
             RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
-            if (nodeInstance instanceof TaskNodeInstanceImpl) {
+            if ( nodeInstance instanceof TaskNodeInstanceImpl ) {
                 TaskNodeInstanceImpl taskNodeInstance = (TaskNodeInstanceImpl) nodeInstance;
                 WorkItem nodeTaskInstance = taskNodeInstance.getTaskInstance();
-                if (nodeTaskInstance != null && nodeTaskInstance.getId() == taskInstance.getId()) {
+                if ( nodeTaskInstance != null && nodeTaskInstance.getId() == taskInstance.getId() ) {
                     taskNodeInstance.triggerCompleted();
                 }
             }
@@ -306,12 +327,12 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     }
 
     public void taskAborted(WorkItem taskInstance) {
-        for (Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
+        for ( Iterator iterator = getNodeInstances().iterator(); iterator.hasNext(); ) {
             RuleFlowNodeInstance nodeInstance = (RuleFlowNodeInstance) iterator.next();
-            if (nodeInstance instanceof TaskNodeInstanceImpl) {
+            if ( nodeInstance instanceof TaskNodeInstanceImpl ) {
                 TaskNodeInstanceImpl taskNodeInstance = (TaskNodeInstanceImpl) nodeInstance;
                 WorkItem nodeTaskInstance = taskNodeInstance.getTaskInstance();
-                if (nodeTaskInstance != null && nodeTaskInstance.getId() == taskInstance.getId()) {
+                if ( nodeTaskInstance != null && nodeTaskInstance.getId() == taskInstance.getId() ) {
                     taskNodeInstance.triggerCompleted();
                 }
             }
