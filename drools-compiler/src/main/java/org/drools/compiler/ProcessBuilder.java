@@ -28,6 +28,10 @@ import java.util.Map.Entry;
 
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
+import org.drools.process.builder.ActionNodeBuilder;
+import org.drools.process.builder.ProcessNodeBuilder;
+import org.drools.process.builder.ProcessNodeBuilderRegistry;
+import org.drools.process.builder.SplitNodeBuilder;
 import org.drools.rule.Package;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.builder.ProcessBuildContext;
@@ -60,138 +64,119 @@ import com.thoughtworks.xstream.XStream;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ProcessBuilder {
-    
-	private PackageBuilder packageBuilder;
-	private final List errors = new ArrayList(); 
-	
-	public ProcessBuilder(PackageBuilder packageBuilder) {
-		this.packageBuilder = packageBuilder;
-	}
-    
+
+    private PackageBuilder packageBuilder;
+    private final List     errors = new ArrayList();
+
+    public ProcessBuilder(PackageBuilder packageBuilder) {
+        this.packageBuilder = packageBuilder;
+    }
+
     public List getErrors() {
-    	return errors;
+        return errors;
     }
 
     public void buildProcess(final Process process) {
-    	if (process instanceof RuleFlowProcess) {
-    		RuleFlowProcessValidator validator = RuleFlowProcessValidatorImpl.getInstance();
-    		RuleFlowProcessValidationError[] errors = validator.validateProcess((RuleFlowProcess) process);
-    		if (errors.length != 0) {
-    			for (int i = 0; i < errors.length; i++) {
-    				this.errors.add(new ParserError(errors[i].toString(), -1, -1));
-    			}
-    		} else {
-	            // generate and add rule for process
-	            String rules = generateRules( process );
-        		try {
-        			packageBuilder.addPackageFromDrl(new StringReader(rules));
-        		} catch (IOException e) {
-        			// should never occur
-        			e.printStackTrace(System.err);
-        		} catch (DroolsParserException e) {
-        			// should never occur
-        			e.printStackTrace(System.err);
-        		}        		
-        		buildNodes( process );   
+        if ( process instanceof RuleFlowProcess ) {
+            RuleFlowProcessValidator validator = RuleFlowProcessValidatorImpl.getInstance();
+            RuleFlowProcessValidationError[] errors = validator.validateProcess( (RuleFlowProcess) process );
+            if ( errors.length != 0 ) {
+                for ( int i = 0; i < errors.length; i++ ) {
+                    this.errors.add( new ParserError( errors[i].toString(),
+                                                      -1,
+                                                      -1 ) );
+                }
+            } else {
+                // generate and add rule for process
+                String rules = generateRules( process );
+                try {
+                    packageBuilder.addPackageFromDrl( new StringReader( rules ) );
+                } catch ( IOException e ) {
+                    // should never occur
+                    e.printStackTrace( System.err );
+                } catch ( DroolsParserException e ) {
+                    // should never occur
+                    e.printStackTrace( System.err );
+                }
+                buildNodes( process );
                 this.packageBuilder.getPackage().addRuleFlow( process );
-                
+
                 Package pkg = this.packageBuilder.getPackage();
-                if (  pkg != null ) {
+                if ( pkg != null ) {
                     // we can only do this is this.pkg != null, as otherwise the dialects won't be properly initialised
                     // as the dialects are initialised when the pkg is  first created
                     this.packageBuilder.getDialectRegistry().compileAll();
-                    
+
                     // some of the rules and functions may have been redefined
                     if ( pkg.getPackageCompilationData().isDirty() ) {
                         pkg.getPackageCompilationData().reload();
-                    }            
-                }                
-    		}
-    	}
+                    }
+                }
+            }
+        }
     }
-    
-    // @FIXME this is a hack to wire in Actions for now
+
+    private static ProcessNodeBuilderRegistry nodeBuilderRegistry = new ProcessNodeBuilderRegistry();
+
+    static {
+        nodeBuilderRegistry.register( ActionNodeImpl.class,
+                                      new ActionNodeBuilder() );
+        nodeBuilderRegistry.register( SplitImpl.class,
+                                      new SplitNodeBuilder() );
+    }
+
     public void buildNodes(Process process) {
         RuleFlowProcess rfp = (RuleFlowProcess) process;
 
         ProcessDescr processDescr = new ProcessDescr();
         processDescr.setName( rfp.getPackageName() );
-        
+
         Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( "java" );
         dialect.init( processDescr );
-        
+
         ProcessBuildContext context = new ProcessBuildContext( this.packageBuilder.getPackageBuilderConfiguration(),
                                                                this.packageBuilder.getPackage(),
                                                                process,
                                                                processDescr,
                                                                this.packageBuilder.getDialectRegistry(),
-                                                               dialect );         
-        
+                                                               dialect );
+
         for ( Node node : rfp.getNodes() ) {
-            if ( node instanceof ActionNode ) {
-                buildAction(process, processDescr, context, (ActionNodeImpl) node );
-            } else if ( node instanceof SplitImpl ) {
-                buildSplit(process, processDescr, context, (SplitImpl) node );
+            ProcessNodeBuilder builder = nodeBuilderRegistry.getNodeBuilder( node );
+            if ( builder != null ) {
+                // only build if there is a registered builder for this node type
+                builder.build( process,
+                               processDescr,
+                               context,
+                               node );
             }
-        }       
-        
+        }
+
         if ( !context.getErrors().isEmpty() ) {
             this.errors.addAll( context.getErrors() );
         }
-        
+
         for ( Iterator it = this.packageBuilder.getDialectRegistry().iterator(); it.hasNext(); ) {
-            dialect = ( Dialect ) it.next();
+            dialect = (Dialect) it.next();
             dialect.addProcess( context );
         }
-        
-    }    
-    
-    public void buildAction(Process process, ProcessDescr processDescr, ProcessBuildContext context, ActionNodeImpl actionNode) {
+
+    }
+
+    public void buildAction(Process process,
+                            ProcessDescr processDescr,
+                            ProcessBuildContext context,
+                            ActionNodeImpl actionNode) {
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
         ActionDescr actionDescr = new ActionDescr();
-        actionDescr.setText( action.getConsequence() );   
-        
-        Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( action.getDialect() );            
-        
-        dialect.getActionBuilder().build( context, actionNode, actionDescr );
+        actionDescr.setText( action.getConsequence() );
+
+        Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( action.getDialect() );
+
+        dialect.getActionBuilder().build( context,
+                                          actionNode,
+                                          actionDescr );
     }
-    
-    public void buildSplit(Process process, ProcessDescr processDescr, ProcessBuildContext context, SplitImpl splitNode) {
-        if ( splitNode.getType() == Split.TYPE_AND ) {
-            // we only process or/xor
-            return;
-        }
-        // we need to clone the map, so we can update the original while iterating.
-        Map map = new HashMap( splitNode.getConstraints() );
-        for ( Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
-            Entry entry = (Entry) it.next();
-            Connection connection = (Connection) entry.getKey();
-            ConstraintImpl constraint = (ConstraintImpl) entry.getValue();
-            
-            if ( "rule".equals( constraint.getType() )) {
-                RuleFlowConstraintEvaluator ruleConstraint = new RuleFlowConstraintEvaluator();
-                ruleConstraint.setDialect( constraint.getDialect() );
-                ruleConstraint.setName( constraint.getName() );
-                ruleConstraint.setPriority( constraint.getPriority() );
-                ruleConstraint.setPriority( constraint.getPriority() );
-                splitNode.setConstraint( connection, ruleConstraint );
-            } else if ( "code".equals( constraint.getType() ) ) {
-                ReturnValueConstraintEvaluator returnValueConstraint = new ReturnValueConstraintEvaluator();
-                returnValueConstraint.setDialect( constraint.getDialect() );
-                returnValueConstraint.setName( constraint.getName() );
-                returnValueConstraint.setPriority( constraint.getPriority() );
-                returnValueConstraint.setPriority( constraint.getPriority() );
-                splitNode.setConstraint( connection, returnValueConstraint );            
-                
-                ReturnValueDescr returnValueDescr = new ReturnValueDescr();
-                returnValueDescr.setText( constraint.getConstraint() );
-                
-                Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( constraint.getDialect() );                               
-                dialect.getReturnValueEvaluatorBuilder().build( context, returnValueConstraint, returnValueDescr );
-            }
-        }
-    }
-    
 
     public void addProcessFromFile(final Reader reader) throws Exception {
         final XStream stream = new XStream();
@@ -200,74 +185,68 @@ public class ProcessBuilder {
         final ClassLoader newLoader = this.getClass().getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( newLoader );
-            final RuleFlowProcess process = (RuleFlowProcess) stream.fromXML( reader );   
-            buildProcess(process);
+            final RuleFlowProcess process = (RuleFlowProcess) stream.fromXML( reader );
+            buildProcess( process );
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
         }
         reader.close();
     }
-    
+
     private String generateRules(final Process process) {
         StringBuilder builder = new StringBuilder();
-        
-    	if (process instanceof RuleFlowProcessImpl) {
-    		RuleFlowProcessImpl ruleFlow = (RuleFlowProcessImpl) process;
-    		builder.append( "package " + ruleFlow.getPackageName() + "\n" );
-    		List imports = ruleFlow.getImports();
-    		if (imports != null) {
-    			for (Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
-    			    builder.append( "import " + iterator.next() + ";\n" );
-    			}
-    		}
-    		Map globals = ruleFlow.getGlobals();
-    		if (globals != null) {
-    			for (Iterator iterator = globals.entrySet().iterator(); iterator.hasNext(); ) {
-    				Map.Entry entry = (Map.Entry) iterator.next();
-    				builder.append( "global " + entry.getValue() + " " + entry.getKey() + ";\n" );
-    			}
-    		}
 
-    		Node[] nodes = ruleFlow.getNodes();
-    		for (int i = 0; i < nodes.length; i++) {
-    			 if (nodes[i] instanceof Split ) {
-    				 Split split = (Split) nodes[i];
-    				 if (split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR) {
-    					 for (Iterator iterator = split.getOutgoingConnections().iterator(); iterator.hasNext(); ) {    					     
-    						 Connection connection = (Connection) iterator.next();
-    						 Constraint constraint = split.getConstraint( connection );
-    						 if (  "rule".equals( constraint.getType() ) ) {
-    						     builder.append( createSplitRule(process, connection, split.getConstraint(connection).getConstraint()) );
-    						 }
-    					 }
-    				 }
-    			 } else if (nodes[i] instanceof MilestoneNode) {
-    				 MilestoneNode milestone = (MilestoneNode) nodes[i];
-    				 builder.append( createMilestoneRule(process, milestone) );
-    			 }
-    		}
-    	}
-    	return builder.toString();
+        if ( process instanceof RuleFlowProcessImpl ) {
+            RuleFlowProcessImpl ruleFlow = (RuleFlowProcessImpl) process;
+            builder.append( "package " + ruleFlow.getPackageName() + "\n" );
+            List imports = ruleFlow.getImports();
+            if ( imports != null ) {
+                for ( Iterator iterator = imports.iterator(); iterator.hasNext(); ) {
+                    builder.append( "import " + iterator.next() + ";\n" );
+                }
+            }
+            Map globals = ruleFlow.getGlobals();
+            if ( globals != null ) {
+                for ( Iterator iterator = globals.entrySet().iterator(); iterator.hasNext(); ) {
+                    Map.Entry entry = (Map.Entry) iterator.next();
+                    builder.append( "global " + entry.getValue() + " " + entry.getKey() + ";\n" );
+                }
+            }
+
+            Node[] nodes = ruleFlow.getNodes();
+            for ( int i = 0; i < nodes.length; i++ ) {
+                if ( nodes[i] instanceof Split ) {
+                    Split split = (Split) nodes[i];
+                    if ( split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR ) {
+                        for ( Iterator iterator = split.getOutgoingConnections().iterator(); iterator.hasNext(); ) {
+                            Connection connection = (Connection) iterator.next();
+                            Constraint constraint = split.getConstraint( connection );
+                            if ( "rule".equals( constraint.getType() ) ) {
+                                builder.append( createSplitRule( process,
+                                                                 connection,
+                                                                 split.getConstraint( connection ).getConstraint() ) );
+                            }
+                        }
+                    }
+                } else if ( nodes[i] instanceof MilestoneNode ) {
+                    MilestoneNode milestone = (MilestoneNode) nodes[i];
+                    builder.append( createMilestoneRule( process,
+                                                         milestone ) );
+                }
+            }
+        }
+        return builder.toString();
     }
-    
-    private String createSplitRule(Process process, Connection connection, String constraint) {
-		return 
-    		"rule \"RuleFlow-Split-" + process.getId() + "-"
-    			+ connection.getFrom().getId() + "-" + connection.getTo().getId() + "\" \n" + 
-			"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
-			"    when \n" + 
-			"      " + constraint + "\n" +
-			"    then \n" +
-			"end \n\n";
+
+    private String createSplitRule(Process process,
+                                   Connection connection,
+                                   String constraint) {
+        return "rule \"RuleFlow-Split-" + process.getId() + "-" + connection.getFrom().getId() + "-" + connection.getTo().getId() + "\" \n" + "      ruleflow-group \"DROOLS_SYSTEM\" \n" + "    when \n" + "      " + constraint + "\n" + "    then \n"
+               + "end \n\n";
     }
-    
-    private String createMilestoneRule(Process process, MilestoneNode milestone) {
-		return 
-    		"rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getId() + "\" \n" + 
-			"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
-			"    when \n" + 
-			"      " + milestone.getConstraint() + "\n" +
-			"    then \n" +
-			"end \n\n";
+
+    private String createMilestoneRule(Process process,
+                                       MilestoneNode milestone) {
+        return "rule \"RuleFlow-Milestone-" + process.getId() + "-" + milestone.getId() + "\" \n" + "      ruleflow-group \"DROOLS_SYSTEM\" \n" + "    when \n" + "      " + milestone.getConstraint() + "\n" + "    then \n" + "end \n\n";
     }
 }

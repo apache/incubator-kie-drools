@@ -112,6 +112,10 @@ public class PackageBuildContext {
     public Dialect getDialect(String dialectName) {
         return (Dialect) this.dialectRegistry.getDialect( dialectName );
     }
+    
+    public DialectRegistry getDialectRegistry() {
+        return this.dialectRegistry;
+    }
 
     /**
      * Returns the list of errors found while building the current context
