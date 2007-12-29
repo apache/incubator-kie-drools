@@ -44,40 +44,40 @@ public class ActionNodeHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
         
-        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) xmlPackageReader.getParent();
+        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) parser.getParent();
         
         ActionNodeImpl actionNode = new ActionNodeImpl();
         
         final String name = attrs.getValue( "name" );        
-        emptyAttributeCheck( localName, "name", name, xmlPackageReader );        
+        emptyAttributeCheck( localName, "name", name, parser );        
         actionNode.setName( name );
         
         process.addNode( actionNode );
-        ((ProcessBuildData)xmlPackageReader.getData()).addNode( actionNode );
+        ((ProcessBuildData)parser.getData()).addNode( actionNode );
         
         return actionNode;
     }    
     
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
-        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) xmlPackageReader.getParent();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
+        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) parser.getParent();
 
-        ActionNodeImpl actionNode = ( ActionNodeImpl ) xmlPackageReader.getCurrent();
+        ActionNodeImpl actionNode = ( ActionNodeImpl ) parser.getCurrent();
         
         String text = config.getText();
         if ( text == null ) {
             throw new SAXParseException( "<action-node> requires content",
-                                         xmlPackageReader.getLocator() );
+                                         parser.getLocator() );
         }
         
         final String dialect = config.getAttribute( "dialect" );     
-        emptyAttributeCheck( localName, "dialect", dialect, xmlPackageReader );
+        emptyAttributeCheck( localName, "dialect", dialect, parser );
         
         DroolsConsequenceAction actionText = new DroolsConsequenceAction( dialect, text);
         

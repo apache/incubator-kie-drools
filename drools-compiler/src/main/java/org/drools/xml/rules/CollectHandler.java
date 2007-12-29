@@ -55,9 +55,9 @@ public class CollectHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                        final ExtensibleXmlParser parser) throws SAXException {
 
-        xmlPackageReader.startConfiguration( localName,
+        parser.startConfiguration( localName,
                                                   attrs );
         final CollectDescr collectDescr = new CollectDescr();
         return collectDescr;
@@ -65,15 +65,15 @@ public class CollectHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                      final ExtensibleXmlParser parser) throws SAXException {
 
-        final Configuration config = xmlPackageReader.endConfiguration();
-        final CollectDescr collectDescr = (CollectDescr) xmlPackageReader.getCurrent();
+        final Configuration config = parser.endConfiguration();
+        final CollectDescr collectDescr = (CollectDescr) parser.getCurrent();
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         if ( parent.getClass().getName().equals( FromDescr.class.getName() ) ) {
-            final PatternDescr resultPattern = (PatternDescr) xmlPackageReader.getParent( 1 );
+            final PatternDescr resultPattern = (PatternDescr) parser.getParent( 1 );
             resultPattern.setSource( collectDescr );
         } else if ( parent instanceof ConditionalElementDescr ) {
             final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;

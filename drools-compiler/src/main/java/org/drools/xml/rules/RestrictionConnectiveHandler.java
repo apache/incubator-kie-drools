@@ -67,8 +67,8 @@ public class RestrictionConnectiveHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
 
         RestrictionConnectiveDescr connectiveDescr = null;
@@ -83,12 +83,12 @@ public class RestrictionConnectiveHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final RestrictionConnectiveDescr connectiveDescr = (RestrictionConnectiveDescr) xmlPackageReader.getCurrent();
+        final RestrictionConnectiveDescr connectiveDescr = (RestrictionConnectiveDescr) parser.getCurrent();
 
-        final Object obj = xmlPackageReader.getParent();
+        final Object obj = parser.getParent();
 
         if ( obj instanceof FieldConstraintDescr ) {
             final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) obj;

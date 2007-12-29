@@ -57,14 +57,14 @@ public class FunctionHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                              attrs );
         final String name = attrs.getValue( "name" );
         final String returnType = attrs.getValue( "return-type" );
         
-        emptyAttributeCheck( localName, "name", name, xmlPackageReader );
-        emptyAttributeCheck( localName, "return-type", returnType, xmlPackageReader );
+        emptyAttributeCheck( localName, "name", name, parser );
+        emptyAttributeCheck( localName, "return-type", returnType, parser );
 
         final FunctionDescr functionDescr = new FunctionDescr( name,
                                                                returnType );
@@ -74,10 +74,10 @@ public class FunctionHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        FunctionDescr functionDescr = ( FunctionDescr ) xmlPackageReader.getCurrent();
+        FunctionDescr functionDescr = ( FunctionDescr ) parser.getCurrent();
 
         final Configuration[] parameters = config.getChildren( "parameter" );
 
@@ -85,8 +85,8 @@ public class FunctionHandler extends BaseAbstractHandler
             final String identifier = parameters[i].getAttribute( "identifier" );      
             final String type = parameters[i].getAttribute( "type" );
             
-            emptyAttributeCheck("parameter", "identifier", identifier, xmlPackageReader);                  
-            emptyAttributeCheck("parameter", "type", type, xmlPackageReader);
+            emptyAttributeCheck("parameter", "identifier", identifier, parser);                  
+            emptyAttributeCheck("parameter", "type", type, parser);
             
             functionDescr.addParameter( type,
                                         identifier );
@@ -96,12 +96,12 @@ public class FunctionHandler extends BaseAbstractHandler
         final Configuration body = config.getChild( "body" );
         if ( body == null ) {
             throw new SAXParseException( "function must have a <body>",
-                                         xmlPackageReader.getLocator() );
+                                         parser.getLocator() );
         }
 
         functionDescr.setText( body.getText() );
 
-        final PackageDescr packageDescr = (PackageDescr) xmlPackageReader.getData();
+        final PackageDescr packageDescr = (PackageDescr) parser.getData();
 
         packageDescr.addFunction( functionDescr );
 

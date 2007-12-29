@@ -66,8 +66,8 @@ public class OrHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
         final OrDescr orDescr = new OrDescr();
 
@@ -76,12 +76,12 @@ public class OrHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final OrDescr orDescr = (OrDescr) xmlPackageReader.getCurrent();
+        final OrDescr orDescr = (OrDescr) parser.getCurrent();
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         if ( parent instanceof ConditionalElementDescr ) {
             final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;

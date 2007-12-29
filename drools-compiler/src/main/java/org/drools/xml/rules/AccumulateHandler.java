@@ -54,9 +54,9 @@ public class AccumulateHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                        final ExtensibleXmlParser parser) throws SAXException {
 
-        xmlPackageReader.startConfiguration( localName,
+        parser.startConfiguration( localName,
                                                   attrs );
         final AccumulateDescr accumulateDesrc = new AccumulateDescr();
         return accumulateDesrc;
@@ -64,15 +64,15 @@ public class AccumulateHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                      final ExtensibleXmlParser parser) throws SAXException {
 
-        final Configuration config = xmlPackageReader.endConfiguration();
-        final AccumulateDescr accumulateDescr = (AccumulateDescr) xmlPackageReader.getCurrent();
+        final Configuration config = parser.endConfiguration();
+        final AccumulateDescr accumulateDescr = (AccumulateDescr) parser.getCurrent();
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         if ( parent.getClass().getName().equals( FromDescr.class.getName() ) ) {
-            final PatternDescr result = (PatternDescr) xmlPackageReader.getParent( 1 );
+            final PatternDescr result = (PatternDescr) parser.getParent( 1 );
             result.setSource( accumulateDescr );
 
         } else if ( parent instanceof ConditionalElementDescr ) {

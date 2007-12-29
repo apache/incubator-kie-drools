@@ -58,8 +58,8 @@ public class PredicateHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
 
         final PredicateDescr predicateDescr = new PredicateDescr();
@@ -69,21 +69,21 @@ public class PredicateHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final PredicateDescr predicateDescr = (PredicateDescr) xmlPackageReader.getCurrent();
+        final PredicateDescr predicateDescr = (PredicateDescr) parser.getCurrent();
 
         final String expression = config.getText();
 
         if ( expression == null || expression.trim().equals( "" ) ) {
             throw new SAXParseException( "<predicate> must have some content",
-                                         xmlPackageReader.getLocator() );
+                                         parser.getLocator() );
         }
 
         predicateDescr.setContent( expression );
 
-        final PatternDescr patternDescr = (PatternDescr) xmlPackageReader.getParent();
+        final PatternDescr patternDescr = (PatternDescr) parser.getParent();
 
         patternDescr.addConstraint( predicateDescr );
 

@@ -76,15 +76,15 @@ public class PatternHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
 
         final String objectType = attrs.getValue( "object-type" );
 
         if ( objectType == null || objectType.trim().equals( "" ) ) {
             throw new SAXParseException( "<pattern> requires an 'object-type' attribute",
-                                         xmlPackageReader.getLocator() );
+                                         parser.getLocator() );
         }
 
         PatternDescr patternDescr = null;
@@ -102,12 +102,12 @@ public class PatternHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                      final ExtensibleXmlParser parser) throws SAXException {
 
-        final Configuration config = xmlPackageReader.endConfiguration();
-        final PatternDescr patternDescr = (PatternDescr) xmlPackageReader.getCurrent();
+        final Configuration config = parser.endConfiguration();
+        final PatternDescr patternDescr = (PatternDescr) parser.getCurrent();
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         if ( parent instanceof PatternDestinationDescr ) {
             final PatternDestinationDescr parentDescr = (PatternDestinationDescr) parent;

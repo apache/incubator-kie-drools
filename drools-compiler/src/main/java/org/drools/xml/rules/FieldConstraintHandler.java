@@ -67,13 +67,13 @@ public class FieldConstraintHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
 
         final String fieldName = attrs.getValue( "field-name" );
         
-        emptyAttributeCheck( localName, "field-name", fieldName, xmlPackageReader );
+        emptyAttributeCheck( localName, "field-name", fieldName, parser );
 
         final FieldConstraintDescr fieldConstraint = new FieldConstraintDescr( fieldName );
 
@@ -82,20 +82,20 @@ public class FieldConstraintHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                      final ExtensibleXmlParser parser) throws SAXException {
 
-        final Configuration config = xmlPackageReader.endConfiguration();
+        final Configuration config = parser.endConfiguration();
 
-        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) xmlPackageReader.getCurrent();
+        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parser.getCurrent();
         
-        final Object parent = xmlPackageReader.getParent( );
+        final Object parent = parser.getParent( );
 
         if ( parent instanceof PatternDescr ) {
             final PatternDescr patternDescr = (PatternDescr) parent;
             patternDescr.addConstraint( fieldConstraintDescr );
         } else if ( parent instanceof ConditionalElementDescr ) {
             final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
-            final FieldConstraintDescr field = (FieldConstraintDescr) xmlPackageReader.getCurrent();
+            final FieldConstraintDescr field = (FieldConstraintDescr) parser.getCurrent();
             ceDescr.addOrMerge( field );
         }
 
