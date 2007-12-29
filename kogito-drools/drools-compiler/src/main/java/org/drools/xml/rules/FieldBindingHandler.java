@@ -55,15 +55,15 @@ public class FieldBindingHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
         
         final String identifier = attrs.getValue( "identifier" );
         final String fieldName = attrs.getValue( "field-name" );
         
-        emptyAttributeCheck( localName, "identifier", identifier, xmlPackageReader );        
-        emptyAttributeCheck( localName, "fieldName", fieldName, xmlPackageReader );
+        emptyAttributeCheck( localName, "identifier", identifier, parser );        
+        emptyAttributeCheck( localName, "fieldName", fieldName, parser );
 
         final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( fieldName,
                                                                            identifier );
@@ -73,12 +73,12 @@ public class FieldBindingHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) xmlPackageReader.getCurrent();
+        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) parser.getCurrent();
 
-        final PatternDescr patternDescr = (PatternDescr) xmlPackageReader.getParent( );
+        final PatternDescr patternDescr = (PatternDescr) parser.getParent( );
 
         patternDescr.addConstraint( fieldBindingDescr );
 

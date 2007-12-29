@@ -74,8 +74,8 @@ public class AndHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
         final AndDescr andDescr = new AndDescr();
 
@@ -84,12 +84,12 @@ public class AndHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final AndDescr andDescr = (AndDescr) xmlPackageReader.getCurrent();
+        final AndDescr andDescr = (AndDescr) parser.getCurrent();
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         if ( parent instanceof RuleDescr || parent instanceof QueryDescr ) {
             final RuleDescr ruleDescr = (RuleDescr) parent;

@@ -42,29 +42,29 @@ public class StartNodeHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
         
-        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) xmlPackageReader.getParent();
+        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) parser.getParent();
         
         final StartNode startNode = new StartNodeImpl();
 
         final String name = attrs.getValue( "name" );        
-        emptyAttributeCheck( localName, "name", name, xmlPackageReader );        
+        emptyAttributeCheck( localName, "name", name, parser );        
         startNode.setName( name );
         
         process.addNode( startNode );        
-        ((ProcessBuildData)xmlPackageReader.getData()).addNode( startNode );
+        ((ProcessBuildData)parser.getData()).addNode( startNode );
         
         return startNode;
     }    
     
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
-        return xmlPackageReader.getCurrent();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
+        return parser.getCurrent();
     }
 
     public Class generateNodeFor() {

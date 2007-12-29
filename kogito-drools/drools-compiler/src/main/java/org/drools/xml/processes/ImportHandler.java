@@ -45,14 +45,14 @@ public class ImportHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
         
-        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) xmlPackageReader.getParent();        
+        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) parser.getParent();        
         
         final String name = attrs.getValue( "name" );        
-        emptyAttributeCheck( localName, "name", name, xmlPackageReader );       
+        emptyAttributeCheck( localName, "name", name, parser );       
         
         java.util.List<String> list =process.getImports();
         if ( list == null ) {
@@ -66,8 +66,8 @@ public class ImportHandler extends BaseAbstractHandler
     
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
         return null;
     }
 

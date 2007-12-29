@@ -57,9 +57,9 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                        final ExtensibleXmlParser parser) throws SAXException {
 
-        xmlPackageReader.startConfiguration( localName,
+        parser.startConfiguration( localName,
                                                   attrs );
 
         return new BaseDescr();
@@ -67,27 +67,27 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
     
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                      final ExtensibleXmlParser parser) throws SAXException {
 
-        final Configuration config = xmlPackageReader.endConfiguration();
+        final Configuration config = parser.endConfiguration();
 
         final String expression = config.getText();
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         final AccumulateDescr accumulate = (AccumulateDescr) parent;
 
         if ( localName.equals( "init" ) ) {
-            emptyContentCheck( localName, expression, xmlPackageReader );
+            emptyContentCheck( localName, expression, parser );
             accumulate.setInitCode( expression.trim() );
         } else if ( localName.equals( "action" ) ) {  
-            emptyContentCheck( localName, expression, xmlPackageReader );
+            emptyContentCheck( localName, expression, parser );
             accumulate.setActionCode( expression.trim() );
         } else if ( localName.equals( "result" ) ) { 
-            emptyContentCheck( localName, expression, xmlPackageReader );
+            emptyContentCheck( localName, expression, parser );
             accumulate.setResultCode( expression.trim() );
         } else if ( localName.equals( "reverse" ) ) {
-            emptyContentCheck( localName, expression, xmlPackageReader );
+            emptyContentCheck( localName, expression, parser );
             accumulate.setReverseCode( expression.trim() );
         } else if ( localName.equals( "external-function" ) ) {
             accumulate.setExternalFunction( true );

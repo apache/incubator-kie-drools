@@ -68,8 +68,8 @@ public class EvalHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
 
         final EvalDescr evalDescr = new EvalDescr();
@@ -79,18 +79,18 @@ public class EvalHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final EvalDescr evalDescr = (EvalDescr) xmlPackageReader.getCurrent();
+        final EvalDescr evalDescr = (EvalDescr) parser.getCurrent();
 
         final String expression = config.getText();
 
-        emptyContentCheck( localName, expression, xmlPackageReader );
+        emptyContentCheck( localName, expression, parser );
 
         evalDescr.setContent( expression );
 
-        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) xmlPackageReader.getParent();
+        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parser.getParent();
         parentDescr.addDescr( evalDescr );
 
         return evalDescr;

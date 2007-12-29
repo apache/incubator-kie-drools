@@ -54,9 +54,9 @@ public class FromHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                        final ExtensibleXmlParser parser) throws SAXException {
 
-        xmlPackageReader.startConfiguration( localName,
+        parser.startConfiguration( localName,
                                                   attrs );
 
         final FromDescr fromDesctiptor = new FromDescr();
@@ -65,17 +65,17 @@ public class FromHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                      final ExtensibleXmlParser parser) throws SAXException {
 
-        final Configuration config = xmlPackageReader.endConfiguration();
+        final Configuration config = parser.endConfiguration();
 
-        final FromDescr fromDescr = (FromDescr) xmlPackageReader.getCurrent();
+        final FromDescr fromDescr = (FromDescr) parser.getCurrent();
 
-        Object parent = xmlPackageReader.getParent();
+        Object parent = parser.getParent();
 
         final PatternDescr patternDescr = (PatternDescr) parent;
 
-        final ConditionalElementDescr parentDescr = (ConditionalElementDescr)  xmlPackageReader.getParent( 1 );
+        final ConditionalElementDescr parentDescr = (ConditionalElementDescr)  parser.getParent( 1 );
 
         if ( (config.getChild( "expression" ) != null) ) {
             patternDescr.setSource( fromDescr );    

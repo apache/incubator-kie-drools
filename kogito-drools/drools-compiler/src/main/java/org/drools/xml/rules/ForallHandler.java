@@ -70,9 +70,9 @@ public class ForallHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                        final ExtensibleXmlParser parser) throws SAXException {
 
-        xmlPackageReader.startConfiguration( localName,
+        parser.startConfiguration( localName,
                                              attrs );
 
         final ForallDescr forallDescr = new ForallDescr();
@@ -85,12 +85,12 @@ public class ForallHandler extends BaseAbstractHandler
      */
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final ForallDescr forallDescr = (ForallDescr) xmlPackageReader.getCurrent();
+        final ForallDescr forallDescr = (ForallDescr) parser.getCurrent();
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
         parentDescr.addDescr( forallDescr );

@@ -64,12 +64,12 @@ public class LiteralRestrictionHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
 
         final String evaluator = attrs.getValue( "evaluator" );
-        emptyAttributeCheck( localName, "evaluator", evaluator, xmlPackageReader );
+        emptyAttributeCheck( localName, "evaluator", evaluator, parser );
 
         final String text = attrs.getValue( "value" );
 
@@ -81,12 +81,12 @@ public class LiteralRestrictionHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final LiteralRestrictionDescr literalDescr = (LiteralRestrictionDescr) xmlPackageReader.getCurrent();
+        final LiteralRestrictionDescr literalDescr = (LiteralRestrictionDescr) parser.getCurrent();
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         if ( parent instanceof FieldConstraintDescr ) {
             final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) parent;

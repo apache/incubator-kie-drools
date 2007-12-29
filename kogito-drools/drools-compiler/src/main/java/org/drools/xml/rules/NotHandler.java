@@ -68,8 +68,8 @@ public class NotHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
         final NotDescr notDescr = new NotDescr();
 
@@ -78,17 +78,17 @@ public class NotHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final NotDescr notDescr = (NotDescr) xmlPackageReader.getCurrent();
+        final NotDescr notDescr = (NotDescr) parser.getCurrent();
 
         if ( (notDescr.getDescrs().size() != 1) && (notDescr.getDescrs().get( 0 ).getClass() != PatternDescr.class) ) {
             throw new SAXParseException( "<not> can only have a single <pattern...> as a child element",
-                                         xmlPackageReader.getLocator() );
+                                         parser.getLocator() );
         }
 
-        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) xmlPackageReader.getParent();
+        final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parser.getParent();
         parentDescr.addDescr( notDescr );
 
         return null;

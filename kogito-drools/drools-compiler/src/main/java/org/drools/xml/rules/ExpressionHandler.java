@@ -66,9 +66,9 @@ public class ExpressionHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                        final ExtensibleXmlParser parser) throws SAXException {
 
-        xmlPackageReader.startConfiguration( localName,
+        parser.startConfiguration( localName,
                                                   attrs );
 
         return new BaseDescr();
@@ -76,28 +76,28 @@ public class ExpressionHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
+                      final ExtensibleXmlParser parser) throws SAXException {
 
-        final Configuration config = xmlPackageReader.endConfiguration();
+        final Configuration config = parser.endConfiguration();
 
         final String expression = config.getText();
         
-        emptyContentCheck( localName, expression, xmlPackageReader );
+        emptyContentCheck( localName, expression, parser );
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         final FromDescr fromSource = (FromDescr) parent;
         final CharStream charStream = new ANTLRStringStream( expression.trim() );
         final DRLLexer lexer = new DRLLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
-        final DRLParser parser = new DRLParser( tokenStream );
+        final DRLParser drlParser = new DRLParser( tokenStream );
 
         try {
-            final DeclarativeInvokerDescr declarativeInvoker = parser.from_source( fromSource );
+            final DeclarativeInvokerDescr declarativeInvoker = drlParser.from_source( fromSource );
             fromSource.setDataSource( declarativeInvoker );
         } catch ( final RecognitionException e ) {
             throw new SAXParseException( "<" + localName + "> must have a valid expression content ",
-                                         xmlPackageReader.getLocator() );
+                                         parser.getLocator() );
         }
 
         return null;

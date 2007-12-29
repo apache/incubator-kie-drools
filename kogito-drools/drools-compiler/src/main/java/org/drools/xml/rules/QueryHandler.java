@@ -58,12 +58,12 @@ public class QueryHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
 
         final String queryName = attrs.getValue( "name" );
-        emptyAttributeCheck( localName, "name", queryName, xmlPackageReader );
+        emptyAttributeCheck( localName, "name", queryName, parser );
 
         final QueryDescr queryDescr = new QueryDescr( queryName.trim() );
 
@@ -72,19 +72,19 @@ public class QueryHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final QueryDescr queryDescr = (QueryDescr) xmlPackageReader.getCurrent();
+        final QueryDescr queryDescr = (QueryDescr) parser.getCurrent();
 
         final AndDescr lhs = queryDescr.getLhs();
 
         if ( lhs == null || lhs.getDescrs().isEmpty() ) {
             throw new SAXParseException( "<query> requires a LHS",
-                                         xmlPackageReader.getLocator() );
+                                         parser.getLocator() );
         }
 
-        (( PackageDescr ) xmlPackageReader.getData()).addRule( queryDescr );
+        (( PackageDescr ) parser.getData()).addRule( queryDescr );
 
         return queryDescr;
     }

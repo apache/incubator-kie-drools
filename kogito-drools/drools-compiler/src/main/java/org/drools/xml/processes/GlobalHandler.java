@@ -46,17 +46,17 @@ public class GlobalHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
         
-        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) xmlPackageReader.getParent();        
+        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) parser.getParent();        
         
         final String identifier = attrs.getValue( "identifier" );
         final String type = attrs.getValue( "type" );
         
-        emptyAttributeCheck( localName, "identifier", identifier, xmlPackageReader );
-        emptyAttributeCheck( localName, "type", type, xmlPackageReader );
+        emptyAttributeCheck( localName, "identifier", identifier, parser );
+        emptyAttributeCheck( localName, "type", type, parser );
         
         Map<String, String> map = process.getGlobals();
         if ( map == null ) {
@@ -70,8 +70,8 @@ public class GlobalHandler extends BaseAbstractHandler
     
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
         return null;
     }
 

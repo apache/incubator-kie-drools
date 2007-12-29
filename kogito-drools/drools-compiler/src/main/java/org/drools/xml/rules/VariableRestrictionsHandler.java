@@ -60,15 +60,15 @@ public class VariableRestrictionsHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
 
         final String evaluator = attrs.getValue( "evaluator" );
         final String identifier = attrs.getValue( "identifier" );
         
-        emptyAttributeCheck( localName, "evaluator", evaluator, xmlPackageReader );
-        emptyAttributeCheck( localName, identifier, "identifier", xmlPackageReader );
+        emptyAttributeCheck( localName, "evaluator", evaluator, parser );
+        emptyAttributeCheck( localName, identifier, "identifier", parser );
 
         final VariableRestrictionDescr variableDescr = new VariableRestrictionDescr( evaluator,
                                                                                      identifier );
@@ -78,12 +78,12 @@ public class VariableRestrictionsHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final VariableRestrictionDescr variableDescr = (VariableRestrictionDescr) xmlPackageReader.getCurrent();
+        final VariableRestrictionDescr variableDescr = (VariableRestrictionDescr) parser.getCurrent();
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         if ( parent instanceof FieldConstraintDescr ) {
             final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;

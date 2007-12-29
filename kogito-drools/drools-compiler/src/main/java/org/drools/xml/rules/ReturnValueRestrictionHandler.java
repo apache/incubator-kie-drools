@@ -65,11 +65,11 @@ public class ReturnValueRestrictionHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
         final String evaluator = attrs.getValue( "evaluator" );
-        emptyAttributeCheck( localName, "evaluator", evaluator, xmlPackageReader );
+        emptyAttributeCheck( localName, "evaluator", evaluator, parser );
 
         final ReturnValueRestrictionDescr returnValueDescr = new ReturnValueRestrictionDescr( evaluator );
 
@@ -78,17 +78,17 @@ public class ReturnValueRestrictionHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final ReturnValueRestrictionDescr returnValueDescr = (ReturnValueRestrictionDescr) xmlPackageReader.getCurrent();
+        final ReturnValueRestrictionDescr returnValueDescr = (ReturnValueRestrictionDescr) parser.getCurrent();
 
         final String expression = config.getText();
-        emptyContentCheck( localName, expression, xmlPackageReader );
+        emptyContentCheck( localName, expression, parser );
 
         returnValueDescr.setContent( expression );
 
-        final Object parent = xmlPackageReader.getParent();
+        final Object parent = parser.getParent();
 
         if ( parent instanceof FieldConstraintDescr ) {
             final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;

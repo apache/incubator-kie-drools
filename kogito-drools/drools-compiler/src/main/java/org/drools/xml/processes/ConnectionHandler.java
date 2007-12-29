@@ -46,26 +46,26 @@ public class ConnectionHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );     
         
         String fromName = attrs.getValue( "from" );
         String toName = attrs.getValue( "to" );
-        emptyAttributeCheck( localName, "from", fromName, xmlPackageReader );
-        emptyAttributeCheck( localName, "to", toName, xmlPackageReader );
+        emptyAttributeCheck( localName, "from", fromName, parser );
+        emptyAttributeCheck( localName, "to", toName, parser );
         
-        ProcessBuildData buildData = (ProcessBuildData)xmlPackageReader.getData();
+        ProcessBuildData buildData = (ProcessBuildData)parser.getData();
         Node fromNode = buildData.getNode( fromName );
         Node toNode = buildData.getNode( toName );
         
         if ( fromNode == null ) {
                 throw new SAXParseException( "from Node connection name '" + fromName + "' cannot be found",
-                                             xmlPackageReader.getLocator() );
+                                             parser.getLocator() );
         }
         if ( toNode == null ) {
             throw new SAXParseException( "from Node connection name '" + toName + "' cannot be found",
-                                         xmlPackageReader.getLocator() );
+                                         parser.getLocator() );
     }        
         
         ConnectionImpl connection = new ConnectionImpl(fromNode, toNode, Connection.TYPE_NORMAL);
@@ -75,9 +75,9 @@ public class ConnectionHandler extends BaseAbstractHandler
     
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
-        return xmlPackageReader.getCurrent();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
+        return parser.getCurrent();
     }
 
     public Class generateNodeFor() {

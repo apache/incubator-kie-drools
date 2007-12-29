@@ -36,8 +36,8 @@ public class ProcessHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
         
         final String id = attrs.getValue( "id" );
@@ -46,10 +46,10 @@ public class ProcessHandler extends BaseAbstractHandler
         final String type = attrs.getValue( "type" );
         final String packageName = attrs.getValue( "package-name" );
         
-        emptyAttributeCheck( localName, "id", name, xmlPackageReader );
-        emptyAttributeCheck( localName, "name", name, xmlPackageReader );
-        //emptyAttributeCheck( localName, "version", version, xmlPackageReader );
-        emptyAttributeCheck( localName, "package-name", packageName, xmlPackageReader );
+        emptyAttributeCheck( localName, "id", name, parser );
+        emptyAttributeCheck( localName, "name", name, parser );
+        //emptyAttributeCheck( localName, "version", version, parser );
+        emptyAttributeCheck( localName, "package-name", packageName, parser );
         
 
         RuleFlowProcessImpl process = new RuleFlowProcessImpl();
@@ -59,16 +59,16 @@ public class ProcessHandler extends BaseAbstractHandler
         process.setType( type );
         process.setPackageName( packageName );
 
-        ((ProcessBuildData)xmlPackageReader.getData()).setProcess( process );
+        ((ProcessBuildData)parser.getData()).setProcess( process );
         
         return process;
     }    
     
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();        
-        return xmlPackageReader.getCurrent();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();        
+        return parser.getCurrent();
     }
 
     public Class generateNodeFor() {

@@ -59,12 +59,12 @@ public class RuleHandler extends BaseAbstractHandler
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
-                        final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        xmlPackageReader.startConfiguration( localName,
+                        final ExtensibleXmlParser parser) throws SAXException {
+        parser.startConfiguration( localName,
                                                   attrs );
 
         final String ruleName = attrs.getValue( "name" );
-        emptyAttributeCheck(localName, "name", ruleName, xmlPackageReader );
+        emptyAttributeCheck(localName, "name", ruleName, parser );
 
         final RuleDescr ruleDescr = new RuleDescr( ruleName.trim() );
 
@@ -73,22 +73,22 @@ public class RuleHandler extends BaseAbstractHandler
 
     public Object end(final String uri,
                       final String localName,
-                      final ExtensibleXmlParser xmlPackageReader) throws SAXException {
-        final Configuration config = xmlPackageReader.endConfiguration();
+                      final ExtensibleXmlParser parser) throws SAXException {
+        final Configuration config = parser.endConfiguration();
 
-        final RuleDescr ruleDescr = (RuleDescr) xmlPackageReader.getCurrent();
+        final RuleDescr ruleDescr = (RuleDescr) parser.getCurrent();
 
         final AndDescr lhs = ruleDescr.getLhs();
 
         if ( lhs == null ) {
             throw new SAXParseException( "<rule> requires a LHS",
-                                         xmlPackageReader.getLocator() );
+                                         parser.getLocator() );
         }
 
         final Configuration rhs = config.getChild( "rhs" );
         if ( rhs == null ) {
             throw new SAXParseException( "<rule> requires a <rh> child element",
-                                         xmlPackageReader.getLocator() );
+                                         parser.getLocator() );
         }
 
         ruleDescr.setConsequence( rhs.getText() );
@@ -96,7 +96,7 @@ public class RuleHandler extends BaseAbstractHandler
         final Configuration[] attributes = config.getChildren( "rule-attribute" );
         for ( int i = 0, length = attributes.length; i < length; i++ ) {
             final String name = attributes[i].getAttribute( "name" );
-            emptyAttributeCheck( "rule-attribute", "name", name, xmlPackageReader );
+            emptyAttributeCheck( "rule-attribute", "name", name, parser );
 
             final String value = attributes[i].getAttribute( "value" );
 
@@ -104,7 +104,7 @@ public class RuleHandler extends BaseAbstractHandler
                                                         value ) );
         }
 
-        (( PackageDescr ) xmlPackageReader.getData()).addRule( ruleDescr );
+        (( PackageDescr ) parser.getData()).addRule( ruleDescr );
 
         return ruleDescr;
     }
