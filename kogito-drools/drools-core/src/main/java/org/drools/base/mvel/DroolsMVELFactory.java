@@ -163,7 +163,15 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         this.knowledgeHelper = knowledgeHelper;
         this.object = object;
         this.workingMemory = workingMemory;
-        this.localVariables = variables;
+        if ( variables == null ) {
+            if ( this.localVariables == null ) {
+                this.localVariables = new HashMap();
+            } else {
+                this.localVariables.clear();
+            }            
+        } else {
+            this.localVariables = variables;
+        }
     }
 
     public KnowledgeHelper getKnowledgeHelper() {
@@ -192,41 +200,29 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     public VariableResolver createVariable(String name,
                                            Object value) {
         VariableResolver vr = getVariableResolver( name );
-        if ( vr != null ) {
-            if ( this.localVariables == null ) {
-                this.localVariables = new HashMap();
-            }
-            vr.setValue( value );
-            return vr;
-        } else {
-            if ( this.localVariables == null ) {
-                this.localVariables = new HashMap();
-            }
+        if ( vr == null ) {
             addResolver( name,
                          vr = new LocalVariableResolver( this,
                                                          name ) );
-            vr.setValue( value );
-            return vr;
         }
+        
+        vr.setValue( value );
+        return vr;        
     }
 
     public VariableResolver createVariable(String name,
                                            Object value,
                                            Class type) {
         VariableResolver vr = getVariableResolver( name );
-        if ( vr != null && vr.getType() != null ) {
-            throw new CompileException( "variable already defined within scope: " + vr.getType() + " " + name );
-        } else {
-            if ( this.localVariables == null ) {
-                this.localVariables = new HashMap();
-            }
+        if ( vr == null ) {
             addResolver( name,
                          vr = new LocalVariableResolver( this,
                                                          name,
                                                          type ) );
-            vr.setValue( value );
-            return vr;
-        }
+        }        
+        
+        vr.setValue( value );
+        return vr;
     }
 
     public boolean isResolveable(String name) {
@@ -253,12 +249,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                                                        (Class) this.globals.get( name ),
                                                        this ) );
             return true;
-        } else if ( this.variableResolvers != null && this.variableResolvers.containsKey( name ) ) {
-            addResolver( name,
-                         new LocalVariableResolver( this,
-                                                    name ) );
-            return true;
-        } else if ( nextFactory != null ) {
+        }  else if ( nextFactory != null ) {
             return nextFactory.isResolveable( name );
         }
 
