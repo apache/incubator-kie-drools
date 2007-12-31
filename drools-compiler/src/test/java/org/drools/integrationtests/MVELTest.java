@@ -16,6 +16,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.Cheese;
+import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -69,9 +70,37 @@ public class MVELTest extends TestCase {
 
         Date dt = DateUtils.parseDate( "10-Jul-1974" );
         assertEquals(dt, c.getUsedBy());
-
-
     }
+    
+    public void testLocalVariableMVELConsequence() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LocalVariableMVELConsequence.drl" ) ) );
+        final Package pkg = builder.getPackage();
+ 
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+ 
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+ 
+        workingMemory.insert( new Person( "bob", "stilton" ) );
+        workingMemory.insert( new Person( "mark", "brie" ) );
+ 
+        try {
+            workingMemory.fireAllRules();
+ 
+            assertEquals( "should have fired twice", 
+                          2,
+                          list.size() );
+ 
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail( "Should not raise any exception");
+        }
+ 
+    }    
 
     public Object compiledExecute(String ex) {
         Serializable compiled = MVEL.compileExpression(ex);
