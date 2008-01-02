@@ -16,9 +16,6 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +29,8 @@ import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.util.ChainedProperties;
+import org.drools.util.ClassUtils;
+import org.drools.util.ConfFileUtils;
 import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.Handler;
 import org.drools.xml.ProcessSemanticModule;
@@ -266,66 +265,19 @@ public class PackageBuilderConfiguration {
     }
 
     public void loadSemanticModule(String moduleLocation) {
-        // initialise default classloader, if it does not exist
-        if ( classLoader == null ) {
-            classLoader = Thread.currentThread().getContextClassLoader();
-            if ( classLoader == null ) {
-                classLoader = this.getClass().getClassLoader();
-            }
-        }
-
-        Properties properties = null;
-
-        // User home 
-        String userHome = System.getProperty( "user.home" );
-        if ( userHome.endsWith( "\\" ) || userHome.endsWith( "/" ) ) {
-            properties = loadProperties( userHome + moduleLocation );
-        } else {
-            properties = loadProperties( userHome + "/" + moduleLocation );
-        }
-
-        if ( properties == null ) {
-            // Working directory 
-            properties = loadProperties( moduleLocation );
-        }
-
-        // check META-INF directories for all known ClassLoaders
-
-        if ( properties == null ) {
-            ClassLoader confClassLoader = classLoader;
-            if ( confClassLoader != null ) {
-                properties = loadProperties( confClassLoader.getResource( "META-INF/" + moduleLocation ) );
-            }
-        }
-
-        if ( properties == null ) {
-            ClassLoader confClassLoader = getClass().getClassLoader();
-            if ( confClassLoader != null && confClassLoader != classLoader ) {
-                properties = loadProperties( confClassLoader.getResource( "META-INF/" + moduleLocation ) );
-            }
-        }
-
-        if ( properties == null ) {
-            ClassLoader confClassLoader = Thread.currentThread().getContextClassLoader();
-            if ( confClassLoader != null && confClassLoader != classLoader ) {
-                properties = loadProperties( confClassLoader.getResource( "META-INF/" + moduleLocation ) );
-            }
-        }
-
-        if ( properties == null ) {
-            ClassLoader confClassLoader = ClassLoader.getSystemClassLoader();
-            if ( confClassLoader != null && confClassLoader != classLoader ) {
-                properties = loadProperties( confClassLoader.getResource( "META-INF/" + moduleLocation ) );
-            }
-        }
-
+        URL url = ConfFileUtils.getURL( moduleLocation, this.classLoader , getClass() );        
+        if ( url == null ) {
+            throw new IllegalArgumentException( moduleLocation + " is specified but cannot be found.'" );
+        }        
+        
+        Properties properties = ConfFileUtils.getProperties( url );        
         if ( properties == null ) {
             throw new IllegalArgumentException( moduleLocation + " is specified but cannot be found.'" );
         }
 
         loadSemanticModule( properties );
     }
-
+    
     public void loadSemanticModule(Properties properties) {
         String uri = properties.getProperty( "uri",
                                              null );
@@ -351,37 +303,7 @@ public class PackageBuilderConfiguration {
                 throw new RuntimeException( "Handler name must be specified for Semantic Module" );
             }
 
-            Handler handler = null;
-
-            try {
-                handler = (Handler) this.classLoader.loadClass( handlerName ).newInstance();
-            } catch ( Exception e ) {
-                //swallow
-            }
-
-            if ( handler == null ) {
-                try {
-                    handler = (Handler) getClass().getClassLoader().loadClass( handlerName ).newInstance();
-                } catch ( Exception e ) {
-                    //swallow
-                }
-            }
-
-            if ( handler == null ) {
-                try {
-                    handler = (Handler) Thread.currentThread().getContextClassLoader().loadClass( handlerName ).newInstance();
-                } catch ( Exception e ) {
-                    //swallow
-                }
-            }
-
-            if ( handler == null ) {
-                try {
-                    handler = (Handler) ClassLoader.getSystemClassLoader().loadClass( handlerName ).newInstance();
-                } catch ( Exception e ) {
-                    //swallow
-                }
-            }
+            Handler handler = ( Handler ) ClassUtils.instantiateObject( handlerName, this.classLoader );
 
             if ( handler == null ) {
                 throw new RuntimeException( "Unable to load Semantic Module handler '" + elementName + ":" + handlerName + "'" );
@@ -391,35 +313,6 @@ public class PackageBuilderConfiguration {
             }
         }
         this.semanticModules.addSemanticModule( module );
-    }
-
-    private Properties loadProperties(String fileName) {
-        Properties properties = null;
-        if ( fileName != null ) {
-            File file = new File( fileName );
-            if ( file != null && file.exists() ) {
-                try {
-                    properties = loadProperties( file.toURL() );
-                } catch ( MalformedURLException e ) {
-                    throw new IllegalArgumentException( "file.toURL() failed for '" + file + "'" );
-                }
-            } 
-        }
-        return properties;
-    }
-
-    private Properties loadProperties(URL confURL) {
-        if ( confURL == null ) {
-            return null;
-        }
-        
-        Properties properties = new Properties();
-        try {
-            properties.load( confURL.openStream() );
-        } catch ( IOException e ) {
-            throw new IllegalArgumentException( "Invalid URL to properties file '" + confURL.toExternalForm() + "'" );
-        }
-        return properties;
     }
 
     private void buildAccumulateFunctionsMap() {

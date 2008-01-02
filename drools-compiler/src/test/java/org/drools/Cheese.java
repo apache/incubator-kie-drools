@@ -37,6 +37,12 @@ public class Cheese
     public Cheese() {
 
     }
+    
+    public Cheese(final String type) {
+        super();
+        this.type = type;
+        this.price = 0;
+    }    
 
     public Cheese(final String type,
                   final int price) {
