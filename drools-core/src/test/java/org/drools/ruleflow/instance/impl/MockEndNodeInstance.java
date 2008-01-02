@@ -10,12 +10,12 @@ import org.drools.ruleflow.core.impl.ConnectionImpl;
 import org.drools.ruleflow.core.impl.NodeImpl;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
 
-public class MockNodeInstance extends RuleFlowNodeInstanceImpl {
+public class MockEndNodeInstance extends RuleFlowNodeInstanceImpl {
     private List list = new ArrayList();
     
     private NodeImpl node;
     
-    public MockNodeInstance(NodeImpl node) {
+    public MockEndNodeInstance(NodeImpl node) {
         this.node = node;
     }
     
@@ -37,16 +37,15 @@ public class MockNodeInstance extends RuleFlowNodeInstanceImpl {
     }
     
     public boolean equals(Object object) {
-        if ( object == null || (!( object instanceof MockNodeInstance ) )) {
+        if ( object == null || (!( object instanceof MockEndNodeInstance ) )) {
             return false;
         }
         
-        MockNodeInstance other = ( MockNodeInstance ) object;
+        MockEndNodeInstance other = ( MockEndNodeInstance ) object;
         return getNode().getId() == other.getNode().getId();
     }        
     
     public void triggerCompleted() {        
         getProcessInstance().removeNodeInstance(this);
-        getProcessInstance().getNodeInstance( ((ConnectionImpl) this.node.getOutgoingConnections().get( 0 )).getTo() ).trigger( this );
     }
 }
