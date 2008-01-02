@@ -102,6 +102,23 @@ public class MVELTest extends TestCase {
  
     }    
 
+    public void testDuplicateLocalVariableMVELConsequence() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateLocalVariableMVELConsequence.drl" ) ) );
+        
+        try {
+            final Package pkg = builder.getPackage();
+            
+            final RuleBase ruleBase = getRuleBase();
+            ruleBase.addPackage( pkg );
+            
+            fail( "Should have raised exception because of the duplicate variable definition");
+        } catch (Exception e) {
+            // success
+        }
+ 
+    }    
+
     public Object compiledExecute(String ex) {
         Serializable compiled = MVEL.compileExpression(ex);
         return MVEL.executeExpression(compiled, new Object(), new HashMap());
