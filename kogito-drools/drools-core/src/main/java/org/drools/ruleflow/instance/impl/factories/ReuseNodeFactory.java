@@ -1,14 +1,14 @@
-package org.drools.ruleflow.instance.impl.configuration;
+package org.drools.ruleflow.instance.impl.factories;
 
 import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
-import org.drools.ruleflow.instance.impl.PvmNodeConf;
+import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactory;
 import org.drools.ruleflow.instance.impl.RuleFlowProcessInstanceImpl;
 
-public class ReuseNodeConf implements PvmNodeConf {
+public class ReuseNodeFactory implements ProcessNodeInstanceFactory {
     public final Class<? extends RuleFlowNodeInstance> cls;
     
-    public ReuseNodeConf(Class<? extends RuleFlowNodeInstance> cls){
+    public ReuseNodeFactory(Class<? extends RuleFlowNodeInstance> cls){
         this.cls = cls;
 //        if ( RuleFlowNodeInstance.class.isAssignableFrom( this.cls ) ) {
 //            throw new IllegalArgumentException("Node must be of the type RuleFlowNodeInstance." );

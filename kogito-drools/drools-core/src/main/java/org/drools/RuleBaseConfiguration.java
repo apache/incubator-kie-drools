@@ -22,15 +22,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
+import org.drools.ruleflow.core.Node;
+import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactory;
+import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactoryRegistry;
+import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactoryTest;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.temporal.SessionClock;
 import org.drools.temporal.SessionPseudoClock;
 import org.drools.util.ChainedProperties;
+import org.drools.util.ConfFileUtils;
+import org.mvel.MVEL;
 
 /**
  * RuleBaseConfiguration
@@ -73,38 +80,40 @@ import org.drools.util.ChainedProperties;
 public class RuleBaseConfiguration
     implements
     Serializable {
-    private static final long              serialVersionUID = 400L;
+    private static final long                  serialVersionUID = 400L;
 
-    private ChainedProperties              chainedProperties;
+    private ChainedProperties                  chainedProperties;
 
-    private boolean                        immutable;
+    private boolean                            immutable;
 
-    private boolean                        sequential;
-    private SequentialAgenda               sequentialAgenda;
+    private boolean                            sequential;
+    private SequentialAgenda                   sequentialAgenda;
 
-    private boolean                        maintainTms;
-    private boolean                        removeIdentities;
-    private boolean                        shareAlphaNodes;
-    private boolean                        shareBetaNodes;
-    private boolean                        alphaMemory;
-    private int                            alphaNodeHashingThreshold;
-    private int                            compositeKeyDepth;
-    private boolean                        indexLeftBetaMemory;
-    private boolean                        indexRightBetaMemory;
-    private AssertBehaviour                assertBehaviour;
-    private LogicalOverride                logicalOverride;
-    private String                         executorService;
-    private ConsequenceExceptionHandler    consequenceExceptionHandler;
-    private String                         ruleBaseUpdateHandler;
-    private Class< ? extends SessionClock> sessionClockClass;
+    private boolean                            maintainTms;
+    private boolean                            removeIdentities;
+    private boolean                            shareAlphaNodes;
+    private boolean                            shareBetaNodes;
+    private boolean                            alphaMemory;
+    private int                                alphaNodeHashingThreshold;
+    private int                                compositeKeyDepth;
+    private boolean                            indexLeftBetaMemory;
+    private boolean                            indexRightBetaMemory;
+    private AssertBehaviour                    assertBehaviour;
+    private LogicalOverride                    logicalOverride;
+    private String                             executorService;
+    private ConsequenceExceptionHandler        consequenceExceptionHandler;
+    private String                             ruleBaseUpdateHandler;
+    private Class< ? extends SessionClock>     sessionClockClass;
 
-    private ConflictResolver               conflictResolver;
+    private ConflictResolver                   conflictResolver;
 
-    private boolean                        shadowProxy;
-    private Map                            shadowProxyExcludes;
-    private static final String            STAR             = "*";
+    private boolean                            shadowProxy;
+    private Map                                shadowProxyExcludes;
+    private static final String                STAR             = "*";
 
-    private transient ClassLoader          classLoader;
+    private ProcessNodeInstanceFactoryRegistry processNodeInstanceFactoryRegistry;
+
+    private transient ClassLoader              classLoader;
 
     /**
      * Creates a new rulebase configuration using the provided properties
@@ -466,6 +475,56 @@ public class RuleBaseConfiguration
     public void setSequentialAgenda(final SequentialAgenda sequentialAgenda) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.sequentialAgenda = sequentialAgenda;
+    }
+
+    public ProcessNodeInstanceFactoryRegistry getProcessNodeInstanceFactoryRegistry() {
+        if ( this.processNodeInstanceFactoryRegistry == null ) {
+            initProcessNodeInstanceFactoryRegistry();
+        }
+        return this.processNodeInstanceFactoryRegistry;
+
+    }
+
+    private void initProcessNodeInstanceFactoryRegistry() {
+        this.processNodeInstanceFactoryRegistry = new ProcessNodeInstanceFactoryRegistry();
+
+        // split on each space
+        String locations[] = this.chainedProperties.getProperty( "processNodeInstanceFactoryRegistry",
+                                                                 "" ).split( "\\s" );
+
+        int i = 0;
+        // load each SemanticModule
+        for ( String factoryLocation : locations ) {
+            // trim leading/trailing spaces and quotes
+            factoryLocation = factoryLocation.trim();
+            if ( factoryLocation.startsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 1 );
+            }
+            if ( factoryLocation.endsWith( "\"" ) ) {
+                factoryLocation = factoryLocation.substring( 0,
+                                                             factoryLocation.length() - 1 );
+            }
+            if ( !factoryLocation.equals( "" ) ) {
+                loadProcessNodeInstanceFactoryRegistry( factoryLocation );
+            }
+        }
+    }
+
+    private void loadProcessNodeInstanceFactoryRegistry(String factoryLocation) {
+        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( factoryLocation,
+                                                                                  null,
+                                                                                  RuleBaseConfiguration.class ) );
+        
+        Map<Class< ? extends Node>, ProcessNodeInstanceFactory> map = (Map<Class< ? extends Node>, ProcessNodeInstanceFactory>) MVEL.eval( content,
+                                                                                                                                           new HashMap() );
+
+        if ( map != null ) {
+            for ( Entry<Class< ? extends Node>, ProcessNodeInstanceFactory> entry : map.entrySet() ) {
+                this.processNodeInstanceFactoryRegistry.register( entry.getKey(),
+                                                                  entry.getValue() );
+            }
+        }
+
     }
 
     private boolean determineShadowProxy(String userValue) {
