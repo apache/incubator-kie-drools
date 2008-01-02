@@ -30,7 +30,6 @@ import org.drools.common.PriorityQueueAgendaGroupFactory;
 import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactory;
 import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactoryRegistry;
-import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactoryTest;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.temporal.SessionClock;
