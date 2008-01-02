@@ -7,7 +7,7 @@ import java.util.Map;
 
 public final class ClassUtils {
     private static Map classes = Collections.synchronizedMap( new HashMap() );
-    
+
     /**
      * Please do not use - internal
      * org/my/Class.xxx -> org.my.Class
@@ -62,49 +62,94 @@ public final class ClassUtils {
         final String relFileName = absFileName.substring( rootLength + 1 );
         return relFileName;
     }
-    
-    public static String canonicalName( Class clazz ) {
+
+    public static String canonicalName(Class clazz) {
         StringBuffer name = new StringBuffer();
-        
-        if( clazz.isArray() ) {
+
+        if ( clazz.isArray() ) {
             name.append( canonicalName( clazz.getComponentType() ) );
             name.append( "[]" );
-        } else if( clazz.getDeclaringClass() == null ) {
+        } else if ( clazz.getDeclaringClass() == null ) {
             name.append( clazz.getName() );
         } else {
             name.append( canonicalName( clazz.getDeclaringClass() ) );
             name.append( "." );
             name.append( clazz.getName().substring( clazz.getDeclaringClass().getName().length() + 1 ) );
         }
-        
+
         return name.toString();
     }
-    
-    
+
+    public static Object instantiateObject(String className) {
+        return instantiateObject( className,
+                                  null );
+    }
+
     /**
      * This method will attempt to create an instance of the specified Class. It uses
      * a syncrhonized HashMap to cache the reflection Class lookup.
      * @param className
      * @return
      */
-    public static Object instantiateObject(String className) {
+    public static Object instantiateObject(String className,
+                                           ClassLoader classLoader) {
         Class cls = (Class) ClassUtils.classes.get( className );
         if ( cls == null ) {
             try {
                 cls = Class.forName( className );
-                ClassUtils.classes.put(  className, cls );
-            } catch ( Throwable e ) {
-                throw new RuntimeException("Unable to load class '" + className + "'", e );
-            }            
+            } catch ( Exception e ) {
+                //swallow
+            }
+
+            //ConfFileFinder
+            if ( cls == null && classLoader != null ) {
+                try {
+                    cls = classLoader.loadClass( className );
+                } catch ( Exception e ) {
+                    //swallow
+                }
+            }
+
+            if ( cls == null ) {
+                try {
+                    cls = ClassUtils.class.getClassLoader().loadClass( className );
+                } catch ( Exception e ) {
+                    //swallow
+                }
+            }
+
+            if ( cls == null ) {
+                try {
+                    cls = Thread.currentThread().getContextClassLoader().loadClass( className );
+                } catch ( Exception e ) {
+                    //swallow
+                }
+            }
+
+            if ( cls == null ) {
+                try {
+                    cls = ClassLoader.getSystemClassLoader().loadClass( className );
+                } catch ( Exception e ) {
+                    //swallow
+                }
+            }
+            
+            if ( cls != null ) {
+                ClassUtils.classes.put( className,
+                                        cls );
+            } else {
+                throw new RuntimeException( "Unable to load class '" + className + "'" );
+            }
         }
-        
+
         Object object = null;
         try {
-            object = cls.newInstance();            
+            object = cls.newInstance();
         } catch ( Throwable e ) {
-            throw new RuntimeException("Unable to instantiate object for class '" + className + "'", e );
-        }  
+            throw new RuntimeException( "Unable to instantiate object for class '" + className + "'",
+                                        e );
+        }
         return object;
-    }    
+    }
 
 }

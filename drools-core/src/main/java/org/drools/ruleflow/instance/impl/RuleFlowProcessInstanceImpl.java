@@ -19,8 +19,11 @@ package org.drools.ruleflow.instance.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.Agenda;
 import org.drools.WorkingMemory;
@@ -54,9 +57,11 @@ import org.drools.ruleflow.core.impl.StartNodeImpl;
 import org.drools.ruleflow.core.impl.SubFlowNodeImpl;
 import org.drools.ruleflow.instance.RuleFlowNodeInstance;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
-import org.drools.ruleflow.instance.impl.configuration.CreateNewNodeConf;
-import org.drools.ruleflow.instance.impl.configuration.ReuseNodeConf;
-import org.drools.ruleflow.instance.impl.configuration.RuleSetNodeConf;
+import org.drools.ruleflow.instance.impl.factories.CreateNewNodeFactory;
+import org.drools.ruleflow.instance.impl.factories.ReuseNodeFactory;
+import org.drools.ruleflow.instance.impl.factories.RuleSetNodeFactory;
+import org.drools.util.ConfFileUtils;
+import org.mvel.MVEL;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -69,10 +74,11 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     AgendaEventListener,
     RuleFlowEventListener {
 
-    private static final long     serialVersionUID = 400L;
+    private static final long                  serialVersionUID = 400L;
 
-    private InternalWorkingMemory workingMemory;
-    private final List            nodeInstances    = new ArrayList();
+    private InternalWorkingMemory              workingMemory;
+    private final List                         nodeInstances    = new ArrayList();
+    private ProcessNodeInstanceFactoryRegistry nodeRegistry;
 
     public RuleFlowProcess getRuleFlowProcess() {
         return (RuleFlowProcess) getProcess();
@@ -120,42 +126,21 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
-
-    private static PvmNodeRegistry nodeRegistry = new PvmNodeRegistry();
-    static {
-        //    	nodeRegistry.register(RuleSetNodeImpl.class, new RuleSetNodeConf() );
-        //    	nodeRegistry.register(SplitImpl.class, new SplitNodeConf() );
-        //    	nodeRegistry.register(JoinImpl.class, new JoinNodeConf() );
-        //    	nodeRegistry.register(StartNodeImpl.class, new StartNodeConf() );
-        //    	nodeRegistry.register(EndNodeImpl.class, new EndNodeConf() );
-        //    	nodeRegistry.register(MilestoneNodeImpl.class, new MilestoneNodeConf() );    	    
-        //    	nodeRegistry.register(SubFlowNodeImpl.class, new SubFlowNodeConf() );
-        //    	nodeRegistry.register(ActionNodeImpl.class, new ActionNodeConf() );
-        //    	nodeRegistry.register(WorkItemNode.class, new TaskNodeConf() );
-
-        nodeRegistry.register( RuleSetNodeImpl.class,
-                               new RuleSetNodeConf() );
-        nodeRegistry.register( SplitImpl.class,
-                               new ReuseNodeConf( RuleFlowSplitInstanceImpl.class ) );
-        nodeRegistry.register( JoinImpl.class,
-                               new ReuseNodeConf( RuleFlowJoinInstanceImpl.class ) );
-        nodeRegistry.register( StartNodeImpl.class,
-                               new CreateNewNodeConf( StartNodeInstanceImpl.class ) );
-        nodeRegistry.register( EndNodeImpl.class,
-                               new CreateNewNodeConf( EndNodeInstanceImpl.class ) );
-        nodeRegistry.register( MilestoneNodeImpl.class,
-                               new CreateNewNodeConf( MilestoneNodeInstanceImpl.class ) );
-        nodeRegistry.register( SubFlowNodeImpl.class,
-                               new CreateNewNodeConf( SubFlowNodeInstanceImpl.class ) );
-        nodeRegistry.register( ActionNodeImpl.class,
-                               new CreateNewNodeConf( ActionNodeInstanceImpl.class ) );
-        nodeRegistry.register( WorkItemNode.class,
-                               new CreateNewNodeConf( TaskNodeInstanceImpl.class ) );
-
+    
+    public void registerNodeInstanceFactory(Class<? extends Node> cls, ProcessNodeInstanceFactory factory) {
+        if ( this.nodeRegistry == null ) {
+            this.nodeRegistry = new ProcessNodeInstanceFactoryRegistry();
+        }
+        
+        this.nodeRegistry.register( cls, factory );
     }
 
     public RuleFlowNodeInstance getNodeInstance(final Node node) {
-        PvmNodeConf conf = this.nodeRegistry.getRuleFlowNodeConf( node );
+        if ( this.nodeRegistry == null ) {
+            this.nodeRegistry = new ProcessNodeInstanceFactoryRegistry();
+        }
+        
+        ProcessNodeInstanceFactory conf = this.nodeRegistry.getRuleFlowNodeFactory( node );
         if ( conf == null ) {
             throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
         }
