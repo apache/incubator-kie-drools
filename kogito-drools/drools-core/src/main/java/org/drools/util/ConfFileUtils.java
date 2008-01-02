@@ -11,8 +11,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
-import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactoryTest;
-
 public class ConfFileUtils {
    
     /**
