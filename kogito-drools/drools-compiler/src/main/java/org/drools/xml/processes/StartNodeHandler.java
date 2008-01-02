@@ -36,30 +36,31 @@ public class StartNodeHandler extends BaseAbstractHandler
             this.allowNesting = false;
         }
     }
-    
 
-    
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
                         final ExtensibleXmlParser parser) throws SAXException {
         parser.startConfiguration( localName,
-                                                  attrs );
-        
-        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) parser.getParent();
-        
+                                   attrs );
+
+        RuleFlowProcessImpl process = (RuleFlowProcessImpl) parser.getParent();
+
         final StartNode startNode = new StartNodeImpl();
 
-        final String name = attrs.getValue( "name" );        
-        emptyAttributeCheck( localName, "name", name, parser );        
+        final String name = attrs.getValue( "name" );
+        emptyAttributeCheck( localName,
+                             "name",
+                             name,
+                             parser );
         startNode.setName( name );
-        
-        process.addNode( startNode );        
-        ((ProcessBuildData)parser.getData()).addNode( startNode );
-        
+
+        process.addNode( startNode );
+        ((ProcessBuildData) parser.getData()).addNode( startNode );
+
         return startNode;
-    }    
-    
+    }
+
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
@@ -69,6 +70,6 @@ public class StartNodeHandler extends BaseAbstractHandler
 
     public Class generateNodeFor() {
         return StartNode.class;
-    }    
+    }
 
 }
