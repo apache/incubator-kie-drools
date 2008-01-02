@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import org.drools.Agenda;
 import org.drools.WorkingMemory;
 import org.drools.common.EventSupport;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
@@ -78,7 +79,6 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
 
     private InternalWorkingMemory              workingMemory;
     private final List                         nodeInstances    = new ArrayList();
-    private ProcessNodeInstanceFactoryRegistry nodeRegistry;
 
     public RuleFlowProcess getRuleFlowProcess() {
         return (RuleFlowProcess) getProcess();
@@ -127,20 +127,10 @@ public class RuleFlowProcessInstanceImpl extends ProcessInstanceImpl
         return this.workingMemory;
     }
     
-    public void registerNodeInstanceFactory(Class<? extends Node> cls, ProcessNodeInstanceFactory factory) {
-        if ( this.nodeRegistry == null ) {
-            this.nodeRegistry = new ProcessNodeInstanceFactoryRegistry();
-        }
-        
-        this.nodeRegistry.register( cls, factory );
-    }
-
     public RuleFlowNodeInstance getNodeInstance(final Node node) {
-        if ( this.nodeRegistry == null ) {
-            this.nodeRegistry = new ProcessNodeInstanceFactoryRegistry();
-        }
+        ProcessNodeInstanceFactoryRegistry nodeRegistry = ( (InternalRuleBase) this.workingMemory.getRuleBase() ).getConfiguration().getProcessNodeInstanceFactoryRegistry();
         
-        ProcessNodeInstanceFactory conf = this.nodeRegistry.getRuleFlowNodeFactory( node );
+        ProcessNodeInstanceFactory conf = nodeRegistry.getRuleFlowNodeFactory( node );
         if ( conf == null ) {
             throw new IllegalArgumentException( "Illegal node type: " + node.getClass() );
         }

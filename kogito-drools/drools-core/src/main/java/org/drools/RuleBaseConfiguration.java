@@ -524,7 +524,6 @@ public class RuleBaseConfiguration
                                                                   entry.getValue() );
             }
         }
-
     }
 
     private boolean determineShadowProxy(String userValue) {

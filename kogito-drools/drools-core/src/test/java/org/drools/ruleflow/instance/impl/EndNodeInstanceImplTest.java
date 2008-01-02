@@ -2,6 +2,7 @@ package org.drools.ruleflow.instance.impl;
 
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
@@ -19,10 +20,14 @@ import junit.framework.TestCase;
 
 public class EndNodeInstanceImplTest extends TestCase {
     public void testStartNode() {
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
         StatefulSession session = ruleBase.newStatefulSession();        
         
         NodeImpl mockNode = new NodeImpl()  { };        
+        MockNodeInstanceFactory factory = new MockNodeInstanceFactory( new MockNodeInstance( mockNode ) );
+        conf.getProcessNodeInstanceFactoryRegistry().register(  mockNode.getClass(), factory );
         
         RuleFlowProcessImpl process = new RuleFlowProcessImpl(); 
         
@@ -42,8 +47,7 @@ public class EndNodeInstanceImplTest extends TestCase {
         processInstance.setWorkingMemory( (InternalWorkingMemory) session );
         
         
-        MockNodeInstanceFactory factory = new MockNodeInstanceFactory( new MockNodeInstance( mockNode ) );
-        processInstance.registerNodeInstanceFactory( mockNode.getClass(), factory );
+
         
         MockNodeInstance mockNodeInstance = ( MockNodeInstance ) processInstance.getNodeInstance( mockNode );
         
