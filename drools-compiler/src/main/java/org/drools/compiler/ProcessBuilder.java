@@ -116,16 +116,11 @@ public class ProcessBuilder {
         }
     }
 
-    private static ProcessNodeBuilderRegistry nodeBuilderRegistry = new ProcessNodeBuilderRegistry();
-
-    static {
-        nodeBuilderRegistry.register( ActionNodeImpl.class,
-                                      new ActionNodeBuilder() );
-        nodeBuilderRegistry.register( SplitImpl.class,
-                                      new SplitNodeBuilder() );
-    }
+    
 
     public void buildNodes(Process process) {
+        ProcessNodeBuilderRegistry nodeBuilderRegistry = packageBuilder.getPackageBuilderConfiguration().getProcessNodeBuilderRegistry();
+
         RuleFlowProcess rfp = (RuleFlowProcess) process;
 
         ProcessDescr processDescr = new ProcessDescr();
@@ -161,21 +156,6 @@ public class ProcessBuilder {
             dialect.addProcess( context );
         }
 
-    }
-
-    public void buildAction(Process process,
-                            ProcessDescr processDescr,
-                            ProcessBuildContext context,
-                            ActionNodeImpl actionNode) {
-        DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
-        ActionDescr actionDescr = new ActionDescr();
-        actionDescr.setText( action.getConsequence() );
-
-        Dialect dialect = this.packageBuilder.getDialectRegistry().getDialect( action.getDialect() );
-
-        dialect.getActionBuilder().build( context,
-                                          actionNode,
-                                          actionDescr );
     }
 
     public void addProcessFromFile(final Reader reader) throws Exception {

@@ -1909,6 +1909,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();// RuleBaseFactory.newRuleBase();   
         
+        // serialise a hashmap with the RuleBase as a key
         Map map = new HashMap();
         map.put( "x", ruleBase );
         final byte[] ast = serializeOut( map );
@@ -1917,23 +1918,19 @@ public class MiscTest extends TestCase {
 
         WorkingMemory workingMemory = ruleBase.newStatefulSession();    
         
-        final byte[] wm = serializeOut( workingMemory );
-
+        // serialise the working memory before population
+        final byte[] wm = serializeOut( workingMemory );        
         workingMemory = ruleBase.newStatefulSession( new ByteArrayInputStream( wm ) );
 
         ruleBase.addPackage( pkg );
 
         workingMemory.setGlobal( "list", 
-                new ArrayList() );
+        					     new ArrayList() );
         
-
         final Person bob = new Person( "bob" );
         workingMemory.insert( bob );
-
-
         
         final Rule[] rules = ruleBase.getPackages()[0].getRules();
-
                 
         assertEquals( 4,
                       rules.length );
@@ -1945,9 +1942,7 @@ public class MiscTest extends TestCase {
         assertEquals( "match Person 3",
                       rules[2].getName() );
         assertEquals( "match Integer",
-                      rules[3].getName() );
-
-        
+                      rules[3].getName() );        
 
         assertEquals( 1,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
@@ -1971,7 +1966,79 @@ public class MiscTest extends TestCase {
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
         assertTrue( IteratorToList.convert( workingMemory.iterateObjects() ).contains( bob ) );
         assertTrue( IteratorToList.convert( workingMemory.iterateObjects() ).contains( new Person( "help" ) ) );
+    }    
+    
+    
+    public void testSerializeWorkingMemoryAndRuleBase3() throws Exception {
+        // has the first newStatefulSession after the ruleBase is serialised
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
 
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( reader );
+        final Package pkg = builder.getPackage();
+
+        assertEquals( 0,
+                      builder.getErrors().getErrors().length );
+
+        RuleBase ruleBase = getRuleBase();        
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();            
+
+        ruleBase.addPackage( pkg );
+
+        workingMemory.setGlobal( "list", 
+        						 new ArrayList() );
+        
+
+        final Person bob = new Person( "bob" );
+        workingMemory.insert( bob );        
+        
+        // serialise a hashmap with the RuleBase as a key, after WM population
+        Map map = new HashMap();
+        map.put( "x", ruleBase );
+        final byte[] ast = serializeOut( map );
+        map = (Map) serializeIn( ast );
+        ruleBase = (RuleBase) map.get( "x" );        
+        
+        // now try serialising with a fully populated wm from a serialised rulebase
+        final byte[] wm = serializeOut( workingMemory );
+        workingMemory = ruleBase.newStatefulSession( new ByteArrayInputStream( wm ) );         
+        
+        final Rule[] rules = ruleBase.getPackages()[0].getRules();
+                
+        assertEquals( 4,
+                      rules.length );
+
+        assertEquals( "match Person 1",
+                      rules[0].getName() );
+        assertEquals( "match Person 2",
+                      rules[1].getName() );
+        assertEquals( "match Person 3",
+                      rules[2].getName() );
+        assertEquals( "match Integer",
+                      rules[3].getName() );        
+
+        assertEquals( 1,
+                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+        assertEquals( bob,
+                      IteratorToList.convert( workingMemory.iterateObjects() ).get( 0 ) );
+
+        assertEquals( 2,
+                      workingMemory.getAgenda().agendaSize() );
+
+        workingMemory.fireAllRules();
+
+        final List list = (List) workingMemory.getGlobal( "list" );
+
+        assertEquals( 3,
+                      list.size() );
+        // because of agenda-groups
+        assertEquals( new Integer( 4 ),
+                      list.get( 0 ) );
+
+        assertEquals( 2,
+                      IteratorToList.convert( workingMemory.iterateObjects() ).size() );
+        assertTrue( IteratorToList.convert( workingMemory.iterateObjects() ).contains( bob ) );
+        assertTrue( IteratorToList.convert( workingMemory.iterateObjects() ).contains( new Person( "help" ) ) );              
     }    
     
     

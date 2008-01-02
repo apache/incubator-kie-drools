@@ -24,10 +24,16 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
 
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.accumulators.AccumulateFunction;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.process.builder.ProcessNodeBuilder;
+import org.drools.process.builder.ProcessNodeBuilderRegistry;
+import org.drools.ruleflow.core.Node;
+import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactory;
+import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactoryRegistry;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassUtils;
 import org.drools.util.ConfFileUtils;
@@ -37,6 +43,7 @@ import org.drools.xml.ProcessSemanticModule;
 import org.drools.xml.RulesSemanticModule;
 import org.drools.xml.SemanticModule;
 import org.drools.xml.SemanticModules;
+import org.mvel.MVEL;
 
 /**
  * This class configures the package compiler. 
@@ -61,23 +68,25 @@ import org.drools.xml.SemanticModules;
  */
 public class PackageBuilderConfiguration {
 
-    private static final String ACCUMULATE_FUNCTION_PREFIX = "drools.accumulate.function.";
+    private static final String        ACCUMULATE_FUNCTION_PREFIX  = "drools.accumulate.function.";
 
-    private static final String EVALUATOR_DEFINITION_PREFIX = "drools.evaluator.";
-    
-    private Map                 dialectConfigurations;
+    private static final String        EVALUATOR_DEFINITION_PREFIX = "drools.evaluator.";
 
-    private String              defaultDialect;
+    private Map                        dialectConfigurations;
 
-    private ClassLoader         classLoader;
+    private String                     defaultDialect;
 
-    private ChainedProperties   chainedProperties;
+    private ClassLoader                classLoader;
 
-    private Map<String, String> accumulateFunctions;
-    
-    private EvaluatorRegistry   evaluatorRegistry;
-    
-    private SemanticModules     semanticModules;   
+    private ChainedProperties          chainedProperties;
+
+    private Map<String, String>        accumulateFunctions;
+
+    private EvaluatorRegistry          evaluatorRegistry;
+
+    private SemanticModules            semanticModules;
+
+    private ProcessNodeBuilderRegistry nodeBuilderRegistry         = new ProcessNodeBuilderRegistry();
 
     /**
      * Constructor that sets the parent class loader for the package being built/compiled
@@ -135,7 +144,7 @@ public class PackageBuilderConfiguration {
         buildDialectConfigurationMap();
 
         buildAccumulateFunctionsMap();
-        
+
         buildEvaluatorRegistry();
     }
 
@@ -238,10 +247,10 @@ public class PackageBuilderConfiguration {
 
     public void initSemanticModules() {
         this.semanticModules = new SemanticModules();
-        
+
         this.semanticModules.addSemanticModule( new ProcessSemanticModule() );
         this.semanticModules.addSemanticModule( new RulesSemanticModule() );
-        
+
         // split on each space
         String locations[] = this.chainedProperties.getProperty( "semanticModules",
                                                                  "" ).split( "\\s" );
@@ -259,25 +268,27 @@ public class PackageBuilderConfiguration {
                                                            moduleLocation.length() - 1 );
             }
             if ( !moduleLocation.equals( "" ) ) {
-                loadSemanticModule( moduleLocation );    
+                loadSemanticModule( moduleLocation );
             }
         }
     }
 
     public void loadSemanticModule(String moduleLocation) {
-        URL url = ConfFileUtils.getURL( moduleLocation, this.classLoader , getClass() );        
+        URL url = ConfFileUtils.getURL( moduleLocation,
+                                        this.classLoader,
+                                        getClass() );
         if ( url == null ) {
             throw new IllegalArgumentException( moduleLocation + " is specified but cannot be found.'" );
-        }        
-        
-        Properties properties = ConfFileUtils.getProperties( url );        
+        }
+
+        Properties properties = ConfFileUtils.getProperties( url );
         if ( properties == null ) {
             throw new IllegalArgumentException( moduleLocation + " is specified but cannot be found.'" );
         }
 
         loadSemanticModule( properties );
     }
-    
+
     public void loadSemanticModule(Properties properties) {
         String uri = properties.getProperty( "uri",
                                              null );
@@ -289,12 +300,12 @@ public class PackageBuilderConfiguration {
 
         for ( Entry<Object, Object> entry : properties.entrySet() ) {
             String elementName = (String) entry.getKey();
-            
+
             //uri is processed above, so skip
             if ( "uri".equals( elementName ) ) {
                 continue;
             }
-            
+
             if ( elementName == null || elementName.trim().equals( "" ) ) {
                 throw new RuntimeException( "Element name must be specified for Semantic Module handler" );
             }
@@ -303,7 +314,8 @@ public class PackageBuilderConfiguration {
                 throw new RuntimeException( "Handler name must be specified for Semantic Module" );
             }
 
-            Handler handler = ( Handler ) ClassUtils.instantiateObject( handlerName, this.classLoader );
+            Handler handler = (Handler) ClassUtils.instantiateObject( handlerName,
+                                                                      this.classLoader );
 
             if ( handler == null ) {
                 throw new RuntimeException( "Unable to load Semantic Module handler '" + elementName + ":" + handlerName + "'" );
@@ -313,6 +325,55 @@ public class PackageBuilderConfiguration {
             }
         }
         this.semanticModules.addSemanticModule( module );
+    }
+
+    public ProcessNodeBuilderRegistry getProcessNodeBuilderRegistry() {
+        if ( this.nodeBuilderRegistry == null ) {
+            initProcessNodeBuilderRegistry();
+        }
+        return this.nodeBuilderRegistry;
+
+    }
+
+    private void initProcessNodeBuilderRegistry() {
+        this.nodeBuilderRegistry = new ProcessNodeBuilderRegistry();
+
+        // split on each space
+        String locations[] = this.chainedProperties.getProperty( "processNodeBuilderRegistry",
+                                                                 "" ).split( "\\s" );
+
+        int i = 0;
+        // load each SemanticModule
+        for ( String builderLocation : locations ) {
+            // trim leading/trailing spaces and quotes
+            builderLocation = builderLocation.trim();
+            if ( builderLocation.startsWith( "\"" ) ) {
+                builderLocation = builderLocation.substring( 1 );
+            }
+            if ( builderLocation.endsWith( "\"" ) ) {
+                builderLocation = builderLocation.substring( 0,
+                                                             builderLocation.length() - 1 );
+            }
+            if ( !builderLocation.equals( "" ) ) {
+                loadProcessNodeBuilderRegistry( builderLocation );
+            }
+        }
+    }
+
+    private void loadProcessNodeBuilderRegistry(String factoryLocation) {
+        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( factoryLocation,
+                                                                                  null,
+                                                                                  RuleBaseConfiguration.class ) );
+
+        Map<Class< ? extends Node>, ProcessNodeBuilder> map = (Map<Class< ? extends Node>, ProcessNodeBuilder>) MVEL.eval( content,
+                                                                                                                           new HashMap() );
+
+        if ( map != null ) {
+            for ( Entry<Class< ? extends Node>, ProcessNodeBuilder> entry : map.entrySet() ) {
+                this.nodeBuilderRegistry.register( entry.getKey(),
+                                                   entry.getValue() );
+            }
+        }
     }
 
     private void buildAccumulateFunctionsMap() {
@@ -396,7 +457,7 @@ public class PackageBuilderConfiguration {
      *                  The class must implement the EvaluatorDefinition interface.
      * 
      */
-    public void addEvaluatorDefinition( String className ) {
+    public void addEvaluatorDefinition(String className) {
         this.evaluatorRegistry.addEvaluatorDefinition( className );
     }
 
@@ -408,7 +469,7 @@ public class PackageBuilderConfiguration {
      * @param def the evaluator definition to be added.
      * 
      */
-    public void addEvaluatorDefinition( EvaluatorDefinition def ) {
+    public void addEvaluatorDefinition(EvaluatorDefinition def) {
         this.evaluatorRegistry.addEvaluatorDefinition( def );
     }
 
