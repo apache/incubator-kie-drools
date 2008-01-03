@@ -62,9 +62,9 @@ public class JavaRuleClassBuilder
             buffer.append( context.getMethods().get( i ) + lineSeparator );
         }
 
-        final String[] lines = buffer.toString().split( lineSeparator );
+        final String[] lines = buffer.toString().split( lineSeparator, -1 );
 
-        ruleDescr.setConsequenceOffset( lines.length + 1 );
+        ruleDescr.setConsequenceOffset( lines.length );
 
         buffer.append( context.getMethods().get( context.getMethods().size() - 1 ) + lineSeparator );
         buffer.append( "}" );
