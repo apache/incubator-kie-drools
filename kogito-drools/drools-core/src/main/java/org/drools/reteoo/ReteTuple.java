@@ -27,8 +27,6 @@ public class ReteTuple
     private long                     recency;
 
     private int                      hashCode;
-
-    private boolean                  fieldIndexed;
     
     private InternalFactHandle       match;
 
@@ -79,14 +77,6 @@ public class ReteTuple
 
     public Entry getNext() {
         return this.next;
-    }
-
-    public boolean isFieldIndexed() {
-        return this.fieldIndexed;
-    }
-
-    public void setIsFieldIndexHashCode(final boolean fieldIndexed) {
-        this.fieldIndexed = fieldIndexed;
     }
 
     public InternalFactHandle getLastHandle() {
