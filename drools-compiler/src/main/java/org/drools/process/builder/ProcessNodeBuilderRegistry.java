@@ -14,7 +14,7 @@ public class ProcessNodeBuilderRegistry {
         this.registry = new HashMap<Class< ? extends Node>, ProcessNodeBuilder>();
 
         register( ActionNodeImpl.class,
-                  new ActionNodeBuilder() );
+                  new StoreNodeBuilder() );
         register( SplitImpl.class,
                   new SplitNodeBuilder() );
     }

@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 
 import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.ProcessDescr;
-import org.drools.process.builder.ActionNodeBuilder;
+import org.drools.process.builder.StoreNodeBuilder;
 import org.drools.process.builder.ProcessNodeBuilder;
 import org.drools.process.builder.ProcessNodeBuilderRegistry;
 import org.drools.process.builder.SplitNodeBuilder;
