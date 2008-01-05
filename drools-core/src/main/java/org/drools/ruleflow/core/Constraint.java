@@ -65,7 +65,7 @@ public interface Constraint {
 
     /**
      * Returns the type of the constraint,
-     * e.g. "eval" or "rule"
+     * e.g. "code" or "rule"
      * 
      * @return the type of the constraint
      */
@@ -73,7 +73,7 @@ public interface Constraint {
 
     /**
      * Method for setting the type of the constraint,
-     * e.g. "eval" or "rule"
+     * e.g. "code" or "rule"
      * 
      * @param type  the type of the constraint
      */
