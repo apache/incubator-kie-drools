@@ -16,11 +16,13 @@ import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.Redundancy;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.Cause;
-import org.drools.analytics.report.components.Cause.CauseType;
+import org.drools.analytics.report.components.CauseType;
+import org.drools.analytics.report.components.Severity;
+import org.drools.analytics.report.components.MessageType;
 
 
 #
-# Dependencies: 
+# Dependencies:
 #
 #	Needs at least one rule from following rules:
 #		package org.drools.analytics.redundancy.restrictions
@@ -31,25 +33,25 @@ rule "Find redundant restrictions from pattern possibilities"
 	salience -100
 	when
 		$r :Redundancy(
-			left.causeType == Cause.CauseType.RESTRICTION
+			left.causeType == CauseType.RESTRICTION
 		)
-		
+
 		$pp :PatternPossibility(
-			items contains $r.left, 
-			items contains $r.right 
+			items contains $r.left,
+			items contains $r.right
 		)
 	then
 		Collection causes = new ArrayList();
 		causes.add( $r.getLeft() );
 		causes.add( $r.getRight() );
-		
-		result.add(new AnalyticsMessage( 
-						AnalyticsMessage.Severity.NOTE, AnalyticsMessage.MessageType.REDUNDANCY, 
+
+		result.add(new AnalyticsMessage(
+						Severity.NOTE, MessageType.REDUNDANCY,
 						$r, "Same restriction exists twice.", causes ) );
 end
 
 #
-# Dependencies: 
+# Dependencies:
 #
 #		package org.drools.analytics.redundancy.possibilities
 #			rule "Find pattern possibility redundancy"
@@ -58,20 +60,20 @@ rule "Find redundant pattern possibilities from rule possibilities"
 	salience -100
 	when
 		$r :Redundancy(
-			left.causeType == Cause.CauseType.PATTERN_POSSIBILITY
+			left.causeType == CauseType.PATTERN_POSSIBILITY
 		)
-		
+
 		RulePossibility(
-			items contains $r.left, 
-			items contains $r.right 
+			items contains $r.left,
+			items contains $r.right
 		)
 	then
 		Collection causes = new ArrayList();
 		causes.add( $r.getLeft() );
 		causes.add( $r.getRight() );
-		
-		result.add(new AnalyticsMessage( 
-						AnalyticsMessage.Severity.NOTE, AnalyticsMessage.MessageType.REDUNDANCY, 
+
+		result.add(new AnalyticsMessage(
+						Severity.NOTE, MessageType.REDUNDANCY,
 						$r, "Two pattern possibilities with redundant restrictions exists twice in the same rule.", causes ) );
 end
 

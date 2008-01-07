@@ -12,12 +12,13 @@ import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
+import org.drools.analytics.report.components.Severity;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
 /**
- * 
+ *
  * @author Toni Rikkola
- * 
+ *
  */
 public class IncoherentPatternsTest extends TestBase {
 
@@ -38,7 +39,7 @@ public class IncoherentPatternsTest extends TestBase {
 		session.executeWithResults(testData);
 
 		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
-				AnalyticsMessageBase.Severity.WARNING).iterator();
+				Severity.WARNING).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
@@ -79,7 +80,7 @@ public class IncoherentPatternsTest extends TestBase {
 		session.executeWithResults(testData);
 
 		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
-				AnalyticsMessageBase.Severity.WARNING).iterator();
+				Severity.WARNING).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
@@ -122,7 +123,7 @@ public class IncoherentPatternsTest extends TestBase {
 		session.executeWithResults(testData);
 
 		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
-				AnalyticsMessageBase.Severity.WARNING).iterator();
+				Severity.WARNING).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
@@ -163,7 +164,7 @@ public class IncoherentPatternsTest extends TestBase {
 		session.executeWithResults(testData);
 
 		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
-				AnalyticsMessageBase.Severity.WARNING).iterator();
+				Severity.WARNING).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
@@ -204,7 +205,7 @@ public class IncoherentPatternsTest extends TestBase {
 		session.executeWithResults(testData);
 
 		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
-				AnalyticsMessageBase.Severity.WARNING).iterator();
+				Severity.WARNING).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
@@ -245,7 +246,7 @@ public class IncoherentPatternsTest extends TestBase {
 		session.executeWithResults(testData);
 
 		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
-				AnalyticsMessageBase.Severity.WARNING).iterator();
+				Severity.WARNING).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
@@ -285,7 +286,7 @@ public class IncoherentPatternsTest extends TestBase {
 		session.executeWithResults(testData);
 
 		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
-				AnalyticsMessageBase.Severity.WARNING).iterator();
+				Severity.WARNING).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {
@@ -325,7 +326,7 @@ public class IncoherentPatternsTest extends TestBase {
 		session.executeWithResults(testData);
 
 		Iterator<AnalyticsMessageBase> iter = result.getBySeverity(
-				AnalyticsMessageBase.Severity.WARNING).iterator();
+				Severity.WARNING).iterator();
 
 		Set<String> rulesThatHadErrors = new HashSet<String>();
 		while (iter.hasNext()) {

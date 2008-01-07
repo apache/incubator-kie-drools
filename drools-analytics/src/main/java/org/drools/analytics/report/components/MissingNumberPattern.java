@@ -8,7 +8,7 @@ import org.drools.analytics.components.Field;
 import org.drools.base.evaluators.Operator;
 
 /**
- * 
+ *
  * @author Toni Rikkola
  */
 public class MissingNumberPattern extends MissingRange implements
@@ -23,7 +23,7 @@ public class MissingNumberPattern extends MissingRange implements
 	}
 
 	public CauseType getCauseType() {
-		return Cause.CauseType.RANGE_CHECK_CAUSE;
+		return CauseType.RANGE_CHECK_CAUSE;
 	}
 
 	public MissingNumberPattern(Field field, Operator operator,

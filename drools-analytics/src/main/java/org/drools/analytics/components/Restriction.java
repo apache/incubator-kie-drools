@@ -1,10 +1,11 @@
 package org.drools.analytics.components;
 
 import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.CauseType;
 import org.drools.base.evaluators.Operator;
 
 /**
- * 
+ *
  * @author Toni Rikkola
  */
 public abstract class Restriction extends AnalyticsComponent implements Cause {
@@ -45,7 +46,7 @@ public abstract class Restriction extends AnalyticsComponent implements Cause {
 	}
 
 	public CauseType getCauseType() {
-		return Cause.CauseType.RESTRICTION;
+		return CauseType.RESTRICTION;
 	}
 
 	public abstract RestrictionType getRestrictionType();

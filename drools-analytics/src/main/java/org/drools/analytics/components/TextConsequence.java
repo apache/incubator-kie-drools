@@ -1,5 +1,7 @@
 package org.drools.analytics.components;
 
+import org.drools.analytics.report.components.CauseType;
+
 public class TextConsequence extends AnalyticsComponent implements Consequence {
 
 	private static int index = 0;

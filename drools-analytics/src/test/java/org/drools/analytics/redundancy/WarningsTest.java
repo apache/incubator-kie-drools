@@ -12,6 +12,8 @@ import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.Redundancy;
+import org.drools.analytics.report.components.RedundancyType;
+import org.drools.analytics.report.components.Severity;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
 public class WarningsTest extends TestBase {
@@ -29,7 +31,7 @@ public class WarningsTest extends TestBase {
 		AnalyticsRule rule2 = new AnalyticsRule();
 
 		Redundancy ruleRedundancy = new Redundancy(
-				Redundancy.RedundancyType.STRONG, rule1, rule2);
+				RedundancyType.STRONG, rule1, rule2);
 
 		RulePossibility rp1 = new RulePossibility();
 		rp1.setRuleId(rule1.getId());
@@ -38,10 +40,10 @@ public class WarningsTest extends TestBase {
 		rp2.setRuleId(rule2.getId());
 
 		Redundancy rulePossibilityRedundancy1 = new Redundancy(
-				Redundancy.RedundancyType.STRONG, rp1, rp2);
+				RedundancyType.STRONG, rp1, rp2);
 
 		Redundancy rulePossibilityRedundancy2 = new Redundancy(
-				Redundancy.RedundancyType.STRONG, rp2, rp1);
+				RedundancyType.STRONG, rp2, rp1);
 
 		objects.add(rule1);
 		objects.add(rule2);
@@ -57,7 +59,7 @@ public class WarningsTest extends TestBase {
 		session.executeWithResults(objects);
 
 		Collection<AnalyticsMessageBase> notes = result
-				.getBySeverity(AnalyticsMessage.Severity.WARNING);
+				.getBySeverity(Severity.WARNING);
 
 		// Has at least one item.
 		assertEquals(1, notes.size());
@@ -79,7 +81,7 @@ public class WarningsTest extends TestBase {
 		AnalyticsRule rule2 = new AnalyticsRule();
 
 		Redundancy ruleRedundancy = new Redundancy(
-				Redundancy.RedundancyType.STRONG, rule1, rule2);
+				RedundancyType.STRONG, rule1, rule2);
 
 		RulePossibility rp1 = new RulePossibility();
 		rp1.setRuleId(rule1.getId());
@@ -88,7 +90,7 @@ public class WarningsTest extends TestBase {
 		rp2.setRuleId(rule2.getId());
 
 		Redundancy rulePossibilityRedundancy1 = new Redundancy(
-				Redundancy.RedundancyType.STRONG, rp1, rp2);
+				RedundancyType.STRONG, rp1, rp2);
 
 		objects.add(rule1);
 		objects.add(rule2);
@@ -103,7 +105,7 @@ public class WarningsTest extends TestBase {
 		session.executeWithResults(objects);
 
 		Collection<AnalyticsMessageBase> notes = result
-				.getBySeverity(AnalyticsMessage.Severity.WARNING);
+				.getBySeverity(Severity.WARNING);
 
 		// Has at least one item.
 		assertEquals(1, notes.size());

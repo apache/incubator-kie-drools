@@ -16,7 +16,9 @@ import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.dao.AnalyticsResultFactory;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.CauseType;
 import org.drools.analytics.report.components.Redundancy;
+import org.drools.analytics.report.components.RedundancyType;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
 public class RedundantPossibilitiesTest extends RedundancyTestBase {
@@ -120,7 +122,7 @@ public class RedundantPossibilitiesTest extends RedundancyTestBase {
 		rp2.add(pp2);
 
 		Redundancy possibilityredundancy = new Redundancy(
-				Redundancy.RedundancyType.STRONG, pp1, pp2);
+				RedundancyType.STRONG, pp1, pp2);
 		Redundancy ruleRedundancy = new Redundancy(r1, r2);
 
 		data.add(r1);
@@ -166,7 +168,7 @@ public class RedundantPossibilitiesTest extends RedundancyTestBase {
 		rp4.add(pp5);
 
 		Redundancy possibilityredundancy2 = new Redundancy(
-				Redundancy.RedundancyType.STRONG, pp3, pp4);
+				RedundancyType.STRONG, pp3, pp4);
 		Redundancy ruleRedundancy2 = new Redundancy(r3, r4);
 
 		data.add(r3);
@@ -182,7 +184,7 @@ public class RedundantPossibilitiesTest extends RedundancyTestBase {
 		StatelessSessionResult sessionResult = session.executeWithResults(data);
 
 		Map<Cause, Set<Cause>> map = createRedundancyCauseMap(
-				Cause.CauseType.RULE_POSSIBILITY, sessionResult
+				CauseType.RULE_POSSIBILITY, sessionResult
 						.iterateObjects());
 
 		assertTrue(TestBase.causeMapContains(map, rp1, rp2));

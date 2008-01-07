@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.rule.Package;
 
 class RuleLoader {
@@ -63,7 +65,11 @@ class RuleLoader {
 	private static Package loadPackage(InputStreamReader reader)
 			throws DroolsParserException, IOException {
 
-		PackageBuilder builder = new PackageBuilder();
+        Properties properties = new Properties();
+        properties.setProperty( "drools.dialect.java.compiler",
+                                "JANINO" );
+
+		PackageBuilder builder = new PackageBuilder(new PackageBuilderConfiguration( properties ));
 
 		builder.addPackageFromDrl(reader);
 

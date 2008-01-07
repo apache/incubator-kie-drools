@@ -4,12 +4,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.CauseType;
 
 /**
  * Instance of this class represents a possible combination of Constraints under
  * one Pattern. Each possibility returns true if all the Constraints in the
  * combination are true.
- * 
+ *
  * @author Toni Rikkola
  */
 public class PatternPossibility extends AnalyticsComponent implements
@@ -32,7 +33,7 @@ public class PatternPossibility extends AnalyticsComponent implements
 	}
 
 	public CauseType getCauseType() {
-		return Cause.CauseType.PATTERN_POSSIBILITY;
+		return CauseType.PATTERN_POSSIBILITY;
 	}
 
 	public Set<Cause> getItems() {

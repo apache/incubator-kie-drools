@@ -13,6 +13,8 @@ import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.Redundancy;
+import org.drools.analytics.report.components.RedundancyType;
+import org.drools.analytics.report.components.Severity;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
 public class NotesTest extends TestBase {
@@ -31,7 +33,7 @@ public class NotesTest extends TestBase {
 		LiteralRestriction right = new LiteralRestriction();
 
 		Redundancy redundancy = new Redundancy(
-				Redundancy.RedundancyType.STRONG, left, right);
+				RedundancyType.STRONG, left, right);
 
 		PatternPossibility possibility = new PatternPossibility();
 		possibility.add(left);
@@ -48,7 +50,7 @@ public class NotesTest extends TestBase {
 		session.executeWithResults(objects);
 
 		Collection<AnalyticsMessageBase> notes = result
-				.getBySeverity(AnalyticsMessage.Severity.NOTE);
+				.getBySeverity(Severity.NOTE);
 
 		// Has at least one item.
 		assertEquals(1, notes.size());
@@ -72,7 +74,7 @@ public class NotesTest extends TestBase {
 		PatternPossibility right = new PatternPossibility();
 
 		Redundancy redundancy = new Redundancy(
-				Redundancy.RedundancyType.STRONG, left, right);
+				RedundancyType.STRONG, left, right);
 
 		RulePossibility possibility = new RulePossibility();
 		possibility.add(left);
@@ -89,7 +91,7 @@ public class NotesTest extends TestBase {
 		session.executeWithResults(objects);
 
 		Collection<AnalyticsMessageBase> notes = result
-				.getBySeverity(AnalyticsMessage.Severity.NOTE);
+				.getBySeverity(Severity.NOTE);
 
 		// Has at least one item.
 		assertEquals(1, notes.size());

@@ -1,9 +1,10 @@
 package org.drools.analytics.components;
 
 import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.CauseType;
 
 /**
- * 
+ *
  * @author Toni Rikkola
  */
 public class AnalyticsEvalDescr extends AnalyticsComponent implements Cause {

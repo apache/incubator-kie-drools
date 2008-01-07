@@ -6,10 +6,10 @@ import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.Gap;
 import org.drools.analytics.report.components.MissingNumberPattern;
 import org.drools.analytics.report.components.RangeCheckCause;
-import org.drools.analytics.report.components.AnalyticsMessageBase.Severity;
+import org.drools.analytics.report.components.Severity;
 
 /**
- * 
+ *
  * @author Toni Rikkola
  */
 public interface AnalyticsResult {
@@ -32,7 +32,7 @@ public interface AnalyticsResult {
 
 	/**
 	 * Return all the items that have given severity value.
-	 * 
+	 *
 	 * @param severity
 	 *            Severity level of item.
 	 * @return Collection of items or an empty list if none was found.
