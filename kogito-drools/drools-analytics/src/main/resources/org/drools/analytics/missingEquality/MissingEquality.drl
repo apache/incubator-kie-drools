@@ -7,9 +7,11 @@ import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
 
 import org.drools.analytics.components.VariableRestriction;
-import org.drools.analytics.components.LiteralRestriction;	
+import org.drools.analytics.components.LiteralRestriction;
 import org.drools.analytics.report.components.MissingRange;
 import org.drools.analytics.report.components.AnalyticsMessage;
+import org.drools.analytics.report.components.Severity;
+import org.drools.analytics.report.components.MessageType;
 import org.drools.analytics.dao.AnalyticsResult;
 
 
@@ -19,10 +21,10 @@ global AnalyticsResult result;
 
 #
 # Informs that there are inequalities, but not equality being catered for.
-# 
+#
 # Type: Warning
 # Dependencies: None
-# Example: val != 10 when val == 10 is missing. 
+# Example: val != 10 when val == 10 is missing.
 #
 rule "Missing restriction in LiteralRestrictions"
 	when
@@ -81,22 +83,22 @@ rule "Missing restriction in LiteralRestrictions"
 		)
 	then
 		result.add( new AnalyticsMessage(
-								AnalyticsMessage.Severity.WARNING, 
-								AnalyticsMessage.MessageType.MISSING_EQUALITY, 
-								$r, 
-								"Rule base covers " + 
+								Severity.WARNING,
+								MessageType.MISSING_EQUALITY,
+								$r,
+								"Rule base covers " +
 								$r.getOperator().getOperatorString() + " " + $r.getValueAsString() +
 								", but it is missing " + MissingRange.getReversedOperator( $r.getOperator() ).getOperatorString() +
 								" " + $r.getValueAsString()
-								) );		
+								) );
 end
 
 #
 # Informs that there are inequalities, but not equality being catered for.
-# 
+#
 # Type: Warning
 # Dependencies: None
-# Example: val != $var when val == $var is missing. 
+# Example: val != $var when val == $var is missing.
 #
 rule "Missing restriction in VariableRestrictions"
 	when
@@ -125,14 +127,14 @@ rule "Missing restriction in VariableRestrictions"
 					operator == Operator.EQUAL,
 					patternIsNot == $r.patternIsNot,
 					variable.objectId == $r.variable.objectId,
-					variable.objectType == $r.variable.objectType  
+					variable.objectType == $r.variable.objectType
 				)
 		#
 		# matches and not matches
 		#
 		) or (
 				$r :VariableRestriction(
-					operator == MatchesEvaluatorsDefinition.MATCHES 
+					operator == MatchesEvaluatorsDefinition.MATCHES
 				)
 			and
 				not VariableRestriction(
@@ -152,7 +154,7 @@ rule "Missing restriction in VariableRestrictions"
 					operator == MatchesEvaluatorsDefinition.MATCHES,
 					patternIsNot == $r.patternIsNot,
 					variable.objectId == $r.variable.objectId,
-					variable.objectType == $r.variable.objectType 
+					variable.objectType == $r.variable.objectType
 				)
 		#
 		# memberof and not memberof
@@ -211,12 +213,12 @@ rule "Missing restriction in VariableRestrictions"
 		)
 	then
 		result.add( new AnalyticsMessage(
-								AnalyticsMessage.Severity.WARNING, 
-								AnalyticsMessage.MessageType.MISSING_EQUALITY, 
-								$r, 
-								"Rule base covers " + 
+								Severity.WARNING,
+								MessageType.MISSING_EQUALITY,
+								$r,
+								"Rule base covers " +
 								$r.getOperator().getOperatorString() + " " + $r.getVariable().getName() +
 								", but it is missing " + MissingRange.getReversedOperator( $r.getOperator() ).getOperatorString() +
 								" " + $r.getVariable().getName()
-								) );		
+								) );
 end

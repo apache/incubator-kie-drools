@@ -5,12 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.CauseType;
 
 /**
  * Instance of this class represents a possible combination of
  * PatternPosibilities under one Rule. Each possibility returns true if all the
  * PatternPosibilities in the combination are true.
- * 
+ *
  * @author Toni Rikkola
  */
 public class RulePossibility extends AnalyticsComponent implements
@@ -32,7 +33,7 @@ public class RulePossibility extends AnalyticsComponent implements
 	}
 
 	public CauseType getCauseType() {
-		return Cause.CauseType.RULE_POSSIBILITY;
+		return CauseType.RULE_POSSIBILITY;
 	}
 
 	public Set<Cause> getItems() {

@@ -13,12 +13,15 @@ import java.util.ArrayList;
 import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.Redundancy;
+import org.drools.analytics.report.components.RedundancyType;
 import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.Cause;
-import org.drools.analytics.report.components.Cause.CauseType;
+import org.drools.analytics.report.components.CauseType;
+import org.drools.analytics.report.components.Severity;
+import org.drools.analytics.report.components.MessageType;
 
 #
-# Dependencies: 
+# Dependencies:
 #
 #	Needs at least one rule from these packages:
 #		package org.drools.analytics.equivalency.rules
@@ -34,50 +37,50 @@ rule "Find redundant rule possibilities from different rules"
 	salience -100
 	when
 		$ruleRedundancy :Redundancy(
-			left.causeType == Cause.CauseType.RULE
+			left.causeType == CauseType.RULE
 		)
-		
+
 		$rulePossibilityRedundancy :Redundancy(
-			left.causeType == Cause.CauseType.RULE_POSSIBILITY
+			left.causeType == CauseType.RULE_POSSIBILITY
 		)
-		
+
 		# Check that redundant possibilities are from redundant rules
 		exists RulePossibility(
 			this == $rulePossibilityRedundancy.left,
 			eval( ruleId == $ruleRedundancy.getLeft().getId() )
 		)
-		
+
 		exists RulePossibility(
 			this == $rulePossibilityRedundancy.right,
 			eval( ruleId == $ruleRedundancy.getRight().getId() )
 		)
-		
-		# Check that the possibilties are redundant to each other. 
+
+		# Check that the possibilties are redundant to each other.
 		exists Redundancy(
-			left.causeType == Cause.CauseType.RULE_POSSIBILITY,
+			left.causeType == CauseType.RULE_POSSIBILITY,
 			left == $rulePossibilityRedundancy.right,
 			right == $rulePossibilityRedundancy.left
 		)
-		
+
 	then
 		Collection causes = new ArrayList();
 		causes.add( $rulePossibilityRedundancy.getLeft() );
 		causes.add( $rulePossibilityRedundancy.getRight() );
-		
+
 		String message;
-		if( $ruleRedundancy.getType() == Redundancy.RedundancyType.WEAK ) {
+		if( $ruleRedundancy.getType() == RedundancyType.WEAK ) {
 			message = "Rules are equivalent.";
 		} else {
 			message = "Rules are redundant.";
 		}
-		
-		result.add(new AnalyticsMessage( 
-						AnalyticsMessage.Severity.WARNING, AnalyticsMessage.MessageType.REDUNDANCY, 
+
+		result.add(new AnalyticsMessage(
+						Severity.WARNING, MessageType.REDUNDANCY,
 						$rulePossibilityRedundancy, message, causes ) );
 end
 
 #
-# Dependencies: 
+# Dependencies:
 #
 #	Needs at least one rule from these packages:
 #		package org.drools.analytics.equivalency.rules
@@ -93,37 +96,37 @@ rule "Find subsumptant rule possibilities from different rules"
 	salience -100
 	when
 		$ruleRedundancy :Redundancy(
-			left.causeType == Cause.CauseType.RULE
+			left.causeType == CauseType.RULE
 		)
-		
+
 		$rulePossibilityRedundancy :Redundancy(
-			left.causeType == Cause.CauseType.RULE_POSSIBILITY
+			left.causeType == CauseType.RULE_POSSIBILITY
 		)
-		
+
 		# Check that redundant possibilities are from redundant rules
 		exists RulePossibility(
 			this == $rulePossibilityRedundancy.left,
 			eval( ruleId == $ruleRedundancy.getLeft().getId() )
 		)
-		
+
 		exists RulePossibility(
 			this == $rulePossibilityRedundancy.right,
 			eval( ruleId == $ruleRedundancy.getRight().getId() )
 		)
-		
-		# Check that the left side is redundant to right, but the right side is not redudant to left. 
+
+		# Check that the left side is redundant to right, but the right side is not redudant to left.
 		not Redundancy(
-			left.causeType == Cause.CauseType.RULE_POSSIBILITY,
+			left.causeType == CauseType.RULE_POSSIBILITY,
 			left == $rulePossibilityRedundancy.right,
 			right == $rulePossibilityRedundancy.left
 		)
-		
+
 	then
 		Collection causes = new ArrayList();
 		causes.add( $rulePossibilityRedundancy.getLeft() );
 		causes.add( $rulePossibilityRedundancy.getRight() );
-		
-		result.add(new AnalyticsMessage( 
-						AnalyticsMessage.Severity.WARNING, AnalyticsMessage.MessageType.REDUNDANCY, 
+
+		result.add(new AnalyticsMessage(
+						Severity.WARNING, MessageType.REDUNDANCY,
 						$rulePossibilityRedundancy, "Rules are subsumptant.", causes ) );
 end

@@ -3,20 +3,20 @@ package org.drools.analytics.redundancy.possibilities
 
 import org.drools.analytics.components.*;
 import org.drools.analytics.report.components.Redundancy;
-import org.drools.analytics.report.components.Redundancy.RedundancyType;
+import org.drools.analytics.report.components.RedundancyType;
 import org.drools.analytics.report.components.PartialRedundancy;
 import org.drools.analytics.report.components.Subsumption;
 import org.drools.analytics.report.components.Cause;
-import org.drools.analytics.report.components.Cause.CauseType;
+import org.drools.analytics.report.components.CauseType;
 
 import java.util.ArrayList;
 
 #
 # Fires when two PatternPossibilities are redundant.
 # Marks these possibilities as redundant.
-# 
+#
 # Depandencies: Needs at least one rule from both packages.
-# 
+#
 #		package org.drools.analytics.redundancy.patterns
 #			rule "Find redundant Patterns with restrictions"
 #			rule "Find redundant Patterns without restrictions"
@@ -29,8 +29,8 @@ import java.util.ArrayList;
 #
 rule "Find pattern possibility redundancy"
 	when
-		$redundancy :Redundancy( 
-			left.causeType == Cause.CauseType.PATTERN 
+		$redundancy :Redundancy(
+			left.causeType == CauseType.PATTERN
 		)
 
 		# Find two PatternPossibilities.
@@ -51,14 +51,14 @@ rule "Find pattern possibility redundancy"
 					eval( patternId == $redundancy.getLeft().getId() )
 				)
 		)
-		
-		# For every restriction in $pp1 there is a redundancy to $pp2. 
+
+		# For every restriction in $pp1 there is a redundancy to $pp2.
 		forall(
 			$r :Restriction(
 				patternId == $pp1.patternId,
 				this memberOf $pp1.items
 			)
-			
+
 			Redundancy(
 				(
 					left == $r
@@ -69,18 +69,18 @@ rule "Find pattern possibility redundancy"
 					&&
 					right == $r
 				)
-				
+
 			)
 		)
-		
-		# For every restriction in $pp2 there is a redundancy to $pp1. 
+
+		# For every restriction in $pp2 there is a redundancy to $pp1.
 		forall(
 			$r :Restriction(
 				patternId == $pp2.patternId,
 				this memberOf $pp2.items
 			)
-			
-			Redundancy(	
+
+			Redundancy(
 				(
 					left == $r
 					&&
@@ -93,14 +93,14 @@ rule "Find pattern possibility redundancy"
 			)
 		)
 	then
-		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $pp1, $pp2 ) );
+		insert( new Redundancy( RedundancyType.STRONG, $pp1, $pp2 ) );
 end
 
 #
 # Fires when two PatternPossibilities are redundant.
 # Marks these possibilities as redundant.
-# 
-# Depandencies: 
+#
+# Depandencies:
 #
 #	Needs at least one rule from these packages:
 #		package org.drools.analytics.equivalency.rules
@@ -117,8 +117,8 @@ end
 #
 rule "Find rule possibility redundancy"
 	when
-		$redundancy :Redundancy( 
-			left.causeType == Cause.CauseType.RULE 
+		$redundancy :Redundancy(
+			left.causeType == CauseType.RULE
 		)
 
 		# Find two RulePossibilities.
@@ -128,35 +128,35 @@ rule "Find rule possibility redundancy"
 		$rp2 :RulePossibility(
 			eval( ruleId == $redundancy.getRight().getId() )
 		)
-		
-		# For every pattern possibility in $rp1 there is a redundant pattern possibility in $rp2. 
+
+		# For every pattern possibility in $rp1 there is a redundant pattern possibility in $rp2.
 		forall(
 			$pp :PatternPossibility(
 				ruleId == $rp1.ruleId,
 				this memberOf $rp1.items
 			)
-					
+
 			Redundancy(
-				type == Redundancy.RedundancyType.STRONG,
+				type == RedundancyType.STRONG,
 				left == $pp,
 				right memberOf $rp2.items
 			)
-			
+
 		)
-		
-		# For every pattern possibility in $rp2 there is a redundant pattern possibility in $rp1. 
+
+		# For every pattern possibility in $rp2 there is a redundant pattern possibility in $rp1.
 		forall(
 			$pp :PatternPossibility(
 				ruleId == $rp2.ruleId,
 				this memberOf $rp2.items
 			)
-			
+
 			Redundancy(
-				type == Redundancy.RedundancyType.STRONG,
+				type == RedundancyType.STRONG,
 				left == $pp,
 				right memberOf $rp1.items
 			)
 		)
 	then
-		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $rp1, $rp2 ) );
+		insert( new Redundancy( RedundancyType.STRONG, $rp1, $rp2 ) );
 end

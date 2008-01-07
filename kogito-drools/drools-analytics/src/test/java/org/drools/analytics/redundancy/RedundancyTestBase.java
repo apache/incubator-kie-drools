@@ -9,19 +9,20 @@ import java.util.Set;
 import org.drools.analytics.TestBase;
 import org.drools.analytics.components.AnalyticsComponent;
 import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.CauseType;
 import org.drools.analytics.report.components.Redundancy;
 
 /**
- * 
+ *
  * @author Toni Rikkola
- * 
+ *
  */
 public class RedundancyTestBase extends TestBase {
 
 	/**
 	 * Creates redundancy map from Redundancy objects, one rule may have several
 	 * redundancy dependencies.
-	 * 
+	 *
 	 * @param iter
 	 * @return
 	 */
@@ -52,12 +53,12 @@ public class RedundancyTestBase extends TestBase {
 	/**
 	 * Creates redundancy map from Redundancy objects, one rule may have several
 	 * redundancy dependencies.
-	 * 
+	 *
 	 * @param iter
 	 * @return
 	 */
 	protected Map<Cause, Set<Cause>> createRedundancyCauseMap(
-			Cause.CauseType type, Iterator<Object> iter) {
+			CauseType type, Iterator<Object> iter) {
 
 		Map<Cause, Set<Cause>> map = new HashMap<Cause, Set<Cause>>();
 		while (iter.hasNext()) {
@@ -91,7 +92,7 @@ public class RedundancyTestBase extends TestBase {
 
 	/**
 	 * Returns true if map contains redundancy where key is redundant to value.
-	 * 
+	 *
 	 * @param map
 	 * @param key
 	 * @param value

@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import org.drools.RuleBase;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
+import org.drools.analytics.report.components.Severity;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.PackageDescr;
 
@@ -25,9 +26,9 @@ public class AnalyzerTest extends TestCase {
 
 		AnalyticsResult result = anal.getResult();
 		assertNotNull(result);
-		assertEquals(0, result.getBySeverity(AnalyticsMessageBase.Severity.ERROR).size());
-		assertEquals(10, result.getBySeverity(AnalyticsMessageBase.Severity.WARNING).size());
-		assertEquals(1, result.getBySeverity(AnalyticsMessageBase.Severity.NOTE).size());
+		assertEquals(0, result.getBySeverity(Severity.ERROR).size());
+		assertEquals(10, result.getBySeverity(Severity.WARNING).size());
+		assertEquals(1, result.getBySeverity(Severity.NOTE).size());
 
 
 		//check it again
@@ -43,9 +44,9 @@ public class AnalyzerTest extends TestCase {
 
 		result = anal.getResult();
 		assertNotNull(result);
-		assertEquals(0, result.getBySeverity(AnalyticsMessageBase.Severity.ERROR).size());
-		assertEquals(10, result.getBySeverity(AnalyticsMessageBase.Severity.WARNING).size());
-		assertEquals(1, result.getBySeverity(AnalyticsMessageBase.Severity.NOTE).size());
+		assertEquals(0, result.getBySeverity(Severity.ERROR).size());
+		assertEquals(10, result.getBySeverity(Severity.WARNING).size());
+		assertEquals(1, result.getBySeverity(Severity.NOTE).size());
 
 
 

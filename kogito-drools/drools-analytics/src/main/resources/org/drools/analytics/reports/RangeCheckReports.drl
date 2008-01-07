@@ -6,6 +6,8 @@ import org.drools.analytics.components.Field;
 import org.drools.analytics.report.components.AnalyticsRangeCheckMessage;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.MissingRange;
+import org.drools.analytics.report.components.Severity;
+import org.drools.analytics.report.components.MessageType;
 
 import java.util.ArrayList;
 
@@ -14,7 +16,7 @@ global AnalyticsResult result
 
 
 #
-# Dependencies: 
+# Dependencies:
 #
 #	Needs at least one of the following packages or rules to fire:
 # 		package org.drools.analytics.rangeChecks.patterns;
@@ -36,7 +38,7 @@ global AnalyticsResult result
 #			rule "Range check for dates, equal and greater than"
 #			rule "Range check for dates, equal and smaller than"
 #
-#	The following rules are used to clean up the data that this rule uses, 
+#	The following rules are used to clean up the data that this rule uses,
 #	but they are not always necessary:
 #		package org.drools.analytics.rangeChecks.cleanUp
 #			rule "Merge gaps"
@@ -56,7 +58,7 @@ rule "Collect gaps"
 				MissingRange( field == $f )
 			)
 	then
-		result.add( new AnalyticsRangeCheckMessage( 
-								AnalyticsRangeCheckMessage.Severity.WARNING, $f, 
+		result.add( new AnalyticsRangeCheckMessage(
+								Severity.WARNING, $f,
 								$f + " has one or more gaps.", $list ) );
 end

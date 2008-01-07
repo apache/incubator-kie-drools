@@ -12,6 +12,8 @@ import org.drools.analytics.components.AnalyticsEvalDescr;
 import org.drools.analytics.components.AnalyticsComponent;
 import org.drools.analytics.components.AnalyticsComponentType;
 import org.drools.analytics.report.components.AnalyticsMessage;
+import org.drools.analytics.report.components.Severity;
+import org.drools.analytics.report.components.MessageType;
 import org.drools.analytics.dao.AnalyticsResult;
 
 
@@ -23,41 +25,41 @@ global AnalyticsResult result;
 
 # Informs that rule would be more effective if eval
 # was after fact patterns.
-# 
+#
 # Type: Note
 # Dependencies: None
-# Example: eval(function( $something )) Pattern() 
+# Example: eval(function( $something )) Pattern()
 #
 rule "Optimise evals inside pattern"
 	when
 		$operator :OperatorDescr()
-		
-		$eval :AnalyticsEvalDescr( 
-			parent == $operator 
+
+		$eval :AnalyticsEvalDescr(
+			parent == $operator
 		)
-		
-		# Any other AnalyticsComponent that is not predicate or operator 
+
+		# Any other AnalyticsComponent that is not predicate or operator
 		$other :AnalyticsComponent(
 			parent == $operator,
 			orderNumber > $eval.orderNumber,
 			( componentType != AnalyticsComponentType.OPERATOR && != AnalyticsComponentType.EVAL )
 		)
 
-		$rule :AnalyticsRule( 
-			id == $eval.ruleId 
+		$rule :AnalyticsRule(
+			id == $eval.ruleId
 		)
-	then 
+	then
 		Collection list = new ArrayList();
 		list.add( $eval );
 		list.add( $other );
 		result.add( new AnalyticsMessage(
-								AnalyticsMessage.Severity.NOTE, 
-								AnalyticsMessage.MessageType.OPTIMISATION, 
-								$rule, 
-								"Rule \"" + $eval.getRuleName() + 
-								"\" would be more effective if the less expensive component, (" + 
+								Severity.NOTE,
+								MessageType.OPTIMISATION,
+								$rule,
+								"Rule \"" + $eval.getRuleName() +
+								"\" would be more effective if the less expensive component, (" +
 								$other +
-								"), could be before (" + 
-								$eval + ").", 
+								"), could be before (" +
+								$eval + ").",
 								list ) );
 end

@@ -3,24 +3,15 @@ package org.drools.analytics.report.components;
 /**
  * Presents a redundancy between two Causes. The link between them can be WEAK
  * or STRONG.
- * 
+ *
  * WEAK redundancy is for example two AnalyticsRules, but not theyr's rule
  * possibilities. STRONG redundancy includes possibilities.
- * 
+ *
  * @author Toni Rikkola
  */
 public class Redundancy implements Cause {
 
-	public static class RedundancyType {
-		public static final RedundancyType WEAK = new RedundancyType(0);
-		public static final RedundancyType STRONG = new RedundancyType(0);
 
-		private final int index;
-
-		private RedundancyType(int i) {
-			index = i;
-		}
-	}
 
 	private static int index = 0;
 

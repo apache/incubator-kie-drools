@@ -1,9 +1,10 @@
 package org.drools.analytics.components;
 
 import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.CauseType;
 
 /**
- * 
+ *
  * @author Toni Rikkola
  */
 public class AnalyticsRule extends AnalyticsComponent implements Cause {
@@ -28,7 +29,7 @@ public class AnalyticsRule extends AnalyticsComponent implements Cause {
 	}
 
 	public CauseType getCauseType() {
-		return Cause.CauseType.RULE;
+		return CauseType.RULE;
 	}
 
 	public String getRuleAgendaGroup() {

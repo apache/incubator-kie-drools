@@ -16,6 +16,7 @@ import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.AnalyticsRangeCheckMessage;
 import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.Severity;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.Dialect.AnalysisResult;
 import org.drools.lang.descr.PackageDescr;
@@ -60,7 +61,7 @@ class AnalyticsTestStandalone {
 
 			AnalyticsResult result = a.getResult();
 			Collection<AnalyticsMessageBase> msgs = result
-					.getBySeverity(AnalyticsMessageBase.Severity.ERROR);
+					.getBySeverity(Severity.ERROR);
 
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
 				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator
@@ -68,7 +69,7 @@ class AnalyticsTestStandalone {
 				System.out.println("ERR: " + msg.getMessage());
 			}
 
-			msgs = result.getBySeverity(AnalyticsMessageBase.Severity.WARNING);
+			msgs = result.getBySeverity(Severity.WARNING);
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
 				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator
 						.next();
@@ -101,7 +102,7 @@ class AnalyticsTestStandalone {
 				}
 			}
 
-			msgs = result.getBySeverity(AnalyticsMessageBase.Severity.NOTE);
+			msgs = result.getBySeverity(Severity.NOTE);
 			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
 				AnalyticsMessageBase msg = (AnalyticsMessageBase) iterator
 						.next();

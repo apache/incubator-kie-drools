@@ -18,7 +18,7 @@ public class Gap extends MissingRange implements RangeCheckCause,
 	}
 
 	public CauseType getCauseType() {
-		return Cause.CauseType.GAP;
+		return CauseType.GAP;
 	}
 
 	/**

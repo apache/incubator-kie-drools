@@ -8,11 +8,12 @@ import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.Gap;
 import org.drools.analytics.report.components.MissingNumberPattern;
+import org.drools.analytics.report.components.Severity;
 
 import com.thoughtworks.xstream.XStream;
 
 /**
- * 
+ *
  * @author Toni Rikkola
  */
 public class ReportModeller {
@@ -37,7 +38,7 @@ public class ReportModeller {
 
 		StringBuffer str = new StringBuffer();
 
-		for (AnalyticsMessage.Severity severity : AnalyticsMessage.Severity
+		for (Severity severity : Severity
 				.values()) {
 			Collection<AnalyticsMessageBase> messages = result
 					.getBySeverity(severity);

@@ -2,10 +2,12 @@
 package org.drools.analytics.consequence
 
 #list any import classes here.
-import org.drools.analytics.components.AnalyticsRule;  
-import org.drools.analytics.components.TextConsequence;  
-import org.drools.analytics.report.components.AnalyticsMessage;  
+import org.drools.analytics.components.AnalyticsRule;
+import org.drools.analytics.components.TextConsequence;
+import org.drools.analytics.report.components.AnalyticsMessage;
 import org.drools.analytics.dao.AnalyticsResult;
+import org.drools.analytics.report.components.Severity;
+import org.drools.analytics.report.components.MessageType;
 
 #declare any global variables here
 global AnalyticsResult result;
@@ -16,14 +18,14 @@ rule "No action - possibly commented out"
 		$c :TextConsequence(
 			( text == null || text matches "" )
 		)
-	
+
 		$r :AnalyticsRule(
 			id == $c.ruleId
 		)
-	then 
-		result.add( new AnalyticsMessage( 
-								AnalyticsMessage.Severity.WARNING,
-								AnalyticsMessage.MessageType.MISSING_COMPONENT,
-								$r, 
+	then
+		result.add( new AnalyticsMessage(
+								Severity.WARNING,
+								MessageType.MISSING_COMPONENT,
+								$r,
 								$r + " has no RHS." ) );
 end

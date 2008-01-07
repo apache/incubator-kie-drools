@@ -3,6 +3,7 @@ package org.drools.analytics.redundancy.restrictions
 
 import org.drools.analytics.components.*;
 import org.drools.analytics.report.components.Redundancy;
+import org.drools.analytics.report.components.RedundancyType;
 
 #
 # Depandencies: None
@@ -11,23 +12,23 @@ rule "Find redundant VariableRestriction"
 	when
 		# Check that Restrictions $left and $right have redundant fields.
 		$left :VariableRestriction()
-		$right :VariableRestriction( 
-			id != $left.id, 
+		$right :VariableRestriction(
+			id != $left.id,
 			operator == $left.operator,
 			variable.objectType == $left.variable.objectType,
-			variable.objectId == $left.variable.objectId 
+			variable.objectId == $left.variable.objectId
 		)
 		# Check that there is not already a pair with these values.
-		not Redundancy( 
-			left == $left, 
-			right == $right 
+		not Redundancy(
+			left == $left,
+			right == $right
 		)
 		not Redundancy(
-			left == $right, 
-			right == $left 
+			left == $right,
+			right == $left
 		)
 	then
-		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
+		insert( new Redundancy( RedundancyType.STRONG, $left, $right ) );
 end
 
 #
@@ -39,40 +40,40 @@ rule "Find redundant LiteralRestriction"
 		$left :LiteralRestriction()
 		and
 		(
-				$right :LiteralRestriction( 
-					id != $left.id, 
+				$right :LiteralRestriction(
+					id != $left.id,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.BOOLEAN,
 					booleanValue == $left.booleanValue
 				)
 			or
-				$right :LiteralRestriction( 
-					id != $left.id, 
+				$right :LiteralRestriction(
+					id != $left.id,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.STRING,
 					valueAsString matches $left.valueAsString
 				)
 			or
-				$right :LiteralRestriction( 
-					id != $left.id, 
+				$right :LiteralRestriction(
+					id != $left.id,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.INT,
 					intValue == $left.intValue
 				)
 			or
-				$right :LiteralRestriction( 
-					id != $left.id, 
+				$right :LiteralRestriction(
+					id != $left.id,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.DOUBLE,
 					doubleValue == $left.doubleValue
 				)
 			or
-				$right :LiteralRestriction( 
-					id != $left.id, 
+				$right :LiteralRestriction(
+					id != $left.id,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.DATE,
@@ -80,19 +81,19 @@ rule "Find redundant LiteralRestriction"
 				)
 			or
 			(
-				$right :LiteralRestriction( 
-					id != $left.id, 
+				$right :LiteralRestriction(
+					id != $left.id,
 					operator == $left.operator,
 					valueType == $left.valueType,
 					valueType == Field.FieldType.VARIABLE
 				)
 				and
-					$v :Variable( 
+					$v :Variable(
 						objectType == AnalyticsComponentType.FIELD,
 						objectId == $left.id
 					)
 				and
-					Variable( 
+					Variable(
 						objectType == AnalyticsComponentType.FIELD,
 						objectId == $right.id,
 						objectName == $v.objectName,
@@ -101,14 +102,14 @@ rule "Find redundant LiteralRestriction"
 			)
 		)
 		# Check that there is not already a pair with these values.
-		not Redundancy( 
-			left == $left, 
-			right == $right 
+		not Redundancy(
+			left == $left,
+			right == $right
 		)
 		not Redundancy(
-			left == $right, 
-			right == $left 
+			left == $right,
+			right == $left
 		)
 	then
-		insert( new Redundancy( Redundancy.RedundancyType.STRONG, $left, $right ) );
+		insert( new Redundancy( RedundancyType.STRONG, $left, $right ) );
 end

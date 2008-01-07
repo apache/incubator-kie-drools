@@ -11,9 +11,10 @@ import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.Gap;
 import org.drools.analytics.report.components.MissingNumberPattern;
 import org.drools.analytics.report.components.RangeCheckCause;
+import org.drools.analytics.report.components.Severity;
 
 /**
- * 
+ *
  * @author Toni Rikkola
  */
 class AnalyticsResultNormal implements AnalyticsResult {
@@ -25,7 +26,7 @@ class AnalyticsResultNormal implements AnalyticsResult {
 	private DataTree<Integer, MissingNumberPattern> missingNumberPatternsByFieldId = new DataTree<Integer, MissingNumberPattern>();
 
 	private List<AnalyticsMessageBase> messages = new ArrayList<AnalyticsMessageBase>();
-	private DataTree<AnalyticsMessageBase.Severity, AnalyticsMessageBase> messagesBySeverity = new DataTree<AnalyticsMessageBase.Severity, AnalyticsMessageBase>();
+	private DataTree<Severity, AnalyticsMessageBase> messagesBySeverity = new DataTree<Severity, AnalyticsMessageBase>();
 
 	private AnalyticsData data = new AnalyticsDataMaps();
 
@@ -35,7 +36,7 @@ class AnalyticsResultNormal implements AnalyticsResult {
 	}
 
 	public Collection<AnalyticsMessageBase> getBySeverity(
-			AnalyticsMessageBase.Severity severity) {
+			Severity severity) {
 		Collection<AnalyticsMessageBase> result = messagesBySeverity
 				.getBranch(severity);
 

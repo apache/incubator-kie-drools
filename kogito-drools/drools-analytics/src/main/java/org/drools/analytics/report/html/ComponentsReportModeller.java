@@ -9,6 +9,7 @@ import org.drools.analytics.components.Field;
 import org.drools.analytics.dao.AnalyticsData;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.report.components.AnalyticsMessage;
+import org.drools.analytics.report.components.Severity;
 
 public class ComponentsReportModeller extends ReportModeller {
 
@@ -100,18 +101,18 @@ public class ComponentsReportModeller extends ReportModeller {
 
 		String errors = AnalyticsMessagesVisitor
 				.visitAnalyticsMessagesCollection(
-						AnalyticsMessage.Severity.ERROR.getTuple(),
-						result.getBySeverity(AnalyticsMessage.Severity.ERROR),
+						Severity.ERROR.getTuple(),
+						result.getBySeverity(Severity.ERROR),
 						data);
 		String warnings = AnalyticsMessagesVisitor
 				.visitAnalyticsMessagesCollection(
-						AnalyticsMessage.Severity.WARNING.getTuple(),
-						result.getBySeverity(AnalyticsMessage.Severity.WARNING),
+						Severity.WARNING.getTuple(),
+						result.getBySeverity(Severity.WARNING),
 						data);
 		String notes = AnalyticsMessagesVisitor
 				.visitAnalyticsMessagesCollection(
-						AnalyticsMessage.Severity.NOTE.getTuple(), result
-								.getBySeverity(AnalyticsMessage.Severity.NOTE),
+						Severity.NOTE.getTuple(), result
+								.getBySeverity(Severity.NOTE),
 						data);
 
 		writeToFile(path + UrlFactory.SOURCE_FOLDER + File.separator
