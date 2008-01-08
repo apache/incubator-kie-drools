@@ -66,6 +66,6 @@ public class Redundancy implements Cause {
 
 	@Override
 	public String toString() {
-		return "Redundacy between: (" + left + ") and (" + right + ").";
+		return "Redundancy between: (" + left + ") and (" + right + ").";
 	}
 }
