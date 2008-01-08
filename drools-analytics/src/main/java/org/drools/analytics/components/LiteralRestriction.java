@@ -8,7 +8,7 @@ import java.util.zip.DataFormatException;
 import org.drools.analytics.report.components.Cause;
 
 /**
- * 
+ *
  * @author Toni Rikkola
  */
 public class LiteralRestriction extends Restriction implements Cause {
@@ -31,7 +31,7 @@ public class LiteralRestriction extends Restriction implements Cause {
 
 	/**
 	 * Compares two LiteralRestrictions by value.
-	 * 
+	 *
 	 * @param restriction
 	 *            Restriction that this object is compared to.
 	 * @return a negative integer, zero, or a positive integer as this object is
@@ -161,7 +161,7 @@ public class LiteralRestriction extends Restriction implements Cause {
 
 	@Override
 	public String toString() {
-		return "LiteralRestriction from rule '" + ruleName + "' value '"
+		return "LiteralRestriction from rule [" + ruleName + "] value '"
 				+ operator.getOperatorString() + " " + stringValue + "'";
 	}
 }
