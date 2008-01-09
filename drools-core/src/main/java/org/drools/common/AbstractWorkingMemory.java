@@ -55,6 +55,10 @@ import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.facttemplates.Fact;
+import org.drools.process.core.Process;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.ProcessInstanceFactory;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.reteoo.ClassObjectTypeConf;
 import org.drools.reteoo.FactTemplateTypeConf;
 import org.drools.reteoo.LIANodePropagation;
@@ -63,12 +67,9 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
-import org.drools.ruleflow.common.core.Process;
-import org.drools.ruleflow.common.instance.ProcessInstance;
-import org.drools.ruleflow.common.instance.WorkItemManager;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
-import org.drools.ruleflow.instance.impl.RuleFlowProcessInstanceImpl;
+import org.drools.ruleflow.instance.RuleFlowProcessInstanceFactory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -128,7 +129,7 @@ public abstract class AbstractWorkingMemory
 
     protected AgendaEventSupport                         agendaEventSupport                            = new AgendaEventSupport();
 
-    protected RuleFlowEventSupport                       ruleFlowEventSupport                          = new RuleFlowEventSupport();
+    protected RuleFlowEventSupport                workflowEventSupport                          = new RuleFlowEventSupport();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     protected transient InternalRuleBase                 ruleBase;
@@ -163,7 +164,9 @@ public abstract class AbstractWorkingMemory
 
     private int                                          processCounter;
 
-    private WorkItemManager                              taskInstanceManager;
+    private WorkItemManager                              workItemManager;
+    
+    private Map<String, ProcessInstanceFactory>          processInstanceFactories                      = new HashMap();
 
     private TimeMachine                                  timeMachine                                   = new TimeMachine();
 
@@ -216,7 +219,9 @@ public abstract class AbstractWorkingMemory
             this.discardOnLogicalOverride = false;
         }
 
-        this.taskInstanceManager = new WorkItemManager( this );
+        this.workItemManager = new WorkItemManager( this );
+        this.processInstanceFactories.put(
+            RuleFlowProcess.RULEFLOW_TYPE, new RuleFlowProcessInstanceFactory());
 
         this.typeConfMap = new HashMap<EntryPoint, Map<Object, ObjectTypeConf>>();
     }
@@ -238,7 +243,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public void setRuleFlowEventSupport(RuleFlowEventSupport ruleFlowEventSupport) {
-        this.ruleFlowEventSupport = ruleFlowEventSupport;
+        this.workflowEventSupport = ruleFlowEventSupport;
     }
 
     public boolean isSequential() {
@@ -309,7 +314,7 @@ public abstract class AbstractWorkingMemory
     public void addEventListener(final RuleFlowEventListener listener) {
         try {
             this.lock.lock();
-            this.ruleFlowEventSupport.addEventListener( listener );
+            this.workflowEventSupport.addEventListener( listener );
         } finally {
             this.lock.unlock();
         }
@@ -318,7 +323,7 @@ public abstract class AbstractWorkingMemory
     public void removeEventListener(final RuleFlowEventListener listener) {
         try {
             this.lock.lock();
-            this.ruleFlowEventSupport.removeEventListener( listener );
+            this.workflowEventSupport.removeEventListener( listener );
         } finally {
             this.lock.unlock();
         }
@@ -327,7 +332,7 @@ public abstract class AbstractWorkingMemory
     public List getRuleFlowEventListeners() {
         try {
             this.lock.lock();
-            return this.ruleFlowEventSupport.getEventListeners();
+            return this.workflowEventSupport.getEventListeners();
         } finally {
             this.lock.unlock();
         }
@@ -1502,7 +1507,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public RuleFlowEventSupport getRuleFlowEventSupport() {
-        return this.ruleFlowEventSupport;
+        return this.workflowEventSupport;
     }
 
     /**
@@ -1552,27 +1557,36 @@ public abstract class AbstractWorkingMemory
     }
 
     public ProcessInstance startProcess(final String processId) {
+        return startProcess(processId, null);
+    }
+    
+    public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
         final Process process = ((InternalRuleBase) getRuleBase()).getProcess( processId );
         if ( process == null ) {
             throw new IllegalArgumentException( "Unknown process ID: " + processId );
         }
-        if ( process instanceof RuleFlowProcess ) {
-            final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstanceImpl();
-            processInstance.setWorkingMemory( this );
-            processInstance.setProcess( process );
-            processInstance.setId( ++processCounter );
-            processInstances.put( new Long( processInstance.getId() ),
-                                  processInstance );
-            getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance,
-                                                                        this );
-            processInstance.start();
-            getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted( processInstance,
-                                                                       this );
-
-            return processInstance;
-        } else {
-            throw new IllegalArgumentException( "Unknown process type: " + process.getClass() );
+        ProcessInstanceFactory factory = processInstanceFactories.get(process.getType());
+        if (factory == null) {
+            throw new IllegalArgumentException( "Could not create process instance for type: " + process.getType() );
         }
+        ProcessInstance processInstance = factory.createProcessInstance();
+        processInstance.setWorkingMemory( this );
+        processInstance.setProcess( process );
+        processInstance.setId( ++processCounter );
+        processInstances.put( new Long( processInstance.getId() ),
+                              processInstance );
+        if (parameters != null) {
+            for (Map.Entry<String, Object> entry: parameters.entrySet()) {
+                processInstance.setVariable(entry.getKey(), entry.getValue());
+            }
+        }
+        getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance,
+                                                                    this );
+        processInstance.start();
+        getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted( processInstance,
+                                                                   this );
+
+        return processInstance;
     }
 
     public Collection getProcessInstances() {
@@ -1586,9 +1600,13 @@ public abstract class AbstractWorkingMemory
     public void removeProcessInstance(ProcessInstance processInstance) {
         processInstances.remove( processInstance );
     }
+    
+    public void registerProcessInstanceFactory(String type, ProcessInstanceFactory processInstanceFactory) {
+        processInstanceFactories.put(type, processInstanceFactory);
+    }
 
     public WorkItemManager getWorkItemManager() {
-        return taskInstanceManager;
+        return workItemManager;
     }
 
     public List iterateObjectsToList() {

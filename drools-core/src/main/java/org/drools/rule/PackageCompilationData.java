@@ -38,14 +38,14 @@ import org.drools.CheckedDroolsException;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.common.DroolsObjectInputStream;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
-import org.drools.ruleflow.core.impl.ReturnValueConstraintEvaluator;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Consequence;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueEvaluator;
 import org.drools.spi.ReturnValueExpression;
+import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
 public class PackageCompilationData
     implements
@@ -268,8 +268,8 @@ public class PackageCompilationData
             ((Rule) invoker).setConsequence( (Consequence) clazz.newInstance() );
         } else if ( invoker instanceof JavaAccumulatorFunctionExecutor ) {
             ((JavaAccumulatorFunctionExecutor) invoker).setExpression( (ReturnValueExpression) clazz.newInstance() );
-        } else if ( invoker instanceof ActionNodeImpl ) {
-            ((ActionNodeImpl) invoker).setAction( clazz.newInstance() );
+        } else if ( invoker instanceof ActionNode ) {
+            ((ActionNode) invoker).setAction( clazz.newInstance() );
         } else if ( invoker instanceof ReturnValueConstraintEvaluator ) {
             ((ReturnValueConstraintEvaluator) invoker).setEvaluator( (ReturnValueEvaluator) clazz.newInstance() );
         }

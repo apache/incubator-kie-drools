@@ -16,7 +16,7 @@ package org.drools.event;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.instance.RuleFlowNodeInstance;
+import org.drools.workflow.instance.NodeInstance;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
@@ -25,19 +25,19 @@ public class RuleFlowNodeTriggeredEvent extends RuleFlowEvent {
 
     private static final long serialVersionUID = 400L;
     
-    private RuleFlowNodeInstance nodeInstance;
+    private NodeInstance nodeInstance;
 
-    public RuleFlowNodeTriggeredEvent(final RuleFlowNodeInstance nodeInstance) {
+    public RuleFlowNodeTriggeredEvent(final NodeInstance nodeInstance) {
         super( nodeInstance.getProcessInstance() );
         this.nodeInstance = nodeInstance;
     }
     
-    public RuleFlowNodeInstance getRuleFlowNodeInstance() {
+    public NodeInstance getRuleFlowNodeInstance() {
         return nodeInstance;
     }
 
     public String toString() {
-        return "==>[RuleFlowNodeTriggered(nodeId=" + nodeInstance.getNodeId() + "; id=" + nodeInstance.getId() 
-            + "; processName=" + getRuleFlowProcessInstance().getRuleFlowProcess().getName() + "; processId=" + getRuleFlowProcessInstance().getRuleFlowProcess().getId() + ")]";
+        return "==>[WorkflowNodeTriggered(nodeId=" + nodeInstance.getNodeId() + "; id=" + nodeInstance.getId() 
+            + "; processName=" + getRuleFlowProcessInstance().getProcess().getName() + "; processId=" + getRuleFlowProcessInstance().getProcess().getId() + ")]";
     }
 }

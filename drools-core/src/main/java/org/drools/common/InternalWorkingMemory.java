@@ -9,12 +9,13 @@ import org.drools.WorkingMemory;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
-import org.drools.ruleflow.common.instance.ProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
@@ -36,6 +37,8 @@ public interface InternalWorkingMemory
     public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
 
     public void setRuleFlowEventSupport(RuleFlowEventSupport ruleFlowEventSupport);
+    
+    public void registerProcessInstanceFactory(String type, ProcessInstanceFactory nodeInstanceFactory);
 
     public Object getNodeMemory(NodeMemory node);
 

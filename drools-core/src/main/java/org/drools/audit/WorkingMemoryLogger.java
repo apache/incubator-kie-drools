@@ -389,7 +389,7 @@ public abstract class WorkingMemoryLogger
                                             WorkingMemory workingMemory) {
         filterLogEvent(new RuleFlowNodeLogEvent(LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED,
                 event.getRuleFlowNodeInstance().getId() + "",
-                event.getRuleFlowNodeInstance().getProcessInstance().getRuleFlowProcess().getNode(event.getRuleFlowNodeInstance().getNodeId()).getName(),
+                event.getRuleFlowNodeInstance().getNode().getName(),
                 event.getRuleFlowProcessInstance().getProcess().getId(), event
                         .getRuleFlowProcessInstance().getProcess().getName()));
     }
@@ -398,7 +398,7 @@ public abstract class WorkingMemoryLogger
                                            WorkingMemory workingMemory) {
         filterLogEvent(new RuleFlowNodeLogEvent(LogEvent.AFTER_RULEFLOW_NODE_TRIGGERED,
                 event.getRuleFlowNodeInstance().getId() + "",
-                event.getRuleFlowNodeInstance().getProcessInstance().getRuleFlowProcess().getNode(event.getRuleFlowNodeInstance().getNodeId()).getName(),
+                event.getRuleFlowNodeInstance().getNode().getName(),
                 event.getRuleFlowProcessInstance().getProcess().getId(), event
                         .getRuleFlowProcessInstance().getProcess().getName()));
     }

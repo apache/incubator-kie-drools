@@ -16,7 +16,7 @@ package org.drools.event;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
@@ -25,11 +25,11 @@ public class RuleFlowCompletedEvent extends RuleFlowEvent {
 
     private static final long serialVersionUID = 400L;
 
-    public RuleFlowCompletedEvent(final RuleFlowProcessInstance instance) {
+    public RuleFlowCompletedEvent(final ProcessInstance instance) {
         super( instance );
     }
 
     public String toString() {
-        return "==>[RuleFlowCompleted(name=" + getRuleFlowProcessInstance().getRuleFlowProcess().getName() + "; id=" + getRuleFlowProcessInstance().getRuleFlowProcess().getId() + ")]";
+        return "==>[ProcessCompleted(name=" + getRuleFlowProcessInstance().getProcess().getName() + "; id=" + getRuleFlowProcessInstance().getProcess().getId() + ")]";
     }
 }
