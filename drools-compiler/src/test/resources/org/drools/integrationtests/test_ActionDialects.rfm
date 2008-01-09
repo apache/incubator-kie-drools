@@ -1,0 +1,129 @@
+<org.drools.ruleflow.core.RuleFlowProcess id="1">
+  <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess$WorkflowProcessNodeContainer" id="2">
+    <outer-class class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+    <nodes id="3">
+      <entry>
+        <long>1</long>
+        <org.drools.workflow.core.node.StartNode id="4">
+          <id>1</id>
+          <name>Start</name>
+          <incomingConnections id="5"/>
+          <outgoingConnections id="6">
+            <entry>
+              <string>DROOLS_DEFAULT</string>
+              <list id="7">
+                <org.drools.workflow.core.impl.ConnectionImpl id="8">
+                  <from class="org.drools.workflow.core.node.StartNode" reference="4"/>
+                  <to class="org.drools.workflow.core.node.ActionNode" id="9">
+                    <action class="org.drools.workflow.core.impl.DroolsConsequenceAction" id="10">
+                      <dialect>mvel</dialect>
+                      <consequence>list.add(&quot;mvel was here&quot;)</consequence>
+                    </action>
+                    <id>2</id>
+                    <name>mvel</name>
+                    <incomingConnections id="11">
+                      <entry>
+                        <string>DROOLS_DEFAULT</string>
+                        <list id="12">
+                          <org.drools.workflow.core.impl.ConnectionImpl reference="8"/>
+                        </list>
+                      </entry>
+                    </incomingConnections>
+                    <outgoingConnections id="13">
+                      <entry>
+                        <string>DROOLS_DEFAULT</string>
+                        <list id="14">
+                          <org.drools.workflow.core.impl.ConnectionImpl id="15">
+                            <from class="org.drools.workflow.core.node.ActionNode" reference="9"/>
+                            <to class="org.drools.workflow.core.node.ActionNode" id="16">
+                              <action class="org.drools.workflow.core.impl.DroolsConsequenceAction" id="17">
+                                <dialect>java</dialect>
+                                <consequence>list.add( &quot;java was here&quot; );</consequence>
+                              </action>
+                              <id>3</id>
+                              <name>java</name>
+                              <incomingConnections id="18">
+                                <entry>
+                                  <string>DROOLS_DEFAULT</string>
+                                  <list id="19">
+                                    <org.drools.workflow.core.impl.ConnectionImpl reference="15"/>
+                                  </list>
+                                </entry>
+                              </incomingConnections>
+                              <outgoingConnections id="20">
+                                <entry>
+                                  <string>DROOLS_DEFAULT</string>
+                                  <list id="21">
+                                    <org.drools.workflow.core.impl.ConnectionImpl id="22">
+                                      <from class="org.drools.workflow.core.node.ActionNode" reference="16"/>
+                                      <to class="org.drools.workflow.core.node.EndNode" id="23">
+                                        <id>4</id>
+                                        <name>End</name>
+                                        <incomingConnections id="24">
+                                          <entry>
+                                            <string>DROOLS_DEFAULT</string>
+                                            <list id="25">
+                                              <org.drools.workflow.core.impl.ConnectionImpl reference="22"/>
+                                            </list>
+                                          </entry>
+                                        </incomingConnections>
+                                        <outgoingConnections id="26"/>
+                                        <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                      </to>
+                                      <fromType>DROOLS_DEFAULT</fromType>
+                                      <toType>DROOLS_DEFAULT</toType>
+                                    </org.drools.workflow.core.impl.ConnectionImpl>
+                                  </list>
+                                </entry>
+                              </outgoingConnections>
+                              <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                            </to>
+                            <fromType>DROOLS_DEFAULT</fromType>
+                            <toType>DROOLS_DEFAULT</toType>
+                          </org.drools.workflow.core.impl.ConnectionImpl>
+                        </list>
+                      </entry>
+                    </outgoingConnections>
+                    <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                  </to>
+                  <fromType>DROOLS_DEFAULT</fromType>
+                  <toType>DROOLS_DEFAULT</toType>
+                </org.drools.workflow.core.impl.ConnectionImpl>
+              </list>
+            </entry>
+          </outgoingConnections>
+          <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+        </org.drools.workflow.core.node.StartNode>
+      </entry>
+      <entry>
+        <long>2</long>
+        <org.drools.workflow.core.node.ActionNode reference="9"/>
+      </entry>
+      <entry>
+        <long>3</long>
+        <org.drools.workflow.core.node.ActionNode reference="16"/>
+      </entry>
+      <entry>
+        <long>4</long>
+        <org.drools.workflow.core.node.EndNode reference="23"/>
+      </entry>
+    </nodes>
+    <lastNodeId>4</lastNodeId>
+  </nodeContainer>
+  <imports id="27">
+    <string>java.util.List</string>
+  </imports>
+  <globals id="28">
+    <entry>
+      <string>list</string>
+      <string>List</string>
+    </entry>
+  </globals>
+  <id>ActionDialects</id>
+  <name>ActionDialects</name>
+  <type>RuleFlow</type>
+  <packageName>org.drools.test</packageName>
+  <variableScope class="org.drools.process.core.impl.VariableScopeImpl" id="29">
+    <variables id="30"/>
+  </variableScope>
+</org.drools.ruleflow.core.RuleFlowProcess>
