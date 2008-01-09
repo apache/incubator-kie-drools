@@ -47,7 +47,7 @@ public class DynamicRulesTest extends TestCase {
                                             config );
     }
 
-    public void xxxtestDynamicRuleAdditions() throws Exception {
+    public void testDynamicRuleAdditions() throws Exception {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) );
 
         PackageBuilder builder = new PackageBuilder();
@@ -142,7 +142,7 @@ public class DynamicRulesTest extends TestCase {
 
     }
 
-    public void xxxtestDynamicRuleRemovals() throws Exception {
+    public void testDynamicRuleRemovals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
@@ -216,7 +216,7 @@ public class DynamicRulesTest extends TestCase {
                       workingMemory.getAgenda().getActivations().length );
     }
 
-    public void xxxtestDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
+    public void testDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
@@ -256,7 +256,7 @@ public class DynamicRulesTest extends TestCase {
         }
     }
 
-    public void xxxtestDynamicFunction() throws Exception {
+    public void testDynamicFunction() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction1.drl" ) ) );
         
@@ -326,7 +326,7 @@ public class DynamicRulesTest extends TestCase {
                       list.get( 2 ) );
     }
 
-    public void xxxtestRemovePackage() throws Exception {
+    public void testRemovePackage() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
 
@@ -354,7 +354,7 @@ public class DynamicRulesTest extends TestCase {
         ruleBaseWM.addPackage( serialisePackage( builder1.getPackage() ) );
     }
 
-    public void xxxtestDynamicRules() throws Exception {
+    public void testDynamicRules() throws Exception {
         final RuleBase ruleBase = getRuleBase();
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final Cheese a = new Cheese( "stilton",
@@ -375,7 +375,7 @@ public class DynamicRulesTest extends TestCase {
         workingMemory.fireAllRules();
     }
 
-    public void xxxtestDynamicRules2() throws Exception {
+    public void testDynamicRules2() throws Exception {
         final RuleBase ruleBase = getRuleBase();
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -397,7 +397,7 @@ public class DynamicRulesTest extends TestCase {
         workingMemory.fireAllRules();
     }
 
-    public void xxxtestRuleBaseAddRemove() throws Exception {
+    public void testRuleBaseAddRemove() throws Exception {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
         //add and remove
@@ -415,7 +415,7 @@ public class DynamicRulesTest extends TestCase {
         ruleBase.removePackage( pkg.getName() );
     }
 
-    public void xxxtestClassLoaderSwitchsUsingConf() throws Exception {
+    public void testClassLoaderSwitchsUsingConf() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/" )},
@@ -460,7 +460,7 @@ public class DynamicRulesTest extends TestCase {
 
     }
 
-    public void xxxtestClassLoaderSwitchsUsingContext() throws Exception {
+    public void testClassLoaderSwitchsUsingContext() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
             ClassLoader original = Thread.currentThread().getContextClassLoader();
