@@ -1,0 +1,324 @@
+<org.drools.ruleflow.core.RuleFlowProcess id="1">
+  <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess$WorkflowProcessNodeContainer" id="2">
+    <outer-class class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+    <nodes id="3">
+      <entry>
+        <long>1</long>
+        <org.drools.workflow.core.node.StartNode id="4">
+          <id>1</id>
+          <name>Start</name>
+          <incomingConnections id="5"/>
+          <outgoingConnections id="6">
+            <entry>
+              <string>DROOLS_DEFAULT</string>
+              <list id="7">
+                <org.drools.workflow.core.impl.ConnectionImpl id="8">
+                  <from class="org.drools.workflow.core.node.StartNode" reference="4"/>
+                  <to class="org.drools.workflow.core.node.Split" id="9">
+                    <type>3</type>
+                    <constraints id="10">
+                      <entry>
+                        <org.drools.workflow.core.impl.ConnectionImpl id="11">
+                          <from class="org.drools.workflow.core.node.Split" reference="9"/>
+                          <to class="org.drools.workflow.core.node.ActionNode" id="12">
+                            <action class="org.drools.workflow.core.impl.DroolsConsequenceAction" id="13">
+                              <dialect>mvel</dialect>
+                              <consequence>outList.add(&quot;MVELRuleConstraint was here&quot;);</consequence>
+                            </action>
+                            <id>6</id>
+                            <name>MVELRuleConstraintAction</name>
+                            <incomingConnections id="14">
+                              <entry>
+                                <string>DROOLS_DEFAULT</string>
+                                <list id="15">
+                                  <org.drools.workflow.core.impl.ConnectionImpl reference="11"/>
+                                </list>
+                              </entry>
+                            </incomingConnections>
+                            <outgoingConnections id="16">
+                              <entry>
+                                <string>DROOLS_DEFAULT</string>
+                                <list id="17">
+                                  <org.drools.workflow.core.impl.ConnectionImpl id="18">
+                                    <from class="org.drools.workflow.core.node.ActionNode" reference="12"/>
+                                    <to class="org.drools.workflow.core.node.Join" id="19">
+                                      <type>1</type>
+                                      <id>7</id>
+                                      <name>Join</name>
+                                      <incomingConnections id="20">
+                                        <entry>
+                                          <string>DROOLS_DEFAULT</string>
+                                          <list id="21">
+                                            <org.drools.workflow.core.impl.ConnectionImpl reference="18"/>
+                                            <org.drools.workflow.core.impl.ConnectionImpl id="22">
+                                              <from class="org.drools.workflow.core.node.ActionNode" id="23">
+                                                <action class="org.drools.workflow.core.impl.DroolsConsequenceAction" id="24">
+                                                  <dialect>java</dialect>
+                                                  <consequence>outList.add(&quot;JavaRuleConstraint was here&quot;);</consequence>
+                                                </action>
+                                                <id>5</id>
+                                                <name>JavaRuleConstraintAction</name>
+                                                <incomingConnections id="25">
+                                                  <entry>
+                                                    <string>DROOLS_DEFAULT</string>
+                                                    <list id="26">
+                                                      <org.drools.workflow.core.impl.ConnectionImpl id="27">
+                                                        <from class="org.drools.workflow.core.node.Split" reference="9"/>
+                                                        <to class="org.drools.workflow.core.node.ActionNode" reference="23"/>
+                                                        <fromType>DROOLS_DEFAULT</fromType>
+                                                        <toType>DROOLS_DEFAULT</toType>
+                                                      </org.drools.workflow.core.impl.ConnectionImpl>
+                                                    </list>
+                                                  </entry>
+                                                </incomingConnections>
+                                                <outgoingConnections id="28">
+                                                  <entry>
+                                                    <string>DROOLS_DEFAULT</string>
+                                                    <list id="29">
+                                                      <org.drools.workflow.core.impl.ConnectionImpl reference="22"/>
+                                                    </list>
+                                                  </entry>
+                                                </outgoingConnections>
+                                                <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                              </from>
+                                              <to class="org.drools.workflow.core.node.Join" reference="19"/>
+                                              <fromType>DROOLS_DEFAULT</fromType>
+                                              <toType>DROOLS_DEFAULT</toType>
+                                            </org.drools.workflow.core.impl.ConnectionImpl>
+                                            <org.drools.workflow.core.impl.ConnectionImpl id="30">
+                                              <from class="org.drools.workflow.core.node.ActionNode" id="31">
+                                                <action class="org.drools.workflow.core.impl.DroolsConsequenceAction" id="32">
+                                                  <dialect>mvel</dialect>
+                                                  <consequence>outList.add(&quot;JavaCodeConstraint was here&quot;);</consequence>
+                                                </action>
+                                                <id>4</id>
+                                                <name>JavaCodeConstraintAction</name>
+                                                <incomingConnections id="33">
+                                                  <entry>
+                                                    <string>DROOLS_DEFAULT</string>
+                                                    <list id="34">
+                                                      <org.drools.workflow.core.impl.ConnectionImpl id="35">
+                                                        <from class="org.drools.workflow.core.node.Split" reference="9"/>
+                                                        <to class="org.drools.workflow.core.node.ActionNode" reference="31"/>
+                                                        <fromType>DROOLS_DEFAULT</fromType>
+                                                        <toType>DROOLS_DEFAULT</toType>
+                                                      </org.drools.workflow.core.impl.ConnectionImpl>
+                                                    </list>
+                                                  </entry>
+                                                </incomingConnections>
+                                                <outgoingConnections id="36">
+                                                  <entry>
+                                                    <string>DROOLS_DEFAULT</string>
+                                                    <list id="37">
+                                                      <org.drools.workflow.core.impl.ConnectionImpl reference="30"/>
+                                                    </list>
+                                                  </entry>
+                                                </outgoingConnections>
+                                                <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                              </from>
+                                              <to class="org.drools.workflow.core.node.Join" reference="19"/>
+                                              <fromType>DROOLS_DEFAULT</fromType>
+                                              <toType>DROOLS_DEFAULT</toType>
+                                            </org.drools.workflow.core.impl.ConnectionImpl>
+                                            <org.drools.workflow.core.impl.ConnectionImpl id="38">
+                                              <from class="org.drools.workflow.core.node.ActionNode" id="39">
+                                                <action class="org.drools.workflow.core.impl.DroolsConsequenceAction" id="40">
+                                                  <dialect>mvel</dialect>
+                                                  <consequence>outList.add(&quot;MVELCodeConstraint was here&quot;);</consequence>
+                                                </action>
+                                                <id>3</id>
+                                                <name>MVELCodeConstraintAction</name>
+                                                <incomingConnections id="41">
+                                                  <entry>
+                                                    <string>DROOLS_DEFAULT</string>
+                                                    <list id="42">
+                                                      <org.drools.workflow.core.impl.ConnectionImpl id="43">
+                                                        <from class="org.drools.workflow.core.node.Split" reference="9"/>
+                                                        <to class="org.drools.workflow.core.node.ActionNode" reference="39"/>
+                                                        <fromType>DROOLS_DEFAULT</fromType>
+                                                        <toType>DROOLS_DEFAULT</toType>
+                                                      </org.drools.workflow.core.impl.ConnectionImpl>
+                                                    </list>
+                                                  </entry>
+                                                </incomingConnections>
+                                                <outgoingConnections id="44">
+                                                  <entry>
+                                                    <string>DROOLS_DEFAULT</string>
+                                                    <list id="45">
+                                                      <org.drools.workflow.core.impl.ConnectionImpl reference="38"/>
+                                                    </list>
+                                                  </entry>
+                                                </outgoingConnections>
+                                                <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                              </from>
+                                              <to class="org.drools.workflow.core.node.Join" reference="19"/>
+                                              <fromType>DROOLS_DEFAULT</fromType>
+                                              <toType>DROOLS_DEFAULT</toType>
+                                            </org.drools.workflow.core.impl.ConnectionImpl>
+                                          </list>
+                                        </entry>
+                                      </incomingConnections>
+                                      <outgoingConnections id="46">
+                                        <entry>
+                                          <string>DROOLS_DEFAULT</string>
+                                          <list id="47">
+                                            <org.drools.workflow.core.impl.ConnectionImpl id="48">
+                                              <from class="org.drools.workflow.core.node.Join" reference="19"/>
+                                              <to class="org.drools.workflow.core.node.EndNode" id="49">
+                                                <id>8</id>
+                                                <name>End</name>
+                                                <incomingConnections id="50">
+                                                  <entry>
+                                                    <string>DROOLS_DEFAULT</string>
+                                                    <list id="51">
+                                                      <org.drools.workflow.core.impl.ConnectionImpl reference="48"/>
+                                                    </list>
+                                                  </entry>
+                                                </incomingConnections>
+                                                <outgoingConnections id="52"/>
+                                                <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                              </to>
+                                              <fromType>DROOLS_DEFAULT</fromType>
+                                              <toType>DROOLS_DEFAULT</toType>
+                                            </org.drools.workflow.core.impl.ConnectionImpl>
+                                          </list>
+                                        </entry>
+                                      </outgoingConnections>
+                                      <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                    </to>
+                                    <fromType>DROOLS_DEFAULT</fromType>
+                                    <toType>DROOLS_DEFAULT</toType>
+                                  </org.drools.workflow.core.impl.ConnectionImpl>
+                                </list>
+                              </entry>
+                            </outgoingConnections>
+                            <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                          </to>
+                          <fromType>DROOLS_DEFAULT</fromType>
+                          <toType>DROOLS_DEFAULT</toType>
+                        </org.drools.workflow.core.impl.ConnectionImpl>
+                        <org.drools.workflow.core.impl.ConstraintImpl id="53">
+                          <name>MVELRuleConstraint</name>
+                          <constraint>list : List()&#x0D;
+eval( list.contains( 6 ) )</constraint>
+                          <priority>6</priority>
+                          <dialect>mvel</dialect>
+                          <type>rule</type>
+                        </org.drools.workflow.core.impl.ConstraintImpl>
+                      </entry>
+                      <entry>
+                        <org.drools.workflow.core.impl.ConnectionImpl reference="43"/>
+                        <org.drools.workflow.core.impl.ConstraintImpl id="54">
+                          <name>MVELCodeConstraint</name>
+                          <constraint>return inList.contains( 1 );</constraint>
+                          <priority>1</priority>
+                          <dialect>mvel</dialect>
+                          <type>code</type>
+                        </org.drools.workflow.core.impl.ConstraintImpl>
+                      </entry>
+                      <entry>
+                        <org.drools.workflow.core.impl.ConnectionImpl reference="27"/>
+                        <org.drools.workflow.core.impl.ConstraintImpl id="55">
+                          <name>JavaRuleConstraint</name>
+                          <constraint>list : List()&#x0D;
+eval( list.contains( 25 ) )</constraint>
+                          <priority>25</priority>
+                          <dialect>java</dialect>
+                          <type>rule</type>
+                        </org.drools.workflow.core.impl.ConstraintImpl>
+                      </entry>
+                      <entry>
+                        <org.drools.workflow.core.impl.ConnectionImpl reference="35"/>
+                        <org.drools.workflow.core.impl.ConstraintImpl id="56">
+                          <name>JavaCodeConstraint</name>
+                          <constraint>return inList.contains( 3 );</constraint>
+                          <priority>3</priority>
+                          <dialect>java</dialect>
+                          <type>code</type>
+                        </org.drools.workflow.core.impl.ConstraintImpl>
+                      </entry>
+                    </constraints>
+                    <id>2</id>
+                    <name>Split</name>
+                    <incomingConnections id="57">
+                      <entry>
+                        <string>DROOLS_DEFAULT</string>
+                        <list id="58">
+                          <org.drools.workflow.core.impl.ConnectionImpl reference="8"/>
+                        </list>
+                      </entry>
+                    </incomingConnections>
+                    <outgoingConnections id="59">
+                      <entry>
+                        <string>DROOLS_DEFAULT</string>
+                        <list id="60">
+                          <org.drools.workflow.core.impl.ConnectionImpl reference="43"/>
+                          <org.drools.workflow.core.impl.ConnectionImpl reference="35"/>
+                          <org.drools.workflow.core.impl.ConnectionImpl reference="27"/>
+                          <org.drools.workflow.core.impl.ConnectionImpl reference="11"/>
+                        </list>
+                      </entry>
+                    </outgoingConnections>
+                    <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                  </to>
+                  <fromType>DROOLS_DEFAULT</fromType>
+                  <toType>DROOLS_DEFAULT</toType>
+                </org.drools.workflow.core.impl.ConnectionImpl>
+              </list>
+            </entry>
+          </outgoingConnections>
+          <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+        </org.drools.workflow.core.node.StartNode>
+      </entry>
+      <entry>
+        <long>2</long>
+        <org.drools.workflow.core.node.Split reference="9"/>
+      </entry>
+      <entry>
+        <long>3</long>
+        <org.drools.workflow.core.node.ActionNode reference="39"/>
+      </entry>
+      <entry>
+        <long>4</long>
+        <org.drools.workflow.core.node.ActionNode reference="31"/>
+      </entry>
+      <entry>
+        <long>5</long>
+        <org.drools.workflow.core.node.ActionNode reference="23"/>
+      </entry>
+      <entry>
+        <long>6</long>
+        <org.drools.workflow.core.node.ActionNode reference="12"/>
+      </entry>
+      <entry>
+        <long>7</long>
+        <org.drools.workflow.core.node.Join reference="19"/>
+      </entry>
+      <entry>
+        <long>8</long>
+        <org.drools.workflow.core.node.EndNode reference="49"/>
+      </entry>
+    </nodes>
+    <lastNodeId>8</lastNodeId>
+  </nodeContainer>
+  <imports id="61">
+    <string>java.util.List</string>
+  </imports>
+  <globals id="62">
+    <entry>
+      <string>inList</string>
+      <string>List</string>
+    </entry>
+    <entry>
+      <string>outList</string>
+      <string>List</string>
+    </entry>
+  </globals>
+  <id>ConstraintDialects</id>
+  <name>ConstraintDialects</name>
+  <type>RuleFlow</type>
+  <packageName>org.drools.test</packageName>
+  <variableScope class="org.drools.process.core.impl.VariableScopeImpl" id="63">
+    <variables id="64"/>
+  </variableScope>
+</org.drools.ruleflow.core.RuleFlowProcess>
