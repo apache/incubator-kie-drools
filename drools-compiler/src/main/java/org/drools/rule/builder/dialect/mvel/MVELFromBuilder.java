@@ -78,6 +78,7 @@ public class MVELFromBuilder
                                                        analysis,
                                                        null,
                                                        null,
+                                                       null,
                                                        context );
 
             dataProvider = new MVELDataProvider( expr,

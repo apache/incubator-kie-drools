@@ -406,9 +406,11 @@ public class MVELDialect
                                 final Dialect.AnalysisResult analysis,
                                 final Map interceptors,
                                 final Map outerDeclarations,
+                                final Map otherInputVariables,
                                 final PackageBuildContext context) {
         final ParserContext parserContext = getParserContext( analysis,
                                                               outerDeclarations,
+                                                              otherInputVariables,
                                                               context );
 
         ExpressionCompiler compiler = new ExpressionCompiler( text.trim() );
@@ -424,6 +426,7 @@ public class MVELDialect
 
     public ParserContext getParserContext(final Dialect.AnalysisResult analysis,
                                           final Map outerDeclarations,
+                                          final Map otherInputVariables,
                                           final PackageBuildContext context) {
         // @todo proper source file name
         final ParserContext parserContext = new ParserContext( this.imports,
@@ -462,9 +465,8 @@ public class MVELDialect
                                     (Class) globalTypes.get( identifier ) );
         }
 
-        Map mvelVars = ((MVELAnalysisResult) analysis).getMvelVariables();
-        if ( mvelVars != null ) {
-            for ( Iterator it = mvelVars.entrySet().iterator(); it.hasNext(); ) {
+        if( otherInputVariables != null ) {
+            for ( Iterator it = otherInputVariables.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
                 parserContext.addInput( (String) entry.getKey(),
                                         (Class) entry.getValue() );
