@@ -32,7 +32,7 @@ import org.drools.xml.rules.RestrictionConnectiveHandler;
 import org.drools.xml.rules.ReturnValueRestrictionHandler;
 import org.drools.xml.rules.RuleHandler;
 import org.drools.xml.rules.VariableRestrictionsHandler;
-import org.drools.ruleflow.common.core.Process;
+import org.drools.process.core.Process;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -98,7 +98,7 @@ public class XmlProcessReader {
         return this.process;
     }
 
-    void setProcess(final Process packageDescr) {
+    void setProcess(final Process process) {
         this.process = process;
     }
 

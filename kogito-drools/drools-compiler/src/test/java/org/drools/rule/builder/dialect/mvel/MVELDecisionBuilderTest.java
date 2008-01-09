@@ -40,10 +40,10 @@ import org.drools.rule.Rule;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
 import org.drools.spi.Action;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
+import org.drools.workflow.core.node.ActionNode;
 import org.mvel.ExpressionCompiler;
 import org.mvel.ParserContext;
 
@@ -67,7 +67,7 @@ public class MVELDecisionBuilderTest extends TestCase {
         
         pkgBuilder.addPackageFromDrl( new StringReader("package pkg1;\nglobal java.util.List list;\n") );        
         
-        ActionNodeImpl actionNode = new ActionNodeImpl();
+        ActionNode actionNode = new ActionNode();
         
         final MVELActionBuilder builder = new MVELActionBuilder();
         builder.build( context,

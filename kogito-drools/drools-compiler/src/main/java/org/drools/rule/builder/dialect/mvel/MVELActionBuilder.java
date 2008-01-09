@@ -16,7 +16,7 @@ import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
+import org.drools.workflow.core.node.ActionNode;
 import org.mvel.Macro;
 import org.mvel.MacroProcessor;
 
@@ -29,7 +29,7 @@ public class MVELActionBuilder
     }
 
     public void build(final PackageBuildContext context,
-                      final ActionNodeImpl actionNode,
+                      final ActionNode actionNode,
                       final ActionDescr actionDescr) {
 
         String text = actionDescr.getText();

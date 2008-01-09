@@ -1,0 +1,29 @@
+<process  xmlns="http://drools.org/drools-4.0/process"
+	      xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	      xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd" 
+          name="process name" id="process name" package-name="org.domain" >
+          
+    <header>
+        <imports>
+    		<import name="java.util.List" />    
+        </imports>        					
+	        
+        <globals>
+            <global identifier="list" type="List" />        
+        </globals>
+    </header>      
+    
+    <nodes>              
+	    <start name="start node" />
+	    
+	    <action name="action node" dialect="java">list.add( "action node was here" );</action>	    
+	    
+	    <end name="end node" />
+    </nodes>
+    
+    <connections>
+        <connection from="start node" to="action node" />
+        <connection from="action node" to="end node" />
+    </connections>
+    
+</process>

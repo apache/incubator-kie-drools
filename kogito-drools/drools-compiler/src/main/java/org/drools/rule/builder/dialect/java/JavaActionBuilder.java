@@ -33,8 +33,8 @@ import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
 import org.drools.spi.PatternExtractor;
+import org.drools.workflow.core.node.ActionNode;
 
 /**
  * @author etirelli
@@ -48,7 +48,7 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
      * @see org.drools.semantics.java.builder.ConsequenceBuilder#buildConsequence(org.drools.semantics.java.builder.BuildContext, org.drools.semantics.java.builder.BuildUtils, org.drools.lang.descr.RuleDescr)
      */
     public void build(final PackageBuildContext context,
-                      final ActionNodeImpl actionNode,
+                      final ActionNode actionNode,
                       final ActionDescr actionDescr) {
 
         final String className = "action" + context.getNextId();               

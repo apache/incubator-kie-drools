@@ -6,8 +6,8 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ProcessDescr;
 
+import org.drools.process.core.Process;
 import org.drools.rule.Package;
-import org.drools.ruleflow.common.core.Process;
 
 public class ProcessBuildContext extends PackageBuildContext {
     private Process      process;

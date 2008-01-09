@@ -8,15 +8,14 @@ import java.util.Map.Entry;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
 import org.drools.lang.descr.ProcessDescr;
+import org.drools.process.core.Process;
 import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.ruleflow.common.core.Process;
-import org.drools.ruleflow.core.Connection;
-import org.drools.ruleflow.core.Node;
-import org.drools.ruleflow.core.Split;
-import org.drools.ruleflow.core.impl.ConstraintImpl;
-import org.drools.ruleflow.core.impl.ReturnValueConstraintEvaluator;
-import org.drools.ruleflow.core.impl.RuleFlowConstraintEvaluator;
-import org.drools.ruleflow.core.impl.SplitImpl;
+import org.drools.workflow.core.Connection;
+import org.drools.workflow.core.Node;
+import org.drools.workflow.core.impl.ConstraintImpl;
+import org.drools.workflow.core.node.Split;
+import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
+import org.drools.workflow.instance.impl.RuleConstraintEvaluator;
 
 public class SplitNodeBuilder
     implements
@@ -26,7 +25,7 @@ public class SplitNodeBuilder
                            ProcessDescr processDescr,
                            ProcessBuildContext context,
                            Node node) {
-        SplitImpl splitNode = ( SplitImpl ) node;
+        Split splitNode = ( Split ) node;
         
         if ( splitNode.getType() == Split.TYPE_AND ) {
             // we only process or/xor
@@ -40,7 +39,7 @@ public class SplitNodeBuilder
             ConstraintImpl constraint = (ConstraintImpl) entry.getValue();
             
             if ( "rule".equals( constraint.getType() )) {
-                RuleFlowConstraintEvaluator ruleConstraint = new RuleFlowConstraintEvaluator();
+                RuleConstraintEvaluator ruleConstraint = new RuleConstraintEvaluator();
                 ruleConstraint.setDialect( constraint.getDialect() );
                 ruleConstraint.setName( constraint.getName() );
                 ruleConstraint.setPriority( constraint.getPriority() );

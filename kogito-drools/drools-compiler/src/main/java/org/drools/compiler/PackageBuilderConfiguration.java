@@ -31,12 +31,12 @@ import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.process.builder.ProcessNodeBuilder;
 import org.drools.process.builder.ProcessNodeBuilderRegistry;
-import org.drools.ruleflow.core.Node;
-import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactory;
-import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactoryRegistry;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassUtils;
 import org.drools.util.ConfFileUtils;
+import org.drools.workflow.core.Node;
+import org.drools.workflow.instance.impl.NodeInstanceFactory;
+import org.drools.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.Handler;
 import org.drools.xml.ProcessSemanticModule;
@@ -86,7 +86,7 @@ public class PackageBuilderConfiguration {
 
     private SemanticModules            semanticModules;
 
-    private ProcessNodeBuilderRegistry nodeBuilderRegistry         = new ProcessNodeBuilderRegistry();
+    private ProcessNodeBuilderRegistry nodeBuilderRegistry;
 
     /**
      * Constructor that sets the parent class loader for the package being built/compiled

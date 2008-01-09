@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,19 +28,21 @@ import java.util.Map;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.process.builder.ProcessNodeBuilder;
 import org.drools.process.builder.ProcessNodeBuilderRegistry;
+import org.drools.process.core.Process;
+import org.drools.process.core.validation.ProcessValidationError;
+import org.drools.process.core.validation.ProcessValidator;
 import org.drools.rule.Package;
 import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.ruleflow.common.core.Process;
-import org.drools.ruleflow.core.Connection;
-import org.drools.ruleflow.core.Constraint;
-import org.drools.ruleflow.core.MilestoneNode;
-import org.drools.ruleflow.core.Node;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.ruleflow.core.RuleFlowProcessValidationError;
-import org.drools.ruleflow.core.RuleFlowProcessValidator;
-import org.drools.ruleflow.core.Split;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
-import org.drools.ruleflow.core.impl.RuleFlowProcessValidatorImpl;
+import org.drools.ruleflow.core.validation.RuleFlowProcessValidator;
+import org.drools.workflow.core.Connection;
+import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.Node;
+import org.drools.workflow.core.NodeContainer;
+import org.drools.workflow.core.WorkflowProcess;
+import org.drools.workflow.core.impl.WorkflowProcessImpl;
+import org.drools.workflow.core.node.MilestoneNode;
+import org.drools.workflow.core.node.Split;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -53,9 +56,11 @@ public class ProcessBuilder {
 
     private PackageBuilder packageBuilder;
     private final List     errors = new ArrayList();
+    private Map<String, ProcessValidator> processValidators = new HashMap<String, ProcessValidator>();;
 
     public ProcessBuilder(PackageBuilder packageBuilder) {
         this.packageBuilder = packageBuilder;
+        this.processValidators.put(RuleFlowProcess.RULEFLOW_TYPE, RuleFlowProcessValidator.getInstance());
     }
 
     public List getErrors() {
@@ -63,40 +68,46 @@ public class ProcessBuilder {
     }
 
     public void buildProcess(final Process process) {
-        if ( process instanceof RuleFlowProcess ) {
-            RuleFlowProcessValidator validator = RuleFlowProcessValidatorImpl.getInstance();
-            RuleFlowProcessValidationError[] errors = validator.validateProcess( (RuleFlowProcess) process );
+        boolean hasErrors = false;
+        ProcessValidator validator = processValidators.get(process.getType());
+        if (validator == null) {
+            System.out.println("Could not find validator for process " + process.getType() + ".");
+            System.out.println("Continuing without validation of the process " + process.getName() + "[" + process.getId() + "]");
+        } else {
+            ProcessValidationError[] errors = validator.validateProcess( (WorkflowProcess) process );
             if ( errors.length != 0 ) {
+                hasErrors = true;
                 for ( int i = 0; i < errors.length; i++ ) {
                     this.errors.add( new ParserError( errors[i].toString(),
                                                       -1,
                                                       -1 ) );
                 }
-            } else {
-                // generate and add rule for process
-                String rules = generateRules( process );
-                try {
-                    packageBuilder.addPackageFromDrl( new StringReader( rules ) );
-                } catch ( IOException e ) {
-                    // should never occur
-                    e.printStackTrace( System.err );
-                } catch ( DroolsParserException e ) {
-                    // should never occur
-                    e.printStackTrace( System.err );
-                }
-                buildNodes( process );
-                this.packageBuilder.getPackage().addRuleFlow( process );
+            }
+        }
+        if ( !hasErrors ) {
+            // generate and add rule for process
+            String rules = generateRules( process );
+            try {
+                packageBuilder.addPackageFromDrl( new StringReader( rules ) );
+            } catch ( IOException e ) {
+                // should never occur
+                e.printStackTrace( System.err );
+            } catch ( DroolsParserException e ) {
+                // should never occur
+                e.printStackTrace( System.err );
+            }
+            buildNodes( process );
+            this.packageBuilder.getPackage().addRuleFlow( process );
 
-                Package pkg = this.packageBuilder.getPackage();
-                if ( pkg != null ) {
-                    // we can only do this is this.pkg != null, as otherwise the dialects won't be properly initialised
-                    // as the dialects are initialised when the pkg is  first created
-                    this.packageBuilder.getDialectRegistry().compileAll();
+            Package pkg = this.packageBuilder.getPackage();
+            if ( pkg != null ) {
+                // we can only do this is this.pkg != null, as otherwise the dialects won't be properly initialised
+                // as the dialects are initialised when the pkg is  first created
+                this.packageBuilder.getDialectRegistry().compileAll();
 
-                    // some of the rules and functions may have been redefined
-                    if ( pkg.getPackageCompilationData().isDirty() ) {
-                        pkg.getPackageCompilationData().reload();
-                    }
+                // some of the rules and functions may have been redefined
+                if ( pkg.getPackageCompilationData().isDirty() ) {
+                    pkg.getPackageCompilationData().reload();
                 }
             }
         }
@@ -107,7 +118,7 @@ public class ProcessBuilder {
     public void buildNodes(Process process) {
         ProcessNodeBuilderRegistry nodeBuilderRegistry = packageBuilder.getPackageBuilderConfiguration().getProcessNodeBuilderRegistry();
 
-        RuleFlowProcess rfp = (RuleFlowProcess) process;
+        WorkflowProcess rfp = (WorkflowProcess) process;
 
         ProcessDescr processDescr = new ProcessDescr();
         processDescr.setName( rfp.getPackageName() );
@@ -122,16 +133,7 @@ public class ProcessBuilder {
                                                                this.packageBuilder.getDialectRegistry(),
                                                                dialect );
 
-        for ( Node node : rfp.getNodes() ) {
-            ProcessNodeBuilder builder = nodeBuilderRegistry.getNodeBuilder( node );
-            if ( builder != null ) {
-                // only build if there is a registered builder for this node type
-                builder.build( process,
-                               processDescr,
-                               context,
-                               node );
-            }
-        }
+        processNodes(rfp.getNodes(), process, processDescr, context, nodeBuilderRegistry);
 
         if ( !context.getErrors().isEmpty() ) {
             this.errors.addAll( context.getErrors() );
@@ -143,6 +145,24 @@ public class ProcessBuilder {
         }
 
     }
+    
+    private void processNodes(
+            Node[] nodes, Process process, ProcessDescr processDescr, 
+            ProcessBuildContext context, ProcessNodeBuilderRegistry nodeBuilderRegistry) {
+        for ( Node node : nodes ) {
+            ProcessNodeBuilder builder = nodeBuilderRegistry.getNodeBuilder( node );
+            if ( builder != null ) {
+                // only build if there is a registered builder for this node type
+                builder.build( process,
+                               processDescr,
+                               context,
+                               node );
+            }
+            if (node instanceof NodeContainer) {
+                processNodes(((NodeContainer) node).getNodes(), process, processDescr, context, nodeBuilderRegistry);
+            }
+        }
+    }
 
     public void addProcessFromFile(final Reader reader) throws Exception {
         final XStream stream = new XStream();
@@ -151,7 +171,7 @@ public class ProcessBuilder {
         final ClassLoader newLoader = this.getClass().getClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( newLoader );
-            final RuleFlowProcess process = (RuleFlowProcess) stream.fromXML( reader );
+            final WorkflowProcess process = (WorkflowProcess) stream.fromXML( reader );
             buildProcess( process );
         } finally {
             Thread.currentThread().setContextClassLoader( oldLoader );
@@ -162,8 +182,8 @@ public class ProcessBuilder {
     private String generateRules(final Process process) {
         StringBuilder builder = new StringBuilder();
 
-        if ( process instanceof RuleFlowProcessImpl ) {
-            RuleFlowProcessImpl ruleFlow = (RuleFlowProcessImpl) process;
+        if ( process instanceof WorkflowProcessImpl ) {
+            WorkflowProcessImpl ruleFlow = (WorkflowProcessImpl) process;
             builder.append( "package " + ruleFlow.getPackageName() + "\n" );
             List imports = ruleFlow.getImports();
             if ( imports != null ) {
@@ -184,7 +204,7 @@ public class ProcessBuilder {
                 if ( nodes[i] instanceof Split ) {
                     Split split = (Split) nodes[i];
                     if ( split.getType() == Split.TYPE_XOR || split.getType() == Split.TYPE_OR ) {
-                        for ( Iterator iterator = split.getOutgoingConnections().iterator(); iterator.hasNext(); ) {
+                        for ( Iterator iterator = split.getDefaultOutgoingConnections().iterator(); iterator.hasNext(); ) {
                             Connection connection = (Connection) iterator.next();
                             Constraint constraint = split.getConstraint( connection );
                             if ( "rule".equals( constraint.getType() ) ) {

@@ -2,11 +2,7 @@ package org.drools.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.lang.descr.FunctionImportDescr;
-import org.drools.lang.descr.GlobalDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
+import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
@@ -14,7 +10,6 @@ import org.drools.xml.Handler;
 import org.drools.xml.ProcessBuildData;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 public class ProcessHandler extends BaseAbstractHandler
     implements
@@ -52,7 +47,7 @@ public class ProcessHandler extends BaseAbstractHandler
         emptyAttributeCheck( localName, "package-name", packageName, parser );
         
 
-        RuleFlowProcessImpl process = new RuleFlowProcessImpl();
+        RuleFlowProcess process = new RuleFlowProcess();
         process.setId( id );
         process.setName( name );
         process.setVersion( version );
@@ -72,7 +67,7 @@ public class ProcessHandler extends BaseAbstractHandler
     }
 
     public Class generateNodeFor() {
-        return org.drools.ruleflow.common.core.Process.class;
+        return org.drools.process.core.Process.class;
     }    
 
 }

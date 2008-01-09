@@ -1,7 +1,7 @@
 package org.drools.compiler;
 
 import org.drools.lang.descr.BaseDescr;
-import org.drools.ruleflow.common.core.Process;
+import org.drools.process.core.Process;
 
 public class ProcessBuildError extends DescrBuildError {
     private final Process process;

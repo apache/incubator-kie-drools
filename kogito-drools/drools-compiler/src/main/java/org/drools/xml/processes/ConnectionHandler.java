@@ -2,20 +2,10 @@ package org.drools.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.ruleflow.common.core.impl.ProcessImpl;
-import org.drools.ruleflow.common.core.Process;
-import org.drools.lang.descr.FunctionImportDescr;
-import org.drools.lang.descr.GlobalDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.ruleflow.core.ActionNode;
-import org.drools.ruleflow.core.Connection;
-import org.drools.ruleflow.core.EndNode;
-import org.drools.ruleflow.core.Node;
-import org.drools.ruleflow.core.StartNode;
-import org.drools.ruleflow.core.impl.ConnectionImpl;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
-import org.drools.ruleflow.core.impl.StartNodeImpl;
+import org.drools.process.core.Process;
+import org.drools.workflow.core.Connection;
+import org.drools.workflow.core.Node;
+import org.drools.workflow.core.impl.ConnectionImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
@@ -68,7 +58,7 @@ public class ConnectionHandler extends BaseAbstractHandler
                                          parser.getLocator() );
     }        
         
-        ConnectionImpl connection = new ConnectionImpl(fromNode, toNode, Connection.TYPE_NORMAL);
+        ConnectionImpl connection = new ConnectionImpl(fromNode, Node.CONNECTION_DEFAULT_TYPE, toNode, Node.CONNECTION_DEFAULT_TYPE);
         
         return connection;
     }    

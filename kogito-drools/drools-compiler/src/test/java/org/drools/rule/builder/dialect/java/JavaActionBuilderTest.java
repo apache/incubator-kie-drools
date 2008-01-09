@@ -42,11 +42,11 @@ import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 import org.drools.spi.Action;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
+import org.drools.workflow.core.impl.WorkflowProcessImpl;
+import org.drools.workflow.core.node.ActionNode;
 import org.mvel.ExpressionCompiler;
 import org.mvel.ParserContext;
 
@@ -69,7 +69,7 @@ public class JavaActionBuilderTest extends TestCase {
         processDescr.setClassName( "Process1" );
         processDescr.setName( "Process1" );
         
-        RuleFlowProcessImpl process = new RuleFlowProcessImpl();
+        WorkflowProcessImpl process = new WorkflowProcessImpl();
         process.setName( "Process1" );
         process.setPackageName( "pkg1" );
 
@@ -79,7 +79,7 @@ public class JavaActionBuilderTest extends TestCase {
         
         pkgBuilder.addPackageFromDrl( new StringReader("package pkg1;\nglobal java.util.List list;\n") );        
         
-        ActionNodeImpl actionNode = new ActionNodeImpl();
+        ActionNode actionNode = new ActionNode();
         
         javaDialect.getActionBuilder().build( context, actionNode, actionDescr );
         javaDialect.addProcess( context );

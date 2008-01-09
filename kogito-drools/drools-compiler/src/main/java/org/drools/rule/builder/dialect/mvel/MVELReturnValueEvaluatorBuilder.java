@@ -19,9 +19,9 @@ import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
 import org.drools.rule.builder.RuleBuildContext;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
-import org.drools.ruleflow.core.impl.ReturnValueConstraintEvaluator;
 import org.drools.spi.ReturnValueEvaluator;
+import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 import org.mvel.Macro;
 import org.mvel.MacroProcessor;
 

@@ -13,11 +13,10 @@ import org.drools.compiler.ReturnValueDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.ruleflow.common.core.Process;
-import org.drools.ruleflow.core.impl.ReturnValueConstraintEvaluator;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
-import org.drools.ruleflow.instance.impl.RuleFlowProcessInstanceImpl;
-import org.drools.ruleflow.instance.impl.RuleFlowSplitInstanceImpl;
+import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.workflow.core.impl.WorkflowProcessImpl;
+import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
+import org.drools.workflow.instance.node.SplitInstance;
 
 public class JavaReturnValueConstraintEvaluatorBuilderTest extends TestCase {
 
@@ -31,7 +30,7 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends TestCase {
         processDescr.setClassName( "Process1" );
         processDescr.setName( "Process1" );
         
-        RuleFlowProcessImpl process = new RuleFlowProcessImpl();
+        WorkflowProcessImpl process = new WorkflowProcessImpl();
         process.setName( "Process1" );
         process.setPackageName( "pkg1" );
 
@@ -69,10 +68,10 @@ public class JavaReturnValueConstraintEvaluatorBuilderTest extends TestCase {
         wm.setGlobal( "value",
                       true );
 
-        RuleFlowProcessInstanceImpl processInstance = new RuleFlowProcessInstanceImpl();
+        RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
         processInstance.setWorkingMemory( wm );
 
-        RuleFlowSplitInstanceImpl splitInstance = new RuleFlowSplitInstanceImpl();
+        SplitInstance splitInstance = new SplitInstance();
         splitInstance.setProcessInstance( processInstance );
 
         assertTrue( node.evaluate( splitInstance,
