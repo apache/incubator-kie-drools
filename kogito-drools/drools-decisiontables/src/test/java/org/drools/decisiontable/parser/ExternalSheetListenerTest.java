@@ -22,9 +22,9 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.Rule;
-import org.drools.ruleflow.common.instance.ProcessInstance;
-import org.drools.ruleflow.common.instance.WorkItemManager;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -412,6 +412,12 @@ public class ExternalSheetListenerTest extends TestCase {
                 }
 
                 public Collection getProcessInstances() {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public ProcessInstance startProcess(String processId,
+                        Map<String, Object> parameters) {
                     // TODO Auto-generated method stub
                     return null;
                 }
