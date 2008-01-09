@@ -1,0 +1,12 @@
+package org.drools
+
+import java.util.ArrayList;
+
+global java.util.List results
+
+rule "Test collect dynamic rule"
+when
+    $list: ArrayList( size > 0 ) from collect( Cheese( type == "stilton" ) )
+then
+    results.add( $list );
+end 
