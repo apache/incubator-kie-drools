@@ -338,7 +338,9 @@ public class AccumulateNode extends BetaNode {
                                         tuple,
                                         handle,
                                         workingMemory );
-        } else if ( context.getType() == PropagationContext.MODIFICATION ) {
+        } else if ( context.getType() == PropagationContext.MODIFICATION || 
+                context.getType() == PropagationContext.RULE_ADDITION || 
+                context.getType() == PropagationContext.RULE_REMOVAL ) {
             // modification
             if ( isAssert ) {
                 this.accumulate.accumulate( memory.workingMemoryContext,

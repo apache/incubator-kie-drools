@@ -289,7 +289,9 @@ public class CollectNode extends BetaNode
             ((Collection) result.handle.getObject()).add( handle.getObject() );
         } else if ( context.getType() == PropagationContext.RETRACTION ) {
             ((Collection) result.handle.getObject()).remove( handle.getObject() );
-        } else if ( context.getType() == PropagationContext.MODIFICATION ) {
+        } else if ( context.getType() == PropagationContext.MODIFICATION || 
+                    context.getType() == PropagationContext.RULE_ADDITION || 
+                    context.getType() == PropagationContext.RULE_REMOVAL ) {
             if( isAssert ) {
                 ((Collection) result.handle.getObject()).add( handle.getObject() );
             } else {
