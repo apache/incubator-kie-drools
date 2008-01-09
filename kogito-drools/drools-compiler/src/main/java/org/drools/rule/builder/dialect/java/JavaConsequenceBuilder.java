@@ -164,6 +164,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                                                                  mvelAnalysis,
                                                                                  mvel.getInterceptors(),
                                                                                  null,
+                                                                                 null,
                                                                                  context );
 
             Class ret = expr.getKnownEgressType();

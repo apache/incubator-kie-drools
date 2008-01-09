@@ -53,6 +53,7 @@ public class MVELReturnValueEvaluatorBuilder
                                                        analysis,
                                                        dialect.getInterceptors(),
                                                        null,
+                                                       null,
                                                        context );
 
             final DroolsMVELFactory factory = new DroolsMVELFactory( null,

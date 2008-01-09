@@ -48,6 +48,7 @@ public class MVELActionBuilder
                                                        analysis,
                                                        dialect.getInterceptors(),
                                                        null,
+                                                       null,
                                                        context );
 
             final DroolsMVELFactory factory = new DroolsMVELFactory( null,

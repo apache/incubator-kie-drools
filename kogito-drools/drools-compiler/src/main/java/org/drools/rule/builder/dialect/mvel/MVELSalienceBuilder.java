@@ -39,6 +39,7 @@ public class MVELSalienceBuilder
                                                        analysis,
                                                        null,
                                                        null,
+                                                       null,
                                                        context );
 
             MVELSalienceExpression salience = new MVELSalienceExpression( expr,

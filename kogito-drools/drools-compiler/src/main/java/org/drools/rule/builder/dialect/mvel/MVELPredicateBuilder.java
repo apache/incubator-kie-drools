@@ -60,19 +60,24 @@ public class MVELPredicateBuilder
             localMap.put( localDeclarations[i].getIdentifier(),
                           localDeclarations[i] );
         }
-        
+
         try {
             final DroolsMVELFactory factory = new DroolsMVELFactory( previousMap,
                                                                      localMap,
-                                                                     context.getPkg().getGlobals() );                
-            
+                                                                     context.getPkg().getGlobals() );
+
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       predicateDescr,
                                                                                       predicateDescr.getContent(),
                                                                                       new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
-            
-            final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) predicateDescr.getContent(), analysis, null, null, context );            
-            
+
+            final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) predicateDescr.getContent(),
+                                                                                    analysis,
+                                                                                    null,
+                                                                                    null,
+                                                                                    null,
+                                                                                    context );
+
             predicate.setPredicateExpression( new MVELPredicateExpression( expr,
                                                                            factory ) );
         } catch ( final Exception e ) {

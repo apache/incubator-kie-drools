@@ -52,24 +52,31 @@ public class MVELReturnValueBuilder
         Map previousMap = new HashMap();
         for ( int i = 0, length = previousDeclarations.length; i < length; i++ ) {
             previousMap.put( previousDeclarations[i].getIdentifier(),
-                     previousDeclarations[i] );
+                             previousDeclarations[i] );
         }
 
         Map localMap = new HashMap();
         for ( int i = 0, length = localDeclarations.length; i < length; i++ ) {
             localMap.put( localDeclarations[i].getIdentifier(),
-                     localDeclarations[i] );
-        }             
-        
-        final DroolsMVELFactory factory = new DroolsMVELFactory(previousMap, localMap,  context.getPkg().getGlobals() );
-        
+                          localDeclarations[i] );
+        }
+
+        final DroolsMVELFactory factory = new DroolsMVELFactory( previousMap,
+                                                                 localMap,
+                                                                 context.getPkg().getGlobals() );
+
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   returnValueRestrictionDescr,
                                                                                   returnValueRestrictionDescr.getContent(),
                                                                                   new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
-        
-        final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) returnValueRestrictionDescr.getContent(), analysis, null, null, context );        
-        
+
+        final Serializable expr = ((MVELDialect) context.getDialect()).compile( (String) returnValueRestrictionDescr.getContent(),
+                                                                                analysis,
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                context );
+
         returnValueRestriction.setReturnValueExpression( new MVELReturnValueExpression( expr,
                                                                                         factory ) );
     }
