@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.DroolsTestCase;
-import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.SalienceInteger;
@@ -28,30 +27,23 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Rule;
-import org.drools.ruleflow.common.instance.ProcessInstance;
-import org.drools.ruleflow.core.Connection;
-import org.drools.ruleflow.core.Constraint;
-import org.drools.ruleflow.core.EndNode;
-import org.drools.ruleflow.core.Join;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.ruleflow.core.RuleSetNode;
-import org.drools.ruleflow.core.Split;
-import org.drools.ruleflow.core.StartNode;
-import org.drools.ruleflow.core.impl.ConnectionImpl;
-import org.drools.ruleflow.core.impl.EndNodeImpl;
-import org.drools.ruleflow.core.impl.JoinImpl;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
-import org.drools.ruleflow.core.impl.RuleSetNodeImpl;
-import org.drools.ruleflow.core.impl.SplitImpl;
-import org.drools.ruleflow.core.impl.StartNodeImpl;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
-import org.drools.ruleflow.instance.impl.RuleFlowProcessInstanceImpl;
-import org.drools.ruleflow.nodes.split.ConstraintEvaluator;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
+import org.drools.workflow.core.Connection;
+import org.drools.workflow.core.Node;
+import org.drools.workflow.core.impl.ConnectionImpl;
+import org.drools.workflow.core.node.EndNode;
+import org.drools.workflow.core.node.Join;
+import org.drools.workflow.core.node.RuleSetNode;
+import org.drools.workflow.core.node.Split;
+import org.drools.workflow.core.node.StartNode;
+import org.drools.workflow.instance.impl.ConstraintEvaluator;
 
 /**
  * @author mproctor
@@ -135,48 +127,56 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                                                         null );
 
         // nodes
-        final StartNode start = new StartNodeImpl();
-        final RuleSetNode ruleSet0 = new RuleSetNodeImpl();
+        final StartNode start = new StartNode();
+        final RuleSetNode ruleSet0 = new RuleSetNode();
         ruleSet0.setRuleFlowGroup( "rule-flow-group-0" );
-        final RuleSetNode ruleSet1 = new RuleSetNodeImpl();
+        final RuleSetNode ruleSet1 = new RuleSetNode();
         ruleSet1.setRuleFlowGroup( "rule-flow-group-1" );
-        final RuleSetNode ruleSet2 = new RuleSetNodeImpl();
+        final RuleSetNode ruleSet2 = new RuleSetNode();
         ruleSet2.setRuleFlowGroup( "rule-flow-group-2" );
-        final RuleSetNode ruleSet3 = new RuleSetNodeImpl();
+        final RuleSetNode ruleSet3 = new RuleSetNode();
         ruleSet3.setRuleFlowGroup( "rule-flow-group-3" );
-        final Split split = new SplitImpl();
+        final Split split = new Split();
         split.setType( Split.TYPE_AND );
-        final Join join = new JoinImpl();
+        final Join join = new Join();
         join.setType( Join.TYPE_AND );
-        final EndNode end = new EndNodeImpl();
+        final EndNode end = new EndNode();
         // connections
         new ConnectionImpl( start,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet0,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( ruleSet0,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             split,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( split,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet1,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( split,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet2,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( ruleSet1,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             join,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( ruleSet2,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             join,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( join,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet3,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( ruleSet3,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             end,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
 
         // process
-        final RuleFlowProcess process = new RuleFlowProcessImpl();
+        final RuleFlowProcess process = new RuleFlowProcess();
         process.addNode( start );
         process.addNode( ruleSet0 );
         process.addNode( ruleSet1 );
@@ -187,7 +187,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         process.addNode( end );
 
         // proces instance
-        final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstanceImpl();
+        final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
         processInstance.setWorkingMemory( workingMemory );
         processInstance.setProcess( process );
         assertEquals( ProcessInstance.STATE_PENDING,
@@ -379,56 +379,64 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                                                         null );
 
         // nodes
-        final StartNode start = new StartNodeImpl();
-        final RuleSetNode ruleSet0 = new RuleSetNodeImpl();
+        final StartNode start = new StartNode();
+        final RuleSetNode ruleSet0 = new RuleSetNode();
         ruleSet0.setRuleFlowGroup( "rule-flow-group-0" );
-        final RuleSetNode ruleSet1 = new RuleSetNodeImpl();
+        final RuleSetNode ruleSet1 = new RuleSetNode();
         ruleSet1.setRuleFlowGroup( "rule-flow-group-1" );
-        final RuleSetNode ruleSet2 = new RuleSetNodeImpl();
+        final RuleSetNode ruleSet2 = new RuleSetNode();
         ruleSet2.setRuleFlowGroup( "rule-flow-group-2" );
-        final RuleSetNode ruleSet3 = new RuleSetNodeImpl();
+        final RuleSetNode ruleSet3 = new RuleSetNode();
         ruleSet3.setRuleFlowGroup( "rule-flow-group-3" );
-        final Split split = new SplitImpl();
+        final Split split = new Split();
         split.setType( Split.TYPE_XOR );
-        final Join join = new JoinImpl();
+        final Join join = new Join();
         join.setType( Join.TYPE_XOR );
-        final EndNode end = new EndNodeImpl();
+        final EndNode end = new EndNode();
         // connections
         new ConnectionImpl( start,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet0,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( ruleSet0,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             split,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         Connection out1 = new ConnectionImpl( split,
+                                              Node.CONNECTION_DEFAULT_TYPE,
                                               ruleSet1,
-                                              Connection.TYPE_NORMAL );
+                                              Node.CONNECTION_DEFAULT_TYPE);
         Connection out2 = new ConnectionImpl( split,
+                                              Node.CONNECTION_DEFAULT_TYPE,
                                               ruleSet2,
-                                              Connection.TYPE_NORMAL );
+                                              Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( ruleSet1,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             join,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( ruleSet2,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             join,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( join,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             ruleSet3,
-                            Connection.TYPE_NORMAL );
+                            Node.CONNECTION_DEFAULT_TYPE);
         new ConnectionImpl( ruleSet3,
+                            Node.CONNECTION_DEFAULT_TYPE,
                             end,
-                            Connection.TYPE_NORMAL );
-        ConstraintEvaluator constraint1 = new org.drools.ruleflow.core.impl.RuleFlowConstraintEvaluator();
+                            Node.CONNECTION_DEFAULT_TYPE);
+        ConstraintEvaluator constraint1 = new org.drools.workflow.instance.impl.RuleConstraintEvaluator();
         constraint1.setPriority( 1 );
         split.setConstraint( out1,
                              constraint1 );
-        ConstraintEvaluator constraint2 = new org.drools.ruleflow.core.impl.RuleFlowConstraintEvaluator();
+        ConstraintEvaluator constraint2 = new org.drools.workflow.instance.impl.RuleConstraintEvaluator();
         constraint2.setPriority( 2 );
         split.setConstraint( out2,
                              constraint2 );
 
         // process
-        final RuleFlowProcess process = new RuleFlowProcessImpl();
+        final RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "1" );
         process.addNode( start );
         process.addNode( ruleSet0 );
@@ -461,7 +469,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
                                                                   buildContext );
 
         // proces instance
-        final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstanceImpl();
+        final RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
         processInstance.setWorkingMemory( workingMemory );
         processInstance.setProcess( process );
         assertEquals( ProcessInstance.STATE_PENDING,

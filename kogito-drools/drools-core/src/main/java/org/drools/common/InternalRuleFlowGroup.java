@@ -1,12 +1,9 @@
 package org.drools.common;
 
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.RuleFlowGroup;
 
-public interface InternalRuleFlowGroup
-    extends
-    RuleFlowGroup {
+public interface InternalRuleFlowGroup extends RuleFlowGroup {
 
 	void setWorkingMemory(InternalWorkingMemory workingMemory);
 	
@@ -33,8 +30,8 @@ public interface InternalRuleFlowGroup
 
     boolean isActive();
 
-    void triggerCompleted();
+    void addRuleFlowGroupListener(RuleFlowGroupListener listener);
     
-    RuleFlowProcessInstance getProcessInstance();
+    void removeRuleFlowGroupListener(RuleFlowGroupListener listener);
     
 }

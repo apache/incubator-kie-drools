@@ -16,8 +16,8 @@ package org.drools;
  * limitations under the License.
  */
 
+import org.drools.process.core.Process;
 import org.drools.rule.Rule;
-import  org.drools.ruleflow.common.core.Process;
 
 /**
  * Indicates an error integrating a <code>Process</code> or <code>Package</code>

@@ -18,14 +18,14 @@ package org.drools;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
-import org.drools.ruleflow.common.instance.ProcessInstance;
-import org.drools.ruleflow.common.instance.WorkItemManager;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
-import org.drools.temporal.SessionClock;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.
@@ -339,6 +339,11 @@ public interface WorkingMemory extends WorkingMemoryEventManager {
      * Starts a new process instance for the process with the given id. 
      */
     ProcessInstance startProcess(String processId);
+
+    /**
+     * Starts a new process instance for the process with the given id. 
+     */
+    ProcessInstance startProcess(String processId, Map<String, Object> parameters);
 
     /**
      * Returns the list of process instances of this working memory.

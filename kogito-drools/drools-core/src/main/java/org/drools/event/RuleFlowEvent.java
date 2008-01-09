@@ -18,7 +18,7 @@ package org.drools.event;
 
 import java.util.EventObject;
 
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
@@ -27,12 +27,12 @@ public class RuleFlowEvent extends EventObject {
 
     private static final long serialVersionUID = 400L;
 
-    public RuleFlowEvent(final RuleFlowProcessInstance instance) {
+    public RuleFlowEvent(final ProcessInstance instance) {
         super( instance );
     }
 
-    public RuleFlowProcessInstance getRuleFlowProcessInstance() {
-        return (RuleFlowProcessInstance) getSource();
+    public ProcessInstance getRuleFlowProcessInstance() {
+        return (ProcessInstance) getSource();
     }
 
 }

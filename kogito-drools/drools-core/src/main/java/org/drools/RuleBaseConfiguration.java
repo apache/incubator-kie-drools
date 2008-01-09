@@ -27,15 +27,15 @@ import java.util.Map.Entry;
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
-import org.drools.ruleflow.core.Node;
-import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactory;
-import org.drools.ruleflow.instance.impl.ProcessNodeInstanceFactoryRegistry;
 import org.drools.spi.ConflictResolver;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.temporal.SessionClock;
 import org.drools.temporal.SessionPseudoClock;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ConfFileUtils;
+import org.drools.workflow.core.Node;
+import org.drools.workflow.instance.impl.NodeInstanceFactory;
+import org.drools.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.mvel.MVEL;
 
 /**
@@ -110,7 +110,7 @@ public class RuleBaseConfiguration
     private Map                                shadowProxyExcludes;
     private static final String                STAR             = "*";
 
-    private ProcessNodeInstanceFactoryRegistry processNodeInstanceFactoryRegistry;
+    private NodeInstanceFactoryRegistry processNodeInstanceFactoryRegistry;
 
     private transient ClassLoader              classLoader;
 
@@ -476,7 +476,7 @@ public class RuleBaseConfiguration
         this.sequentialAgenda = sequentialAgenda;
     }
 
-    public ProcessNodeInstanceFactoryRegistry getProcessNodeInstanceFactoryRegistry() {
+    public NodeInstanceFactoryRegistry getProcessNodeInstanceFactoryRegistry() {
         if ( this.processNodeInstanceFactoryRegistry == null ) {
             initProcessNodeInstanceFactoryRegistry();
         }
@@ -485,7 +485,7 @@ public class RuleBaseConfiguration
     }
 
     private void initProcessNodeInstanceFactoryRegistry() {
-        this.processNodeInstanceFactoryRegistry = new ProcessNodeInstanceFactoryRegistry();
+        this.processNodeInstanceFactoryRegistry = new NodeInstanceFactoryRegistry();
 
         // split on each space
         String locations[] = this.chainedProperties.getProperty( "processNodeInstanceFactoryRegistry",
@@ -514,11 +514,11 @@ public class RuleBaseConfiguration
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
         
-        Map<Class< ? extends Node>, ProcessNodeInstanceFactory> map = (Map<Class< ? extends Node>, ProcessNodeInstanceFactory>) MVEL.eval( content,
+        Map<Class< ? extends Node>, NodeInstanceFactory> map = (Map<Class< ? extends Node>, NodeInstanceFactory>) MVEL.eval( content,
                                                                                                                                            new HashMap() );
 
         if ( map != null ) {
-            for ( Entry<Class< ? extends Node>, ProcessNodeInstanceFactory> entry : map.entrySet() ) {
+            for ( Entry<Class< ? extends Node>, NodeInstanceFactory> entry : map.entrySet() ) {
                 this.processNodeInstanceFactoryRegistry.register( entry.getKey(),
                                                                   entry.getValue() );
             }

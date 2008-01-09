@@ -24,12 +24,12 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
 import org.drools.objenesis.Objenesis;
+import org.drools.process.core.Process;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
-import org.drools.ruleflow.common.core.Process;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 

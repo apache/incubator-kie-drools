@@ -22,16 +22,17 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.common.InternalWorkingMemory;
-import org.drools.ruleflow.instance.RuleFlowNodeInstance;
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.process.instance.ProcessInstance;
 import org.drools.spi.RuleFlowGroup;
+import org.drools.workflow.instance.NodeInstance;
+import org.drools.workflow.instance.WorkflowProcessInstance;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class RuleFlowEventSupport
-    implements
-    Serializable {
+public class RuleFlowEventSupport implements Serializable {
+    
+    // TODO separate out process level stuff
 
     private static final long serialVersionUID = 400L;
     private final List        listeners        = Collections.synchronizedList( new ArrayList() );
@@ -62,7 +63,7 @@ public class RuleFlowEventSupport
     }
 
     public void fireBeforeRuleFlowProcessStarted(
-            final RuleFlowProcessInstance instance,
+            final ProcessInstance instance,
             final InternalWorkingMemory workingMemory) {
         if (this.listeners.isEmpty()) {
             return;
@@ -77,7 +78,7 @@ public class RuleFlowEventSupport
     }
 
     public void fireAfterRuleFlowProcessStarted(
-            final RuleFlowProcessInstance instance,
+            final ProcessInstance instance,
             final InternalWorkingMemory workingMemory) {
         if (this.listeners.isEmpty()) {
             return;
@@ -92,7 +93,7 @@ public class RuleFlowEventSupport
     }
 
     public void fireBeforeRuleFlowProcessCompleted(
-            final RuleFlowProcessInstance instance,
+            final WorkflowProcessInstance instance,
             final InternalWorkingMemory workingMemory) {
         if (this.listeners.isEmpty()) {
             return;
@@ -108,7 +109,7 @@ public class RuleFlowEventSupport
     }
 
     public void fireAfterRuleFlowProcessCompleted(
-            final RuleFlowProcessInstance instance,
+            final WorkflowProcessInstance instance,
             final InternalWorkingMemory workingMemory) {
         if (this.listeners.isEmpty()) {
             return;
@@ -188,7 +189,7 @@ public class RuleFlowEventSupport
     }
 
     public void fireBeforeRuleFlowNodeTriggered(
-            final RuleFlowNodeInstance ruleFlowNodeInstance,
+            final NodeInstance ruleFlowNodeInstance,
             final InternalWorkingMemory workingMemory) {
         if (this.listeners.isEmpty()) {
             return;
@@ -204,7 +205,7 @@ public class RuleFlowEventSupport
     }
 
     public void fireAfterRuleFlowNodeTriggered(
-            final RuleFlowNodeInstance ruleFlowNodeInstance,
+            final NodeInstance ruleFlowNodeInstance,
             final InternalWorkingMemory workingMemory) {
         if (this.listeners.isEmpty()) {
             return;

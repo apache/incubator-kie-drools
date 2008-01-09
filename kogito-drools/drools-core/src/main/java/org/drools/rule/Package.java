@@ -35,7 +35,7 @@ import java.util.Set;
 
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.facttemplates.FactTemplate;
-import org.drools.ruleflow.common.core.Process;
+import org.drools.process.core.Process;
 import org.drools.util.StringUtils;
 
 /**

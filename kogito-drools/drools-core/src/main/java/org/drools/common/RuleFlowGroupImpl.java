@@ -16,8 +16,9 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.ruleflow.instance.RuleFlowNodeInstance;
-import org.drools.ruleflow.instance.impl.RuleFlowSequenceNodeInstanceImpl;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.spi.Activation;
 import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
@@ -36,9 +37,7 @@ import org.drools.util.LinkedList;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  *
  */
-public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
-    implements
-    InternalRuleFlowGroup {
+public class RuleFlowGroupImpl implements InternalRuleFlowGroup {
 
     private static final long     serialVersionUID = 400L;
 
@@ -47,6 +46,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
     private boolean               active           = false;
     private final LinkedList      list;
     private boolean               autoDeactivate   = true;
+    private List<RuleFlowGroupListener> listeners;
 
     /**
      * Construct a <code>RuleFlowGroupImpl</code> with the given name.
@@ -102,9 +102,7 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
                     activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
                 }
             }
-            if ( getProcessInstance() != null ) {
-                triggerCompleted();
-            }
+            notifyRuleFlowGroupListeners();
             ((EventSupport) this.workingMemory).getRuleFlowEventSupport()
                     .fireAfterRuleFlowGroupDeactivated(this, this.workingMemory);
         }
@@ -165,6 +163,27 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
             }
         }
     }
+    
+    public void addRuleFlowGroupListener(RuleFlowGroupListener listener) {
+        if (listeners == null) {
+            listeners = new ArrayList<RuleFlowGroupListener>();
+        }
+        listeners.add(listener);
+    }
+
+    public void removeRuleFlowGroupListener(RuleFlowGroupListener listener) {
+        if (listeners == null) {
+            listeners.remove(listener);
+        }
+    }
+    
+    public void notifyRuleFlowGroupListeners() {
+        if (listeners != null) {
+            for (java.util.Iterator<RuleFlowGroupListener> iterator = listeners.iterator(); iterator.hasNext(); ) {
+                iterator.next().ruleFlowGroupDeactivated();
+            }
+        }
+    }
 
     public boolean isEmpty() {
         return this.list.isEmpty();
@@ -194,13 +213,8 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
         return this.name.hashCode();
     }
 
-    public void internalTrigger(final RuleFlowNodeInstance parent) {
-        setActive( true );
-    }
-
-    public static class DeactivateCallback
-        implements
-        WorkingMemoryAction {
+    public static class DeactivateCallback implements WorkingMemoryAction {
+        private static final long serialVersionUID = 400L;
         private final InternalRuleFlowGroup ruleFlowGroup;
 
         public DeactivateCallback(InternalRuleFlowGroup ruleFlowGroup) {
@@ -209,9 +223,9 @@ public class RuleFlowGroupImpl extends RuleFlowSequenceNodeInstanceImpl
 
         public void execute(InternalWorkingMemory workingMemory) {
             // check whether ruleflow group is still empty first
-            if ( this.ruleFlowGroup.isEmpty() ) {
+            if (this.ruleFlowGroup.isEmpty()) {
                 // deactivate ruleflow group
-                this.ruleFlowGroup.setActive( false );
+                this.ruleFlowGroup.setActive(false);
             }
         }
     }
