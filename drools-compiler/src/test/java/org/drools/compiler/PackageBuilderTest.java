@@ -70,6 +70,8 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.process.core.Process;
+import org.drools.process.core.Variable;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
@@ -82,14 +84,13 @@ import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.ruleflow.common.core.Process;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.LinkedList;
+import org.drools.workflow.core.impl.WorkflowProcessImpl;
 
 public class PackageBuilderTest extends DroolsTestCase {
 
@@ -1206,7 +1207,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertTrue( flows.containsKey( "0" ) );
 
         Process p = (Process) flows.get( "0" );
-        assertTrue( p instanceof RuleFlowProcessImpl );
+        assertTrue( p instanceof WorkflowProcessImpl );
 
         //now serialization
         ByteArrayOutputStream data = new ByteArrayOutputStream();
@@ -1223,7 +1224,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       flows.size() );
         assertTrue( flows.containsKey( "0" ) );
         p = (Process) flows.get( "0" );
-        assertTrue( p instanceof RuleFlowProcessImpl );
+        assertTrue( p instanceof WorkflowProcessImpl );
     }
 
     public void testPackageRuleFlows() throws Exception {
@@ -1309,6 +1310,17 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
         
         public void setPackageName(String packageName) {
+        }
+
+        public String[] getVariableNames() {
+            return null;
+        }
+
+        public List<Variable> getVariables() {
+            return null;
+        }
+
+        public void setVariables(List<Variable> variables) {
         }
 
     }

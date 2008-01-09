@@ -27,13 +27,14 @@ import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.process.instance.ProcessInstance;
+import org.drools.process.instance.ProcessInstanceFactory;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
-import org.drools.ruleflow.common.instance.ProcessInstance;
-import org.drools.ruleflow.common.instance.WorkItemManager;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
@@ -317,6 +318,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 		return null;
 	}
 
+    public ProcessInstance startProcess(String processId,
+            Map<String, Object> parameters) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 	public void update(FactHandle handle, Object object) throws FactException {
 		// TODO Auto-generated method stub
 
@@ -445,6 +452,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public FactHandle getFactHandleByIdentity(Object object) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void registerProcessInstanceFactory(String type,
+            ProcessInstanceFactory nodeInstanceFactory) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

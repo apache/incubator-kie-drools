@@ -1,7 +1,7 @@
 <process  xmlns="http://drools.org/drools-4.0/process"
 	      xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
 	      xs:schemaLocation="http://drools.org/drools-4.0/process drools-processes-4.0.xsd" 
-          name="process name" id="process name" package-name="org.domain" >
+          name="process name" id="process name" type="RuleFlow" package-name="org.domain" >
     <header>
         <imports>
     		<import name="java.util.List" />    

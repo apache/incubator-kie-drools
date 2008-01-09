@@ -12,9 +12,9 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ReturnValueDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
-import org.drools.ruleflow.core.impl.ReturnValueConstraintEvaluator;
-import org.drools.ruleflow.instance.impl.RuleFlowProcessInstanceImpl;
-import org.drools.ruleflow.instance.impl.RuleFlowSplitInstanceImpl;
+import org.drools.ruleflow.instance.RuleFlowProcessInstance;
+import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
+import org.drools.workflow.instance.node.SplitInstance;
 
 public class MVELReturnValueConstraintEvaluatorBuilderTest extends TestCase {
 
@@ -54,10 +54,10 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends TestCase {
 
         wm.setGlobal( "value", true );        
 
-        RuleFlowProcessInstanceImpl processInstance = new RuleFlowProcessInstanceImpl();
+        RuleFlowProcessInstance processInstance = new RuleFlowProcessInstance();
         processInstance.setWorkingMemory( wm );
 
-        RuleFlowSplitInstanceImpl splitInstance = new RuleFlowSplitInstanceImpl();
+        SplitInstance splitInstance = new SplitInstance();
         splitInstance.setProcessInstance( processInstance );
 
         assertTrue( node.evaluate( splitInstance,

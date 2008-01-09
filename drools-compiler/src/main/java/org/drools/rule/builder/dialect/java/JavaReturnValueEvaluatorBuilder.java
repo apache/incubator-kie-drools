@@ -35,9 +35,9 @@ import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
-import org.drools.ruleflow.core.impl.ReturnValueConstraintEvaluator;
 import org.drools.spi.PatternExtractor;
+import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
 /**
  * @author etirelli

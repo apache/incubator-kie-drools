@@ -3,9 +3,9 @@ package org.drools.process.builder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.ruleflow.core.Node;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
-import org.drools.ruleflow.core.impl.SplitImpl;
+import org.drools.workflow.core.Node;
+import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.Split;
 
 public class ProcessNodeBuilderRegistry {
     private Map<Class< ? extends Node>, ProcessNodeBuilder> registry;
@@ -13,9 +13,9 @@ public class ProcessNodeBuilderRegistry {
     public ProcessNodeBuilderRegistry() {
         this.registry = new HashMap<Class< ? extends Node>, ProcessNodeBuilder>();
 
-        register( ActionNodeImpl.class,
+        register( ActionNode.class,
                   new ActionNodeBuilder() );
-        register( SplitImpl.class,
+        register( Split.class,
                   new SplitNodeBuilder() );
     }
 

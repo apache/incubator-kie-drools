@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.ruleflow.common.core.Process;
+import org.drools.process.core.Process;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.compilers.CompilationResult;

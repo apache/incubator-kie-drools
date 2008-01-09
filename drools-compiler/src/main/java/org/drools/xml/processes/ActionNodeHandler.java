@@ -2,18 +2,11 @@ package org.drools.xml.processes;
 
 import java.util.HashSet;
 
-import org.drools.ruleflow.common.core.impl.ProcessImpl;
-import org.drools.ruleflow.common.core.Process;
-import org.drools.lang.descr.FunctionImportDescr;
-import org.drools.lang.descr.GlobalDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.ruleflow.core.ActionNode;
-import org.drools.ruleflow.core.StartNode;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
-import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
-import org.drools.ruleflow.core.impl.StartNodeImpl;
+import org.drools.process.core.Process;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
+import org.drools.workflow.core.impl.WorkflowProcessImpl;
+import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.StartNode;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.Configuration;
 import org.drools.xml.ExtensibleXmlParser;
@@ -48,9 +41,9 @@ public class ActionNodeHandler extends BaseAbstractHandler
         parser.startConfiguration( localName,
                                                   attrs );
         
-        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) parser.getParent();
+        WorkflowProcessImpl  process = ( WorkflowProcessImpl ) parser.getParent();
         
-        ActionNodeImpl actionNode = new ActionNodeImpl();
+        ActionNode actionNode = new ActionNode();
         
         final String name = attrs.getValue( "name" );        
         emptyAttributeCheck( localName, "name", name, parser );        
@@ -66,9 +59,9 @@ public class ActionNodeHandler extends BaseAbstractHandler
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final Configuration config = parser.endConfiguration();
-        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) parser.getParent();
+        WorkflowProcessImpl  process = ( WorkflowProcessImpl ) parser.getParent();
 
-        ActionNodeImpl actionNode = ( ActionNodeImpl ) parser.getCurrent();
+        ActionNode actionNode = ( ActionNode ) parser.getCurrent();
         
         String text = config.getText();
         if ( text == null ) {

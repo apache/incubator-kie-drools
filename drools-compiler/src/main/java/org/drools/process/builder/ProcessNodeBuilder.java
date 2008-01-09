@@ -1,9 +1,9 @@
 package org.drools.process.builder;
 
 import org.drools.lang.descr.ProcessDescr;
+import org.drools.process.core.Process;
 import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.ruleflow.common.core.Process;
-import org.drools.ruleflow.core.Node;
+import org.drools.workflow.core.Node;
 
 
 public interface ProcessNodeBuilder {

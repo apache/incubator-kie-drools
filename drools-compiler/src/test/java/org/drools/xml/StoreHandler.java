@@ -2,26 +2,13 @@ package org.drools.xml;
 
 import java.util.HashSet;
 
-import org.drools.ruleflow.common.core.impl.ProcessImpl;
-import org.drools.ruleflow.common.core.Process;
-import org.drools.lang.descr.FunctionImportDescr;
-import org.drools.lang.descr.GlobalDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.ruleflow.core.ActionNode;
-import org.drools.ruleflow.core.StartNode;
-import org.drools.ruleflow.core.impl.ActionNodeImpl;
-import org.drools.ruleflow.core.impl.DroolsConsequenceAction;
-import org.drools.ruleflow.core.impl.RuleFlowProcessImpl;
-import org.drools.ruleflow.core.impl.StartNodeImpl;
-import org.drools.xml.BaseAbstractHandler;
-import org.drools.xml.Configuration;
-import org.drools.xml.ExtensibleXmlParser;
-import org.drools.xml.Handler;
-import org.drools.xml.ProcessBuildData;
+import org.drools.process.core.Process;
+import org.drools.workflow.core.impl.DroolsConsequenceAction;
+import org.drools.workflow.core.impl.WorkflowProcessImpl;
+import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.core.node.StartNode;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 public class StoreHandler extends BaseAbstractHandler
     implements
@@ -48,9 +35,9 @@ public class StoreHandler extends BaseAbstractHandler
         xmlPackageReader.startConfiguration( localName,
                                                   attrs );
         
-        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) xmlPackageReader.getParent();
+        WorkflowProcessImpl  process = ( WorkflowProcessImpl ) xmlPackageReader.getParent();
         
-        ActionNodeImpl actionNode = new ActionNodeImpl();
+        ActionNode actionNode = new ActionNode();
         
         final String name = attrs.getValue( "name" );        
         emptyAttributeCheck( localName, "name", name, xmlPackageReader );        
@@ -66,9 +53,9 @@ public class StoreHandler extends BaseAbstractHandler
                       final String localName,
                       final ExtensibleXmlParser xmlPackageReader) throws SAXException {
         final Configuration config = xmlPackageReader.endConfiguration();
-        RuleFlowProcessImpl  process = ( RuleFlowProcessImpl ) xmlPackageReader.getParent();
+        WorkflowProcessImpl  process = ( WorkflowProcessImpl ) xmlPackageReader.getParent();
 
-        ActionNodeImpl actionNode = ( ActionNodeImpl ) xmlPackageReader.getCurrent();
+        ActionNode actionNode = ( ActionNode ) xmlPackageReader.getCurrent();
         
         String text = config.getText();
         
