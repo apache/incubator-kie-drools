@@ -214,9 +214,11 @@ public class VariableRestriction
         }
         
         public void resetTuple() {
+            this.reteTuple = null;
         }
         
         public void resetFactHandle() {
+            this.object = null;
         }        
     }
 
@@ -256,10 +258,12 @@ public class VariableRestriction
         
         public void resetTuple() {
             this.left = null;
+            this.reteTuple = null;
         }
         
         public void resetFactHandle() {
             this.right = null;
+            this.object = null;
         }        
     }
 
