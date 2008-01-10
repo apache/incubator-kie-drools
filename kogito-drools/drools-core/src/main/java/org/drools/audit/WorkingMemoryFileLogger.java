@@ -78,18 +78,20 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      * The log is automatically cleared afterwards.
      */
     public void writeToDisk() {
+        ObjectOutputStream out = null; 
         try {
             final XStream xstream = new XStream();
-            final ObjectOutputStream out = xstream.createObjectOutputStream( new FileWriter( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
+            out = xstream.createObjectOutputStream( new FileWriter( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
                                                                                              false ) );
             out.writeObject( this.events );
-            out.close();
             this.nbOfFile++;
             clear();
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {
             t.printStackTrace( System.err );
+        } finally {
+            if( out != null ) { try { out.close(); } catch(Exception e) {} }
         }
     }
 

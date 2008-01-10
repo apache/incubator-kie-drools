@@ -220,4 +220,8 @@ public class RuleFlowEventSupport implements Serializable {
         }
     }
 
+    public void reset() {
+        this.listeners.clear();
+    }
+
 }

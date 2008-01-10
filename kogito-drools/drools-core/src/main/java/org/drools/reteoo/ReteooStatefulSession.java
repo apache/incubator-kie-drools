@@ -2,6 +2,7 @@ package org.drools.reteoo;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.FactHandle;
@@ -14,6 +15,7 @@ import org.drools.concurrent.FireAllRules;
 import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
+import org.drools.event.RuleBaseEventListener;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.RuleBaseUpdateListener;
 import org.drools.spi.RuleBaseUpdateListenerFactory;
@@ -77,6 +79,12 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
     
     public void dispose() {
         this.ruleBase.disposeStatefulSession( this );
+        this.workingMemoryEventSupport.reset();
+        this.agendaEventSupport.reset();
+        this.ruleFlowEventSupport.reset();
+        for( Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
+            this.ruleBase.removeEventListener( (RuleBaseEventListener) it.next() );
+        }
         this.executor.shutDown();
     }
 
