@@ -162,7 +162,7 @@ public class RuleBaseConfiguration
      * @param classLoder
      * @param properties
      */
-    public RuleBaseConfiguration(ClassLoader classLoder,
+    public RuleBaseConfiguration(ClassLoader classLoader,
                                  Properties properties) {
         init( classLoader,
               properties );
