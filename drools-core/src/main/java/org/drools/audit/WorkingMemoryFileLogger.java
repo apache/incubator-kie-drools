@@ -24,12 +24,6 @@ import java.util.List;
 
 import org.drools.WorkingMemoryEventManager;
 import org.drools.audit.event.LogEvent;
-import org.drools.event.AfterFunctionRemovedEvent;
-import org.drools.event.AfterRuleBaseLockedEvent;
-import org.drools.event.AfterRuleBaseUnlockedEvent;
-import org.drools.event.BeforeFunctionRemovedEvent;
-import org.drools.event.BeforeRuleBaseLockedEvent;
-import org.drools.event.BeforeRuleBaseUnlockedEvent;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -125,10 +119,6 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         if ( this.events.size() > this.maxEventsInMemory ) {
             writeToDisk();
         }
-    }
-
-    public void finalize() {
-        writeToDisk();
     }
 
 }
