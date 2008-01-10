@@ -138,6 +138,8 @@ public class AccumulateNode extends BetaNode {
                 }
             }
         }
+        
+        this.constraints.resetTuple();
 
         final Object result = this.accumulate.getResult( memory.workingMemoryContext,
                                                          accContext,
@@ -251,6 +253,8 @@ public class AccumulateNode extends BetaNode {
                 }
             }
         }
+        
+        this.constraints.resetFactHandle();
     }
 
     /**
@@ -290,6 +294,8 @@ public class AccumulateNode extends BetaNode {
                 }
             }
         }
+        
+        this.constraints.resetFactHandle();
     }
 
     public void modifyTuple(final boolean isAssert,
@@ -396,6 +402,8 @@ public class AccumulateNode extends BetaNode {
             } else {
                 workingMemory.getFactHandleFactory().destroyFactHandle( createdHandle );
             }
+            
+            this.resultBinder.resetTuple();
         } else {
             workingMemory.getFactHandleFactory().destroyFactHandle( createdHandle );
         }
