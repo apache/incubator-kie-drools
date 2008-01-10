@@ -105,6 +105,8 @@ public class ExistsNode extends BetaNode {
                 break;
             }            
         }
+        
+        this.constraints.resetTuple();
 
         if ( leftTuple.getMatch() != null ) {
             this.sink.propagateAssertTuple( leftTuple,
@@ -147,6 +149,8 @@ public class ExistsNode extends BetaNode {
                                                      workingMemory );                                 
             }
         }
+        
+        this.constraints.resetFactHandle();
     }
 
     /**
@@ -190,6 +194,8 @@ public class ExistsNode extends BetaNode {
                         }
                     }
                     
+                    this.constraints.resetTuple();
+                    
                     // if there is now no new tuple match then propagate assert.
                     if ( tuple.getMatch() == null ) {
                         this.sink.propagateRetractTuple( tuple,
@@ -200,6 +206,8 @@ public class ExistsNode extends BetaNode {
                 
             }
         }
+
+        this.constraints.resetFactHandle();
     }
 
     /**
