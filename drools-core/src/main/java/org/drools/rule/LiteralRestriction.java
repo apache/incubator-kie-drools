@@ -165,6 +165,13 @@ public class LiteralRestriction
                                     final ReteTuple tuple) {
             // nothing to do
         }
+        
+        public void resetTuple() {            
+        }
+        
+        public void resetFactHandle() {
+            this.object = null;
+        }        
 
     }
 

@@ -127,6 +127,18 @@ public abstract class AbstractCompositeRestriction
                                                         tuple );
             }
         }
+        
+        public void resetTuple() {
+            for ( int i = 0, length = this.contextEntries.length; i < length; i++ ) {
+                this.contextEntries[i].resetTuple();
+            }
+        }
+        
+        public void resetFactHandle() {
+            for ( int i = 0, length = this.contextEntries.length; i < length; i++ ) {
+                this.contextEntries[i].resetFactHandle();
+            }
+        }        
 
     }
 

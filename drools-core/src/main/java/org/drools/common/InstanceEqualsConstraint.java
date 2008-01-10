@@ -130,5 +130,13 @@ public class InstanceEqualsConstraint
                                          final InternalFactHandle handle) {
             this.right = handle.getObject();
         }
+        
+        public void resetTuple() {
+            this.left = null;
+        }
+        
+        public void resetFactHandle() {
+            this.right = null;
+        }         
     }
 }

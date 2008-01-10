@@ -199,6 +199,20 @@ public class QuadroupleBetaConstraints
         this.context3.updateFromFactHandle( workingMemory,
                                             handle );
     }
+    
+    public void resetTuple() {
+        this.context0.resetTuple();
+        this.context1.resetTuple();
+        this.context2.resetTuple();
+        this.context3.resetTuple();
+    }
+    
+    public void resetFactHandle() {
+        this.context0.resetFactHandle();
+        this.context1.resetFactHandle();
+        this.context2.resetFactHandle();
+        this.context3.resetFactHandle();
+    }      
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)

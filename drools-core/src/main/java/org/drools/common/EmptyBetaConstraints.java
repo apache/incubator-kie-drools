@@ -60,6 +60,12 @@ public class EmptyBetaConstraints
                                      final InternalFactHandle handle) {
     }
 
+    public void resetTuple() {
+    }
+    
+    public void resetFactHandle() {
+    } 
+    
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */

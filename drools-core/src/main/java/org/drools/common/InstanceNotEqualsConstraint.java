@@ -123,8 +123,15 @@ public class InstanceNotEqualsConstraint
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
                                          final InternalFactHandle handle) {
             this.right = handle.getObject();
-
         }
+        
+        public void resetTuple() {
+            this.left = null;
+        }
+        
+        public void resetFactHandle() {
+            this.right = null;
+        }                
     }
 
 }

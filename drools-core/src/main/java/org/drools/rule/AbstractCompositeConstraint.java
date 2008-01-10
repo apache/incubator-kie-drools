@@ -228,6 +228,18 @@ public abstract class AbstractCompositeConstraint
                                              tuple );
             }
         }
+        
+        public void resetTuple() {
+            for ( int i = 0, length = this.contexts.length; i < length; i++ ) {
+                this.contexts[i].resetTuple();
+            }
+        }
+        
+        public void resetFactHandle() {
+            for ( int i = 0, length = this.contexts.length; i < length; i++ ) {
+                this.contexts[i].resetFactHandle();
+            }
+        }           
 
     }
 
