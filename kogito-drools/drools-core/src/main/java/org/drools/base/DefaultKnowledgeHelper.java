@@ -49,6 +49,13 @@ public class DefaultKnowledgeHelper
         this.activation = agendaItem;
         this.tuple = agendaItem.getTuple();
     }
+    
+    public void reset() {
+        this.rule = null;
+        this.subrule = null;
+        this.activation = null;
+        this.tuple = null;
+    }
 
     public void insert(final Object object) throws FactException {
         insert( object,

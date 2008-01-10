@@ -43,6 +43,9 @@ public interface KnowledgeHelper
     
     public void setActivation(final Activation agendaItem); 
     
+    public void reset();
+    
+    
     /**
      * Asserts an object, notice that it does not return the FactHandle
      * 
