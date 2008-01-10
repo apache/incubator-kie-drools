@@ -310,6 +310,14 @@ public abstract class WorkingMemoryLogger
         }
         return result.append( "]" ).toString();
     }
+    
+    public void dispose() {
+        this.workingMemoryEventManager.removeEventListener( (WorkingMemoryEventListener) this );
+        this.workingMemoryEventManager.removeEventListener( (AgendaEventListener) this );
+        this.workingMemoryEventManager.removeEventListener( (RuleFlowEventListener) this );
+        this.workingMemoryEventManager.removeEventListener( (RuleBaseEventListener) this );
+
+    }
 
     public void agendaGroupPopped(final AgendaGroupPoppedEvent event,
                                   final WorkingMemory workingMemory) {
