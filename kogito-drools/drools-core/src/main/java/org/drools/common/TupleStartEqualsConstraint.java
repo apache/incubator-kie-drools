@@ -141,5 +141,13 @@ public class TupleStartEqualsConstraint
             // it MUST be a rete tuple
             this.right = (ReteTuple) handle.getObject();
         }
+        
+        public void resetTuple() {
+            this.left = null;
+        }
+        
+        public void resetFactHandle() {
+            this.right = null;
+        }         
     }
 }

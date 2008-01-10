@@ -19,5 +19,9 @@ public interface ContextEntry
 
     public void updateFromFactHandle(InternalWorkingMemory workingMemory,
                                      InternalFactHandle handle);
+    
+    public void resetTuple();
+    
+    public void resetFactHandle();
 
 }

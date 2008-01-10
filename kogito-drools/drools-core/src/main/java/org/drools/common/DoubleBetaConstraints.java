@@ -138,6 +138,16 @@ public class DoubleBetaConstraints
         this.context1.updateFromFactHandle( workingMemory,
                                             handle );
     }
+    
+    public void resetTuple() {
+        this.context0.resetTuple();
+        this.context1.resetTuple();
+    }
+    
+    public void resetFactHandle() {
+        this.context0.resetFactHandle();
+        this.context1.resetFactHandle();
+    }      
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)

@@ -358,6 +358,14 @@ public class ReturnValueRestriction
         public InternalWorkingMemory getWorkingMemory() {
             return this.workingMemory;
         }
+        
+        public void resetTuple() {
+            this.leftTuple = null;
+        }
+        
+        public void resetFactHandle() {
+            this.handle = null;
+        }        
     }
 
 }

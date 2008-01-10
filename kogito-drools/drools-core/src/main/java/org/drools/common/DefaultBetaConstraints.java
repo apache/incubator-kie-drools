@@ -149,6 +149,18 @@ public class DefaultBetaConstraints
                                           handle );
         }
     }
+    
+    public void resetTuple() {
+        for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
+            context.resetTuple();
+        }
+    }
+    
+    public void resetFactHandle() {
+        for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
+            context.resetFactHandle();
+        }
+    }     
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)

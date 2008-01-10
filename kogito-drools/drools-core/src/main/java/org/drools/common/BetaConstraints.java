@@ -30,4 +30,8 @@ public interface BetaConstraints
     public boolean isEmpty();
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config);
+    
+    public void resetTuple();
+    
+    public void resetFactHandle();    
 }
