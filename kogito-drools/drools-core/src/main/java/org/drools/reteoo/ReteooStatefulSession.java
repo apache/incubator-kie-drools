@@ -81,7 +81,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         this.ruleBase.disposeStatefulSession( this );
         this.workingMemoryEventSupport.reset();
         this.agendaEventSupport.reset();
-        this.ruleFlowEventSupport.reset();
+        this.workflowEventSupport.reset();
         for( Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
             this.ruleBase.removeEventListener( (RuleBaseEventListener) it.next() );
         }
