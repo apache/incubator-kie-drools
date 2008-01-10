@@ -23,14 +23,6 @@ import java.util.List;
 
 import org.drools.WorkingMemory;
 import org.drools.audit.event.LogEvent;
-import org.drools.event.AfterPackageAddedEvent;
-import org.drools.event.AfterPackageRemovedEvent;
-import org.drools.event.AfterRuleAddedEvent;
-import org.drools.event.AfterRuleRemovedEvent;
-import org.drools.event.BeforePackageAddedEvent;
-import org.drools.event.BeforePackageRemovedEvent;
-import org.drools.event.BeforeRuleAddedEvent;
-import org.drools.event.BeforeRuleRemovedEvent;
 
 import com.thoughtworks.xstream.XStream;
 

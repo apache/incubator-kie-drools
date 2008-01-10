@@ -118,4 +118,8 @@ public class WorkingMemoryEventSupport
         }
     }
 
+    public void reset() {
+        this.listeners.clear();
+    }
+
 }

@@ -146,4 +146,8 @@ public class AgendaEventSupport
                                                                                workingMemory );
         }
     }
+
+    public void reset() {
+        this.listeners.clear();
+    }
 }

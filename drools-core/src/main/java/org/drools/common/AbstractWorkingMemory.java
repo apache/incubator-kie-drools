@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -130,6 +131,8 @@ public abstract class AbstractWorkingMemory
     protected AgendaEventSupport                         agendaEventSupport                            = new AgendaEventSupport();
 
     protected RuleFlowEventSupport                workflowEventSupport                          = new RuleFlowEventSupport();
+    
+    protected List                                  __ruleBaseEventListeners                      = new LinkedList();                      
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     protected transient InternalRuleBase                 ruleBase;
@@ -342,6 +345,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.lock.lock();
             this.ruleBase.addEventListener( listener );
+            this.__ruleBaseEventListeners.add( listener );
         } finally {
             this.lock.unlock();
         }
@@ -350,7 +354,7 @@ public abstract class AbstractWorkingMemory
     public List getRuleBaseEventListeners() {
         try {
             this.lock.lock();
-            return this.ruleBase.getRuleBaseEventListeners();
+            return Collections.unmodifiableList( this.__ruleBaseEventListeners );
         } finally {
             this.lock.unlock();
         }
@@ -360,6 +364,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.lock.lock();
             this.ruleBase.removeEventListener( listener );
+            this.__ruleBaseEventListeners.remove( listener );
         } finally {
             this.lock.unlock();
         }

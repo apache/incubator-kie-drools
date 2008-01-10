@@ -92,7 +92,6 @@ public abstract class WorkingMemoryLogger
     RuleBaseEventListener {
 
     private final List    filters = new ArrayList();
-    private WorkingMemoryEventManager workingMemoryEventManager;
 
     /**
      * Creates a new working memory logger for the given working memory.
@@ -100,11 +99,10 @@ public abstract class WorkingMemoryLogger
      * @param workingMemory
      */
     public WorkingMemoryLogger(final WorkingMemoryEventManager workingMemoryEventManager) {
-        this.workingMemoryEventManager = workingMemoryEventManager;
-        this.workingMemoryEventManager.addEventListener( (WorkingMemoryEventListener) this );
-        this.workingMemoryEventManager.addEventListener( (AgendaEventListener) this );
-        this.workingMemoryEventManager.addEventListener( (RuleFlowEventListener) this );
-        this.workingMemoryEventManager.addEventListener( (RuleBaseEventListener) this );
+        workingMemoryEventManager.addEventListener( (WorkingMemoryEventListener) this );
+        workingMemoryEventManager.addEventListener( (AgendaEventListener) this );
+        workingMemoryEventManager.addEventListener( (RuleFlowEventListener) this );
+        workingMemoryEventManager.addEventListener( (RuleBaseEventListener) this );
     }
 
     /**
@@ -311,14 +309,6 @@ public abstract class WorkingMemoryLogger
         return result.append( "]" ).toString();
     }
     
-    public void dispose() {
-        this.workingMemoryEventManager.removeEventListener( (WorkingMemoryEventListener) this );
-        this.workingMemoryEventManager.removeEventListener( (AgendaEventListener) this );
-        this.workingMemoryEventManager.removeEventListener( (RuleFlowEventListener) this );
-        this.workingMemoryEventManager.removeEventListener( (RuleBaseEventListener) this );
-
-    }
-
     public void agendaGroupPopped(final AgendaGroupPoppedEvent event,
                                   final WorkingMemory workingMemory) {
         // we don't audit this yet     
