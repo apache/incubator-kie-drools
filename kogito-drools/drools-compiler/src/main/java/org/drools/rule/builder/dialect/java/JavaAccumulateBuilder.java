@@ -18,6 +18,7 @@ package org.drools.rule.builder.dialect.java;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -138,11 +139,11 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                                                       accumDescr.getResultCode(),
                                                                                                       new Set[]{context.getDeclarationResolver().getDeclarations().keySet(), context.getPkg().getGlobals().keySet()} );
 
-            final List requiredDeclarations = new ArrayList( initCodeAnalysis.getBoundIdentifiers()[0] );
+            final Set requiredDeclarations = new HashSet( initCodeAnalysis.getBoundIdentifiers()[0] );
             requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers()[0] );
             requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers()[0] );
 
-            final List requiredGlobals = new ArrayList( initCodeAnalysis.getBoundIdentifiers()[1] );
+            final Set requiredGlobals = new HashSet( initCodeAnalysis.getBoundIdentifiers()[1] );
             requiredGlobals.addAll( actionCodeAnalysis.getBoundIdentifiers()[1] );
             requiredGlobals.addAll( resultCodeAnalysis.getBoundIdentifiers()[1] );
 
@@ -156,8 +157,9 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             }
 
             final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
-            for ( int i = 0, size = requiredDeclarations.size(); i < size; i++ ) {
-                declarations[i] = context.getDeclarationResolver().getDeclaration( (String) requiredDeclarations.get( i ) );
+            int i = 0;
+            for( Iterator it = requiredDeclarations.iterator(); it.hasNext(); i++ ) {
+                declarations[i] = context.getDeclarationResolver().getDeclaration( (String) it.next() );
             }
             final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
 
