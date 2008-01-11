@@ -679,7 +679,7 @@ public class AccumulateTest extends TestCase {
     public void testAccumulateMultiPatternMVEL() throws Exception {
         execTestAccumulateReverseModifyMultiPattern( "test_AccumulateMultiPatternMVEL.drl" );
     }
-    
+
     public void execTestAccumulateSum(String fileName) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
@@ -1024,7 +1024,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
-    public void execTestAccumulateReverseModifyMultiPattern( String fileName ) throws Exception {
+    public void execTestAccumulateReverseModifyMultiPattern(String fileName) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -1093,6 +1093,35 @@ public class AccumulateTest extends TestCase {
         Assert.assertEquals( 2,
                              results.size() );
 
+    }
+
+    public void testAccumulateWithPreviouslyBoundVariables() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulatePreviousBinds.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+
+        wm.insert( new Cheese( "stilton",
+                               10 ) );
+        wm.insert( new Cheese( "brie",
+                               5 ) );
+        wm.insert( new Cheese( "provolone",
+                               150 ) );
+        wm.insert( new Cheese( "brie",
+                               20 ) );
+
+        wm.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( new Integer( 45 ),
+                      results.get( 0 ) );
     }
 
 }
