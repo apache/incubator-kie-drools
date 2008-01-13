@@ -138,25 +138,24 @@ $ mvn -Psolver -Dmaven.test.skip clean install
 $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
 ...</programlisting>
 
-    <para>You will use drools-solver with the latest, unstable revision of
-    drools. If you would rather use a stable version of drools, edit
-    <literal>/drools-solver/drools-solver-examples/pom.xml</literal> and
-    overwrite the drools jar versions, before runing the example:</para>
+    <para>You will use drools-solver with the latest, unstable snapshot of the
+    drools rule engine. If you would rather use a stable version of the drools
+    rule engine, edit <literal>/drools-solver/pom.xml</literal> and overwrite
+    the drools jar versions, before building and running the examples:</para>
 
-    <programlisting>    &lt;dependencies&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.drools&lt;/groupId&gt;
-            &lt;artifactId&gt;drools-core&lt;/artifactId&gt;
-            &lt;version&gt;4.0.2&lt;/version&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.drools&lt;/groupId&gt;
-            &lt;artifactId&gt;drools-compiler&lt;/artifactId&gt;
-            &lt;version&gt;4.0.2&lt;/version&gt;
-        &lt;/dependency&gt;
-
-        ...
-
-     &lt;/dependencies&gt;</programlisting>
+    <programlisting>    &lt;dependencyManagement&gt;
+        &lt;dependencies&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;org.drools&lt;/groupId&gt;
+                &lt;artifactId&gt;drools-core&lt;/artifactId&gt;
+                &lt;version&gt;4.0.3&lt;/version&gt;
+            &lt;/dependency&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;org.drools&lt;/groupId&gt;
+                &lt;artifactId&gt;drools-compiler&lt;/artifactId&gt;
+                &lt;version&gt;4.0.3&lt;/version&gt;
+            &lt;/dependency&gt;
+        &lt;/dependencies&gt;
+    &lt;/dependencyManagement&gt;</programlisting>
   </section>
 </section>
