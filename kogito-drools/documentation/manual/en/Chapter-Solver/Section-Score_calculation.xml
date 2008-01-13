@@ -22,7 +22,7 @@
         $q1 : Queen($id : id, $y : y);
         $q2 : Queen(id &gt; $id, y == $y);
     then
-        insertLogical(new ConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
 end</programlisting>
     </example>
 
@@ -150,7 +150,7 @@ rule "multipleQueensHorizontal"
         $q1 : Queen($id : id, $y : y);
         $q2 : Queen(id &gt; $id, y == $y);
     then
-        insertLogical(new ConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
 end
 
 // multipleQueensVertical is obsolete because it is always 0
@@ -160,7 +160,7 @@ rule "multipleQueensAscendingDiagonal"
         $q1 : Queen($id : id, $ascendingD : ascendingD);
         $q2 : Queen(id &gt; $id, ascendingD == $ascendingD);
     then
-        insertLogical(new ConstraintOccurrence("multipleQueensAscendingDiagonal", $q1, $q2));
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensAscendingDiagonal", $q1, $q2));
 end
 
 rule "multipleQueensDescendingDiagonal"
@@ -168,17 +168,17 @@ rule "multipleQueensDescendingDiagonal"
         $q1 : Queen($id : id, $descendingD : descendingD);
         $q2 : Queen(id &gt; $id, descendingD == $descendingD);
     then
-        insertLogical(new ConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
 end
 
-rule "constraintsBroken"
+rule "hardConstraintsBroken"
     when
-        $constraintCount : Number() from accumulate(
-            $constraintOccurrence : ConstraintOccurrence(),
-            count($constraintOccurrence)
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
         );
     then
-        scoreCalculator.setScore(- $constraintCount.intValue());
+        scoreCalculator.setScore(- $occurrenceCount.intValue());
 end</programlisting>
 
     <para>Optionally, you can also weigh your constraints differently, by
