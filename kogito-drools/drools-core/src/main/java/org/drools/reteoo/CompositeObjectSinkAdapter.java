@@ -40,8 +40,6 @@ public class CompositeObjectSinkAdapter
 
     ObjectHashMap             hashedSinkMap;
 
-    private HashKey           hashKey;
-
     private final int         alphaNodeHashingThreshold;
 
     public CompositeObjectSinkAdapter() {
@@ -49,7 +47,6 @@ public class CompositeObjectSinkAdapter
     }
 
     public CompositeObjectSinkAdapter(final int alphaNodeHashingThreshold) {
-        this.hashKey = new HashKey();
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
 
@@ -67,7 +64,7 @@ public class CompositeObjectSinkAdapter
                     final FieldIndex fieldIndex = registerFieldIndex( index,
                                                                       literalConstraint.getFieldExtractor() );
 
-                    if ( fieldIndex.getCount() >= this.alphaNodeHashingThreshold && this.alphaNodeHashingThreshold != 0) {
+                    if ( fieldIndex.getCount() >= this.alphaNodeHashingThreshold && this.alphaNodeHashingThreshold != 0 ) {
                         if ( !fieldIndex.isHashed() ) {
                             hashSinks( fieldIndex );
                         }
@@ -112,10 +109,10 @@ public class CompositeObjectSinkAdapter
                     final FieldIndex fieldIndex = unregisterFieldIndex( index );
 
                     if ( fieldIndex.isHashed() ) {
-                        this.hashKey.setValue( index,
-                                               fieldIndex.getFieldExtractor(),
-                                               value );
-                        this.hashedSinkMap.remove( this.hashKey );
+                        HashKey hashKey = new HashKey( index,
+                                                       value,
+                                                       fieldIndex.getFieldExtractor() );
+                        this.hashedSinkMap.remove( hashKey );
                         if ( fieldIndex.getCount() <= this.alphaNodeHashingThreshold - 1 ) {
                             // we have less than three so unhash
                             unHashSinks( fieldIndex );
@@ -293,10 +290,10 @@ public class CompositeObjectSinkAdapter
                 // this field is hashed so set the existing hashKey and see if there is a sink for it
                 final int index = fieldIndex.getIndex();
                 final FieldExtractor extractor = fieldIndex.getFieldExtactor();
-                this.hashKey.setValue( index,
-                                       object,
-                                       extractor );
-                final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( this.hashKey );
+                HashKey hashKey = new HashKey( index,
+                                               object,
+                                               fieldIndex.getFieldExtractor() );
+                final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( hashKey );
                 if ( sink != null ) {
                     // The sink exists so propagate
                     sink.assertObject( handle,
@@ -341,11 +338,10 @@ public class CompositeObjectSinkAdapter
                     }
 
                     final int index = fieldIndex.getIndex();
-                    final FieldExtractor extractor = fieldIndex.getFieldExtactor();
-                    this.hashKey.setValue( index,
-                                           object,
-                                           extractor );
-                    final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( this.hashKey );
+                    HashKey hashKey = new HashKey( index,
+                                                   object,
+                                                   fieldIndex.getFieldExtactor() );
+                    final ObjectSink sink = (ObjectSink) this.hashedSinkMap.get( hashKey );
                     if ( sink != null ) {
                         // The sink exists so propagate
                         sink.retractObject( handle,
@@ -434,7 +430,7 @@ public class CompositeObjectSinkAdapter
         private long              lvalue;
         private boolean           bvalue;
         private double            dvalue;
-        
+
         private boolean           isNull;
 
         private int               hashCode;
@@ -444,9 +440,9 @@ public class CompositeObjectSinkAdapter
 
         public HashKey(final int index,
                        final FieldValue value,
-                       final Extractor extractor ) {
+                       final Extractor extractor) {
             this.setValue( index,
-                           extractor, 
+                           extractor,
                            value );
         }
 
@@ -467,42 +463,47 @@ public class CompositeObjectSinkAdapter
                              final Extractor extractor) {
             this.index = index;
             final ValueType vtype = extractor.getValueType();
-            
-            isNull = extractor.isNullValue(null, value);
-            
+
+            isNull = extractor.isNullValue( null,
+                                            value );
+
             if ( vtype.isBoolean() ) {
                 this.type = BOOL;
-            	if ( !isNull ) {
-            		this.bvalue = extractor.getBooleanValue( null, value );
+                if ( !isNull ) {
+                    this.bvalue = extractor.getBooleanValue( null,
+                                                             value );
                     this.setHashCode( this.bvalue ? 1231 : 1237 );
-            	} else {
+                } else {
                     this.setHashCode( 0 );
-            	}
+                }
             } else if ( vtype.isIntegerNumber() || vtype.isChar() ) {
                 this.type = LONG;
                 if ( !isNull ) {
-                    this.lvalue = extractor.getLongValue( null, value );
+                    this.lvalue = extractor.getLongValue( null,
+                                                          value );
                     this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
                 } else {
                     this.setHashCode( 0 );
                 }
             } else if ( vtype.isFloatNumber() ) {
                 this.type = DOUBLE;
-            	if ( !isNull ) {                
-	                this.dvalue = extractor.getDoubleValue( null, value );
-	                final long temp = Double.doubleToLongBits( this.dvalue );
-	                this.setHashCode( (int) (temp ^ (temp >>> 32)) );
-            	} else {
-            		this.setHashCode( 0 );
-            	}
+                if ( !isNull ) {
+                    this.dvalue = extractor.getDoubleValue( null,
+                                                            value );
+                    final long temp = Double.doubleToLongBits( this.dvalue );
+                    this.setHashCode( (int) (temp ^ (temp >>> 32)) );
+                } else {
+                    this.setHashCode( 0 );
+                }
             } else {
                 this.type = OBJECT;
-            	if ( !isNull ) {
-            		this.ovalue = extractor.getValue( null, value );
-            		this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
-            	} else {
-            		this.setHashCode( 0 );
-            	}                
+                if ( !isNull ) {
+                    this.ovalue = extractor.getValue( null,
+                                                      value );
+                    this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
+                } else {
+                    this.setHashCode( 0 );
+                }
             }
         }
 
@@ -510,42 +511,42 @@ public class CompositeObjectSinkAdapter
                              final Extractor extractor,
                              final FieldValue value) {
             this.index = index;
-            
+
             this.isNull = value.isNull();
             final ValueType vtype = extractor.getValueType();
-            
+
             if ( vtype.isBoolean() ) {
                 this.type = BOOL;
-                if ( !isNull ) {      
-	                this.bvalue = value.getBooleanValue();
-	                this.setHashCode( this.bvalue ? 1231 : 1237 );
+                if ( !isNull ) {
+                    this.bvalue = value.getBooleanValue();
+                    this.setHashCode( this.bvalue ? 1231 : 1237 );
                 } else {
-             		this.setHashCode( 0 );
+                    this.setHashCode( 0 );
                 }
             } else if ( vtype.isIntegerNumber() ) {
                 this.type = LONG;
-                if ( !isNull ) {      
-	                this.lvalue = value.getLongValue();
-	                this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
+                if ( !isNull ) {
+                    this.lvalue = value.getLongValue();
+                    this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
                 } else {
-             		this.setHashCode( 0 );
+                    this.setHashCode( 0 );
                 }
             } else if ( vtype.isFloatNumber() ) {
                 this.type = DOUBLE;
-                if ( !isNull ) {      
-	                this.dvalue = value.getDoubleValue();
-	                final long temp = Double.doubleToLongBits( this.dvalue );
-	                this.setHashCode( (int) (temp ^ (temp >>> 32)) );
+                if ( !isNull ) {
+                    this.dvalue = value.getDoubleValue();
+                    final long temp = Double.doubleToLongBits( this.dvalue );
+                    this.setHashCode( (int) (temp ^ (temp >>> 32)) );
                 } else {
-             		this.setHashCode( 0 );
+                    this.setHashCode( 0 );
                 }
             } else {
                 this.type = OBJECT;
-                if ( !isNull ) {      
-	                this.ovalue = value.getValue();
-	                this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
+                if ( !isNull ) {
+                    this.ovalue = value.getValue();
+                    this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
                 } else {
-             		this.setHashCode( 0 );
+                    this.setHashCode( 0 );
                 }
             }
         }
@@ -646,9 +647,9 @@ public class CompositeObjectSinkAdapter
 
         public boolean equals(final Object object) {
             final HashKey other = (HashKey) object;
-            
+
             if ( this.isNull ) {
-            	return ( other.isNull );
+                return (other.isNull );
             }
 
             switch ( this.type ) {
@@ -663,7 +664,7 @@ public class CompositeObjectSinkAdapter
                     if ( (this.ovalue != null) && (this.ovalue instanceof Number) && (otherValue instanceof Number) ) {
                         return (this.index == other.index) && (((Number) this.ovalue).doubleValue() == ((Number) otherValue).doubleValue());
                     }
-                    return (this.index == other.index) && ( this.ovalue == null ? otherValue == null : this.ovalue.equals( otherValue ));
+                    return (this.index == other.index) && (this.ovalue == null ? otherValue == null : this.ovalue.equals( otherValue ));
             }
             return false;
         }
