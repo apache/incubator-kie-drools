@@ -3208,7 +3208,7 @@ public class MiscTest extends TestCase {
         assertEquals( sum,
                       stilton.getPrice() );
         assertEquals( 1,
-                      workingMemory.getFactHandleMap().size() );
+                      workingMemory.getObjectStore().size() );
         assertNotNull( workingMemory.getObject( stiltonHandle ) );
         assertNotNull( workingMemory.getFactHandle( stilton ) );
 

@@ -35,8 +35,6 @@ import org.drools.util.ChainedProperties;
 import org.drools.util.ClassUtils;
 import org.drools.util.ConfFileUtils;
 import org.drools.workflow.core.Node;
-import org.drools.workflow.instance.impl.NodeInstanceFactory;
-import org.drools.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.Handler;
 import org.drools.xml.ProcessSemanticModule;

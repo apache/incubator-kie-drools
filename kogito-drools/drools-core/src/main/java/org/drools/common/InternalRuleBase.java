@@ -114,4 +114,6 @@ public interface InternalRuleBase
     public boolean isEvent( Class clazz );
 
 	public Objenesis getObjenesis();
+	
+	public int getNodeCount();
 }

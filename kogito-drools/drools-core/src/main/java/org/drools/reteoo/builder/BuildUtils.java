@@ -31,6 +31,7 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
+import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectSink;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
@@ -40,7 +41,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.util.ObjectHashMap;
+import org.drools.spi.ObjectType;
 
 /**
  * Utility functions for reteoo build
@@ -83,17 +84,23 @@ public class BuildUtils {
      *            The node to attach.
      *            
      * @return the actual attached node that may be the one given as parameter
-     *         or eventualy one that was already in the cache if sharing is enabled
+     *         or eventually one that was already in the cache if sharing is enabled
      */
     public BaseNode attachNode(final BuildContext context,
                                final BaseNode candidate) {
         BaseNode node = null;
-        if( candidate instanceof ObjectTypeNode ) {
+        if( candidate instanceof EntryPointNode ) {
+            // entry point nodes are always shared
+            EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode)candidate).getEntryPoint() );
+            if( epn != null ) {
+                node = epn;
+            }
+        } else if( candidate instanceof ObjectTypeNode ) {
             // object type nodes are always shared
             ObjectTypeNode otn = (ObjectTypeNode) candidate;
-            ObjectHashMap map = context.getRuleBase().getRete().getObjectTypeNodes( context.getCurrentEntryPoint() );
+            Map<ObjectType, ObjectTypeNode> map = context.getRuleBase().getRete().getObjectTypeNodes( context.getCurrentEntryPoint() );
             if( map != null ) {
-                otn = (ObjectTypeNode) map.get( otn.getObjectType() );
+                otn = map.get( otn.getObjectType() );
                 if ( otn != null ) {
                     node = otn;
                 }

@@ -421,6 +421,23 @@ public class ExternalSheetListenerTest extends TestCase {
                     // TODO Auto-generated method stub
                     return null;
                 }
+
+				public FactHandle insert(Object object, long duration)
+						throws FactException {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+				public FactHandle insert(Object object, long duration,
+						boolean dynamic) throws FactException {
+					// TODO Auto-generated method stub
+					return null;
+				}
+
+                public FactHandle getFactHandleByIdentity(Object object) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
 			};
 		}
 	}

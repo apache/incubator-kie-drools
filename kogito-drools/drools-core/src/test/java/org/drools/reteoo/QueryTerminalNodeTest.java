@@ -46,6 +46,7 @@ import org.drools.spi.FieldValue;
 public class QueryTerminalNodeTest extends TestCase {
     private ReteooRuleBase   ruleBase;
     private BuildContext     buildContext;
+    private EntryPointNode   entryPoint;
 
     ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
     private EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
@@ -54,11 +55,16 @@ public class QueryTerminalNodeTest extends TestCase {
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase,
                                               ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
+        this.entryPoint = new EntryPointNode( 0,
+                                              this.ruleBase.getRete(),
+                                              buildContext );
+        this.entryPoint.attach();
     }
 
     public void testQueryTerminalNode() {
         final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
         final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( this.buildContext.getNextId(),
+                                                                       this.entryPoint,
                                                                        queryObjectType,
                                                                        buildContext );
         queryObjectTypeNode.attach();
@@ -87,6 +93,7 @@ public class QueryTerminalNodeTest extends TestCase {
 
         final ClassObjectType cheeseObjectType = new ClassObjectType( Cheese.class );
         final ObjectTypeNode cheeseObjectTypeNode = new ObjectTypeNode( this.buildContext.getNextId(),
+                                                                        this.entryPoint,
                                                                         cheeseObjectType,
                                                                         buildContext );
         cheeseObjectTypeNode.attach();

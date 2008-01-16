@@ -16,7 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,7 +39,6 @@ import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.PropagationContext;
-import org.drools.util.ObjectHashMap;
 
 /**
  * @author mproctor
@@ -48,13 +46,20 @@ import org.drools.util.ObjectHashMap;
  */
 public class ReteTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
-    private BuildContext buildContext;
-    
+    private BuildContext   buildContext;
+    private EntryPointNode entryPoint;
+
     protected void setUp() throws Exception {
-        this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
-        this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        this.buildContext = new BuildContext( ruleBase,
+                                              ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
+        this.entryPoint = new EntryPointNode( 0,
+                                              this.ruleBase.getRete(),
+                                              buildContext );
+        this.entryPoint.attach();
+
     }
-    
+
     /**
      * Tests ObjectTypeNodes are correctly added to the Rete object
      * 
@@ -64,23 +69,25 @@ public class ReteTest extends DroolsTestCase {
         final Rete rete = ruleBase.getRete();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( Object.class ),
                                                                   buildContext );
         objectTypeNode.attach();
 
         final ObjectTypeNode stringTypeNode = new ObjectTypeNode( 2,
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
         stringTypeNode.attach();
 
-        final Map map = rete.getObjectTypeNodes();
+        final List<ObjectTypeNode> list = rete.getObjectTypeNodes();
 
         // Check the ObjectTypeNodes are correctly added to Rete
         assertEquals( 2,
-                      map.size() );
+                      list.size() );
 
-        assertNotNull( map.get( new ClassObjectType( Object.class ) ) );
-        assertNotNull( map.get( new ClassObjectType( String.class ) ) );
+        assertTrue( list.contains( objectTypeNode ) );
+        assertTrue( list.contains( stringTypeNode ) );
     }
 
     /**
@@ -89,11 +96,12 @@ public class ReteTest extends DroolsTestCase {
      * @throws FactException
      */
     public void testCache() throws FactException {
-        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                            this.entryPoint,
                                                             new ClassObjectType( List.class ),
                                                             buildContext );
         objectTypeNode.attach();
@@ -101,6 +109,7 @@ public class ReteTest extends DroolsTestCase {
         objectTypeNode.addObjectSink( sink );
 
         objectTypeNode = new ObjectTypeNode( 1,
+                                             this.entryPoint,
                                              new ClassObjectType( Collection.class ),
                                              buildContext );
         objectTypeNode.attach();
@@ -108,6 +117,7 @@ public class ReteTest extends DroolsTestCase {
         objectTypeNode.addObjectSink( sink );
 
         objectTypeNode = new ObjectTypeNode( 1,
+                                             this.entryPoint,
                                              new ClassObjectType( ArrayList.class ),
                                              buildContext );
         objectTypeNode.attach();
@@ -150,11 +160,12 @@ public class ReteTest extends DroolsTestCase {
      * @throws Exception
      */
     public void testAssertObject() throws Exception {
-        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( List.class ),
                                                                   buildContext );
         objectTypeNode.attach();
@@ -199,7 +210,7 @@ public class ReteTest extends DroolsTestCase {
     }
 
     public void testAssertObjectWithNoMatchingObjectTypeNode() {
-        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
         final Rete rete = ruleBase.getRete();
         assertEquals( 0,
@@ -214,13 +225,14 @@ public class ReteTest extends DroolsTestCase {
     }
 
     public void testHierarchy() {
-        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
         final Rete rete = ruleBase.getRete();
         final IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         // Attach a List ObjectTypeNode
         final ObjectTypeNode listOtn = new ObjectTypeNode( idGenerator.getNextId(),
+                                                           this.entryPoint,
                                                            new ClassObjectType( List.class ),
                                                            buildContext );
         listOtn.attach();
@@ -234,7 +246,7 @@ public class ReteTest extends DroolsTestCase {
 
         // double check that the Listreference is the same as the one we created, i.e. engine should try and recreate it
         assertSame( listOtn,
-                    rete.getObjectTypeNodes().get( new ClassObjectType( List.class ) ) );
+                    rete.getObjectTypeNodes( EntryPoint.DEFAULT ).get( new ClassObjectType( List.class ) ) );
 
         // ArrayConf should match two ObjectTypenodes for List and ArrayList
         Map memory = workingMemory.getObjectTypeConfMap( EntryPoint.DEFAULT );
@@ -242,13 +254,14 @@ public class ReteTest extends DroolsTestCase {
         final ObjectTypeNode arrayOtn = arrayConf.getConcreteObjectTypeNode();
         assertEquals( 2,
                       arrayConf.getObjectTypeNodes().length );
-        
+
         // Check it contains List and ArrayList
         List nodes = Arrays.asList( arrayConf.getObjectTypeNodes() );
-        assertEquals(2, nodes.size() );
+        assertEquals( 2,
+                      nodes.size() );
         assertTrue( nodes.contains( arrayOtn ) );
         assertTrue( nodes.contains( listOtn ) );
-        
+
         // Nodes are there, retract the fact so we can check both nodes are populated
         workingMemory.retract( handle );
 
@@ -267,6 +280,7 @@ public class ReteTest extends DroolsTestCase {
 
         // Add a Collection ObjectTypeNode, so that we can check that the data from ArrayList is sent to it
         final ObjectTypeNode collectionOtn = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                 this.entryPoint,
                                                                  new ClassObjectType( Collection.class ),
                                                                  buildContext );
         final MockObjectSink collectionSink = new MockObjectSink();
@@ -274,11 +288,12 @@ public class ReteTest extends DroolsTestCase {
         collectionOtn.attach( new InternalWorkingMemory[]{workingMemory} );
 
         assertEquals( 1,
-                      collectionSink.getAsserted().size() );       
-        
+                      collectionSink.getAsserted().size() );
+
         // check that ArrayListConf was updated with the new ObjectTypeNode
         nodes = Arrays.asList( arrayConf.getObjectTypeNodes() );
-        assertEquals(3, nodes.size() );
+        assertEquals( 3,
+                      nodes.size() );
         assertTrue( nodes.contains( arrayOtn ) );
         assertTrue( nodes.contains( listOtn ) );
         assertTrue( nodes.contains( collectionOtn ) );
@@ -289,11 +304,12 @@ public class ReteTest extends DroolsTestCase {
      * ObjectTypeNodes.
      */
     public void testRetractObject() throws Exception {
-        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( List.class ),
                                                                   buildContext );
         objectTypeNode.attach();
@@ -346,11 +362,12 @@ public class ReteTest extends DroolsTestCase {
     }
 
     public void testIsShadowed() {
-        final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) this.ruleBase.newStatefulSession();
+        final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( Cheese.class ),
                                                                   buildContext );
         objectTypeNode.attach();
@@ -384,13 +401,20 @@ public class ReteTest extends DroolsTestCase {
                                 "org.drools.Cheese" );
         RuleBaseConfiguration conf = new RuleBaseConfiguration( properties );
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase( conf );
-        buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        buildContext = new BuildContext( ruleBase,
+                                         ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            ruleBase );
 
         // Create a Rete network with ObjectTypeNodes for List, Collection and ArrayList
         final Rete rete = ruleBase.getRete();
+        final EntryPointNode entryPoint = new EntryPointNode( 0,
+                                                              rete,
+                                                              buildContext );
+        entryPoint.attach();
+        
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  entryPoint,
                                                                   new ClassObjectType( Cheese.class ),
                                                                   buildContext );
         objectTypeNode.attach();

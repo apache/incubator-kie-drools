@@ -25,8 +25,10 @@ import org.drools.base.DroolsQuery;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.AlphaNode;
+import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.PropagationQueuingNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;
@@ -93,15 +95,23 @@ public class PatternBuilder
                            source );
             // restoring offset
             context.setCurrentPatternOffset( currentOffset );
-            
+
         }
-        
-        if( pattern.getSource() == null || context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
+
+        if ( pattern.getSource() == null || context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
             attachAlphaNodes( context,
                               utils,
                               pattern,
                               alphaConstraints );
-            context.setCurrentEntryPoint( EntryPoint.DEFAULT );
+
+            if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
+                context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                          new PropagationQueuingNode( context.getNextId(),
+                                                                                                      context.getObjectSource(),
+                                                                                                      context ) ) );
+                // the entry-point specific network nodes are attached, so, set context to default entry-point 
+                context.setCurrentEntryPoint( EntryPoint.DEFAULT );
+            }
         }
 
         // last thing to do is increment the offset, since if the pattern has a source,
@@ -152,20 +162,34 @@ public class PatternBuilder
 
     public static ObjectTypeNode attachObjectTypeNode(BuildContext context,
                                                       ObjectType objectType) {
-        synchronized ( context.getRuleBase().getPackagesMap() ) {                           
+        synchronized ( context.getRuleBase().getPackagesMap() ) {
+            InternalWorkingMemory[] wms = context.getWorkingMemories();
+
+            EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( context.getCurrentEntryPoint() );
+            if ( epn == null ) {
+                epn = new EntryPointNode( context.getNextId(),
+                                          context.getRuleBase().getRete(),
+                                          context );
+                if ( wms.length > 0 ) {
+                    epn.attach( wms );
+                } else {
+                    epn.attach();
+                }
+            }
+
             ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
+                                                     epn,
                                                      objectType,
                                                      context );
-    
-            InternalWorkingMemory[] wms = context.getWorkingMemories();
+
             if ( wms.length > 0 ) {
                 otn.attach( wms );
             } else {
                 otn.attach();
             }
-    
+
             return otn;
-        } 
+        }
     }
 
     public void attachAlphaNodes(final BuildContext context,
@@ -175,10 +199,10 @@ public class PatternBuilder
 
         // Drools Query ObjectTypeNode never has memory, but other ObjectTypeNode/AlphaNoesNodes may (if not in sequential), 
         //so need to preserve, so we can resotre after this node is added. LeftMemory  and Terminal remain the same once set.
-        
-        boolean objectMemory = context.isObjectTypeNodeMemoryEnabled(); 
+
+        boolean objectMemory = context.isObjectTypeNodeMemoryEnabled();
         boolean alphaMemory = context.isAlphaMemoryAllowed();
-                
+
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
             // Is this the query node, if so we don't want any memory
             if ( DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
@@ -190,7 +214,13 @@ public class PatternBuilder
         }
 
         context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                  new EntryPointNode( context.getNextId(),
+                                                                                      context.getRuleBase().getRete(),
+                                                                                      context ) ) );
+
+        context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                   new ObjectTypeNode( context.getNextId(),
+                                                                                      (EntryPointNode) context.getObjectSource(),
                                                                                       pattern.getObjectType(),
                                                                                       context ) ) );
 
@@ -203,7 +233,7 @@ public class PatternBuilder
                                                                                      context.getObjectSource(),
                                                                                      context ) ) );
         }
-        
+
         // now restore back to original values
         context.setObjectTypeNodeMemoryEnabled( objectMemory );
         context.setAlphaNodeMemoryAllowed( alphaMemory );

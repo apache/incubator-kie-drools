@@ -155,22 +155,22 @@ abstract class BetaNode extends TupleSource
 
     }
 
-    public void remove(final BaseNode node,
-                       final InternalWorkingMemory[] workingMemories) {
+    public void remove(ReteooBuilder builder,
+                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
             removeTupleSink( (TupleSink) node );
         }
-        removeShare();
+        removeShare(builder);
 
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        this.rightInput.remove( this,
-                                workingMemories );
-        this.leftInput.remove( this,
-                               workingMemories );
+        this.rightInput.remove( builder,
+                                this, workingMemories );
+        this.leftInput.remove( builder,
+                               this, workingMemories );
 
     }
 

@@ -18,6 +18,7 @@ import org.drools.RuleBase;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
+import org.drools.common.ObjectStore;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.AgendaEventListener;
@@ -246,8 +247,20 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 		this.facts .add(object);
 		return new MockFactHandle(object.hashCode());
 	}
+	
+	public FactHandle insert(Object object, long duration)
+		throws FactException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	public FactHandle insert(Object object, boolean dynamic)
+			throws FactException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public FactHandle insert(Object object, long duration, boolean dynamic)
 			throws FactException {
 		// TODO Auto-generated method stub
 		return null;
@@ -458,6 +471,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
             ProcessInstanceFactory nodeInstanceFactory) {
         // TODO Auto-generated method stub
         
+    }
+
+    public ObjectStore getObjectStore() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

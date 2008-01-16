@@ -33,12 +33,19 @@ import org.drools.common.InternalFactHandle;
 public interface FactHandleFactory
     extends
     Serializable {
-    /**
+   /**
      * Construct a handle with a new id.
      * 
      * @return The handle.
      */
     InternalFactHandle newFactHandle(Object object, boolean isEvent, WorkingMemory workingMemory );
+    
+    /**
+     * Construct a handle with a new id and a duration.
+     * 
+     * @return The handle.
+     */
+    InternalFactHandle newFactHandle(Object object, boolean isEvent, long duration, WorkingMemory workingMemory );
 
     /**
      * Increases the recency of the FactHandle

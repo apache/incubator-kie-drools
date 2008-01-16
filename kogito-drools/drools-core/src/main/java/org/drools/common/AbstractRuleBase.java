@@ -774,7 +774,7 @@ abstract public class AbstractRuleBase
         this.eventSupport.removeEventListener( listener );
     }
 
-    public List getRuleBaseEventListeners() {
+    public List<RuleBaseEventListener> getRuleBaseEventListeners() {
         // since the event support is thread-safe, no need for locks... right?
         return this.eventSupport.getEventListeners();
     }

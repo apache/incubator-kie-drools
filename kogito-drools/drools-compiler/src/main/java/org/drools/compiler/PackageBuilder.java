@@ -48,7 +48,6 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
-import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlPackageReader;
 import org.drools.xml.XmlProcessReader;
 import org.xml.sax.SAXException;

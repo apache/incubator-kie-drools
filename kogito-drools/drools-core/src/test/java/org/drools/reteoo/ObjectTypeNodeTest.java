@@ -45,10 +45,15 @@ import org.drools.util.ObjectHashMap;
 public class ObjectTypeNodeTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext buildContext;
+    private EntryPointNode entryPoint;
     
     protected void setUp() throws Exception {
         this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        this.entryPoint = new EntryPointNode( 0,
+                                              this.ruleBase.getRete(),
+                                              buildContext );
+        this.entryPoint.attach();
     }
     
     public void testAttach() throws Exception {
@@ -60,13 +65,14 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         int id = idGenerator.getNextId();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( id,
+                                                                  this.entryPoint,
                                                                   objectType,
                                                                   buildContext );
 
         assertEquals( id,
                       objectTypeNode.getId() );
 
-        ObjectHashMap map = source.getObjectTypeNodes( EntryPoint.DEFAULT );
+        Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes( EntryPoint.DEFAULT );
 
         assertEquals( 0,
                       map.size() );
@@ -93,7 +99,13 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final Rete source = ruleBase.getRete();
 
+        final EntryPointNode entryPoint = new EntryPointNode( 0,
+                                                              source, 
+                                                              buildContext );
+        entryPoint.attach();
+
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
 
@@ -140,7 +152,13 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final Rete source = ruleBase.getRete();
 
+        final EntryPointNode entryPoint = new EntryPointNode( 0,
+                                                              source, 
+                                                              buildContext );
+        entryPoint.attach();
+
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
 
@@ -176,6 +194,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) ruleBase.newStatefulSession();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
 
@@ -190,6 +209,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final Rete source = new Rete((InternalRuleBase) ruleBase);
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                            this.entryPoint,
                                                             new ClassObjectType( String.class ),
                                                             buildContext );
 
@@ -198,6 +218,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertTrue( objectTypeNode.matches( "string" ) );
 
         objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                             this.entryPoint,
                                              new ClassObjectType( Object.class ),
                                              buildContext );
 
@@ -220,6 +241,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final Rete source = new Rete((InternalRuleBase) ruleBase);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
 
@@ -271,6 +293,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final Rete source = new Rete( (InternalRuleBase)ruleBase);
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
 
@@ -335,13 +358,19 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
         final Rete source = ruleBase.getRete();
 
+        final EntryPointNode entryPoint = new EntryPointNode( 0,
+                                                              source, 
+                                                              buildContext );
+        entryPoint.attach();
+
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( Cheese.class  ),
                                                                   buildContext );
 
         final MockObjectSink sink = new MockObjectSink();
         objectTypeNode.addObjectSink( sink );
-        source.addObjectSink( objectTypeNode );
+        entryPoint.addObjectSink( objectTypeNode );
 
         final Object cheese = new Cheese( "muzzarela",
                                           5 );
@@ -374,9 +403,15 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) ruleBase.newStatefulSession();
 
         final Rete source = ruleBase.getRete();
+        
+        final EntryPointNode entryPoint = new EntryPointNode( 0,
+                                                              source, 
+                                                              buildContext );
+        entryPoint.attach();
 
         final Class shadowClass = ShadowProxyFactory.getProxy( Person.class );
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  entryPoint,
                                                                   new ClassObjectType( Person.class ),
                                                                   buildContext );
 

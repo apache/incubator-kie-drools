@@ -20,23 +20,22 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
-import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 /**
  * The Rete-OO network.
@@ -68,11 +67,11 @@ public class Rete extends ObjectSource
     /**
      *
      */
-    private static final long                    serialVersionUID = 400L;
+    private static final long                     serialVersionUID = 400L;
 
-    private final Map<EntryPoint, ObjectHashMap> entryPoints;
+    private final Map<EntryPoint, EntryPointNode> entryPoints;
 
-    private transient InternalRuleBase           ruleBase;
+    private transient InternalRuleBase            ruleBase;
 
     // ------------------------------------------------------------
     // Constructors
@@ -80,9 +79,7 @@ public class Rete extends ObjectSource
 
     public Rete(InternalRuleBase ruleBase) {
         super( 0 );
-        this.entryPoints = new HashMap<EntryPoint, ObjectHashMap>();
-        this.entryPoints.put( EntryPoint.DEFAULT,
-                              new ObjectHashMap() );
+        this.entryPoints = new HashMap<EntryPoint, EntryPointNode>();
         this.ruleBase = ruleBase;
     }
 
@@ -111,29 +108,10 @@ public class Rete extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-
-        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( context.getEntryPoint(),
-                                                                         handle.getObject() );
-
-        // checks if shadow is enabled
-        if ( objectTypeConf.isShadowEnabled() ) {
-            // need to improve this
-            if ( !(handle.getObject() instanceof ShadowProxy) ) {
-                // replaces the actual object by its shadow before propagating
-                handle.setObject( objectTypeConf.getShadow( handle.getObject() ) );
-                handle.setShadowFact( true );
-            } else {
-                ((ShadowProxy) handle.getObject()).updateProxy();
-            }
-        }
-
-        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
-
-        for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
-            cachedNodes[i].assertObject( handle,
-                                         context,
-                                         workingMemory );
-        }
+        EntryPointNode node = this.entryPoints.get( context.getEntryPoint() );
+        node.assertObject( handle,
+                           context,
+                           workingMemory );
     }
 
     /**
@@ -148,22 +126,10 @@ public class Rete extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        final Object object = handle.getObject();
-
-        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( context.getEntryPoint(),
-                                                                         object );
-        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
-
-        if ( cachedNodes == null ) {
-            // it is  possible that there are no ObjectTypeNodes for an  object being retracted
-            return;
-        }
-
-        for ( int i = 0; i < cachedNodes.length; i++ ) {
-            cachedNodes[i].retractObject( handle,
-                                          context,
-                                          workingMemory );
-        }
+        EntryPointNode node = this.entryPoints.get( context.getEntryPoint() );
+        node.retractObject( handle,
+                            context,
+                            workingMemory );
     }
 
     /**
@@ -176,21 +142,14 @@ public class Rete extends ObjectSource
      *            as parameters to this method, though.
      */
     protected void addObjectSink(final ObjectSink objectSink) {
-        final ObjectTypeNode node = (ObjectTypeNode) objectSink;
-        ObjectHashMap map = this.entryPoints.get( node.getEntryPoint() );
-        if ( map == null ) {
-            map = new ObjectHashMap();
-            this.entryPoints.put( node.getEntryPoint(),
-                                  map );
-        }
-        map.put( node.getObjectType(),
-                 node,
-                 true );
+        final EntryPointNode node = (EntryPointNode) objectSink;
+        this.entryPoints.put( node.getEntryPoint(),
+                              node );
     }
 
     protected void removeObjectSink(final ObjectSink objectSink) {
-        final ObjectTypeNode node = (ObjectTypeNode) objectSink;
-        this.entryPoints.get( node.getEntryPoint() ).remove( node.getObjectType() );
+        final EntryPointNode node = (EntryPointNode) objectSink;
+        this.entryPoints.remove( node.getEntryPoint() );
     }
 
     public void attach() {
@@ -201,29 +160,26 @@ public class Rete extends ObjectSource
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 
-    public void remove(final BaseNode node,
-                       final InternalWorkingMemory[] workingMemories) {
-        final ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;
-        removeObjectSink( objectTypeNode );
-        for ( int i = 0; i < workingMemories.length; i++ ) {
-            // clear the node memory for each working memory.
-            workingMemories[i].clearNodeMemory( (NodeMemory) node );
-        }
+    public void remove(ReteooBuilder builder,
+                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+        final EntryPointNode entryPointNode = (EntryPointNode) node;
+        removeObjectSink( entryPointNode );
+    }
+    
+    public EntryPointNode getEntryPointNode( final EntryPoint entryPoint ) {
+        return this.entryPoints.get( entryPoint );
     }
 
-    public Map<ObjectType, ObjectTypeNode> getObjectTypeNodes() {
-        Map<ObjectType, ObjectTypeNode> allNodes = new HashMap<ObjectType, ObjectTypeNode>();
-        for( ObjectHashMap map : this.entryPoints.values() ) {
-            Iterator it = map.iterator();
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                allNodes.put( (ObjectType) entry.getKey(), (ObjectTypeNode) entry.getValue() );
-            }
+    public List<ObjectTypeNode> getObjectTypeNodes() {
+        List<ObjectTypeNode> allNodes = new LinkedList<ObjectTypeNode>();
+        for( EntryPointNode node : this.entryPoints.values() ) {
+            allNodes.addAll(node.getObjectTypeNodes().values());
         }
         return allNodes;
     }
 
-    public ObjectHashMap getObjectTypeNodes(EntryPoint entryPoint) {
-        return this.entryPoints.get( entryPoint );
+    public Map<ObjectType, ObjectTypeNode> getObjectTypeNodes(EntryPoint entryPoint) {
+        return this.entryPoints.get( entryPoint ).getObjectTypeNodes();
     }
 
     public InternalRuleBase getRuleBase() {
@@ -250,23 +206,7 @@ public class Rete extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.
-        final ObjectTypeNode node = (ObjectTypeNode) sink;
-        final ObjectType newObjectType = node.getObjectType();
-
-        for ( ObjectTypeConf objectTypeConf : workingMemory.getObjectTypeConfMap( context.getEntryPoint() ).values() ) {
-            if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
-                objectTypeConf.resetCache();
-                ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
-                FactHashTable table = (FactHashTable) workingMemory.getNodeMemory( sourceNode );
-                Iterator factIter = table.iterator();
-                for ( FactEntry factEntry = (FactEntry) factIter.next(); factEntry != null; factEntry = (FactEntry) factIter.next() ) {
-                    sink.assertObject( factEntry.getFactHandle(),
-                                       context,
-                                       workingMemory );
-                }
-            }
-        }
+        // nothing to do, since Rete object itself holds no facts to propagate.
     }
 
     public boolean isObjectMemoryEnabled() {

@@ -49,6 +49,6 @@ public interface RuleBaseEventManager
      * 
      * @return listeners The listeners.
      */
-    public List getRuleBaseEventListeners();
+    public List<RuleBaseEventListener> getRuleBaseEventListeners();
 
 }

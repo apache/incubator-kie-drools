@@ -17,10 +17,8 @@ package org.drools.reteoo;
  */
 
 import org.drools.DroolsTestCase;
-import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
-import org.drools.common.InternalRuleBase;
 import org.drools.reteoo.builder.BuildContext;
 
 public class AddRemoveTest extends DroolsTestCase {
@@ -31,8 +29,14 @@ public class AddRemoveTest extends DroolsTestCase {
          */
         final ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();        
         BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        
+        final EntryPointNode entryPoint = new EntryPointNode( -1,
+                                                              ruleBase.getRete(),
+                                                              context );
+        entryPoint.attach();
                         
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
+                                                                  entryPoint,
                                                                   new ClassObjectType( Object.class ),
                                                                   context );
         objectTypeNode.attach();

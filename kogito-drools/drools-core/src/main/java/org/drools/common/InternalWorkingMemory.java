@@ -32,7 +32,7 @@ public interface InternalWorkingMemory
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport);
 
-    public ObjectHashMap getAssertMap();
+    ///public ObjectHashMap getAssertMap();
 
     public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
 
@@ -46,7 +46,9 @@ public interface InternalWorkingMemory
 
     public long getNextPropagationIdCounter();
 
-    public ObjectHashMap getFactHandleMap();
+    //public ObjectHashMap getFactHandleMap()
+    
+    public ObjectStore getObjectStore();
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem();
 
