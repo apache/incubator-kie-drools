@@ -96,8 +96,8 @@ public class MockTupleSink extends TupleSource
 
     }
 
-    public void remove(final BaseNode node,
-                       final InternalWorkingMemory[] workingMemories) {
+    public void remove(ReteooBuilder builder,
+                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
         // TODO Auto-generated method stub
 
     }

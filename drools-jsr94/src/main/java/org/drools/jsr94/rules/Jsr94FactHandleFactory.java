@@ -25,43 +25,48 @@ import org.drools.temporal.SessionClock;
 
 /**
  * A factory for creating <code>Handle</code>s.
+ * 
  * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
 public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 
+	private static final long serialVersionUID = 4964273923122006124L;
 
-    private static final long serialVersionUID = 4964273923122006124L;
+	protected final InternalFactHandle newFactHandle(final long id,
+			final Object object, final long recency, final boolean isEvent,
+			final WorkingMemory workingMemory) {
+		return this.newFactHandle(id, object, recency, isEvent, 0,
+				workingMemory);
+	}
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
-     */
-    protected final InternalFactHandle newFactHandle(final long id,
-                                                     final Object object,
-                                                     final long recency,
-                                                     final boolean isEvent,
-                                                     final WorkingMemory workingMemory ) {
-        if ( isEvent ) {
-            SessionClock clock = ((TemporalSession) workingMemory).getSessionClock(); 
-            return new Jsr94EventFactHandle( id,
-                                             object,
-                                             recency,
-                                             clock.getCurrentTime(),
-                                             0 ); // for now, we are only handling primitive events
-        } else {
-            return new Jsr94FactHandle( id,
-                                        object,
-                                        recency );
-        }
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
+	 */
+	protected final InternalFactHandle newFactHandle(final long id,
+			final Object object, final long recency, final boolean isEvent,
+			final long duration, final WorkingMemory workingMemory) {
+		if (isEvent) {
+			SessionClock clock = ((TemporalSession) workingMemory)
+					.getSessionClock();
+			return new Jsr94EventFactHandle(id, object, recency, clock
+					.getCurrentTime(), duration);
+		} else {
+			return new Jsr94FactHandle(id, object, recency);
+		}
+	}
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#newInstance()
-     */
-    public FactHandleFactory newInstance() {
-        return new Jsr94FactHandleFactory();
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.drools.reteoo.FactHandleFactory#newInstance()
+	 */
+	public FactHandleFactory newInstance() {
+		return new Jsr94FactHandleFactory();
+	}
 
-    public Class getFactHandleType() {
-        return Jsr94FactHandle.class;
-    }
+	public Class getFactHandleType() {
+		return Jsr94FactHandle.class;
+	}
 }

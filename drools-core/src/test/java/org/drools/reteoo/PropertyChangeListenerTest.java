@@ -12,16 +12,22 @@ import org.drools.reteoo.builder.BuildContext;
 public class PropertyChangeListenerTest extends TestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext buildContext;
+    private EntryPointNode entryPoint;
     
     protected void setUp() throws Exception {
         this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        this.entryPoint = new EntryPointNode( 0,
+                                              this.ruleBase.getRete(),
+                                              buildContext );
+        this.entryPoint.attach();
     }
     
     public void test1() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 1,
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( State.class ),
                                                                   buildContext );
 

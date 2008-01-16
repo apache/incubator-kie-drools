@@ -45,12 +45,33 @@ public abstract class AbstractFactHandleFactory
             return newFactHandle( this.factHandlePool.pop(),
                                   object, 
                                   isEvent,
+                                  0,
                                   workingMemory );
         }
 
         return newFactHandle( this.id++,
                               object,
                               isEvent,
+                              0,
+                              workingMemory );
+    }
+    
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
+     */
+    public final InternalFactHandle newFactHandle( final Object object, final boolean isEvent, long duration, final WorkingMemory workingMemory ) {
+        if ( !this.factHandlePool.isEmpty() ) {
+            return newFactHandle( this.factHandlePool.pop(),
+                                  object, 
+                                  isEvent,
+                                  duration,
+                                  workingMemory );
+        }
+
+        return newFactHandle( this.id++,
+                              object,
+                              isEvent,
+                              duration,
                               workingMemory );
     }
 
@@ -65,6 +86,23 @@ public abstract class AbstractFactHandleFactory
                               object,
                               this.counter++,
                               isEvent,
+                              0,
+                              workingMemory );
+    }
+    
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
+     */
+    protected final InternalFactHandle newFactHandle(final long id,
+                                                     final Object object,
+                                                     final boolean isEvent,
+                                                     final long duration,
+                                                     final WorkingMemory workingMemory ) {
+        return newFactHandle( id,
+                              object,
+                              this.counter++,
+                              isEvent,
+                              duration,
                               workingMemory );
     }
 
@@ -75,6 +113,16 @@ public abstract class AbstractFactHandleFactory
                                                         final Object object,
                                                         final long recency,
                                                         final boolean isEvent, 
+                                                        final WorkingMemory workingMemory );
+    
+    /* (non-Javadoc)
+     * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
+     */
+    protected abstract InternalFactHandle newFactHandle(final long id,
+                                                        final Object object,
+                                                        final long recency,
+                                                        final boolean isEvent,
+                                                        final long duration,
                                                         final WorkingMemory workingMemory );
 
     /* (non-Javadoc)

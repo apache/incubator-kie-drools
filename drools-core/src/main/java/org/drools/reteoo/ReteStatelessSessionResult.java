@@ -6,6 +6,7 @@ import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.StatelessSessionResult;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.ObjectStore;
 import org.drools.spi.GlobalResolver;
 import org.drools.util.JavaIteratorAdapter;
 import org.drools.util.ObjectHashMap;
@@ -13,12 +14,13 @@ import org.drools.util.AbstractHashTable.HashTableIterator;
 
 public class ReteStatelessSessionResult implements StatelessSessionResult {
     private transient InternalWorkingMemory workingMemory;
-    private ObjectHashMap assertMap;
+    // @TODO ObjectStore is currently too heavy for serialisation, but done to fix for now
+    private ObjectStore objectStore;
     private GlobalResolver globalResolver;
     
     public ReteStatelessSessionResult(InternalWorkingMemory workingMemory, GlobalResolver globalResolver) {
         this.workingMemory = workingMemory;
-        this.assertMap = workingMemory.getAssertMap();
+        this.objectStore = workingMemory.getObjectStore();
         this.globalResolver = globalResolver;
     }
 
@@ -32,18 +34,11 @@ public class ReteStatelessSessionResult implements StatelessSessionResult {
     }
 
     public Iterator iterateObjects() {
-        HashTableIterator iterator = new HashTableIterator( this.assertMap );
-        iterator.reset();
-        return new JavaIteratorAdapter( iterator,
-                                        JavaIteratorAdapter.OBJECT );
+        return this.objectStore.iterateObjects();
     }
 
     public Iterator iterateObjects(ObjectFilter filter) {
-        HashTableIterator iterator = new HashTableIterator( this.assertMap );
-        iterator.reset();
-        return new JavaIteratorAdapter( iterator,
-                                        JavaIteratorAdapter.OBJECT,
-                                        filter );
+        return this.objectStore.iterateObjects( filter );
     }
     
     public Object getGlobal(String identifier) {

@@ -59,31 +59,70 @@ public class DefaultKnowledgeHelper
 
     public void insert(final Object object) throws FactException {
         insert( object,
+        		0,
                 false );
     }
 
+    public void insert(final Object object, 
+    				   final long duration) throws FactException {
+        insert( object,
+        		duration,
+                false );
+    }
+    
     public void insert(final Object object,
                        final boolean dynamic) throws FactException {
         this.workingMemory.insert( object,
+        						   0,
                                    dynamic,
                                    false,
                                    this.rule,
                                    this.activation );
     }
+    
+    public void insert(final Object object,
+    				   final long duration,
+    				   final boolean dynamic) throws FactException {
+		this.workingMemory.insert( object,
+								duration,
+		                        dynamic,
+		                        false,
+		                        this.rule,
+		                        this.activation );
+	}
 
     public void insertLogical(final Object object) throws FactException {
         insertLogical( object,
+        			   0,
                        false );
     }
 
+    public void insertLogical(final Object object, final long duration) throws FactException {
+        insertLogical( object,
+        			   duration,
+                       false );
+    }
+    
     public void insertLogical(final Object object,
                               final boolean dynamic) throws FactException {
         this.workingMemory.insert( object,
+        						   0,
                                    dynamic,
                                    true,
                                    this.rule,
                                    this.activation );
     }
+    
+    public void insertLogical(final Object object,
+    						  final long duration,
+    						  final boolean dynamic) throws FactException {
+		this.workingMemory.insert( object,
+								   duration,
+								   dynamic,
+								   true,
+								   this.rule,
+								   this.activation );
+	}
 
     public void update(final FactHandle handle,
                        final Object newObject) throws FactException {

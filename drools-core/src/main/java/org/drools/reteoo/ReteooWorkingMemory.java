@@ -89,7 +89,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     public QueryResults getQueryResults(final String query, final Object[] arguments) {
 
         Object object = new DroolsQuery( query, arguments );
-        InternalFactHandle handle = this.handleFactory.newFactHandle( object, false, this );
+        InternalFactHandle handle = this.handleFactory.newFactHandle( object, false, 0, this );
         
         insert( EntryPoint.DEFAULT, // query dummy objects always use default entry point
                 handle,
@@ -119,10 +119,12 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             }
             list = Collections.EMPTY_LIST;
         } else {
-            list = (List) this.nodeMemories.remove( node.getId() );
+            list = (List) this.getNodeMemory( node );
             
             if ( list == null ) {
                 list = Collections.EMPTY_LIST;
+            } else {
+                this.clearNodeMemory( node );
             }
             queryObj = (Query) node.getRule();
             

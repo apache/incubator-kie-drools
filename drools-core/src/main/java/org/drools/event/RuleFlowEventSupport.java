@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.process.instance.ProcessInstance;
@@ -34,8 +35,8 @@ public class RuleFlowEventSupport implements Serializable {
     
     // TODO separate out process level stuff
 
-    private static final long serialVersionUID = 400L;
-    private final List        listeners        = Collections.synchronizedList( new ArrayList() );
+    private static final long                 serialVersionUID = 400L;
+    private final List<RuleFlowEventListener> listeners        = new CopyOnWriteArrayList<RuleFlowEventListener>();
 
     public RuleFlowEventSupport() {
     }
@@ -69,11 +70,11 @@ public class RuleFlowEventSupport implements Serializable {
             return;
         }
 
-        final RuleFlowStartedEvent event = new RuleFlowStartedEvent(instance);
+        final RuleFlowStartedEvent event = new RuleFlowStartedEvent( instance );
 
-        for (int i = 0, size = this.listeners.size(); i < size; i++) {
-            ((RuleFlowEventListener) this.listeners.get(i))
-                    .beforeRuleFlowStarted(event, workingMemory);
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleFlowEventListener) this.listeners.get( i )).beforeRuleFlowStarted( event,
+                                                                                     workingMemory );
         }
     }
 
@@ -84,11 +85,11 @@ public class RuleFlowEventSupport implements Serializable {
             return;
         }
 
-        final RuleFlowStartedEvent event = new RuleFlowStartedEvent(instance);
+        final RuleFlowStartedEvent event = new RuleFlowStartedEvent( instance );
 
-        for (int i = 0, size = this.listeners.size(); i < size; i++) {
-            ((RuleFlowEventListener) this.listeners.get(i))
-                    .afterRuleFlowStarted(event, workingMemory);
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleFlowEventListener) this.listeners.get( i )).afterRuleFlowStarted( event,
+                                                                                    workingMemory );
         }
     }
 
@@ -99,12 +100,11 @@ public class RuleFlowEventSupport implements Serializable {
             return;
         }
 
-        final RuleFlowCompletedEvent event = new RuleFlowCompletedEvent(
-                instance);
+        final RuleFlowCompletedEvent event = new RuleFlowCompletedEvent( instance );
 
-        for (int i = 0, size = this.listeners.size(); i < size; i++) {
-            ((RuleFlowEventListener) this.listeners.get(i))
-                    .beforeRuleFlowCompleted(event, workingMemory);
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleFlowEventListener) this.listeners.get( i )).beforeRuleFlowCompleted( event,
+                                                                                       workingMemory );
         }
     }
 
@@ -115,76 +115,67 @@ public class RuleFlowEventSupport implements Serializable {
             return;
         }
 
-        final RuleFlowCompletedEvent event = new RuleFlowCompletedEvent(
-                instance);
+        final RuleFlowCompletedEvent event = new RuleFlowCompletedEvent( instance );
 
-        for (int i = 0, size = this.listeners.size(); i < size; i++) {
-            ((RuleFlowEventListener) this.listeners.get(i))
-                    .afterRuleFlowCompleted(event, workingMemory);
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleFlowEventListener) this.listeners.get( i )).afterRuleFlowCompleted( event,
+                                                                                      workingMemory );
         }
     }
 
-    public void fireBeforeRuleFlowGroupActivated(
-            final RuleFlowGroup ruleFlowGroup,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
+    public void fireBeforeRuleFlowGroupActivated(final RuleFlowGroup ruleFlowGroup,
+                                                 final InternalWorkingMemory workingMemory) {
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent(
-                ruleFlowGroup);
+        final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent( ruleFlowGroup );
 
-        for (int i = 0, size = this.listeners.size(); i < size; i++) {
-            ((RuleFlowEventListener) this.listeners.get(i))
-                    .beforeRuleFlowGroupActivated(event, workingMemory);
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleFlowEventListener) this.listeners.get( i )).beforeRuleFlowGroupActivated( event,
+                                                                                            workingMemory );
         }
     }
 
-    public void fireAfterRuleFlowGroupActivated(
-            final RuleFlowGroup ruleFlowGroup,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
+    public void fireAfterRuleFlowGroupActivated(final RuleFlowGroup ruleFlowGroup,
+                                                final InternalWorkingMemory workingMemory) {
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent(
-                ruleFlowGroup);
+        final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent( ruleFlowGroup );
 
-        for (int i = 0, size = this.listeners.size(); i < size; i++) {
-            ((RuleFlowEventListener) this.listeners.get(i))
-                    .afterRuleFlowGroupActivated(event, workingMemory);
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleFlowEventListener) this.listeners.get( i )).afterRuleFlowGroupActivated( event,
+                                                                                           workingMemory );
         }
     }
 
-    public void fireBeforeRuleFlowGroupDeactivated(
-            final RuleFlowGroup ruleFlowGroup,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
+    public void fireBeforeRuleFlowGroupDeactivated(final RuleFlowGroup ruleFlowGroup,
+                                                   final InternalWorkingMemory workingMemory) {
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent(
-                ruleFlowGroup);
+        final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent( ruleFlowGroup );
 
-        for (int i = 0, size = this.listeners.size(); i < size; i++) {
-            ((RuleFlowEventListener) this.listeners.get(i))
-                    .beforeRuleFlowGroupDeactivated(event, workingMemory);
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleFlowEventListener) this.listeners.get( i )).beforeRuleFlowGroupDeactivated( event,
+                                                                                              workingMemory );
         }
     }
 
-    public void fireAfterRuleFlowGroupDeactivated(
-            final RuleFlowGroup ruleFlowGroup,
-            final InternalWorkingMemory workingMemory) {
-        if (this.listeners.isEmpty()) {
+    public void fireAfterRuleFlowGroupDeactivated(final RuleFlowGroup ruleFlowGroup,
+                                                  final InternalWorkingMemory workingMemory) {
+        if ( this.listeners.isEmpty() ) {
             return;
         }
 
-        final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent(
-                ruleFlowGroup);
+        final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent( ruleFlowGroup );
 
-        for (int i = 0, size = this.listeners.size(); i < size; i++) {
-            ((RuleFlowEventListener) this.listeners.get(i))
-                    .afterRuleFlowGroupDeactivated(event, workingMemory);
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleFlowEventListener) this.listeners.get( i )).afterRuleFlowGroupDeactivated( event,
+                                                                                             workingMemory );
         }
     }
 
@@ -195,12 +186,11 @@ public class RuleFlowEventSupport implements Serializable {
             return;
         }
 
-        final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent(
-                ruleFlowNodeInstance);
+        final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent( ruleFlowNodeInstance );
 
-        for (int i = 0, size = this.listeners.size(); i < size; i++) {
-            ((RuleFlowEventListener) this.listeners.get(i))
-                    .beforeRuleFlowNodeTriggered(event, workingMemory);
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleFlowEventListener) this.listeners.get( i )).beforeRuleFlowNodeTriggered( event,
+                                                                                           workingMemory );
         }
     }
 
@@ -211,12 +201,11 @@ public class RuleFlowEventSupport implements Serializable {
             return;
         }
 
-        final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent(
-                ruleFlowNodeInstance);
+        final RuleFlowNodeTriggeredEvent event = new RuleFlowNodeTriggeredEvent( ruleFlowNodeInstance );
 
-        for (int i = 0, size = this.listeners.size(); i < size; i++) {
-            ((RuleFlowEventListener) this.listeners.get(i))
-                    .afterRuleFlowNodeTriggered(event, workingMemory);
+        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
+            ((RuleFlowEventListener) this.listeners.get( i )).afterRuleFlowNodeTriggered( event,
+                                                                                          workingMemory );
         }
     }
 

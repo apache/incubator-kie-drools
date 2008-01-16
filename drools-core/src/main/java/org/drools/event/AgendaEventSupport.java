@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemory;
@@ -36,7 +37,7 @@ public class AgendaEventSupport
      * 
      */
     private static final long serialVersionUID = 400L;
-    private final List        listeners        = Collections.synchronizedList( new ArrayList() );
+    private final List<AgendaEventListener>        listeners        = new CopyOnWriteArrayList<AgendaEventListener>();
 
     public AgendaEventSupport() {
     }
@@ -52,6 +53,7 @@ public class AgendaEventSupport
     }
 
     public List getEventListeners() {
+        
         return Collections.unmodifiableList( this.listeners );
     }
 

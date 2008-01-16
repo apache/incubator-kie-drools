@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.FactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -34,8 +35,8 @@ public class WorkingMemoryEventSupport
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
-    private final List        listeners        = Collections.synchronizedList( new ArrayList() );
+    private static final long                      serialVersionUID = 400L;
+    private final List<WorkingMemoryEventListener> listeners        = new CopyOnWriteArrayList<WorkingMemoryEventListener>();
 
     public WorkingMemoryEventSupport() {
     }

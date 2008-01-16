@@ -21,7 +21,6 @@ import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
@@ -30,8 +29,6 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalAgenda;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
@@ -43,10 +40,15 @@ import org.drools.spi.PropagationContext;
 public class LogicalAssertionTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext buildContext;
+    private EntryPointNode entryPoint;
     
     protected void setUp() throws Exception {
         ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
+        this.entryPoint = new EntryPointNode( 0,
+                                              this.ruleBase.getRete(),
+                                              buildContext );
+        this.entryPoint.attach();
     }
     
     public void testSingleLogicalRelationship() throws Exception {
@@ -56,6 +58,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
         objectTypeNode.attach();
@@ -158,6 +161,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
         objectTypeNode.attach();
@@ -248,6 +252,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
         objectTypeNode.attach();
@@ -389,7 +394,13 @@ public class LogicalAssertionTest extends DroolsTestCase {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
+        final EntryPointNode entryPoint = new EntryPointNode( 0,
+                                                              rete,
+                                                              buildContext );
+        entryPoint.attach();
+        
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
         objectTypeNode.attach();
@@ -478,6 +489,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
         objectTypeNode.attach();
@@ -578,6 +590,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // Create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
         objectTypeNode.attach();
@@ -708,6 +721,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
         objectTypeNode.attach();
@@ -809,6 +823,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Rete rete = ruleBase.getRete();
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
+                                                                  this.entryPoint,
                                                                   new ClassObjectType( String.class ),
                                                                   buildContext );
         objectTypeNode.attach();

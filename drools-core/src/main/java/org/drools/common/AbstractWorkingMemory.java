@@ -79,10 +79,6 @@ import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.temporal.SessionClock;
-import org.drools.util.JavaIteratorAdapter;
-import org.drools.util.ObjectHashMap;
-import org.drools.util.PrimitiveLongMap;
-import org.drools.util.AbstractHashTable.HashTableIterator;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -100,6 +96,7 @@ public abstract class AbstractWorkingMemory
     // Constants
     // ------------------------------------------------------------
     protected static final Class[]                       ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    private static final int                             NODE_MEMORIES_ARRAY_GROWTH                    = 32;
 
     // ------------------------------------------------------------
     // Instance members
@@ -110,11 +107,10 @@ public abstract class AbstractWorkingMemory
     protected final Object[]                             addRemovePropertyChangeListenerArgs           = new Object[]{this};
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected final PrimitiveLongMap                     nodeMemories                                  = new PrimitiveLongMap( 32,
-                                                                                                                               8 );
-    /** Object-to-handle mapping. */
-    private final ObjectHashMap                          assertMap;
-    private final ObjectHashMap                          identityMap;
+    protected final NodeMemories                         nodeMemories;
+
+    
+    protected final ObjectStore                          objectStore;
 
     protected Map                                        queryResults                                  = Collections.EMPTY_MAP;
 
@@ -196,24 +192,18 @@ public abstract class AbstractWorkingMemory
         this.globalResolver = new MapGlobalResolver();
         this.maintainTms = this.ruleBase.getConfiguration().isMaintainTms();
         this.sequential = this.ruleBase.getConfiguration().isSequential();
+        
+        this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
 
         if ( this.maintainTms ) {
             this.tms = new TruthMaintenanceSystem( this );
         } else {
             this.tms = null;
         }
-
-        this.assertMap = new ObjectHashMap();
+        
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
-
-        if ( conf.getAssertBehaviour() == AssertBehaviour.IDENTITY ) {
-            this.assertMap.setComparator( new IdentityAssertMapComparator() );
-            this.identityMap = assertMap;
-        } else {
-            this.assertMap.setComparator( new EqualityAssertMapComparator() );
-            this.identityMap = new ObjectHashMap();
-            this.identityMap.setComparator( new IdentityAssertMapComparator() );
-        }
+        
+        this.objectStore = new SingleThreadedObjectStore(conf, this.lock);        
 
         // Only takes effect if are using idententity behaviour for assert
         if ( conf.getLogicalOverride() == LogicalOverride.DISCARD ) {
@@ -235,6 +225,7 @@ public abstract class AbstractWorkingMemory
 
     public void setRuleBase(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
+        this.nodeMemories.setRuleBaseReference( this.ruleBase );
     }
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport) {
@@ -261,113 +252,53 @@ public abstract class AbstractWorkingMemory
     }
 
     public void addEventListener(final WorkingMemoryEventListener listener) {
-        try {
-            this.lock.lock();
-            this.workingMemoryEventSupport.addEventListener( listener );
-        } finally {
-            this.lock.unlock();
-        }
+        this.workingMemoryEventSupport.addEventListener( listener );
     }
 
     public void removeEventListener(final WorkingMemoryEventListener listener) {
-        try {
-            this.lock.lock();
-            this.workingMemoryEventSupport.removeEventListener( listener );
-        } finally {
-            this.lock.unlock();
-        }
+        this.workingMemoryEventSupport.removeEventListener( listener );
     }
 
     public List getWorkingMemoryEventListeners() {
-        try {
-            this.lock.lock();
-            return this.workingMemoryEventSupport.getEventListeners();
-        } finally {
-            this.lock.unlock();
-        }
+        return this.workingMemoryEventSupport.getEventListeners();
     }
 
     public void addEventListener(final AgendaEventListener listener) {
-        try {
-            this.lock.lock();
-            this.agendaEventSupport.addEventListener( listener );
-        } finally {
-            this.lock.unlock();
-        }
+        this.agendaEventSupport.addEventListener( listener );
     }
 
     public void removeEventListener(final AgendaEventListener listener) {
-        try {
-            this.lock.lock();
-            this.agendaEventSupport.removeEventListener( listener );
-        } finally {
-            this.lock.unlock();
-        }
+        this.agendaEventSupport.removeEventListener( listener );
     }
 
     public List getAgendaEventListeners() {
-        try {
-            this.lock.lock();
-            return this.agendaEventSupport.getEventListeners();
-        } finally {
-            this.lock.unlock();
-        }
+        return this.agendaEventSupport.getEventListeners();
     }
 
     public void addEventListener(final RuleFlowEventListener listener) {
-        try {
-            this.lock.lock();
-            this.workflowEventSupport.addEventListener( listener );
-        } finally {
-            this.lock.unlock();
-        }
+        this.workflowEventSupport.addEventListener( listener );
     }
 
     public void removeEventListener(final RuleFlowEventListener listener) {
-        try {
-            this.lock.lock();
-            this.workflowEventSupport.removeEventListener( listener );
-        } finally {
-            this.lock.unlock();
-        }
+        this.workflowEventSupport.removeEventListener( listener );
     }
 
     public List getRuleFlowEventListeners() {
-        try {
-            this.lock.lock();
-            return this.workflowEventSupport.getEventListeners();
-        } finally {
-            this.lock.unlock();
-        }
+        return this.workflowEventSupport.getEventListeners();
     }
 
     public void addEventListener(RuleBaseEventListener listener) {
-        try {
-            this.lock.lock();
-            this.ruleBase.addEventListener( listener );
-            this.__ruleBaseEventListeners.add( listener );
-        } finally {
-            this.lock.unlock();
-        }
+        this.ruleBase.addEventListener( listener );
+        this.__ruleBaseEventListeners.add( listener );
     }
 
     public List getRuleBaseEventListeners() {
-        try {
-            this.lock.lock();
-            return Collections.unmodifiableList( this.__ruleBaseEventListeners );
-        } finally {
-            this.lock.unlock();
-        }
+        return Collections.unmodifiableList( this.__ruleBaseEventListeners );
     }
 
     public void removeEventListener(RuleBaseEventListener listener) {
-        try {
-            this.lock.lock();
-            this.ruleBase.removeEventListener( listener );
-            this.__ruleBaseEventListeners.remove( listener );
-        } finally {
-            this.lock.unlock();
-        }
+        this.ruleBase.removeEventListener( listener );
+        this.__ruleBaseEventListeners.remove( listener );
     }
 
     public FactHandleFactory getFactHandleFactory() {
@@ -586,65 +517,25 @@ public abstract class AbstractWorkingMemory
      * 
      */
     public Object getObject(final FactHandle handle) {
-        try {
-            this.lock.lock();
-
-            // Make sure the FactHandle is from this WorkingMemory
-            final InternalFactHandle internalHandle = (InternalFactHandle) this.assertMap.get( handle );
-            if ( internalHandle == null ) {
-                return null;
-            }
-
-            Object object = internalHandle.getObject();
-
-            if ( object != null && internalHandle.isShadowFact() ) {
-                object = ((ShadowProxy) object).getShadowedObject();
-            }
-
-            return object;
-        } finally {
-            this.lock.unlock();
-        }
-
+        return this.objectStore.getObjectForHandle( (InternalFactHandle) handle );
     }
-
-    public ObjectHashMap getAssertMap() {
-        return this.assertMap;
+    
+    public ObjectStore getObjectStore() {
+        return this.objectStore;
     }
 
     /**
      * @see WorkingMemory
      */
     public FactHandle getFactHandle(final Object object) {
-        try {
-            this.lock.lock();
-            final FactHandle factHandle = (FactHandle) this.assertMap.get( object );
-
-            return factHandle;
-        } finally {
-            this.lock.unlock();
-        }
+        return this.objectStore.getHandleForObject( object );
     }
-
+    
     /**
-     * @see InternalWorkingMemory
+     * @see WorkingMemory
      */
     public FactHandle getFactHandleByIdentity(final Object object) {
-        try {
-            this.lock.lock();
-            final FactHandle factHandle = (FactHandle) this.identityMap.get( object );
-
-            return factHandle;
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    /**
-     * This is an internal method, used to avoid java.util.Iterator adaptors
-     */
-    public ObjectHashMap getFactHandleMap() {
-        return this.assertMap;
+        return this.objectStore.getHandleForObjectIdentity( object );
     }
 
     /**
@@ -652,10 +543,7 @@ public abstract class AbstractWorkingMemory
      * iteration may give unexpected results
      */
     public Iterator iterateObjects() {
-        HashTableIterator iterator = new HashTableIterator( this.assertMap );
-        iterator.reset();
-        return new JavaIteratorAdapter( iterator,
-                                        JavaIteratorAdapter.OBJECT );
+        return this.objectStore.iterateObjects( );
     }
 
     /**
@@ -663,11 +551,7 @@ public abstract class AbstractWorkingMemory
      * iteration may give unexpected results
      */
     public Iterator iterateObjects(ObjectFilter filter) {
-        HashTableIterator iterator = new HashTableIterator( this.assertMap );
-        iterator.reset();
-        return new JavaIteratorAdapter( iterator,
-                                        JavaIteratorAdapter.OBJECT,
-                                        filter );
+        return this.objectStore.iterateObjects( filter );
     }
 
     /**
@@ -675,10 +559,7 @@ public abstract class AbstractWorkingMemory
      * iteration may give unexpected results
      */
     public Iterator iterateFactHandles() {
-        HashTableIterator iterator = new HashTableIterator( this.assertMap );
-        iterator.reset();
-        return new JavaIteratorAdapter( iterator,
-                                        JavaIteratorAdapter.FACT_HANDLE );
+        return this.objectStore.iterateFactHandles();
     }
 
     /**
@@ -686,11 +567,7 @@ public abstract class AbstractWorkingMemory
      * iteration may give unexpected results
      */
     public Iterator iterateFactHandles(ObjectFilter filter) {
-        HashTableIterator iterator = new HashTableIterator( this.assertMap );
-        iterator.reset();
-        return new JavaIteratorAdapter( iterator,
-                                        JavaIteratorAdapter.FACT_HANDLE,
-                                        filter );
+        return this.objectStore.iterateFactHandles( filter );
     }
 
     public abstract QueryResults getQueryResults(String query);
@@ -716,6 +593,17 @@ public abstract class AbstractWorkingMemory
      */
     public FactHandle insert(final Object object) throws FactException {
         return insert( object, /* Not-Dynamic */
+                       0,
+                       false,
+                       false,
+                       null,
+                       null );
+    }
+
+    public FactHandle insert(final Object object,
+                             final long duration) throws FactException {
+        return insert( object, /* Not-Dynamic */
+                       duration,
                        false,
                        false,
                        null,
@@ -726,7 +614,18 @@ public abstract class AbstractWorkingMemory
      * @see WorkingMemory
      */
     public FactHandle insertLogical(final Object object) throws FactException {
+        return insert( object, //Not-Dynamic 
+                       0,
+                       false,
+                       true,
+                       null,
+                       null );
+    }
+
+    public FactHandle insertLogical(final Object object,
+                                    final long duration) throws FactException {
         return insert( object, /* Not-Dynamic */
+                       duration,
                        false,
                        true,
                        null,
@@ -736,6 +635,18 @@ public abstract class AbstractWorkingMemory
     public FactHandle insert(final Object object,
                              final boolean dynamic) throws FactException {
         return insert( object,
+                       0,
+                       dynamic,
+                       false,
+                       null,
+                       null );
+    }
+
+    public FactHandle insert(final Object object,
+                             final long duration,
+                             final boolean dynamic) throws FactException {
+        return insert( object,
+                       duration,
                        dynamic,
                        false,
                        null,
@@ -745,6 +656,18 @@ public abstract class AbstractWorkingMemory
     public FactHandle insertLogical(final Object object,
                                     final boolean dynamic) throws FactException {
         return insert( object,
+                       0,
+                       dynamic,
+                       true,
+                       null,
+                       null );
+    }
+
+    public FactHandle insertLogical(final Object object,
+                                    final long duration,
+                                    final boolean dynamic) throws FactException {
+        return insert( object,
+                       duration,
                        dynamic,
                        true,
                        null,
@@ -758,6 +681,7 @@ public abstract class AbstractWorkingMemory
                              final Activation activation) throws FactException {
         return this.insert( EntryPoint.DEFAULT,
                             object,
+                            0,
                             dynamic,
                             logical,
                             rule,
@@ -765,8 +689,39 @@ public abstract class AbstractWorkingMemory
 
     }
 
+    public FactHandle insert(final Object object,
+                             final long duration,
+                             final boolean dynamic,
+                             boolean logical,
+                             final Rule rule,
+                             final Activation activation) throws FactException {
+        return this.insert( EntryPoint.DEFAULT,
+                            object,
+                            duration,
+                            dynamic,
+                            logical,
+                            rule,
+                            activation );
+    }
+
     protected FactHandle insert(final EntryPoint entryPoint,
                                 final Object object,
+                                final boolean dynamic,
+                                boolean logical,
+                                final Rule rule,
+                                final Activation activation) throws FactException {
+        return this.insert( entryPoint,
+                            object,
+                            0,
+                            dynamic,
+                            logical,
+                            rule,
+                            activation );
+    }
+
+    protected FactHandle insert(final EntryPoint entryPoint,
+                                final Object object,
+                                final long duration,
                                 final boolean dynamic,
                                 boolean logical,
                                 final Rule rule,
@@ -784,8 +739,9 @@ public abstract class AbstractWorkingMemory
         if ( isSequential() ) {
             handle = this.handleFactory.newFactHandle( object,
                                                        typeConf.isEvent(),
+                                                       duration,
                                                        this );
-            addHandleToMaps( handle );
+            this.objectStore.addHandle( handle, object );
             insert( entryPoint,
                     handle,
                     object,
@@ -797,7 +753,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.lock.lock();
             // check if the object already exists in the WM
-            handle = (InternalFactHandle) this.assertMap.get( object );
+            handle = (InternalFactHandle) this.objectStore.getHandleForObject(object);
 
             if ( this.maintainTms ) {
 
@@ -841,8 +797,9 @@ public abstract class AbstractWorkingMemory
                     // assert
                     handle = this.handleFactory.newFactHandle( object,
                                                                typeConf.isEvent(),
+                                                               duration,
                                                                this );
-                    addHandleToMaps( handle );
+                    this.objectStore.addHandle( handle, object );
 
                     key = new EqualityKey( handle );
                     handle.setEqualityKey( key );
@@ -877,16 +834,7 @@ public abstract class AbstractWorkingMemory
                                 // before replacing the object
                                 // and then re-add the handle. Otherwise we may
                                 // end up with a leak.
-                                this.assertMap.remove( handle );
-                                Object oldObject = handle.getObject();
-                                if ( oldObject instanceof ShadowProxy ) {
-                                    ((ShadowProxy) oldObject).setShadowedObject( object );
-                                } else {
-                                    handle.setObject( object );
-                                }
-                                this.assertMap.put( handle,
-                                                    handle,
-                                                    false );
+                                this.objectStore.updateHandle( handle, object );
                             } else {
                                 Object oldObject = handle.getObject();
                                 if ( oldObject instanceof ShadowProxy ) {
@@ -902,18 +850,20 @@ public abstract class AbstractWorkingMemory
                             key.setStatus( EqualityKey.STATED );
                             handle = this.handleFactory.newFactHandle( object,
                                                                        typeConf.isEvent(),
+                                                                       duration,
                                                                        this );
                             handle.setEqualityKey( key );
                             key.addFactHandle( handle );
-                            addHandleToMaps( handle );
+                            this.objectStore.addHandle( handle, object );
 
                         }
 
                     } else {
                         handle = this.handleFactory.newFactHandle( object,
                                                                    typeConf.isEvent(),
+                                                                   duration,
                                                                    this );
-                        addHandleToMaps( handle );
+                        this.objectStore.addHandle( handle, object );
                         key.addFactHandle( handle );
                         handle.setEqualityKey( key );
 
@@ -942,8 +892,9 @@ public abstract class AbstractWorkingMemory
                 }
                 handle = this.handleFactory.newFactHandle( object,
                                                            typeConf.isEvent(),
+                                                           duration,
                                                            this );
-                addHandleToMaps( handle );
+                this.objectStore.addHandle( handle, object );
 
             }
 
@@ -1142,7 +1093,7 @@ public abstract class AbstractWorkingMemory
                                                                 object,
                                                                 this );
 
-            removeHandleFromMaps( handle );
+            this.objectStore.removeHandle( handle );
 
             this.handleFactory.destroyFactHandle( handle );
 
@@ -1154,23 +1105,23 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    private void addHandleToMaps(InternalFactHandle handle) {
-        this.assertMap.put( handle,
-                            handle,
-                            false );
-        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-            this.identityMap.put( handle,
-                                  handle,
-                                  false );
-        }
-    }
-
-    private void removeHandleFromMaps(final InternalFactHandle handle) {
-        this.assertMap.remove( handle );
-        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-            this.identityMap.remove( handle );
-        }
-    }
+//    private void addHandleToMaps(InternalFactHandle handle) {
+//        this.assertMap.put( handle,
+//                            handle,
+//                            false );
+//        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+//            this.identityMap.put( handle,
+//                                  handle,
+//                                  false );
+//        }
+//    }
+//
+//    private void removeHandleFromMaps(final InternalFactHandle handle) {
+//        this.assertMap.remove( handle );
+//        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+//            this.identityMap.remove( handle );
+//        }
+//    }
 
     public void modifyRetract(final FactHandle factHandle) {
         modifyRetract( factHandle,
@@ -1394,11 +1345,11 @@ public abstract class AbstractWorkingMemory
                        propagationContext );
 
             if ( (originalObject != object) || (this.ruleBase.getConfiguration().getAssertBehaviour() != AssertBehaviour.IDENTITY) ) {
-                removeHandleFromMaps( handle );
+                this.objectStore.removeHandle( handle );
 
                 // set anyway, so that it updates the hashCodes
                 handle.setObject( object );
-                addHandleToMaps( handle );
+                this.objectStore.addHandle( handle, object );
             }
 
             if ( this.maintainTms ) {
@@ -1487,20 +1438,11 @@ public abstract class AbstractWorkingMemory
      * @return The node's memory.
      */
     public Object getNodeMemory(final NodeMemory node) {
-        Object memory = this.nodeMemories.get( node.getId() );
-
-        if ( memory == null ) {
-            memory = node.createMemory( this.ruleBase.getConfiguration() );
-
-            this.nodeMemories.put( node.getId(),
-                                   memory );
-        }
-
-        return memory;
+        return this.nodeMemories.getNodeMemory( node );
     }
 
     public void clearNodeMemory(final NodeMemory node) {
-        this.nodeMemories.remove( node.getId() );
+        this.nodeMemories.clearNodeMemory( node );
     }
 
     public WorkingMemoryEventSupport getWorkingMemoryEventSupport() {

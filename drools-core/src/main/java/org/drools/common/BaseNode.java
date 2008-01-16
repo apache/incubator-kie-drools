@@ -1,5 +1,7 @@
 package org.drools.common;
 
+import org.drools.reteoo.ReteooBuilder;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -57,9 +59,11 @@ public abstract class BaseNode
 
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
+     * @param builder TODO
      *
      */
-    public abstract void remove(BaseNode node,
+    public abstract void remove(ReteooBuilder builder,
+                                BaseNode node,
                                 InternalWorkingMemory[] workingMemories);
 
     //    /**
@@ -86,10 +90,14 @@ public abstract class BaseNode
 
     /**
      * Each time a node is unshared a counter is decreased.
+     * @param builder TODO
      *
      */
-    public void removeShare() {
+    public void removeShare(ReteooBuilder builder) {
         --this.sharedCount;
+        if( !this.isInUse() ) {
+            builder.getIdGenerator().releaseId( this.id );
+        }
     }
 
     /**

@@ -33,15 +33,11 @@ import org.drools.base.ShadowProxy;
 import org.drools.base.ShadowProxyFactory;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalRuleBase;
-import org.drools.objenesis.Objenesis;
-import org.drools.objenesis.ObjenesisStd;
 import org.drools.objenesis.instantiator.ObjectInstantiator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
-import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap.ObjectEntry;
 
 public class ClassObjectTypeConf
     implements
@@ -280,11 +276,9 @@ public class ClassObjectTypeConf
     }
 
     private ObjectTypeNode[] getMatchingObjectTypes(final Class clazz) throws FactException {
-        final List cache = new ArrayList();
+        final List<ObjectTypeNode> cache = new ArrayList<ObjectTypeNode>();
 
-        final Iterator it = ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).newIterator();
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            final ObjectTypeNode node = (ObjectTypeNode) entry.getValue();
+        for( ObjectTypeNode node : ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {
             if ( node.isAssignableFrom( clazz ) ) {
                 cache.add( node );
             }

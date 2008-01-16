@@ -35,14 +35,25 @@ public interface InternalWorkingMemoryActions
                         Rule rule,
                         Activation activation) throws FactException;
 
-    FactHandle insert(Object object,
+    /*FactHandle insert(Object object,
                       boolean dynamic,
                       boolean logical,
                       Rule rule,
-                      Activation activation) throws FactException;
+                      Activation activation) throws FactException;*/
+    
+    FactHandle insert(Object object,
+    		long duration,
+            boolean dynamic,
+            boolean logical,
+            Rule rule,
+            Activation activation) throws FactException;
 
+    /*public FactHandle insertLogical(Object object,
+                                    boolean dynamic) throws FactException;*/
+    
     public FactHandle insertLogical(Object object,
-                                    boolean dynamic) throws FactException;
+    								long duration,
+    								boolean dynamic) throws FactException;
 
     public void modifyRetract(final FactHandle factHandle,
                               final Rule rule,

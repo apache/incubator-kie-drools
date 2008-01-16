@@ -64,16 +64,32 @@ public class SequentialKnowledgeHelper
 
     public void insert(final Object object) throws FactException {        
     }
+    
+    public void insert(final Object object, final long duration) throws FactException {        
+    }
 
     public void insert(final Object object,
                        final boolean dynamic) throws FactException {
     }
+    
+    public void insert(final Object object,
+    				   final long duration,
+    				   final boolean dynamic) throws FactException {
+    }
 
     public void insertLogical(final Object object) throws FactException {
+    }
+    
+    public void insertLogical(final Object object, final long duration) throws FactException {
     }
 
     public void insertLogical(final Object object,
                               final boolean dynamic) throws FactException {
+    }
+    
+    public void insertLogical(final Object object,
+    						  final long duration,
+            				  final boolean dynamic) throws FactException {
     }
 
     public void update(final FactHandle handle,

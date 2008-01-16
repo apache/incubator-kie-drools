@@ -26,6 +26,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.Package;
 
 import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 
@@ -37,9 +38,9 @@ public class RuleBaseEventSupport
     /**
      * 
      */
-    private static final long serialVersionUID = 400L;
-    private final List<EventListener>        listeners        = Collections.synchronizedList( new ArrayList<EventListener>() );
-    private transient RuleBase    ruleBase;
+    private static final long                 serialVersionUID = 400L;
+    private final List<RuleBaseEventListener> listeners        = new CopyOnWriteArrayList<RuleBaseEventListener>();
+    private transient RuleBase                ruleBase;
 
     public RuleBaseEventSupport(final RuleBase ruleBase) {
         this.ruleBase = ruleBase;
@@ -50,25 +51,27 @@ public class RuleBaseEventSupport
             this.listeners.add( listener );
         }
     }
-    
+
     public void setRuleBase(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
-    
+
     public void removeEventListener(Class cls) {
-        for ( Iterator<EventListener> it = this.listeners.iterator(); it.hasNext(); ) {
-            EventListener listener = it.next();
+        for ( int i = 0; i < this.listeners.size(); ) {
+            RuleBaseEventListener listener = this.listeners.get( i );
             if ( cls.isAssignableFrom( listener.getClass() ) ) {
-                it.remove();
+                this.listeners.remove( i );
+            } else {
+                i++;
             }
-        }        
+        }
     }
 
     public void removeEventListener(final RuleBaseEventListener listener) {
         this.listeners.remove( listener );
     }
 
-    public List<EventListener> getEventListeners() {
+    public List<RuleBaseEventListener> getEventListeners() {
         return Collections.unmodifiableList( this.listeners );
     }
 

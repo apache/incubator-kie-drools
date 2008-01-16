@@ -32,18 +32,17 @@ public class FactTemplateTypeConf
     implements
     ObjectTypeConf,
     Serializable {
-    private InternalRuleBase ruleBase;
+
+    private static final long serialVersionUID = 4493660262148247467L;
+
     private FactTemplate     factTemplate;
     private ObjectTypeNode   concreteObjectTypeNode;
     private ObjectTypeNode[] cache;
-    private EntryPoint       entryPoint;
 
     public FactTemplateTypeConf(final EntryPoint entryPoint,
                                 final FactTemplate factTemplate,
                                 final InternalRuleBase ruleBase) {
-        this.ruleBase = ruleBase;
         this.factTemplate = factTemplate;
-        this.entryPoint = entryPoint;
 
         ObjectType objectType = new FactTemplateObjectType( factTemplate );
         this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );

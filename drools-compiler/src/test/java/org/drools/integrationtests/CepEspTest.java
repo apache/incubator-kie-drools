@@ -126,6 +126,12 @@ public class CepEspTest extends TestCase {
         final List results_met_by = new ArrayList();
         final List results_overlaps = new ArrayList();
         final List results_overlapped_by = new ArrayList();
+        final List results_during = new ArrayList();
+        final List results_includes = new ArrayList();
+        final List results_starts = new ArrayList();
+        final List results_started_by = new ArrayList();
+        final List results_finishes = new ArrayList();
+        final List results_finished_by = new ArrayList();
 
         wm.setGlobal( "results_coincides",
                 results_coincides );
@@ -137,6 +143,22 @@ public class CepEspTest extends TestCase {
                 results_meets );
         wm.setGlobal( "results_met_by",
                       results_met_by );
+        wm.setGlobal( "results_overlaps",
+                	  results_overlaps );
+        wm.setGlobal( "results_overlapped_by",
+                      results_overlapped_by );
+        wm.setGlobal( "results_during",
+          	  results_during );
+        wm.setGlobal( "results_includes",
+                results_includes );
+        wm.setGlobal( "results_starts",
+          	  results_starts );
+        wm.setGlobal( "results_started_by",
+                results_started_by );
+        wm.setGlobal( "results_finishes",
+            	  results_finishes );
+        wm.setGlobal( "results_finished_by",
+                  results_finished_by );
 
         StockTick tick1 = new StockTick( 1,
                                          "DROO",
@@ -158,27 +180,49 @@ public class CepEspTest extends TestCase {
                 						 "ACME",
                 						 10,
                 						 System.currentTimeMillis() );
+        StockTick tick6 = new StockTick( 6,
+										 "ACME",
+										 10,
+										 System.currentTimeMillis() );
+        StockTick tick7 = new StockTick( 7,
+				 						 "ACME",
+				 						 10,
+				 						 System.currentTimeMillis() );
+        StockTick tick8 = new StockTick( 8,
+										 "ACME",
+										 10,
+										 System.currentTimeMillis() );
 
-        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
+        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1, 3 );
         clock.advanceTime( 4 );
-        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
+        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2, 3 );
         clock.advanceTime( 4 );
-        InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
+        InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3, 3 );
         clock.advanceTime( 4 );
-        InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
-        InternalFactHandle handle5 = (InternalFactHandle) wm.insert( tick5 );
-
+        InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4, 5 );
+        InternalFactHandle handle5 = (InternalFactHandle) wm.insert( tick5, 5 );
+        clock.advanceTime( 1 );
+        InternalFactHandle handle6 = (InternalFactHandle) wm.insert( tick6, 3 );
+        InternalFactHandle handle7 = (InternalFactHandle) wm.insert( tick7, 5 );
+        clock.advanceTime( 2 );
+        InternalFactHandle handle8 = (InternalFactHandle) wm.insert( tick8, 3 );
+        
         assertNotNull( handle1 );
         assertNotNull( handle2 );
         assertNotNull( handle3 );
         assertNotNull( handle4 );
         assertNotNull( handle5 );
+        assertNotNull( handle6 );
+        assertNotNull( handle7 );
+        assertNotNull( handle8 );
 
         assertTrue( handle1.isEvent() );
         assertTrue( handle2.isEvent() );
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
-        assertTrue( handle5.isEvent() );
+        assertTrue( handle6.isEvent() );
+        assertTrue( handle7.isEvent() );
+        assertTrue( handle8.isEvent() );
 
         wm.fireAllRules();
 
@@ -197,12 +241,10 @@ public class CepEspTest extends TestCase {
         assertEquals( tick3,
                       results_after.get( 0 ) );
         
-        assertEquals( 2,
+        assertEquals( 1,
                 results_meets.size() );
-        assertEquals( tick5,
-                results_meets.get( 0 ) );
         assertEquals( tick3,
-                results_meets.get( 1 ) );
+                results_meets.get( 0 ) );
         
         assertEquals( 1,
                       results_met_by.size() );
@@ -213,6 +255,47 @@ public class CepEspTest extends TestCase {
                 results_met_by.size() );
         assertEquals( tick2,
                 results_met_by.get( 0 ) );
+        
+        assertEquals( 1,
+                results_overlaps.size() );
+        assertEquals( tick4,
+                results_overlaps.get( 0 ) );
+        
+        assertEquals( 1,
+                results_overlapped_by.size() );
+        assertEquals( tick7,
+                results_overlapped_by.get( 0 ) );
+        
+        assertEquals( 1,
+                results_during.size() );
+        assertEquals( tick6,
+                results_during.get( 0 ) );
+        
+        assertEquals( 1,
+                results_includes.size() );
+        assertEquals( tick4,
+                results_includes.get( 0 ) );
+        
+        assertEquals( 1,
+                results_starts.size() );
+        assertEquals( tick6,
+                results_starts.get( 0 ) );
+        
+        assertEquals( 1,
+                results_started_by.size() );
+        assertEquals( tick7,
+                results_started_by.get( 0 ) );
+        
+        assertEquals( 1,
+                results_finishes.size() );
+        assertEquals( tick8,
+                results_finishes.get( 0 ) );
+        
+        assertEquals( 1,
+                results_finished_by.size() );
+        assertEquals( tick7,
+                results_finished_by.get( 0 ) );
+
     }
 
     public void testSimpleTimeWindow() throws Exception {

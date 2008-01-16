@@ -35,9 +35,7 @@ public class MemoryVisitor extends ReflectiveVisitor {
      * Rete visits each of its ObjectTypeNodes.
      */
     public void visitRete(final Rete rete) {
-        final Map<ObjectType, ObjectTypeNode> map = rete.getObjectTypeNodes();
-
-        for( ObjectTypeNode node : map.values() ) {
+        for( ObjectTypeNode node : rete.getObjectTypeNodes() ) {
             visit( node );
         }
     }

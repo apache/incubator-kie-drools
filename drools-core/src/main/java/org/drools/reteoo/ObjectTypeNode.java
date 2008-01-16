@@ -72,14 +72,9 @@ public class ObjectTypeNode extends ObjectSource
     /** The <code>ObjectType</code> semantic module. */
     private final ObjectType  objectType;
 
-    /** The parent Rete node */
-    private final Rete        rete;
-
     private boolean           skipOnModify     = false;
 
     private boolean           objectMemoryEnabled;
-
-    private final EntryPoint  entryPoint;
 
     /**
      * Construct given a semantic <code>ObjectType</code> and the provided
@@ -91,15 +86,14 @@ public class ObjectTypeNode extends ObjectSource
      *           The semantic object-type differentiator.
      */
     public ObjectTypeNode(final int id,
+                          final EntryPointNode source,
                           final ObjectType objectType,
                           final BuildContext context) {
         super( id,
-               context.getRuleBase().getRete(),
+               source,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
-        this.rete = (Rete) this.objectSource;
         this.objectType = objectType;
         setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
-        this.entryPoint = context.getCurrentEntryPoint() == null ? EntryPoint.DEFAULT : context.getCurrentEntryPoint();
     }
 
     /**
@@ -203,7 +197,7 @@ public class ObjectTypeNode extends ObjectSource
      * Rete needs to know that this ObjectTypeNode has been added
      */
     public void attach() {
-        this.rete.addObjectSink( this );
+        this.objectSource.addObjectSink( this );
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
@@ -218,24 +212,24 @@ public class ObjectTypeNode extends ObjectSource
                                                                                           PropagationContext.RULE_ADDITION,
                                                                                           null,
                                                                                           null );
-            propagationContext.setEntryPoint( this.entryPoint );
-            this.rete.updateSink( this,
-                                  propagationContext,
-                                  workingMemory );
+            propagationContext.setEntryPoint( ((EntryPointNode) this.objectSource).getEntryPoint() );
+            this.objectSource.updateSink( this,
+                                          propagationContext,
+                                          workingMemory );
         }
     }
 
-    public void remove(final BaseNode node,
-                       final InternalWorkingMemory[] workingMemories) {
+    public void remove(ReteooBuilder builder,
+                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
             removeObjectSink( (ObjectSink) node );
         }
-        removeShare();
+        removeShare(builder);
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
-            this.rete.removeObjectSink( this );
+            this.objectSource.removeObjectSink( this );
         }
     }
 
@@ -265,14 +259,14 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public String toString() {
-        return "[ObjectTypeNode(" + this.id + ") " + this.entryPoint + " objectType=" + this.objectType + "]";
+        return "[ObjectTypeNode(" + this.id + ")::" + ((EntryPointNode)this.objectSource).getEntryPoint() + " objectType=" + this.objectType + "]";
     }
 
     /**
      * Uses he hashCode() of the underlying ObjectType implementation.
      */
     public int hashCode() {
-        return this.objectType.hashCode() ^ this.entryPoint.hashCode();
+        return this.objectType.hashCode() ^ this.objectSource.hashCode();
     }
 
     public boolean equals(final Object object) {
@@ -286,7 +280,7 @@ public class ObjectTypeNode extends ObjectSource
 
         final ObjectTypeNode other = (ObjectTypeNode) object;
 
-        return this.objectType.equals( other.objectType ) && this.entryPoint.equals( other.entryPoint );
+        return this.objectType.equals( other.objectType ) && this.objectSource.equals( other.objectSource );
     }
 
     /** 
@@ -353,6 +347,6 @@ public class ObjectTypeNode extends ObjectSource
      * @return the entryPoint
      */
     public EntryPoint getEntryPoint() {
-        return entryPoint;
+        return ((EntryPointNode)this.objectSource).getEntryPoint();
     }
 }
