@@ -1,22 +1,22 @@
 returnValueMethod() ::=<<
-public static org.drools.spi.FieldValue @{methodName}(@foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
-                                                      @foreach{localDeclarationTypes, localDeclarations as type, declr } @{type} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
-                                                      @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","} ) throws Exception {
+public static org.drools.spi.FieldValue @{methodName}(@foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
+                                                      @foreach{localDeclarationTypes as type, localDeclarations as declr } @{type} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
+                                                      @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} @end{","} ) throws Exception {
     return org.drools.base.FieldFactory.getFieldValue( @{text} );
 }
 >>=::
 
 predicateMethod() ::=<<
-public static boolean @{methodName}(@foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
-                                                      @foreach{localDeclarationTypes, localDeclarations as type, declr } @{type} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
-                                                      @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","} ) throws Exception {
+public static boolean @{methodName}(@foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
+                                                      @foreach{localDeclarationTypes as type, localDeclarations as declr } @{type} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
+                                                      @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} @end{","} ) throws Exception {
     return ( @{text} );
 }
 >>=::
 
 evalMethod() ::=<<
-public static boolean @{methodName}(@foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier} @end{","} @if{globals != empty && declarations != empty},@end{}
-                                    @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","} ) throws Exception {
+public static boolean @{methodName}(@foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier} @end{","} @if{globals != empty && declarations != empty},@end{}
+                                    @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} @end{","} ) throws Exception {
     return ( @{text} );
 }
 >>=::
@@ -24,14 +24,14 @@ public static boolean @{methodName}(@foreach{declarationTypes, declarations as t
 accumulateInnerClass() ::=<<
 public static class @{className} {
 
-    @foreach{attributesTypes, attributes as type, attr} private @{type} @{attr};
+    @foreach{attributesTypes as type, attributes as attr} private @{type} @{attr};
     @end{}    
     
     public @{className}() {
     }
 
-    public void init(@foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
-                     @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}
+    public void init(@foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
+                     @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} @end{","}
                      ) throws Exception {
         @{initCode}
     }
@@ -39,8 +39,8 @@ public static class @{className} {
     public void accumulate(org.drools.WorkingMemory workingMemory,
                            org.drools.rule.Declaration[] innerDeclarations, 
                            Object object @if{declarations != empty}, @end{}
-                           @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
-                           @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
+                           @foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
+                           @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
                            @foreach{innerDeclarations as declr}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                            ) throws Exception {
         @{actionCode}
@@ -49,15 +49,15 @@ public static class @{className} {
     public void reverse(org.drools.WorkingMemory workingMemory,
                            org.drools.rule.Declaration[] innerDeclarations, 
                            Object object @if{declarations != empty}, @end{}
-                           @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
-                           @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
+                           @foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
+                           @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
                            @foreach{innerDeclarations as declr}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                            ) throws Exception {
         @{reverseCode}
     }
     
-    public Object getResult(@foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
-                            @foreach{globalTypes, globals as type, identifier}@{type} @{identifier} @end{","}
+    public Object getResult(@foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
+                            @foreach{globalTypes as type, globals as identifier}@{type} @{identifier} @end{","}
                            ) throws Exception {
         return ( @{resultCode} );
     }
@@ -69,7 +69,7 @@ public static class @{className} {
 >>=::
 
 consequenceMethod() ::=<<
-public static void @{methodName}(org.drools.spi.KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declarationTypes, declarations as type, declr} @{type} @{declr.identifier}, org.drools.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{globalTypes, globals as type, identifier}  @{type} @{identifier} @end{","} ) throws Exception {
+public static void @{methodName}(org.drools.spi.KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier}, org.drools.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{globalTypes as type, globals as identifier}  @{type} @{identifier} @end{","} ) throws Exception {
     @{text}
 }
 >>=::

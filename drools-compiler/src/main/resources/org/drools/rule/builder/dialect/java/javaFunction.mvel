@@ -11,7 +11,7 @@ import static @{importEntry};
 public class @{className} {
     private static final long serialVersionUID  = 400L;
         
-    public static @{returnType} @{methodName}(@foreach{parameterTypes, parameterNames as type, name}@{type} @{name}@end{","}) throws Exception {
+    public static @{returnType} @{methodName}(@foreach{parameterTypes as type, parameterNames as name}@{type} @{name}@end{","}) throws Exception {
         @{text}
     }      
 }
