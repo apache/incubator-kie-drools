@@ -337,7 +337,7 @@ public class @{invokerClassName} implements org.drools.spi.Action
 
     public void execute(org.drools.WorkingMemory workingMemory) throws Exception {    
                                
-        @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" ); 
+        @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" ); 
         @end{}    
         
         @{processClassName}.@{methodName} ( 
@@ -356,7 +356,7 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator
 
     public Object evaluate(org.drools.WorkingMemory workingMemory) throws Exception {    
                                
-        @foreach{globalTypes, globals as type, identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" ); 
+        @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" ); 
         @end{}    
         
         return @{processClassName}.@{methodName} ( 
