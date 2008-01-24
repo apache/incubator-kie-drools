@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.TypeResolver;
@@ -21,17 +22,24 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
+import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
+import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
+import org.drools.rule.builder.ProcessBuildContext;
+import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
+import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
@@ -39,9 +47,9 @@ import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialectConfiguration;
 public class ClipsDialect implements Dialect {
 
-    public final static String                ID                      = "ClipsDialect";
+    public final static String                ID                      = "clips";
 
-    private final static String               EXPRESSION_DIALECT_NAME = "MVEL";    
+    private final static String               EXPRESSION_DIALECT_NAME = "mvel";    
     
     private final PatternBuilder              pattern                 = new PatternBuilder();    
     private final ClpConsequenceBuilder      consequence             = new ClpConsequenceBuilder();    
@@ -232,6 +240,52 @@ public class ClipsDialect implements Dialect {
 
     public TypeResolver getTypeResolver() {
         return this.typeResolver;
+    }
+
+    public void addProcess(ProcessBuildContext context) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public AnalysisResult analyzeBlock(PackageBuildContext context,
+                                       BaseDescr descr,
+                                       String text,
+                                       Set[] availableIdentifiers) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public AnalysisResult analyzeExpression(PackageBuildContext context,
+                                            BaseDescr descr,
+                                            Object content,
+                                            Set[] availableIdentifiers) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public ActionBuilder getActionBuilder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public EntryPointBuilder getEntryPointBuilder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public ProcessClassBuilder getProcessClassBuilder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void init(ProcessDescr processDescr) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

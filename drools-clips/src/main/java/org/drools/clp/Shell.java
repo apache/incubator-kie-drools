@@ -88,6 +88,7 @@ public class Shell
         } catch ( Exception e ) {
             throw new RuntimeException( e );
         }
+        
         //parser.setF
     }
 
@@ -106,7 +107,7 @@ public class Shell
         valueHandler.getValue( context );
     }
 
-    public void ruleDescrHandler(RuleDescr ruleDescr) {
+    public void ruleDescrHandler(RuleDescr ruleDescr) {        
         String module = getModuleName( ruleDescr.getAttributes() );
 
         PackageDescr pkg = new PackageDescr( module );
@@ -118,7 +119,7 @@ public class Shell
         pkg.addRule( ruleDescr );
 
         PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( pkg );
+        builder.addPackage( pkg );                
         
         try {
             this.ruleBase.addPackage( builder.getPackage() );
