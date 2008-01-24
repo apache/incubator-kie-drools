@@ -657,7 +657,7 @@ lisp_list2 returns[SExpression sExpression]
         sExpression = null;
     }
 	:	LEFT_PAREN	
-	    t=NAME { list.add( new SymbolLispAtom2(  t.getText() ) ); }
+	    t=(NAME|VAR) { list.add( new SymbolLispAtom2( t.getText() ) ); }
 		(		a=lisp_atom2	{ list.add( a ); }
 			|	a=lisp_list2	{ list.add( a ); }
 		)+									    	
@@ -687,7 +687,7 @@ lisp_atom2 returns[SExpression sExpression]
 			|	t=INT		{ sExpression = new IntLispAtom2( t.getText() ); }
 			| 	t=BOOL		{ sExpression = new BoolLispAtom2( t.getText() ); }			
 			| 	t=NULL		{ sExpression = new NullLispAtom2( null ); }						
-	        | t=NAME	{ sExpression = new SymbolLispAtom2( t.getText() ); }				
+	        |   t=NAME		{ sExpression = new SymbolLispAtom2( "\"" +t.getText() + "\""); }				
 
 		)		
 	;		
@@ -800,7 +800,7 @@ BOOL
 	:	('true'|'false') 
 	;
 	
-VAR 	: '?'~DELIM+
+VAR 	: '?' SYMBOL_CHAR+
         ;
 
 SH_STYLE_SINGLE_LINE_COMMENT	
@@ -866,16 +866,25 @@ MULTI_LINE_COMMENT
 NAME :	SYMBOL ;
 
 fragment
-SYMBOL : CHAR* ;	
+SYMBOL : FIRST_SYMBOL_CHAR SYMBOL_CHAR* ;	
 
+/*
 fragment
 START_DELIM	:	' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'?';	
 
 fragment
 DELIM	    :	' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'<';	
+*/
 
+// allowed <
+// not allowed ?
 fragment
-CHAR : ('a'..'z'|'A'..'Z'|'0'..'9'|'!'|'$'|'%'|'^'|'*'|'_'|'-'|'+'|'='|'\\'|'/'|'@'|'#'|':'|'>'|','|'.'|'['|']'|'{'|'}');	
+FIRST_SYMBOL_CHAR : ('a'..'z'|'A'..'Z'|'0'..'9'|'!'|'$'|'%'|'^'|'*'|'_'|'-'|'+'|'='|'\\'|'/'|'@'|'#'|':'|'>'|'<'|','|'.'|'['|']'|'{'|'}');	
+
+// allowed ? 
+// not allowed <
+fragment
+SYMBOL_CHAR : ('a'..'z'|'A'..'Z'|'0'..'9'|'!'|'$'|'%'|'^'|'*'|'_'|'-'|'+'|'='|'\\'|'/'|'@'|'#'|':'|'>'|','|'.'|'['|']'|'{'|'}'|'?');	
 
 	
 /*	
