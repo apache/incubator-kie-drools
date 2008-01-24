@@ -657,7 +657,7 @@ lisp_list2 returns[SExpression sExpression]
         sExpression = null;
     }
 	:	LEFT_PAREN	
-	    t=FUNC_NAME { list.add( new SymbolLispAtom2(  t.getText() ) ); }
+	    t=NAME { list.add( new SymbolLispAtom2(  t.getText() ) ); }
 		(		a=lisp_atom2	{ list.add( a ); }
 			|	a=lisp_list2	{ list.add( a ); }
 		)+									    	
@@ -687,7 +687,7 @@ lisp_atom2 returns[SExpression sExpression]
 			|	t=INT		{ sExpression = new IntLispAtom2( t.getText() ); }
 			| 	t=BOOL		{ sExpression = new BoolLispAtom2( t.getText() ); }			
 			| 	t=NULL		{ sExpression = new NullLispAtom2( null ); }						
-	        | t=SYMBOL	{ sExpression = new SymbolLispAtom2( t.getText() ); }				
+	        | t=NAME	{ sExpression = new SymbolLispAtom2( t.getText() ); }				
 
 		)		
 	;		
@@ -863,21 +863,20 @@ MULTI_LINE_COMMENT
                 { $channel=HIDDEN; }
 	;
 
-NAME	:	SYMBOL	;
-
-//FUNC_NAME : ('a'..'z'|'A'..'Z'|'0'..'9'|'!'|'$'|'%'|'^'|'&'|'*'|'_'|'-'|'+'|'='|'|'|'\'|'/'|'@'|'~'|'#'|':'|';'|'<'|'>'|','|'.'|'['|']'|'{'|'}')+;	
+NAME :	SYMBOL ;
 
 fragment
-FUNC_NAME :	 SYMBOL ;
-
-fragment
-SYMBOL : ~START_DELIM ~DELIM* ;	
+SYMBOL : CHAR* ;	
 
 fragment
 START_DELIM	:	' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'?';	
 
 fragment
 DELIM	    :	' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'<';	
+
+fragment
+CHAR : ('a'..'z'|'A'..'Z'|'0'..'9'|'!'|'$'|'%'|'^'|'*'|'_'|'-'|'+'|'='|'\\'|'/'|'@'|'#'|':'|'>'|','|'.'|'['|']'|'{'|'}');	
+
 	
 /*	
 fragment	

@@ -30,7 +30,7 @@ public class ShellTest extends TestCase {
         
         assertEquals( 2, pkg.getRules().length );
         
-        assertTrue( pkg.getImports().contains( "org.drools.Person" ) );
+        assertTrue( pkg.getImports().containsKey( "org.drools.Person" ) );
         
         WorkingMemory wm = shell.getWorkingMemory();
         wm.insert( new Person("bob", "cheddar", 30) );
