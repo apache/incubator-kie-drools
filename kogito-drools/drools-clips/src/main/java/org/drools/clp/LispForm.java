@@ -20,8 +20,8 @@ public class LispForm
     }
 
     public void add(ValueHandler valueHandler) {
-        // we know this is a string literal, so can use null for the context
         if ( this.caller == null ) {
+            // we know this is a string literal, so can use null for the context
             this.caller = new FunctionCaller( this.context.getFunctionRegistry().getFunction( valueHandler.getStringValue( null ) ) );
 
             //We can only call initCallback on known functions

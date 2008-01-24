@@ -43,17 +43,25 @@ public class BlockExecutionEngine
                         ReteTuple tuple,
                         Object object) {
         execute( new ExecutionContextImpl( workingMemory,
-                                       tuple,
-                                       object,
-                                       this.index - 1 ) );
+                                           tuple,
+                                           object,
+                                           this.index - 1 ) );
     }
 
     public void execute(InternalWorkingMemory workingMemory,
                         ReteTuple tuple) {
         execute( new ExecutionContextImpl( workingMemory,
-                                       tuple,
-                                       this.index - 1 ) );
+                                           tuple,
+                                           this.index - 1 ) );
     }
+    
+    public void evaluate(KnowledgeHelper knowledgeHelper,
+                         WorkingMemory workingMemory) throws Exception {
+        ExecutionContext context = new ExecutionContextImpl( (InternalWorkingMemory) workingMemory,
+                                                             (ReteTuple) knowledgeHelper.getTuple(),
+                                                             this.index );
+        execute( context );
+    }    
 
     public void execute(ExecutionContext context) {
         if ( this.functions == null ) {
@@ -63,14 +71,6 @@ public class BlockExecutionEngine
         for ( int i = 0, length = functions.length; i < length; i++ ) {
             this.functions[i].getValue( context );
         }
-    }
-
-    public void evaluate(KnowledgeHelper knowledgeHelper,
-                         WorkingMemory workingMemory) throws Exception {
-        ExecutionContext context = new ExecutionContextImpl( (InternalWorkingMemory) workingMemory,
-                                                         (ReteTuple) knowledgeHelper.getTuple(),
-                                                         this.index );
-        execute( context );
     }
 
     public void replaceTempTokens(Map variables) {
