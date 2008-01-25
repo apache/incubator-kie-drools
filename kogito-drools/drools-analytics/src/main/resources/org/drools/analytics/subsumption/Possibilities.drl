@@ -1,0 +1,194 @@
+#created on: 8.1.2008
+package org.drools.analytics.subsumption.patterns
+
+import org.drools.analytics.components.Restriction;
+import org.drools.analytics.components.Pattern;
+import org.drools.analytics.components.PatternPossibility;
+import org.drools.analytics.components.RulePossibility;
+import org.drools.analytics.report.components.Redundancy;
+import org.drools.analytics.report.components.Subsumption;
+import org.drools.analytics.report.components.CauseType;
+import org.drools.analytics.report.components.RedundancyType;
+
+
+#declare any global variables here
+
+
+#
+# Finds subsumptant patterns possibilities
+#
+# Depandencies: TODO: Dependencies 
+#
+rule "Find subsumptant pattern possibilities"
+	when
+		$redundancy :Redundancy(
+			left.causeType == CauseType.PATTERN
+		)
+
+		# Find two PatternPossibilities.
+		(
+				$pp1 :PatternPossibility(
+					eval( patternId == $redundancy.getLeft().getId() )
+				)
+			and
+				$pp2 :PatternPossibility(
+					eval( patternId == $redundancy.getRight().getId() )
+				)
+		) or (
+				$pp1 :PatternPossibility(
+					eval( patternId == $redundancy.getRight().getId() )
+				)
+			and
+				$pp2 :PatternPossibility(
+					eval( patternId == $redundancy.getLeft().getId() )
+				)
+		)
+
+		# For every restriction in $pp1 there is a redundancy to restriction in $pp2.
+		forall(
+			$r :Restriction(
+				patternId == $pp1.patternId,
+				this memberOf $pp1.items
+			)
+
+			Redundancy(
+				(
+					left == $r
+					&&
+					right memberOf $pp2.items
+				) || (
+					left memberOf $pp2.items
+					&&
+					right == $r
+				)
+			)
+		)
+
+		# There is at least one restriction in $pp2 that has a redundancy to restriction in $pp1.
+		exists(
+				$r :Restriction(
+					patternId == $pp2.patternId,
+					this memberOf $pp2.items
+				)
+			and
+				Redundancy(
+					(
+						left == $r
+						&&
+						right memberOf $pp1.items
+					) || (
+						left memberOf $pp1.items
+						&&
+						right == $r
+					)
+				)
+		)
+		
+		# There is at least one restriction in $pp2 that does not hava a redundancy to restriction in $pp1.
+		not(
+				$r :Restriction(
+					patternId == $pp2.patternId,
+					this memberOf $pp2.items
+				)
+			and
+				forall (
+					Redundancy(
+						(
+							left == $r
+							&&
+							right memberOf $pp1.items
+						) || (
+							left memberOf $pp1.items
+							&&
+							right == $r
+						)
+					)
+				)
+		)
+
+	then
+		insert( new Subsumption( $pp1, $pp2 ) );
+end
+
+#
+# Finds subsumptant rule possibilities
+#
+# Depandencies: TODO: Dependencies 
+#
+rule "Find subsumptant rule possibilities"
+	when
+		$redundancy :Redundancy(
+			left.causeType == CauseType.RULE,
+			$leftRuleId :left.id,
+			$rightRuleId :right.id
+		)
+
+		# Find two RulePossibilities.
+		$rp1 :RulePossibility(
+			ruleId == $leftRuleId
+		)
+		$rp2 :RulePossibility(
+			ruleId == $rightRuleId
+		)
+
+		# For every pattern possibility in $rp1 there is a redundant pattern possibility in $rp2.
+		forall(
+			$pp :PatternPossibility(
+				ruleId == $rp1.ruleId,
+				this memberOf $rp1.items
+			)
+
+#			Redundancy(
+#				type == RedundancyType.STRONG,
+#				left == $pp,
+#				right memberOf $rp2.items
+#			)
+		)
+
+		#  There is at least one PatternPossibility in $rp2 that does not hava a redundancy to PatternPossibility in $rp1.
+		
+		#$pp :PatternPossibility(
+		#	ruleId == $rp2.ruleId,
+		#	this memberOf $rp2.items
+		#)
+		exists( 
+				Subsumption(
+#					left memberOf $rp2.items,
+#					right memberOf $rp1.items
+				)
+			or
+				Redundancy(
+#					type == RedundancyType.STRONG,
+#					left memberOf $rp2.items,
+#					right memberOf $rp1.items
+				)
+		)
+		
+		# There is at least one PatternPossibility in $rp2 that does not hava a redundancy to PatternPossibility in $rp1.
+		#not(
+		#		$pp :PatternPossibility(
+		#			ruleId == $rp2.ruleId,
+		#			this memberOf $rp2.items
+		#		)
+		#	and
+		#		forall (
+		#			Redundancy(
+		#				type == RedundancyType.STRONG,
+		#				(
+		#					left == $pp
+		#					&&
+		#					right memberOf $rp1.items
+		#				) || (
+		#					left memberOf $rp1.items
+		#					&&
+		#					right == $pp
+		#				)
+		#			)
+		#		)
+		#)
+
+	then
+		System.out.println("pim");
+		#insert( new Subsumption( $rp1, $rp2 ) );
+end
+
