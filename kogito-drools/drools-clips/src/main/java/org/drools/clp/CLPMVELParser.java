@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g 2008-01-24 21:14:26
+// $ANTLR 3.0.1 C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g 2008-01-25 00:37:25
 
 	package org.drools.clp;
 	
@@ -1885,7 +1885,7 @@ public class CLPMVELParser extends Parser {
 
 
     // $ANTLR start lisp_list2
-    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:654:1: lisp_list2 returns [SExpression sExpression] : LEFT_PAREN t= ( NAME | VAR ) (a= lisp_atom2 | a= lisp_list2 )+ RIGHT_PAREN ;
+    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:654:1: lisp_list2 returns [SExpression sExpression] : LEFT_PAREN t= ( NAME | VAR ) (a= lisp_atom2 | a= lisp_list2 )* RIGHT_PAREN ;
     public final SExpression lisp_list2() throws RecognitionException {
         SExpression sExpression = null;
 
@@ -1898,8 +1898,8 @@ public class CLPMVELParser extends Parser {
                 sExpression = null;
             
         try {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:659:2: ( LEFT_PAREN t= ( NAME | VAR ) (a= lisp_atom2 | a= lisp_list2 )+ RIGHT_PAREN )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:659:4: LEFT_PAREN t= ( NAME | VAR ) (a= lisp_atom2 | a= lisp_list2 )+ RIGHT_PAREN
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:659:2: ( LEFT_PAREN t= ( NAME | VAR ) (a= lisp_atom2 | a= lisp_list2 )* RIGHT_PAREN )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:659:4: LEFT_PAREN t= ( NAME | VAR ) (a= lisp_atom2 | a= lisp_list2 )* RIGHT_PAREN
             {
             match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lisp_list21300); if (failed) return sExpression;
             t=(Token)input.LT(1);
@@ -1917,8 +1917,7 @@ public class CLPMVELParser extends Parser {
             if ( backtracking==0 ) {
                list.add( new SymbolLispAtom2( t.getText() ) ); 
             }
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:661:3: (a= lisp_atom2 | a= lisp_list2 )+
-            int cnt18=0;
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:661:3: (a= lisp_atom2 | a= lisp_list2 )*
             loop18:
             do {
                 int alt18=3;
@@ -1961,16 +1960,11 @@ public class CLPMVELParser extends Parser {
             	    break;
 
             	default :
-            	    if ( cnt18 >= 1 ) break loop18;
-            	    if (backtracking>0) {failed=true; return sExpression;}
-                        EarlyExitException eee =
-                            new EarlyExitException(18, input);
-                        throw eee;
+            	    break loop18;
                 }
-                cnt18++;
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lisp_list21364); if (failed) return sExpression;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lisp_list21363); if (failed) return sExpression;
             if ( backtracking==0 ) {
                sExpression = new LispForm2( ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ) ); 
             }
@@ -2054,7 +2048,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:684:6: t= VAR
                     {
                     t=(Token)input.LT(1);
-                    match(input,VAR,FOLLOW_VAR_in_lisp_atom21414); if (failed) return sExpression;
+                    match(input,VAR,FOLLOW_VAR_in_lisp_atom21413); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new VariableLispAtom2( t.getText() ); 
                     }
@@ -2065,7 +2059,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:685:6: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_lisp_atom21426); if (failed) return sExpression;
+                    match(input,STRING,FOLLOW_STRING_in_lisp_atom21425); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new StringLispAtom2( getString( t ) ); 
                     }
@@ -2076,7 +2070,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:686:6: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_lisp_atom21448); if (failed) return sExpression;
+                    match(input,FLOAT,FOLLOW_FLOAT_in_lisp_atom21447); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new FloatLispAtom2( t.getText() ); 
                     }
@@ -2087,7 +2081,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:687:6: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_lisp_atom21460); if (failed) return sExpression;
+                    match(input,INT,FOLLOW_INT_in_lisp_atom21459); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new IntLispAtom2( t.getText() ); 
                     }
@@ -2098,7 +2092,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:688:7: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_lisp_atom21473); if (failed) return sExpression;
+                    match(input,BOOL,FOLLOW_BOOL_in_lisp_atom21472); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new BoolLispAtom2( t.getText() ); 
                     }
@@ -2109,7 +2103,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:689:7: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_lisp_atom21489); if (failed) return sExpression;
+                    match(input,NULL,FOLLOW_NULL_in_lisp_atom21488); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new NullLispAtom2( null ); 
                     }
@@ -2120,7 +2114,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:690:14: t= NAME
                     {
                     t=(Token)input.LT(1);
-                    match(input,NAME,FOLLOW_NAME_in_lisp_atom21515); if (failed) return sExpression;
+                    match(input,NAME,FOLLOW_NAME_in_lisp_atom21514); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new SymbolLispAtom2( "\"" +t.getText() + "\""); 
                     }
@@ -2157,7 +2151,7 @@ public class CLPMVELParser extends Parser {
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:696:2: ( LEFT_PAREN (a= lisp_atom[context] | a= lisp_list[context, list.createList()] )* RIGHT_PAREN )
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:696:4: LEFT_PAREN (a= lisp_atom[context] | a= lisp_list[context, list.createList()] )* RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lisp_list1546); if (failed) return valueHandler;
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lisp_list1545); if (failed) return valueHandler;
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:697:3: (a= lisp_atom[context] | a= lisp_list[context, list.createList()] )*
             loop20:
             do {
@@ -2176,7 +2170,7 @@ public class CLPMVELParser extends Parser {
             	case 1 :
             	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:697:6: a= lisp_atom[context]
             	    {
-            	    pushFollow(FOLLOW_lisp_atom_in_lisp_list1556);
+            	    pushFollow(FOLLOW_lisp_atom_in_lisp_list1555);
             	    a=lisp_atom(context);
             	    _fsp--;
             	    if (failed) return valueHandler;
@@ -2189,7 +2183,7 @@ public class CLPMVELParser extends Parser {
             	case 2 :
             	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:698:6: a= lisp_list[context, list.createList()]
             	    {
-            	    pushFollow(FOLLOW_lisp_list_in_lisp_list1572);
+            	    pushFollow(FOLLOW_lisp_list_in_lisp_list1571);
             	    a=lisp_list(context,  list.createList());
             	    _fsp--;
             	    if (failed) return valueHandler;
@@ -2205,7 +2199,7 @@ public class CLPMVELParser extends Parser {
                 }
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lisp_list1602); if (failed) return valueHandler;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lisp_list1601); if (failed) return valueHandler;
             if ( backtracking==0 ) {
                valueHandler = list.getValueHandler(); 
             }
@@ -2289,7 +2283,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:709:6: t= VAR
                     {
                     t=(Token)input.LT(1);
-                    match(input,VAR,FOLLOW_VAR_in_lisp_atom1639); if (failed) return value;
+                    match(input,VAR,FOLLOW_VAR_in_lisp_atom1638); if (failed) return value;
                     if ( backtracking==0 ) {
                        value = context.getVariableValueHandler(t.getText() ); 
                     }
@@ -2300,7 +2294,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:710:6: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_lisp_atom1651); if (failed) return value;
+                    match(input,STRING,FOLLOW_STRING_in_lisp_atom1650); if (failed) return value;
                     if ( backtracking==0 ) {
                        value = new ObjectValueHandler( getString( t ) ); 
                     }
@@ -2311,7 +2305,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:711:7: t= NAME
                     {
                     t=(Token)input.LT(1);
-                    match(input,NAME,FOLLOW_NAME_in_lisp_atom1663); if (failed) return value;
+                    match(input,NAME,FOLLOW_NAME_in_lisp_atom1662); if (failed) return value;
                     if ( backtracking==0 ) {
                        value = new ObjectValueHandler( t.getText() ); 
                     }
@@ -2322,7 +2316,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:712:6: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_lisp_atom1678); if (failed) return value;
+                    match(input,FLOAT,FOLLOW_FLOAT_in_lisp_atom1677); if (failed) return value;
                     if ( backtracking==0 ) {
                        value = new DoubleValueHandler( t.getText() ); 
                     }
@@ -2333,7 +2327,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:713:6: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_lisp_atom1690); if (failed) return value;
+                    match(input,INT,FOLLOW_INT_in_lisp_atom1689); if (failed) return value;
                     if ( backtracking==0 ) {
                        value = new LongValueHandler( t.getText() ); 
                     }
@@ -2344,7 +2338,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:714:6: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_lisp_atom1706); if (failed) return value;
+                    match(input,BOOL,FOLLOW_BOOL_in_lisp_atom1705); if (failed) return value;
                     if ( backtracking==0 ) {
                        value = new BooleanValueHandler( t.getText() ); 
                     }
@@ -2355,7 +2349,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:715:6: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_lisp_atom1724); if (failed) return value;
+                    match(input,NULL,FOLLOW_NULL_in_lisp_atom1723); if (failed) return value;
                     if ( backtracking==0 ) {
                        value = ObjectValueHandler.NULL; 
                     }
@@ -2440,7 +2434,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:723:8: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_literal1760); if (failed) return text;
+                    match(input,STRING,FOLLOW_STRING_in_literal1759); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = getString( t ); 
                     }
@@ -2451,7 +2445,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:724:7: t= NAME
                     {
                     t=(Token)input.LT(1);
-                    match(input,NAME,FOLLOW_NAME_in_literal1773); if (failed) return text;
+                    match(input,NAME,FOLLOW_NAME_in_literal1772); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2462,7 +2456,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:725:7: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_literal1789); if (failed) return text;
+                    match(input,INT,FOLLOW_INT_in_literal1788); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2473,7 +2467,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:726:7: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_literal1804); if (failed) return text;
+                    match(input,FLOAT,FOLLOW_FLOAT_in_literal1803); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2484,7 +2478,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:727:7: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_literal1817); if (failed) return text;
+                    match(input,BOOL,FOLLOW_BOOL_in_literal1816); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2495,7 +2489,7 @@ public class CLPMVELParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:728:7: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_literal1831); if (failed) return text;
+                    match(input,NULL,FOLLOW_NULL_in_literal1830); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = null; 
                     }
@@ -2615,33 +2609,33 @@ public class CLPMVELParser extends Parser {
     public static final BitSet FOLLOW_literal_in_literal_restriction1239 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_lisp_list2_in_eval_sExpressions1271 = new BitSet(new long[]{0x0000000000000012L});
     public static final BitSet FOLLOW_LEFT_PAREN_in_lisp_list21300 = new BitSet(new long[]{0x0000000000000120L});
-    public static final BitSet FOLLOW_set_in_lisp_list21310 = new BitSet(new long[]{0x0000000007001530L});
+    public static final BitSet FOLLOW_set_in_lisp_list21310 = new BitSet(new long[]{0x0000000007001570L});
     public static final BitSet FOLLOW_lisp_atom2_in_lisp_list21325 = new BitSet(new long[]{0x0000000007001570L});
     public static final BitSet FOLLOW_lisp_list2_in_lisp_list21336 = new BitSet(new long[]{0x0000000007001570L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_lisp_list21364 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VAR_in_lisp_atom21414 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_lisp_atom21426 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_lisp_atom21448 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_lisp_atom21460 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_lisp_atom21473 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_lisp_atom21489 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NAME_in_lisp_atom21515 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_lisp_list1546 = new BitSet(new long[]{0x0000000007001570L});
-    public static final BitSet FOLLOW_lisp_atom_in_lisp_list1556 = new BitSet(new long[]{0x0000000007001570L});
-    public static final BitSet FOLLOW_lisp_list_in_lisp_list1572 = new BitSet(new long[]{0x0000000007001570L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_lisp_list1602 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VAR_in_lisp_atom1639 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_lisp_atom1651 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NAME_in_lisp_atom1663 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_lisp_atom1678 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_lisp_atom1690 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_lisp_atom1706 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_lisp_atom1724 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_literal1760 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NAME_in_literal1773 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_literal1789 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_literal1804 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_literal1817 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_literal1831 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_lisp_list21363 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VAR_in_lisp_atom21413 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_lisp_atom21425 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_lisp_atom21447 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_lisp_atom21459 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_lisp_atom21472 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_lisp_atom21488 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_lisp_atom21514 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_lisp_list1545 = new BitSet(new long[]{0x0000000007001570L});
+    public static final BitSet FOLLOW_lisp_atom_in_lisp_list1555 = new BitSet(new long[]{0x0000000007001570L});
+    public static final BitSet FOLLOW_lisp_list_in_lisp_list1571 = new BitSet(new long[]{0x0000000007001570L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_lisp_list1601 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VAR_in_lisp_atom1638 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_lisp_atom1650 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_lisp_atom1662 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_lisp_atom1677 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_lisp_atom1689 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_lisp_atom1705 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_lisp_atom1723 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_literal1759 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_literal1772 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_literal1788 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_literal1803 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_literal1816 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_literal1830 = new BitSet(new long[]{0x0000000000000002L});
 
 }
