@@ -300,6 +300,10 @@ public class GroupElement extends ConditionalElement {
         return this.children;
     }
 
+    public boolean isPatternScopeDelimiter() {
+        return this.type.isPatternScopeDelimiter();
+    }
+
     /**
      * A public interface for CE types
      */
@@ -338,6 +342,16 @@ public class GroupElement extends ConditionalElement {
          * visible outside of an element of this type
          */
         public Map getOuterDeclarations(List children);
+        
+        /**
+         * Returns true in case this RuleConditionElement delimits
+         * a pattern visibility scope.
+         * 
+         * For instance, AND CE is not a scope delimiter, while 
+         * NOT CE is a scope delimiter
+         * @return
+         */
+        public boolean isPatternScopeDelimiter();
     }
 
     private static abstract class AbstractType
@@ -428,6 +442,10 @@ public class GroupElement extends ConditionalElement {
             return "AND";
         }
 
+        public boolean isPatternScopeDelimiter() {
+            return false;
+        }
+
     }
 
     /**
@@ -469,6 +487,10 @@ public class GroupElement extends ConditionalElement {
 
         public String toString() {
             return "OR";
+        }
+
+        public boolean isPatternScopeDelimiter() {
+            return false;
         }
     }
 
@@ -519,6 +541,10 @@ public class GroupElement extends ConditionalElement {
         public String toString() {
             return "NOT";
         }
+
+        public boolean isPatternScopeDelimiter() {
+            return true;
+        }
     }
 
     /**
@@ -567,6 +593,10 @@ public class GroupElement extends ConditionalElement {
 
         public String toString() {
             return "EXISTS";
+        }
+
+        public boolean isPatternScopeDelimiter() {
+            return true;
         }
     }
 

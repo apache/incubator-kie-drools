@@ -292,7 +292,7 @@ public class DefaultBetaConstraints
             return false;
         }
 
-        return this.constraints.equals( other );
+        return this.constraints.equals( other.constraints );
     }
 
 }

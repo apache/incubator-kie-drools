@@ -102,7 +102,7 @@ public class Pattern
                                            this.objectType,
                                            identifier,
                                            this.declaration != null ? this.declaration.isInternalFact() : false );
-        if( this.getSource() != null ) {
+        if ( this.getSource() != null ) {
             clone.setSource( (PatternSource) this.getSource().clone() );
         }
 
@@ -114,18 +114,19 @@ public class Pattern
                                       decl.getExtractor() );
             } else {
                 Constraint constraint = (Constraint) ((Constraint) constr).clone();
-                
+
                 // we must update pattern references in cloned declarations
                 Declaration[] oldDecl = ((Constraint) constr).getRequiredDeclarations();
                 Declaration[] newDecl = constraint.getRequiredDeclarations();
-                for( int i = 0; i < newDecl.length; i++ ) {
-                    if( newDecl[i].getPattern() == this ) {
+                for ( int i = 0; i < newDecl.length; i++ ) {
+                    if ( newDecl[i].getPattern() == this ) {
                         newDecl[i].setPattern( clone );
                         // we still need to call replace because there might be nested declarations to replace
-                        constraint.replaceDeclaration( oldDecl[i], newDecl[i] );
+                        constraint.replaceDeclaration( oldDecl[i],
+                                                       newDecl[i] );
                     }
                 }
-                
+
                 clone.addConstraint( constraint );
             }
         }
@@ -160,17 +161,20 @@ public class Pattern
         if ( this.constraints == Collections.EMPTY_LIST ) {
             this.constraints = new ArrayList( 1 );
         }
-        final Declaration declaration = new Declaration( identifier,
-                                                         extractor,
-                                                         this );
-        this.constraints.add( declaration );
-        if ( this.declarations == null ) {
-            this.declarations = new HashMap( 2 ); // default to avoid immediate resize
-        }
-        this.declarations.put( declaration.getIdentifier(),
-                               declaration );
-        return declaration;
 
+        Declaration declaration = this.declarations != null ? (Declaration) this.declarations.get( identifier ) : null;
+        if ( declaration == null ) {
+            declaration = new Declaration( identifier,
+                                           extractor,
+                                           this );
+            this.constraints.add( declaration );
+            if ( this.declarations == null ) {
+                this.declarations = new HashMap( 2 ); // default to avoid immediate resize
+            }
+            this.declarations.put( declaration.getIdentifier(),
+                                   declaration );
+        }
+        return declaration;
     }
 
     public boolean isBound() {
@@ -266,6 +270,10 @@ public class Pattern
 
     public List getNestedElements() {
         return this.source != null ? Collections.singletonList( this.source ) : Collections.EMPTY_LIST;
+    }
+
+    public boolean isPatternScopeDelimiter() {
+        return true;
     }
 
 }

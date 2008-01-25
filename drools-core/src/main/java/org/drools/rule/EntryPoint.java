@@ -139,4 +139,8 @@ public class EntryPoint extends ConditionalElement
     public String toString() {
         return "EntryPoint::"+this.entryPointId;
     }
+
+    public boolean isPatternScopeDelimiter() {
+        return true;
+    }
 }

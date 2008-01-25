@@ -92,4 +92,8 @@ public class Collect extends ConditionalElement
     public List getNestedElements() {
         return Collections.singletonList( this.sourcePattern );
     }
+
+    public boolean isPatternScopeDelimiter() {
+        return true;
+    }
 }

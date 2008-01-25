@@ -130,4 +130,8 @@ public class Forall extends ConditionalElement {
         return elements;
     }
 
+    public boolean isPatternScopeDelimiter() {
+        return true;
+    }
+
 }

@@ -219,4 +219,26 @@ public class RightInputAdapterNode extends ObjectSource
         this.previousTupleSinkNode = previous;
     }
 
+    public int hashCode() {
+        return this.tupleSource.hashCode() * 17 + ((this.tupleMemoryEnabled) ? 1234 : 4321 );
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(final Object object) {
+        if ( this == object ) {
+            return true;
+        }
+
+        if ( object == null || !(object instanceof RightInputAdapterNode) ) {
+            return false;
+        }
+
+        final RightInputAdapterNode other = (RightInputAdapterNode) object;
+
+        return this.tupleMemoryEnabled == other.tupleMemoryEnabled && this.tupleSource.equals( other.tupleSource );
+    }
 }

@@ -160,6 +160,16 @@ class LogicTransformer {
                     if ( resolved != null && resolved != decl[i] ) {
                         constraint.replaceDeclaration( decl[i],
                                                        resolved );
+                    } else if( resolved == null ) {
+                        // it is probably an implicit declaration, so find the corresponding pattern
+                        Pattern old = decl[i].getPattern();
+                        Pattern current = resolver.findPatternByIndex( old.getIndex() );
+                        if ( current != null && old != current ) {
+                            resolved = new Declaration( decl[i].getIdentifier(),
+                                                        decl[i].getExtractor(),
+                                                        current );
+                            constraint.replaceDeclaration( decl[i], resolved );
+                        }
                     }
                 }
             }
@@ -194,20 +204,20 @@ class LogicTransformer {
         // first we elimininate any redundancy
         ce.pack();
 
-        Object[] children = (Object[]) ce.getChildren().toArray(); 
+        Object[] children = (Object[]) ce.getChildren().toArray();
         for ( int i = 0; i < children.length; i++ ) {
             if ( children[i] instanceof GroupElement ) {
                 final GroupElement child = (GroupElement) children[i];
 
                 processTree( child );
-                if( ( child.isOr() || child.isAnd() ) && child.getType() == ce.getType() ) {
+                if ( (child.isOr() || child.isAnd()) && child.getType() == ce.getType() ) {
                     child.pack( ce );
                 } else if ( child.isOr() ) {
                     hasChildOr = true;
                 }
             }
         }
-        
+
         if ( hasChildOr ) {
             applyOrTransformation( ce );
         }

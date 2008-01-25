@@ -262,6 +262,6 @@ public class JoinNode extends BetaNode {
             source = source.objectSource;
         }
 
-        return "[JoinNode - " + ((ObjectTypeNode) source).getObjectType() + "]";
+        return "[JoinNode("+this.getId()+") - " + ((ObjectTypeNode) source).getObjectType() + "]";
     }
 }

@@ -1,6 +1,7 @@
 package org.drools.spi;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -128,5 +129,29 @@ public class DeclarationScopeResolver {
             declarations.putAll( ((RuleConditionElement) this.buildStack.get( i )).getInnerDeclarations() );
         }
         return declarations;
+    }
+
+    public Pattern findPatternByIndex(int index) {
+        if ( ! this.buildStack.isEmpty() ) {
+            return findPatternInNestedElements( index, (RuleConditionElement) this.buildStack.get( 0 ) );
+        }
+        return null;
+    }
+    
+    private Pattern findPatternInNestedElements( final int index, final RuleConditionElement rce ) {
+        for( RuleConditionElement element : rce.getNestedElements() ) {
+            if( element instanceof Pattern ) {
+                Pattern p = (Pattern) element;
+                if( p.getIndex() == index ) {
+                    return p;
+                }
+            } else if( ! element.isPatternScopeDelimiter() ) {
+                Pattern p = findPatternInNestedElements( index, element );
+                if( p != null ) {
+                    return p;
+                }
+            }
+        }
+        return null;
     }
 }
