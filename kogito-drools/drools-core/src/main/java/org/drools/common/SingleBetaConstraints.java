@@ -209,7 +209,7 @@ public class SingleBetaConstraints
 
         final SingleBetaConstraints other = (SingleBetaConstraints) object;
 
-        return this.constraint == other.constraint || this.constraint.equals( other );
+        return this.constraint == other.constraint || this.constraint.equals( other.constraint );
     }
 
 }

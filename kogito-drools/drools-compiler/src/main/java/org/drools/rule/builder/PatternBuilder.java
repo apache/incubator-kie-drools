@@ -558,6 +558,7 @@ public class PatternBuilder
         final Declaration declaration = new Declaration( identifier,
                                                          extractor,
                                                          pattern );
+
         return declaration;
     }
 

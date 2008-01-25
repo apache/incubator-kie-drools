@@ -894,4 +894,30 @@ public class FirstOrderLogicTest extends TestCase {
 
     }
 
+    public void testForallSinglePatternWithExists() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ForallSinglePatternWithExists.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+        
+        workingMemory.insert( new Cheese( "stilton", 10 ) );
+        workingMemory.insert( new Cheese( "brie", 10 ) );
+        workingMemory.insert( new Cheese( "brie", 10 ) );
+        workingMemory.insert( new Order( 1, "bob" ) );
+        workingMemory.insert( new Person( "bob", "stilton", 10 ) );
+        workingMemory.insert( new Person( "mark", "stilton" ) );
+        
+        workingMemory.fireAllRules();
+        
+        //assertEquals( 1, list.size() );
+        
+    }
+
 }

@@ -48,4 +48,8 @@ public class From extends ConditionalElement
         return Collections.EMPTY_LIST;
     }
 
+    public boolean isPatternScopeDelimiter() {
+        return true;
+    }
+
 }

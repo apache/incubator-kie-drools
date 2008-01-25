@@ -226,4 +226,8 @@ public class Accumulate extends ConditionalElement
         return Collections.singletonList( this.source );
     }
 
+    public boolean isPatternScopeDelimiter() {
+        return true;
+    }
+
 }

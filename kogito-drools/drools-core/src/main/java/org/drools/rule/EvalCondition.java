@@ -134,4 +134,8 @@ public class EvalCondition extends ConditionalElement {
         return Collections.EMPTY_LIST;
     }
 
+    public boolean isPatternScopeDelimiter() {
+        return true;
+    }
+
 };

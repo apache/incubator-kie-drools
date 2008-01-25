@@ -67,6 +67,16 @@ public interface RuleConditionElement
      * inside the current element
      * @return
      */
-    public List getNestedElements();
+    public List<RuleConditionElement> getNestedElements();
+    
+    /**
+     * Returns true in case this RuleConditionElement delimits
+     * a pattern visibility scope.
+     * 
+     * For instance, AND CE is not a scope delimiter, while 
+     * NOT CE is a scope delimiter
+     * @return
+     */
+    public boolean isPatternScopeDelimiter();
 
 }
