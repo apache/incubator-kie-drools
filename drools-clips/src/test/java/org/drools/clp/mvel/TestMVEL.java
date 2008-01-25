@@ -26,11 +26,12 @@ public class TestMVEL extends TestCase {
         handlers.registerFunction( new IfFunction() );
         handlers.registerFunction( new LessThanFunction() );
         handlers.registerFunction( new MoreThanFunction() );
-        handlers.registerFunction( new EqFunction() );        
+        handlers.registerFunction( new EqFunction() );
+        handlers.registerFunction( new SwitchFunction() );    
     }
 
     public void test1() {
-        String expr = "(* (+ 4 4 ) 2) (create$ 10 20 (+ 10 10) a) (modify ?p (name mark) (age (+ 16 16) ) ) (printout t a b c (+ 4 4) )";
+        String expr = "(* (+ 4 4 ) 2) (create$ 10 20 (+ 10 10) a) (modify ?p (name mark) (location \"london\")(age (+ 16 16) ) ) (printout t a b c (+ 4 4) )";
         
         SExpression[] lisplists = evalString( expr );
 
@@ -83,7 +84,21 @@ public class TestMVEL extends TestCase {
         }
         
         System.out.println( appendable );         
-    }    
+    }  
+    
+    public void testSwitch() {
+        String expr = "(switch (?x) (case a then (printout t a)) (case b then (printout t b)) (default (printout t b)) )";
+        
+        SExpression[] lisplists = evalString( expr );
+
+        StringBuilderAppendable appendable = new StringBuilderAppendable();
+        
+        for ( SExpression sExpression : lisplists ) {
+            FunctionHandlers.getInstance().dump( sExpression, appendable );
+        }
+        
+        System.out.println( appendable );           
+    }
     
     
     

@@ -660,7 +660,7 @@ lisp_list2 returns[SExpression sExpression]
 	    t=(NAME|VAR) { list.add( new SymbolLispAtom2( t.getText() ) ); }
 		(		a=lisp_atom2	{ list.add( a ); }
 			|	a=lisp_list2	{ list.add( a ); }
-		)+									    	
+		)*								    	
 	    RIGHT_PAREN
 	    { sExpression = new LispForm2( ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ) ); }
 	;
@@ -868,14 +868,6 @@ NAME :	SYMBOL ;
 fragment
 SYMBOL : FIRST_SYMBOL_CHAR SYMBOL_CHAR* ;	
 
-/*
-fragment
-START_DELIM	:	' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'?';	
-
-fragment
-DELIM	    :	' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'<';	
-*/
-
 // allowed <
 // not allowed ?
 fragment
@@ -884,17 +876,7 @@ FIRST_SYMBOL_CHAR : ('a'..'z'|'A'..'Z'|'0'..'9'|'!'|'$'|'%'|'^'|'*'|'_'|'-'|'+'|
 // allowed ? 
 // not allowed <
 fragment
-SYMBOL_CHAR : ('a'..'z'|'A'..'Z'|'0'..'9'|'!'|'$'|'%'|'^'|'*'|'_'|'-'|'+'|'='|'\\'|'/'|'@'|'#'|':'|'>'|','|'.'|'['|']'|'{'|'}'|'?');	
-
-	
-/*	
-fragment	
-SYMBOL
-	:	((~(' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'?'|'$'))|('$' ~('?'|' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'<'))) 
-	         (~(' '|'\t'|'\n'|'\r'|'"'|'('|')'|';'|'&'|'|'|'~'|'<'|'?'))*
-	;
-*/
-	
+SYMBOL_CHAR : ('a'..'z'|'A'..'Z'|'0'..'9'|'!'|'$'|'%'|'^'|'*'|'_'|'-'|'+'|'='|'\\'|'/'|'@'|'#'|':'|'>'|','|'.'|'['|']'|'{'|'}'|'?');		
 
 
 
