@@ -3,9 +3,9 @@
  */
 package org.drools.clp.mvel;
 
-public class IntLispAtom2 extends LispAtom2 {
+public class NullLispAtom extends LispAtom {
     
-    public IntLispAtom2(String value) {
+    public NullLispAtom(String value) {
         super(value);
     }
     

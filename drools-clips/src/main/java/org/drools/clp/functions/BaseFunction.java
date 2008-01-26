@@ -2,7 +2,7 @@ package org.drools.clp.functions;
 
 import org.drools.clp.BuildContext;
 import org.drools.clp.Function;
-import org.drools.clp.LispForm;
+import org.drools.clp.LispForm2;
 import org.drools.clp.LispList;
 import org.drools.clp.ValueHandler;
 import org.drools.clp.valuehandlers.FunctionCaller;
@@ -24,7 +24,7 @@ public abstract class BaseFunction
     }
 
     public LispList createList(int index) {
-        return new LispForm();
+        return new LispForm2();
     }
 
     public String toString() {

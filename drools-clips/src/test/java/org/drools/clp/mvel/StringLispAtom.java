@@ -3,9 +3,9 @@
  */
 package org.drools.clp.mvel;
 
-public class StringLispAtom2 extends LispAtom2 {
+public class StringLispAtom extends LispAtom {
     
-    public StringLispAtom2(String value) {
+    public StringLispAtom(String value) {
         super("\"" + value + "\"");
     }
     

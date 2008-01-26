@@ -18,7 +18,7 @@ public class LispData
     }
 
     public LispList createList() {
-        LispList list = new LispForm();
+        LispList list = new LispForm2();
 
         list.setContext( this.context );
 

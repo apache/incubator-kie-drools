@@ -1,7 +1,13 @@
 package org.drools.clp.mvel;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -13,8 +19,13 @@ import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.clp.CLPMVELLexer;
 import org.drools.clp.CLPMVELParser;
+import org.mvel.MVEL;
 
 public class TestMVEL extends TestCase {
+    private Map vars;
+    private ByteArrayOutputStream baos;
+    private MVELClipsContext context;
+    
     public void setUp() {
         FunctionHandlers handlers = FunctionHandlers.getInstance();
         handlers.registerFunction( new PlusFunction() );
@@ -27,7 +38,17 @@ public class TestMVEL extends TestCase {
         handlers.registerFunction( new LessThanFunction() );
         handlers.registerFunction( new MoreThanFunction() );
         handlers.registerFunction( new EqFunction() );
-        handlers.registerFunction( new SwitchFunction() );    
+        handlers.registerFunction( new SwitchFunction() );
+        handlers.registerFunction( new DeffunctionFunction() );    
+        handlers.registerFunction( new ReturnFunction() );
+        
+        baos = new ByteArrayOutputStream();                
+        vars = new HashMap();
+        Map routers = new HashMap();
+        routers.put( "t",  new PrintStream( baos ) );
+        vars.put( "routers", routers );
+        
+        context = new MVELClipsContext();
     }
 
     public void test1() {
@@ -35,10 +56,10 @@ public class TestMVEL extends TestCase {
         
         SExpression[] lisplists = evalString( expr );
 
-        StringBuilderAppendable appendable = new StringBuilderAppendable();
-        
+        StringBuilderAppendable appendable = new StringBuilderAppendable();        
+        MVELClipsContext context = new MVELClipsContext();         
         for ( SExpression sExpression : lisplists ) {
-            FunctionHandlers.getInstance().dump( sExpression, appendable );
+            FunctionHandlers.dump( sExpression, appendable, context );
         }
         
         System.out.println( appendable );
@@ -49,63 +70,101 @@ public class TestMVEL extends TestCase {
         
         SExpression[] lisplists = evalString( expr );
 
-        StringBuilderAppendable appendable = new StringBuilderAppendable();
-        
+        StringBuilderAppendable appendable = new StringBuilderAppendable();                 
         for ( SExpression sExpression : lisplists ) {
-            FunctionHandlers.getInstance().dump( sExpression, appendable );
+            FunctionHandlers.dump( sExpression, appendable, context );
         }
         
-        System.out.println( appendable );
+        eval( appendable.toString() );        
+        assertEquals( "102030", new String( baos.toByteArray() ));
     }    
     
     public void testIf() {
-        String expr = "(if (< 1 3) then (printout t x) )";
+        String expr = "(if (< 1 3) then (printout t hello) (printout t hello) )";
         
         SExpression[] lisplists = evalString( expr );
 
-        StringBuilderAppendable appendable = new StringBuilderAppendable();
-        
+        StringBuilderAppendable appendable = new StringBuilderAppendable();                 
         for ( SExpression sExpression : lisplists ) {
-            FunctionHandlers.getInstance().dump( sExpression, appendable );
+            FunctionHandlers.dump( sExpression, appendable, context );
         }
         
-        System.out.println( appendable );        
+        eval( appendable.toString() );      
+        assertEquals( "hellohello", new String( baos.toByteArray() ));        
     }
     
     public void testIfElse() {
-        String expr = "(if (eq 1 3) then (printout t x) else (printout t y) )";
+        String expr = "(if (eq 1 3) then (printout t hello)  (printout t 1) else (printout t hello)  (printout t 2))";
         
         SExpression[] lisplists = evalString( expr );
 
-        StringBuilderAppendable appendable = new StringBuilderAppendable();
-        
+        StringBuilderAppendable appendable = new StringBuilderAppendable();        
         for ( SExpression sExpression : lisplists ) {
-            FunctionHandlers.getInstance().dump( sExpression, appendable );
+            FunctionHandlers.dump( sExpression, appendable, context );
         }
         
-        System.out.println( appendable );         
+        eval( appendable.toString() );              
+        assertEquals( "hello2", new String( baos.toByteArray() ) );               
     }  
     
-    public void testSwitch() {
-        String expr = "(switch (?x) (case a then (printout t a)) (case b then (printout t b)) (default (printout t b)) )";
+    public void testSwitch() throws IOException {
+        String expr = "(switch (?x) (case a then (printout t hello)(printout t 1)) (case b then (printout t hello)(printout t 2)) (default (printout t hello)(printout t 3)) )";
         
         SExpression[] lisplists = evalString( expr );
 
-        StringBuilderAppendable appendable = new StringBuilderAppendable();
-        
+        StringBuilderAppendable appendable = new StringBuilderAppendable();                 
         for ( SExpression sExpression : lisplists ) {
-            FunctionHandlers.getInstance().dump( sExpression, appendable );
-        }
+            FunctionHandlers.dump( sExpression, appendable, context );
+        }          
         
-        System.out.println( appendable );           
+        // check case a
+        vars.put("_Q_x", "a" );        
+        MVEL.eval( appendable.toString(),  vars);        
+        assertEquals( "hello1", new String( baos.toByteArray() ) );
+        
+        // check default
+        vars.put("_Q_x", "M" );        
+        MVEL.eval( appendable.toString(),  vars);        
+        assertEquals( "hello1hello3", new String( baos.toByteArray() ) );    
+        
+        // check case b
+        vars.put("_Q_x", "b" );        
+        eval( appendable.toString() );        
+        assertEquals( "hello1hello3hello2", new String( baos.toByteArray() ) );         
     }
     
     
     
-    public  void test3() {
-        String function = "(deffunction max (?a ?b) (return ?b) )";
-        String expr = "(max (3 5) )";
+    public  void testDeffunction() {
+        String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
         
+        
+        SExpression[] lisplists = evalString( function );
+        StringBuilderAppendable appendable = new StringBuilderAppendable();        
+        for ( SExpression sExpression : lisplists ) {
+            FunctionHandlers.dump( sExpression, appendable, context );                       
+        }                  
+        eval( appendable.toString() );        
+        
+        String expr = "(if (eq (max 3 5) 5) then (printout t hello) )";
+        lisplists = evalString( expr );
+        appendable = new StringBuilderAppendable();        
+        for ( SExpression sExpression : lisplists ) {
+            FunctionHandlers.dump( sExpression, appendable, context );                       
+        }                  
+        eval( appendable.toString() );        
+        
+        // check case a
+        vars.put("_Q_a", "10" );
+        vars.put("_Q_b", "20" );
+        assertEquals( "hello", new String( baos.toByteArray() ) );        
+    }
+    
+    public void eval(String string) {
+        for ( org.mvel.ast.Function function : context.getFunctions().values() ) {
+            this.vars.put( function.getAbsoluteName(), function );
+        }
+        MVEL.eval( string,  vars);
     }
 
     public SExpression[] evalReader(Reader reader) {

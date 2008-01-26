@@ -24,14 +24,26 @@ public class FunctionHandlers {
         this.map.put( function.getName(), function );
     }
     
-    public void dump(SExpression sExpression, Appendable appendable) {              
-        if ( sExpression instanceof LispAtom2 ) {
-            appendable.append( ( ( LispAtom2 ) sExpression).getValue() );
+    public static void dump(SExpression sExpression, Appendable appendable, MVELClipsContext context) {              
+        if ( sExpression instanceof LispAtom ) {
+            appendable.append( ( ( LispAtom ) sExpression).getValue() );
         } else {
-            LispForm2 form = (LispForm2) sExpression;
-            Function function = FunctionHandlers.getInstance().getFunction( ( (LispAtom2) form.getSExpressions()[0]).getValue() );
-            function.dump(form, appendable );
-            
+            LispForm form = (LispForm) sExpression;
+            String functionName =  ( (LispAtom) form.getSExpressions()[0]).getValue();
+            Function function = FunctionHandlers.getInstance().getFunction( functionName );
+            if ( function != null ) {
+                function.dump(form, appendable, context );                
+            } else {
+                // execute as user function
+                appendable.append( functionName + "(" );
+                for ( int i = 1, length = form.getSExpressions().length; i < length; i++ ) {
+                    dump( form.getSExpressions()[i], appendable, context );
+                    if ( i < length -1 ) {
+                        appendable.append( ", " );
+                    }
+                }
+                appendable.append( ")" );                
+            }
         }           
     }
     
