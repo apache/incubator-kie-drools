@@ -3,7 +3,7 @@ package org.drools.clp.functions;
 import org.drools.clp.ExecutionBuildContext;
 import org.drools.clp.ExecutionContext;
 import org.drools.clp.Function;
-import org.drools.clp.LispForm;
+import org.drools.clp.LispForm2;
 import org.drools.clp.LispList;
 import org.drools.clp.ValueHandler;
 import org.drools.clp.valuehandlers.BooleanValueHandler;

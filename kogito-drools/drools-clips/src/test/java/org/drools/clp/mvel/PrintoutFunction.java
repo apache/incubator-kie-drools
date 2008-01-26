@@ -9,11 +9,12 @@ public class PrintoutFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm2 lispForm, Appendable appendable) {
+    public void dump(LispForm lispForm, Appendable appendable, MVELClipsContext context) {
         SExpression[] sExpressions = lispForm.getSExpressions();
-        appendable.append( "((PrintStream) routers.get(" + ( ( LispAtom2 ) lispForm.getSExpressions()[route]).getValue()+ ")).print(" );
+        appendable.append( "routers.get(" + ( ( LispAtom ) lispForm.getSExpressions()[route]).getValue()+ ").print(" );
+        //appendable.append( "routers.get(" + ( ( LispAtom2 ) lispForm.getSExpressions()[route]).getValue()+ ").print(" );
         for ( int i = 2, length = sExpressions.length; i < length; i++) {            
-            FunctionHandlers.getInstance().dump( sExpressions[i], appendable );         
+            FunctionHandlers.dump( sExpressions[i], appendable, context );         
             
             if ( i != length -1 ) { 
                 appendable.append( "+" );

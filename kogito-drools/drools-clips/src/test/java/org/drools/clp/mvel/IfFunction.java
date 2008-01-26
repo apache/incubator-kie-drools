@@ -7,22 +7,37 @@ public class IfFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm2 lispForm, Appendable appendable) {
+    public void dump(LispForm lispForm, Appendable appendable, MVELClipsContext context) {
         SExpression[] sExpressions = lispForm.getSExpressions();
 
         appendable.append( "if " );
         
-        FunctionHandlers.getInstance().dump( sExpressions[1], appendable );
+        FunctionHandlers.dump( sExpressions[1], appendable, context );
         
         appendable.append( "{" );
-        FunctionHandlers.getInstance().dump( sExpressions[3], appendable );
+        int i = 3;
+        for ( int length = sExpressions.length; i < length; i++ ) {
+            SExpression sExpr = ( SExpression ) sExpressions[i];
+            if ( ( sExpr instanceof LispAtom ) && "\"else\"".equals( ((LispAtom)sExpr).getValue() ) ) {
+                i++;
+                break;
+            }
+            FunctionHandlers.dump( sExpressions[i], appendable, context );
+        }  
         appendable.append( "}" );
         
-        if ( sExpressions.length > 4 ) {
-            appendable.append( "else {" );
-                FunctionHandlers.getInstance().dump( sExpressions[5], appendable );
-            appendable.append( "}" );            
-        }
         
+        while ( i < sExpressions.length ) {        
+            appendable.append( " else {" );
+            for ( int length = sExpressions.length; i < length; i++ ) {
+                SExpression sExpr = ( SExpression ) sExpressions[i];
+                if ( ( sExpr instanceof LispAtom ) && "\"else\"".equals( ((LispAtom)sExpr).getValue() ) ) {
+                    i++;
+                    break;
+                }
+                FunctionHandlers.dump( sExpressions[i], appendable, context );
+            }        
+            appendable.append( "}" );  
+        }             
     }
 }

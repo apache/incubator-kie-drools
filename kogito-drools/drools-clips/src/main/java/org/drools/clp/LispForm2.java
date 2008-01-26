@@ -2,17 +2,17 @@ package org.drools.clp;
 
 import org.drools.clp.valuehandlers.FunctionCaller;
 
-public class LispForm
+public class LispForm2
     implements
     LispList {
     private BuildContext context;
     private FunctionCaller        caller;
 
-    public LispForm(BuildContext context) {
+    public LispForm2(BuildContext context) {
         this.context = context;
     }
 
-    public LispForm() {
+    public LispForm2() {
     }
 
     public ValueHandler getValueHandler() {

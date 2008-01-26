@@ -226,11 +226,11 @@ package_statement returns [String packageName]
 */
 
 eval_script[Shell  shell]
-	:	(		  i=importDescr{ shell.importDescrHandler( i ); }
+	:	/*(		  i=importDescr{ shell.importDescrHandler( i ); }
 				| r=defrule { shell.ruleDescrHandler( r ); }
 				//e=execution_block { parserHandler.lispFormHandler( e ); }
 				| fc=lisp_list[shell, new LispForm(shell) ] { shell.lispFormHandler(fc); }
-		)*
+		)**/
 	;
 	
 importDescr returns[ImportDescr importDescr]
@@ -249,6 +249,7 @@ execution_list returns[ExecutionEngine engine]
 	;	
 */	
 
+/*
 deffunction returns[Deffunction function]
 	@init {
 			BuildContext context = null;  	
@@ -268,6 +269,7 @@ deffunction returns[Deffunction function]
 	  	(fc=lisp_list[context, new LispForm(context) ] { context.addFunction( (FunctionCaller) fc ); })*
 	  	RIGHT_PAREN
 	;
+*/	
 	
 /*	
 deffunction_params[BuildContext context]
@@ -330,7 +332,7 @@ defrule returns [RuleDescr rule]
 		
 		'=>'
 		
-		engine=execution_block { rule.setConsequence( engine ); }
+		t=lisp_list { rule.setConsequence( t ); }
 		
 		RIGHT_PAREN
 	;
@@ -368,16 +370,6 @@ ce[ConditionalElementDescr in_ce, Set declarations]
 		  | bound_pattern[in_ce, declarations]
 		)
 	;
-
-execution_block returns[ExecutionEngine engine]
-	@init {
-	        engine = new BlockExecutionEngine();
-			BuildContext context = new ExecutionBuildContext( engine, functionRegistry );  	
-	}
-	
-	:
-		(fc=lisp_list[context, new LispForm(context) ] { context.addFunction( (FunctionCaller) fc ); })*
-	;	
 	
 and_ce[ConditionalElementDescr in_ce, Set declarations]
     @init {
@@ -432,20 +424,9 @@ exists_ce[ConditionalElementDescr in_ce, Set declarations]
 	;		
 
 eval_ce[ConditionalElementDescr in_ce, Set declarations]
-    @init {
-        EvalDescr evalDescr= null;    
-   		ExecutionEngine engine = new CLPEval();     
-		BuildContext context = new ExecutionBuildContext( engine, functionRegistry );   		         
-    }
 	:	LEFT_PAREN	
-		TEST {
-		    evalDescr = new EvalDescr();
-		    in_ce.addDescr( evalDescr );
-		}
-		fc=lisp_list[context, new LispForm(context)] {					
-		    engine.addFunction( (FunctionCaller) fc );		
-			evalDescr.setContent( engine );			
-		}			 
+		TEST 
+		t=lisp_list { EvalDescr evalDescr = new EvalDescr(); evalDescr.setContent( t ); in_ce.addDescr( evalDescr ); }			 
 		RIGHT_PAREN					
 	;		
 
@@ -590,29 +571,15 @@ restriction[RestrictionConnectiveDescr rc, ConditionalElementDescr base, FieldCo
 	;		
 
 predicate_constraint[RestrictionConnectiveDescr rc, String op, ConditionalElementDescr base]	
-    @init {
-   		ExecutionEngine engine = new CLPPredicate();
-		BuildContext context = new ExecutionBuildContext( engine, functionRegistry );    
-    }
 	:	COLON
-		fc=lisp_list[context, new LispForm(context)] {	
-		        engine.addFunction( (FunctionCaller) fc );
-			$rc.addRestriction( new PredicateDescr( engine ) );
-		}	
+		t=lisp_list { $rc.addRestriction( new PredicateDescr( t ) ); }	
 		
 	;
 
 
 return_value_restriction[String op, RestrictionConnectiveDescr rc]
-	@init {
-		ExecutionEngine engine = new CLPReturnValue();
-		BuildContext context = new ExecutionBuildContext( engine, functionRegistry );
-	}
 	:	EQUALS 
-		func=lisp_list[context, new LispForm(context)] {					
-   		    engine.addFunction( (FunctionCaller) func );
-			rc.addRestriction( new ReturnValueRestrictionDescr (op, engine ) );
-		}		
+		t=lisp_list {rc.addRestriction( new ReturnValueRestrictionDescr (op, t ) ); }		
 	;
 		
 //will add a declaration field binding, if this is the first time the name  is used		
@@ -647,25 +614,30 @@ eval_sExpressions returns[List<SExpression> list]
 		list = new ArrayList<SExpression>();
     }
 	:
-		(a=lisp_list2 { list.add( a ); })*
+		(a=lisp_list { list.add( a ); })*
 //		{ sExpressions = ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ); }
 	;
 	
-lisp_list2 returns[SExpression sExpression]
+lisp_list returns[SExpression sExpression]
     @init {
         List list = new ArrayList();
         sExpression = null;
     }
 	:	LEFT_PAREN	
-	    t=(NAME|VAR) { list.add( new SymbolLispAtom2( t.getText() ) ); }
-		(		a=lisp_atom2	{ list.add( a ); }
-			|	a=lisp_list2	{ list.add( a ); }
+	
+		(
+		    t=NAME { list.add( new SymbolLispAtom( t.getText() ) ); }
+		    |
+		    t=VAR { list.add( new VariableLispAtom( t.getText() ) ); }	    
+	    )
+		(		a=lisp_atom	{ list.add( a ); }
+			|	a=lisp_list	{ list.add( a ); }
 		)*								    	
 	    RIGHT_PAREN
-	    { sExpression = new LispForm2( ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ) ); }
+	    { sExpression = new LispForm( ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ) ); }
 	;
 	
-lisp_atom2 returns[SExpression sExpression] 
+lisp_atom returns[SExpression sExpression] 
 	@init {
 		sExpression  =  null;		
 	}
@@ -681,40 +653,16 @@ lisp_atom2 returns[SExpression sExpression]
 		)*/	
 		
 		(		
-			 	t=VAR		{ sExpression = new VariableLispAtom2( t.getText() ); }
-			|	t=STRING	{ sExpression = new StringLispAtom2( getString( t ) ); }											
-			|	t=FLOAT		{ sExpression = new FloatLispAtom2( t.getText() ); }
-			|	t=INT		{ sExpression = new IntLispAtom2( t.getText() ); }
-			| 	t=BOOL		{ sExpression = new BoolLispAtom2( t.getText() ); }			
-			| 	t=NULL		{ sExpression = new NullLispAtom2( null ); }						
-	        |   t=NAME		{ sExpression = new SymbolLispAtom2( "\"" +t.getText() + "\""); }				
+			 	t=VAR		{ sExpression = new VariableLispAtom( t.getText() ); }
+			|	t=STRING	{ sExpression = new StringLispAtom( getString( t ) ); }											
+			|	t=FLOAT		{ sExpression = new FloatLispAtom( t.getText() ); }
+			|	t=INT		{ sExpression = new IntLispAtom( t.getText() ); }
+			| 	t=BOOL		{ sExpression = new BoolLispAtom( t.getText() ); }			
+			| 	t=NULL		{ sExpression = new NullLispAtom( null ); }						
+	        |   t=NAME		{ sExpression = new SymbolLispAtom( "\"" +t.getText() + "\""); }				
 
 		)		
 	;		
-
-lisp_list[BuildContext context, LispList list] returns[ValueHandler valueHandler]
-	:	LEFT_PAREN	
-		(		a=lisp_atom[context]					{ list.add( a ); }
-			|	a=lisp_list[context, list.createList()]	{ list.add( a ); }
-		)*										    	
-	    RIGHT_PAREN
-	    { valueHandler = list.getValueHandler(); }
-	;
-	
-lisp_atom[BuildContext context] returns[ValueHandler value] 
-	@init {
-		value  =  null;		
-	}
-	:
-		(		t=VAR		{ value = context.getVariableValueHandler(t.getText() ); }
-			|	t=STRING	{ value = new ObjectValueHandler( getString( t ) ); }
-			| 	t=NAME		{ value = new ObjectValueHandler( t.getText() ); }			
-			|	t=FLOAT		{ value = new DoubleValueHandler( t.getText() ); }
-			|	t=INT 		{ value = new LongValueHandler( t.getText() ); }			
-			|	t=BOOL		{ value = new BooleanValueHandler( t.getText() ); }						
-			|	t=NULL		{ value = ObjectValueHandler.NULL; }
-		)	
-	;
 	
 literal returns [String text]
 	@init {
@@ -738,7 +686,7 @@ WS      :       (	' '
         ;                      
         
 DEFRULE		:	'defrule';
-DEFFUNCTION :	'deffunction';
+//DEFFUNCTION :	'deffunction';
 OR 			:	'or';
 AND 		:	'and';
 NOT 		:	'not';

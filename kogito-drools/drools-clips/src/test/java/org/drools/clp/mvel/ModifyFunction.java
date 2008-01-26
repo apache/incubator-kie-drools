@@ -7,18 +7,18 @@ public class ModifyFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm2 lispForm, Appendable appendable) {
+    public void dump(LispForm lispForm, Appendable appendable, MVELClipsContext context) {
         SExpression[] sExpressions = lispForm.getSExpressions();
         
-        appendable.append("modify (" + ( (LispAtom2) lispForm.getSExpressions()[1]).getValue() + ") {");
+        appendable.append("modify (" + ( (LispAtom) lispForm.getSExpressions()[1]).getValue() + ") {");
         
         for ( int i = 2, length = sExpressions.length; i < length; i++) {
-            LispForm2 setter = (LispForm2) sExpressions[i];
-            appendable.append( ( ( LispAtom2 ) setter.getSExpressions()[0]).getValue() );            
+            LispForm setter = (LispForm) sExpressions[i];
+            appendable.append( ( ( LispAtom ) setter.getSExpressions()[0]).getValue() );            
             
             appendable.append( " = " );
             
-            FunctionHandlers.getInstance().dump( setter.getSExpressions()[1], appendable);  
+            FunctionHandlers.dump( setter.getSExpressions()[1], appendable, context);  
             
             if ( i != length -1 ) { 
                 appendable.append( "," );

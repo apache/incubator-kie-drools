@@ -3,10 +3,10 @@
  */
 package org.drools.clp.mvel;
 
-public class LispForm2 implements SExpression {
+public class LispForm implements SExpression {
     private SExpression[] sExpressions;
     
-    public LispForm2(SExpression[] sExpressions) {
+    public LispForm(SExpression[] sExpressions) {
         this.sExpressions = sExpressions;
     }
 

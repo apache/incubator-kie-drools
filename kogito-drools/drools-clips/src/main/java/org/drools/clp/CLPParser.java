@@ -308,7 +308,7 @@ public class CLPParser extends Parser {
             	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g:230:7: fc= lisp_list[shell, new LispForm(shell) ]
             	    {
             	    pushFollow(FOLLOW_lisp_list_in_eval_script83);
-            	    fc=lisp_list(shell,  new LispForm(shell) );
+            	    fc=lisp_list(shell,  new LispForm2(shell) );
             	    _fsp--;
             	    if (failed) return ;
             	    if ( backtracking==0 ) {
@@ -452,7 +452,7 @@ public class CLPParser extends Parser {
             	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g:266:6: fc= lisp_list[context, new LispForm(context) ]
             	    {
             	    pushFollow(FOLLOW_lisp_list_in_deffunction198);
-            	    fc=lisp_list(context,  new LispForm(context) );
+            	    fc=lisp_list(context,  new LispForm2(context) );
             	    _fsp--;
             	    if (failed) return function;
             	    if ( backtracking==0 ) {
@@ -906,7 +906,7 @@ public class CLPParser extends Parser {
             	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLP.g:377:4: fc= lisp_list[context, new LispForm(context) ]
             	    {
             	    pushFollow(FOLLOW_lisp_list_in_execution_block498);
-            	    fc=lisp_list(context,  new LispForm(context) );
+            	    fc=lisp_list(context,  new LispForm2(context) );
             	    _fsp--;
             	    if (failed) return engine;
             	    if ( backtracking==0 ) {
@@ -1172,7 +1172,7 @@ public class CLPParser extends Parser {
               		
             }
             pushFollow(FOLLOW_lisp_list_in_eval_ce730);
-            fc=lisp_list(context,  new LispForm(context));
+            fc=lisp_list(context,  new LispForm2(context));
             _fsp--;
             if (failed) return ;
             if ( backtracking==0 ) {
@@ -1677,7 +1677,7 @@ public class CLPParser extends Parser {
             {
             match(input,COLON,FOLLOW_COLON_in_predicate_constraint1147); if (failed) return ;
             pushFollow(FOLLOW_lisp_list_in_predicate_constraint1153);
-            fc=lisp_list(context,  new LispForm(context));
+            fc=lisp_list(context,  new LispForm2(context));
             _fsp--;
             if (failed) return ;
             if ( backtracking==0 ) {
@@ -1717,7 +1717,7 @@ public class CLPParser extends Parser {
             {
             match(input,EQUALS,FOLLOW_EQUALS_in_return_value_restriction1179); if (failed) return ;
             pushFollow(FOLLOW_lisp_list_in_return_value_restriction1186);
-            func=lisp_list(context,  new LispForm(context));
+            func=lisp_list(context,  new LispForm2(context));
             _fsp--;
             if (failed) return ;
             if ( backtracking==0 ) {

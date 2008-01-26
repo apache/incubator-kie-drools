@@ -99,7 +99,7 @@ public class Deffunction
     }
 
     public LispList createList(int index) {
-        return new LispForm();
+        return new LispForm2();
     }
 
     public VariableValueHandler createLocalVariable(String identifier) {

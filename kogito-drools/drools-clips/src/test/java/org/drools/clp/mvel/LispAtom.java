@@ -3,11 +3,10 @@
  */
 package org.drools.clp.mvel;
 
-public class LispAtom2 implements SExpression {
+public class LispAtom implements SExpression {
     private String value;
 
-    public LispAtom2(String value) {
-        super();
+    public LispAtom(String value) {
         this.value = value;
     }
 

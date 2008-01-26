@@ -4,6 +4,6 @@ public interface Function {
 
     public abstract String getName();
 
-    public abstract void dump(LispForm2 lispForm, Appendable appendable);
+    public abstract void dump(LispForm lispForm, Appendable appendable, MVELClipsContext context);
 
 }
