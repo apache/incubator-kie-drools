@@ -12,9 +12,9 @@ public abstract class AnalyticsComponent implements
 	protected int id;
 
 	protected AnalyticsComponent parent;
-	protected int orderNumber = 0; // Order number of this instance under
-
-	// parent.
+	
+	// Order number of this instance under parent.
+	protected int orderNumber = 0; 
 
 	public abstract AnalyticsComponentType getComponentType();
 

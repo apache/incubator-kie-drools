@@ -13,102 +13,60 @@ import org.drools.analytics.report.components.RedundancyType;
 
 #declare any global variables here
 
-
-#
-# Finds subsumptant patterns possibilities
-#
-# Depandencies: TODO: Dependencies 
-#
 rule "Find subsumptant pattern possibilities"
 	when
+		
 		$redundancy :Redundancy(
 			left.causeType == CauseType.PATTERN
 		)
 
 		# Find two PatternPossibilities.
-		(
-				$pp1 :PatternPossibility(
-					eval( patternId == $redundancy.getLeft().getId() )
-				)
-			and
-				$pp2 :PatternPossibility(
-					eval( patternId == $redundancy.getRight().getId() )
-				)
-		) or (
-				$pp1 :PatternPossibility(
-					eval( patternId == $redundancy.getRight().getId() )
-				)
-			and
-				$pp2 :PatternPossibility(
-					eval( patternId == $redundancy.getLeft().getId() )
-				)
+		$pp1 :PatternPossibility(
+			eval( patternId == $redundancy.getLeft().getId() )
 		)
-
+		$pp2 :PatternPossibility(
+			eval( patternId == $redundancy.getRight().getId() )
+		)		
+		
 		# For every restriction in $pp1 there is a redundancy to restriction in $pp2.
 		forall(
 			$r :Restriction(
-				patternId == $pp1.patternId,
 				this memberOf $pp1.items
 			)
 
 			Redundancy(
-				(
-					left == $r
-					&&
-					right memberOf $pp2.items
-				) || (
-					left memberOf $pp2.items
-					&&
-					right == $r
-				)
+				left == $r,
+				right memberOf $pp2.items
 			)
 		)
-
-		# There is at least one restriction in $pp2 that has a redundancy to restriction in $pp1.
-		exists(
-				$r :Restriction(
-					patternId == $pp2.patternId,
+		
+		# There is no restriction on $pp2 that has no redundancy in $pp1 
+		# and has a lower order number than an existing redundancy from $pp2 to $pp1.
+		not(
+				$r1 :Restriction(
 					this memberOf $pp2.items
+				)
+			and
+				$r2 :Restriction(
+					this memberOf $pp2.items,
+					orderNumber > $r1.orderNumber
+				)
+			and
+				not Redundancy(
+					left memberOf $pp1.items,
+					right == $r1
 				)
 			and
 				Redundancy(
-					(
-						left == $r
-						&&
-						right memberOf $pp1.items
-					) || (
-						left memberOf $pp1.items
-						&&
-						right == $r
-					)
-				)
-		)
-		
-		# There is at least one restriction in $pp2 that does not hava a redundancy to restriction in $pp1.
-		not(
-				$r :Restriction(
-					patternId == $pp2.patternId,
-					this memberOf $pp2.items
-				)
-			and
-				forall (
-					Redundancy(
-						(
-							left == $r
-							&&
-							right memberOf $pp1.items
-						) || (
-							left memberOf $pp1.items
-							&&
-							right == $r
-						)
-					)
+					left memberOf $pp1.items,
+					right == $r2
 				)
 		)
 
 	then
 		insert( new Subsumption( $pp1, $pp2 ) );
 end
+
 
 #
 # Finds subsumptant rule possibilities
@@ -138,29 +96,30 @@ rule "Find subsumptant rule possibilities"
 				this memberOf $rp1.items
 			)
 
-#			Redundancy(
-#				type == RedundancyType.STRONG,
-#				left == $pp,
-#				right memberOf $rp2.items
-#			)
+			Redundancy(
+				type == RedundancyType.STRONG,
+				left == $pp,
+				right memberOf $rp2.items
+			)
 		)
 
 		#  There is at least one PatternPossibility in $rp2 that does not hava a redundancy to PatternPossibility in $rp1.
+		$pp :PatternPossibility(
+			ruleId == $rp2.ruleId,
+			this memberOf $rp2.items
+		)
 		
-		#$pp :PatternPossibility(
-		#	ruleId == $rp2.ruleId,
-		#	this memberOf $rp2.items
-		#)
+		# XXX: Problem here, or splits the rule in to two.
 		exists( 
 				Subsumption(
-#					left memberOf $rp2.items,
-#					right memberOf $rp1.items
+					left memberOf $rp2.items,
+					right memberOf $rp1.items
 				)
 			or
 				Redundancy(
-#					type == RedundancyType.STRONG,
-#					left memberOf $rp2.items,
-#					right memberOf $rp1.items
+					type == RedundancyType.STRONG,
+					left memberOf $rp2.items,
+					right memberOf $rp1.items
 				)
 		)
 		
@@ -189,6 +148,6 @@ rule "Find subsumptant rule possibilities"
 
 	then
 		System.out.println("pim");
-		#insert( new Subsumption( $rp1, $rp2 ) );
+		insert( new Subsumption( $rp1, $rp2 ) );
 end
 
