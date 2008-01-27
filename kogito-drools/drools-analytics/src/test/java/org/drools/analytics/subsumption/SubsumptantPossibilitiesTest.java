@@ -15,15 +15,13 @@ import org.drools.analytics.components.PatternPossibility;
 import org.drools.analytics.components.RulePossibility;
 import org.drools.analytics.dao.AnalyticsResult;
 import org.drools.analytics.dao.AnalyticsResultFactory;
-import org.drools.analytics.report.components.Cause;
-import org.drools.analytics.report.components.CauseType;
 import org.drools.analytics.report.components.Redundancy;
 import org.drools.analytics.report.components.RedundancyType;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 
 public class SubsumptantPossibilitiesTest extends SubsumptionTestBase {
 
-	public void FIXMEtestPatternPossibilityRedundancy() throws Exception {
+	public void testPatternPossibilityRedundancy1() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Possibilities.drl"));
 
@@ -35,6 +33,9 @@ public class SubsumptantPossibilitiesTest extends SubsumptionTestBase {
 		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
 		session.setGlobal("result", result);
 
+		/*
+		 * Redundant patterns
+		 */
 		String ruleName1 = "Rule 1";
 		String ruleName2 = "Rule 2";
 
@@ -45,10 +46,13 @@ public class SubsumptantPossibilitiesTest extends SubsumptionTestBase {
 
 		LiteralRestriction lr1 = new LiteralRestriction();
 		lr1.setRuleName(ruleName1);
+		lr1.setOrderNumber(0);
 		LiteralRestriction lr2 = new LiteralRestriction();
 		lr2.setRuleName(ruleName2);
+		lr2.setOrderNumber(0);
 		LiteralRestriction lr3 = new LiteralRestriction();
-		lr2.setRuleName(ruleName2);
+		lr3.setRuleName(ruleName2);
+		lr3.setOrderNumber(1);
 
 		PatternPossibility pp1 = new PatternPossibility();
 		pp1.setPatternId(p1.getId());
@@ -79,18 +83,84 @@ public class SubsumptantPossibilitiesTest extends SubsumptionTestBase {
 		Map<String, Set<String>> map = createSubsumptionMap(sessionResult
 				.iterateObjects());
 
-		assertTrue(TestBase.mapContains(map, ruleName2, ruleName1));
+		assertTrue(TestBase.mapContains(map, ruleName1, ruleName2));
 
 		if (!map.isEmpty()) {
 			fail("More redundancies than was expected.");
 		}
 	}
 
-	/**
-	 * The problem is in this test -Rikkola-
-	 * 
-	 * @throws Exception
-	 */
+	public void testPatternPossibilityRedundancy2() throws Exception {
+		StatelessSession session = getStatelessSession(this.getClass()
+				.getResourceAsStream("Possibilities.drl"));
+
+		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+				"Find subsumptant pattern possibilities"));
+
+		Collection<Object> data = new ArrayList<Object>();
+
+		AnalyticsResult result = AnalyticsResultFactory.createAnalyticsResult();
+		session.setGlobal("result", result);
+
+		/*
+		 * Not redundant patterns
+		 * 
+		 * For example: Pattern ( a==1, b==1, c==1) and Pattern ( a==1, c==1)
+		 */
+		String ruleName1 = "Rule 1";
+		String ruleName2 = "Rule 2";
+
+		Pattern p1 = new Pattern();
+		p1.setRuleName(ruleName1);
+		Pattern p2 = new Pattern();
+		p2.setRuleName(ruleName2);
+
+		LiteralRestriction lr1 = new LiteralRestriction();
+		lr1.setRuleName(ruleName1);
+		lr1.setOrderNumber(0);
+		LiteralRestriction lr2 = new LiteralRestriction();
+		lr2.setRuleName(ruleName2);
+		lr2.setOrderNumber(0);
+		LiteralRestriction lr3 = new LiteralRestriction();
+		lr3.setRuleName(ruleName2);
+		lr3.setOrderNumber(1);
+
+		PatternPossibility pp1 = new PatternPossibility();
+		pp1.setPatternId(p1.getId());
+		pp1.setRuleName(ruleName1);
+		pp1.add(lr1);
+
+		PatternPossibility pp2 = new PatternPossibility();
+		pp2.setPatternId(p2.getId());
+		pp2.setRuleName(ruleName2);
+		pp2.add(lr2);
+		pp2.add(lr3);
+
+		Redundancy r1 = new Redundancy(lr1, lr3);
+		Redundancy r2 = new Redundancy(p1, p2);
+
+		data.add(p1);
+		data.add(p2);
+		data.add(lr1);
+		data.add(lr2);
+		data.add(lr3);
+		data.add(pp1);
+		data.add(pp2);
+		data.add(r1);
+		data.add(r2);
+
+		StatelessSessionResult sessionResult = session.executeWithResults(data);
+
+		Map<String, Set<String>> map = createSubsumptionMap(sessionResult
+				.iterateObjects());
+
+		assertFalse(TestBase.mapContains(map, ruleName1, ruleName2));
+
+		if (!map.isEmpty()) {
+			fail("More redundancies than was expected.");
+		}
+	}
+
 	public void FIXMEtestRulePossibilityRedundancy() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("Possibilities.drl"));
