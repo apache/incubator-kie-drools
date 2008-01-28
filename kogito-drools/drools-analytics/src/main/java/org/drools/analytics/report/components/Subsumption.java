@@ -4,7 +4,11 @@ package org.drools.analytics.report.components;
  * 
  * @author Toni Rikkola
  */
-public class Subsumption {
+public class Subsumption implements Cause {
+
+	private static int index = 0;
+
+	private int id = index++;
 
 	private Cause left;
 	private Cause right;
@@ -12,6 +16,14 @@ public class Subsumption {
 	public Subsumption(Cause left, Cause right) {
 		this.left = left;
 		this.right = right;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public CauseType getCauseType() {
+		return CauseType.SUBSUMPTION;
 	}
 
 	public Cause getLeft() {
@@ -28,5 +40,11 @@ public class Subsumption {
 
 	public void setRight(Cause right) {
 		this.right = right;
+	}
+
+	@Override
+	public String toString() {
+		return "Subsumption between: (" + getLeft() + ") and (" + getRight()
+				+ ").";
 	}
 }
