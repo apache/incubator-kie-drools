@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.analytics.TestBase;
-import org.drools.analytics.components.AnalyticsComponent;
+import org.drools.analytics.report.components.Cause;
+import org.drools.analytics.report.components.Redundancy;
 import org.drools.analytics.report.components.Subsumption;
 
 /**
@@ -29,24 +30,23 @@ public class SubsumptionTestBase extends TestBase {
 	 * @param iter
 	 * @return
 	 */
-	protected Map<String, Set<String>> createSubsumptionMap(
-			Iterator<Object> iter) {
+	protected Map<Cause, Set<Cause>> createSubsumptionMap(Iterator<Object> iter) {
 
-		Map<String, Set<String>> map = new HashMap<String, Set<String>>();
+		Map<Cause, Set<Cause>> map = new HashMap<Cause, Set<Cause>>();
 		while (iter.hasNext()) {
 			Object o = (Object) iter.next();
-			if (o instanceof Subsumption) {
+			if (o instanceof Subsumption && !(o instanceof Redundancy)) {
 				Subsumption s = (Subsumption) o;
-				AnalyticsComponent left = (AnalyticsComponent) s.getLeft();
-				AnalyticsComponent right = (AnalyticsComponent) s.getRight();
+				Cause left = s.getLeft();
+				Cause right = s.getRight();
 
-				if (map.containsKey(left.getRuleName())) {
-					Set<String> set = map.get(left.getRuleName());
-					set.add(right.getRuleName());
+				if (map.containsKey(left)) {
+					Set<Cause> set = map.get(left);
+					set.add(right);
 				} else {
-					Set<String> set = new HashSet<String>();
-					set.add(right.getRuleName());
-					map.put(left.getRuleName(), set);
+					Set<Cause> set = new HashSet<Cause>();
+					set.add(right);
+					map.put(left, set);
 				}
 			}
 		}

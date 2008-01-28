@@ -1,6 +1,5 @@
 package org.drools.analytics.report.components;
 
-
 public class CauseType {
 
 	public static final CauseType RULE = new CauseType(0);
@@ -16,6 +15,7 @@ public class CauseType {
 	public static final CauseType PREDICATE = new CauseType(10);
 	public static final CauseType CONSTRAINT = new CauseType(11);
 	public static final CauseType CONSEQUENCE = new CauseType(12);
+	public static final CauseType SUBSUMPTION = new CauseType(13);
 
 	public final int index;
 
