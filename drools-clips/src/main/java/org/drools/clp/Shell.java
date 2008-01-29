@@ -39,7 +39,7 @@ public class Shell
     BuildContext,
     ExecutionContext {
     private static final long serialVersionUID = 1L;
-    private FunctionRegistry registry;
+    private XFunctionRegistry registry;
 
     private ValueHandler[]   variables;
     private Map              vars       = new HashMap();
@@ -63,7 +63,7 @@ public class Shell
         
         this.imports = new HashSet();
 
-        this.registry = new FunctionRegistry( BuiltinFunctions.getInstance() );
+        this.registry = new XFunctionRegistry( BuiltinFunctions.getInstance() );
     }
 
     public void evalReader(Reader reader) {
@@ -184,7 +184,7 @@ public class Shell
         this.variables[index] = valueHandler;
     }
 
-    public FunctionRegistry getFunctionRegistry() {
+    public XFunctionRegistry getFunctionRegistry() {
         return this.registry;
     }
 

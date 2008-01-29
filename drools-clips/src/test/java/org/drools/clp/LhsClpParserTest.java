@@ -34,10 +34,10 @@ public class LhsClpParserTest extends TestCase {
 
     private CLPParser parser;
     
-    FunctionRegistry registry;
+    XFunctionRegistry registry;
     
     public void setUp() {
-        this.registry = new FunctionRegistry( BuiltinFunctions.getInstance() );
+        this.registry = new XFunctionRegistry( BuiltinFunctions.getInstance() );
     }
     
     protected void tearDown() throws Exception {
@@ -419,7 +419,7 @@ public class LhsClpParserTest extends TestCase {
 
     private CLPParser newParser(final TokenStream tokenStream) {
         final CLPParser p = new CLPParser( tokenStream );
-        p.setFunctionRegistry( new FunctionRegistry( BuiltinFunctions.getInstance() )  );
+        p.setFunctionRegistry( new XFunctionRegistry( BuiltinFunctions.getInstance() )  );
         //p.setParserDebug( true );
         return p;
     }

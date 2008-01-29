@@ -9,9 +9,9 @@ public class PrintoutFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm lispForm, Appendable appendable, MVELClipsContext context) {
+    public void dump(LispForm lispForm, Appendable appendable, MVELBuildContext context) {
         SExpression[] sExpressions = lispForm.getSExpressions();
-        appendable.append( "routers.get(" + ( ( LispAtom ) lispForm.getSExpressions()[route]).getValue()+ ").print(" );
+        appendable.append( "printrouters.get(" + ( ( LispAtom ) lispForm.getSExpressions()[route]).getValue()+ ").print(" );
         //appendable.append( "routers.get(" + ( ( LispAtom2 ) lispForm.getSExpressions()[route]).getValue()+ ").print(" );
         for ( int i = 2, length = sExpressions.length; i < length; i++) {            
             FunctionHandlers.dump( sExpressions[i], appendable, context );         

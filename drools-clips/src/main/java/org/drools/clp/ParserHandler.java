@@ -1,12 +1,17 @@
 package org.drools.clp;
 
+import org.drools.clp.mvel.LispForm;
+import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.RuleDescr;
 
-public interface ParserHandler {       
+public interface ParserHandler {  
     
-    //public void functionHandler(RuleDescr ruleDescr);
+    public void importHandler(ImportDescr descr);
     
-    public void ruleDescrHandler(RuleDescr ruleDescr);
+    public void functionHandler(FunctionDescr ruleDescr);
     
-    public void lispFormHandler(ValueHandler valueHandler);  
+    public void ruleHandler(RuleDescr ruleDescr);
+    
+    public void lispFormHandler(LispForm lispForm);  
 }

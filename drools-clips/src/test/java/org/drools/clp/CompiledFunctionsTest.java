@@ -326,7 +326,7 @@ public class CompiledFunctionsTest extends TestCase {
 
     private CLPParser newParser(final TokenStream tokenStream) {
         final CLPParser p = new CLPParser( tokenStream );
-        p.setFunctionRegistry( new FunctionRegistry( BuiltinFunctions.getInstance() ) );
+        p.setFunctionRegistry( new XFunctionRegistry( BuiltinFunctions.getInstance() ) );
         //p.setParserDebug( true );
         return p;
     }

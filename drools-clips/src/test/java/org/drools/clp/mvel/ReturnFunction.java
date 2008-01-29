@@ -7,7 +7,7 @@ public class ReturnFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm lispForm, Appendable appendable, MVELClipsContext context) {
+    public void dump(LispForm lispForm, Appendable appendable, MVELBuildContext context) {
         appendable.append( "return " );
         FunctionHandlers.dump( lispForm.getSExpressions()[1], appendable, context );
         appendable.append( ";\n" );

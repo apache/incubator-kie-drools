@@ -2,10 +2,10 @@ grammar CLPMVEL;
 
 @parser::header {
 	package org.drools.clp;
-	
+
+    import org.drools.clp.*;		
     import org.drools.clp.mvel.*;	
     
-	import org.drools.clp.valuehandlers.*;
 	import java.util.List;
 	import java.util.ArrayList;
 	import java.util.Iterator;
@@ -23,13 +23,9 @@ grammar CLPMVEL;
 	private String source = "unknown";
 	private int lineOffset = 0;
 	private DescrFactory factory = new DescrFactory();
+	private MVELBuildContext context;
 	private boolean parserDebug = false;
-	private FunctionRegistry functionRegistry;	
 	private Location location = new Location( Location.LOCATION_UNKNOWN );	
-	
-	public void setFunctionRegistry(FunctionRegistry functionRegistry) {
-		this.functionRegistry = functionRegistry;
-	}
 	
 	public void setParserDebug(boolean parserDebug) {
 		this.parserDebug = parserDebug;
@@ -225,16 +221,31 @@ package_statement returns [String packageName]
 	;	
 */
 
-eval_script[Shell  shell]
-	:	/*(		  i=importDescr{ shell.importDescrHandler( i ); }
-				| r=defrule { shell.ruleDescrHandler( r ); }
-				//e=execution_block { parserHandler.lispFormHandler( e ); }
-				| fc=lisp_list[shell, new LispForm(shell) ] { shell.lispFormHandler(fc); }
-		)**/
+eval[ParserHandler handler, MVELBuildContext context]
+	:	
+	{ this.context = context; }
+	(		  i=importDescr{ handler.importHandler( i ); }
+				| f=deffunction { handler.functionHandler( f ); }	
+				| r=defrule { handler.ruleHandler( r ); }
+				| form=lisp_form { handler.lispFormHandler( form ); }
+		)
 	;
 	
+	/*
+eval_sExpressions[MVELClipsContext context] returns[List<SExpression> list]
+    @init {
+		list = new ArrayList<SExpression>();
+    }
+	:
+		(  	a=lisp_list { list.add( a ); }
+		   | a=deffunction { FunctionHandlers.dump(a, null, context); }
+		)*
+//		{ sExpressions = ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ); }
+	;
+	*/	
+	
 importDescr returns[ImportDescr importDescr]
-	: LEFT_PAREN 'import' importName=NAME { importDescr = new ImportDescr( importName.getText() ); }RIGHT_PAREN
+	: LEFT_PAREN 'import' importName=NAME { importDescr = new ImportDescr( importName.getText() ); } RIGHT_PAREN
 	;	
 /*	
 
@@ -281,6 +292,22 @@ deffunction_params[BuildContext context]
 	 	 RIGHT_PAREN	
 	;	
 */
+
+deffunction returns[FunctionDescr functionDescr]
+    @init {
+        List content = null;
+        functionDescr = null;
+    }
+	:	LEFT_PAREN	
+    	t=DEFFUNCTION //{ list.add( new SymbolLispAtom( t.getText() ) ); }    	//deffunction
+    	name=lisp_atom //name
+    	params=lisp_form  // params
+		(form=lisp_form { if ( content == null ) content = new ArrayList(); content.add( form ); } )+					    	
+	    RIGHT_PAREN
+	    { functionDescr = FunctionHandlers.createFunctionDescr( name, params, content ); }
+	    //{ sExpression = new LispForm( ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ) ); }
+	;
+	
 defrule returns [RuleDescr rule]
 	@init { 
 	        rule = null; 
@@ -332,7 +359,7 @@ defrule returns [RuleDescr rule]
 		
 		'=>'
 		
-		t=lisp_list { rule.setConsequence( t ); }
+		t=lisp_form { rule.setConsequence( t ); }
 		
 		RIGHT_PAREN
 	;
@@ -426,7 +453,7 @@ exists_ce[ConditionalElementDescr in_ce, Set declarations]
 eval_ce[ConditionalElementDescr in_ce, Set declarations]
 	:	LEFT_PAREN	
 		TEST 
-		t=lisp_list { EvalDescr evalDescr = new EvalDescr(); evalDescr.setContent( t ); in_ce.addDescr( evalDescr ); }			 
+		t=lisp_form { EvalDescr evalDescr = new EvalDescr(); evalDescr.setContent( t ); in_ce.addDescr( evalDescr ); }			 
 		RIGHT_PAREN					
 	;		
 
@@ -572,14 +599,14 @@ restriction[RestrictionConnectiveDescr rc, ConditionalElementDescr base, FieldCo
 
 predicate_constraint[RestrictionConnectiveDescr rc, String op, ConditionalElementDescr base]	
 	:	COLON
-		t=lisp_list { $rc.addRestriction( new PredicateDescr( t ) ); }	
+		t=lisp_form { $rc.addRestriction( new PredicateDescr( t ) ); }	
 		
 	;
 
 
 return_value_restriction[String op, RestrictionConnectiveDescr rc]
 	:	EQUALS 
-		t=lisp_list {rc.addRestriction( new ReturnValueRestrictionDescr (op, t ) ); }		
+		t=lisp_form {rc.addRestriction( new ReturnValueRestrictionDescr (op, t ) ); }		
 	;
 		
 //will add a declaration field binding, if this is the first time the name  is used		
@@ -608,52 +635,44 @@ literal_restriction returns [String text]
 	    }
 	;
 
- 
-eval_sExpressions returns[List<SExpression> list]
+/* 
+eval_sExpressions[MVELClipsContext context] returns[List<SExpression> list]
     @init {
 		list = new ArrayList<SExpression>();
     }
 	:
-		(a=lisp_list { list.add( a ); })*
+		(  	a=lisp_list { list.add( a ); }
+		   | a=deffunction { FunctionHandlers.dump(a, null, context); }
+		)*
 //		{ sExpressions = ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ); }
 	;
-	
-lisp_list returns[SExpression sExpression]
+*/	
+lisp_form returns[LispForm lispForm]
     @init {
         List list = new ArrayList();
-        sExpression = null;
+        lispForm = null;
     }
 	:	LEFT_PAREN	
 	
 		(
 		    t=NAME { list.add( new SymbolLispAtom( t.getText() ) ); }
 		    |
-		    t=VAR { list.add( new VariableLispAtom( t.getText() ) ); }	    
+		    t=VAR { list.add( new VariableLispAtom( t.getText(), context ) ); }	    
 	    )
 		(		a=lisp_atom	{ list.add( a ); }
-			|	a=lisp_list	{ list.add( a ); }
+			|	l=lisp_form	{ list.add( l ); }
 		)*								    	
 	    RIGHT_PAREN
-	    { sExpression = new LispForm( ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ) ); }
+	    { lispForm = new LispForm( ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ) ); }
 	;
 	
 lisp_atom returns[SExpression sExpression] 
 	@init {
 		sExpression  =  null;		
 	}
-	:
-		/*(		
-			 	t=FLOAT		{ sExpression = new LispAtom2( t.getText() ); }
-			|	t=INT 		{ sExpression = new LispAtom2( t.getText() ); }			
-			|	t=BOOL		{ sExpression = new LispAtom2( t.getText() ); }						
-			|	t=NULL		{ sExpression = new LispAtom2( null ); }
-			|	t=STRING	{ sExpression = new LispAtom2( getString( t ) ); }
-			| 	t=NAME		{ sExpression = new LispAtom2( t.getText() ); }			
-
-		)*/	
-		
+	:		
 		(		
-			 	t=VAR		{ sExpression = new VariableLispAtom( t.getText() ); }
+			 	t=VAR		{ sExpression = new VariableLispAtom( t.getText(), context ); }
 			|	t=STRING	{ sExpression = new StringLispAtom( getString( t ) ); }											
 			|	t=FLOAT		{ sExpression = new FloatLispAtom( t.getText() ); }
 			|	t=INT		{ sExpression = new IntLispAtom( t.getText() ); }
@@ -686,7 +705,7 @@ WS      :       (	' '
         ;                      
         
 DEFRULE		:	'defrule';
-//DEFFUNCTION :	'deffunction';
+DEFFUNCTION :	'deffunction';
 OR 			:	'or';
 AND 		:	'and';
 NOT 		:	'not';
