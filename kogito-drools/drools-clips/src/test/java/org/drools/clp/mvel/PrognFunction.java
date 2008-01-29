@@ -7,7 +7,7 @@ public class PrognFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm lispForm, Appendable appendable, MVELClipsContext context) {
+    public void dump(LispForm lispForm, Appendable appendable, MVELBuildContext context) {
         Function createList = FunctionHandlers.getInstance().getFunction( "create$" );
         
         SExpression[] sExpressions = lispForm.getSExpressions();

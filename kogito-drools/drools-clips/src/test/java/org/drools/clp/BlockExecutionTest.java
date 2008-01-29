@@ -15,10 +15,10 @@ import org.drools.clp.valuehandlers.ObjectValueHandler;
 
 public class BlockExecutionTest extends TestCase {
     
-    FunctionRegistry registry;
+    XFunctionRegistry registry;
     
     public void setUp() {
-        this.registry = new FunctionRegistry( BuiltinFunctions.getInstance() );
+        this.registry = new XFunctionRegistry( BuiltinFunctions.getInstance() );
     }    
     
     public void testAddWithModify() {

@@ -3,7 +3,8 @@
  */
 package org.drools.clp.mvel;
 
-public class LispForm implements SExpression {
+public class LispForm
+ implements SExpression {
     private SExpression[] sExpressions;
     
     public LispForm(SExpression[] sExpressions) {
@@ -28,7 +29,9 @@ public class LispForm implements SExpression {
 //        builder.append(")");
 //        return builder.toString();
 //    }    
-    
+    public int size() {
+        return this.sExpressions.length;
+    }
     public String toString() {
         StringBuilder builder = new StringBuilder();
         

@@ -3,7 +3,7 @@ package org.drools.clp.mvel;
 public abstract class BaseInfixFunction implements Function {
     public abstract String getMappedSymbol();
     
-    public void dump(LispForm lispForm, Appendable appendable, MVELClipsContext context) {
+    public void dump(LispForm lispForm, Appendable appendable, MVELBuildContext context) {
         SExpression[] sExpressions = lispForm.getSExpressions();        
         
         appendable.append("(");

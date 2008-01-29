@@ -1,7 +1,10 @@
 package org.drools.clp.mvel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.drools.lang.descr.FunctionDescr;
 
 public class FunctionHandlers {
     public static final FunctionHandlers INSTANCE = new FunctionHandlers();
@@ -24,7 +27,7 @@ public class FunctionHandlers {
         this.map.put( function.getName(), function );
     }
     
-    public static void dump(SExpression sExpression, Appendable appendable, MVELClipsContext context) {              
+    public static void dump(SExpression sExpression, Appendable appendable, MVELBuildContext context) {              
         if ( sExpression instanceof LispAtom ) {
             appendable.append( ( ( LispAtom ) sExpression).getValue() );
         } else {
@@ -47,5 +50,23 @@ public class FunctionHandlers {
         }           
     }
     
+    public static FunctionDescr createFunctionDescr(SExpression name, LispForm params, List<SExpression> content) {
+        FunctionDescr descr = new FunctionDescr(((LispAtom)name).getValue(), "Object" );
+        for ( SExpression sExpr  : params.getSExpressions() ) {
+            String param = ((LispAtom)sExpr).getValue().trim();
+            if ( param.charAt( 0 ) == '"' ) {
+                param = param.substring( 1 );
+            }
+            
+            if ( param.charAt( param.length()-1 ) == '"' ) {
+                param = param.substring( 0, param.length()-1 );
+            }
+            descr.addParameter(  "Object",  param );
+        }
+        
+        descr.setContent( content );
+        
+        return descr;
+    }
     
 }
