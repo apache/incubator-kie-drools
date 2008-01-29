@@ -1,10 +1,9 @@
-grammar CLPMVEL;
+grammar Clips;
 
 @parser::header {
-	package org.drools.clp;
+	package org.drools.clips;
 
-    import org.drools.clp.*;		
-    import org.drools.clp.mvel.*;	
+    import org.drools.clips.*;		
     
 	import java.util.List;
 	import java.util.ArrayList;
@@ -166,7 +165,7 @@ grammar CLPMVEL;
 }
 
 @lexer::header {
-	package org.drools.clp;
+	package org.drools.clips;
 }
 
 /*

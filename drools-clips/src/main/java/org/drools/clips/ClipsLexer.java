@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g 2008-01-29 07:31:27
+// $ANTLR 3.0.1 C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g 2008-01-29 21:18:01
 
 	package org.drools.clips;
 
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
-public class CLPMVELLexer extends Lexer {
+public class ClipsLexer extends Lexer {
     public static final int RIGHT_SQUARE=38;
     public static final int RIGHT_CURLY=40;
     public static final int EQUALS=23;
@@ -54,19 +54,19 @@ public class CLPMVELLexer extends Lexer {
     public static final int OctalEscape=33;
     public static final int C_STYLE_SINGLE_LINE_COMMENT=36;
     public static final int STRING=9;
-    public CLPMVELLexer() {;} 
-    public CLPMVELLexer(CharStream input) {
+    public ClipsLexer() {;} 
+    public ClipsLexer(CharStream input) {
         super(input);
         ruleMemo = new HashMap[44+1];
      }
-    public String getGrammarFileName() { return "C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g"; }
+    public String getGrammarFileName() { return "C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g"; }
 
     // $ANTLR start T44
     public final void mT44() throws RecognitionException {
         try {
             int _type = T44;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:6:5: ( 'import' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:6:7: 'import'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:6:5: ( 'import' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:6:7: 'import'
             {
             match("import"); if (failed) return ;
 
@@ -84,8 +84,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mT45() throws RecognitionException {
         try {
             int _type = T45;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:7:5: ( '=>' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:7:7: '=>'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:7:5: ( '=>' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:7:7: '=>'
             {
             match("=>"); if (failed) return ;
 
@@ -103,10 +103,10 @@ public class CLPMVELLexer extends Lexer {
     public final void mWS() throws RecognitionException {
         try {
             int _type = WS;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:699:9: ( ( ' ' | '\\t' | '\\f' | EOL ) )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:699:17: ( ' ' | '\\t' | '\\f' | EOL )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:698:9: ( ( ' ' | '\\t' | '\\f' | EOL ) )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:698:17: ( ' ' | '\\t' | '\\f' | EOL )
             {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:699:17: ( ' ' | '\\t' | '\\f' | EOL )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:698:17: ( ' ' | '\\t' | '\\f' | EOL )
             int alt1=4;
             switch ( input.LA(1) ) {
             case ' ':
@@ -133,35 +133,35 @@ public class CLPMVELLexer extends Lexer {
             default:
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("699:17: ( ' ' | '\\t' | '\\f' | EOL )", 1, 0, input);
+                    new NoViableAltException("698:17: ( ' ' | '\\t' | '\\f' | EOL )", 1, 0, input);
 
                 throw nvae;
             }
 
             switch (alt1) {
                 case 1 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:699:19: ' '
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:698:19: ' '
                     {
                     match(' '); if (failed) return ;
 
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:700:19: '\\t'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:699:19: '\\t'
                     {
                     match('\t'); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:701:19: '\\f'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:700:19: '\\f'
                     {
                     match('\f'); if (failed) return ;
 
                     }
                     break;
                 case 4 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:702:19: EOL
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:701:19: EOL
                     {
                     mEOL(); if (failed) return ;
 
@@ -187,8 +187,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mDEFRULE() throws RecognitionException {
         try {
             int _type = DEFRULE;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:707:10: ( 'defrule' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:707:12: 'defrule'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:706:10: ( 'defrule' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:706:12: 'defrule'
             {
             match("defrule"); if (failed) return ;
 
@@ -206,8 +206,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mDEFFUNCTION() throws RecognitionException {
         try {
             int _type = DEFFUNCTION;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:708:13: ( 'deffunction' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:708:15: 'deffunction'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:707:13: ( 'deffunction' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:707:15: 'deffunction'
             {
             match("deffunction"); if (failed) return ;
 
@@ -225,8 +225,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mOR() throws RecognitionException {
         try {
             int _type = OR;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:709:7: ( 'or' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:709:9: 'or'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:708:7: ( 'or' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:708:9: 'or'
             {
             match("or"); if (failed) return ;
 
@@ -244,8 +244,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mAND() throws RecognitionException {
         try {
             int _type = AND;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:710:7: ( 'and' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:710:9: 'and'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:709:7: ( 'and' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:709:9: 'and'
             {
             match("and"); if (failed) return ;
 
@@ -263,8 +263,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mNOT() throws RecognitionException {
         try {
             int _type = NOT;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:711:7: ( 'not' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:711:9: 'not'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:710:7: ( 'not' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:710:9: 'not'
             {
             match("not"); if (failed) return ;
 
@@ -282,8 +282,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mEXISTS() throws RecognitionException {
         try {
             int _type = EXISTS;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:712:10: ( 'exists' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:712:12: 'exists'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:711:10: ( 'exists' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:711:12: 'exists'
             {
             match("exists"); if (failed) return ;
 
@@ -301,8 +301,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mTEST() throws RecognitionException {
         try {
             int _type = TEST;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:713:8: ( 'test' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:713:10: 'test'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:712:8: ( 'test' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:712:10: 'test'
             {
             match("test"); if (failed) return ;
 
@@ -320,8 +320,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mNULL() throws RecognitionException {
         try {
             int _type = NULL;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:715:7: ( 'null' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:715:9: 'null'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:714:7: ( 'null' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:714:9: 'null'
             {
             match("null"); if (failed) return ;
 
@@ -339,8 +339,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mDECLARE() throws RecognitionException {
         try {
             int _type = DECLARE;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:717:10: ( 'declare' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:717:12: 'declare'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:716:10: ( 'declare' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:716:12: 'declare'
             {
             match("declare"); if (failed) return ;
 
@@ -358,8 +358,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mSALIENCE() throws RecognitionException {
         try {
             int _type = SALIENCE;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:719:10: ( 'salience' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:719:12: 'salience'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:718:10: ( 'salience' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:718:12: 'salience'
             {
             match("salience"); if (failed) return ;
 
@@ -376,10 +376,10 @@ public class CLPMVELLexer extends Lexer {
     // $ANTLR start EOL
     public final void mEOL() throws RecognitionException {
         try {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:724:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:725:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:723:6: ( ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' ) )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:724:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:725:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:724:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )
             int alt2=3;
             int LA2_0 = input.LA(1);
 
@@ -398,13 +398,13 @@ public class CLPMVELLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("725:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )", 2, 0, input);
+                    new NoViableAltException("724:6: ( ( '\\r\\n' )=> '\\r\\n' | '\\r' | '\\n' )", 2, 0, input);
 
                 throw nvae;
             }
             switch (alt2) {
                 case 1 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:725:14: ( '\\r\\n' )=> '\\r\\n'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:724:14: ( '\\r\\n' )=> '\\r\\n'
                     {
                     match("\r\n"); if (failed) return ;
 
@@ -412,14 +412,14 @@ public class CLPMVELLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:726:25: '\\r'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:725:25: '\\r'
                     {
                     match('\r'); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:727:25: '\\n'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:726:25: '\\n'
                     {
                     match('\n'); if (failed) return ;
 
@@ -441,10 +441,10 @@ public class CLPMVELLexer extends Lexer {
     public final void mINT() throws RecognitionException {
         try {
             int _type = INT;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:732:2: ( ( '-' )? ( '0' .. '9' )+ )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:732:4: ( '-' )? ( '0' .. '9' )+
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:731:2: ( ( '-' )? ( '0' .. '9' )+ )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:731:4: ( '-' )? ( '0' .. '9' )+
             {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:732:4: ( '-' )?
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:731:4: ( '-' )?
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -453,7 +453,7 @@ public class CLPMVELLexer extends Lexer {
             }
             switch (alt3) {
                 case 1 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:732:5: '-'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:731:5: '-'
                     {
                     match('-'); if (failed) return ;
 
@@ -462,7 +462,7 @@ public class CLPMVELLexer extends Lexer {
 
             }
 
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:732:10: ( '0' .. '9' )+
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:731:10: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -476,7 +476,7 @@ public class CLPMVELLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:732:11: '0' .. '9'
+            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:731:11: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
@@ -507,10 +507,10 @@ public class CLPMVELLexer extends Lexer {
     public final void mFLOAT() throws RecognitionException {
         try {
             int _type = FLOAT;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:736:2: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:736:4: ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:735:2: ( ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+ )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:735:4: ( '-' )? ( '0' .. '9' )+ '.' ( '0' .. '9' )+
             {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:736:4: ( '-' )?
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:735:4: ( '-' )?
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -519,7 +519,7 @@ public class CLPMVELLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:736:5: '-'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:735:5: '-'
                     {
                     match('-'); if (failed) return ;
 
@@ -528,7 +528,7 @@ public class CLPMVELLexer extends Lexer {
 
             }
 
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:736:10: ( '0' .. '9' )+
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:735:10: ( '0' .. '9' )+
             int cnt6=0;
             loop6:
             do {
@@ -542,7 +542,7 @@ public class CLPMVELLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:736:11: '0' .. '9'
+            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:735:11: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
@@ -560,7 +560,7 @@ public class CLPMVELLexer extends Lexer {
             } while (true);
 
             match('.'); if (failed) return ;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:736:26: ( '0' .. '9' )+
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:735:26: ( '0' .. '9' )+
             int cnt7=0;
             loop7:
             do {
@@ -574,7 +574,7 @@ public class CLPMVELLexer extends Lexer {
 
                 switch (alt7) {
             	case 1 :
-            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:736:27: '0' .. '9'
+            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:735:27: '0' .. '9'
             	    {
             	    matchRange('0','9'); if (failed) return ;
 
@@ -605,7 +605,7 @@ public class CLPMVELLexer extends Lexer {
     public final void mSTRING() throws RecognitionException {
         try {
             int _type = STRING;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:740:5: ( ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' ) | ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' ) )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:739:5: ( ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' ) | ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' ) )
             int alt10=2;
             int LA10_0 = input.LA(1);
 
@@ -618,19 +618,19 @@ public class CLPMVELLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("739:1: STRING : ( ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' ) | ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' ) );", 10, 0, input);
+                    new NoViableAltException("738:1: STRING : ( ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' ) | ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' ) );", 10, 0, input);
 
                 throw nvae;
             }
             switch (alt10) {
                 case 1 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:740:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:739:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
                     {
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:740:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:740:9: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:739:8: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:739:9: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
                     {
                     match('\"'); if (failed) return ;
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:740:13: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:739:13: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
                     loop8:
                     do {
                         int alt8=3;
@@ -646,14 +646,14 @@ public class CLPMVELLexer extends Lexer {
 
                         switch (alt8) {
                     	case 1 :
-                    	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:740:15: EscapeSequence
+                    	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:739:15: EscapeSequence
                     	    {
                     	    mEscapeSequence(); if (failed) return ;
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:740:32: ~ ( '\\\\' | '\"' )
+                    	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:739:32: ~ ( '\\\\' | '\"' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -683,13 +683,13 @@ public class CLPMVELLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:741:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:740:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
                     {
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:741:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:741:9: '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\''
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:740:8: ( '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\'' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:740:9: '\\'' ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )* '\\''
                     {
                     match('\''); if (failed) return ;
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:741:14: ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )*
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:740:14: ( EscapeSequence | ~ ( '\\\\' | '\\'' ) )*
                     loop9:
                     do {
                         int alt9=3;
@@ -705,14 +705,14 @@ public class CLPMVELLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:741:16: EscapeSequence
+                    	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:740:16: EscapeSequence
                     	    {
                     	    mEscapeSequence(); if (failed) return ;
 
                     	    }
                     	    break;
                     	case 2 :
-                    	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:741:33: ~ ( '\\\\' | '\\'' )
+                    	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:740:33: ~ ( '\\\\' | '\\'' )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -753,8 +753,8 @@ public class CLPMVELLexer extends Lexer {
     // $ANTLR start HexDigit
     public final void mHexDigit() throws RecognitionException {
         try {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:745:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:745:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:744:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:744:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -779,7 +779,7 @@ public class CLPMVELLexer extends Lexer {
     // $ANTLR start EscapeSequence
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:749:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:748:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape )
             int alt11=3;
             int LA11_0 = input.LA(1);
 
@@ -817,7 +817,7 @@ public class CLPMVELLexer extends Lexer {
                 default:
                     if (backtracking>0) {failed=true; return ;}
                     NoViableAltException nvae =
-                        new NoViableAltException("747:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 11, 1, input);
+                        new NoViableAltException("746:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 11, 1, input);
 
                     throw nvae;
                 }
@@ -826,13 +826,13 @@ public class CLPMVELLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("747:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 11, 0, input);
+                    new NoViableAltException("746:1: fragment EscapeSequence : ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape );", 11, 0, input);
 
                 throw nvae;
             }
             switch (alt11) {
                 case 1 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:749:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:748:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); if (failed) return ;
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -850,14 +850,14 @@ public class CLPMVELLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:750:9: UnicodeEscape
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:749:9: UnicodeEscape
                     {
                     mUnicodeEscape(); if (failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:751:9: OctalEscape
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:750:9: OctalEscape
                     {
                     mOctalEscape(); if (failed) return ;
 
@@ -874,7 +874,7 @@ public class CLPMVELLexer extends Lexer {
     // $ANTLR start OctalEscape
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:756:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:755:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt12=3;
             int LA12_0 = input.LA(1);
 
@@ -908,7 +908,7 @@ public class CLPMVELLexer extends Lexer {
                 else {
                     if (backtracking>0) {failed=true; return ;}
                     NoViableAltException nvae =
-                        new NoViableAltException("754:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 1, input);
+                        new NoViableAltException("753:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 1, input);
 
                     throw nvae;
                 }
@@ -916,31 +916,31 @@ public class CLPMVELLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("754:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 0, input);
+                    new NoViableAltException("753:1: fragment OctalEscape : ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) );", 12, 0, input);
 
                 throw nvae;
             }
             switch (alt12) {
                 case 1 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:756:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:755:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); if (failed) return ;
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:756:14: ( '0' .. '3' )
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:756:15: '0' .. '3'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:755:14: ( '0' .. '3' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:755:15: '0' .. '3'
                     {
                     matchRange('0','3'); if (failed) return ;
 
                     }
 
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:756:25: ( '0' .. '7' )
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:756:26: '0' .. '7'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:755:25: ( '0' .. '7' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:755:26: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
                     }
 
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:756:36: ( '0' .. '7' )
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:756:37: '0' .. '7'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:755:36: ( '0' .. '7' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:755:37: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
@@ -950,18 +950,18 @@ public class CLPMVELLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:757:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:756:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); if (failed) return ;
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:757:14: ( '0' .. '7' )
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:757:15: '0' .. '7'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:756:14: ( '0' .. '7' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:756:15: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
                     }
 
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:757:25: ( '0' .. '7' )
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:757:26: '0' .. '7'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:756:25: ( '0' .. '7' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:756:26: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
@@ -971,11 +971,11 @@ public class CLPMVELLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:758:9: '\\\\' ( '0' .. '7' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:757:9: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); if (failed) return ;
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:758:14: ( '0' .. '7' )
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:758:15: '0' .. '7'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:757:14: ( '0' .. '7' )
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:757:15: '0' .. '7'
                     {
                     matchRange('0','7'); if (failed) return ;
 
@@ -995,8 +995,8 @@ public class CLPMVELLexer extends Lexer {
     // $ANTLR start UnicodeEscape
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:763:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:763:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:762:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:762:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); if (failed) return ;
             match('u'); if (failed) return ;
@@ -1017,10 +1017,10 @@ public class CLPMVELLexer extends Lexer {
     public final void mBOOL() throws RecognitionException {
         try {
             int _type = BOOL;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:767:2: ( ( 'true' | 'false' ) )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:767:4: ( 'true' | 'false' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:766:2: ( ( 'true' | 'false' ) )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:766:4: ( 'true' | 'false' )
             {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:767:4: ( 'true' | 'false' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:766:4: ( 'true' | 'false' )
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1033,13 +1033,13 @@ public class CLPMVELLexer extends Lexer {
             else {
                 if (backtracking>0) {failed=true; return ;}
                 NoViableAltException nvae =
-                    new NoViableAltException("767:4: ( 'true' | 'false' )", 13, 0, input);
+                    new NoViableAltException("766:4: ( 'true' | 'false' )", 13, 0, input);
 
                 throw nvae;
             }
             switch (alt13) {
                 case 1 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:767:5: 'true'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:766:5: 'true'
                     {
                     match("true"); if (failed) return ;
 
@@ -1047,7 +1047,7 @@ public class CLPMVELLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:767:12: 'false'
+                    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:766:12: 'false'
                     {
                     match("false"); if (failed) return ;
 
@@ -1071,11 +1071,11 @@ public class CLPMVELLexer extends Lexer {
     public final void mVAR() throws RecognitionException {
         try {
             int _type = VAR;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:770:6: ( '?' ( SYMBOL_CHAR )+ )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:770:8: '?' ( SYMBOL_CHAR )+
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:769:6: ( '?' ( SYMBOL_CHAR )+ )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:769:8: '?' ( SYMBOL_CHAR )+
             {
             match('?'); if (failed) return ;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:770:12: ( SYMBOL_CHAR )+
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:769:12: ( SYMBOL_CHAR )+
             int cnt14=0;
             loop14:
             do {
@@ -1089,7 +1089,7 @@ public class CLPMVELLexer extends Lexer {
 
                 switch (alt14) {
             	case 1 :
-            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:770:12: SYMBOL_CHAR
+            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:769:12: SYMBOL_CHAR
             	    {
             	    mSYMBOL_CHAR(); if (failed) return ;
 
@@ -1120,11 +1120,11 @@ public class CLPMVELLexer extends Lexer {
     public final void mSH_STYLE_SINGLE_LINE_COMMENT() throws RecognitionException {
         try {
             int _type = SH_STYLE_SINGLE_LINE_COMMENT;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:774:2: ( '#' ( options {greedy=false; } : . )* EOL )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:774:4: '#' ( options {greedy=false; } : . )* EOL
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:773:2: ( '#' ( options {greedy=false; } : . )* EOL )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:773:4: '#' ( options {greedy=false; } : . )* EOL
             {
             match('#'); if (failed) return ;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:774:8: ( options {greedy=false; } : . )*
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:773:8: ( options {greedy=false; } : . )*
             loop15:
             do {
                 int alt15=2;
@@ -1143,7 +1143,7 @@ public class CLPMVELLexer extends Lexer {
 
                 switch (alt15) {
             	case 1 :
-            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:774:35: .
+            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:773:35: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -1173,12 +1173,12 @@ public class CLPMVELLexer extends Lexer {
     public final void mC_STYLE_SINGLE_LINE_COMMENT() throws RecognitionException {
         try {
             int _type = C_STYLE_SINGLE_LINE_COMMENT;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:780:2: ( '//' ( options {greedy=false; } : . )* EOL )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:780:4: '//' ( options {greedy=false; } : . )* EOL
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:779:2: ( '//' ( options {greedy=false; } : . )* EOL )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:779:4: '//' ( options {greedy=false; } : . )* EOL
             {
             match("//"); if (failed) return ;
 
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:780:9: ( options {greedy=false; } : . )*
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:779:9: ( options {greedy=false; } : . )*
             loop16:
             do {
                 int alt16=2;
@@ -1197,7 +1197,7 @@ public class CLPMVELLexer extends Lexer {
 
                 switch (alt16) {
             	case 1 :
-            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:780:36: .
+            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:779:36: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -1227,8 +1227,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mLEFT_PAREN() throws RecognitionException {
         try {
             int _type = LEFT_PAREN;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:786:2: ( '(' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:786:4: '('
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:785:2: ( '(' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:785:4: '('
             {
             match('('); if (failed) return ;
 
@@ -1245,8 +1245,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mRIGHT_PAREN() throws RecognitionException {
         try {
             int _type = RIGHT_PAREN;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:790:2: ( ')' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:790:4: ')'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:789:2: ( ')' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:789:4: ')'
             {
             match(')'); if (failed) return ;
 
@@ -1263,8 +1263,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mLEFT_SQUARE() throws RecognitionException {
         try {
             int _type = LEFT_SQUARE;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:794:2: ( '[' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:794:4: '['
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:793:2: ( '[' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:793:4: '['
             {
             match('['); if (failed) return ;
 
@@ -1281,8 +1281,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mRIGHT_SQUARE() throws RecognitionException {
         try {
             int _type = RIGHT_SQUARE;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:798:2: ( ']' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:798:4: ']'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:797:2: ( ']' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:797:4: ']'
             {
             match(']'); if (failed) return ;
 
@@ -1299,8 +1299,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mLEFT_CURLY() throws RecognitionException {
         try {
             int _type = LEFT_CURLY;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:802:2: ( '{' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:802:4: '{'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:801:2: ( '{' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:801:4: '{'
             {
             match('{'); if (failed) return ;
 
@@ -1317,8 +1317,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mRIGHT_CURLY() throws RecognitionException {
         try {
             int _type = RIGHT_CURLY;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:806:2: ( '}' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:806:4: '}'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:805:2: ( '}' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:805:4: '}'
             {
             match('}'); if (failed) return ;
 
@@ -1335,8 +1335,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mTILDE() throws RecognitionException {
         try {
             int _type = TILDE;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:809:7: ( '~' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:809:9: '~'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:808:7: ( '~' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:808:9: '~'
             {
             match('~'); if (failed) return ;
 
@@ -1353,8 +1353,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mAMPERSAND() throws RecognitionException {
         try {
             int _type = AMPERSAND;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:813:2: ( '&' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:813:4: '&'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:812:2: ( '&' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:812:4: '&'
             {
             match('&'); if (failed) return ;
 
@@ -1371,8 +1371,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mPIPE() throws RecognitionException {
         try {
             int _type = PIPE;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:817:2: ( '|' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:817:4: '|'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:816:2: ( '|' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:816:4: '|'
             {
             match('|'); if (failed) return ;
 
@@ -1389,8 +1389,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mASSIGN_OP() throws RecognitionException {
         try {
             int _type = ASSIGN_OP;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:821:2: ( '<-' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:821:4: '<-'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:820:2: ( '<-' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:820:4: '<-'
             {
             match("<-"); if (failed) return ;
 
@@ -1408,8 +1408,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mCOLON() throws RecognitionException {
         try {
             int _type = COLON;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:824:7: ( ':' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:824:9: ':'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:823:7: ( ':' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:823:9: ':'
             {
             match(':'); if (failed) return ;
 
@@ -1426,8 +1426,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mEQUALS() throws RecognitionException {
         try {
             int _type = EQUALS;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:826:8: ( '=' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:826:10: '='
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:825:8: ( '=' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:825:10: '='
             {
             match('='); if (failed) return ;
 
@@ -1444,12 +1444,12 @@ public class CLPMVELLexer extends Lexer {
     public final void mMULTI_LINE_COMMENT() throws RecognitionException {
         try {
             int _type = MULTI_LINE_COMMENT;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:829:2: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:829:4: '/*' ( options {greedy=false; } : . )* '*/'
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:828:2: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:828:4: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); if (failed) return ;
 
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:829:9: ( options {greedy=false; } : . )*
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:828:9: ( options {greedy=false; } : . )*
             loop17:
             do {
                 int alt17=2;
@@ -1474,7 +1474,7 @@ public class CLPMVELLexer extends Lexer {
 
                 switch (alt17) {
             	case 1 :
-            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:829:35: .
+            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:828:35: .
             	    {
             	    matchAny(); if (failed) return ;
 
@@ -1505,8 +1505,8 @@ public class CLPMVELLexer extends Lexer {
     public final void mNAME() throws RecognitionException {
         try {
             int _type = NAME;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:833:6: ( SYMBOL )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:833:8: SYMBOL
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:832:6: ( SYMBOL )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:832:8: SYMBOL
             {
             mSYMBOL(); if (failed) return ;
 
@@ -1522,11 +1522,11 @@ public class CLPMVELLexer extends Lexer {
     // $ANTLR start SYMBOL
     public final void mSYMBOL() throws RecognitionException {
         try {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:836:8: ( FIRST_SYMBOL_CHAR ( SYMBOL_CHAR )* )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:836:10: FIRST_SYMBOL_CHAR ( SYMBOL_CHAR )*
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:835:8: ( FIRST_SYMBOL_CHAR ( SYMBOL_CHAR )* )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:835:10: FIRST_SYMBOL_CHAR ( SYMBOL_CHAR )*
             {
             mFIRST_SYMBOL_CHAR(); if (failed) return ;
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:836:28: ( SYMBOL_CHAR )*
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:835:28: ( SYMBOL_CHAR )*
             loop18:
             do {
                 int alt18=2;
@@ -1539,7 +1539,7 @@ public class CLPMVELLexer extends Lexer {
 
                 switch (alt18) {
             	case 1 :
-            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:836:28: SYMBOL_CHAR
+            	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:835:28: SYMBOL_CHAR
             	    {
             	    mSYMBOL_CHAR(); if (failed) return ;
 
@@ -1563,8 +1563,8 @@ public class CLPMVELLexer extends Lexer {
     // $ANTLR start FIRST_SYMBOL_CHAR
     public final void mFIRST_SYMBOL_CHAR() throws RecognitionException {
         try {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:841:19: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '!' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '=' | '\\\\' | '/' | '@' | '#' | ':' | '>' | '<' | ',' | '.' | '[' | ']' | '{' | '}' ) )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:841:21: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '!' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '=' | '\\\\' | '/' | '@' | '#' | ':' | '>' | '<' | ',' | '.' | '[' | ']' | '{' | '}' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:840:19: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '!' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '=' | '\\\\' | '/' | '@' | '#' | ':' | '>' | '<' | ',' | '.' | '[' | ']' | '{' | '}' ) )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:840:21: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '!' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '=' | '\\\\' | '/' | '@' | '#' | ':' | '>' | '<' | ',' | '.' | '[' | ']' | '{' | '}' )
             {
             if ( input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='%')||(input.LA(1)>='*' && input.LA(1)<=':')||(input.LA(1)>='<' && input.LA(1)<='>')||(input.LA(1)>='@' && input.LA(1)<='_')||(input.LA(1)>='a' && input.LA(1)<='{')||input.LA(1)=='}' ) {
                 input.consume();
@@ -1589,8 +1589,8 @@ public class CLPMVELLexer extends Lexer {
     // $ANTLR start SYMBOL_CHAR
     public final void mSYMBOL_CHAR() throws RecognitionException {
         try {
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:846:13: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '!' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '=' | '\\\\' | '/' | '@' | '#' | ':' | '>' | ',' | '.' | '[' | ']' | '{' | '}' | '?' ) )
-            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:846:15: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '!' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '=' | '\\\\' | '/' | '@' | '#' | ':' | '>' | ',' | '.' | '[' | ']' | '{' | '}' | '?' )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:845:13: ( ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '!' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '=' | '\\\\' | '/' | '@' | '#' | ':' | '>' | ',' | '.' | '[' | ']' | '{' | '}' | '?' ) )
+            // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:845:15: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '!' | '$' | '%' | '^' | '*' | '_' | '-' | '+' | '=' | '\\\\' | '/' | '@' | '#' | ':' | '>' | ',' | '.' | '[' | ']' | '{' | '}' | '?' )
             {
             if ( input.LA(1)=='!'||(input.LA(1)>='#' && input.LA(1)<='%')||(input.LA(1)>='*' && input.LA(1)<=':')||(input.LA(1)>='=' && input.LA(1)<='_')||(input.LA(1)>='a' && input.LA(1)<='{')||input.LA(1)=='}' ) {
                 input.consume();
@@ -1613,243 +1613,243 @@ public class CLPMVELLexer extends Lexer {
     // $ANTLR end SYMBOL_CHAR
 
     public void mTokens() throws RecognitionException {
-        // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:8: ( T44 | T45 | WS | DEFRULE | DEFFUNCTION | OR | AND | NOT | EXISTS | TEST | NULL | DECLARE | SALIENCE | INT | FLOAT | STRING | BOOL | VAR | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | TILDE | AMPERSAND | PIPE | ASSIGN_OP | COLON | EQUALS | MULTI_LINE_COMMENT | NAME )
+        // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:8: ( T44 | T45 | WS | DEFRULE | DEFFUNCTION | OR | AND | NOT | EXISTS | TEST | NULL | DECLARE | SALIENCE | INT | FLOAT | STRING | BOOL | VAR | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | TILDE | AMPERSAND | PIPE | ASSIGN_OP | COLON | EQUALS | MULTI_LINE_COMMENT | NAME )
         int alt19=34;
         alt19 = dfa19.predict(input);
         switch (alt19) {
             case 1 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:10: T44
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:10: T44
                 {
                 mT44(); if (failed) return ;
 
                 }
                 break;
             case 2 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:14: T45
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:14: T45
                 {
                 mT45(); if (failed) return ;
 
                 }
                 break;
             case 3 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:18: WS
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:18: WS
                 {
                 mWS(); if (failed) return ;
 
                 }
                 break;
             case 4 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:21: DEFRULE
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:21: DEFRULE
                 {
                 mDEFRULE(); if (failed) return ;
 
                 }
                 break;
             case 5 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:29: DEFFUNCTION
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:29: DEFFUNCTION
                 {
                 mDEFFUNCTION(); if (failed) return ;
 
                 }
                 break;
             case 6 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:41: OR
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:41: OR
                 {
                 mOR(); if (failed) return ;
 
                 }
                 break;
             case 7 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:44: AND
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:44: AND
                 {
                 mAND(); if (failed) return ;
 
                 }
                 break;
             case 8 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:48: NOT
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:48: NOT
                 {
                 mNOT(); if (failed) return ;
 
                 }
                 break;
             case 9 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:52: EXISTS
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:52: EXISTS
                 {
                 mEXISTS(); if (failed) return ;
 
                 }
                 break;
             case 10 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:59: TEST
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:59: TEST
                 {
                 mTEST(); if (failed) return ;
 
                 }
                 break;
             case 11 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:64: NULL
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:64: NULL
                 {
                 mNULL(); if (failed) return ;
 
                 }
                 break;
             case 12 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:69: DECLARE
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:69: DECLARE
                 {
                 mDECLARE(); if (failed) return ;
 
                 }
                 break;
             case 13 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:77: SALIENCE
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:77: SALIENCE
                 {
                 mSALIENCE(); if (failed) return ;
 
                 }
                 break;
             case 14 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:86: INT
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:86: INT
                 {
                 mINT(); if (failed) return ;
 
                 }
                 break;
             case 15 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:90: FLOAT
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:90: FLOAT
                 {
                 mFLOAT(); if (failed) return ;
 
                 }
                 break;
             case 16 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:96: STRING
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:96: STRING
                 {
                 mSTRING(); if (failed) return ;
 
                 }
                 break;
             case 17 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:103: BOOL
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:103: BOOL
                 {
                 mBOOL(); if (failed) return ;
 
                 }
                 break;
             case 18 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:108: VAR
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:108: VAR
                 {
                 mVAR(); if (failed) return ;
 
                 }
                 break;
             case 19 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:112: SH_STYLE_SINGLE_LINE_COMMENT
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:112: SH_STYLE_SINGLE_LINE_COMMENT
                 {
                 mSH_STYLE_SINGLE_LINE_COMMENT(); if (failed) return ;
 
                 }
                 break;
             case 20 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:141: C_STYLE_SINGLE_LINE_COMMENT
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:141: C_STYLE_SINGLE_LINE_COMMENT
                 {
                 mC_STYLE_SINGLE_LINE_COMMENT(); if (failed) return ;
 
                 }
                 break;
             case 21 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:169: LEFT_PAREN
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:169: LEFT_PAREN
                 {
                 mLEFT_PAREN(); if (failed) return ;
 
                 }
                 break;
             case 22 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:180: RIGHT_PAREN
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:180: RIGHT_PAREN
                 {
                 mRIGHT_PAREN(); if (failed) return ;
 
                 }
                 break;
             case 23 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:192: LEFT_SQUARE
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:192: LEFT_SQUARE
                 {
                 mLEFT_SQUARE(); if (failed) return ;
 
                 }
                 break;
             case 24 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:204: RIGHT_SQUARE
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:204: RIGHT_SQUARE
                 {
                 mRIGHT_SQUARE(); if (failed) return ;
 
                 }
                 break;
             case 25 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:217: LEFT_CURLY
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:217: LEFT_CURLY
                 {
                 mLEFT_CURLY(); if (failed) return ;
 
                 }
                 break;
             case 26 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:228: RIGHT_CURLY
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:228: RIGHT_CURLY
                 {
                 mRIGHT_CURLY(); if (failed) return ;
 
                 }
                 break;
             case 27 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:240: TILDE
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:240: TILDE
                 {
                 mTILDE(); if (failed) return ;
 
                 }
                 break;
             case 28 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:246: AMPERSAND
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:246: AMPERSAND
                 {
                 mAMPERSAND(); if (failed) return ;
 
                 }
                 break;
             case 29 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:256: PIPE
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:256: PIPE
                 {
                 mPIPE(); if (failed) return ;
 
                 }
                 break;
             case 30 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:261: ASSIGN_OP
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:261: ASSIGN_OP
                 {
                 mASSIGN_OP(); if (failed) return ;
 
                 }
                 break;
             case 31 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:271: COLON
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:271: COLON
                 {
                 mCOLON(); if (failed) return ;
 
                 }
                 break;
             case 32 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:277: EQUALS
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:277: EQUALS
                 {
                 mEQUALS(); if (failed) return ;
 
                 }
                 break;
             case 33 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:284: MULTI_LINE_COMMENT
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:284: MULTI_LINE_COMMENT
                 {
                 mMULTI_LINE_COMMENT(); if (failed) return ;
 
                 }
                 break;
             case 34 :
-                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:1:303: NAME
+                // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:1:303: NAME
                 {
                 mNAME(); if (failed) return ;
 
@@ -1862,8 +1862,8 @@ public class CLPMVELLexer extends Lexer {
 
     // $ANTLR start synpred1
     public final void synpred1_fragment() throws RecognitionException {   
-        // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:725:14: ( '\\r\\n' )
-        // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\clp\\CLPMVEL.g:725:16: '\\r\\n'
+        // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:724:14: ( '\\r\\n' )
+        // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:724:16: '\\r\\n'
         {
         match("\r\n"); if (failed) return ;
 
