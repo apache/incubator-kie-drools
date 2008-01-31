@@ -58,7 +58,8 @@ public class FromNode extends TupleSource
 
         memory.getTupleMemory().add( leftTuple );
         final LinkedList list = new LinkedList();
-        this.betaConstraints.updateFromTuple( workingMemory,
+        this.betaConstraints.updateFromTuple( memory.getContext(),
+                                              workingMemory,
                                               leftTuple );
 
         for ( final java.util.Iterator it = this.dataProvider.getResults( leftTuple,
@@ -81,7 +82,8 @@ public class FromNode extends TupleSource
                 }
             }
 
-            if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( handle ) ) {
+            if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( memory.getContext(),
+                                                                        handle ) ) {
                 list.add( new LinkedListEntry( handle ) );
 
                 this.sink.propagateAssertTuple( leftTuple,
@@ -93,7 +95,7 @@ public class FromNode extends TupleSource
             }
         }
         
-        this.betaConstraints.resetTuple();
+        this.betaConstraints.resetTuple( memory.getContext() );
         
         if ( !list.isEmpty() ) {
             memory.getCreatedHandles().put( leftTuple,
@@ -184,7 +186,8 @@ public class FromNode extends TupleSource
 
     public Object createMemory(final RuleBaseConfiguration config) {
         return new BetaMemory( new TupleHashTable(),
-                               null );
+                               null,
+                               this.betaConstraints.createContext() );
     }
     
     public boolean isTupleMemoryEnabled() {

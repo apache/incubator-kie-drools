@@ -47,38 +47,37 @@ public class DefaultBetaConstraints
     /**
      * 
      */
-    private static final long     serialVersionUID = 400L;
+    private static final long serialVersionUID = 400L;
 
-    private final LinkedList      constraints;
+    private final LinkedList  constraints;
 
-    private ContextEntry          contexts;
-
-    private int                   indexed;
+    private int               indexed;
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                   final RuleBaseConfiguration conf) {
-        this( constraints, conf, false );
-        
+        this( constraints,
+              conf,
+              false );
+
     }
-    
+
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                   final RuleBaseConfiguration conf,
-                                  final boolean disableIndexing ) {
+                                  final boolean disableIndexing) {
         this.indexed = -1;
         this.constraints = new LinkedList();
-        ContextEntry current = null;
         final int depth = conf.getCompositeKeyDepth();
 
         // First create a LinkedList of constraints, with the indexed constraints first.
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             // Determine  if this constraint is indexable
-            if ( (!disableIndexing) && conf.isIndexLeftBetaMemory() && conf.isIndexRightBetaMemory() && isIndexable( constraints[i] ) && ( this.indexed < depth-1 ) ) {
+            if ( (!disableIndexing) && conf.isIndexLeftBetaMemory() && conf.isIndexRightBetaMemory() && isIndexable( constraints[i] ) && (this.indexed < depth - 1) ) {
                 if ( depth >= 1 && this.indexed == -1 ) {
                     // first index, so just add to the front
                     this.constraints.insertAfter( null,
                                                   new LinkedListEntry( constraints[i] ) );
                     this.indexed++;
-                } else { 
+                } else {
                     // insert this index after  the previous index
                     this.constraints.insertAfter( findNode( this.indexed++ ),
                                                   new LinkedListEntry( constraints[i] ) );
@@ -89,32 +88,23 @@ public class DefaultBetaConstraints
             }
         }
 
+    }
+
+    public ContextEntry[] createContext() {
         // Now create the ContextEntries  in the same order the constraints
+        ContextEntry[] contexts = new ContextEntry[this.constraints.size()];
+        int i = 0;
         for ( LinkedListEntry entry = (LinkedListEntry) this.constraints.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
             final BetaNodeFieldConstraint constraint = (BetaNodeFieldConstraint) entry.getObject();
-            final ContextEntry context = constraint.getContextEntry();
-            if ( current == null ) {
-                current = context;
-                this.contexts = context;
-            } else {
-                current.setNext( context );
-            }
-            current = context;
+            contexts[i++] = constraint.createContextEntry();
         }
+        return contexts;
     }
 
     private LinkedListEntry findNode(final int pos) {
         LinkedListEntry current = (LinkedListEntry) this.constraints.getFirst();
         for ( int i = 0; i < pos; i++ ) {
             current = (LinkedListEntry) current.getNext();
-        }
-        return current;
-    }
-
-    private ContextEntry findContext(final int pos) {
-        ContextEntry current = this.contexts;
-        for ( int i = 0; i < pos; i++ ) {
-            current = current.getNext();
         }
         return current;
     }
@@ -131,52 +121,55 @@ public class DefaultBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final InternalWorkingMemory workingMemory,
+    public void updateFromTuple(final ContextEntry[] context,
+                                final InternalWorkingMemory workingMemory,
                                 final ReteTuple tuple) {
-        for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
-            context.updateFromTuple( workingMemory,
-                                     tuple );
+        for ( int i = 0; i < context.length; i++ ) {
+            context[i].updateFromTuple( workingMemory,
+                                        tuple );
         }
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+    public void updateFromFactHandle(final ContextEntry[] context,
+                                     final InternalWorkingMemory workingMemory,
                                      final InternalFactHandle handle) {
-        for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
-            context.updateFromFactHandle( workingMemory,
-                                          handle );
+        for ( int i = 0; i < context.length; i++ ) {
+            context[i].updateFromFactHandle( workingMemory,
+                                             handle );
         }
     }
-    
-    public void resetTuple() {
-        for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
-            context.resetTuple();
+
+    public void resetTuple(final ContextEntry[] context) {
+        for ( int i = 0; i < context.length; i++ ) {
+            context[i].resetTuple();
         }
     }
-    
-    public void resetFactHandle() {
-        for ( ContextEntry context = this.contexts; context != null; context = context.getNext() ) {
-            context.resetFactHandle();
+
+    public void resetFactHandle(final ContextEntry[] context) {
+        for ( int i = 0; i < context.length; i++ ) {
+            context[i].resetFactHandle();
         }
-    }     
+    }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(final InternalFactHandle handle) {
+    public boolean isAllowedCachedLeft(final ContextEntry[] context,
+                                       final InternalFactHandle handle) {
         // skip the indexed constraints
-        LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed );
+        LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed+1 );
 
-        ContextEntry context = findContext( this.indexed );
+        int i = 1;
         while ( entry != null ) {
-            if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedLeft( context,
+            if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedLeft( context[this.indexed + i],
                                                                                      handle ) ) {
                 return false;
             }
             entry = (LinkedListEntry) entry.getNext();
-            context = context.getNext();
+            i++;
         }
         return true;
     }
@@ -184,18 +177,19 @@ public class DefaultBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
-    public boolean isAllowedCachedRight(final ReteTuple tuple) {
+    public boolean isAllowedCachedRight(final ContextEntry[] context,
+                                        final ReteTuple tuple) {
         // skip the indexed constraints
-        LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed );
+        LinkedListEntry entry = (LinkedListEntry) findNode( this.indexed+1 );
 
-        ContextEntry context = findContext( this.indexed );
+        int i = 1;
         while ( entry != null ) {
             if ( !((BetaNodeFieldConstraint) entry.getObject()).isAllowedCachedRight( tuple,
-                                                                                      context ) ) {
+                                                                                      context[this.indexed + i] ) ) {
                 return false;
             }
             entry = (LinkedListEntry) entry.getNext();
-            context = context.getNext();
+            i++;
         }
         return true;
     }
@@ -204,10 +198,10 @@ public class DefaultBetaConstraints
         // false if -1
         return this.indexed >= 0;
     }
-    
+
     public int getIndexCount() {
-        return this.indexed+1;
-    }   
+        return this.indexed + 1;
+    }
 
     public boolean isEmpty() {
         return false;
@@ -244,10 +238,12 @@ public class DefaultBetaConstraints
                 factHandleMemory = config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable();
             }
             memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
-                                     factHandleMemory );
+                                     factHandleMemory,
+                                     this.createContext() );
         } else {
             memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
-                                     config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable() );
+                                     config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable(),
+                                     this.createContext() );
         }
 
         return memory;

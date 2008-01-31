@@ -210,7 +210,7 @@ public class PredicateConstraint
         return this.expression.equals( other.expression );
     }
 
-    public ContextEntry getContextEntry() {
+    public ContextEntry createContextEntry() {
         return new PredicateContextEntry();
     }
 

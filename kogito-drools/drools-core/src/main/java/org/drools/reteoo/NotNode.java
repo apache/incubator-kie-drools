@@ -94,18 +94,20 @@ public class NotNode extends BetaNode {
         }
 
         final Iterator it = memory.getFactHandleMemory().iterator( leftTuple );
-        this.constraints.updateFromTuple( workingMemory,
+        this.constraints.updateFromTuple( memory.getContext(),
+                                          workingMemory,
                                           leftTuple );
         
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
             final InternalFactHandle handle = entry.getFactHandle();
-            if ( this.constraints.isAllowedCachedLeft( handle ) ) {
+            if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+                                                       handle ) ) {
                 leftTuple.setMatch( handle );
                 break;
             }
         }
         
-        this.constraints.resetTuple();
+        this.constraints.resetTuple( memory.getContext() );
 
         if ( leftTuple.getMatch() == null ) {
             this.sink.propagateAssertTuple( leftTuple,
@@ -138,10 +140,12 @@ public class NotNode extends BetaNode {
         }        
 
         final Iterator it = memory.getTupleMemory().iterator( handle );
-        this.constraints.updateFromFactHandle( workingMemory,
+        this.constraints.updateFromFactHandle( memory.getContext(),
+                                               workingMemory,
                                                handle );
         for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
-            if ( this.constraints.isAllowedCachedRight( tuple ) &&  tuple.getMatch() == null) {
+            if ( this.constraints.isAllowedCachedRight( memory.getContext(),
+                                                        tuple ) &&  tuple.getMatch() == null) {
                     tuple.setMatch( handle );
                     this.sink.propagateRetractTuple( tuple,
                                                      context,
@@ -149,7 +153,7 @@ public class NotNode extends BetaNode {
             }
         }
         
-        this.constraints.resetFactHandle();
+        this.constraints.resetFactHandle( memory.getContext() );
     }
 
     /**
@@ -174,10 +178,12 @@ public class NotNode extends BetaNode {
         }
 
         final Iterator it = memory.getTupleMemory().iterator( handle );
-        this.constraints.updateFromFactHandle( workingMemory,
+        this.constraints.updateFromFactHandle( memory.getContext(),
+                                               workingMemory,
                                                handle );
         for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
-            if ( this.constraints.isAllowedCachedRight( tuple ) ) {
+            if ( this.constraints.isAllowedCachedRight( memory.getContext(),
+                                                        tuple ) ) {
                 
                 if ( tuple.getMatch() == handle ) {
                     // reset the match                    
@@ -185,17 +191,19 @@ public class NotNode extends BetaNode {
                     
                     // find next match, remember it and break.
                     final Iterator tupleIt = memory.getFactHandleMemory().iterator( tuple );
-                    this.constraints.updateFromTuple( workingMemory, tuple );
+                    this.constraints.updateFromTuple( memory.getContext(),
+                                                      workingMemory, tuple );
                     
                     for ( FactEntry entry = (FactEntry) tupleIt.next(); entry != null; entry = (FactEntry) tupleIt.next() ) {
                         final InternalFactHandle rightHandle = entry.getFactHandle();
-                        if ( this.constraints.isAllowedCachedLeft( rightHandle ) ) {
+                        if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+                                                                   rightHandle ) ) {
                             tuple.setMatch( rightHandle );
                             break;
                         }
                     }
                     
-                    this.constraints.resetTuple();
+                    this.constraints.resetTuple( memory.getContext() );
                     // if there is now no new tuple match then propagate assert.
                     if ( tuple.getMatch() == null ) {
                         this.sink.propagateAssertTuple( tuple,
@@ -206,7 +214,7 @@ public class NotNode extends BetaNode {
             }
         }
         
-        this.constraints.resetFactHandle();
+        this.constraints.resetFactHandle( memory.getContext() );
     }
 
     /**

@@ -35,16 +35,16 @@ public class LiteralRestriction
 
     private final Evaluator            evaluator;
 
-    private static final Declaration[] requiredDeclarations = new Declaration[0];
+    private final FieldExtractor       extractor;
 
-    private final LiteralContextEntry  contextEntry;
+    private static final Declaration[] requiredDeclarations = new Declaration[0];
 
     public LiteralRestriction(final FieldValue field,
                               final Evaluator evaluator,
                               final FieldExtractor fieldExtractor) {
         this.field = field;
         this.evaluator = evaluator;
-        this.contextEntry = new LiteralContextEntry( fieldExtractor );
+        this.extractor = fieldExtractor;
     }
 
     public Evaluator getEvaluator() {
@@ -117,14 +117,14 @@ public class LiteralRestriction
         return this.field.equals( other.field ) && this.evaluator.equals( other.evaluator );
     }
 
-    public ContextEntry getContextEntry() {
-        return this.contextEntry;
+    public ContextEntry createContextEntry() {
+        return new LiteralContextEntry( this.extractor );
     }
 
     public Object clone() {
         return new LiteralRestriction( this.field,
                                        this.evaluator,
-                                       this.contextEntry.extractor );
+                                       this.extractor );
     }
 
     private static class LiteralContextEntry
@@ -165,13 +165,13 @@ public class LiteralRestriction
                                     final ReteTuple tuple) {
             // nothing to do
         }
-        
-        public void resetTuple() {            
+
+        public void resetTuple() {
         }
-        
+
         public void resetFactHandle() {
             this.object = null;
-        }        
+        }
 
     }
 

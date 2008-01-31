@@ -16,11 +16,9 @@ public abstract class AbstractCompositeRestriction
     private static final long             serialVersionUID = 400L;
 
     protected final Restriction[]         restrictions;
-    protected final CompositeContextEntry contextEntry;
 
     public AbstractCompositeRestriction(final Restriction[] restriction) {
         this.restrictions = restriction;
-        this.contextEntry = new CompositeContextEntry( this.restrictions );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -81,8 +79,8 @@ public abstract class AbstractCompositeRestriction
         return true;
     }
 
-    public ContextEntry getContextEntry() {
-        return this.contextEntry;
+    public ContextEntry createContextEntry() {
+        return new CompositeContextEntry( this.restrictions );
     }
 
     public abstract Object clone();
@@ -100,7 +98,7 @@ public abstract class AbstractCompositeRestriction
         public CompositeContextEntry(final Restriction[] restrictions) {
             contextEntries = new ContextEntry[restrictions.length];
             for ( int i = 0; i < restrictions.length; i++ ) {
-                contextEntries[i] = restrictions[i].getContextEntry();
+                contextEntries[i] = restrictions[i].createContextEntry();
             }
         }
 

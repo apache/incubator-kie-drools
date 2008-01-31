@@ -22,6 +22,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.FactHandleMemory;
 import org.drools.reteoo.ReteTuple;
+import org.drools.rule.ContextEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.FactList;
 import org.drools.util.LinkedList;
@@ -33,6 +34,7 @@ public class EmptyBetaConstraints
     BetaConstraints {
 
     private static final BetaConstraints INSTANCE = new EmptyBetaConstraints();
+    private static final ContextEntry[]  EMPTY    = new ContextEntry[0];
 
     public static BetaConstraints getInstance() {
         return EmptyBetaConstraints.INSTANCE;
@@ -49,41 +51,45 @@ public class EmptyBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final InternalWorkingMemory workingMemory,
+    public void updateFromTuple(final ContextEntry[] context,
+                                final InternalWorkingMemory workingMemory,
                                 final ReteTuple tuple) {
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+    public void updateFromFactHandle(final ContextEntry[] context,
+                                     final InternalWorkingMemory workingMemory,
                                      final InternalFactHandle handle) {
     }
 
-    public void resetTuple() {
+    public void resetTuple(final ContextEntry[] context) {
     }
-    
-    public void resetFactHandle() {
-    } 
-    
+
+    public void resetFactHandle(final ContextEntry[] context) {
+    }
+
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(final InternalFactHandle handle) {
+    public boolean isAllowedCachedLeft(final ContextEntry[] context,
+                                       final InternalFactHandle handle) {
         return true;
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
-    public boolean isAllowedCachedRight(final ReteTuple tuple) {
+    public boolean isAllowedCachedRight(final ContextEntry[] context,
+                                        final ReteTuple tuple) {
         return true;
     }
 
     public boolean isIndexed() {
         return false;
     }
-    
+
     public int getIndexCount() {
         return 0;
     }
@@ -94,7 +100,8 @@ public class EmptyBetaConstraints
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config) {
         final BetaMemory memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
-                                                  config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable() );
+                                                  config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable(),
+                                                  this.createContext() );
 
         return memory;
     }
@@ -126,6 +133,10 @@ public class EmptyBetaConstraints
         }
 
         return (object != null && (object instanceof EmptyBetaConstraints));
+    }
+
+    public ContextEntry[] createContext() {
+        return EMPTY;
     }
 
 }

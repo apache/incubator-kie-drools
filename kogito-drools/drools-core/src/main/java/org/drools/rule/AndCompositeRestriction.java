@@ -29,8 +29,9 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final InternalFactHandle handle) {
+        CompositeContextEntry contextEntry = (CompositeContextEntry) context;
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
-            if ( !this.restrictions[i].isAllowedCachedLeft( this.contextEntry.contextEntries[i],
+            if ( !this.restrictions[i].isAllowedCachedLeft( contextEntry.contextEntries[i],
                                                             handle ) ) {
                 return false;
             }
@@ -40,9 +41,10 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
 
     public boolean isAllowedCachedRight(final ReteTuple tuple,
                                         final ContextEntry context) {
+        CompositeContextEntry contextEntry = (CompositeContextEntry) context;
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
             if ( !this.restrictions[i].isAllowedCachedRight( tuple,
-                                                             this.contextEntry.contextEntries[i] ) ) {
+                                                             contextEntry.contextEntries[i] ) ) {
                 return false;
             }
         }

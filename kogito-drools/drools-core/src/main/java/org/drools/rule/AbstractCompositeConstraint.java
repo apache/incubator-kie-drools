@@ -150,7 +150,7 @@ public abstract class AbstractCompositeConstraint
     /**
      * {@inheritDoc}
      */
-    public ContextEntry getContextEntry() {
+    public ContextEntry createContextEntry() {
         return new MultiFieldConstraintContextEntry( this.betaConstraints );
     }
 
@@ -201,7 +201,7 @@ public abstract class AbstractCompositeConstraint
         public MultiFieldConstraintContextEntry(BetaNodeFieldConstraint[] constraints) {
             contexts = new ContextEntry[constraints.length];
             for ( int i = 0; i < contexts.length; i++ ) {
-                contexts[i] = constraints[i].getContextEntry();
+                contexts[i] = constraints[i].createContextEntry();
             }
         }
 

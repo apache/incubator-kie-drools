@@ -94,8 +94,8 @@ public class ReturnValueConstraint
         return this.fieldExtractor.equals( other.fieldExtractor ) && this.restriction.equals( other.restriction );
     }
 
-    public ContextEntry getContextEntry() {
-        return this.restriction.getContextEntry();
+    public ContextEntry createContextEntry() {
+        return this.restriction.createContextEntry();
     }
 
     public boolean isAllowed(final InternalFactHandle handle,

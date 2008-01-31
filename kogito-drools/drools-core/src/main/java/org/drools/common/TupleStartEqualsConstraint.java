@@ -69,7 +69,7 @@ public class TupleStartEqualsConstraint
                                    Declaration newDecl) {
     }
 
-    public ContextEntry getContextEntry() {
+    public ContextEntry createContextEntry() {
         return new TupleStartEqualsConstraintContextEntry();
     }
 

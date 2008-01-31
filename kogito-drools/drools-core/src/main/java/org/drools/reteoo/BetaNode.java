@@ -25,6 +25,7 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.rule.ContextEntry;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
