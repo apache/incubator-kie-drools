@@ -16,21 +16,22 @@ public class MVELConsequence
     private static final long       serialVersionUID = 400L;
 
     private final Serializable      expr;
-    private final DroolsMVELFactory factory;
+    private final DroolsMVELFactory prototype;
 
     public MVELConsequence(final Serializable expr,
                            final DroolsMVELFactory factory) {
         this.expr = expr;
-        this.factory = factory;
+        this.prototype = factory;
     }
 
     public void evaluate(final KnowledgeHelper knowledgeHelper,
                          final WorkingMemory workingMemory) throws Exception {
-        this.factory.setContext( knowledgeHelper.getTuple(),
-                                 knowledgeHelper,
-                                 null,
-                                 workingMemory,
-                                 null );
+        DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
+        factory.setContext( knowledgeHelper.getTuple(),
+                            knowledgeHelper,
+                            null,
+                            workingMemory,
+                            null );
         CompiledExpression compexpr = (CompiledExpression) this.expr;
 
         //Receive breakpoints from debugger
@@ -42,11 +43,11 @@ public class MVELConsequence
             }
             MVEL.executeDebugger( compexpr,
                                   null,
-                                  this.factory );
+                                  factory );
         } else {
             MVEL.executeExpression( compexpr,
                                     null,
-                                    this.factory );
+                                    factory );
         }
 
     }
