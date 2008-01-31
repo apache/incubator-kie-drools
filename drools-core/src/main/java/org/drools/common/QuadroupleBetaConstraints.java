@@ -53,11 +53,6 @@ public class QuadroupleBetaConstraints
     private final BetaNodeFieldConstraint constraint2;
     private final BetaNodeFieldConstraint constraint3;
 
-    private final ContextEntry            context0;
-    private final ContextEntry            context1;
-    private final ContextEntry            context2;
-    private final ContextEntry            context3;
-
     private boolean                       indexed0;
     private boolean                       indexed1;
     private boolean                       indexed2;
@@ -73,7 +68,7 @@ public class QuadroupleBetaConstraints
     public QuadroupleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                      final RuleBaseConfiguration conf,
                                      final boolean disableIndexing) {
-        if ( disableIndexing || ( !conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory() ) ) {
+        if ( disableIndexing || (!conf.isIndexLeftBetaMemory() && !conf.isIndexRightBetaMemory()) ) {
             this.indexed0 = false;
             this.indexed1 = false;
             this.indexed2 = false;
@@ -141,16 +136,9 @@ public class QuadroupleBetaConstraints
         }
 
         this.constraint0 = constraints[0];
-        this.context0 = this.constraint0.getContextEntry();
-
         this.constraint1 = constraints[1];
-        this.context1 = this.constraint1.getContextEntry();
-
         this.constraint2 = constraints[2];
-        this.context2 = this.constraint2.getContextEntry();
-
         this.constraint3 = constraints[3];
-        this.context3 = this.constraint3.getContextEntry();
     }
 
     private void swap(final BetaNodeFieldConstraint[] constraints,
@@ -173,80 +161,84 @@ public class QuadroupleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final InternalWorkingMemory workingMemory,
+    public void updateFromTuple(final ContextEntry[] context,
+                                final InternalWorkingMemory workingMemory,
                                 final ReteTuple tuple) {
-        this.context0.updateFromTuple( workingMemory,
-                                       tuple );
-        this.context1.updateFromTuple( workingMemory,
-                                       tuple );
-        this.context2.updateFromTuple( workingMemory,
-                                       tuple );
-        this.context3.updateFromTuple( workingMemory,
-                                       tuple );
+        context[0].updateFromTuple( workingMemory,
+                                    tuple );
+        context[1].updateFromTuple( workingMemory,
+                                    tuple );
+        context[2].updateFromTuple( workingMemory,
+                                    tuple );
+        context[3].updateFromTuple( workingMemory,
+                                    tuple );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+    public void updateFromFactHandle(final ContextEntry[] context,
+                                     final InternalWorkingMemory workingMemory,
                                      final InternalFactHandle handle) {
-        this.context0.updateFromFactHandle( workingMemory,
-                                            handle );
-        this.context1.updateFromFactHandle( workingMemory,
-                                            handle );
-        this.context2.updateFromFactHandle( workingMemory,
-                                            handle );
-        this.context3.updateFromFactHandle( workingMemory,
-                                            handle );
+        context[0].updateFromFactHandle( workingMemory,
+                                         handle );
+        context[1].updateFromFactHandle( workingMemory,
+                                         handle );
+        context[2].updateFromFactHandle( workingMemory,
+                                         handle );
+        context[3].updateFromFactHandle( workingMemory,
+                                         handle );
     }
-    
-    public void resetTuple() {
-        this.context0.resetTuple();
-        this.context1.resetTuple();
-        this.context2.resetTuple();
-        this.context3.resetTuple();
+
+    public void resetTuple(final ContextEntry[] context) {
+        context[0].resetTuple();
+        context[1].resetTuple();
+        context[2].resetTuple();
+        context[3].resetTuple();
     }
-    
-    public void resetFactHandle() {
-        this.context0.resetFactHandle();
-        this.context1.resetFactHandle();
-        this.context2.resetFactHandle();
-        this.context3.resetFactHandle();
-    }      
+
+    public void resetFactHandle(final ContextEntry[] context) {
+        context[0].resetFactHandle();
+        context[1].resetFactHandle();
+        context[2].resetFactHandle();
+        context[3].resetFactHandle();
+    }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(final InternalFactHandle handle) {
-        //        return ( this.indexed0 || this.constraint0.isAllowedCachedLeft( context0,
-        //                                                                       object ) ) && this.constraint1.isAllowedCachedLeft( context1,
-        //                                                                                                       object ) && this.constraint2.isAllowedCachedLeft( context2,
+    public boolean isAllowedCachedLeft(final ContextEntry[] context,
+                                       final InternalFactHandle handle) {
+        //        return ( this.indexed0 || this.constraint0.isAllowedCachedLeft( context[0],
+        //                                                                       object ) ) && this.constraint1.isAllowedCachedLeft( context[1],
+        //                                                                                                       object ) && this.constraint2.isAllowedCachedLeft( context[2],
         //                                                                                                                                                         object );
 
-        return (this.indexed0 || this.constraint0.isAllowedCachedLeft( this.context0,
-                                                                       handle )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( this.context1,
-                                                                                                                                            handle )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( this.context2,
+        return (this.indexed0 || this.constraint0.isAllowedCachedLeft( context[0],
+                                                                       handle )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( context[1],
+                                                                                                                                            handle )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( context[2],
                                                                                                                                                                                                                  handle ))
-               && (this.indexed3 || this.constraint3.isAllowedCachedLeft( this.context3,
+               && (this.indexed3 || this.constraint3.isAllowedCachedLeft( context[3],
                                                                           handle ));
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
-    public boolean isAllowedCachedRight(final ReteTuple tuple) {
+    public boolean isAllowedCachedRight(final ContextEntry[] context,
+                                        final ReteTuple tuple) {
         return this.constraint0.isAllowedCachedRight( tuple,
-                                                      this.context0 ) && this.constraint1.isAllowedCachedRight( tuple,
-                                                                                                                this.context1 ) && this.constraint2.isAllowedCachedRight( tuple,
-                                                                                                                                                                          this.context2 )
+                                                      context[0] ) && this.constraint1.isAllowedCachedRight( tuple,
+                                                                                                             context[1] ) && this.constraint2.isAllowedCachedRight( tuple,
+                                                                                                                                                                    context[2] )
                && (this.indexed3 || this.constraint3.isAllowedCachedRight( tuple,
-                                                                           this.context3 ));
+                                                                           context[3] ));
     }
 
     public boolean isIndexed() {
         return this.indexed0;
     }
-    
+
     public int getIndexCount() {
         int count = 0;
         if ( this.indexed0 ) {
@@ -260,9 +252,9 @@ public class QuadroupleBetaConstraints
         }
         if ( this.indexed3 ) {
             count++;
-        }        
-        return count;    
-    }     
+        }
+        return count;
+    }
 
     public boolean isEmpty() {
         return false;
@@ -322,10 +314,12 @@ public class QuadroupleBetaConstraints
                 factHandleMemory = conf.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable();
             }
             memory = new BetaMemory( conf.isSequential() ? null : tupleMemory,
-                                     factHandleMemory );
+                                     factHandleMemory,
+                                     this.createContext() );
         } else {
             memory = new BetaMemory( conf.isSequential() ? null : new TupleHashTable(),
-                                     conf.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable() );
+                                     conf.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable(),
+                                     this.createContext() );
         }
 
         return memory;
@@ -384,6 +378,10 @@ public class QuadroupleBetaConstraints
         }
 
         return true;
+    }
+
+    public ContextEntry[] createContext() {
+        return new ContextEntry[]{this.constraint0.createContextEntry(), this.constraint1.createContextEntry(), this.constraint2.createContextEntry(), this.constraint3.createContextEntry()};
     }
 
 }

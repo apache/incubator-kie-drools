@@ -73,8 +73,8 @@ public class MultiRestrictionFieldConstraint
                                             workingMemory );
     }
 
-    public ContextEntry getContextEntry() {
-        return this.restrictions.getContextEntry();
+    public ContextEntry createContextEntry() {
+        return this.restrictions.createContextEntry();
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,

@@ -31,15 +31,15 @@ public class VariableRestriction
     implements
     Restriction {
 
-    private static final long          serialVersionUID = 400L;
+    private static final long    serialVersionUID = 400L;
 
-    private Declaration                declaration;
+    private Declaration          declaration;
 
-    private final Declaration[]        requiredDeclarations;
+    private final Declaration[]  requiredDeclarations;
 
-    private final Evaluator            evaluator;
+    private final Evaluator      evaluator;
 
-    private final VariableContextEntry contextEntry;
+    private final FieldExtractor extractor;
 
     public VariableRestriction(final FieldExtractor fieldExtractor,
                                final Declaration declaration,
@@ -47,8 +47,7 @@ public class VariableRestriction
         this.declaration = declaration;
         this.requiredDeclarations = new Declaration[]{declaration};
         this.evaluator = evaluator;
-        this.contextEntry = this.createContextEntry( this.evaluator,
-                                                     fieldExtractor );
+        this.extractor = fieldExtractor;
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -60,7 +59,6 @@ public class VariableRestriction
         if ( this.declaration.equals( oldDecl ) ) {
             this.declaration = newDecl;
             this.requiredDeclarations[0] = newDecl;
-            this.contextEntry.declaration = newDecl;
         }
     }
 
@@ -72,9 +70,9 @@ public class VariableRestriction
                              final InternalFactHandle handle,
                              final InternalWorkingMemory workingMemory) {
         return this.evaluator.evaluate( workingMemory,
-                                        this.contextEntry.extractor,
+                                        this.extractor,
                                         this.evaluator.prepareObject( handle ),
-                                        this.contextEntry.declaration.getExtractor(),
+                                        this.declaration.getExtractor(),
                                         this.evaluator.prepareObject( handle ) );
     }
 
@@ -126,7 +124,7 @@ public class VariableRestriction
     private final VariableContextEntry createContextEntry(final Evaluator eval,
                                                           final FieldExtractor fieldExtractor) {
         ValueType coerced = eval.getCoercedValueType();
-        
+
         if ( coerced.isBoolean() ) {
             return new BooleanVariableContextEntry( fieldExtractor,
                                                     this.declaration,
@@ -150,12 +148,13 @@ public class VariableRestriction
         }
     }
 
-    public ContextEntry getContextEntry() {
-        return this.contextEntry;
+    public ContextEntry createContextEntry() {
+        return this.createContextEntry( this.evaluator,
+                                        this.extractor );
     }
 
     public Object clone() {
-        return new VariableRestriction( this.contextEntry.extractor,
+        return new VariableRestriction( this.extractor,
                                         (Declaration) this.declaration.clone(),
                                         this.evaluator );
     }
@@ -212,14 +211,14 @@ public class VariableRestriction
         public boolean isRightNull() {
             return this.rightNull;
         }
-        
+
         public void resetTuple() {
             this.reteTuple = null;
         }
-        
+
         public void resetFactHandle() {
             this.object = null;
-        }        
+        }
     }
 
     public static class ObjectVariableContextEntry extends VariableContextEntry {
@@ -233,7 +232,7 @@ public class VariableRestriction
                                           final Evaluator evaluator) {
             super( extractor,
                    declaration,
-                   evaluator);
+                   evaluator );
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -255,16 +254,16 @@ public class VariableRestriction
             this.right = this.extractor.getValue( workingMemory,
                                                   evaluator.prepareObject( handle ) );
         }
-        
+
         public void resetTuple() {
             this.left = null;
             this.reteTuple = null;
         }
-        
+
         public void resetFactHandle() {
             this.right = null;
             this.object = null;
-        }        
+        }
     }
 
     public static class LongVariableContextEntry extends VariableContextEntry {

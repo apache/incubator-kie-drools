@@ -25,6 +25,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
+import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ArrayUtils;
@@ -114,12 +115,14 @@ public class AccumulateNode extends BetaNode {
                               workingMemory );
 
         final Iterator it = memory.betaMemory.getFactHandleMemory().iterator( leftTuple );
-        this.constraints.updateFromTuple( workingMemory,
+        this.constraints.updateFromTuple( memory.betaMemory.getContext(),
+                                          workingMemory,
                                           leftTuple );
 
         for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
             InternalFactHandle handle = entry.getFactHandle();
-            if ( this.constraints.isAllowedCachedLeft( handle ) ) {
+            if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
+                                                       handle ) ) {
                 if ( this.unwrapRightObject ) {
                     // if there is a subnetwork, handle must be unwrapped
                     ReteTuple tuple = (ReteTuple) handle.getObject(); 
@@ -139,7 +142,7 @@ public class AccumulateNode extends BetaNode {
             }
         }
         
-        this.constraints.resetTuple();
+        this.constraints.resetTuple( memory.betaMemory.getContext() );
 
         final Object result = this.accumulate.getResult( memory.workingMemoryContext,
                                                          accContext,
@@ -162,9 +165,11 @@ public class AccumulateNode extends BetaNode {
             }
         }
         if ( isAllowed ) {
-            this.resultBinder.updateFromTuple( workingMemory,
+            this.resultBinder.updateFromTuple( memory.resultsContext,
+                                               workingMemory,
                                                leftTuple );
-            if ( this.resultBinder.isAllowedCachedLeft( handle ) ) {
+            if ( this.resultBinder.isAllowedCachedLeft( memory.resultsContext,
+                                                        handle ) ) {
                 accresult.handle = handle;
 
                 this.sink.propagateAssertTuple( leftTuple,
@@ -228,14 +233,16 @@ public class AccumulateNode extends BetaNode {
             return;
         }
 
-        this.constraints.updateFromFactHandle( workingMemory,
+        this.constraints.updateFromFactHandle( memory.betaMemory.getContext(),
+                                               workingMemory,
                                                handle );
 
         // need to clone the tuples to avoid concurrent modification exceptions
         Entry[] tuples = memory.betaMemory.getTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
             ReteTuple tuple = (ReteTuple) tuples[i];
-            if ( this.constraints.isAllowedCachedRight( tuple ) ) {
+            if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
+                                                        tuple ) ) {
                 if ( this.accumulate.supportsReverse() || context.getType() == PropagationContext.ASSERTION ) {
                     modifyTuple( true,
                                  tuple,
@@ -254,7 +261,7 @@ public class AccumulateNode extends BetaNode {
             }
         }
         
-        this.constraints.resetFactHandle();
+        this.constraints.resetFactHandle( memory.betaMemory.getContext() );
     }
 
     /**
@@ -271,13 +278,15 @@ public class AccumulateNode extends BetaNode {
             return;
         }
 
-        this.constraints.updateFromFactHandle( workingMemory,
+        this.constraints.updateFromFactHandle( memory.betaMemory.getContext(),
+                                               workingMemory,
                                                handle );
         // need to clone the tuples to avoid concurrent modification exceptions
         Entry[] tuples = memory.betaMemory.getTupleMemory().toArray();
         for ( int i = 0; i < tuples.length; i++ ) {
             ReteTuple tuple = (ReteTuple) tuples[i];
-            if ( this.constraints.isAllowedCachedRight( tuple ) ) {
+            if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
+                                                        tuple ) ) {
                 if ( this.accumulate.supportsReverse() ) {
                     this.modifyTuple( false,
                                       tuple,
@@ -295,7 +304,7 @@ public class AccumulateNode extends BetaNode {
             }
         }
         
-        this.constraints.resetFactHandle();
+        this.constraints.resetFactHandle( memory.betaMemory.getContext() );
     }
 
     public void modifyTuple(final boolean isAssert,
@@ -390,9 +399,11 @@ public class AccumulateNode extends BetaNode {
             }
         }
         if ( isAllowed ) {
-            this.resultBinder.updateFromTuple( workingMemory,
+            this.resultBinder.updateFromTuple( memory.resultsContext,
+                                               workingMemory,
                                                leftTuple );
-            if ( this.resultBinder.isAllowedCachedLeft( createdHandle ) ) {
+            if ( this.resultBinder.isAllowedCachedLeft( memory.resultsContext,
+                                                        createdHandle ) ) {
                 accresult.handle = createdHandle;
 
                 this.sink.propagateAssertTuple( leftTuple,
@@ -403,7 +414,7 @@ public class AccumulateNode extends BetaNode {
                 workingMemory.getFactHandleFactory().destroyFactHandle( createdHandle );
             }
             
-            this.resultBinder.resetTuple();
+            this.resultBinder.resetTuple( memory.resultsContext );
         } else {
             workingMemory.getFactHandleFactory().destroyFactHandle( createdHandle );
         }
@@ -465,6 +476,7 @@ public class AccumulateNode extends BetaNode {
         AccumulateMemory memory = new AccumulateMemory();
         memory.betaMemory = this.constraints.createBetaMemory( config );
         memory.workingMemoryContext = this.accumulate.createWorkingMemoryContext();
+        memory.resultsContext = this.resultBinder.createContext();
         return memory;
     }
 
@@ -473,6 +485,7 @@ public class AccumulateNode extends BetaNode {
         
         public Object workingMemoryContext;
         public BetaMemory betaMemory;
+        public ContextEntry[] resultsContext;
     }
 
     private static class AccumulateResult {

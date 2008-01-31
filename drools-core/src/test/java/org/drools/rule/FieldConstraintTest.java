@@ -228,7 +228,7 @@ public class FieldConstraintTest extends TestCase {
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
-        final PredicateContextEntry context = (PredicateContextEntry) constraint1.getContextEntry();
+        final PredicateContextEntry context = (PredicateContextEntry) constraint1.createContextEntry();
         context.updateFromTuple( workingMemory,
                                  tuple );
         assertTrue( constraint1.isAllowedCachedLeft( context,
@@ -315,13 +315,13 @@ public class FieldConstraintTest extends TestCase {
         tuple = new InstrumentedReteTuple( tuple,
                                            f1 );
 
-        final ReturnValueContextEntry context1 = (ReturnValueContextEntry) constraint1.getContextEntry();
+        final ReturnValueContextEntry context1 = (ReturnValueContextEntry) constraint1.createContextEntry();
         context1.updateFromTuple( workingMemory,
                                   tuple );
         assertTrue( constraint1.isAllowedCachedLeft( context1,
                                                      f1 ) );
 
-        final ReturnValueContextEntry context2 = (ReturnValueContextEntry) constraint2.getContextEntry();
+        final ReturnValueContextEntry context2 = (ReturnValueContextEntry) constraint2.createContextEntry();
         context2.updateFromTuple( workingMemory,
                                   tuple );
         assertFalse( constraint2.isAllowedCachedLeft( context2,

@@ -90,8 +90,8 @@ public class VariableConstraint
         return "[VariableConstraint fieldExtractor=" + this.fieldExtractor + " declaration=" + getRequiredDeclarations() + "]";
     }
 
-    public ContextEntry getContextEntry() {
-        return this.restriction.getContextEntry();
+    public ContextEntry createContextEntry() {
+        return this.restriction.createContextEntry();
     }
 
     public int hashCode() {

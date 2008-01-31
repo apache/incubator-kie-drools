@@ -57,7 +57,7 @@ public class InstanceEqualsConstraint
         return this.otherPattern;
     }
 
-    public ContextEntry getContextEntry() {
+    public ContextEntry createContextEntry() {
         return new InstanceEqualsConstraintContextEntry( this.otherPattern );
     }
 

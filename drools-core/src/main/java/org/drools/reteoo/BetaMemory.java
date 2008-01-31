@@ -2,6 +2,7 @@ package org.drools.reteoo;
 
 import java.io.Serializable;
 
+import org.drools.rule.ContextEntry;
 import org.drools.util.ObjectHashMap;
 
 public class BetaMemory
@@ -13,11 +14,14 @@ public class BetaMemory
     private TupleMemory       tupleMemory;
     private FactHandleMemory  factHandleMemory;
     private ObjectHashMap     createdHandles;
+    private ContextEntry[]    context;
 
     public BetaMemory(final TupleMemory tupleMemory,
-                      final FactHandleMemory objectMemory) {
+                      final FactHandleMemory objectMemory,
+                      final ContextEntry[] context ) {
         this.tupleMemory = tupleMemory;
         this.factHandleMemory = objectMemory;
+        this.context = context;
     }
 
     public FactHandleMemory getFactHandleMemory() {
@@ -33,5 +37,12 @@ public class BetaMemory
             this.createdHandles = new ObjectHashMap();
         }
         return this.createdHandles;
+    }
+
+    /**
+     * @return the context
+     */
+    public ContextEntry[] getContext() {
+        return context;
     }
 }

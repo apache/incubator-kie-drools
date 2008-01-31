@@ -47,18 +47,16 @@ public class SingleBetaConstraints
 
     private final BetaNodeFieldConstraint constraint;
 
-    private ContextEntry                  context;
-
     private boolean                       indexed;
 
     private RuleBaseConfiguration         conf;
-    
+
     public SingleBetaConstraints(final BetaNodeFieldConstraint[] constraint,
                                  final RuleBaseConfiguration conf) {
         this( constraint[0],
               conf,
               false );
-    }    
+    }
 
     public SingleBetaConstraints(final BetaNodeFieldConstraint constraint,
                                  final RuleBaseConfiguration conf) {
@@ -80,7 +78,6 @@ public class SingleBetaConstraints
         }
 
         this.constraint = constraint;
-        this.context = constraint.getContextEntry();
     }
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
@@ -92,54 +89,54 @@ public class SingleBetaConstraints
         }
     }
 
+    public ContextEntry[] createContext() {
+        return new ContextEntry[] { this.constraint.createContextEntry() };
+    }
+
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final InternalWorkingMemory workingMemory,
+    public void updateFromTuple(final ContextEntry[] context,
+                                final InternalWorkingMemory workingMemory,
                                 final ReteTuple tuple) {
-        this.context.updateFromTuple( workingMemory,
-                                      tuple );
+        context[0].updateFromTuple( workingMemory,
+                                 tuple );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+    public void updateFromFactHandle(final ContextEntry[] context,
+                                     final InternalWorkingMemory workingMemory,
                                      final InternalFactHandle handle) {
-        this.context.updateFromFactHandle( workingMemory,
+        context[0].updateFromFactHandle( workingMemory,
                                            handle );
     }
-    
-    public void resetTuple() {
-        this.context.resetTuple();
-    }
-    
-    public void resetFactHandle() {
-        this.context.resetFactHandle();
-    }     
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(final InternalFactHandle handle) {
-        return this.indexed || this.constraint.isAllowedCachedLeft( this.context,
+    public boolean isAllowedCachedLeft(final ContextEntry[] context,
+                                       final InternalFactHandle handle) {
+        return this.indexed || this.constraint.isAllowedCachedLeft( context[0],
                                                                     handle );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
-    public boolean isAllowedCachedRight(final ReteTuple tuple) {
+    public boolean isAllowedCachedRight(final ContextEntry[] context,
+                                        final ReteTuple tuple) {
         return this.constraint.isAllowedCachedRight( tuple,
-                                                     this.context );
+                                                     context[0] );
     }
 
     public boolean isIndexed() {
         return this.indexed;
     }
-    
+
     public int getIndexCount() {
-        return ( this.indexed ? 1 : 0 );
+        return (this.indexed ? 1 : 0);
     }
 
     public boolean isEmpty() {
@@ -167,10 +164,12 @@ public class SingleBetaConstraints
                 factHandleMemory = new FactHashTable();
             }
             memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
-                                     factHandleMemory );
+                                     factHandleMemory,
+                                     this.createContext() );
         } else {
             memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
-                                     new FactHashTable() );
+                                     new FactHashTable(),
+                                     this.createContext() );
         }
 
         return memory;
@@ -210,6 +209,14 @@ public class SingleBetaConstraints
         final SingleBetaConstraints other = (SingleBetaConstraints) object;
 
         return this.constraint == other.constraint || this.constraint.equals( other.constraint );
+    }
+
+    public void resetFactHandle(ContextEntry[] context) {
+        context[0].resetFactHandle();
+    }
+
+    public void resetTuple(ContextEntry[] context) {
+        context[0].resetTuple();
     }
 
 }

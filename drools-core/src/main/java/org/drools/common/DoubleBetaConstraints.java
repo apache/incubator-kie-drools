@@ -51,9 +51,6 @@ public class DoubleBetaConstraints
     private final BetaNodeFieldConstraint constraint0;
     private final BetaNodeFieldConstraint constraint1;
 
-    private ContextEntry                  context0;
-    private ContextEntry                  context1;
-
     private boolean                       indexed0;
     private boolean                       indexed1;
 
@@ -94,10 +91,7 @@ public class DoubleBetaConstraints
         }
 
         this.constraint0 = constraints[0];
-        this.context0 = this.constraint0.getContextEntry();
-
         this.constraint1 = constraints[1];
-        this.context1 = this.constraint1.getContextEntry();
     }
 
     private void swap(final BetaNodeFieldConstraint[] constraints,
@@ -120,51 +114,55 @@ public class DoubleBetaConstraints
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
      */
-    public void updateFromTuple(final InternalWorkingMemory workingMemory,
+    public void updateFromTuple(final ContextEntry[] context,
+                                final InternalWorkingMemory workingMemory,
                                 final ReteTuple tuple) {
-        this.context0.updateFromTuple( workingMemory,
-                                       tuple );
-        this.context1.updateFromTuple( workingMemory,
-                                       tuple );
+        context[0].updateFromTuple( workingMemory,
+                                    tuple );
+        context[1].updateFromTuple( workingMemory,
+                                    tuple );
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromFactHandle(org.drools.common.InternalFactHandle)
      */
-    public void updateFromFactHandle(final InternalWorkingMemory workingMemory,
+    public void updateFromFactHandle(final ContextEntry[] context,
+                                     final InternalWorkingMemory workingMemory,
                                      final InternalFactHandle handle) {
-        this.context0.updateFromFactHandle( workingMemory,
-                                            handle );
-        this.context1.updateFromFactHandle( workingMemory,
-                                            handle );
+        context[0].updateFromFactHandle( workingMemory,
+                                         handle );
+        context[1].updateFromFactHandle( workingMemory,
+                                         handle );
     }
-    
-    public void resetTuple() {
-        this.context0.resetTuple();
-        this.context1.resetTuple();
+
+    public void resetTuple(final ContextEntry[] context) {
+        context[0].resetTuple();
+        context[1].resetTuple();
     }
-    
-    public void resetFactHandle() {
-        this.context0.resetFactHandle();
-        this.context1.resetFactHandle();
-    }      
+
+    public void resetFactHandle(final ContextEntry[] context) {
+        context[0].resetFactHandle();
+        context[1].resetFactHandle();
+    }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedLeft(java.lang.Object)
      */
-    public boolean isAllowedCachedLeft(final InternalFactHandle handle) {
-        return (this.indexed0 || this.constraint0.isAllowedCachedLeft( this.context0,
-                                                                       handle )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( this.context1,
+    public boolean isAllowedCachedLeft(final ContextEntry[] context,
+                                       final InternalFactHandle handle) {
+        return (this.indexed0 || this.constraint0.isAllowedCachedLeft( context[0],
+                                                                       handle )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( context[1],
                                                                                                                                             handle ));
     }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#isAllowedCachedRight(org.drools.reteoo.ReteTuple)
      */
-    public boolean isAllowedCachedRight(final ReteTuple tuple) {
+    public boolean isAllowedCachedRight(final ContextEntry[] context,
+                                        final ReteTuple tuple) {
         return this.constraint0.isAllowedCachedRight( tuple,
-                                                      this.context0 ) && this.constraint1.isAllowedCachedRight( tuple,
-                                                                                                                this.context1 );
+                                                      context[0] ) && this.constraint1.isAllowedCachedRight( tuple,
+                                                                                                             context[1] );
     }
 
     public boolean isIndexed() {
@@ -224,10 +222,12 @@ public class DoubleBetaConstraints
                 factHandleMemory = config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable();
             }
             memory = new BetaMemory( config.isSequential() ? null : tupleMemory,
-                                     factHandleMemory );
+                                     factHandleMemory,
+                                     this.createContext() );
         } else {
             memory = new BetaMemory( config.isSequential() ? null : new TupleHashTable(),
-                                     config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable() );
+                                     config.isSequential() ? (FactHandleMemory) new FactList() : (FactHandleMemory) new FactHashTable(),
+                                     this.createContext() );
         }
 
         return memory;
@@ -276,6 +276,10 @@ public class DoubleBetaConstraints
         }
 
         return true;
+    }
+
+    public ContextEntry[] createContext() {
+        return new ContextEntry[]{this.constraint0.createContextEntry(), this.constraint1.createContextEntry()};
     }
 
 }

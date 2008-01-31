@@ -30,6 +30,6 @@ public interface BetaNodeFieldConstraint
     public boolean isAllowedCachedRight(ReteTuple tuple,
                                         ContextEntry context);
 
-    public ContextEntry getContextEntry();
+    public ContextEntry createContextEntry();
 
 }
