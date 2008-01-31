@@ -39,7 +39,7 @@ public class MVELAccumulator
 
     private static final long       serialVersionUID = 400L;
 
-    private final DroolsMVELFactory model;
+    private final DroolsMVELFactory prototype;
     private final Serializable      init;
     private final Serializable      action;
     private final Serializable      reverse;
@@ -51,7 +51,7 @@ public class MVELAccumulator
                            final Serializable reverse,
                            final Serializable result) {
         super();
-        this.model = factory;
+        this.prototype = factory;
         this.init = init;
         this.action = action;
         this.reverse = reverse;
@@ -148,7 +148,7 @@ public class MVELAccumulator
     }
 
     public Object createWorkingMemoryContext() {
-        return this.model.clone();
+        return this.prototype.clone();
     }
 
 }

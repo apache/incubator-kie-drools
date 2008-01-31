@@ -1,8 +1,10 @@
 package org.drools.spi;
 
 import org.drools.WorkingMemory;
-import org.drools.rule.Dialectable;
 
 public interface Action {
-    void execute(WorkingMemory workingMemory) throws Exception ;
+    
+    public Object createContext();
+    
+    public void execute(final WorkingMemory workingMemory, final Object actionContext ) throws Exception ;
 }

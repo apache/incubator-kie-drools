@@ -1,8 +1,5 @@
 package org.drools.base.mvel;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Calendar;
@@ -13,13 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
-import org.drools.common.DroolsObjectInputStream;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.Declaration;
-import org.drools.rule.Package;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
-import org.mvel.CompileException;
 import org.mvel.DataConversion;
 import org.mvel.integration.VariableResolver;
 import org.mvel.integration.impl.BaseVariableResolverFactory;

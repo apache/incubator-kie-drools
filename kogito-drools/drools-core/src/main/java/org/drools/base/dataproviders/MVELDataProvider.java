@@ -18,24 +18,33 @@ public class MVELDataProvider
     DataProvider,
     Serializable  {
 
+    private static final long serialVersionUID = 1901006343031798173L;
+    
     private final Serializable      expression;
-    private final DroolsMVELFactory factory;
+    private final DroolsMVELFactory prototype;
 
     public MVELDataProvider(final Serializable expression,
                             final DroolsMVELFactory factory) {
         this.expression = expression;
-        this.factory = factory;
+        this.prototype = factory;
     }
 
     public Declaration[] getRequiredDeclarations() {
         return new Declaration[]{};
         //return factory.getRequiredDeclarations();
     }
+    
+    public Object createContext() {
+        return this.prototype.clone();
+    }
 
     public Iterator getResults(final Tuple tuple,
                                final WorkingMemory wm,
-                               final PropagationContext ctx) {
-        this.factory.setContext( tuple,
+                               final PropagationContext ctx,
+                               final Object executionContext ) {
+        DroolsMVELFactory factory = (DroolsMVELFactory) executionContext;
+        
+        factory.setContext( tuple,
                                  null,
                                  null,
                                  wm,
@@ -43,7 +52,7 @@ public class MVELDataProvider
 
         //this.expression.
         final Object result = MVEL.executeExpression( this.expression,
-                                                      this.factory );
+                                                      factory );
         if ( result instanceof Collection ) {
             return ((Collection) result).iterator();
         } else if ( result instanceof Iterator ) {

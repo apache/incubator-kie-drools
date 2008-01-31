@@ -9,6 +9,8 @@ public class DroolsMVELGlobalVariable
     VariableResolver,
     Serializable {
 
+    private static final long serialVersionUID = -2480015657934353449L;
+    
     private String            name;
     private Class             knownType;
     private DroolsMVELFactory factory;

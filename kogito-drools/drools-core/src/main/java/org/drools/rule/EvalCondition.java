@@ -65,13 +65,19 @@ public class EvalCondition extends ConditionalElement {
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
     }
+    
+    public Object createContext() {
+        return this.expression.createContext();
+    }
 
     public boolean isAllowed(final Tuple tuple,
-                             final WorkingMemory workingMemory) {
+                             final WorkingMemory workingMemory,
+                             final Object context ) {
         try {
             return this.expression.evaluate( tuple,
                                              this.requiredDeclarations,
-                                             workingMemory );
+                                             workingMemory,
+                                             context );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }

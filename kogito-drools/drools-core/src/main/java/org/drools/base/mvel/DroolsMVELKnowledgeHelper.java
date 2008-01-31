@@ -2,7 +2,6 @@ package org.drools.base.mvel;
 
 import java.io.Serializable;
 
-import org.drools.rule.Declaration;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel.integration.VariableResolver;
 
@@ -11,6 +10,8 @@ public class DroolsMVELKnowledgeHelper
     VariableResolver,
     Serializable  {
 
+    private static final long serialVersionUID = 9175428283083361478L;
+    
     private DroolsMVELFactory factory;
     public static final String DROOLS = "drools";
 

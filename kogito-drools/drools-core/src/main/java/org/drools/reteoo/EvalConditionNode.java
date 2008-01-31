@@ -16,6 +16,8 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.Serializable;
+
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
@@ -141,14 +143,15 @@ public class EvalConditionNode extends TupleSource
     public void assertTuple(final ReteTuple tuple,
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
+        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
 
         final boolean allowed = this.condition.isAllowed( tuple,
-                                                          workingMemory );
+                                                          workingMemory,
+                                                          memory.context );
 
         if ( allowed ) {
             if ( this.tupleMemoryEnabled ) {
-                final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( this );
-                memory.add( tuple );
+                memory.tupleMemory.add( tuple );
             }
 
             this.sink.propagateAssertTuple( tuple,
@@ -160,10 +163,10 @@ public class EvalConditionNode extends TupleSource
     public void retractTuple(final ReteTuple tuple,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( this );
+        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
 
         // can we improve that?
-        final ReteTuple memTuple = memory.remove( tuple );
+        final ReteTuple memTuple = memory.tupleMemory.remove( tuple );
         if ( memTuple != null ) {
             this.sink.propagateRetractTuple( memTuple,
                                              context,
@@ -199,7 +202,7 @@ public class EvalConditionNode extends TupleSource
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new TupleHashTable();
+        return new EvalMemory( this.tupleMemoryEnabled, this.condition.createContext() ); 
     }
 
     /* (non-Javadoc)
@@ -209,9 +212,9 @@ public class EvalConditionNode extends TupleSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
 
-        final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( this );
+        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
 
-        final Iterator it = memory.iterator();
+        final Iterator it = memory.tupleMemory.iterator();
         for ( ReteTuple tuple = (ReteTuple) it.next(); tuple != null; tuple = (ReteTuple) it.next() ) {
             sink.assertTuple( tuple,
                               context,
@@ -277,6 +280,21 @@ public class EvalConditionNode extends TupleSource
      */
     public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
+    }
+    
+    public static class EvalMemory implements Serializable {
+
+        private static final long serialVersionUID = -2754669682742843929L;
+        
+        public TupleHashTable tupleMemory;
+        public Object context;
+        
+        public EvalMemory( final boolean tupleMemoryEnabled, final Object context ) {
+            this.context = context;
+            if( tupleMemoryEnabled ) {
+                this.tupleMemory = new TupleHashTable();
+            }
+        }
     }
 
 }

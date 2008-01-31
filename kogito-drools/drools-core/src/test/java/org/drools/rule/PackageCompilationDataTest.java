@@ -13,7 +13,8 @@ import org.drools.spi.Tuple;
 
 public class PackageCompilationDataTest extends TestCase {
     public static class TestEvalExpression implements EvalExpression {
-        public boolean evaluate(Tuple t, Declaration[] d, WorkingMemory w) {
+        public Object createContext() { return null; }
+        public boolean evaluate(Tuple t, Declaration[] d, WorkingMemory w, Object context ) {
             return false;
         }
     }

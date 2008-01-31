@@ -11,6 +11,8 @@ public class DroolsMVELLocalDeclarationVariable
     VariableResolver,
     Serializable  {
 
+    private static final long serialVersionUID = -8081447010148362496L;
+    
     private Declaration       declaration;
     private DroolsMVELFactory factory;
 

@@ -36,10 +36,13 @@ public class MockEvalCondition extends EvalCondition {
                                                        * 
                                                        */
                                                       private static final long serialVersionUID = 400L;
+                                                      
+                                                      public Object createContext() { return null; }
 
                                                       public boolean evaluate(Tuple tuple,
                                                                               Declaration[] requiredDeclarations,
-                                                                              WorkingMemory workingMemory) {
+                                                                              WorkingMemory workingMemory,
+                                                                              Object context ) {
                                                           return MockEvalCondition.this.isAllowed.booleanValue();
                                                       }
                                                   };
