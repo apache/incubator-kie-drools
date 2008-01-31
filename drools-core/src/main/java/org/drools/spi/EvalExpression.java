@@ -22,7 +22,11 @@ import org.drools.rule.Declaration;
 public interface EvalExpression
     extends
     Invoker {
+    
+    public Object createContext();
+    
     public boolean evaluate(Tuple tuple,
                             Declaration[] requiredDeclarations,
-                            WorkingMemory workingMemory) throws Exception;
+                            WorkingMemory workingMemory,
+                            Object context ) throws Exception;
 }

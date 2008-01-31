@@ -77,15 +77,19 @@ public class MVELEvalBuilderTest extends TestCase {
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
         final ReteTuple tuple = new ReteTuple( f0 );
+        
+        Object evalContext = eval.createContext();
 
         assertTrue( eval.isAllowed( tuple,
-                                    wm ) );
+                                    wm,
+                                    evalContext ) );
 
         cheddar.setPrice( 9 );
         wm.update( f0,
                    cheddar );
         assertFalse( eval.isAllowed( tuple,
-                                     wm ) );
+                                     wm,
+                                     evalContext ) );
     }
 
 }

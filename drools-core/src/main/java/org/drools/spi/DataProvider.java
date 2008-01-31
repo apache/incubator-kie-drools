@@ -9,9 +9,12 @@ import org.drools.rule.Declaration;
 public interface DataProvider extends Serializable {
 
     public Declaration[] getRequiredDeclarations();
+    
+    public Object createContext();
 
     public Iterator getResults(Tuple tuple,
                                WorkingMemory wm,
-                               PropagationContext ctx);
+                               PropagationContext ctx,
+                               Object providerContext);
 
 }

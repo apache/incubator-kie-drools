@@ -21,6 +21,7 @@ import org.drools.FactException;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.util.TupleHashTable;
@@ -79,9 +80,9 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                                               new MockEvalCondition( true ),
                                                               buildContext );
 
-        final TupleHashTable memory = (TupleHashTable) workingMemory.getNodeMemory( node );
+        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( node );
 
-        assertNotNull( memory );
+        assertNotNull( memory.tupleMemory );
     }
 
     /**
@@ -123,13 +124,13 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                           this.workingMemory );
 
         // Check memory was populated
-        final TupleHashTable memory = (TupleHashTable) this.workingMemory.getNodeMemory( node );
+        final EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
 
         assertEquals( 2,
-                      memory.size() );
+                      memory.tupleMemory.size() );
 
-        assertTrue( memory.contains( tuple0 ) );
-        assertTrue( memory.contains( tuple1 ) );
+        assertTrue( memory.tupleMemory.contains( tuple0 ) );
+        assertTrue( memory.tupleMemory.contains( tuple1 ) );
 
         // make sure assertions were propagated
         assertEquals( 2,
@@ -170,12 +171,12 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                           this.workingMemory );
 
         // Check memory was populated
-        final TupleHashTable memory = (TupleHashTable) this.workingMemory.getNodeMemory( node );
+        final EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
 
         assertEquals( 2,
-                      memory.size() );
-        assertTrue( memory.contains( tuple0 ) );
-        assertTrue( memory.contains( tuple1 ) );
+                      memory.tupleMemory.size() );
+        assertTrue( memory.tupleMemory.contains( tuple0 ) );
+        assertTrue( memory.tupleMemory.contains( tuple1 ) );
 
         // make sure assertions were propagated
         assertEquals( 2,
@@ -188,9 +189,9 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
         // Now test that the fact is retracted correctly
         assertEquals( 1,
-                      memory.size() );
+                      memory.tupleMemory.size() );
 
-        assertTrue( memory.contains( tuple1 ) );
+        assertTrue( memory.tupleMemory.contains( tuple1 ) );
 
         // make sure retractions were propagated
         assertEquals( 1,
@@ -203,7 +204,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
         // Now test that the fact is retracted correctly
         assertEquals( 0,
-                      memory.size() );
+                      memory.tupleMemory.size() );
 
         // make sure retractions were propagated
         assertEquals( 2,
@@ -243,10 +244,10 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                           this.workingMemory );
 
         // Check memory was not populated
-        final TupleHashTable memory = (TupleHashTable) this.workingMemory.getNodeMemory( node );
+        final EvalMemory memory = (EvalMemory) this.workingMemory.getNodeMemory( node );
 
         assertEquals( 0,
-                      memory.size() );
+                      memory.tupleMemory.size() );
 
         // test no propagations
         assertEquals( 0,
