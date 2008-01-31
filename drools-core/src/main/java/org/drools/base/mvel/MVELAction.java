@@ -22,22 +22,20 @@ public class MVELAction
         this.expr = expr;
         this.prototype = factory;
     }
-    
+
     public String getDialect() {
         return "mvel";
     }
 
-    public Object createContext() {
-        return this.prototype.clone();
-    }
-    
-    public void execute(final WorkingMemory workingMemory, final Object actionContext ) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) actionContext;
+    public void execute(final WorkingMemory workingMemory) throws Exception {
+        // must clone to avoid concurrency problems
+        DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
+
         factory.setContext( null,
-                                 null,
-                                 null,
-                                 workingMemory,
-                                 null );
+                            null,
+                            null,
+                            workingMemory,
+                            null );
         CompiledExpression compexpr = (CompiledExpression) this.expr;
 
         //Receive breakpoints from debugger

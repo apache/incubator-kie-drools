@@ -4,7 +4,5 @@ import org.drools.WorkingMemory;
 
 public interface Action {
     
-    public Object createContext();
-    
-    public void execute(final WorkingMemory workingMemory, final Object actionContext ) throws Exception ;
+    public void execute(final WorkingMemory workingMemory) throws Exception ;
 }
