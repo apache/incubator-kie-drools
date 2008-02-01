@@ -3150,6 +3150,40 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    public void testConstraintConnectivesMatches() throws Exception {
+        final String text = "Person( name matches \"mark\" || matches \"bob\" )";
+        final CharStream charStream = new ANTLRStringStream( text );
+        final DRLLexer lexer = new DRLLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        final DRLParser parser = new DRLParser( tokenStream );
+
+        PatternDescr pattern = (PatternDescr) parser.fact( null );
+        assertFalse( parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        FieldConstraintDescr fcd = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "name",
+                      fcd.getFieldName() );
+
+        RestrictionConnectiveDescr or = (RestrictionConnectiveDescr) fcd.getRestrictions().get( 0 );
+
+        assertEquals( 2,
+                      or.getRestrictions().size() );
+
+        assertEquals( "matches",
+                      ((LiteralRestrictionDescr) or.getRestrictions().get( 0 )).getEvaluator() );
+        assertEquals( "mark",
+                      ((LiteralRestrictionDescr) or.getRestrictions().get( 0 )).getText() );
+
+        assertEquals( "matches",
+                      ((LiteralRestrictionDescr) or.getRestrictions().get( 1 )).getEvaluator() );
+        assertEquals( "bob",
+                      ((LiteralRestrictionDescr) or.getRestrictions().get( 1 )).getText() );
+
+    }
+
     public void testNotContains() throws Exception {
         final String text = "City( $city : city )\nCountry( cities not contains $city )\n";
         final AndDescr descrs = new AndDescr();

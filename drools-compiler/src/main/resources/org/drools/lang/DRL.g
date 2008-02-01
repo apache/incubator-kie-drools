@@ -1718,11 +1718,6 @@ identifier
         |       ACTION	        
         |       REVERSE	        
         |       RESULT	        
-        |       CONTAINS 
-        |       EXCLUDES 
-        |       MEMBEROF
-        |       MATCHES 
-        |       SOUNDSLIKE        
         |       WHEN            
         |       THEN	        
         |       END     
