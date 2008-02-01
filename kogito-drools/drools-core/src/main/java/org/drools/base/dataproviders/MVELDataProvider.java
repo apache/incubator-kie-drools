@@ -57,8 +57,10 @@ public class MVELDataProvider
             return ((Collection) result).iterator();
         } else if ( result instanceof Iterator ) {
             return (Iterator) result;
-        } else {
+        } else if ( result != null ){
             return Collections.singletonList( result ).iterator();
+        } else {
+            return Collections.EMPTY_LIST.iterator();
         }
     }
 }
