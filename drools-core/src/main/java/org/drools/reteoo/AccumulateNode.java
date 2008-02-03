@@ -159,7 +159,8 @@ public class AccumulateNode extends BetaNode {
 
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( handle,
-                                                       workingMemory ) ) {
+                                                       workingMemory,
+                                                       memory.alphaContexts[i] ) ) {
                 isAllowed = false;
                 break;
             }
@@ -393,7 +394,8 @@ public class AccumulateNode extends BetaNode {
         final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result, false, 0, workingMemory ); // so far, result is not an event
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( createdHandle,
-                                                       workingMemory ) ) {
+                                                       workingMemory,
+                                                       memory.alphaContexts[i] ) ) {
                 isAllowed = false;
                 break;
             }
@@ -477,6 +479,10 @@ public class AccumulateNode extends BetaNode {
         memory.betaMemory = this.constraints.createBetaMemory( config );
         memory.workingMemoryContext = this.accumulate.createWorkingMemoryContext();
         memory.resultsContext = this.resultBinder.createContext();
+        memory.alphaContexts = new ContextEntry[this.resultConstraints.length];
+        for ( int i = 0; i < this.resultConstraints.length; i++ ) {
+            memory.alphaContexts[i] = this.resultConstraints[i].createContextEntry();
+        }
         return memory;
     }
 
@@ -486,6 +492,7 @@ public class AccumulateNode extends BetaNode {
         public Object workingMemoryContext;
         public BetaMemory betaMemory;
         public ContextEntry[] resultsContext;
+        public ContextEntry[] alphaContexts;
     }
 
     private static class AccumulateResult {

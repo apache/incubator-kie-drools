@@ -58,11 +58,14 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression
 {
     private static final long serialVersionUID  = 400L;
     
+    public Object createContext() { return null; }
+    
     public org.drools.spi.FieldValue evaluate(java.lang.Object object,
                             org.drools.spi.Tuple tuple,
                             org.drools.rule.Declaration[] previousDeclarations, 
                             org.drools.rule.Declaration[] localDeclarations, 
-                            org.drools.WorkingMemory workingMemory) throws Exception {                               
+                            org.drools.WorkingMemory workingMemory,
+                            Object context ) throws Exception {                               
 
         @foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier} = ( @{type} ) previousDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) tuple.get( previousDeclarations[@{i0}] ) ).getObject() );
         @end{}                
@@ -100,11 +103,14 @@ public class @{invokerClassName} implements org.drools.spi.PredicateExpression, 
 {
     private static final long serialVersionUID  = 400L;
     
+    public Object createContext() { return null; }
+    
     public boolean evaluate(java.lang.Object object,
                             org.drools.spi.Tuple tuple,
                             org.drools.rule.Declaration[] previousDeclarations, 
                             org.drools.rule.Declaration[] localDeclarations, 
-                            org.drools.WorkingMemory workingMemory) throws Exception {                               
+                            org.drools.WorkingMemory workingMemory,
+                            Object context ) throws Exception {                               
 
         @foreach{declarationTypes as type, declarations as  declr} @{type} @{declr.identifier} = ( @{type} ) previousDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) tuple.get( previousDeclarations[@{i0}] ) ).getObject() );
         @end{}                

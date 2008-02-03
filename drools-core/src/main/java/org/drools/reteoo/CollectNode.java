@@ -108,19 +108,20 @@ public class CollectNode extends BetaNode
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
 
         final Collection result = this.collect.instantiateResultObject();
-        final InternalFactHandle resultHandle = workingMemory.getFactHandleFactory().newFactHandle( result, false, workingMemory );
+        final InternalFactHandle resultHandle = workingMemory.getFactHandleFactory().newFactHandle( result,
+                                                                                                    false,
+                                                                                                    workingMemory );
         CollectResult colresult = new CollectResult();
         colresult.handle = resultHandle;
         colresult.propagated = false;
-        
+
         // do not add tuple and result to the memory in sequential mode
         if ( this.tupleMemoryEnabled ) {
             memory.betaMemory.getTupleMemory().add( leftTuple );
             memory.betaMemory.getCreatedHandles().put( leftTuple,
-                                            colresult,
-                                            false );
+                                                       colresult,
+                                                       false );
         }
-
 
         final Iterator it = memory.betaMemory.getFactHandleMemory().iterator( leftTuple );
         this.constraints.updateFromTuple( memory.betaMemory.getContext(),
@@ -131,20 +132,21 @@ public class CollectNode extends BetaNode
             InternalFactHandle handle = entry.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                        handle ) ) {
-                if( this.unwrapRightObject ) {
-                    handle = ((ReteTuple) handle.getObject()).getLastHandle(); 
+                if ( this.unwrapRightObject ) {
+                    handle = ((ReteTuple) handle.getObject()).getLastHandle();
                 }
                 result.add( handle.getObject() );
             }
         }
-        
-        this.constraints.resetTuple(memory.betaMemory.getContext() );
+
+        this.constraints.resetTuple( memory.betaMemory.getContext() );
 
         // First alpha node filters
         boolean isAllowed = true;
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( resultHandle,
-                                                       workingMemory ) ) {
+                                                       workingMemory,
+                                                       memory.alphaContexts[i]) ) {
                 isAllowed = false;
                 break;
             }
@@ -205,11 +207,11 @@ public class CollectNode extends BetaNode
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
         memory.betaMemory.getFactHandleMemory().add( handle );
-        
+
         if ( !this.tupleMemoryEnabled ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
             return;
-        }        
+        }
 
         this.constraints.updateFromFactHandle( memory.betaMemory.getContext(),
                                                workingMemory,
@@ -257,7 +259,7 @@ public class CollectNode extends BetaNode
             ReteTuple tuple = (ReteTuple) tuples[i];
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         tuple ) ) {
-                
+
                 this.modifyTuple( false,
                                   tuple,
                                   handle,
@@ -265,7 +267,7 @@ public class CollectNode extends BetaNode
                                   workingMemory );
             }
         }
-        
+
         this.constraints.resetFactHandle( memory.betaMemory.getContext() );
     }
 
@@ -296,20 +298,18 @@ public class CollectNode extends BetaNode
                                              workingMemory );
             result.propagated = false;
         }
-        
+
         // if there is a subnetwork, we need to unwrapp the object from inside the tuple
-        if( this.unwrapRightObject ) {
-            handle = ((ReteTuple) handle.getObject()).getLastHandle(); 
+        if ( this.unwrapRightObject ) {
+            handle = ((ReteTuple) handle.getObject()).getLastHandle();
         }
 
         if ( context.getType() == PropagationContext.ASSERTION ) {
             ((Collection) result.handle.getObject()).add( handle.getObject() );
         } else if ( context.getType() == PropagationContext.RETRACTION ) {
             ((Collection) result.handle.getObject()).remove( handle.getObject() );
-        } else if ( context.getType() == PropagationContext.MODIFICATION || 
-                    context.getType() == PropagationContext.RULE_ADDITION || 
-                    context.getType() == PropagationContext.RULE_REMOVAL ) {
-            if( isAssert ) {
+        } else if ( context.getType() == PropagationContext.MODIFICATION || context.getType() == PropagationContext.RULE_ADDITION || context.getType() == PropagationContext.RULE_REMOVAL ) {
+            if ( isAssert ) {
                 ((Collection) result.handle.getObject()).add( handle.getObject() );
             } else {
                 ((Collection) result.handle.getObject()).remove( handle.getObject() );
@@ -320,7 +320,8 @@ public class CollectNode extends BetaNode
         boolean isAllowed = true;
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( result.handle,
-                                                       workingMemory ) ) {
+                                                       workingMemory,
+                                                       memory.alphaContexts[i] ) ) {
                 isAllowed = false;
                 break;
             }
@@ -337,7 +338,7 @@ public class CollectNode extends BetaNode
                                                 context,
                                                 workingMemory );
             }
-            
+
             this.resultsBinder.resetTuple( memory.resultsContext );
         }
     }
@@ -398,13 +399,18 @@ public class CollectNode extends BetaNode
         CollectMemory memory = new CollectMemory();
         memory.betaMemory = this.constraints.createBetaMemory( config );
         memory.resultsContext = this.resultsBinder.createContext();
+        memory.alphaContexts = new ContextEntry[this.resultConstraints.length];
+        for ( int i = 0; i < this.resultConstraints.length; i++ ) {
+            memory.alphaContexts[i] = this.resultConstraints[i].createContextEntry();
+        }
         return memory;
     }
 
     public static class CollectMemory {
         private static final long serialVersionUID = 400L;
-        public BetaMemory betaMemory;
-        public ContextEntry[] resultsContext;
+        public BetaMemory         betaMemory;
+        public ContextEntry[]     resultsContext;
+        public ContextEntry[]     alphaContexts;
     }
 
     private static class CollectResult {

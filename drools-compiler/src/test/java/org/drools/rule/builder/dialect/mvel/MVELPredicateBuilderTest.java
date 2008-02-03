@@ -107,7 +107,7 @@ public class MVELPredicateBuilderTest extends TestCase {
         final InternalFactHandle f1 = (InternalFactHandle) wm.insert( stilton );
         final ReteTuple tuple = new ReteTuple( f0 );
 
-        final PredicateContextEntry predicateContext = new PredicateContextEntry();
+        final PredicateContextEntry predicateContext = (PredicateContextEntry) predicate.createContextEntry();
         predicateContext.leftTuple = tuple;
 
         assertTrue( predicate.isAllowedCachedLeft( predicateContext,

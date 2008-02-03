@@ -68,7 +68,8 @@ public class VariableRestriction
 
     public boolean isAllowed(final Extractor extractor,
                              final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory,
+                             final ContextEntry context ) {
         return this.evaluator.evaluate( workingMemory,
                                         this.extractor,
                                         this.evaluator.prepareObject( handle ),

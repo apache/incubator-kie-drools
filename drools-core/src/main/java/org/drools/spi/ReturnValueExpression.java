@@ -22,9 +22,14 @@ import org.drools.rule.Declaration;
 public interface ReturnValueExpression
     extends
     Invoker {
+    
+    public Object createContext();
+    
     public FieldValue evaluate(Object object,
                                Tuple tuple,
                                Declaration[] previousDeclarations,
                                Declaration[] localDeclarations,
-                               WorkingMemory workingMemory) throws Exception;
+                               WorkingMemory workingMemory,
+                               Object context ) throws Exception;
+
 }

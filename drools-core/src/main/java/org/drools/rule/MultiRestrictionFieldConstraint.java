@@ -67,10 +67,12 @@ public class MultiRestrictionFieldConstraint
     }
 
     public boolean isAllowed(final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory,
+                             final ContextEntry context ) {
         return this.restrictions.isAllowed( this.extractor,
                                             handle,
-                                            workingMemory );
+                                            workingMemory,
+                                            context );
     }
 
     public ContextEntry createContextEntry() {

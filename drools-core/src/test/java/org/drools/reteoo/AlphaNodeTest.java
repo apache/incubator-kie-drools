@@ -31,6 +31,7 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.reteoo.AlphaNode.AlphaMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Rule;
@@ -42,7 +43,7 @@ import org.drools.util.FactHashTable;
 
 public class AlphaNodeTest extends DroolsTestCase {
 
-    ClassFieldExtractorCache cache = ClassFieldExtractorCache.getInstance();
+    ClassFieldExtractorCache     cache  = ClassFieldExtractorCache.getInstance();
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     public void testMemory() {
@@ -53,12 +54,24 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                       ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
         ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
+        final ClassFieldExtractor extractor = cache.getExtractor( Cheese.class,
+                                                                  "type",
+                                                                  getClass().getClassLoader() );
+
+        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
+
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                         Operator.EQUAL );
+        final LiteralConstraint constraint = new LiteralConstraint( extractor,
+                                                                    evaluator,
+                                                                    field );
+
         final AlphaNode alphaNode = new AlphaNode( buildContext.getNextId(),
-                                                   null,
+                                                   constraint,
                                                    null,
                                                    buildContext );
 
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
+        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( alphaNode );
 
         assertNotNull( memory );
     }
@@ -85,7 +98,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                         Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -109,10 +123,10 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
 
         // check alpha memory is empty 
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
+        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( alphaNode );
 
         assertEquals( 0,
-                      memory.size() );
+                      memory.facts.size() );
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
@@ -122,12 +136,12 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       sink.getAsserted().size() );
         assertEquals( 1,
-                      memory.size() );
+                      memory.facts.size() );
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
                     workingMemory.getObject( (DefaultFactHandle) list[0] ) );
         assertTrue( "Should contain 'cheddar handle'",
-                    memory.contains( f0 ) );
+                    memory.facts.contains( f0 ) );
 
         final Cheese stilton = new Cheese( "stilton",
                                            6 );
@@ -142,12 +156,12 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertLength( 1,
                       sink.getAsserted() );
         assertEquals( 1,
-                      memory.size() );
+                      memory.facts.size() );
         list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
                     workingMemory.getObject( (DefaultFactHandle) list[0] ) );
         assertTrue( "Should contain 'cheddar handle'",
-                    memory.contains( f0 ) );
+                    memory.facts.contains( f0 ) );
     }
 
     public void testIsMemoryAllowedOverride() throws Exception {
@@ -172,7 +186,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                         Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -196,10 +211,9 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
 
         // check alpha memory is empty 
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
+        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( alphaNode );
 
-        assertEquals( 0,
-                      memory.size() );
+        assertNull( memory.facts );
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
@@ -209,8 +223,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertEquals( 1,
                       sink.getAsserted().size() );
         // memory should be one, as even though isAlphaMemory is on for the configuration, the build never allows memory
-        assertEquals( 0,
-                      memory.size() );
+        assertNull( memory.facts );
     }
 
     public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
@@ -235,7 +248,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                         Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -258,10 +272,9 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
 
         // check alpha memory is empty 
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
+        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( alphaNode );
 
-        assertEquals( 0,
-                      memory.size() );
+        assertNull( memory.facts );
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
@@ -270,13 +283,10 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         assertEquals( 1,
                       sink.getAsserted().size() );
-        assertEquals( 0,
-                      memory.size() );
+        assertNull( memory.facts );
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
                     workingMemory.getObject( (DefaultFactHandle) list[0] ) );
-        assertFalse( "Should not contain 'cheddar handle'",
-                     memory.contains( f0 ) );
 
         final Cheese stilton = new Cheese( "stilton",
                                            6 );
@@ -290,13 +300,10 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         assertLength( 1,
                       sink.getAsserted() );
-        assertEquals( 0,
-                      memory.size() );
+        assertNull( memory.facts );
         list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
                     workingMemory.getObject( (DefaultFactHandle) list[0] ) );
-        assertFalse( "Should not contain 'cheddar handle'",
-                     memory.contains( f0 ) );
     }
 
     public void testLiteralConstraintAssertSequentialMode() throws Exception {
@@ -322,7 +329,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                         Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -345,10 +353,9 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
 
         // check alpha memory is empty 
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
+        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( alphaNode );
 
-        assertEquals( 0,
-                      memory.size() );
+        assertNull( memory.facts );
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
@@ -357,8 +364,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         assertEquals( 1,
                       sink.getAsserted().size() );
-        assertEquals( 0,
-                      memory.size() );
+        assertNull( memory.facts );
         Object[] list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
                     workingMemory.getObject( (DefaultFactHandle) list[0] ) );
@@ -375,8 +381,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         assertLength( 1,
                       sink.getAsserted() );
-        assertEquals( 0,
-                      memory.size() );
+        assertNull( memory.facts );
         list = (Object[]) sink.getAsserted().get( 0 );
         assertSame( cheddar,
                     workingMemory.getObject( (DefaultFactHandle) list[0] ) );
@@ -409,7 +414,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                         Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -477,7 +483,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                         Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -497,9 +504,9 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                             cheddar );
 
         // check alpha memory is empty
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
+        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( alphaNode );
         assertEquals( 0,
-                      memory.size() );
+                      memory.facts.size() );
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
@@ -507,7 +514,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                 workingMemory );
 
         assertEquals( 1,
-                      memory.size() );
+                      memory.facts.size() );
 
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheese" );
@@ -520,9 +527,9 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertLength( 0,
                       sink.getRetracted() );
         assertEquals( 1,
-                      memory.size() );
+                      memory.facts.size() );
         assertTrue( "Should contain 'cheddar handle'",
-                    memory.contains( f0 ) );
+                    memory.facts.contains( f0 ) );
 
         // object should retract as it does exist
         alphaNode.retractObject( f0,
@@ -532,7 +539,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         assertLength( 1,
                       sink.getRetracted() );
         assertEquals( 0,
-                      memory.size() );
+                      memory.facts.size() );
         final Object[] list = (Object[]) sink.getRetracted().get( 0 );
         assertSame( f0,
                     list[0] );
@@ -561,7 +568,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                         Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -580,17 +588,15 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                             cheddar );
 
         // check alpha memory is empty
-        final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( alphaNode );
-        assertEquals( 0,
-                      memory.size() );
+        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( alphaNode );
+        assertNull( memory.facts );
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,
                                 context,
                                 workingMemory );
 
-        assertEquals( 0,
-                      memory.size() );
+        assertNull( memory.facts );
 
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             new Cheese( "brie",
@@ -604,10 +610,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         // without memory, it will always propagate a retract
         assertLength( 0,
                       sink.getRetracted() );
-        assertEquals( 0,
-                      memory.size() );
-        assertFalse( "Should not contain 'cheddar handle'",
-                     memory.contains( f0 ) );
+        assertNull( memory.facts );
 
         // object should retract as it does exist
         alphaNode.retractObject( f0,
@@ -616,8 +619,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         assertLength( 1,
                       sink.getRetracted() );
-        assertEquals( 0,
-                      memory.size() );
+        assertNull( memory.facts );
         final Object[] list = (Object[]) sink.getRetracted().get( 0 );
         assertSame( f0,
                     list[0] );
@@ -649,7 +651,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                         Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
@@ -733,7 +736,8 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
 
-        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE, Operator.EQUAL );
+        final Evaluator evaluator = equals.getEvaluator( ValueType.OBJECT_TYPE,
+                                                         Operator.EQUAL );
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );

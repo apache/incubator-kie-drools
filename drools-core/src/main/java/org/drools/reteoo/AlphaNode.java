@@ -15,6 +15,8 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.io.Serializable;
+
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -23,6 +25,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
@@ -129,12 +132,13 @@ public class AlphaNode extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) throws FactException {
+        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
         if ( this.constraint.isAllowed( handle,
-                                        workingMemory ) ) {
+                                        workingMemory,
+                                        memory.context ) ) {
             if ( isObjectMemoryEnabled() ) {
-                final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-                memory.add( handle,
-                            false );
+                memory.facts.add( handle,
+                                  false );
             }
 
             this.sink.propagateAssertObject( handle,
@@ -147,12 +151,13 @@ public class AlphaNode extends ObjectSource
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
         boolean propagate = true;
+        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
         if ( isObjectMemoryEnabled() ) {
-            final FactHashTable memory = (FactHashTable) workingMemory.getNodeMemory( this );
-            propagate = memory.remove( handle );
+            propagate = memory.facts.remove( handle );
         } else {
             propagate = this.constraint.isAllowed( handle,
-                                                   workingMemory );
+                                                   workingMemory,
+                                                   memory.context );
         }
         if ( propagate ) {
             this.sink.propagateRetractObject( handle,
@@ -165,18 +170,19 @@ public class AlphaNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        FactHashTable memory = null;
+        AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
 
         if ( !isObjectMemoryEnabled() ) {
             // get the objects from the parent
-            ObjectSinkUpdateAdapter adapter = new ObjectSinkUpdateAdapter( sink, this.constraint );
+            ObjectSinkUpdateAdapter adapter = new ObjectSinkUpdateAdapter( sink,
+                                                                           this.constraint,
+                                                                           memory.context );
             this.objectSource.updateSink( adapter,
                                           context,
                                           workingMemory );
         } else {
             // if already has memory, just iterate and propagate
-            memory = (FactHashTable) workingMemory.getNodeMemory( this );
-            final Iterator it = memory.iterator();
+            final Iterator it = memory.facts.iterator();
             for ( FactEntry entry = (FactEntry) it.next(); entry != null; entry = (FactEntry) it.next() ) {
                 sink.assertObject( entry.getFactHandle(),
                                    context,
@@ -186,19 +192,21 @@ public class AlphaNode extends ObjectSource
     }
 
     public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+                       final BaseNode node,
+                       final InternalWorkingMemory[] workingMemories) {
 
         if ( !node.isInUse() ) {
             removeObjectSink( (ObjectSink) node );
         }
-        removeShare(builder);
+        removeShare( builder );
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
         }
         this.objectSource.remove( builder,
-                                  this, workingMemories );
+                                  this,
+                                  workingMemories );
     }
 
     public void setObjectMemoryAllowed(boolean objectMemoryAllowed) {
@@ -217,7 +225,12 @@ public class AlphaNode extends ObjectSource
      * Creates a HashSet for the AlphaNode's memory.
      */
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new FactHashTable();
+        AlphaMemory memory = new AlphaMemory();
+        memory.context = this.constraint.createContextEntry();
+        if ( this.objectMemoryEnabled ) {
+            memory.facts = new FactHashTable();
+        }
+        return memory;
     }
 
     /** 
@@ -290,6 +303,16 @@ public class AlphaNode extends ObjectSource
         this.previousObjectSinkNode = previous;
     }
 
+    public static class AlphaMemory
+        implements
+        Serializable {
+        private static final long serialVersionUID = -5852576405010023458L;
+
+        public FactHashTable      facts;
+        public ContextEntry       context;
+
+    }
+
     /**
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
@@ -299,20 +322,24 @@ public class AlphaNode extends ObjectSource
     private static class ObjectSinkUpdateAdapter
         implements
         ObjectSink {
-        private final ObjectSink sink;
+        private final ObjectSink               sink;
         private final AlphaNodeFieldConstraint constraint;
+        private final ContextEntry             alphaContext;
 
-        public ObjectSinkUpdateAdapter(final ObjectSink sink, 
-                                       final AlphaNodeFieldConstraint constraint ) {
+        public ObjectSinkUpdateAdapter(final ObjectSink sink,
+                                       final AlphaNodeFieldConstraint constraint,
+                                       final ContextEntry context ) {
             this.sink = sink;
             this.constraint = constraint;
+            this.alphaContext = context;
         }
 
         public void assertObject(final InternalFactHandle handle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
             if ( this.constraint.isAllowed( handle,
-                                            workingMemory ) ) {
+                                            workingMemory,
+                                            this.alphaContext ) ) {
                 this.sink.assertObject( handle,
                                         context,
                                         workingMemory );

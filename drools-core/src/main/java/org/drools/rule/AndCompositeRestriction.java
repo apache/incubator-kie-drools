@@ -16,11 +16,13 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
 
     public boolean isAllowed(final Extractor extractor,
                              final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory,
+                             final ContextEntry context ) {
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
             if ( !this.restrictions[i].isAllowed( extractor,
                                                   handle,
-                                                  workingMemory ) ) {
+                                                  workingMemory,
+                                                  context ) ) {
                 return false;
             }
         }

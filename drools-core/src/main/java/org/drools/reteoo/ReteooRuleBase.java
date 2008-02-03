@@ -313,7 +313,8 @@ public class ReteooRuleBase extends AbstractRuleBase {
     }
     
     public int getNodeCount() {
-        return this.reteooBuilder.getIdGenerator().getLastId();
+        // may start in 0
+        return this.reteooBuilder.getIdGenerator().getLastId()+1;
     }
 
     public static class InitialFactHandleDummyObject

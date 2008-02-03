@@ -159,7 +159,8 @@ public class ReturnValueRestriction
     public boolean isAllowed(final Extractor extractor,
                              final InternalFactHandle handle,
                              final Tuple tuple,
-                             final WorkingMemory workingMemory) {
+                             final WorkingMemory workingMemory,
+                             final ContextEntry context) {
         try {
             return this.evaluator.evaluate( null,
                                             extractor,
@@ -168,7 +169,8 @@ public class ReturnValueRestriction
                                                                       tuple,
                                                                       this.previousDeclarations,
                                                                       this.localDeclarations,
-                                                                      workingMemory ) );
+                                                                      workingMemory,
+                                                                      ((ReturnValueContextEntry)context).dialectContext) );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
@@ -176,7 +178,8 @@ public class ReturnValueRestriction
 
     public boolean isAllowed(final Extractor extractor,
                              final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemoiry) {
+                             final InternalWorkingMemory workingMemoiry,
+                             final ContextEntry context) {
         throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
     }
 
@@ -255,9 +258,11 @@ public class ReturnValueRestriction
     }
 
     public ContextEntry createContextEntry() {
-        return new ReturnValueContextEntry( this.extractor,
+        ReturnValueContextEntry ctx =  new ReturnValueContextEntry( this.extractor,
                                             this.previousDeclarations,
                                             this.localDeclarations );
+        ctx.dialectContext = this.expression.createContext();
+        return ctx;
     }
 
     public Object clone() {
@@ -292,6 +297,8 @@ public class ReturnValueRestriction
         public Declaration[]         localDeclarations;
 
         private ContextEntry         entry;
+
+        public Object                dialectContext;
 
         public ReturnValueContextEntry(final FieldExtractor fieldExtractor,
                                        final Declaration[] previousDeclarations,

@@ -22,9 +22,13 @@ import org.drools.rule.Declaration;
 public interface PredicateExpression
     extends
     Invoker {
+    
+    public Object createContext();
+    
     public boolean evaluate(Object object,
                             Tuple tuple,
                             Declaration[] previousDeclarations,
                             Declaration[] localDeclarations,
-                            WorkingMemory workingMemory) throws Exception;
+                            WorkingMemory workingMemory,
+                            Object context ) throws Exception;
 }

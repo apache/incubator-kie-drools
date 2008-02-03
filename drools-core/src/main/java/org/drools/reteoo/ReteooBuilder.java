@@ -29,9 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.RuleIntegrationException;
 import org.drools.base.SalienceInteger;
@@ -261,10 +258,6 @@ public class ReteooBuilder
             return id.intValue();
         }
 
-        public void releaseLastId() {
-            this.nextId--;
-        }
-        
         public void releaseId( int id ) {
             this.recycledIds.add( new Integer(id) );
         }

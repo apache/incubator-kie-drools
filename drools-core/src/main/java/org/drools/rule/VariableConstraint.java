@@ -68,10 +68,12 @@ public class VariableConstraint
     }
 
     public boolean isAllowed(final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory,
+                             final ContextEntry context) {
         return this.restriction.isAllowed( this.fieldExtractor,
                                            handle,
-                                           workingMemory );
+                                           workingMemory,
+                                           context );
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,

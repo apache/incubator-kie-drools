@@ -15,27 +15,33 @@ public class MVELPredicateExpression
     private static final long       serialVersionUID = 400L;
 
     private final Serializable      expr;
-    private final DroolsMVELFactory factory;
+    private final DroolsMVELFactory prototype;
 
     public MVELPredicateExpression(final Serializable expr,
                                    final DroolsMVELFactory factory) {
         this.expr = expr;
-        this.factory = factory;
+        this.prototype = factory;
+    }
+    
+    public Object createContext() {
+        return this.prototype.clone();
     }
 
     public boolean evaluate(final Object object,
                             final Tuple tuple,
                             final Declaration[] previousDeclarations,
                             final Declaration[] requiredDeclarations,
-                            final WorkingMemory workingMemory) throws Exception {
-        this.factory.setContext( tuple,
+                            final WorkingMemory workingMemory,
+                            final Object context ) throws Exception {
+        DroolsMVELFactory factory = (DroolsMVELFactory) context;
+        factory.setContext( tuple,
                                  null,
                                  object,
                                  workingMemory,
                                  null );
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
                                                                  object,
-                                                                 this.factory );
+                                                                 factory );
         return result.booleanValue();
     }
 
