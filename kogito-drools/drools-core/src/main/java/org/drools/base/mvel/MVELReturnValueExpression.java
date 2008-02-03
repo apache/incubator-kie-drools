@@ -16,20 +16,22 @@ public class MVELReturnValueExpression
     private static final long       serialVersionUID = 400L;
 
     private final Serializable      expr;
-    private final DroolsMVELFactory factory;
+    private final DroolsMVELFactory prototype;
 
     public MVELReturnValueExpression(final Serializable expr,
                                      final DroolsMVELFactory factory) {
         this.expr = expr;
-        this.factory = factory;
+        this.prototype = factory;
     }
 
     public FieldValue evaluate(final Object object,
                                final Tuple tuple,
                                final Declaration[] previousDeclarations,
                                final Declaration[] requiredDeclarations,
-                               final WorkingMemory workingMemory) throws Exception {
-        this.factory.setContext( tuple,
+                               final WorkingMemory workingMemory,
+                               final Object ctx ) throws Exception {
+        DroolsMVELFactory factory = (DroolsMVELFactory) ctx;
+        factory.setContext( tuple,
                                  null,
                                  object,
                                  workingMemory,
@@ -37,7 +39,11 @@ public class MVELReturnValueExpression
 
         return org.drools.base.FieldFactory.getFieldValue( MVEL.executeExpression( this.expr,
                                                                                    null,
-                                                                                   this.factory ) );
+                                                                                   factory ) );
+    }
+
+    public Object createContext() {
+        return this.prototype.clone();
     }
 
 }

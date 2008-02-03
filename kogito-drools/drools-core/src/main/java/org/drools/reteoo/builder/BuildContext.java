@@ -217,8 +217,8 @@ public class BuildContext {
     /**
      * Method used to undo previous id assignment
      */
-    public void releaseLastId() {
-        this.idGenerator.releaseLastId();
+    public void releaseId( int id ) {
+        this.idGenerator.releaseId( id );
     }
 
     /**

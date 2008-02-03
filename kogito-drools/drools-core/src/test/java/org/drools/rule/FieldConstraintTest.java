@@ -85,6 +85,7 @@ public class FieldConstraintTest extends TestCase {
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
+        final ContextEntry context = constraint.createContextEntry();
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
@@ -93,7 +94,8 @@ public class FieldConstraintTest extends TestCase {
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory ) );
+                                          workingMemory,
+                                          context ) );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
@@ -102,7 +104,8 @@ public class FieldConstraintTest extends TestCase {
 
         // check constraint
         assertFalse( constraint.isAllowed( stiltonHandle,
-                                           workingMemory ) );
+                                           workingMemory,
+                                           context ) );
     }
 
     /**
@@ -131,6 +134,7 @@ public class FieldConstraintTest extends TestCase {
         final LiteralConstraint constraint = new LiteralConstraint( extractor,
                                                                     evaluator,
                                                                     field );
+        final ContextEntry context = constraint.createContextEntry();
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
@@ -139,7 +143,8 @@ public class FieldConstraintTest extends TestCase {
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory ) );
+                                          workingMemory,
+                                          context ) );
 
         final Cheese stilton = new Cheese( "stilton",
                                            10 );
@@ -148,7 +153,8 @@ public class FieldConstraintTest extends TestCase {
 
         // check constraint
         assertFalse( constraint.isAllowed( stiltonHandle,
-                                           workingMemory ) );
+                                           workingMemory,
+                                           context ) );
     }
 
     /**
@@ -200,7 +206,8 @@ public class FieldConstraintTest extends TestCase {
                                     Tuple tuple,
                                     Declaration[] previousDeclarations,
                                     Declaration[] localDeclarations,
-                                    WorkingMemory workingMemory) {
+                                    WorkingMemory workingMemory,
+                                    Object context ) {
                 int price1 = previousDeclarations[0].getIntValue( (InternalWorkingMemory) workingMemory,
                                                                   workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) );
                 int price2 = localDeclarations[0].getIntValue( (InternalWorkingMemory) workingMemory,
@@ -209,6 +216,11 @@ public class FieldConstraintTest extends TestCase {
                 return (price2 == (price1 * 2));
 
             }
+
+            public Object createContext() {
+                return null;
+            }
+
         };
 
         final PredicateConstraint constraint1 = new PredicateConstraint( evaluator,
@@ -275,11 +287,16 @@ public class FieldConstraintTest extends TestCase {
                                        Tuple tuple, // ?price
                                        Declaration[] previousDeclarations,
                                        Declaration[] localDeclarations,
-                                       WorkingMemory workingMemory) {
+                                       WorkingMemory workingMemory,
+                                       Object context ) {
                 int price = ((Number) previousDeclarations[0].getValue( (InternalWorkingMemory) workingMemory,
                                                                         workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) )).intValue();
                 return FieldFactory.getFieldValue( 2 * price );
 
+            }
+
+            public Object createContext() {
+                return null;
             }
         };
 
@@ -385,26 +402,32 @@ public class FieldConstraintTest extends TestCase {
         constraint.addAlphaConstraint( constraint1 );
         constraint.addAlphaConstraint( constraint2 );
 
+        final ContextEntry context = constraint.createContextEntry();
+
         final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory ) );
+                                          workingMemory,
+                                          context ) );
 
         cheddar.setPrice( 5 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory ) );
+                                           workingMemory,
+                                           context ) );
 
         cheddar.setType( "stilton" );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory ) );
+                                           workingMemory,
+                                           context ) );
 
         cheddar.setPrice( 15 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory ) );
+                                           workingMemory,
+                                           context ) );
     }
 
     /**
@@ -454,27 +477,32 @@ public class FieldConstraintTest extends TestCase {
         final OrConstraint constraint = new OrConstraint();
         constraint.addAlphaConstraint( constraint1 );
         constraint.addAlphaConstraint( constraint2 );
+        final ContextEntry context = constraint.createContextEntry();
 
         final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory ) );
+                                          workingMemory,
+                                          context ) );
 
         cheddar.setPrice( 5 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory ) );
+                                          workingMemory,
+                                          context ) );
 
         cheddar.setType( "stilton" );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory ) );
+                                           workingMemory,
+                                           context ) );
 
         cheddar.setPrice( 15 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory ) );
+                                          workingMemory,
+                                          context ) );
     }
 
     /**
@@ -547,6 +575,7 @@ public class FieldConstraintTest extends TestCase {
         final OrConstraint constraint = new OrConstraint();
         constraint.addAlphaConstraint( and1 );
         constraint.addAlphaConstraint( and2 );
+        final ContextEntry context = constraint.createContextEntry();
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            15 );
@@ -555,22 +584,26 @@ public class FieldConstraintTest extends TestCase {
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory ) );
+                                          workingMemory,
+                                          context ) );
 
         cheddar.setPrice( 5 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory ) );
+                                           workingMemory,
+                                           context ) );
 
         cheddar.setType( "stilton" );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory ) );
+                                          workingMemory,
+                                          context ) );
 
         cheddar.setPrice( 15 );
         ((ShadowProxy) cheddarHandle.getObject()).updateProxy();
         assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory ) );
+                                           workingMemory,
+                                           context ) );
     }
 
 }

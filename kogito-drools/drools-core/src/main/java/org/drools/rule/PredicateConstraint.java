@@ -211,17 +211,21 @@ public class PredicateConstraint
     }
 
     public ContextEntry createContextEntry() {
-        return new PredicateContextEntry();
+        PredicateContextEntry ctx = new PredicateContextEntry();
+        ctx.dialectContext = this.expression.createContext();
+        return ctx;
     }
 
     public boolean isAllowed(final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory,
+                             final ContextEntry ctx ) {
         try {
             return this.expression.evaluate( handle.getObject(),
                                              null,
                                              this.previousDeclarations,
                                              this.localDeclarations,
-                                             workingMemory );
+                                             workingMemory,
+                                             ((PredicateContextEntry) ctx).dialectContext );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
                                               e );
@@ -230,7 +234,8 @@ public class PredicateConstraint
 
     public boolean isAllowed(Extractor extractor,
                              InternalFactHandle handle,
-                             InternalWorkingMemory workingMemory) {
+                             InternalWorkingMemory workingMemory, 
+                             ContextEntry context ) {
         throw new UnsupportedOperationException("Method not supported. Please contact development team.");
     }
 
@@ -242,7 +247,8 @@ public class PredicateConstraint
                                              ctx.leftTuple,
                                              this.previousDeclarations,
                                              this.localDeclarations,
-                                             ctx.workingMemory );
+                                             ctx.workingMemory,
+                                             ctx.dialectContext );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
                                               e );
@@ -257,7 +263,8 @@ public class PredicateConstraint
                                              tuple,
                                              this.previousDeclarations,
                                              this.localDeclarations,
-                                             ctx.workingMemory );
+                                             ctx.workingMemory,
+                                             ctx.dialectContext );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "Exception executing predicate " + this.expression,
                                               e );
@@ -290,6 +297,8 @@ public class PredicateConstraint
         public ReteTuple             leftTuple;
         public Object                rightObject;
         public InternalWorkingMemory workingMemory;
+        
+        public Object                dialectContext;
 
         private ContextEntry         entry;
 

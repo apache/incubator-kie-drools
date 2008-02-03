@@ -18,11 +18,15 @@ package org.drools.spi;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.rule.ContextEntry;
 
 public interface AlphaNodeFieldConstraint
     extends
     Constraint {
+    
+    public ContextEntry createContextEntry();
 
     public boolean isAllowed(InternalFactHandle handle,
-                             InternalWorkingMemory workingMemory);
+                             InternalWorkingMemory workingMemory,
+                             ContextEntry context);
 }

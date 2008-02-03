@@ -3,7 +3,6 @@ package org.drools.rule;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.AbstractCompositeRestriction.CompositeContextEntry;
 import org.drools.spi.Extractor;
 import org.drools.spi.Restriction;
 
@@ -17,11 +16,13 @@ public class OrCompositeRestriction extends AbstractCompositeRestriction {
 
     public boolean isAllowed(final Extractor extractor,
                              final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory,
+                             final ContextEntry context ) {
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
             if ( this.restrictions[i].isAllowed( extractor,
                                                  handle,
-                                                 workingMemory ) ) {
+                                                 workingMemory,
+                                                 context ) ) {
                 return true;
             }
         }

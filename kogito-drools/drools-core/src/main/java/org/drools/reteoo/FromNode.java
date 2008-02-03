@@ -10,6 +10,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
@@ -79,7 +80,8 @@ public class FromNode extends TupleSource
                 // First alpha node filters
                 for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
                     if ( !this.alphaConstraints[i].isAllowed( handle,
-                                                              workingMemory ) ) {
+                                                              workingMemory,
+                                                              memory.alphaContexts[i] ) ) {
                         // next iteration
                         isAllowed = false;
                         break;
@@ -196,7 +198,8 @@ public class FromNode extends TupleSource
                                           null,
                                           this.betaConstraints.createContext() );
         return new FromMemory( beta,
-                               this.dataProvider.createContext() );
+                               this.dataProvider.createContext(),
+                               this.alphaConstraints );
     }
 
     public boolean isTupleMemoryEnabled() {
@@ -243,16 +246,24 @@ public class FromNode extends TupleSource
         this.previousTupleSinkNode = previous;
     }
 
-    public static class FromMemory implements Serializable {
+    public static class FromMemory
+        implements
+        Serializable {
         private static final long serialVersionUID = -5802345705144095216L;
-        
-        public BetaMemory betaMemory;
-        public Object     providerContext;
+
+        public BetaMemory         betaMemory;
+        public Object             providerContext;
+        public ContextEntry[]     alphaContexts;
 
         public FromMemory(BetaMemory betaMemory,
-                          Object providerContext) {
+                          Object providerContext,
+                          AlphaNodeFieldConstraint[] constraints) {
             this.betaMemory = betaMemory;
             this.providerContext = providerContext;
+            this.alphaContexts = new ContextEntry[constraints.length];
+            for( int i = 0; i < constraints.length; i++ ) {
+                this.alphaContexts[i] = constraints[i].createContextEntry();
+            }
         }
     }
 }

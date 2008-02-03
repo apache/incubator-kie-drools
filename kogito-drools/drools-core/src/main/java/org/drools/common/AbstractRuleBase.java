@@ -532,50 +532,53 @@ abstract public class AbstractRuleBase
                 lock();
                 doUnlock = true;
             }
-            this.removalsSinceLock++;
+            try {
+                this.removalsSinceLock++;
 
-            this.eventSupport.fireBeforePackageRemoved( pkg );
+                this.eventSupport.fireBeforePackageRemoved( pkg );
 
-            final Rule[] rules = pkg.getRules();
+                final Rule[] rules = pkg.getRules();
 
-            for ( int i = 0; i < rules.length; ++i ) {
-                removeRule( pkg,
-                            rules[i] );
-            }
-
-            this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
-
-            // getting the list of referenced globals
-            final Set referencedGlobals = new HashSet();
-            for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
-                final org.drools.rule.Package pkgref = (org.drools.rule.Package) it.next();
-                if ( pkgref != pkg ) {
-                    referencedGlobals.addAll( pkgref.getGlobals().keySet() );
+                for ( int i = 0; i < rules.length; ++i ) {
+                    removeRule( pkg,
+                                rules[i] );
                 }
-            }
-            // removing globals declared inside the package that are not shared
-            for ( final Iterator it = pkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
-                final String globalName = (String) it.next();
-                if ( !referencedGlobals.contains( globalName ) ) {
-                    this.globals.remove( globalName );
+
+                this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
+
+                // getting the list of referenced globals
+                final Set referencedGlobals = new HashSet();
+                for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
+                    final org.drools.rule.Package pkgref = (org.drools.rule.Package) it.next();
+                    if ( pkgref != pkg ) {
+                        referencedGlobals.addAll( pkgref.getGlobals().keySet() );
+                    }
                 }
-            }
-            //and now the rule flows
-            final Map flows = pkg.getRuleFlows();
-            for ( final Iterator iter = flows.keySet().iterator(); iter.hasNext(); ) {
-                removeProcess( (String) iter.next() );
-            }
-            // removing the package itself from the list
-            this.pkgs.remove( pkg.getName() );
+                // removing globals declared inside the package that are not shared
+                for ( final Iterator it = pkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
+                    final String globalName = (String) it.next();
+                    if ( !referencedGlobals.contains( globalName ) ) {
+                        this.globals.remove( globalName );
+                    }
+                }
+                //and now the rule flows
+                final Map flows = pkg.getRuleFlows();
+                for ( final Iterator iter = flows.keySet().iterator(); iter.hasNext(); ) {
+                    removeProcess( (String) iter.next() );
+                }
+                // removing the package itself from the list
+                this.pkgs.remove( pkg.getName() );
 
-            //clear all members of the pkg
-            pkg.clear();
+                //clear all members of the pkg
+                pkg.clear();
 
-            this.eventSupport.fireAfterPackageRemoved( pkg );
+                this.eventSupport.fireAfterPackageRemoved( pkg );
 
-            // only unlock if it had been acquired implicitely
-            if ( doUnlock ) {
-                unlock();
+                // only unlock if it had been acquired implicitely
+            } finally {
+                if ( doUnlock ) {
+                    unlock();
+                }
             }
         }
     }

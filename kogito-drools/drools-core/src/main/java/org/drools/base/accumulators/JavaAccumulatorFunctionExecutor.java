@@ -75,7 +75,8 @@ public class JavaAccumulatorFunctionExecutor
                                                        leftTuple,
                                                        declarations,
                                                        innerDeclarations,
-                                                       workingMemory ).getValue();
+                                                       workingMemory,
+                                                       workingMemoryContext ).getValue();
         this.function.accumulate( context,
                                   value );
     }
@@ -91,7 +92,8 @@ public class JavaAccumulatorFunctionExecutor
                                                        leftTuple,
                                                        declarations,
                                                        innerDeclarations,
-                                                       workingMemory ).getValue();
+                                                       workingMemory,
+                                                       workingMemoryContext ).getValue();
         this.function.reverse( context,
                                value );
     }

@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.base.ValueType;
 import org.drools.spi.Evaluator;
 

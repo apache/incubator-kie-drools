@@ -99,12 +99,14 @@ public class ReturnValueConstraint
     }
 
     public boolean isAllowed(final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemory) {
+                             final InternalWorkingMemory workingMemory,
+                             final ContextEntry context ) {
         try {
             return this.restriction.isAllowed( this.fieldExtractor,
                                                handle,
                                                null,
-                                               workingMemory );
+                                               workingMemory,
+                                               context );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction + " : " + e.getMessage(),
                                               e );
@@ -118,7 +120,8 @@ public class ReturnValueConstraint
             return this.restriction.isAllowed( this.fieldExtractor,
                                                handle,
                                                ctx.getTuple(),
-                                               ctx.getWorkingMemory() );
+                                               ctx.getWorkingMemory(),
+                                               ctx );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction + " : " + e.getMessage(),
                                               e );
@@ -132,7 +135,8 @@ public class ReturnValueConstraint
             return this.restriction.isAllowed( this.fieldExtractor,
                                                ctx.getHandle(),
                                                tuple,
-                                               ctx.getWorkingMemory() );
+                                               ctx.getWorkingMemory(),
+                                               ctx );
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( "Exception executing ReturnValue constraint " + this.restriction + " : " + e.getMessage(),
                                               e );

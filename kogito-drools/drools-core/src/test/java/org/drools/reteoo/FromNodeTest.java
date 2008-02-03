@@ -176,7 +176,7 @@ public class FromNodeTest extends TestCase {
         final FromNode from = new FromNode( 3,
                                             dataProvider,
                                             null,
-                                            null,
+                                            new AlphaNodeFieldConstraint[0],
                                             betaConstraints );
         final MockTupleSink sink = new MockTupleSink( 5 );
         from.addTupleSink( sink );

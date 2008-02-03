@@ -57,7 +57,8 @@ public class LiteralRestriction
 
     public boolean isAllowed(final Extractor extractor,
                              final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemoiry) {
+                             final InternalWorkingMemory workingMemoiry,
+                             final ContextEntry context ) {
         return this.evaluator.evaluate( null,
                                         extractor,
                                         handle.getObject(),
