@@ -1,0 +1,12 @@
+package fred;
+
+import org.drools.Person;
+
+global java.util.List results;
+
+rule "Find fred"
+when
+    $p : Person( name == "fred" )
+then
+    results.add( $p );
+end
