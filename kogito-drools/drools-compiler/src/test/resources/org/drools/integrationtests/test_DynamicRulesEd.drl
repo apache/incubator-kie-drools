@@ -1,0 +1,12 @@
+package ed;
+
+import org.drools.Person;
+
+global java.util.List results;
+
+rule "Find ed"
+when
+    $p : Person( name == "ed" )
+then
+    results.add( $p );
+end
