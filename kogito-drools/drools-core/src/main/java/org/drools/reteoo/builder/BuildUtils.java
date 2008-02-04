@@ -50,7 +50,7 @@ import org.drools.spi.ObjectType;
  */
 public class BuildUtils {
 
-    private final Map componentBuilders = new HashMap();
+    private final Map<Class<?>, ReteooComponentBuilder> componentBuilders = new HashMap<Class<?>, ReteooComponentBuilder>();
 
     /**
      * Adds the given builder for the given target to the builders map
@@ -58,7 +58,7 @@ public class BuildUtils {
      * @param target
      * @param builder
      */
-    public void addBuilder(final Class target,
+    public void addBuilder(final Class<?> target,
                            final ReteooComponentBuilder builder) {
         this.componentBuilders.put( target,
                                     builder );
@@ -71,7 +71,7 @@ public class BuildUtils {
      * @return returns null if not found
      */
     public ReteooComponentBuilder getBuilderFor(final RuleConditionElement target) {
-        return (ReteooComponentBuilder) this.componentBuilders.get( target.getClass() );
+        return this.componentBuilders.get( target.getClass() );
     }
 
     /**
@@ -175,7 +175,7 @@ public class BuildUtils {
      * @return
      */
     public BetaConstraints createBetaNodeConstraint(final BuildContext context,
-                                                    final List list,
+                                                    final List<BetaNodeFieldConstraint> list,
                                                     final boolean disableIndexing ) {
         BetaConstraints constraints;
         switch ( list.size() ) {
@@ -183,27 +183,27 @@ public class BuildUtils {
                 constraints = EmptyBetaConstraints.getInstance();
                 break;
             case 1 :
-                constraints = new SingleBetaConstraints( (BetaNodeFieldConstraint) list.get( 0 ),
+                constraints = new SingleBetaConstraints( list.get( 0 ),
                                                          context.getRuleBase().getConfiguration(),
                                                          disableIndexing );
                 break;
             case 2 :
-                constraints = new DoubleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = new DoubleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
                                                          context.getRuleBase().getConfiguration(),
                                                          disableIndexing  );
                 break;
             case 3 :
-                constraints = new TripleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = new TripleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
                                                          context.getRuleBase().getConfiguration(),
                                                          disableIndexing  );
                 break;
             case 4 :
-                constraints = new QuadroupleBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = new QuadroupleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
                                                              context.getRuleBase().getConfiguration(),
                                                              disableIndexing  );
                 break;
             default :
-                constraints = new DefaultBetaConstraints( (BetaNodeFieldConstraint[]) list.toArray( new BetaNodeFieldConstraint[list.size()] ),
+                constraints = new DefaultBetaConstraints( list.toArray( new BetaNodeFieldConstraint[list.size()] ),
                                                           context.getRuleBase().getConfiguration(),
                                                           disableIndexing  );
         }
@@ -218,10 +218,10 @@ public class BuildUtils {
      */
     public void checkUnboundDeclarations(final BuildContext context,
                                          final Declaration[] declarations) throws InvalidPatternException {
-        final List list = new ArrayList();
+        final List<String> list = new ArrayList<String>();
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            for ( final ListIterator it = context.stackIterator(); it.hasPrevious(); ) {
-                final RuleConditionElement rce = (RuleConditionElement) it.previous();
+            for ( final ListIterator<RuleConditionElement> it = (ListIterator<RuleConditionElement>) context.stackIterator(); it.hasPrevious(); ) {
+                final RuleConditionElement rce = it.previous();
                 final Declaration decl = rce.resolveDeclaration( declarations[i].getIdentifier() );
                 if ( decl == null || decl.getPattern().getOffset() > declarations[i].getPattern().getOffset() ) {
                     list.add( declarations[i].getIdentifier() );
