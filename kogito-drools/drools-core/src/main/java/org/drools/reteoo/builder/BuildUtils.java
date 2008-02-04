@@ -94,6 +94,7 @@ public class BuildUtils {
             EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( ((EntryPointNode)candidate).getEntryPoint() );
             if( epn != null ) {
                 node = epn;
+                node.addShare();
             }
         } else if( candidate instanceof ObjectTypeNode ) {
             // object type nodes are always shared
@@ -103,6 +104,7 @@ public class BuildUtils {
                 otn = map.get( otn.getObjectType() );
                 if ( otn != null ) {
                     node = otn;
+                    node.addShare();
                 }
             }
         } else if( isSharingEnabledForNode( context, candidate ) ) {
