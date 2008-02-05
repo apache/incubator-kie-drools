@@ -18,7 +18,7 @@ import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
 import org.drools.Person;
 
-public class CompiledFunctionsTest extends TestCase {
+public class CompiledFunctionsTest { //extends TestCase {
 //    private CLPParser parser;
 //
 //    public void testPrintout() throws Exception {        
