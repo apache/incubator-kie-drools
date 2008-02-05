@@ -5,7 +5,6 @@ import org.drools.clips.Function;
 import org.drools.clips.FunctionHandlers;
 import org.drools.clips.LispAtom;
 import org.drools.clips.LispForm;
-import org.drools.clips.MVELBuildContext;
 import org.drools.clips.SExpression;
 
 public class IfFunction implements Function {
@@ -15,12 +14,12 @@ public class IfFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm lispForm, Appendable appendable, MVELBuildContext context) {
+    public void dump(LispForm lispForm, Appendable appendable) {
         SExpression[] sExpressions = lispForm.getSExpressions();
 
         appendable.append( "if " );
         
-        FunctionHandlers.dump( sExpressions[1], appendable, context );
+        FunctionHandlers.dump( sExpressions[1], appendable );
         
         appendable.append( "{" );
         int i = 3;
@@ -30,7 +29,7 @@ public class IfFunction implements Function {
                 i++;
                 break;
             }
-            FunctionHandlers.dump( sExpressions[i], appendable, context );
+            FunctionHandlers.dump( sExpressions[i], appendable );
         }  
         appendable.append( "}" );
         
@@ -43,7 +42,7 @@ public class IfFunction implements Function {
                     i++;
                     break;
                 }
-                FunctionHandlers.dump( sExpressions[i], appendable, context );
+                FunctionHandlers.dump( sExpressions[i], appendable );
             }        
             appendable.append( "}" );  
         }             

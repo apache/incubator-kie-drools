@@ -5,7 +5,6 @@ import org.drools.clips.Function;
 import org.drools.clips.FunctionHandlers;
 import org.drools.clips.LispAtom;
 import org.drools.clips.LispForm;
-import org.drools.clips.MVELBuildContext;
 import org.drools.clips.SExpression;
 
 public class SwitchFunction implements Function {     
@@ -15,15 +14,15 @@ public class SwitchFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm lispForm, Appendable appendable, MVELBuildContext context) {
+    public void dump(LispForm lispForm, Appendable appendable) {
         SExpression[] sExpressions = lispForm.getSExpressions();
 
         appendable.append( "switchvar = " );
         LispForm expr = ( LispForm ) sExpressions[1];
         if ( expr.getSExpressions().length > 1 ) {
-            FunctionHandlers.dump( expr, appendable, context );
+            FunctionHandlers.dump( expr, appendable );
         } else {
-            FunctionHandlers.dump( expr.getSExpressions()[0], appendable, context );
+            FunctionHandlers.dump( expr.getSExpressions()[0], appendable );
         }
         appendable.append( ";\n" );
         
@@ -31,10 +30,10 @@ public class SwitchFunction implements Function {
         
         appendable.append( "if ( switchvar == " );            
         
-        FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable, context );            
+        FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );            
         appendable.append( ") {" );
         for ( int j = 3, jlength = caseForm.getSExpressions().length; j < jlength; j++ ) {
-            FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, context );
+            FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable );
         }        
         appendable.append( "}" );
         
@@ -42,11 +41,11 @@ public class SwitchFunction implements Function {
             caseForm = ( LispForm ) sExpressions[i];
             
             appendable.append( " else if ( switchvar == " );            
-            FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable, context );            
+            FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );            
             appendable.append( ") {" );
             
             for ( int j = 3, jlength = caseForm.getSExpressions().length; j < jlength; j++ ) {
-                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, context );
+                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable );
             }
             appendable.append( "}" );
         }
@@ -54,16 +53,16 @@ public class SwitchFunction implements Function {
         caseForm = ( LispForm ) sExpressions[ sExpressions.length-1 ];
         if ( "case".equals( ((LispAtom)caseForm.getSExpressions()[0]).getValue() ) ) {
             appendable.append( " else if ( switchvar == " );            
-            FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable, context );            
+            FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );            
             appendable.append( ") {" );
             for ( int j = 3, length = caseForm.getSExpressions().length; j < length; j++ ) {
-                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, context );
+                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable );
             }        
             appendable.append( "}" );            
         } else {
             appendable.append( " else { " ); 
             for ( int j = 1, length = caseForm.getSExpressions().length; j < length; j++ ) {
-                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, context );
+                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable );
             }        
             appendable.append( "}" );            
         }        

@@ -27,7 +27,7 @@ public class FunctionHandlers {
         this.map.put( function.getName(), function );
     }
     
-    public static void dump(SExpression sExpression, Appendable appendable, MVELBuildContext context) {              
+    public static void dump(SExpression sExpression, Appendable appendable) {              
         if ( sExpression instanceof LispAtom ) {
             appendable.append( ( ( LispAtom ) sExpression).getValue() );
         } else {
@@ -35,12 +35,16 @@ public class FunctionHandlers {
             String functionName =  ( (LispAtom) form.getSExpressions()[0]).getValue();
             Function function = FunctionHandlers.getInstance().getFunction( functionName );
             if ( function != null ) {
-                function.dump(form, appendable, context );                
+                function.dump(form, appendable );                
+            } else if ( form.getSExpressions()[0] instanceof VariableLispAtom ){
+                // try and execute this as a java call
+                function = FunctionHandlers.getInstance().getFunction( "call" );
+                function.dump(form, appendable );                
             } else {
                 // execute as user function
                 appendable.append( functionName + "(" );
                 for ( int i = 1, length = form.getSExpressions().length; i < length; i++ ) {
-                    dump( form.getSExpressions()[i], appendable, context );
+                    dump( form.getSExpressions()[i], appendable );
                     if ( i < length -1 ) {
                         appendable.append( ", " );
                     }

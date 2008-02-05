@@ -11,6 +11,6 @@ public interface PrintRouterContext {
 
     public abstract boolean removeRouter(String name);
 
-    public abstract Map<String, PrintStream> getRouters();
+//    public abstract Map<String, PrintStream> getRouters();
 
 }

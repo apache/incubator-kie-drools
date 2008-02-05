@@ -51,6 +51,12 @@ public class Person
         this.likes = likes;
         this.age = age;
     }
+    
+    public void setFields(String name, String likes, int age) {
+        this.name = name;
+        this.likes = likes;
+        this.age = age;
+    }
 
     /* (non-Javadoc)
      * @see org.drools.PersonInterface#getStatus()
@@ -131,6 +137,10 @@ public class Person
         this.hair = hair;
     }
 
+    public String toLongString() {
+        return "[Person name='" + this.name + "' likes='" + this.likes + "' age='" + this.age + "']";
+    }
+    
     public String toString() {
         return "[Person name='" + this.name + "']";
     }
