@@ -19,6 +19,12 @@
 package org.drools.integrationtests;
 
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import junit.framework.TestCase;
 
@@ -26,9 +32,11 @@ import org.drools.Child;
 import org.drools.GrandParent;
 import org.drools.Parent;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 
 /**
  * This is a test case for multi-thred issues
@@ -148,6 +156,55 @@ public class MultithreadTest extends TestCase {
             return status;
         }
 
+    }
+
+    public void testExpectedFires() {
+        try {
+            final PackageBuilder packageBuilder = new PackageBuilder();
+            packageBuilder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MultithreadFiringCheck.drl" ) ) );
+            final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            ruleBase.addPackage( packageBuilder.getPackage() );
+            final Queue errorList = new ConcurrentLinkedQueue();
+            final Thread t[] = new Thread[50];
+            for ( int i = 0; i < t.length; i++ ) {
+                final int count = i;
+                t[i] = new Thread( new Runnable() {
+                    public void run() {
+                        try {
+                            final int iterations = count * 15 + 3000;
+                            final List results = new ArrayList();
+                            final StatefulSession session2 = ruleBase.newStatefulSession();
+                            session2.setGlobal( "results",
+                                                results );
+                            session2.insert( new Integer( -1 ) );
+                            for ( int k = 0; k < iterations; k++ ) {
+                                session2.insert( new Integer( k ) );
+                                if ( k + 1 != session2.getAgenda().agendaSize() ) {
+                                    errorList.add( "THREAD-" + count + " ERROR: expected agenda size=" + (k + 1) + " but was " + session2.getAgenda().agendaSize() );
+                                }
+                            }
+                            session2.fireAllRules();
+                            session2.dispose();
+                            if ( results.size() != iterations ) {
+                                errorList.add( "THREAD-" + count + " ERROR: expected fire count=" + iterations + " but was " + results.size() );
+                            }
+                        } catch ( Exception e ) {
+                            errorList.add( "THREAD-" + count + " EXCEPTION: " + e.getMessage() );
+                            e.printStackTrace();
+                        }
+                    }
+                } );
+                t[i].start();
+            }
+            for ( int i = 0; i < t.length; i++ ) {
+                t[i].join();
+            }
+            assertTrue( "Errors during execution: " + errorList.toString(),
+                        errorList.isEmpty() );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( "No exception should have been raised: "+e.getMessage());
+        }
     }
 
 }

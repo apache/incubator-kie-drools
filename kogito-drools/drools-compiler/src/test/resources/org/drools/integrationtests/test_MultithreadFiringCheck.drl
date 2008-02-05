@@ -1,0 +1,11 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "Should fire"
+when
+    $i1 : Integer( intValue == -1 )
+    $i2 : Integer( intValue > $i1 )
+then
+    results.add( $i2 );
+end
