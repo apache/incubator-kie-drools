@@ -47,7 +47,7 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.workflow.core.impl.WorkflowProcessImpl;
 import org.drools.workflow.core.node.ActionNode;
-import org.mvel.ExpressionCompiler;
+import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.ParserContext;
 
 public class JavaActionBuilderTest extends TestCase {

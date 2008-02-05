@@ -27,8 +27,8 @@ import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldExtractor;
-import org.mvel.CompiledExpression;
-import org.mvel.ExpressionCompiler;
+import org.mvel.compiler.CompiledExpression;
+import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.MVEL;
 
 /**

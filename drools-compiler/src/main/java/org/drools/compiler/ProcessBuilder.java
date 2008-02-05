@@ -104,11 +104,8 @@ public class ProcessBuilder {
                 // we can only do this is this.pkg != null, as otherwise the dialects won't be properly initialised
                 // as the dialects are initialised when the pkg is  first created
                 this.packageBuilder.getDialectRegistry().compileAll();
-
-                // some of the rules and functions may have been redefined
-                if ( pkg.getPackageCompilationData().isDirty() ) {
-                    pkg.getPackageCompilationData().reload();
-                }
+                
+                pkg.getDialectDatas().reloadDirty();
             }
         }
     }

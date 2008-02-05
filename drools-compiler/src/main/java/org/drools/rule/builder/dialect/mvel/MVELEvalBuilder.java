@@ -35,7 +35,8 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.spi.DeclarationScopeResolver;
-import org.mvel.ExpressionCompiler;
+import org.mvel.compiler.AbstractParser;
+import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
 import org.mvel.util.ParseTools;
@@ -74,7 +75,7 @@ public class MVELEvalBuilder
         try {
             final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                      null,
-                                                                     context.getPkg().getGlobals() );
+                                                                     context.getPkg().getGlobals() );            
 
             Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                       evalDescr,

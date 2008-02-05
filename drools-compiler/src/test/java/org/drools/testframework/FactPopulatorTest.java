@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.mvel.ExpressionCompiler;
+import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
 

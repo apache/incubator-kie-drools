@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
 import org.drools.spi.KnowledgeHelper;
-import org.mvel.ASTNode;
+import org.mvel.ast.ASTNode;
 import org.mvel.ast.WithNode;
 import org.mvel.integration.Interceptor;
 import org.mvel.integration.VariableResolverFactory;

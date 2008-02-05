@@ -50,11 +50,12 @@ import org.drools.objenesis.Objenesis;
 import org.drools.objenesis.ObjenesisStd;
 import org.drools.process.core.Process;
 import org.drools.rule.CompositePackageClassLoader;
+import org.drools.rule.DialectDatas;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
-import org.drools.rule.PackageCompilationData;
+import org.drools.rule.JavaDialectData;
 import org.drools.rule.Rule;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
@@ -91,9 +92,9 @@ abstract public class AbstractRuleBase
 
     protected transient MapBackedClassLoader        classLoader;
 
-	private transient Objenesis                     objenesis;
+    private transient Objenesis                     objenesis;
 
-	/** The fact handle factory. */
+    /** The fact handle factory. */
     protected FactHandleFactory                     factHandleFactory;
 
     protected Map                                   globals;
@@ -117,8 +118,8 @@ abstract public class AbstractRuleBase
     // lock for entire rulebase, used for dynamic updates
     protected final ReentrantLock                   lock                         = new ReentrantLock();
 
-    private int                                  additionsSinceLock;
-    private int                                  removalsSinceLock;
+    private int                                     additionsSinceLock;
+    private int                                     removalsSinceLock;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
@@ -161,8 +162,8 @@ abstract public class AbstractRuleBase
         this.processes = new HashMap();
         this.globals = new HashMap();
         this.statefulSessions = new ObjectHashSet();
-		this.objenesis = createObjenesis();
-	}
+        this.objenesis = createObjenesis();
+    }
 
     // ------------------------------------------------------------
     // Instance methods
@@ -200,7 +201,7 @@ abstract public class AbstractRuleBase
      *
      */
     public void doReadExternal(final ObjectInput stream) throws IOException,
-                                                      ClassNotFoundException {
+                                                        ClassNotFoundException {
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         this.pkgs = (Map) stream.readObject();
 
@@ -215,10 +216,10 @@ abstract public class AbstractRuleBase
         }
 
         this.packageClassLoader.addClassLoader( this.classLoader );
-		this.objenesis = createObjenesis();
+        this.objenesis = createObjenesis();
 
-		for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
-            this.packageClassLoader.addClassLoader( ((Package) it.next()).getPackageCompilationData().getClassLoader() );
+        for ( final Iterator it = this.pkgs.values().iterator(); it.hasNext(); ) {
+            this.packageClassLoader.addClassLoader( ((Package) it.next()).getDialectDatas().getClassLoader() );
         }
 
         // Return the rules stored as a byte[]
@@ -243,15 +244,15 @@ abstract public class AbstractRuleBase
         this.statefulSessions = new ObjectHashSet();
     }
 
-	/**
-	 * Creates Objenesis instance for the RuleBase. 
-	 * @return a standart Objenesis instanse with caching turned on.
-	 */
-	protected Objenesis createObjenesis() {
-		return new ObjenesisStd(true);
-	}
+    /**
+     * Creates Objenesis instance for the RuleBase. 
+     * @return a standart Objenesis instanse with caching turned on.
+     */
+    protected Objenesis createObjenesis() {
+        return new ObjenesisStd( true );
+    }
 
-	/**
+    /**
      * @return the id
      */
     public String getId() {
@@ -272,7 +273,7 @@ abstract public class AbstractRuleBase
 
     public synchronized void disposeStatefulSession(final StatefulSession statefulSession) {
         this.statefulSessions.remove( statefulSession );
-        for( Iterator it = statefulSession.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
+        for ( Iterator it = statefulSession.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
             this.removeEventListener( (RuleBaseEventListener) it.next() );
         }
     }
@@ -428,7 +429,7 @@ abstract public class AbstractRuleBase
                 }
             }
 
-            this.packageClassLoader.addClassLoader( newPkg.getPackageCompilationData().getClassLoader() );
+            this.packageClassLoader.addClassLoader( newPkg.getDialectDatas().getClassLoader() );
 
             this.eventSupport.fireAfterPackageAdded( newPkg );
 
@@ -451,28 +452,8 @@ abstract public class AbstractRuleBase
         final Map globals = pkg.getGlobals();
         final Map<String, ImportDeclaration> imports = pkg.getImports();
 
-        // First update the binary files
-        // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.
-        final PackageCompilationData compilationData = pkg.getPackageCompilationData();
-        final PackageCompilationData newCompilationData = newPkg.getPackageCompilationData();
-        final String[] files = newCompilationData.list();
-        for ( int i = 0, length = files.length; i < length; i++ ) {
-            compilationData.write( files[i],
-                                   newCompilationData.read( files[i] ) );
-        }
-
         // Merge imports
         imports.putAll( newPkg.getImports() );
-
-        // Add invokers
-        compilationData.putAllInvokers( newCompilationData.getInvokers() );
-
-        if ( compilationData.isDirty() ) {
-            if ( this.reloadPackageCompilationData == null ) {
-                this.reloadPackageCompilationData = new ReloadPackageCompilationData();
-            }
-            this.reloadPackageCompilationData.addPackageCompilationData( compilationData );
-        }
 
         // Add globals
         for ( final Iterator it = newPkg.getGlobals().keySet().iterator(); it.hasNext(); ) {
@@ -503,6 +484,13 @@ abstract public class AbstractRuleBase
                 pkg.addRuleFlow( flow );
             }
         }
+
+        pkg.getDialectDatas().merge( newPkg.getDialectDatas() );
+
+        if ( this.reloadPackageCompilationData == null ) {
+            this.reloadPackageCompilationData = new ReloadPackageCompilationData();
+        }
+        this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectDatas() );
     }
 
     private synchronized void addRule(final Package pkg,
@@ -544,7 +532,7 @@ abstract public class AbstractRuleBase
                                 rules[i] );
                 }
 
-                this.packageClassLoader.removeClassLoader( pkg.getPackageCompilationData().getClassLoader() );
+                this.packageClassLoader.removeClassLoader( pkg.getDialectDatas().getClassLoader() );
 
                 // getting the list of referenced globals
                 final Set referencedGlobals = new HashSet();
@@ -604,15 +592,13 @@ abstract public class AbstractRuleBase
             }
             this.removalsSinceLock++;
 
-            PackageCompilationData compilationData = null;
-
             removeRule( pkg,
                         rule );
-            compilationData = pkg.removeRule( rule );
+            pkg.removeRule( rule );
             if ( this.reloadPackageCompilationData == null ) {
                 this.reloadPackageCompilationData = new ReloadPackageCompilationData();
             }
-            this.reloadPackageCompilationData.addPackageCompilationData( compilationData );
+            this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectDatas() );
 
             // only unlock if it had been acquired implicitely
             if ( doUnlock ) {
@@ -643,15 +629,16 @@ abstract public class AbstractRuleBase
             this.eventSupport.fireBeforeFunctionRemoved( pkg,
                                                          functionName );
 
-            final PackageCompilationData compilationData = pkg.removeFunction( functionName );
-            if ( compilationData == null ) {
+            if ( !pkg.getFunctions().containsKey( functionName ) ) {
                 throw new IllegalArgumentException( "function name '" + packageName + "' does not exist in the Package '" + packageName + "'." );
             }
+
+            pkg.removeFunction( functionName );
 
             if ( this.reloadPackageCompilationData == null ) {
                 this.reloadPackageCompilationData = new ReloadPackageCompilationData();
             }
-            this.reloadPackageCompilationData.addPackageCompilationData( compilationData );
+            this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectDatas() );
 
             this.eventSupport.fireAfterFunctionRemoved( pkg,
                                                         functionName );
@@ -680,11 +667,11 @@ abstract public class AbstractRuleBase
         return process;
     }
 
-	public Objenesis getObjenesis() {
-		return objenesis;
-	}
+    public Objenesis getObjenesis() {
+        return objenesis;
+    }
 
-	protected synchronized void addStatefulSession(final StatefulSession statefulSession) {
+    protected synchronized void addStatefulSession(final StatefulSession statefulSession) {
         this.statefulSessions.add( statefulSession );
     }
 
@@ -726,15 +713,15 @@ abstract public class AbstractRuleBase
 
         synchronized ( this.pkgs ) {
             ((InternalWorkingMemory) session).setRuleBase( this );
-            ((InternalWorkingMemory) session).setId( ( nextWorkingMemoryCounter() ) );
+            ((InternalWorkingMemory) session).setId( (nextWorkingMemoryCounter()) );
 
-            ExecutorService executor = ExecutorServiceFactory.createExecutorService(  this.config.getExecutorService() );
+            ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );
 
             executor.setCommandExecutor( new CommandExecutor( session ) );
 
             if ( keepReference ) {
                 addStatefulSession( session );
-                for( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
+                for ( Iterator it = session.getRuleBaseUpdateListeners().iterator(); it.hasNext(); ) {
                     addEventListener( (RuleBaseEventListener) it.next() );
                 }
             }
@@ -781,10 +768,10 @@ abstract public class AbstractRuleBase
         // since the event support is thread-safe, no need for locks... right?
         return this.eventSupport.getEventListeners();
     }
-    
-    public boolean isEvent( Class clazz ) {
-        for( Package pkg : this.pkgs.values() ) {
-            if( pkg.isEvent( clazz ) ) {
+
+    public boolean isEvent(Class clazz) {
+        for ( Package pkg : this.pkgs.values() ) {
+            if ( pkg.isEvent( clazz ) ) {
                 return true;
             }
         }
@@ -797,18 +784,18 @@ abstract public class AbstractRuleBase
         private static final long serialVersionUID = 1L;
         private Set               set;
 
-        public void addPackageCompilationData(final PackageCompilationData packageCompilationData) {
+        public void addDialectDatas(final DialectDatas dialectDatas) {
             if ( this.set == null ) {
                 this.set = new HashSet();
             }
 
-            this.set.add( packageCompilationData );
+            this.set.add( dialectDatas );
         }
 
         public void execute(final InternalRuleBase ruleBase) {
             for ( final Iterator it = this.set.iterator(); it.hasNext(); ) {
-                final PackageCompilationData packageCompilationData = (PackageCompilationData) it.next();
-                packageCompilationData.reload();
+                final DialectDatas dialectDatas = (DialectDatas) it.next();
+                dialectDatas.reloadDirty();
             }
         }
     }

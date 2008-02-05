@@ -30,7 +30,8 @@ import org.drools.rule.Declaration;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
-import org.mvel.ExpressionCompiler;
+import org.mvel.compiler.AbstractParser;
+import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
 

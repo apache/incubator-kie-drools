@@ -225,7 +225,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 
                 final String resourceName = ClassUtils.convertClassToResourcePath(pClazzName);
                 
-                final byte[] clazzBytes = pStore.read(pClazzName);
+                final byte[] clazzBytes = pStore.read( resourceName );
                 if (clazzBytes != null) {
                     final char[] fileName = pClazzName.toCharArray();
                     try {

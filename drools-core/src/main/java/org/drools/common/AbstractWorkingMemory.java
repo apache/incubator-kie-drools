@@ -109,7 +109,6 @@ public abstract class AbstractWorkingMemory
     /** The actual memory for the <code>JoinNode</code>s. */
     protected final NodeMemories                         nodeMemories;
 
-    
     protected final ObjectStore                          objectStore;
 
     protected Map                                        queryResults                                  = Collections.EMPTY_MAP;
@@ -126,9 +125,9 @@ public abstract class AbstractWorkingMemory
 
     protected AgendaEventSupport                         agendaEventSupport                            = new AgendaEventSupport();
 
-    protected RuleFlowEventSupport                workflowEventSupport                          = new RuleFlowEventSupport();
-    
-    protected List                                  __ruleBaseEventListeners                      = new LinkedList();                      
+    protected RuleFlowEventSupport                       workflowEventSupport                          = new RuleFlowEventSupport();
+
+    protected List                                       __ruleBaseEventListeners                      = new LinkedList();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
     protected transient InternalRuleBase                 ruleBase;
@@ -164,7 +163,7 @@ public abstract class AbstractWorkingMemory
     private int                                          processCounter;
 
     private WorkItemManager                              workItemManager;
-    
+
     private Map<String, ProcessInstanceFactory>          processInstanceFactories                      = new HashMap();
 
     private TimeMachine                                  timeMachine                                   = new TimeMachine();
@@ -192,7 +191,7 @@ public abstract class AbstractWorkingMemory
         this.globalResolver = new MapGlobalResolver();
         this.maintainTms = this.ruleBase.getConfiguration().isMaintainTms();
         this.sequential = this.ruleBase.getConfiguration().isSequential();
-        
+
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
 
         if ( this.maintainTms ) {
@@ -200,10 +199,11 @@ public abstract class AbstractWorkingMemory
         } else {
             this.tms = null;
         }
-        
+
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
-        
-        this.objectStore = new SingleThreadedObjectStore(conf, this.lock);        
+
+        this.objectStore = new SingleThreadedObjectStore( conf,
+                                                          this.lock );
 
         // Only takes effect if are using idententity behaviour for assert
         if ( conf.getLogicalOverride() == LogicalOverride.DISCARD ) {
@@ -213,8 +213,8 @@ public abstract class AbstractWorkingMemory
         }
 
         this.workItemManager = new WorkItemManager( this );
-        this.processInstanceFactories.put(
-            RuleFlowProcess.RULEFLOW_TYPE, new RuleFlowProcessInstanceFactory());
+        this.processInstanceFactories.put( RuleFlowProcess.RULEFLOW_TYPE,
+                                           new RuleFlowProcessInstanceFactory() );
 
         this.typeConfMap = new HashMap<EntryPoint, Map<Object, ObjectTypeConf>>();
     }
@@ -519,7 +519,7 @@ public abstract class AbstractWorkingMemory
     public Object getObject(final FactHandle handle) {
         return this.objectStore.getObjectForHandle( (InternalFactHandle) handle );
     }
-    
+
     public ObjectStore getObjectStore() {
         return this.objectStore;
     }
@@ -530,7 +530,7 @@ public abstract class AbstractWorkingMemory
     public FactHandle getFactHandle(final Object object) {
         return this.objectStore.getHandleForObject( object );
     }
-    
+
     /**
      * @see WorkingMemory
      */
@@ -543,7 +543,7 @@ public abstract class AbstractWorkingMemory
      * iteration may give unexpected results
      */
     public Iterator iterateObjects() {
-        return this.objectStore.iterateObjects( );
+        return this.objectStore.iterateObjects();
     }
 
     /**
@@ -741,7 +741,8 @@ public abstract class AbstractWorkingMemory
                                                        typeConf.isEvent(),
                                                        duration,
                                                        this );
-            this.objectStore.addHandle( handle, object );
+            this.objectStore.addHandle( handle,
+                                        object );
             insert( entryPoint,
                     handle,
                     object,
@@ -753,7 +754,7 @@ public abstract class AbstractWorkingMemory
         try {
             this.lock.lock();
             // check if the object already exists in the WM
-            handle = (InternalFactHandle) this.objectStore.getHandleForObject(object);
+            handle = (InternalFactHandle) this.objectStore.getHandleForObject( object );
 
             if ( this.maintainTms ) {
 
@@ -799,7 +800,8 @@ public abstract class AbstractWorkingMemory
                                                                typeConf.isEvent(),
                                                                duration,
                                                                this );
-                    this.objectStore.addHandle( handle, object );
+                    this.objectStore.addHandle( handle,
+                                                object );
 
                     key = new EqualityKey( handle );
                     handle.setEqualityKey( key );
@@ -834,7 +836,8 @@ public abstract class AbstractWorkingMemory
                                 // before replacing the object
                                 // and then re-add the handle. Otherwise we may
                                 // end up with a leak.
-                                this.objectStore.updateHandle( handle, object );
+                                this.objectStore.updateHandle( handle,
+                                                               object );
                             } else {
                                 Object oldObject = handle.getObject();
                                 if ( oldObject instanceof ShadowProxy ) {
@@ -854,7 +857,8 @@ public abstract class AbstractWorkingMemory
                                                                        this );
                             handle.setEqualityKey( key );
                             key.addFactHandle( handle );
-                            this.objectStore.addHandle( handle, object );
+                            this.objectStore.addHandle( handle,
+                                                        object );
 
                         }
 
@@ -863,7 +867,8 @@ public abstract class AbstractWorkingMemory
                                                                    typeConf.isEvent(),
                                                                    duration,
                                                                    this );
-                        this.objectStore.addHandle( handle, object );
+                        this.objectStore.addHandle( handle,
+                                                    object );
                         key.addFactHandle( handle );
                         handle.setEqualityKey( key );
 
@@ -894,7 +899,8 @@ public abstract class AbstractWorkingMemory
                                                            typeConf.isEvent(),
                                                            duration,
                                                            this );
-                this.objectStore.addHandle( handle, object );
+                this.objectStore.addHandle( handle,
+                                            object );
 
             }
 
@@ -1105,23 +1111,23 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-//    private void addHandleToMaps(InternalFactHandle handle) {
-//        this.assertMap.put( handle,
-//                            handle,
-//                            false );
-//        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-//            this.identityMap.put( handle,
-//                                  handle,
-//                                  false );
-//        }
-//    }
-//
-//    private void removeHandleFromMaps(final InternalFactHandle handle) {
-//        this.assertMap.remove( handle );
-//        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
-//            this.identityMap.remove( handle );
-//        }
-//    }
+    //    private void addHandleToMaps(InternalFactHandle handle) {
+    //        this.assertMap.put( handle,
+    //                            handle,
+    //                            false );
+    //        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+    //            this.identityMap.put( handle,
+    //                                  handle,
+    //                                  false );
+    //        }
+    //    }
+    //
+    //    private void removeHandleFromMaps(final InternalFactHandle handle) {
+    //        this.assertMap.remove( handle );
+    //        if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.EQUALITY ) {
+    //            this.identityMap.remove( handle );
+    //        }
+    //    }
 
     public void modifyRetract(final FactHandle factHandle) {
         modifyRetract( factHandle,
@@ -1349,7 +1355,8 @@ public abstract class AbstractWorkingMemory
 
                 // set anyway, so that it updates the hashCodes
                 handle.setObject( object );
-                this.objectStore.addHandle( handle, object );
+                this.objectStore.addHandle( handle,
+                                            object );
             }
 
             if ( this.maintainTms ) {
@@ -1504,16 +1511,18 @@ public abstract class AbstractWorkingMemory
     }
 
     public ProcessInstance startProcess(final String processId) {
-        return startProcess(processId, null);
+        return startProcess( processId,
+                             null );
     }
-    
-    public ProcessInstance startProcess(String processId, Map<String, Object> parameters) {
+
+    public ProcessInstance startProcess(String processId,
+                                        Map<String, Object> parameters) {
         final Process process = ((InternalRuleBase) getRuleBase()).getProcess( processId );
         if ( process == null ) {
             throw new IllegalArgumentException( "Unknown process ID: " + processId );
         }
-        ProcessInstanceFactory factory = processInstanceFactories.get(process.getType());
-        if (factory == null) {
+        ProcessInstanceFactory factory = processInstanceFactories.get( process.getType() );
+        if ( factory == null ) {
             throw new IllegalArgumentException( "Could not create process instance for type: " + process.getType() );
         }
         ProcessInstance processInstance = factory.createProcessInstance();
@@ -1522,9 +1531,10 @@ public abstract class AbstractWorkingMemory
         processInstance.setId( ++processCounter );
         processInstances.put( new Long( processInstance.getId() ),
                               processInstance );
-        if (parameters != null) {
-            for (Map.Entry<String, Object> entry: parameters.entrySet()) {
-                processInstance.setVariable(entry.getKey(), entry.getValue());
+        if ( parameters != null ) {
+            for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
+                processInstance.setVariable( entry.getKey(),
+                                             entry.getValue() );
             }
         }
         getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance,
@@ -1547,9 +1557,11 @@ public abstract class AbstractWorkingMemory
     public void removeProcessInstance(ProcessInstance processInstance) {
         processInstances.remove( processInstance );
     }
-    
-    public void registerProcessInstanceFactory(String type, ProcessInstanceFactory processInstanceFactory) {
-        processInstanceFactories.put(type, processInstanceFactory);
+
+    public void registerProcessInstanceFactory(String type,
+                                               ProcessInstanceFactory processInstanceFactory) {
+        processInstanceFactories.put( type,
+                                      processInstanceFactory );
     }
 
     public WorkItemManager getWorkItemManager() {

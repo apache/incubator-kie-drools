@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
-import org.mvel.CompiledExpression;
+import org.mvel.compiler.CompiledExpression;
 import org.mvel.MVEL;
 import org.mvel.debug.DebugTools;
 

@@ -84,6 +84,10 @@ public class RuleBuildContext extends PackageBuildContext {
                        ruleDescr.getAttributes() );
         
         init(configuration, pkg, ruleDescr, dialectRegistry, defaultDialect, this.rule );
+        
+        if ( this.rule.getDialect() == null ) {
+            this.rule.setDialect( getDialect().getId() );
+        }
 
         getDialect().init( ruleDescr );
     }

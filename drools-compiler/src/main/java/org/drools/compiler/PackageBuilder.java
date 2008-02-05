@@ -306,7 +306,10 @@ public class PackageBuilder {
 
                 // iterate and compile
                 for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-                    addFunction( (FunctionDescr) it.next() );
+                    // inherit the dialect from the package
+                    FunctionDescr functionDescr = (FunctionDescr) it.next();
+                    functionDescr.setDialect( this.dialect.getId() );
+                    addFunction(  functionDescr );
                 }
 
                 // We need to compile all the functions, so scripting languages like mvel can find them
@@ -326,11 +329,11 @@ public class PackageBuilder {
         }
 
         this.dialectRegistry.compileAll();
+        
+        
 
         // some of the rules and functions may have been redefined
-        if ( this.pkg.getPackageCompilationData().isDirty() ) {
-            this.pkg.getPackageCompilationData().reload();
-        }
+        this.pkg.getDialectDatas().reloadDirty();
         this.results = this.dialectRegistry.addResults( this.results );
     }
 
@@ -470,8 +473,8 @@ public class PackageBuilder {
      * Compiled packages are serializable.
      */
     public Package getPackage() {
-        if ( this.pkg != null && this.pkg.getPackageCompilationData() != null && this.pkg.getPackageCompilationData().isDirty() ) {
-            this.pkg.getPackageCompilationData().reload();
+        if ( this.pkg != null ) {
+            this.pkg.getDialectDatas().reloadDirty();
         }
         if ( hasErrors() && this.pkg != null ) {
             this.pkg.setError( getErrors().toString() );

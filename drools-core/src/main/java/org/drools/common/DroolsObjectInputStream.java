@@ -10,6 +10,7 @@ import java.io.ObjectStreamClass;
 import java.util.HashMap;
 
 import org.drools.base.ClassFieldExtractorCache;
+import org.drools.rule.DialectDatas;
 import org.drools.rule.Package;
 
 public class DroolsObjectInputStream extends ObjectInputStream {
@@ -17,6 +18,7 @@ public class DroolsObjectInputStream extends ObjectInputStream {
     private InternalRuleBase         ruleBase;
     private InternalWorkingMemory    workingMemory;
     private Package                  pkg;
+    private DialectDatas             dialectDatas;
     private ClassFieldExtractorCache extractorFactory;
 
     /** table mapping primitive type names to corresponding class objects */
@@ -107,6 +109,14 @@ public class DroolsObjectInputStream extends ObjectInputStream {
 
     public void setPackage(Package pkg) {
         this.pkg = pkg;
+    }      
+
+    public DialectDatas getDialectDatas() {
+        return this.dialectDatas;
+    }
+
+    public void setDialectDatas(DialectDatas dialectDatas) {
+        this.dialectDatas = dialectDatas;
     }
 
     public ClassFieldExtractorCache getExtractorFactory() {

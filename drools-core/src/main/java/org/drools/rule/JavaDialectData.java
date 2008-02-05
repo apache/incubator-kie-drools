@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
@@ -44,11 +45,13 @@ import org.drools.spi.EvalExpression;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueEvaluator;
 import org.drools.spi.ReturnValueExpression;
+import org.drools.util.StringUtils;
 import org.drools.workflow.core.node.ActionNode;
 import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
-public class PackageCompilationData
+public class JavaDialectData
     implements
+    DialectData,
     Externalizable {
 
     /**
@@ -63,19 +66,17 @@ public class PackageCompilationData
     private Object                        AST;
 
     private Map                           store;
-
-    private Map                           lineMappings;
+    
+    private DialectDatas                  datas;
 
     private transient PackageClassLoader  classLoader;
 
-    private transient ClassLoader         parentClassLoader;
-    
     private boolean                       dirty;
 
     static {
         PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
             public Object run() {
-                return PackageCompilationData.class.getProtectionDomain();
+                return JavaDialectData.class.getProtectionDomain();
             }
         } );
     }
@@ -84,28 +85,21 @@ public class PackageCompilationData
      * Default constructor - for Externalizable. This should never be used by a user, as it
      * will result in an invalid state for the instance.
      */
-    public PackageCompilationData() {
+    public JavaDialectData() {
 
     }
 
-    public PackageCompilationData(final ClassLoader parentClassLoader) {
-        initClassLoader( parentClassLoader );
+    public JavaDialectData(final DialectDatas datas) {
+        this.datas = datas;
+        this.classLoader = new PackageClassLoader( this.datas.getParentClassLoader() );
+        this.datas.addClassLoader( this.classLoader );
         this.invokerLookups = new HashMap();
         this.store = new HashMap();
-        this.lineMappings = new HashMap();
         this.dirty = false;
     }
-    
+
     public boolean isDirty() {
         return this.dirty;
-    }
-
-    private void initClassLoader(ClassLoader parentClassLoader) {
-        if ( parentClassLoader == null ) {
-            throw new RuntimeDroolsException( "PackageCompilationData cannot have a null parentClassLoader" );
-        }
-        this.parentClassLoader = parentClassLoader;
-        this.classLoader = new PackageClassLoader( this.parentClassLoader );
     }
 
     /**
@@ -133,13 +127,11 @@ public class PackageCompilationData
      */
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
-        if ( stream instanceof DroolsObjectInputStream ) {
-            DroolsObjectInputStream droolsStream = (DroolsObjectInputStream) stream;
-            initClassLoader( droolsStream.getClassLoader() );
-        } else {
-            initClassLoader( Thread.currentThread().getContextClassLoader() );
-        }
-
+        DroolsObjectInputStream droolsStream = (DroolsObjectInputStream) stream;
+        this.datas = droolsStream.getDialectDatas();
+        this.classLoader = new PackageClassLoader( this.datas.getParentClassLoader() );
+        this.datas.addClassLoader( this.classLoader );
+                
         this.store = (Map) stream.readObject();
         this.AST = stream.readObject();
 
@@ -156,11 +148,72 @@ public class PackageCompilationData
         return this.classLoader;
     }
 
+    public void removeRule(Package pkg,
+                           Rule rule) {
+        final String consequenceName = rule.getConsequence().getClass().getName();
+
+        // check for compiled code and remove if present.
+        if ( remove( consequenceName ) ) {
+            removeClasses( rule.getLhs() );
+
+            // Now remove the rule class - the name is a subset of the consequence name
+            remove( consequenceName.substring( 0,
+                                               consequenceName.indexOf( "ConsequenceInvoker" ) ) );
+        }
+    }
+
+    public void removeFunction(Package pkg,
+                               Function function) {
+        remove( pkg.getName() + "." + StringUtils.ucFirst( function.getName() ) );
+    }
+
+    public void merge(DialectData newData) {
+        JavaDialectData newJavaData = (JavaDialectData) newData;
+
+        // First update the binary files
+        // @todo: this probably has issues if you add classes in the incorrect order - functions, rules, invokers.
+        final String[] files = newJavaData.list();
+        for ( int i = 0, length = files.length; i < length; i++ ) {
+            write( files[i],
+                   newJavaData.read( files[i] ) );
+        }
+
+        // Add invokers
+        putAllInvokers( newJavaData.getInvokers() );
+    }
+
+    private void removeClasses(final ConditionalElement ce) {
+        if ( ce instanceof GroupElement ) {
+            final GroupElement group = (GroupElement) ce;
+            for ( final Iterator it = group.getChildren().iterator(); it.hasNext(); ) {
+                final Object object = it.next();
+                if ( object instanceof ConditionalElement ) {
+                    removeClasses( (ConditionalElement) object );
+                } else if ( object instanceof Pattern ) {
+                    removeClasses( (Pattern) object );
+                }
+            }
+        } else if ( ce instanceof EvalCondition ) {
+            remove( ((EvalCondition) ce).getEvalExpression().getClass().getName() );
+        }
+    }
+
+    private void removeClasses(final Pattern pattern) {
+        for ( final Iterator it = pattern.getConstraints().iterator(); it.hasNext(); ) {
+            final Object object = it.next();
+            if ( object instanceof PredicateConstraint ) {
+                remove( ((PredicateConstraint) object).getPredicateExpression().getClass().getName() );
+            } else if ( object instanceof ReturnValueConstraint ) {
+                remove( ((ReturnValueConstraint) object).getExpression().getClass().getName() );
+            }
+        }
+    }
+
     public byte[] read(final String resourceName) {
         byte[] bytes = null;
 
         if ( this.store != null ) {
-            bytes = ( byte[] ) this.store.get( resourceName );
+            bytes = (byte[]) this.store.get( resourceName );
         }
         return bytes;
     }
@@ -214,7 +267,8 @@ public class PackageCompilationData
      */
     public void reload() throws RuntimeDroolsException {
         // drops the classLoader and adds a new one
-        this.classLoader = new PackageClassLoader( this.parentClassLoader );
+        this.classLoader = new PackageClassLoader( this.datas.getParentClassLoader() );
+        this.datas.addClassLoader( this.classLoader );
 
         // Wire up invokers
         try {
@@ -298,17 +352,6 @@ public class PackageCompilationData
         this.invokerLookups.remove( className );
     }
 
-    public Map getLineMappings() {
-        if ( this.lineMappings == null ) {
-            this.lineMappings = new HashMap();
-        }
-        return this.lineMappings;
-    }
-
-    public LineMappings getLineMappings(final String className) {
-        return (LineMappings) getLineMappings().get( className );
-    }
-
     public Object getAST() {
         return this.AST;
     }
@@ -383,8 +426,9 @@ public class PackageCompilationData
             return clazz;
         }
 
+
         public InputStream getResourceAsStream(final String name) {
-            final byte[] bytes = (byte[]) PackageCompilationData.this.store.get( name );
+            final byte[] bytes = (byte[]) JavaDialectData.this.store.get( name );
             if ( bytes != null ) {
                 return new ByteArrayInputStream( bytes );
             } else {

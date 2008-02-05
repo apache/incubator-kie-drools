@@ -21,11 +21,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.compiler.Dialect;
+import org.drools.rule.Dialectable;
 
-public class RuleDescr extends BaseDescr {
+public class RuleDescr extends BaseDescr implements Dialectable {
 
     private static final long serialVersionUID = 400L;
     private String            name;
+    private String            dialect;
     private String            documentation;
 
     private AndDescr          lhs;
@@ -53,6 +55,10 @@ public class RuleDescr extends BaseDescr {
 
     public String getName() {
         return this.name;
+    }
+    
+    public String getDialect() {
+        return this.dialect;
     }
 
     public String getSalience() {
@@ -83,6 +89,12 @@ public class RuleDescr extends BaseDescr {
         if ( this.attributes == Collections.EMPTY_LIST ) {
             this.attributes = new ArrayList();
         }
+        
+        if ( "dialect".equals( attribute.getName() ) ) {
+            // set dialect specifically as its to drive the build process.
+            this.dialect = attribute.getValue();
+        }
+        
         this.attributes.add( attribute );
     }
 

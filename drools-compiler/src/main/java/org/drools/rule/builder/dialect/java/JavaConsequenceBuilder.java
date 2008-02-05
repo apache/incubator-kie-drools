@@ -33,7 +33,7 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.PatternExtractor;
-import org.mvel.ExecutableStatement;
+import org.mvel.compiler.ExecutableStatement;
 
 /**
  * @author etirelli

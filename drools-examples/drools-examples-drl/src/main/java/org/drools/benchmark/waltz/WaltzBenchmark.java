@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
@@ -41,7 +42,9 @@ public abstract class WaltzBenchmark {
             Package pkg = builder.getPackage();
             
             //add the package to a rulebase
-            final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            RuleBaseConfiguration conf = new RuleBaseConfiguration();
+            //conf.setAlphaMemory( true );
+            final RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
             ruleBase.addPackage( pkg );
             
             StatefulSession session = ruleBase.newStatefulSession();
@@ -58,8 +61,9 @@ public abstract class WaltzBenchmark {
             
             Stage stage = new Stage(Stage.DUPLICATE);
             session.insert( stage );
-            
+                        
             long start = System.currentTimeMillis();
+            session.setGlobal( "time", start );
             session.fireAllRules();
             System.out.println( (System.currentTimeMillis() - start) / 1000 );
             session.dispose();

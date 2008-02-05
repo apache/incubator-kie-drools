@@ -1,7 +1,9 @@
 package org.drools.examples
  
 import org.drools.examples.HelloWorldExample.Message;
- 
+
+global java.util.List list
+ /*
 rule "Hello World"
     dialect "mvel"
 	when
@@ -21,4 +23,14 @@ rule "Good Bye"
 		System.out.println( message ); 
 	System.out.println( message ); 
 	System.out.println( message ); 			
+end
+*/
+
+rule "new rule"
+		dialect "mvel"
+	when
+	    m : Message( status == Message.HELLO, message : message )
+		eval( null )
+	then
+		System.out.println( list );
 end

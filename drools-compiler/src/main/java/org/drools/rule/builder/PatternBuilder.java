@@ -833,7 +833,7 @@ public class PatternBuilder
                                                         factTemplate.getFieldTemplateIndex( fieldName ) );
         } else {
             try {
-                ClassLoader classloader = context.getPkg().getPackageCompilationData().getClassLoader();
+                ClassLoader classloader = context.getPkg().getDialectDatas().getClassLoader();
                 extractor = context.getDialect().getClassFieldExtractorCache().getExtractor( ((ClassObjectType) objectType).getClassType(),
                                                                                              fieldName,
                                                                                              classloader );
