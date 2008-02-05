@@ -19,25 +19,25 @@ package org.drools.rule.builder.dialect.java;
 import java.util.List;
 
 import org.drools.commons.jci.stores.ResourceStore;
-import org.drools.rule.PackageCompilationData;
+import org.drools.rule.JavaDialectData;
 
 public class PackageStore
     implements
     ResourceStore {
-    private PackageCompilationData packageCompilationData;
+    private JavaDialectData packageCompilationData;
 
     private List                   errors;
 
     public PackageStore() {
     }
 
-    public PackageStore(final PackageCompilationData packageCompiationData,
+    public PackageStore(final JavaDialectData packageCompiationData,
                         final List errors) {
         this.packageCompilationData = packageCompiationData;
         this.errors = errors;
     }
 
-    public void setPackageCompilationData(final PackageCompilationData packageCompiationData) {
+    public void setPackageCompilationData(final JavaDialectData packageCompiationData) {
         this.packageCompilationData = packageCompiationData;
     }
 

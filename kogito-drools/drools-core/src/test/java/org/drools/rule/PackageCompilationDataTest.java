@@ -21,7 +21,8 @@ public class PackageCompilationDataTest extends TestCase {
 
     public void testCodeSourceUrl() throws IOException {
         final String className = TestEvalExpression.class.getName();
-        final PackageCompilationData pcData = new PackageCompilationData(getClass().getClassLoader());
+        
+        final JavaDialectData pcData = new JavaDialectData( new DialectDatas(getClass().getClassLoader()) );
         final EvalCondition invoker = new EvalCondition(null);
         pcData.putInvoker(className, invoker);
         final InputStream is = getClass().getClassLoader().getResourceAsStream(className.replace('.', '/') + ".class");

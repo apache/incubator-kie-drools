@@ -42,7 +42,7 @@ import org.drools.workflow.core.node.StartNode;
 import org.drools.workflow.core.node.SubProcessNode;
 import org.drools.workflow.core.node.WorkItemNode;
 import org.mvel.ErrorDetail;
-import org.mvel.ExpressionCompiler;
+import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.ParserContext;
 
 /**

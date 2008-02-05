@@ -7,6 +7,8 @@ import org.drools.benchmark.waltz.Edge
 import org.drools.benchmark.waltz.Junction
 import org.drools.benchmark.waltz.WaltzUtil
 
+global Long time
+
 #If the duplicate flag is set, and there is still a line in WM, delete the line
 #and add two edges. One edge runs from p1 to p2 and the other runs from p2 to
 #p1.  We then plot the edge.
@@ -30,7 +32,9 @@ rule "reversing done" salience -10
 	then
         $stage.setValue ( Stage.DETECT_JUNCTIONS );
         update($stage);
-    	System.out.println("reversing done");
+        long current = System.currentTimeMillis();
+    	System.out.println("reversing done  : " + ( current - time ) );
+    	drools.getWorkingMemory().setGlobal( "time", current);
 end
 
 #If three edges meet at a point and none of them have already been joined in

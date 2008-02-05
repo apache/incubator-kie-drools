@@ -17,6 +17,7 @@ rule "AccumulateTest" salience 100
         results.add($totalAmount);
 end  
 
+
 rule "Accumulate with Bindings" salience 90
 	dialect "mvel"
     when
@@ -64,5 +65,4 @@ rule "Accumulate with previous Bindings" salience 60
                                                   result( total ) );
     then
         results.add($totalAmount);
-end  
-
+end 

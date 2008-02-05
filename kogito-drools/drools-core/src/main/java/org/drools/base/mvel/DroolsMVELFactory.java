@@ -237,7 +237,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                          new DroolsMVELLocalDeclarationVariable( (Declaration) this.localDeclarations.get( name ),
                                                                  this ) );
             return true;
-        } else if ( this.globals.containsKey( name ) ) {
+        } else if ( this.workingMemory.getGlobal( name ) != null ) {
             addResolver( name,
                          new DroolsMVELGlobalVariable( name,
                                                        (Class) this.globals.get( name ),

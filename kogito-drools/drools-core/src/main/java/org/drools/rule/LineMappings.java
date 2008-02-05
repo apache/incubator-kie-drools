@@ -1,6 +1,8 @@
 package org.drools.rule;
 
-public class LineMappings {
+import java.io.Serializable;
+
+public class LineMappings implements Serializable {
     private String className;
     private int    startLine;
     private int    offset;

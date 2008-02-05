@@ -76,6 +76,7 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.GroupElement;
+import org.drools.rule.JavaDialectData;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
@@ -190,7 +191,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // Make sure the compiled classes are also removed
         assertEquals( 0,
-                      pkg.getPackageCompilationData().list().length );
+                      ((JavaDialectData)pkg.getDialectDatas().getDialectData( "java" )).list().length );
 
         builder.addPackage( packageDescr );
         

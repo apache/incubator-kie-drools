@@ -2,6 +2,8 @@ package org.drools.examples;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -43,6 +45,7 @@ public class HelloWorldExample {
         ruleBase.addPackage( pkg );
 
         final StatefulSession session = ruleBase.newStatefulSession();
+        session.setGlobal( "list", new ArrayList() );
         
         session.addEventListener( new DebugAgendaEventListener() );
         session.addEventListener( new DebugWorkingMemoryEventListener() );
@@ -88,6 +91,15 @@ public class HelloWorldExample {
 
         public void setStatus(final int status) {
             this.status = status;
+        }
+        
+        public static Message doSomething(Message message) {
+            return message;
+        }
+        
+        public boolean isSomething(String msg, List list) {
+            list.add( this );        
+            return this.message.equals( msg );
         }
     }
 

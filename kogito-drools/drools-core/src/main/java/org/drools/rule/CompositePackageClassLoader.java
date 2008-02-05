@@ -1,10 +1,12 @@
 package org.drools.rule;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CompositePackageClassLoader extends ClassLoader {
+public class CompositePackageClassLoader extends ClassLoader implements DroolsClassLoader  {
 
     private final List classLoaders = new ArrayList();
 
@@ -25,7 +27,7 @@ public class CompositePackageClassLoader extends ClassLoader {
         }
     }
 
-    private Class compositeFastFindClass(final String name) {
+    public Class fastFindClass(final String name) {
         for ( final Iterator it = this.classLoaders.iterator(); it.hasNext(); ) {
             final DroolsClassLoader classLoader = (DroolsClassLoader) it.next();
             final Class clazz = classLoader.fastFindClass( name );
@@ -48,7 +50,7 @@ public class CompositePackageClassLoader extends ClassLoader {
         Class clazz = findLoadedClass( name );
 
         if ( clazz == null ) {
-            clazz = compositeFastFindClass( name );
+            clazz = fastFindClass( name );
 
             if ( clazz == null ) {
 
@@ -67,9 +69,22 @@ public class CompositePackageClassLoader extends ClassLoader {
 
         return clazz;
     }
+    
+    public InputStream getResourceAsStream(final String name) {
+        InputStream stream =  super.getResourceAsStream( name );
+        
+        for ( final Iterator it = this.classLoaders.iterator(); it.hasNext(); ) {
+            final DroolsClassLoader classLoader = (DroolsClassLoader) it.next();
+            stream = classLoader.getResourceAsStream( name );
+            if ( stream != null ) {
+                return stream;
+            }
+        }        
+        return stream;
+    }
 
     protected Class findClass(final String name) throws ClassNotFoundException {
-        final Class clazz = compositeFastFindClass( name );
+        final Class clazz = fastFindClass( name );
         if ( clazz == null ) {
             throw new ClassNotFoundException( name );
         }

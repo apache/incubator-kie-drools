@@ -20,29 +20,40 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FunctionDescr extends BaseDescr {
+import org.drools.rule.Dialectable;
+
+public class FunctionDescr extends BaseDescr implements Dialectable {
     private static final long serialVersionUID = 400L;
 
     private final String      name;
     private final String      returnType;
+    private String      dialect;
 
-    private List              parameterTypes   = Collections.EMPTY_LIST;
-    private List              parameterNames   = Collections.EMPTY_LIST;
+    private List<String>      parameterTypes   = Collections.emptyList();
+    private List<String>      parameterNames   = Collections.emptyList();
 
-    private String            text;
+    private Object            content;
 
     private int               offset;
 
     private String            className;
 
     public FunctionDescr(final String name,
-                         final String returnType) {
+                         final String returnType ) {
         this.name = name;
         this.returnType = returnType;
     }
 
     public String getName() {
         return this.name;
+    }        
+    
+    public void setDialect(String dialect) {
+        this.dialect = dialect;
+    }
+
+    public String getDialect() {
+        return this.dialect;
     }
 
     public String getClassName() {
@@ -53,23 +64,23 @@ public class FunctionDescr extends BaseDescr {
         this.className = className;
     }
 
-    public List getParameterNames() {
+    public List<String> getParameterNames() {
         return this.parameterNames;
     }
 
-    public List getParameterTypes() {
+    public List<String> getParameterTypes() {
         return this.parameterTypes;
     }
 
     public void addParameter(final String type,
                              final String name) {
         if ( this.parameterTypes == Collections.EMPTY_LIST ) {
-            this.parameterTypes = new ArrayList();
+            this.parameterTypes = new ArrayList<String>();
         }
         this.parameterTypes.add( type );
 
         if ( this.parameterNames == Collections.EMPTY_LIST ) {
-            this.parameterNames = new ArrayList();
+            this.parameterNames = new ArrayList<String>();
         }
         this.parameterNames.add( name );
     }
@@ -78,12 +89,12 @@ public class FunctionDescr extends BaseDescr {
         return this.returnType;
     }
 
-    public void setText(final String text) {
-        this.text = text;
+    public void setContent(Object content) {
+        this.content = content;
     }
 
-    public String getText() {
-        return this.text;
+    public Object getContent() {
+        return this.content;
     }
 
     public int getOffset() {

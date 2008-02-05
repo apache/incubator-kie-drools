@@ -48,7 +48,7 @@ public class MannersBenchmark {
 			String arg = args[0];
 			filename = arg;
 		} else {
-			filename = "manners64.dat";
+			filename = "manners128.dat";
 		}
 
 		InputStream is = MannersBenchmark.class.getResourceAsStream(filename);

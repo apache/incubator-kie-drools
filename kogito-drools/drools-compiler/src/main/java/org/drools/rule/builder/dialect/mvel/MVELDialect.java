@@ -63,8 +63,8 @@ import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.util.StringUtils;
-import org.mvel.AbstractParser;
-import org.mvel.ExpressionCompiler;
+import org.mvel.compiler.AbstractParser;
+import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
 import org.mvel.optimizers.OptimizerFactory;
@@ -74,33 +74,33 @@ public class MVELDialect
     implements
     Dialect {
 
-    public final static String           ID                      = "mvel";
+    public final static String                    ID                          = "mvel";
 
     private final static String                   EXPRESSION_DIALECT_NAME     = "MVEL";
 
-    private final PatternBuilder                  pattern                     = new PatternBuilder();
-    private final QueryBuilder                    query                       = new QueryBuilder();
-    private final MVELAccumulateBuilder           accumulate                  = new MVELAccumulateBuilder();
-    private final SalienceBuilder                 salience                    = new MVELSalienceBuilder();
-    private final MVELEvalBuilder                 eval                        = new MVELEvalBuilder();
-    private final MVELPredicateBuilder            predicate                   = new MVELPredicateBuilder();
-    private final MVELReturnValueBuilder          returnValue                 = new MVELReturnValueBuilder();
-    private final MVELConsequenceBuilder          consequence                 = new MVELConsequenceBuilder();
-    private final MVELActionBuilder               actionBuilder               = new MVELActionBuilder();
-    private final MVELReturnValueEvaluatorBuilder returnValueEvaluatorBuilder = new MVELReturnValueEvaluatorBuilder();
+    private static final PatternBuilder                  pattern                     = new PatternBuilder();
+    private static final QueryBuilder                    query                       = new QueryBuilder();
+    private static final MVELAccumulateBuilder           accumulate                  = new MVELAccumulateBuilder();
+    private static final SalienceBuilder                 salience                    = new MVELSalienceBuilder();
+    private static final MVELEvalBuilder                 eval                        = new MVELEvalBuilder();
+    private static final MVELPredicateBuilder            predicate                   = new MVELPredicateBuilder();
+    private static final MVELReturnValueBuilder          returnValue                 = new MVELReturnValueBuilder();
+    private static final MVELConsequenceBuilder          consequence                 = new MVELConsequenceBuilder();
+    private static final MVELActionBuilder               actionBuilder               = new MVELActionBuilder();
+    private static final MVELReturnValueEvaluatorBuilder returnValueEvaluatorBuilder = new MVELReturnValueEvaluatorBuilder();
     //private final JavaRuleClassBuilder            rule        = new JavaRuleClassBuilder();
-    private final MVELFromBuilder        from                    = new MVELFromBuilder();
-    private final JavaFunctionBuilder    function                = new JavaFunctionBuilder();
-    private final CollectBuilder         collect                 = new CollectBuilder();
-    private final ForallBuilder          forall                  = new ForallBuilder();
-    private final EntryPointBuilder      entrypoint              = new EntryPointBuilder();
+    private static final MVELFromBuilder                 from                        = new MVELFromBuilder();
+    private static final JavaFunctionBuilder             function                    = new JavaFunctionBuilder();
+    private static final CollectBuilder                  collect                     = new CollectBuilder();
+    private static final ForallBuilder                   forall                      = new ForallBuilder();
+    private static final EntryPointBuilder               entrypoint                  = new EntryPointBuilder();
 
-    private Map                          interceptors;
+    private Map                                   interceptors;
 
-    private List                         results;
+    private List                                  results;
     //private final JavaFunctionBuilder             function    = new JavaFunctionBuilder();
 
-    private MemoryResourceReader         src;
+    private MemoryResourceReader                  src;
 
     private Package                               pkg;
     private MVELDialectConfiguration              configuration;
@@ -212,7 +212,7 @@ public class MVELDialect
 
         this.builders.put( FunctionDescr.class,
                            this.function );
-        
+
         this.builders.put( EntryPointDescr.class,
                            this.entrypoint );
     }
@@ -262,7 +262,7 @@ public class MVELDialect
         mapping.setStartLine( ruleDescr.getConsequenceLine() );
         mapping.setOffset( ruleDescr.getConsequenceOffset() );
 
-        context.getPkg().getPackageCompilationData().getLineMappings().put( name,
+        context.getPkg().getDialectDatas().getLineMappings().put( name,
                                                                             mapping );
 
     }
@@ -308,7 +308,7 @@ public class MVELDialect
         String methodName = staticImportEntry.substring( index + 1 );
 
         try {
-            Class cls = this.pkg.getPackageCompilationData().getClassLoader().loadClass( className );
+            Class cls = this.pkg.getDialectDatas().getClassLoader().loadClass( className );
             Method[] methods = cls.getDeclaredMethods();
             for ( int i = 0; i < methods.length; i++ ) {
                 if ( methods[i].getName().equals( methodName ) ) {
@@ -465,7 +465,7 @@ public class MVELDialect
                                     (Class) globalTypes.get( identifier ) );
         }
 
-        if( otherInputVariables != null ) {
+        if ( otherInputVariables != null ) {
             for ( Iterator it = otherInputVariables.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
                 parserContext.addInput( (String) entry.getKey(),

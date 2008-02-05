@@ -71,7 +71,7 @@ public class Package
 
     private Map<String, ImportDeclaration> imports;
 
-    private List                           functions;
+    private Map<String, Function>          functions;
 
     private Set                            staticImports;
 
@@ -81,7 +81,8 @@ public class Package
 
     private Map                            ruleFlows;
 
-    private PackageCompilationData         packageCompilationData;
+    //    private JavaDialectData         packageCompilationData;
+    private DialectDatas                   dialectDatas;
 
     /** This is to indicate the the package has no errors during the compilation/building phase */
     private boolean                        valid            = true;
@@ -127,7 +128,7 @@ public class Package
         this.ruleFlows = Collections.EMPTY_MAP;
         this.globals = Collections.EMPTY_MAP;
         this.factTemplates = Collections.EMPTY_MAP;
-        this.functions = Collections.EMPTY_LIST;
+        this.functions = Collections.EMPTY_MAP;
 
         // This classloader test should only be here for unit testing, too much legacy api to want to change by hand at the moment
         if ( parentClassLoader == null ) {
@@ -136,7 +137,8 @@ public class Package
                 parentClassLoader = getClass().getClassLoader();
             }
         }
-        this.packageCompilationData = new PackageCompilationData( parentClassLoader );
+        //this.packageCompilationData = new JavaDialectData( parentClassLoader );
+        this.dialectDatas = new DialectDatas( parentClassLoader );
     }
 
     /**
@@ -145,7 +147,7 @@ public class Package
      *
      */
     public void writeExternal(final ObjectOutput stream) throws IOException {
-        stream.writeObject( this.packageCompilationData );
+        stream.writeObject( this.dialectDatas );
         stream.writeObject( this.name );
         stream.writeObject( this.imports );
         stream.writeObject( this.staticImports );
@@ -172,11 +174,11 @@ public class Package
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
-        this.packageCompilationData = (PackageCompilationData) stream.readObject();
+        this.dialectDatas = (DialectDatas) stream.readObject();
         this.name = (String) stream.readObject();
         this.imports = (Map<String, ImportDeclaration>) stream.readObject();
         this.staticImports = (Set) stream.readObject();
-        this.functions = (List) stream.readObject();
+        this.functions = (Map) stream.readObject();
         this.factTemplates = (Map) stream.readObject();
         this.ruleFlows = (Map) stream.readObject();
         this.globals = (Map) stream.readObject();
@@ -187,7 +189,7 @@ public class Package
 
         //  Use a custom ObjectInputStream that can resolve against a given classLoader
         final DroolsObjectInputStream streamWithLoader = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ),
-                                                                                      this.packageCompilationData.getClassLoader() );
+                                                                                      this.dialectDatas.getClassLoader() );
 
         this.rules = (Map) streamWithLoader.readObject();
     }
@@ -205,8 +207,13 @@ public class Package
         return this.name;
     }
 
+    public DialectDatas getDialectDatas() {
+        return this.dialectDatas;
+    }
+
     public void addImport(final ImportDeclaration importDecl) {
-        this.imports.put( importDecl.getTarget(), importDecl );
+        this.imports.put( importDecl.getTarget(),
+                          importDecl );
     }
 
     public void removeImport(final String importEntry) {
@@ -224,15 +231,16 @@ public class Package
         this.staticImports.add( functionImport );
     }
 
-    public void addFunction(final String functionName) {
-        if ( this.functions == Collections.EMPTY_LIST ) {
-            this.functions = new ArrayList( 1 );
+    public void addFunction(final Function function) {
+        if ( this.functions == Collections.EMPTY_MAP ) {
+            this.functions = new HashMap<String, Function>( 1 );
         }
 
-        this.functions.add( functionName );
+        this.functions.put( function.getName(),
+                            function );
     }
 
-    public List getFunctions() {
+    public Map<String, Function> getFunctions() {
         return this.functions;
     }
 
@@ -261,12 +269,12 @@ public class Package
         return this.globals;
     }
 
-    public PackageCompilationData removeFunction(final String functionName) {
-        if ( !this.functions.remove( functionName ) ) {
-            return null;
+    public void removeFunction(final String functionName) {
+        Function function = this.functions.remove( functionName );
+        if ( function != null ) {
+            this.dialectDatas.removeFunction( this,
+                                              function );
         }
-        this.packageCompilationData.remove( this.name + "." + StringUtils.ucFirst( functionName ) );
-        return this.packageCompilationData;
     }
 
     public FactTemplate getFactTemplate(final String name) {
@@ -330,47 +338,51 @@ public class Package
         this.ruleFlows.remove( id );
     }
 
-    public PackageCompilationData removeRule(final Rule rule) {
+    public void removeRule(final Rule rule) {
         this.rules.remove( rule.getName() );
-        final String consequenceName = rule.getConsequence().getClass().getName();
-
-        // check for compiled code and remove if present.
-        if ( this.packageCompilationData.remove( consequenceName ) ) {
-            removeClasses( rule.getLhs() );
-
-            // Now remove the rule class - the name is a subset of the consequence name
-            this.packageCompilationData.remove( consequenceName.substring( 0,
-                                                                           consequenceName.indexOf( "ConsequenceInvoker" ) ) );
-        }
-        return this.packageCompilationData;
+        this.dialectDatas.removeRule( this,
+                                      rule );
+        //        final String consequenceName = rule.getConsequence().getClass().getName();
+        //        
+        //        Object object = this.dialectData.getDialectData( rule.getDialect() );
+        //
+        //        // check for compiled code and remove if present.
+        //        if ( this.packageCompilationData.remove( consequenceName ) ) {
+        //            removeClasses( rule.getLhs() );
+        //
+        //            // Now remove the rule class - the name is a subset of the consequence name
+        //            this.packageCompilationData.remove( consequenceName.substring( 0,
+        //                                                                           consequenceName.indexOf( "ConsequenceInvoker" ) ) );
+        //        }
+        //        return this.packageCompilationData;
     }
 
-    private void removeClasses(final ConditionalElement ce) {
-        if ( ce instanceof GroupElement ) {
-            final GroupElement group = (GroupElement) ce;
-            for ( final Iterator it = group.getChildren().iterator(); it.hasNext(); ) {
-                final Object object = it.next();
-                if ( object instanceof ConditionalElement ) {
-                    removeClasses( (ConditionalElement) object );
-                } else if ( object instanceof Pattern ) {
-                    removeClasses( (Pattern) object );
-                }
-            }
-        } else if ( ce instanceof EvalCondition ) {
-            this.packageCompilationData.remove( ((EvalCondition) ce).getEvalExpression().getClass().getName() );
-        }
-    }
-
-    private void removeClasses(final Pattern pattern) {
-        for ( final Iterator it = pattern.getConstraints().iterator(); it.hasNext(); ) {
-            final Object object = it.next();
-            if ( object instanceof PredicateConstraint ) {
-                this.packageCompilationData.remove( ((PredicateConstraint) object).getPredicateExpression().getClass().getName() );
-            } else if ( object instanceof ReturnValueConstraint ) {
-                this.packageCompilationData.remove( ((ReturnValueConstraint) object).getExpression().getClass().getName() );
-            }
-        }
-    }
+    //    private void removeClasses(final ConditionalElement ce) {
+    //        if ( ce instanceof GroupElement ) {
+    //            final GroupElement group = (GroupElement) ce;
+    //            for ( final Iterator it = group.getChildren().iterator(); it.hasNext(); ) {
+    //                final Object object = it.next();
+    //                if ( object instanceof ConditionalElement ) {
+    //                    removeClasses( (ConditionalElement) object );
+    //                } else if ( object instanceof Pattern ) {
+    //                    removeClasses( (Pattern) object );
+    //                }
+    //            }
+    //        } else if ( ce instanceof EvalCondition ) {
+    //            this.packageCompilationData.remove( ((EvalCondition) ce).getEvalExpression().getClass().getName() );
+    //        }
+    //    }
+    //
+    //    private void removeClasses(final Pattern pattern) {
+    //        for ( final Iterator it = pattern.getConstraints().iterator(); it.hasNext(); ) {
+    //            final Object object = it.next();
+    //            if ( object instanceof PredicateConstraint ) {
+    //                this.packageCompilationData.remove( ((PredicateConstraint) object).getPredicateExpression().getClass().getName() );
+    //            } else if ( object instanceof ReturnValueConstraint ) {
+    //                this.packageCompilationData.remove( ((ReturnValueConstraint) object).getExpression().getClass().getName() );
+    //            }
+    //        }
+    //    }
 
     /**
      * Retrieve a <code>Rule</code> by name.
@@ -395,9 +407,9 @@ public class Package
         return (Rule[]) this.rules.values().toArray( new Rule[this.rules.size()] );
     }
 
-    public PackageCompilationData getPackageCompilationData() {
-        return this.packageCompilationData;
-    }
+    //    public JavaDialectData getPackageCompilationData() {
+    //        return this.packageCompilationData;
+    //    }
 
     public String toString() {
         return "[Package name=" + this.name + "]";
@@ -447,30 +459,30 @@ public class Package
     public int hashCode() {
         return this.name.hashCode();
     }
-    
+
     /**
      * Returns true if clazz is imported as an Event class in this package 
      * @param clazz
      * @return
      */
-    public boolean isEvent( Class clazz ) {
-        if( clazz == null ) {
+    public boolean isEvent(Class clazz) {
+        if ( clazz == null ) {
             return false;
         }
         // check if clazz is resolved by any of the import declarations
-        for( ImportDeclaration imp : this.imports.values() ) {
-            if( imp.isEvent() && imp.matches( clazz ) ) {
+        for ( ImportDeclaration imp : this.imports.values() ) {
+            if ( imp.isEvent() && imp.matches( clazz ) ) {
                 return true;
             }
         }
         // if it is not resolved, try superclass 
-        if( this.isEvent( clazz.getSuperclass() ) ) {
+        if ( this.isEvent( clazz.getSuperclass() ) ) {
             return true;
         }
-        
+
         // if it is no resolved, try interfaces
-        for( Class interf : clazz.getInterfaces() ) {
-            if( this.isEvent( interf ) ) {
+        for ( Class interf : clazz.getInterfaces() ) {
+            if ( this.isEvent( interf ) ) {
                 return true;
             }
         }
@@ -479,7 +491,7 @@ public class Package
 
     public void clear() {
         this.rules.clear();
-        this.packageCompilationData.clear();
+        this.dialectDatas.clear();
         this.ruleFlows.clear();
         this.imports.clear();
         this.functions.clear();
