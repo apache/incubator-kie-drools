@@ -1,6 +1,5 @@
-package org.drools.clips;
+package org.drools.clips.functions;
 
-import org.drools.clips.functions.BaseInfixFunction;
 
 public class EqFunction  extends BaseInfixFunction  {
     private static final String name = "eq";

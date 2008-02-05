@@ -4,7 +4,6 @@ import org.drools.clips.Appendable;
 import org.drools.clips.Function;
 import org.drools.clips.FunctionHandlers;
 import org.drools.clips.LispForm;
-import org.drools.clips.MVELBuildContext;
 
 public class ReturnFunction implements Function {
     private static final String name = "return";
@@ -13,9 +12,9 @@ public class ReturnFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm lispForm, Appendable appendable, MVELBuildContext context) {
+    public void dump(LispForm lispForm, Appendable appendable) {
         appendable.append( "return " );
-        FunctionHandlers.dump( lispForm.getSExpressions()[1], appendable, context );
+        FunctionHandlers.dump( lispForm.getSExpressions()[1], appendable );
         appendable.append( ";\n" );
     }
 }

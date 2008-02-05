@@ -5,7 +5,6 @@ import org.drools.clips.Function;
 import org.drools.clips.FunctionHandlers;
 import org.drools.clips.LispAtom;
 import org.drools.clips.LispForm;
-import org.drools.clips.MVELBuildContext;
 import org.drools.clips.SExpression;
 
 public class PrognFunction implements Function {
@@ -15,7 +14,7 @@ public class PrognFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm lispForm, Appendable appendable, MVELBuildContext context) {
+    public void dump(LispForm lispForm, Appendable appendable) {
         Function createList = FunctionHandlers.getInstance().getFunction( "create$" );
         
         SExpression[] sExpressions = lispForm.getSExpressions();
@@ -26,12 +25,12 @@ public class PrognFunction implements Function {
         
         appendable.append( "foreach( " + var + " : " );        
         
-        createList.dump( (LispForm) listSpec.getSExpressions()[1], appendable, context );
+        createList.dump( (LispForm) listSpec.getSExpressions()[1], appendable );
         
         appendable.append( " ) {" );
         
         for ( int i = 2, length = sExpressions.length; i < length; i++ ) {
-            FunctionHandlers.dump( sExpressions[i], appendable, context );
+            FunctionHandlers.dump( sExpressions[i], appendable );
         }          
         
         appendable.append( "}" );

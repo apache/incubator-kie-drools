@@ -5,7 +5,6 @@ import org.drools.clips.Function;
 import org.drools.clips.FunctionHandlers;
 import org.drools.clips.LispAtom;
 import org.drools.clips.LispForm;
-import org.drools.clips.MVELBuildContext;
 import org.drools.clips.SExpression;
 
 public class ModifyFunction implements Function {
@@ -15,7 +14,7 @@ public class ModifyFunction implements Function {
         return name;
     }
     
-    public void dump(LispForm lispForm, Appendable appendable, MVELBuildContext context) {
+    public void dump(LispForm lispForm, Appendable appendable) {
         SExpression[] sExpressions = lispForm.getSExpressions();
         
         appendable.append("modify (" + ( (LispAtom) lispForm.getSExpressions()[1]).getValue() + ") {");
@@ -26,7 +25,7 @@ public class ModifyFunction implements Function {
             
             appendable.append( " = " );
             
-            FunctionHandlers.dump( setter.getSExpressions()[1], appendable, context);  
+            FunctionHandlers.dump( setter.getSExpressions()[1], appendable);  
             
             if ( i != length -1 ) { 
                 appendable.append( "," );

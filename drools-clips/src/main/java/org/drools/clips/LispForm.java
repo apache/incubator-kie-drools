@@ -36,8 +36,11 @@ public class LispForm
         StringBuilder builder = new StringBuilder();
         
         builder.append("(");
-        for ( SExpression sExpression : sExpressions) {
-            builder.append(" " + sExpression + " ");
+        for ( int i = 0, length = sExpressions.length; i < length; i++ ) {
+            builder.append(sExpressions[i]);
+            if ( i < length - 1 ) {
+                builder.append( " " );
+            }
         }
         builder.append(")");
         return builder.toString();

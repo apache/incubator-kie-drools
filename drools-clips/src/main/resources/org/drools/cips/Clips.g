@@ -22,7 +22,6 @@ grammar Clips;
 	private String source = "unknown";
 	private int lineOffset = 0;
 	private DescrFactory factory = new DescrFactory();
-	private MVELBuildContext context;
 	private boolean parserDebug = false;
 	private Location location = new Location( Location.LOCATION_UNKNOWN );	
 	
@@ -220,14 +219,13 @@ package_statement returns [String packageName]
 	;	
 */
 
-eval[ParserHandler handler, MVELBuildContext context]
+eval[ParserHandler handler]
 	:	
-	{ this.context = context; }
-	(		  i=importDescr{ handler.importHandler( i ); }
+	   (		  i=importDescr{ handler.importHandler( i ); }
 				| f=deffunction { handler.functionHandler( f ); }	
 				| r=defrule { handler.ruleHandler( r ); }
 				| form=lisp_form { handler.lispFormHandler( form ); }
-		)
+		)*
 	;
 	
 	/*
@@ -358,11 +356,18 @@ defrule returns [RuleDescr rule]
 		
 		'=>'
 		
-		t=lisp_form { rule.setConsequence( t ); }
+		list=rule_consequence{ rule.setConsequence( list ); }
 		
 		RIGHT_PAREN
 	;
 
+rule_consequence returns[List list]
+    @init {
+        list = null;
+    }
+    :	
+		(l=lisp_form	{ if ( list == null ) list = new ArrayList(); list.add( l ); })*								    	
+	;
 
 ruleAttribute[RuleDescr rule]
 	:
@@ -486,7 +491,7 @@ bound_pattern[ConditionalElementDescr in_ce, Set declarations]
 		ASSIGN_OP LEFT_PAREN name=NAME 
 		{
 			pattern = new PatternDescr(name.getText());
-			pattern.setIdentifier( identifier );
+			pattern.setIdentifier( identifier.replace( '?', '$') );
 			in_ce.addDescr( pattern );
 			top = pattern.getConstraint();				    
 		}
@@ -610,15 +615,17 @@ return_value_restriction[String op, RestrictionConnectiveDescr rc]
 		
 //will add a declaration field binding, if this is the first time the name  is used		
 variable_restriction[String op, RestrictionConnectiveDescr rc, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase, Set declarations ]
+    @init { String identifier = null;}
 	:	VAR {
-	        if ( declarations.contains( $VAR.text ) ) {
-				rc.addRestriction( new VariableRestrictionDescr(op, $VAR.text) );
+	        identifier =  $VAR.text.replace( '?', '$');
+	        if ( declarations.contains( identifier) ) {
+				rc.addRestriction( new VariableRestrictionDescr(op, identifier ) );
 		 	} else {
 		 		FieldBindingDescr fbd = new FieldBindingDescr();
-		 		fbd.setIdentifier( $VAR.text );		
+		 		fbd.setIdentifier( identifier );		
 		 		fbd.setFieldName( fcBase.getFieldName() ); 		
 		 		ceBase.insertBeforeLast( FieldConstraintDescr.class, fbd );
-		 		declarations.add( $VAR.text );
+		 		declarations.add( identifier );
 		 	}
 		}
 	;	
@@ -656,7 +663,7 @@ lisp_form returns[LispForm lispForm]
 		(
 		    t=NAME { list.add( new SymbolLispAtom( t.getText() ) ); }
 		    |
-		    t=VAR { list.add( new VariableLispAtom( t.getText(), context ) ); }	    
+		    t=VAR { list.add( new VariableLispAtom( t.getText() ) ); }	    
 	    )
 		(		a=lisp_atom	{ list.add( a ); }
 			|	l=lisp_form	{ list.add( l ); }
@@ -671,7 +678,7 @@ lisp_atom returns[SExpression sExpression]
 	}
 	:		
 		(		
-			 	t=VAR		{ sExpression = new VariableLispAtom( t.getText(), context ); }
+			 	t=VAR		{ sExpression = new VariableLispAtom( t.getText() ); }
 			|	t=STRING	{ sExpression = new StringLispAtom( getString( t ) ); }											
 			|	t=FLOAT		{ sExpression = new FloatLispAtom( t.getText() ); }
 			|	t=INT		{ sExpression = new IntLispAtom( t.getText() ); }

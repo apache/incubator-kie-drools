@@ -10,11 +10,6 @@ import junit.framework.TestCase;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.Lexer;
-import org.antlr.runtime.TokenStream;
-import org.drools.clips.valuehandlers.DoubleValueHandler;
-import org.drools.clips.valuehandlers.FunctionCaller;
-import org.drools.clips.valuehandlers.LongValueHandler;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.EvalDescr;
@@ -29,29 +24,30 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.reteoo.builder.BuildContext;
 
 public class LhsClpParserTest extends TestCase {
 
-    private CLPParser parser;
+    private ClipsParser parser;
     
-    XFunctionRegistry registry;
+    //XFunctionRegistry registry;
     
     public void setUp() {
-        this.registry = new XFunctionRegistry( BuiltinFunctions.getInstance() );
+        //this.registry = new XFunctionRegistry( BuiltinFunctions.getInstance() );
     }
     
     protected void tearDown() throws Exception {
         super.tearDown();
-        this.parser = null;
+        //this.parser = null;
     }
 
     public void testParseFunction() throws Exception {        
-        BuildContext context = new ExecutionBuildContext( new CLPPredicate(), this.registry );
-        FunctionCaller fc = ( FunctionCaller ) parse( "(< 1 2)" ).lisp_list( context, new LispForm2(context) );
-        
-        assertEquals( "<", fc.getName() );        
-        assertEquals( new LongValueHandler( 1 ), fc.getParameters()[0] );
-        assertEquals( new LongValueHandler( 2 ), fc.getParameters()[1] );
+//        BuildContext context = new ExecutionBuildContext( new CLPPredicate(), this.registry );
+//        FunctionCaller fc = ( FunctionCaller ) parse( "(< 1 2)" ).lisp_list( context, new LispForm2(context) );
+//        
+//        assertEquals( "<", fc.getName() );        
+//        assertEquals( new LongValueHandler( 1 ), fc.getParameters()[0] );
+//        assertEquals( new LongValueHandler( 2 ), fc.getParameters()[1] );
     }
     
     public void testPatternsRule() throws Exception {
@@ -82,7 +78,7 @@ public class LhsClpParserTest extends TestCase {
 
         // Parse the first pattern
         PatternDescr personPattern = (PatternDescr) lhsList.get( 0 );
-        assertEquals( "?b",
+        assertEquals( "$b",
                       personPattern.getIdentifier() );
         assertEquals( "person",
                       personPattern.getObjectType() );
@@ -93,7 +89,7 @@ public class LhsClpParserTest extends TestCase {
         
         // first, we have a field binding
         FieldBindingDescr fbd = (FieldBindingDescr) colList.get( 0 );
-        assertEquals( "?bf",
+        assertEquals( "$bf",
                       fbd.getIdentifier() );
         assertEquals( "name",
                       fbd.getFieldName() );
@@ -138,25 +134,21 @@ public class LhsClpParserTest extends TestCase {
         ReturnValueRestrictionDescr retDescr = (ReturnValueRestrictionDescr) and.getRestrictions().get( 0 );
         assertEquals( "!=",
                       retDescr.getEvaluator() );
-        CLPReturnValue clprv = ( CLPReturnValue ) retDescr.getContent();
-        FunctionCaller fc = clprv.getFunctions()[0];
-        assertEquals( "+", fc.getName() );        
-        assertEquals( new LongValueHandler( 2 ), fc.getParameters()[0] );
-        assertEquals( new LongValueHandler( 3 ), fc.getParameters()[1] );       
+        
+        LispForm lispForm = ( LispForm ) retDescr.getContent();
+        assertEquals("(+ 2 3)", lispForm.toString() );                         
 
         // ----------------
         // this is how it would be compatible to our core engine
-        PredicateDescr predicateDescr = (PredicateDescr) and.getRestrictions().get( 1 );        
-        CLPPredicate clpp = ( CLPPredicate ) predicateDescr.getContent();
-        fc = clpp.getFunctions()[0];
-        assertEquals( "<", fc.getName() );        
-        assertEquals( new LongValueHandler( 1 ), fc.getParameters()[0] );
-        assertEquals( new LongValueHandler( 2 ), fc.getParameters()[1] );        
+        PredicateDescr predicateDescr = (PredicateDescr) and.getRestrictions().get( 1 );
+        
+        lispForm = ( LispForm ) predicateDescr.getContent();
+        assertEquals("(< 1 2)", lispForm.toString() );                
 
         // -----------------
         // Parse the second column
         PatternDescr hobbyPattern = (PatternDescr) lhsList.get( 1 );
-        assertEquals( "?c",
+        assertEquals( "$c",
                       hobbyPattern.getIdentifier() );
         assertEquals( "hobby",
                       hobbyPattern.getObjectType() );
@@ -166,7 +158,7 @@ public class LhsClpParserTest extends TestCase {
                       colList.size() );
 
         fbd = (FieldBindingDescr) colList.get( 0 );
-        assertEquals( "?bf2",
+        assertEquals( "$bf2",
                       fbd.getIdentifier() );
         assertEquals( "type",
                       fbd.getFieldName() );
@@ -212,7 +204,7 @@ public class LhsClpParserTest extends TestCase {
 
         // Parse the first column
         PatternDescr col = (PatternDescr) lhsList.get( 0 );
-        assertEquals( "?b",
+        assertEquals( "$b",
                       col.getIdentifier() );
         assertEquals( "person",
                       col.getObjectType() );
@@ -338,12 +330,8 @@ public class LhsClpParserTest extends TestCase {
                       lhsList.size() );
 
         EvalDescr evalDescr = (EvalDescr) lhsList.get( 0 );
-        
-        CLPEval clpe = ( CLPEval ) evalDescr.getContent();
-        FunctionCaller f = clpe.getFunctions()[0];
-        assertEquals( "<", f.getName() );        
-        assertEquals( new DoubleValueHandler( 9.0 ), f.getParameters()[0] );
-        assertEquals( new DoubleValueHandler( 1.3 ), f.getParameters()[1] );          
+        LispForm lispForm = ( LispForm ) evalDescr.getContent();
+        assertEquals("(< 9.0 1.3)", lispForm.toString() );                          
     }
 
     public void testRuleHeader() throws Exception {
@@ -367,14 +355,13 @@ public class LhsClpParserTest extends TestCase {
         
     }
     
-    private CLPParser parse(final String text) throws Exception {
-        this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
-        return this.parser;
+    private ClipsParser parse(final String text) throws Exception {
+        return new ClipsParser( new CommonTokenStream( new ClipsLexer( new ANTLRStringStream( text ) ) ) );
     }
 
-    private CLPParser parse(final String source,
+    private ClipsParser parse(final String source,
                             final String text) throws Exception {
-        this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
+        this.parser =  new ClipsParser( new CommonTokenStream( new ClipsLexer( new ANTLRStringStream( text ) ) ) );
         this.parser.setSource( source );
         return this.parser;
     }
@@ -385,9 +372,7 @@ public class LhsClpParserTest extends TestCase {
         return new InputStreamReader( in );
     }
 
-    private CLPParser parseResource(final String name) throws Exception {
-
-        //        System.err.println( getClass().getResource( name ) );
+    private ClipsParser parseResource(final String name) throws Exception {
         Reader reader = getReader( name );
 
         final StringBuffer text = new StringBuffer();
@@ -409,20 +394,6 @@ public class LhsClpParserTest extends TestCase {
         return new ANTLRStringStream( text );
     }
 
-    private CLPLexer newLexer(final CharStream charStream) {
-        return new CLPLexer( charStream );
-    }
-
-    private TokenStream newTokenStream(final Lexer lexer) {
-        return new CommonTokenStream( lexer );
-    }
-
-    private CLPParser newParser(final TokenStream tokenStream) {
-        final CLPParser p = new CLPParser( tokenStream );
-        p.setFunctionRegistry( new XFunctionRegistry( BuiltinFunctions.getInstance() )  );
-        //p.setParserDebug( true );
-        return p;
-    }
 
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {

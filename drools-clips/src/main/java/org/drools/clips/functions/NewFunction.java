@@ -7,10 +7,8 @@ import org.drools.clips.LispAtom;
 import org.drools.clips.LispForm;
 import org.drools.clips.SExpression;
 
-public class PrintoutFunction implements Function {
-    private static final String name = "printout";
-    
-    private static final int route = 1;
+public class NewFunction implements Function {
+    private static final String name = "new";    
 
     public String getName() {
         return name;
@@ -18,13 +16,18 @@ public class PrintoutFunction implements Function {
     
     public void dump(LispForm lispForm, Appendable appendable) {
         SExpression[] sExpressions = lispForm.getSExpressions();
-        appendable.append( "printrouters.get(" + ( ( LispAtom ) lispForm.getSExpressions()[route]).getValue()+ ").print(" );
-        //appendable.append( "routers.get(" + ( ( LispAtom2 ) lispForm.getSExpressions()[route]).getValue()+ ").print(" );
+        appendable.append( "new " );
+        
+        String name = ( ( LispAtom ) sExpressions[1] ).getValue().trim();
+        name = name.substring( 1, name.length() -1  );                
+        appendable.append( name );
+        appendable.append( "(" );
+        
         for ( int i = 2, length = sExpressions.length; i < length; i++) {            
             FunctionHandlers.dump( sExpressions[i], appendable );         
             
             if ( i != length -1 ) { 
-                appendable.append( "+" );
+                appendable.append( ", " );
             }
         }        
         appendable.append( ");" );
