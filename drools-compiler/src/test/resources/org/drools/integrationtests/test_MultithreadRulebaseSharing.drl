@@ -1,0 +1,9 @@
+package org.drools;
+
+rule "test multi-thread rulebase sharing"
+when
+    $gp : GrandParent()
+    $ch : Child( parent.grandParent == $gp )
+then
+    // do something
+end
