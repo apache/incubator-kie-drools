@@ -20,6 +20,8 @@ import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.FactA;
 import org.drools.FactB;
+import org.drools.Order;
+import org.drools.OrderItem;
 import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.Precondition;
@@ -600,6 +602,194 @@ public class DynamicRulesTest extends TestCase {
         }
     }
 
+    public void testDynamicRuleRemovalsSubNetwork() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork1.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
+        final Package pkg = serialisePackage( builder.getPackage() );
+
+        org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
+        final RuleBase ruleBase = getRuleBase();
+        reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
+        ruleBase.addPackage( pkg );
+        final PackageBuilder builder2 = new PackageBuilder();
+        builder2.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork2.drl" ) ) );
+        ruleBase.addPackage( serialisePackage( builder2.getPackage() ) );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+        
+        Order order = new Order();
+        
+        OrderItem item1 = new OrderItem(order, 1, "Adventure Guide Brazil", OrderItem.TYPE_BOOK, 24);
+        order.addItem(item1);
+        workingMemory.insert(item1);
+        
+        OrderItem item2 = new OrderItem(order, 2, "Prehistoric Britain", OrderItem.TYPE_BOOK, 15);
+        order.addItem(item2);
+        workingMemory.insert(item2);
+        
+        OrderItem item3 = new OrderItem(order, 3, "Holiday Music", OrderItem.TYPE_CD, 9);
+        order.addItem(item3);
+        workingMemory.insert(item3);
+        
+        OrderItem item4 = new OrderItem(order, 4, "Very Best of Mick Jagger", OrderItem.TYPE_CD, 11);
+        order.addItem(item4);
+        workingMemory.insert(item4);
+        
+        workingMemory.insert(order);
+
+        assertEquals( 11,
+                      workingMemory.getAgenda().getActivations().length );
+
+        reteooRuleBase.removeRule( "org.drools",
+                                   "Apply Discount on all books" );
+        assertEquals( 10,
+                      workingMemory.getAgenda().getActivations().length );
+
+        reteooRuleBase.removeRule( "org.drools",
+                                   "like book" );
+
+        final OrderItem item5 = new OrderItem(order, 5, "Sinatra : Vegas", OrderItem.TYPE_CD,
+                                             5 );
+        assertEquals( 8,
+                      workingMemory.getAgenda().getActivations().length );
+
+        workingMemory.insert( item5 );
+
+        assertEquals( 10,
+                      workingMemory.getAgenda().getActivations().length );
+
+        reteooRuleBase.removePackage( "org.drools" );
+
+        assertEquals( 0,
+                      workingMemory.getAgenda().getActivations().length );
+    }
+
+    public void testDynamicRuleRemovalsUnusedWorkingMemorySubNetwork() throws Exception {
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork1.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork2.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        org.drools.reteoo.ReteooRuleBase reteooRuleBase = null;
+
+        final RuleBase ruleBase = getRuleBase();
+        reteooRuleBase = (org.drools.reteoo.ReteooRuleBase) ruleBase;
+
+        ruleBase.addPackage( pkg );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        if ( reteooRuleBase != null ) {
+            assertEquals( 1,
+                          reteooRuleBase.getPackages().length );
+            assertEquals( 4,
+                          reteooRuleBase.getPackages()[0].getRules().length );
+
+            reteooRuleBase.removeRule( "org.drools",
+                                       "Apply Discount on all books" );
+            assertEquals( 3,
+                          reteooRuleBase.getPackages()[0].getRules().length );
+
+            reteooRuleBase.removeRule( "org.drools",
+                                       "like book" );
+            assertEquals( 2,
+                          reteooRuleBase.getPackages()[0].getRules().length );
+
+            reteooRuleBase.removePackage( "org.drools" );
+            assertEquals( 0,
+                          reteooRuleBase.getPackages().length );
+        }
+    }
+
+
+    public void testRemovePackageSubNetwork() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
+
+        final RuleBase ruleBase = getRuleBase();
+        final String packageName = builder.getPackage().getName();
+        ruleBase.addPackage( serialisePackage( builder.getPackage() ) );
+
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List results = new ArrayList();
+        workingMemory.setGlobal( "results", results );
+
+        Order order = new Order();
+        
+        OrderItem item1 = new OrderItem(order, 1, "Adventure Guide Brazil", OrderItem.TYPE_BOOK, 24);
+        OrderItem item2 = new OrderItem(order, 2, "Prehistoric Britain", OrderItem.TYPE_BOOK, 15);
+        OrderItem item3 = new OrderItem(order, 3, "Holiday Music", OrderItem.TYPE_CD, 9);
+        OrderItem item4 = new OrderItem(order, 4, "Very Best of Mick Jagger", OrderItem.TYPE_CD, 11);
+        OrderItem item5 = new OrderItem(order, 5, "The Master and Margarita", OrderItem.TYPE_BOOK, 29);
+        
+        order.addItem( item1 );
+        order.addItem( item2 );
+        order.addItem( item3 );
+        order.addItem( item4 );
+        order.addItem( item5 );
+        
+        workingMemory.insert( order );
+        workingMemory.fireAllRules();
+        assertEquals( 1, results.size() );
+        assertEquals( 3, ((List) results.get(0)).size() );
+        results.clear();
+
+        final RuleBase ruleBaseWM = workingMemory.getRuleBase();
+        ruleBaseWM.removePackage( packageName );
+        final PackageBuilder builder1 = new PackageBuilder();
+        builder1.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
+        ruleBaseWM.addPackage( serialisePackage( builder1.getPackage() ) );
+        workingMemory.fireAllRules();
+        assertEquals( 1, results.size() );
+        assertEquals( 3, ((List) results.get(0)).size() );
+        results.clear();
+
+        ruleBaseWM.removePackage( packageName );
+        ruleBaseWM.addPackage( serialisePackage( builder1.getPackage() ) );
+        assertEquals( 1, results.size() );
+        assertEquals( 3, ((List) results.get(0)).size() );
+        results.clear();
+
+        ruleBaseWM.removePackage( packageName );
+        ruleBaseWM.addPackage( serialisePackage( builder1.getPackage() ) );
+        assertEquals( 1, results.size() );
+        assertEquals( 3, ((List) results.get(0)).size() );
+        results.clear();
+    }
+
+
+    public void testRuleBaseAddRemoveSubNetworks() throws Exception {
+        try {
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+
+            //add and remove
+            PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
+            Package pkg = serialisePackage( builder.getPackage() );
+            ruleBase.addPackage( pkg );
+            ruleBase.removePackage( pkg.getName() );
+
+            //add and remove again
+            builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
+            pkg = serialisePackage( builder.getPackage() );
+            ruleBase.addPackage( pkg );
+            ruleBase.removePackage( pkg.getName() );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail("Should not raise any exception");
+        }
+    }
+
+    
     public class SubvertedClassLoader extends URLClassLoader {
 
         private static final long serialVersionUID = 400L;

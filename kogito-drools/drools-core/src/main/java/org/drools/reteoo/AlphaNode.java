@@ -191,20 +191,20 @@ public class AlphaNode extends ObjectSource
         }
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node,
-                       final InternalWorkingMemory[] workingMemories) {
-
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
             removeObjectSink( (ObjectSink) node );
         }
-        removeShare( builder );
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        this.objectSource.remove( builder,
+        this.objectSource.remove( context,
+                                  builder,
                                   this,
                                   workingMemories );
     }

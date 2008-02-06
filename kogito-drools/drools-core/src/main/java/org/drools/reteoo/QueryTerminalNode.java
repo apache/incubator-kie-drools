@@ -150,16 +150,24 @@ public final class QueryTerminalNode extends BaseNode
         }
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             workingMemories[i].clearNodeMemory( this );
         }
         
-        removeShare(builder);
-        
-        this.tupleSource.remove( builder,
-                                 this, workingMemories );
+        if( ! context.alreadyVisited( this.tupleSource ) ) {
+            this.tupleSource.remove( context,
+                                     builder,
+                                     this,
+                                     workingMemories );
+        }
+    }
+
+    public boolean isInUse() {
+        return false;
     }
 
     public void updateNewNode(final InternalWorkingMemory workingMemory,

@@ -112,5 +112,9 @@ public abstract class TupleSource extends BaseNode
 
     public abstract void updateSink(TupleSink sink,
                                     PropagationContext context,
-                                    InternalWorkingMemory workingMemory);    
+                                    InternalWorkingMemory workingMemory);
+    
+    public boolean isInUse() {
+        return this.sink.size() > 0;
+    }
 }

@@ -222,20 +222,25 @@ public class EvalConditionNode extends TupleSource
         }
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
+        context.visitTupleSource( this );
         if ( !node.isInUse() ) {
             removeTupleSink( (TupleSink) node );
         }
-        removeShare(builder);
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        this.tupleSource.remove( builder,
-                                 this, workingMemories );
-
+        if( ! context.alreadyVisited( this.tupleSource ) ) {
+            this.tupleSource.remove( context,
+                                     builder,
+                                     this,
+                                     workingMemories );
+        }
     }
     
     public boolean isTupleMemoryEnabled() {

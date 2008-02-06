@@ -60,15 +60,19 @@ public class BaseNodeTest extends TestCase {
 
         }
 
-        public void remove(ReteooBuilder builder,
-                           final BaseNode node, final InternalWorkingMemory[] workingMemories) {
-            // TODO Auto-generated method stub
-
+        protected void doRemove(final RuleRemovalContext context,
+                                final ReteooBuilder builder,
+                                final BaseNode node,
+                                final InternalWorkingMemory[] workingMemories) {
         }
 
         public void attach(final InternalWorkingMemory[] workingMemories) {
             // TODO Auto-generated method stub
 
+        }
+
+        public boolean isInUse() {
+            return true;
         }
 
     }

@@ -1,0 +1,10 @@
+package org.drools;
+ 
+global java.util.List results
+
+rule "like book"
+    when
+        OrderItem( type:type == OrderItem.TYPE_BOOK, price >= 15 )
+    then
+		results.add( type );
+end  

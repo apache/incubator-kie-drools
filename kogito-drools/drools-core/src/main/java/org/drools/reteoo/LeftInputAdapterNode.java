@@ -175,19 +175,23 @@ public class LeftInputAdapterNode extends TupleSource
         }
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
+        context.visitTupleSource( this );
         if ( !node.isInUse() ) {
             removeTupleSink( (TupleSink) node );
         }
-        removeShare(builder);
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        this.objectSource.remove( builder,
-                                  this, workingMemories );
+        this.objectSource.remove( context,
+                                  builder,
+                                  this,
+                                  workingMemories );
     }    
     
     public boolean isObjectMemoryEnabled() {

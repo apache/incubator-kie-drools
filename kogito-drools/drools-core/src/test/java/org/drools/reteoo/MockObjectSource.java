@@ -71,10 +71,10 @@ public class MockObjectSource extends ObjectSource {
         }
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
-        // TODO Auto-generated method stub
-
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
