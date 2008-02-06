@@ -2071,8 +2071,8 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
         // trying to implement runtime type coercion
         public boolean equals( Object arg0, Object arg1 ) {
-            if ( arg0 == null ) {
-                return arg1 == null;
+            if ( arg0 == null || arg1 == null ) {
+                return arg0 == arg1;
             }
             if( arg1 != null && arg1 instanceof ShadowProxy ) {
                 return arg1.equals( arg0 );
