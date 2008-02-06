@@ -219,26 +219,31 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+    /**
+     * OTN needs to override remove to avoid releasing the node ID, since OTN are 
+     * never removed from the rulebase in the current implementation
+     * 
+     * @inheritDoc
+     *
+     * @see org.drools.common.BaseNode#remove(org.drools.reteoo.RuleRemovalContext, org.drools.reteoo.ReteooBuilder, org.drools.common.BaseNode, org.drools.common.InternalWorkingMemory[])
+     */
+    public void remove(RuleRemovalContext context,
+                       ReteooBuilder builder,
+                       BaseNode node,
+                       InternalWorkingMemory[] workingMemories) {
+        doRemove( context,
+                  builder,
+                  node,
+                  workingMemories );
+    }
+
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
             removeObjectSink( (ObjectSink) node );
         }
-        removeShare(builder);
-        if ( !this.isInUse() ) {
-            for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
-                workingMemories[i].clearNodeMemory( this );
-            }
-            this.objectSource.removeObjectSink( this );
-        }
-    }
-
-    /**
-     * Rete needs to know that this ObjectTypeNode has had new nodes attached to
-     * it one one of its ancestors
-     */
-    public void addShare() {
-        super.addShare();
     }
 
     /**
@@ -259,7 +264,7 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public String toString() {
-        return "[ObjectTypeNode(" + this.id + ")::" + ((EntryPointNode)this.objectSource).getEntryPoint() + " objectType=" + this.objectType + "]";
+        return "[ObjectTypeNode(" + this.id + ")::" + ((EntryPointNode) this.objectSource).getEntryPoint() + " objectType=" + this.objectType + "]";
     }
 
     /**
@@ -347,6 +352,6 @@ public class ObjectTypeNode extends ObjectSource
      * @return the entryPoint
      */
     public EntryPoint getEntryPoint() {
-        return ((EntryPointNode)this.objectSource).getEntryPoint();
+        return ((EntryPointNode) this.objectSource).getEntryPoint();
     }
 }

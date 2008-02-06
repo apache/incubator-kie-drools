@@ -211,8 +211,10 @@ public class EntryPointNode extends ObjectSource
         }
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
         final ObjectTypeNode objectTypeNode = (ObjectTypeNode) node;
         removeObjectSink( objectTypeNode );
         for ( int i = 0; i < workingMemories.length; i++ ) {

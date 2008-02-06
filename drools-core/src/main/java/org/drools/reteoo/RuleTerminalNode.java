@@ -432,8 +432,10 @@ public final class RuleTerminalNode extends BaseNode
         }
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
 
@@ -461,10 +463,16 @@ public final class RuleTerminalNode extends BaseNode
             workingMemory.clearNodeMemory( this );
         }
 
-        removeShare(builder);
+        if( !context.alreadyVisited( this.tupleSource ) ) {
+            this.tupleSource.remove( context,
+                                     builder,
+                                     this,
+                                     workingMemories );
+        }
+    }
 
-        this.tupleSource.remove( builder,
-                                 this, workingMemories );
+    public boolean isInUse() {
+        return false;
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {

@@ -20,9 +20,18 @@ package org.drools;
  * @author etirelli
  *
  */
-public class OrderItem {
+public class OrderItem implements java.io.Serializable {
+    private static final long serialVersionUID = -7287814895557751224L;
+    
+    public static final int TYPE_BOOK = 1;
+    public static final int TYPE_CD = 2;
+    
+    private String name;
+    private int type;
+    private int price;
     private int   seq;
     private Order order;
+
 
     public OrderItem() {
         this( null,
@@ -33,6 +42,38 @@ public class OrderItem {
                      final int seq) {
         this.order = order;
         this.seq = seq;
+    }
+
+    public OrderItem(Order order, int seq, String name, int type, int price) {
+        this.order = order;
+        this.seq = seq;
+        this.name = name;
+        this.type = type;
+        this.price = price;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public int getType() {
+        return type;
+    }
+    
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 
     /**

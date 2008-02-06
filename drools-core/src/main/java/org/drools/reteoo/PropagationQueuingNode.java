@@ -112,19 +112,22 @@ public class PropagationQueuingNode extends ObjectSource
      * @see org.drools.common.BaseNode#remove(ReteooBuilder, org.drools.common.BaseNode, org.drools.common.InternalWorkingMemory[])
      */
     @Override
-    public void remove(ReteooBuilder builder,
-                       BaseNode node, InternalWorkingMemory[] workingMemories) {
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
             removeObjectSink( (ObjectSink) node );
         }
-        removeShare(builder);
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        this.objectSource.remove( builder,
-                                  this, workingMemories );
+        this.objectSource.remove( context,
+                                  builder,
+                                  this, 
+                                  workingMemories );
     }
 
     /**

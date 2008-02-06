@@ -134,4 +134,8 @@ public abstract class ObjectSource extends BaseNode
     public ObjectSinkPropagator getSinkPropagator() {
         return this.sink;
     }
+    
+    public boolean isInUse() {
+        return this.sink.size() > 0;
+    }
 }

@@ -160,8 +160,10 @@ public class Rete extends ObjectSource
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
         final EntryPointNode entryPointNode = (EntryPointNode) node;
         removeObjectSink( entryPointNode );
     }

@@ -1,7 +1,3 @@
-package org.drools.common;
-
-import org.drools.reteoo.ReteooBuilder;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -18,6 +14,11 @@ import org.drools.reteoo.ReteooBuilder;
  * limitations under the License.
  */
 
+package org.drools.common;
+
+import org.drools.reteoo.ReteooBuilder;
+import org.drools.reteoo.RuleRemovalContext;
+
 /**
  * The base class for all Rete nodes.
  * 
@@ -29,8 +30,6 @@ public abstract class BaseNode
     implements
     NetworkNode {
     protected final int id;
-
-    protected int       sharedCount = 0;
 
     /**
      * All nodes have a unique id, set in the constructor.
@@ -57,73 +56,34 @@ public abstract class BaseNode
 
     public abstract void attach(InternalWorkingMemory[] workingMemories);
 
+    public void remove(RuleRemovalContext context,
+                       ReteooBuilder builder,
+                       BaseNode node,
+                       InternalWorkingMemory[] workingMemories) {
+        doRemove( context,
+                  builder,
+                  node,
+                  workingMemories );
+        if ( !isInUse() ) {
+            builder.getIdGenerator().releaseId( this.getId() );
+        }
+    }
+
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
      * @param builder TODO
      *
      */
-    public abstract void remove(ReteooBuilder builder,
-                                BaseNode node,
-                                InternalWorkingMemory[] workingMemories);
-
-    //    /**
-    //     * When nodes are added to the network that already has data. that existing data must be repropagated to the new node.
-    //     * This new propagation may result in one or more assertions, so a PropagationContext and the workingMemory for the facts
-    //     * must be provided.
-    //     * 
-    //     * @param workingMemory
-    //     *      The WorkingMemory
-    //     * @param context
-    //     *      The PropagationContext
-    //     *      
-    //     */
-    //    public abstract void updateNewNode(InternalWorkingMemory workingMemory,
-    //                                       PropagationContext context);    
-
-    /**
-     * Each time a node is shared a counter is increased.
-     *
-     */
-    public void addShare() {
-        ++this.sharedCount;
-    }
-
-    /**
-     * Each time a node is unshared a counter is decreased.
-     * @param builder TODO
-     *
-     */
-    public void removeShare(ReteooBuilder builder) {
-        --this.sharedCount;
-        if( !this.isInUse() ) {
-            builder.getIdGenerator().releaseId( this.id );
-        }
-    }
-
-    /**
-     * Indicates whether the node is shared.
-     * @return
-     */
-    public boolean isShared() {
-        return this.sharedCount > 0;
-    }
+    protected abstract void doRemove(RuleRemovalContext context,
+                                     ReteooBuilder builder,
+                                     BaseNode node,
+                                     InternalWorkingMemory[] workingMemories);
 
     /**
      * Returns true in case the current node is in use (is referenced by any other node)
      * @return
      */
-    public boolean isInUse() {
-        return this.sharedCount >= 0;
-    }
-
-    /**
-     * Returns the number of times the node is shared
-     * @return
-     *      int value indicating the share count.
-     */
-    public int getSharedCount() {
-        return this.sharedCount;
-    }
+    public abstract boolean isInUse();
 
     /** 
      * The hashCode return is simply the unique id of the node. It is expected that base classes will also implement equals(Object object). 

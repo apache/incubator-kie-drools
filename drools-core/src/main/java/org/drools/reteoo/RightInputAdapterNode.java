@@ -165,14 +165,19 @@ public class RightInputAdapterNode extends ObjectSource
         }
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
         if ( !node.isInUse() ) {
             removeObjectSink( (ObjectSink) node );
         }
-        removeShare(builder);
-        this.tupleSource.remove( builder,
-                                 this, workingMemories );
+        if( ! context.alreadyVisited( this.tupleSource ) ) {
+            this.tupleSource.remove( context,
+                                     builder,
+                                     this,
+                                     workingMemories );
+        }
     }
     
     public boolean isTupleMemoryEnabled() {

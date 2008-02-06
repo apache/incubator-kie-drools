@@ -25,7 +25,6 @@ import org.drools.common.BetaConstraints;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.rule.ContextEntry;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
@@ -156,22 +155,29 @@ abstract class BetaNode extends TupleSource
 
     }
 
-    public void remove(ReteooBuilder builder,
-                       final BaseNode node, final InternalWorkingMemory[] workingMemories) {
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final BaseNode node,
+                            final InternalWorkingMemory[] workingMemories) {
+        context.visitTupleSource( this );
         if ( !node.isInUse() ) {
             removeTupleSink( (TupleSink) node );
         }
-        removeShare(builder);
-
         if ( !this.isInUse() ) {
             for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
                 workingMemories[i].clearNodeMemory( this );
             }
         }
-        this.rightInput.remove( builder,
-                                this, workingMemories );
-        this.leftInput.remove( builder,
-                               this, workingMemories );
+        this.rightInput.remove( context,
+                                builder,
+                                this, 
+                                workingMemories );
+        if( !context.alreadyVisited( this.leftInput )) {
+            this.leftInput.remove( context,
+                                   builder,
+                                   this,
+                                   workingMemories );
+        }
 
     }
 

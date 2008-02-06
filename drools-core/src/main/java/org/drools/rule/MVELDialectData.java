@@ -2,7 +2,6 @@ package org.drools.rule;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.mvel.ast.Function;
 import org.mvel.integration.VariableResolver;
@@ -42,7 +41,7 @@ public class MVELDialectData implements DialectData, Serializable {
     public static class MapFunctionResolverFactory extends MapVariableResolverFactory {
         
         public MapFunctionResolverFactory() {
-            super(new HashMap<String, Function>() );
+            super(new HashMap<String, Object>() );
         }
         
         
