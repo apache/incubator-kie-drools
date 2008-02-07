@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -216,7 +217,7 @@ public abstract class AbstractWorkingMemory
         this.processInstanceFactories.put( RuleFlowProcess.RULEFLOW_TYPE,
                                            new RuleFlowProcessInstanceFactory() );
 
-        this.typeConfMap = new HashMap<EntryPoint, Map<Object, ObjectTypeConf>>();
+        this.typeConfMap = new ConcurrentHashMap<EntryPoint, Map<Object, ObjectTypeConf>>();
     }
 
     // ------------------------------------------------------------
@@ -1633,7 +1634,7 @@ public abstract class AbstractWorkingMemory
                                             Object object) {
         Map<Object, ObjectTypeConf> map = this.typeConfMap.get( entrypoint );
         if ( map == null ) {
-            map = new HashMap<Object, ObjectTypeConf>();
+            map = new ConcurrentHashMap<Object, ObjectTypeConf>();
             this.typeConfMap.put( entrypoint,
                                   map );
         }
@@ -1689,7 +1690,7 @@ public abstract class AbstractWorkingMemory
                                    ObjectTypeConf conf) {
         Map<Object, ObjectTypeConf> map = this.typeConfMap.get( entryPoint );
         if ( map == null ) {
-            map = new HashMap<Object, ObjectTypeConf>();
+            map = new ConcurrentHashMap<Object, ObjectTypeConf>();
             this.typeConfMap.put( entryPoint,
                                   map );
         }
