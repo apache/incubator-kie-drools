@@ -24,6 +24,8 @@ import java.util.Map;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectData;
+import org.drools.rule.Package;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Tuple;
 import org.mvel.MVEL;
@@ -100,6 +102,13 @@ public class MVELAccumulator
                             handle.getObject(),
                             workingMemory,
                             (Map) context );
+        
+        Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
+        if ( pkg != null ) {
+            MVELDialectData data = ( MVELDialectData ) pkg.getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );
+        }
+        
         MVEL.executeExpression( this.action,
                                 null,
                                 factory );
@@ -118,6 +127,13 @@ public class MVELAccumulator
                             handle.getObject(),
                             workingMemory,
                             (Map) context );
+        
+        Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
+        if ( pkg != null ) {
+            MVELDialectData data = ( MVELDialectData ) pkg.getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );
+        }        
+        
         MVEL.executeExpression( this.reverse,
                                 null,
                                 factory );
@@ -137,6 +153,13 @@ public class MVELAccumulator
                             null,
                             workingMemory,
                             (Map) context );
+        
+        Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
+        if ( pkg != null ) {
+            MVELDialectData data = ( MVELDialectData ) pkg.getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );
+        }        
+        
         final Object result = MVEL.executeExpression( this.result,
                                                       null,
                                                       factory );

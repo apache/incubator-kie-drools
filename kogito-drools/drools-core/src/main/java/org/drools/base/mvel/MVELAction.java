@@ -3,6 +3,8 @@ package org.drools.base.mvel;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
+import org.drools.rule.MVELDialectData;
+import org.drools.rule.Package;
 import org.drools.spi.Action;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.MVEL;
@@ -36,6 +38,13 @@ public class MVELAction
                             null,
                             workingMemory,
                             null );
+        
+        Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
+        if ( pkg != null ) {
+            MVELDialectData data = ( MVELDialectData ) pkg.getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );
+        }        
+        
         CompiledExpression compexpr = (CompiledExpression) this.expr;
 
         //Receive breakpoints from debugger
