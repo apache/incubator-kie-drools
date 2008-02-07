@@ -10,26 +10,38 @@ import org.mvel.integration.impl.MapVariableResolverFactory;
 public class MVELDialectData implements DialectData, Serializable {
     private MapFunctionResolverFactory functionFactory;
     
+    /**
+     * Default constructor - for Externalizable. This should never be used by a user, as it
+     * will result in an invalid state for the instance.
+     */
+    public MVELDialectData() {
+
+    }
+    
     public MVELDialectData(final DialectDatas datas) {
         this.functionFactory = new MapFunctionResolverFactory( );
     }
     
-    public void addFunction(String name, Function function) {
-        this.functionFactory.createVariable( name, function );
+    public MapFunctionResolverFactory getFunctionFactory() {
+        return this.functionFactory;
     }
+    
+    public void removeRule(Package pkg,
+                           Rule rule) {
+    }
+    
+    public void addFunction(Function function) {
+        this.functionFactory.addFunction( function );
+    }
+    
+    public void removeFunction(Package pkg,
+                               org.drools.rule.Function function) {
+        this.functionFactory.removeFunction( function.getName() );
+        
+    }    
 
     public boolean isDirty() {
         return false;
-    }
-
-    public void removeFunction(Package pkg,
-                               org.drools.rule.Function function) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void removeRule(Package pkg,
-                           Rule rule) {        
     }
 
     public void merge(DialectData newData) {        
@@ -47,6 +59,11 @@ public class MVELDialectData implements DialectData, Serializable {
         
         public void addFunction(Function function) {
             this.variables.put( function.getName(), function );
+        }
+        
+        public void removeFunction(String functionName) {
+            this.variables.remove( functionName );
+            this.variableResolvers.remove( functionName );
         }
         
         public VariableResolver createVariable(String name,

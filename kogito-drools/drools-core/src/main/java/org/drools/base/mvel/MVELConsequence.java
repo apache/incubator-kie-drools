@@ -3,6 +3,8 @@ package org.drools.base.mvel;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalRuleBase;
+import org.drools.rule.MVELDialectData;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel.compiler.CompiledExpression;
@@ -27,11 +29,16 @@ public class MVELConsequence
     public void evaluate(final KnowledgeHelper knowledgeHelper,
                          final WorkingMemory workingMemory) throws Exception {
         DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
+        
         factory.setContext( knowledgeHelper.getTuple(),
                             knowledgeHelper,
                             null,
                             workingMemory,
                             null );
+        
+        MVELDialectData data = ( MVELDialectData ) workingMemory.getRuleBase().getPackage( "MAIN" ).getDialectDatas().getDialectData( "mvel" );
+        factory.setNextFactory( data.getFunctionFactory() );
+        
         CompiledExpression compexpr = (CompiledExpression) this.expr;
 
         //Receive breakpoints from debugger

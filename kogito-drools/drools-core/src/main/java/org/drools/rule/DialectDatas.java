@@ -83,19 +83,12 @@ public class DialectDatas implements Externalizable {
         this.dialects.put( dialect, dialectData );
     }
     
+    public void setDialectData(String name, DialectData data) {
+        this.dialects.put( name, data );
+    }
+    
     public DialectData getDialectData(String dialect) {
-        DialectData data = this.dialects.get( dialect );
-        if ( data == null ) {
-          if ( "java".equals( dialect ) ) {
-              data = new JavaDialectData( this );    
-          } else if ( "mvel".equals( dialect )) {
-              data = new MVELDialectData( this );
-          } else {
-              throw new RuntimeException("DialectData " + dialect + " does not exist." );
-          }
-          this.dialects.put( dialect, data );
-        } 
-        return data;
+        return this.dialects.get( dialect );
     }
     
     public DialectData removeRule(final Package pkg, final Rule rule) {

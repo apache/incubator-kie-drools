@@ -364,15 +364,8 @@ abstract public class AbstractRuleBase
      *
      * @param pkg
      *            The package to add.
-     * @throws PackageIntegrationException
-     *
-     * @throws RuleIntegrationException
-     *             if an error prevents complete construction of the network for
-     *             the <code>Rule</code>.
-     * @throws FactException
-     * @throws InvalidPatternException
      */
-    public synchronized void addPackage(final Package newPkg) throws PackageIntegrationException {
+    public synchronized void addPackage(final Package newPkg) {
         newPkg.checkValidity();
         synchronized ( this.pkgs ) {
             final Package pkg = (Package) this.pkgs.get( newPkg.getName() );
@@ -448,7 +441,7 @@ abstract public class AbstractRuleBase
      * and the actual Rule objects into the package).
      */
     private void mergePackage(final Package pkg,
-                              final Package newPkg) throws PackageIntegrationException {
+                              final Package newPkg) {
         final Map globals = pkg.getGlobals();
         final Map<String, ImportDeclaration> imports = pkg.getImports();
 
