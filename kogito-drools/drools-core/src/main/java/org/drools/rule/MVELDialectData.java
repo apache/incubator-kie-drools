@@ -50,7 +50,7 @@ public class MVELDialectData implements DialectData, Serializable {
     public void reload() {
     }
     
-    public static class MapFunctionResolverFactory extends MapVariableResolverFactory {
+    public static class MapFunctionResolverFactory extends MapVariableResolverFactory implements Serializable {
         
         public MapFunctionResolverFactory() {
             super(new HashMap<String, Object>() );
