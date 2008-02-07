@@ -109,6 +109,7 @@ public class MVELPredicateBuilderTest extends TestCase {
 
         final PredicateContextEntry predicateContext = (PredicateContextEntry) predicate.createContextEntry();
         predicateContext.leftTuple = tuple;
+        predicateContext.workingMemory = wm;
 
         assertTrue( predicate.isAllowedCachedLeft( predicateContext,
                                                    f1 ) );
