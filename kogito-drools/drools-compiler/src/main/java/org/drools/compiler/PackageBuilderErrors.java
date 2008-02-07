@@ -12,6 +12,10 @@ public class PackageBuilderErrors {
         return errors;
     }
     
+    public boolean isEmpty() {
+        return this.errors.length == 0;
+    }
+    
     public String toString() {
         final StringBuffer buf = new StringBuffer();
         for ( int i = 0, length = this.errors.length; i < length; i++) {

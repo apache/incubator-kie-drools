@@ -24,7 +24,6 @@ public class AbstractJavaRuleBuilder {
 
     static {
         MVEL.setThreadSafe( true );
-        MVELDialect.setLanguageLevel( 4 );   
         OptimizerFactory.setDefaultOptimizer( "reflective" );
         RULE_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ) ) );
         INVOKER_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ) ) );

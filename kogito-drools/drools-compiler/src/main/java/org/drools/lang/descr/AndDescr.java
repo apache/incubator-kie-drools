@@ -43,6 +43,11 @@ public class AndDescr extends BaseDescr
 
     public void insertBeforeLast(final Class clazz,
                                  final BaseDescr baseDescr) {
+        if ( this.descrs.isEmpty() ) {
+            addDescr( baseDescr );
+            return;
+        }
+        
         for ( int i = this.descrs.size() - 1; i >= 0; i-- ) {
             if ( clazz.isInstance( this.descrs.get( i ) ) ) {
                 insertDescr( i,

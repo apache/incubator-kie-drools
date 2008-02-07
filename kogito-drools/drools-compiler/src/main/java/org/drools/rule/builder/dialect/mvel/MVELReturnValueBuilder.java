@@ -27,6 +27,7 @@ import org.drools.base.mvel.MVELReturnValueExpression;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectData;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -65,6 +66,9 @@ public class MVELReturnValueBuilder
         final DroolsMVELFactory factory = new DroolsMVELFactory( previousMap,
                                                                  localMap,
                                                                  context.getPkg().getGlobals() );
+        
+        MVELDialectData data = (MVELDialectData) context.getPkg().getDialectDatas().getDialectData( "mvel" );
+        factory.setNextFactory( data.getFunctionFactory() );        
 
         Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   returnValueRestrictionDescr,

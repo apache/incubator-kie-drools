@@ -7,6 +7,7 @@ import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
+import org.drools.rule.MVELDialectData;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.SalienceBuilder;
 import org.mvel.compiler.AbstractParser;
@@ -27,6 +28,9 @@ public class MVELSalienceBuilder
             final DroolsMVELFactory factory = new DroolsMVELFactory( context.getDeclarationResolver().getDeclarations(),
                                                                      null,
                                                                      context.getPkg().getGlobals() );
+            
+            MVELDialectData data = (MVELDialectData) context.getPkg().getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );            
 
             // This builder is re-usable in other dialects, so specify by name            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
