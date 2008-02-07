@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectData;
+import org.drools.rule.Package;
 import org.drools.spi.FieldValue;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
@@ -36,6 +38,12 @@ public class MVELReturnValueExpression
                                  object,
                                  workingMemory,
                                  null );
+        
+        Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
+        if ( pkg != null ) {
+            MVELDialectData data = ( MVELDialectData ) pkg.getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );
+        }        
 
         return org.drools.base.FieldFactory.getFieldValue( MVEL.executeExpression( this.expr,
                                                                                    null,

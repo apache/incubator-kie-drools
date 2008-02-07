@@ -5,6 +5,7 @@ import java.io.Serializable;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.rule.MVELDialectData;
+import org.drools.rule.Package;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel.compiler.CompiledExpression;
@@ -36,8 +37,11 @@ public class MVELConsequence
                             workingMemory,
                             null );
         
-        MVELDialectData data = ( MVELDialectData ) workingMemory.getRuleBase().getPackage( "MAIN" ).getDialectDatas().getDialectData( "mvel" );
-        factory.setNextFactory( data.getFunctionFactory() );
+        Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
+        if ( pkg != null ) {
+            MVELDialectData data = ( MVELDialectData ) pkg.getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );
+        }
         
         CompiledExpression compexpr = (CompiledExpression) this.expr;
 

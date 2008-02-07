@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectData;
+import org.drools.rule.Package;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 import org.mvel.MVEL;
@@ -39,6 +41,13 @@ public class MVELEvalExpression
                                  null,
                                  workingMemory,
                                  null );
+        
+        Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
+        if ( pkg != null ) {
+            MVELDialectData data = ( MVELDialectData ) pkg.getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );
+        }        
+        
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
                                                                  new Object(),
                                                                  factory );
