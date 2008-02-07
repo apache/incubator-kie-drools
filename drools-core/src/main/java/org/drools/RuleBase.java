@@ -136,7 +136,7 @@ public interface RuleBase
 
     Package getPackage(String name);
 
-    void addPackage(Package pkg) throws Exception;
+    void addPackage(Package pkg);
     
     /**
      * This locks the current RuleBase and all there referenced StatefulSessions. This should be 

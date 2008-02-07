@@ -16,7 +16,7 @@ package org.drools;
  * limitations under the License.
  */
 
-public class IntegrationException extends CheckedDroolsException {
+public class IntegrationException extends RuntimeDroolsException {
     /**
      * 
      */
