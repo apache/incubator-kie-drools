@@ -92,7 +92,17 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {"foo", "not memberOf", col, Boolean.FALSE},
                                  {"xyz", "not memberOf", col, Boolean.TRUE},
                                  {null, "not memberOf", col, Boolean.FALSE},
-                                 {"foo", "not memberOf", null, Boolean.FALSE}
+                                 {"foo", "not memberOf", null, Boolean.FALSE},
+                                 {Boolean.TRUE, "==", "xyz", Boolean.FALSE},
+                                 {Boolean.TRUE, "==", "true", Boolean.TRUE},
+                                 {Boolean.FALSE, "==", "xyz", Boolean.TRUE},
+                                 {Boolean.FALSE, "==", "false", Boolean.TRUE},
+                                 {Boolean.FALSE, "==", "true", Boolean.FALSE},
+                                 {Boolean.TRUE, "!=", "xyz", Boolean.TRUE},
+                                 {Boolean.TRUE, "!=", "true", Boolean.FALSE},
+                                 {Boolean.FALSE, "!=", "xyz", Boolean.FALSE},
+                                 {Boolean.FALSE, "!=", "true", Boolean.TRUE},
+                                 {Boolean.FALSE, "!=", "false", Boolean.FALSE}
 
         };
 

@@ -1715,7 +1715,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if( ((ObjectVariableContextEntry) context).right != null && ((ObjectVariableContextEntry) context).right instanceof ShadowProxy ) {
                 return comparator.equals( ((ObjectVariableContextEntry) context).right,  value );
             }
-            return comparator.equals( value, ((ObjectVariableContextEntry) context).right );
+            return comparator.equals( ((ObjectVariableContextEntry) context).right, value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -1727,7 +1727,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if( value != null && value instanceof ShadowProxy ) {
                 return comparator.equals( value, ((ObjectVariableContextEntry) context).left );
             }
-            return comparator.equals( ((ObjectVariableContextEntry) context).left, value );
+            return comparator.equals( value, ((ObjectVariableContextEntry) context).left );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -1787,7 +1787,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if( ((ObjectVariableContextEntry) context).right != null && ((ObjectVariableContextEntry) context).right instanceof ShadowProxy ) {
                 return !comparator.equals( ((ObjectVariableContextEntry) context).right, value );
             }
-            return !comparator.equals( value, ((ObjectVariableContextEntry) context).right );
+            return !comparator.equals( ((ObjectVariableContextEntry) context).right, value );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -1799,7 +1799,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             if( value != null && value instanceof ShadowProxy ) {
                 return !comparator.equals( value, ((ObjectVariableContextEntry) context).left );
             }
-            return !comparator.equals( ((ObjectVariableContextEntry) context).left, value );
+            return !comparator.equals( value, ((ObjectVariableContextEntry) context).left );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
