@@ -9,6 +9,7 @@ import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
+import org.drools.rule.MVELDialectData;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.mvel.Macro;
@@ -90,6 +91,7 @@ public class MVELConsequenceBuilder
                                                                      null,
                                                                      context.getPkg().getGlobals(),
                                                                      analysis.getBoundIdentifiers() );
+            
 
             context.getRule().setConsequence( new MVELConsequence( expr,
                                                                    factory ) );

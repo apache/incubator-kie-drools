@@ -32,6 +32,7 @@ import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
 import org.drools.facttemplates.FieldTemplateImpl;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
@@ -79,7 +80,7 @@ public class PackageBuilder {
 
     private Dialect                     dialect;
 
-    private DialectRegistry             dialectRegistry;    
+    private DialectRegistry             dialectRegistry;
 
     /**
      * Use this when package is starting from scratch.
@@ -146,7 +147,6 @@ public class PackageBuilder {
 
         this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
 
-        
         if ( this.pkg != null ) {
             this.dialectRegistry.initAll( this );
         }
@@ -177,7 +177,7 @@ public class PackageBuilder {
      */
     public void addPackageFromXml(final Reader reader) throws DroolsParserException,
                                                       IOException {
-        final XmlPackageReader xmlReader = new XmlPackageReader(  this.configuration.getSemanticModules() );
+        final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
 
         try {
             xmlReader.read( reader );
@@ -214,7 +214,7 @@ public class PackageBuilder {
      */
     public void addRuleFlow(Reader processSource) {
         ProcessBuilder processBuilder = new ProcessBuilder( this );
-        
+
         try {
             processBuilder.addProcessFromFile( processSource );
             this.results.addAll( processBuilder.getErrors() );
@@ -224,29 +224,29 @@ public class PackageBuilder {
             }
             this.results.add( new RuleFlowLoadError( "Unable to load the rule flow.",
                                                      e ) );
-        } 
+        }
 
-        this.results = this.dialectRegistry.addResults( this.results );        
+        this.results = this.dialectRegistry.addResults( this.results );
     }
-    
-    public void addProcessFromXml(Reader reader) {        
+
+    public void addProcessFromXml(Reader reader) {
         ProcessBuilder processBuilder = new ProcessBuilder( this );
         XmlProcessReader xmlReader = new XmlProcessReader( this.configuration.getSemanticModules() );
         try {
-            Process process = xmlReader.read(  reader );
+            Process process = xmlReader.read( reader );
             processBuilder.buildProcess( process );
-            this.results.addAll( processBuilder.getErrors() );            
+            this.results.addAll( processBuilder.getErrors() );
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;
             }
             this.results.add( new RuleFlowLoadError( "Unable to load the rule flow.",
                                                      e ) );
-        } 
+        }
 
-        this.results = this.dialectRegistry.addResults( this.results ); 
+        this.results = this.dialectRegistry.addResults( this.results );
     }
-    
+
     private void addSemanticModules() {
         //this.configuration.getSemanticModules();
     }
@@ -260,24 +260,20 @@ public class PackageBuilder {
         validateUniqueRuleNames( packageDescr );
 
         String dialectName = null;
-        //MN: not needed as overrides are done in the compiler before here
-        //as we can have mixed dialect types - still not quite right here.       
-        //        for ( Iterator it = packageDescr.getAttributes().iterator(); it.hasNext(); ) {
-        //            AttributeDescr value = ( AttributeDescr ) it.next();
-        //            if ( "dialect".equals( value.getName() )) {   
-        //                dialectName = value.getValue();
-        //                break;
-        //            }
-        //        }
-
-        // The Package does not have a default dialect, so set it
-        if ( dialectName == null && this.dialect == null ) {
-            this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
+       
+        for ( Iterator it = packageDescr.getAttributes().iterator(); it.hasNext(); ) {
+            AttributeDescr value = (AttributeDescr) it.next();
+            if ( "dialect".equals( value.getName() ) ) {
+                dialectName = value.getValue();
+                break;
+            }
         }
 
+        // If the PackageDescr specifies a dialect then set it.
         if ( dialectName != null ) {
             this.dialect = this.dialectRegistry.getDialect( dialectName );
         } else if ( this.dialect == null ) {
+            // If a dialect is not specified and one is not set, then set from the configuration
             this.dialect = this.dialectRegistry.getDialect( this.configuration.getDefaultDialect() );
         }
 
@@ -296,30 +292,16 @@ public class PackageBuilder {
             }
 
             if ( !packageDescr.getFunctions().isEmpty() ) {
-                // add static imports for all functions
-                for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-                    FunctionDescr functionDescr = (FunctionDescr) it.next();
-                    final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
-                    functionDescr.setClassName( functionClassName );
-                    this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
-                }
-
                 // iterate and compile
                 for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
                     // inherit the dialect from the package
                     FunctionDescr functionDescr = (FunctionDescr) it.next();
                     functionDescr.setDialect( this.dialect.getId() );
-                    addFunction(  functionDescr );
+                    addFunction( functionDescr );
                 }
 
-                // We need to compile all the functions, so scripting languages like mvel can find them
+                // We need to compile all the functions now, so scripting languages like mvel can find them
                 this.dialectRegistry.compileAll();
-
-                for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
-                    FunctionDescr functionDescr = (FunctionDescr) it.next();
-                    final String functionClassName = this.pkg.getName() + "." + ucFirst( functionDescr.getName() );
-                    this.dialectRegistry.addStaticImport( functionClassName + "." + functionDescr.getName() );
-                }
             }
 
             // iterate and compile
@@ -329,8 +311,6 @@ public class PackageBuilder {
         }
 
         this.dialectRegistry.compileAll();
-        
-        
 
         // some of the rules and functions may have been redefined
         this.pkg.getDialectDatas().reloadDirty();
@@ -364,7 +344,7 @@ public class PackageBuilder {
     private void newPackage(final PackageDescr packageDescr) {
         this.pkg = new Package( packageDescr.getName(),
                                 this.configuration.getClassLoader() );
-        
+
         this.typeResolver.addImport( this.pkg.getName() + ".*" );
 
         this.dialectRegistry.initAll( this );
@@ -376,9 +356,10 @@ public class PackageBuilder {
         final List imports = packageDescr.getImports();
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             ImportDescr importEntry = (ImportDescr) it.next();
-            ImportDeclaration importDecl = new ImportDeclaration( importEntry.getTarget(), importEntry.isEvent() );
+            ImportDeclaration importDecl = new ImportDeclaration( importEntry.getTarget(),
+                                                                  importEntry.isEvent() );
             pkg.addImport( importDecl );
-            this.typeResolver.addImport( importDecl.getTarget() );            
+            this.typeResolver.addImport( importDecl.getTarget() );
             this.dialectRegistry.addImport( importDecl.getTarget() );
         }
 
@@ -398,7 +379,7 @@ public class PackageBuilder {
             try {
                 clazz = typeResolver.resolveType( className );
                 this.pkg.addGlobal( identifier,
-                               clazz );
+                                    clazz );
             } catch ( final ClassNotFoundException e ) {
                 this.results.add( new GlobalError( identifier,
                                                    global.getLine() ) );
@@ -497,7 +478,7 @@ public class PackageBuilder {
 
     public Dialect getDefaultDialect() {
         return this.dialect;
-    }   
+    }
 
     /**
      * Return the ClassFieldExtractorCache, this should only be used internally, and is subject to change

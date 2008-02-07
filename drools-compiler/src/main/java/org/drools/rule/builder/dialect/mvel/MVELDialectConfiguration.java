@@ -21,6 +21,8 @@ public class MVELDialectConfiguration
     private PackageBuilderConfiguration conf;
 
     private boolean                     strict;
+    
+    private int                         langLevel;
 
     public Dialect getDialect() {
         return new MVELDialect();
@@ -28,7 +30,8 @@ public class MVELDialectConfiguration
 
     public void init(PackageBuilderConfiguration conf) {
         this.conf = conf;
-        setStrict( getStrict() );
+        setStrict( determineStrict() );
+        setLangLevel( determineLangLevel() );
     }
 
     public PackageBuilderConfiguration getPackageBuilderConfiguration() {
@@ -42,12 +45,25 @@ public class MVELDialectConfiguration
     public boolean isStrict() {
         return this.strict;
     }
+    
+    public void setLangLevel(int langLevel) {
+        this.langLevel = langLevel;
+    }
+    
+    public int getLangLevel() {
+        return this.langLevel;
+    }
 
-    private boolean getStrict() {
+    private boolean determineStrict() {
         final String prop = this.conf.getChainedProperties().getProperty( "drools.dialect.mvel.strict",
                                                                           "true" );
         return Boolean.valueOf( prop ).booleanValue();
-
     }
+    
+    private int determineLangLevel() {
+        final String prop = this.conf.getChainedProperties().getProperty( "drools.dialect.mvel.langLevel",
+                                                                          "4" );
+        return Integer.valueOf( prop ).intValue();
+    }    
 
 }

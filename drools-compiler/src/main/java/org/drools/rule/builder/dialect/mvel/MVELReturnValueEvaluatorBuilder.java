@@ -14,6 +14,7 @@ import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.ReturnValueDescr;
 import org.drools.lang.descr.ActionDescr;
+import org.drools.rule.MVELDialectData;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.PackageBuildContext;
@@ -60,6 +61,9 @@ public class MVELReturnValueEvaluatorBuilder
                                                                      null,
                                                                      context.getPkg().getGlobals(),
                                                                      analysis.getBoundIdentifiers() );
+            
+            MVELDialectData data = (MVELDialectData) context.getPkg().getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );            
             
             constraintNode.setEvaluator( new MVELReturnValueEvaluator( expr, factory ) );
         } catch ( final Exception e ) {

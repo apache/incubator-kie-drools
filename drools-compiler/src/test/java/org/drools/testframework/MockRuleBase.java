@@ -14,11 +14,6 @@ import org.drools.rule.Package;
 
 public class MockRuleBase implements RuleBase {
 
-	public void addPackage(Package pkg) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
 	public int getAdditionsSinceLock() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -125,6 +120,11 @@ public class MockRuleBase implements RuleBase {
                                               ClockType clockType) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void addPackage(Package pkg) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

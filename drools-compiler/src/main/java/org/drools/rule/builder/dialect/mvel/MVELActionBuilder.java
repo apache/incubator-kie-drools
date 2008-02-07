@@ -12,6 +12,7 @@ import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.ActionDescr;
+import org.drools.rule.MVELDialectData;
 import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.PackageBuildContext;
@@ -55,6 +56,9 @@ public class MVELActionBuilder
                                                                      null,
                                                                      context.getPkg().getGlobals(),
                                                                      analysis.getBoundIdentifiers() );
+            
+            MVELDialectData data = (MVELDialectData) context.getPkg().getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );            
             
             actionNode.setAction( new MVELAction( expr, factory )  );
         } catch ( final Exception e ) {

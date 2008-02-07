@@ -80,7 +80,7 @@ public class JavaDialect
 
     public static final String                ID                          = "java";
 
-    private final static String               EXPRESSION_DIALECT_NAME     = "MVEL";
+    private final static String               EXPRESSION_DIALECT_NAME     = "mvel";
     // builders
     private static final PatternBuilder              pattern                     = new PatternBuilder();
     private static final QueryBuilder                query                       = new QueryBuilder();
@@ -114,18 +114,20 @@ public class JavaDialect
     private PackageStore                      packageStoreWrapper;
     private Map                               errorHandlers;
     private List                              results;
+    private PackageBuilder                    packageBuilder;
 
     private TypeResolver                      typeResolver;
     private ClassFieldExtractorCache          classFieldExtractorCache;
 
     // a map of registered builders
-    private Map                               builders;
+    private static Map                               builders;
 
     public JavaDialect() {
 
     }
 
     public void init(PackageBuilder builder) {
+        this.packageBuilder = builder;
         this.pkg = builder.getPackage();
         this.configuration = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
         this.typeResolver = builder.getTypeResolver();
@@ -139,7 +141,9 @@ public class JavaDialect
             init( pkg );
         }
 
-        initBuilder();
+        if ( this.builders == null ) {
+            initBuilder();
+        }
 
         loadCompiler();
     }
@@ -203,8 +207,9 @@ public class JavaDialect
         this.src = new MemoryResourceReader();
 
         this.generatedClassList = new ArrayList();
-
-        JavaDialectData data = (JavaDialectData) this.pkg.getDialectDatas().getDialectData( this.ID );
+        
+        JavaDialectData data = new JavaDialectData( this.pkg.getDialectDatas() );
+        this.pkg.getDialectDatas().setDialectData( ID, data );
 
         this.packageStoreWrapper = new PackageStore( data,
                                                      this.results );
@@ -545,6 +550,7 @@ public class JavaDialect
         JavaDialectData data = (JavaDialectData) this.pkg.getDialectDatas().getDialectData( this.ID );
         //System.out.println( functionDescr + " : " + typeResolver );
         final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
+        functionDescr.setClassName( functionClassName );
         Function function = new Function( functionDescr.getName(),
                                           this.ID );
         this.pkg.addFunction( function );
@@ -567,6 +573,11 @@ public class JavaDialect
         mapping.setOffset( functionDescr.getOffset() );
         this.pkg.getDialectDatas().getLineMappings().put( functionClassName,
                                                           mapping );
+        
+
+        this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );   
+        
+        this.packageBuilder.getDialectRegistry().addStaticImport( functionClassName + "." + functionDescr.getName() );
     }
 
     /**

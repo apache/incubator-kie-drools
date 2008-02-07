@@ -12,6 +12,7 @@ import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.util.StringUtils;
+import org.mvel.MVEL;
 import org.mvel.MVELTemplateRegistry;
 import org.mvel.TemplateInterpreter;
 import org.mvel.TemplateRegistry;
@@ -22,9 +23,9 @@ public class AbstractJavaProcessBuilder {
     protected static final TemplateRegistry INVOKER_REGISTRY = new MVELTemplateRegistry();
 
     static {
+        MVEL.setThreadSafe( true );        
         RULE_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaProcessBuilder.class.getResourceAsStream( "javaRule.mvel" ) ) );
         INVOKER_REGISTRY.registerTemplate( new InputStreamReader( AbstractJavaProcessBuilder.class.getResourceAsStream( "javaInvokers.mvel" ) ) );
-        MVELDialect.setLanguageLevel( 4 );
 
     }
 

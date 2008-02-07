@@ -60,6 +60,10 @@ public class RuleDescr extends BaseDescr implements Dialectable {
     public String getDialect() {
         return this.dialect;
     }
+    
+    public void setDialect(String dialect) {
+        this.dialect = dialect;
+    }
 
     public String getSalience() {
         return salience;
