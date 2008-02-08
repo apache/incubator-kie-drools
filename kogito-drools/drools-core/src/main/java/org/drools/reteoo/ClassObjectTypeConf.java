@@ -250,8 +250,10 @@ public class ClassObjectTypeConf
                     }
                     proxy = (ShadowProxy) this.instantiator.newInstance();
                 }
+                
                 proxy.setShadowedObject( fact );
             } catch ( final Exception e ) {
+            	System.out.println( "shadow: " +proxy.getClass() + ":" + fact.getClass() );
                 throw new RuntimeDroolsException( "Error creating shadow fact for object: " + fact,
                                                   e );
             }
