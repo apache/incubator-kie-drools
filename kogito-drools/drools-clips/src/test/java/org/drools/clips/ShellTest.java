@@ -254,7 +254,20 @@ public class ShellTest extends TestCase {
         assertEquals( "hello mark",
                       new String( this.baos.toByteArray() ) );
     }
-
+    
+    public void testRuleCallDeftemplate() {
+        String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
+        this.shell.eval( function );
+        
+        this.shell.eval( "(import org.drools.*)" );
+        //this.shell.eval( "(defrule testRule (Person (name mark) (age ?age) ) => (printout t hello) (printout t \" \" (max 5 ?age) ) )" );
+        this.shell.eval( "(defrule testRule (Person (age ?age) ) => (printout t hello) (printout t \" \" (max 3 ?age) ) )" );
+        this.shell.eval( "(assert (Person (name mark) (age 32) ) )" );
+        this.shell.eval( "(run)" );
+        assertEquals( "hello 32",
+                      new String( this.baos.toByteArray() ) );        
+    }
+    
     public void testTwoSimpleRulesWithModify() {
         this.shell.eval( "(import org.drools.*)" );
         this.shell.eval( "(defrule testRule ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )" );

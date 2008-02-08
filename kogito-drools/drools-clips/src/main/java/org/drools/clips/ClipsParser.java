@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g 2008-02-05 16:37:47
+// $ANTLR 3.0.1 C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g 2008-02-07 02:53:24
 
 	package org.drools.clips;
 
@@ -1340,7 +1340,6 @@ public class ClipsParser extends Parser {
               			fc = new FieldConstraintDescr(f.getText());
               			fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
               			fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
-              			base.addDescr( fc );	
               			top = fc.getRestriction();		
               		
             }
@@ -1348,7 +1347,10 @@ public class ClipsParser extends Parser {
             or_restr_connective(top,  base,  fc,  declarations);
             _fsp--;
             if (failed) return ;
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_field_constriant939); if (failed) return ;
+            if ( backtracking==0 ) {
+               if ( top.getRestrictions().size() != 0 ) base.addDescr( fc ); 
+            }
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_field_constriant943); if (failed) return ;
 
             }
 
@@ -1374,7 +1376,7 @@ public class ClipsParser extends Parser {
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:545:2: ( and_restr_connective[or, ceBase, fcBase, declarations] ( options {backtrack=true; } : PIPE and_restr_connective[or, ceBase, fcBase, declarations] )* )
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:546:3: and_restr_connective[or, ceBase, fcBase, declarations] ( options {backtrack=true; } : PIPE and_restr_connective[or, ceBase, fcBase, declarations] )*
             {
-            pushFollow(FOLLOW_and_restr_connective_in_or_restr_connective978);
+            pushFollow(FOLLOW_and_restr_connective_in_or_restr_connective982);
             and_restr_connective(or,  ceBase,  fcBase,  declarations);
             _fsp--;
             if (failed) return ;
@@ -1393,13 +1395,13 @@ public class ClipsParser extends Parser {
             	case 1 :
             	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:549:6: PIPE and_restr_connective[or, ceBase, fcBase, declarations]
             	    {
-            	    match(input,PIPE,FOLLOW_PIPE_in_or_restr_connective1002); if (failed) return ;
+            	    match(input,PIPE,FOLLOW_PIPE_in_or_restr_connective1006); if (failed) return ;
             	    if ( backtracking==0 ) {
             	      
             	      				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
             	      			
             	    }
-            	    pushFollow(FOLLOW_and_restr_connective_in_or_restr_connective1012);
+            	    pushFollow(FOLLOW_and_restr_connective_in_or_restr_connective1016);
             	    and_restr_connective(or,  ceBase,  fcBase,  declarations);
             	    _fsp--;
             	    if (failed) return ;
@@ -1444,7 +1446,7 @@ public class ClipsParser extends Parser {
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:568:2: ( restriction[and, ceBase, fcBase, declarations] ( AMPERSAND restriction[and, ceBase, fcBase, declarations] )* )
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:569:3: restriction[and, ceBase, fcBase, declarations] ( AMPERSAND restriction[and, ceBase, fcBase, declarations] )*
             {
-            pushFollow(FOLLOW_restriction_in_and_restr_connective1044);
+            pushFollow(FOLLOW_restriction_in_and_restr_connective1048);
             restriction(and,  ceBase,  fcBase,  declarations);
             _fsp--;
             if (failed) return ;
@@ -1463,8 +1465,8 @@ public class ClipsParser extends Parser {
             	case 1 :
             	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:570:5: AMPERSAND restriction[and, ceBase, fcBase, declarations]
             	    {
-            	    match(input,AMPERSAND,FOLLOW_AMPERSAND_in_and_restr_connective1052); if (failed) return ;
-            	    pushFollow(FOLLOW_restriction_in_and_restr_connective1054);
+            	    match(input,AMPERSAND,FOLLOW_AMPERSAND_in_and_restr_connective1056); if (failed) return ;
+            	    pushFollow(FOLLOW_restriction_in_and_restr_connective1058);
             	    restriction(and,  ceBase,  fcBase,  declarations);
             	    _fsp--;
             	    if (failed) return ;
@@ -1523,7 +1525,7 @@ public class ClipsParser extends Parser {
                 case 1 :
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:593:5: TILDE
                     {
-                    match(input,TILDE,FOLLOW_TILDE_in_restriction1087); if (failed) return ;
+                    match(input,TILDE,FOLLOW_TILDE_in_restriction1091); if (failed) return ;
                     if ( backtracking==0 ) {
                       op = "!=";
                     }
@@ -1573,7 +1575,7 @@ public class ClipsParser extends Parser {
                 case 1 :
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:594:5: predicate_constraint[rc, op, base]
                     {
-                    pushFollow(FOLLOW_predicate_constraint_in_restriction1103);
+                    pushFollow(FOLLOW_predicate_constraint_in_restriction1107);
                     predicate_constraint(rc,  op,  base);
                     _fsp--;
                     if (failed) return ;
@@ -1583,7 +1585,7 @@ public class ClipsParser extends Parser {
                 case 2 :
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:595:7: return_value_restriction[op, rc]
                     {
-                    pushFollow(FOLLOW_return_value_restriction_in_restriction1119);
+                    pushFollow(FOLLOW_return_value_restriction_in_restriction1123);
                     return_value_restriction(op,  rc);
                     _fsp--;
                     if (failed) return ;
@@ -1593,7 +1595,7 @@ public class ClipsParser extends Parser {
                 case 3 :
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:596:7: variable_restriction[op, rc, base, fcBase, declarations]
                     {
-                    pushFollow(FOLLOW_variable_restriction_in_restriction1128);
+                    pushFollow(FOLLOW_variable_restriction_in_restriction1132);
                     variable_restriction(op,  rc,  base,  fcBase,  declarations);
                     _fsp--;
                     if (failed) return ;
@@ -1603,7 +1605,7 @@ public class ClipsParser extends Parser {
                 case 4 :
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:597:8: lc= literal_restriction
                     {
-                    pushFollow(FOLLOW_literal_restriction_in_restriction1140);
+                    pushFollow(FOLLOW_literal_restriction_in_restriction1144);
                     lc=literal_restriction();
                     _fsp--;
                     if (failed) return ;
@@ -1644,8 +1646,8 @@ public class ClipsParser extends Parser {
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:605:2: ( COLON t= lisp_form )
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:605:4: COLON t= lisp_form
             {
-            match(input,COLON,FOLLOW_COLON_in_predicate_constraint1173); if (failed) return ;
-            pushFollow(FOLLOW_lisp_form_in_predicate_constraint1179);
+            match(input,COLON,FOLLOW_COLON_in_predicate_constraint1177); if (failed) return ;
+            pushFollow(FOLLOW_lisp_form_in_predicate_constraint1183);
             t=lisp_form();
             _fsp--;
             if (failed) return ;
@@ -1677,8 +1679,8 @@ public class ClipsParser extends Parser {
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:612:2: ( EQUALS t= lisp_form )
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:612:4: EQUALS t= lisp_form
             {
-            match(input,EQUALS,FOLLOW_EQUALS_in_return_value_restriction1198); if (failed) return ;
-            pushFollow(FOLLOW_lisp_form_in_return_value_restriction1205);
+            match(input,EQUALS,FOLLOW_EQUALS_in_return_value_restriction1202); if (failed) return ;
+            pushFollow(FOLLOW_lisp_form_in_return_value_restriction1209);
             t=lisp_form();
             _fsp--;
             if (failed) return ;
@@ -1711,7 +1713,7 @@ public class ClipsParser extends Parser {
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:619:4: VAR
             {
             VAR1=(Token)input.LT(1);
-            match(input,VAR,FOLLOW_VAR_in_variable_restriction1233); if (failed) return ;
+            match(input,VAR,FOLLOW_VAR_in_variable_restriction1237); if (failed) return ;
             if ( backtracking==0 ) {
               
               	        identifier =  VAR1.getText().replace( '?', '$');
@@ -1756,7 +1758,7 @@ public class ClipsParser extends Parser {
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:638:2: (t= literal )
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:639:6: t= literal
             {
-            pushFollow(FOLLOW_literal_in_literal_restriction1266);
+            pushFollow(FOLLOW_literal_in_literal_restriction1270);
             t=literal();
             _fsp--;
             if (failed) return text;
@@ -1799,7 +1801,7 @@ public class ClipsParser extends Parser {
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:661:2: ( LEFT_PAREN (t= NAME | t= VAR ) (a= lisp_atom | l= lisp_form )* RIGHT_PAREN )
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:661:4: LEFT_PAREN (t= NAME | t= VAR ) (a= lisp_atom | l= lisp_form )* RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lisp_form1294); if (failed) return lispForm;
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_lisp_form1298); if (failed) return lispForm;
             // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:663:3: (t= NAME | t= VAR )
             int alt16=2;
             int LA16_0 = input.LA(1);
@@ -1822,7 +1824,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:664:7: t= NAME
                     {
                     t=(Token)input.LT(1);
-                    match(input,NAME,FOLLOW_NAME_in_lisp_form1311); if (failed) return lispForm;
+                    match(input,NAME,FOLLOW_NAME_in_lisp_form1315); if (failed) return lispForm;
                     if ( backtracking==0 ) {
                        list.add( new SymbolLispAtom( t.getText() ) ); 
                     }
@@ -1833,7 +1835,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:666:7: t= VAR
                     {
                     t=(Token)input.LT(1);
-                    match(input,VAR,FOLLOW_VAR_in_lisp_form1331); if (failed) return lispForm;
+                    match(input,VAR,FOLLOW_VAR_in_lisp_form1335); if (failed) return lispForm;
                     if ( backtracking==0 ) {
                        list.add( new VariableLispAtom( t.getText() ) ); 
                     }
@@ -1861,7 +1863,7 @@ public class ClipsParser extends Parser {
             	case 1 :
             	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:668:6: a= lisp_atom
             	    {
-            	    pushFollow(FOLLOW_lisp_atom_in_lisp_form1354);
+            	    pushFollow(FOLLOW_lisp_atom_in_lisp_form1358);
             	    a=lisp_atom();
             	    _fsp--;
             	    if (failed) return lispForm;
@@ -1874,7 +1876,7 @@ public class ClipsParser extends Parser {
             	case 2 :
             	    // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:669:6: l= lisp_form
             	    {
-            	    pushFollow(FOLLOW_lisp_form_in_lisp_form1365);
+            	    pushFollow(FOLLOW_lisp_form_in_lisp_form1369);
             	    l=lisp_form();
             	    _fsp--;
             	    if (failed) return lispForm;
@@ -1890,7 +1892,7 @@ public class ClipsParser extends Parser {
                 }
             } while (true);
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lisp_form1392); if (failed) return lispForm;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_lisp_form1396); if (failed) return lispForm;
             if ( backtracking==0 ) {
                lispForm = new LispForm( ( SExpression[] ) list.toArray( new SExpression[ list.size () ] ) ); 
             }
@@ -1974,7 +1976,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:681:6: t= VAR
                     {
                     t=(Token)input.LT(1);
-                    match(input,VAR,FOLLOW_VAR_in_lisp_atom1436); if (failed) return sExpression;
+                    match(input,VAR,FOLLOW_VAR_in_lisp_atom1440); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new VariableLispAtom( t.getText() ); 
                     }
@@ -1985,7 +1987,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:682:6: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_lisp_atom1448); if (failed) return sExpression;
+                    match(input,STRING,FOLLOW_STRING_in_lisp_atom1452); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new StringLispAtom( getString( t ) ); 
                     }
@@ -1996,7 +1998,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:683:6: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_lisp_atom1470); if (failed) return sExpression;
+                    match(input,FLOAT,FOLLOW_FLOAT_in_lisp_atom1474); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new FloatLispAtom( t.getText() ); 
                     }
@@ -2007,7 +2009,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:684:6: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_lisp_atom1482); if (failed) return sExpression;
+                    match(input,INT,FOLLOW_INT_in_lisp_atom1486); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new IntLispAtom( t.getText() ); 
                     }
@@ -2018,7 +2020,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:685:7: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_lisp_atom1495); if (failed) return sExpression;
+                    match(input,BOOL,FOLLOW_BOOL_in_lisp_atom1499); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new BoolLispAtom( t.getText() ); 
                     }
@@ -2029,7 +2031,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:686:7: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_lisp_atom1511); if (failed) return sExpression;
+                    match(input,NULL,FOLLOW_NULL_in_lisp_atom1515); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new NullLispAtom( null ); 
                     }
@@ -2040,7 +2042,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:687:14: t= NAME
                     {
                     t=(Token)input.LT(1);
-                    match(input,NAME,FOLLOW_NAME_in_lisp_atom1537); if (failed) return sExpression;
+                    match(input,NAME,FOLLOW_NAME_in_lisp_atom1541); if (failed) return sExpression;
                     if ( backtracking==0 ) {
                        sExpression = new SymbolLispAtom( "\"" +t.getText() + "\""); 
                     }
@@ -2125,7 +2127,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:696:8: t= STRING
                     {
                     t=(Token)input.LT(1);
-                    match(input,STRING,FOLLOW_STRING_in_literal1581); if (failed) return text;
+                    match(input,STRING,FOLLOW_STRING_in_literal1585); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = getString( t ); 
                     }
@@ -2136,7 +2138,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:697:7: t= NAME
                     {
                     t=(Token)input.LT(1);
-                    match(input,NAME,FOLLOW_NAME_in_literal1594); if (failed) return text;
+                    match(input,NAME,FOLLOW_NAME_in_literal1598); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2147,7 +2149,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:698:7: t= INT
                     {
                     t=(Token)input.LT(1);
-                    match(input,INT,FOLLOW_INT_in_literal1610); if (failed) return text;
+                    match(input,INT,FOLLOW_INT_in_literal1614); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2158,7 +2160,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:699:7: t= FLOAT
                     {
                     t=(Token)input.LT(1);
-                    match(input,FLOAT,FOLLOW_FLOAT_in_literal1625); if (failed) return text;
+                    match(input,FLOAT,FOLLOW_FLOAT_in_literal1629); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2169,7 +2171,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:700:7: t= BOOL
                     {
                     t=(Token)input.LT(1);
-                    match(input,BOOL,FOLLOW_BOOL_in_literal1638); if (failed) return text;
+                    match(input,BOOL,FOLLOW_BOOL_in_literal1642); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = t.getText(); 
                     }
@@ -2180,7 +2182,7 @@ public class ClipsParser extends Parser {
                     // C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g:701:7: t= NULL
                     {
                     t=(Token)input.LT(1);
-                    match(input,NULL,FOLLOW_NULL_in_literal1652); if (failed) return text;
+                    match(input,NULL,FOLLOW_NULL_in_literal1656); if (failed) return text;
                     if ( backtracking==0 ) {
                        text = null; 
                     }
@@ -2279,42 +2281,42 @@ public class ClipsParser extends Parser {
     public static final BitSet FOLLOW_LEFT_PAREN_in_field_constriant914 = new BitSet(new long[]{0x0000000000000020L});
     public static final BitSet FOLLOW_NAME_in_field_constriant918 = new BitSet(new long[]{0x0000000007E20A20L});
     public static final BitSet FOLLOW_or_restr_connective_in_field_constriant933 = new BitSet(new long[]{0x0000000000000040L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_field_constriant939 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_and_restr_connective_in_or_restr_connective978 = new BitSet(new long[]{0x0000000000080002L});
-    public static final BitSet FOLLOW_PIPE_in_or_restr_connective1002 = new BitSet(new long[]{0x0000000007E20A20L});
-    public static final BitSet FOLLOW_and_restr_connective_in_or_restr_connective1012 = new BitSet(new long[]{0x0000000000080002L});
-    public static final BitSet FOLLOW_restriction_in_and_restr_connective1044 = new BitSet(new long[]{0x0000000000100002L});
-    public static final BitSet FOLLOW_AMPERSAND_in_and_restr_connective1052 = new BitSet(new long[]{0x0000000007E20A20L});
-    public static final BitSet FOLLOW_restriction_in_and_restr_connective1054 = new BitSet(new long[]{0x0000000000100002L});
-    public static final BitSet FOLLOW_TILDE_in_restriction1087 = new BitSet(new long[]{0x0000000007C20A20L});
-    public static final BitSet FOLLOW_predicate_constraint_in_restriction1103 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_return_value_restriction_in_restriction1119 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_variable_restriction_in_restriction1128 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_restriction_in_restriction1140 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COLON_in_predicate_constraint1173 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_lisp_form_in_predicate_constraint1179 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_EQUALS_in_return_value_restriction1198 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_lisp_form_in_return_value_restriction1205 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VAR_in_variable_restriction1233 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_literal_restriction1266 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_lisp_form1294 = new BitSet(new long[]{0x0000000000020020L});
-    public static final BitSet FOLLOW_NAME_in_lisp_form1311 = new BitSet(new long[]{0x0000000007020A70L});
-    public static final BitSet FOLLOW_VAR_in_lisp_form1331 = new BitSet(new long[]{0x0000000007020A70L});
-    public static final BitSet FOLLOW_lisp_atom_in_lisp_form1354 = new BitSet(new long[]{0x0000000007020A70L});
-    public static final BitSet FOLLOW_lisp_form_in_lisp_form1365 = new BitSet(new long[]{0x0000000007020A70L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_lisp_form1392 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VAR_in_lisp_atom1436 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_lisp_atom1448 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_lisp_atom1470 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_lisp_atom1482 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_lisp_atom1495 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_lisp_atom1511 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NAME_in_lisp_atom1537 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_STRING_in_literal1581 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NAME_in_literal1594 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INT_in_literal1610 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_literal1625 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_literal1638 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_literal1652 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_field_constriant943 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_and_restr_connective_in_or_restr_connective982 = new BitSet(new long[]{0x0000000000080002L});
+    public static final BitSet FOLLOW_PIPE_in_or_restr_connective1006 = new BitSet(new long[]{0x0000000007E20A20L});
+    public static final BitSet FOLLOW_and_restr_connective_in_or_restr_connective1016 = new BitSet(new long[]{0x0000000000080002L});
+    public static final BitSet FOLLOW_restriction_in_and_restr_connective1048 = new BitSet(new long[]{0x0000000000100002L});
+    public static final BitSet FOLLOW_AMPERSAND_in_and_restr_connective1056 = new BitSet(new long[]{0x0000000007E20A20L});
+    public static final BitSet FOLLOW_restriction_in_and_restr_connective1058 = new BitSet(new long[]{0x0000000000100002L});
+    public static final BitSet FOLLOW_TILDE_in_restriction1091 = new BitSet(new long[]{0x0000000007C20A20L});
+    public static final BitSet FOLLOW_predicate_constraint_in_restriction1107 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_return_value_restriction_in_restriction1123 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_variable_restriction_in_restriction1132 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_restriction_in_restriction1144 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COLON_in_predicate_constraint1177 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_lisp_form_in_predicate_constraint1183 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EQUALS_in_return_value_restriction1202 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_lisp_form_in_return_value_restriction1209 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VAR_in_variable_restriction1237 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_literal_restriction1270 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_lisp_form1298 = new BitSet(new long[]{0x0000000000020020L});
+    public static final BitSet FOLLOW_NAME_in_lisp_form1315 = new BitSet(new long[]{0x0000000007020A70L});
+    public static final BitSet FOLLOW_VAR_in_lisp_form1335 = new BitSet(new long[]{0x0000000007020A70L});
+    public static final BitSet FOLLOW_lisp_atom_in_lisp_form1358 = new BitSet(new long[]{0x0000000007020A70L});
+    public static final BitSet FOLLOW_lisp_form_in_lisp_form1369 = new BitSet(new long[]{0x0000000007020A70L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_lisp_form1396 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VAR_in_lisp_atom1440 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_lisp_atom1452 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_lisp_atom1474 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_lisp_atom1486 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_lisp_atom1499 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_lisp_atom1515 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_lisp_atom1541 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_STRING_in_literal1585 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NAME_in_literal1598 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INT_in_literal1614 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_literal1629 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_literal1642 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_literal1656 = new BitSet(new long[]{0x0000000000000002L});
 
 }

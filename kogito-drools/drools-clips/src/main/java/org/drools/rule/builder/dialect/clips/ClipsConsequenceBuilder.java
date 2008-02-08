@@ -1,17 +1,12 @@
 package org.drools.rule.builder.dialect.clips;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.clips.Appendable;
 import org.drools.clips.FunctionHandlers;
 import org.drools.clips.LispForm;
 import org.drools.clips.StringBuilderAppendable;
-import org.drools.rule.Declaration;
-import org.drools.rule.Rule;
-import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 
@@ -27,6 +22,7 @@ public class ClipsConsequenceBuilder extends MVELConsequenceBuilder  {
         }
         
         context.getRuleDescr().setConsequence( builder.toString() );
+        context.getRuleDescr().setDialect( "mvel" );
         
         super.build(  context );
         
