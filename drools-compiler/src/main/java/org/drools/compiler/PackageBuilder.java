@@ -292,6 +292,12 @@ public class PackageBuilder {
             }
 
             if ( !packageDescr.getFunctions().isEmpty() ) {
+            	
+                for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+                	FunctionDescr functionDescr = (FunctionDescr) it.next();
+                    preCompileAddFunction( functionDescr );
+                }    
+                
                 // iterate and compile
                 for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
                     // inherit the dialect from the package
@@ -395,6 +401,10 @@ public class PackageBuilder {
     private void addFunction(final FunctionDescr functionDescr) {
         this.dialect.addFunction( functionDescr,
                                   getTypeResolver() );
+    }
+    
+    private void preCompileAddFunction(final FunctionDescr functionDescr) {
+        this.dialect.preCompileAddFunction( functionDescr, getTypeResolver() );
     }
     
     private void postCompileAddFunction(final FunctionDescr functionDescr) {

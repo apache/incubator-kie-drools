@@ -284,11 +284,16 @@ public class MVELDialect
             this.data.addFunction( function );
         }
     }
-    
-	public void postCompileAddFunction(FunctionDescr functionDescr,
-			TypeResolver typeResolver) {
-		
-	}
+
+    public void preCompileAddFunction(FunctionDescr functionDescr,
+                                      TypeResolver typeResolver) {
+
+    }
+
+    public void postCompileAddFunction(FunctionDescr functionDescr,
+                                       TypeResolver typeResolver) {
+
+    }
 
     public void addImport(String importEntry) {
         if ( importEntry.endsWith( ".*" ) ) {
