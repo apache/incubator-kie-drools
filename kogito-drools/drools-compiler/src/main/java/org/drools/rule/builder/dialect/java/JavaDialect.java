@@ -78,9 +78,9 @@ public class JavaDialect
     implements
     Dialect {
 
-    public static final String                ID                          = "java";
+    public static final String                       ID                          = "java";
 
-    private final static String               EXPRESSION_DIALECT_NAME     = "mvel";
+    private final static String                      EXPRESSION_DIALECT_NAME     = "mvel";
     // builders
     private static final PatternBuilder              pattern                     = new PatternBuilder();
     private static final QueryBuilder                query                       = new QueryBuilder();
@@ -101,23 +101,23 @@ public class JavaDialect
     private static final EntryPointBuilder           entrypoint                  = new EntryPointBuilder();
 
     //
-    private KnowledgeHelperFixer              knowledgeHelperFixer;
-    private DeclarationTypeFixer              typeFixer;
-    private JavaExprAnalyzer                  analyzer;
+    private KnowledgeHelperFixer                     knowledgeHelperFixer;
+    private DeclarationTypeFixer                     typeFixer;
+    private JavaExprAnalyzer                         analyzer;
 
-    private JavaDialectConfiguration          configuration;
+    private JavaDialectConfiguration                 configuration;
 
-    private Package                           pkg;
-    private JavaCompiler                      compiler;
-    private List                              generatedClassList;
-    private MemoryResourceReader              src;
-    private PackageStore                      packageStoreWrapper;
-    private Map                               errorHandlers;
-    private List                              results;
-    private PackageBuilder                    packageBuilder;
+    private Package                                  pkg;
+    private JavaCompiler                             compiler;
+    private List                                     generatedClassList;
+    private MemoryResourceReader                     src;
+    private PackageStore                             packageStoreWrapper;
+    private Map                                      errorHandlers;
+    private List                                     results;
+    private PackageBuilder                           packageBuilder;
 
-    private TypeResolver                      typeResolver;
-    private ClassFieldExtractorCache          classFieldExtractorCache;
+    private TypeResolver                             typeResolver;
+    private ClassFieldExtractorCache                 classFieldExtractorCache;
 
     // a map of registered builders
     private static Map                               builders;
@@ -207,9 +207,10 @@ public class JavaDialect
         this.src = new MemoryResourceReader();
 
         this.generatedClassList = new ArrayList();
-        
+
         JavaDialectData data = new JavaDialectData( this.pkg.getDialectDatas() );
-        this.pkg.getDialectDatas().setDialectData( ID, data );
+        this.pkg.getDialectDatas().setDialectData( ID,
+                                                   data );
 
         this.packageStoreWrapper = new PackageStore( data,
                                                      this.results );
@@ -551,6 +552,9 @@ public class JavaDialect
         //System.out.println( functionDescr + " : " + typeResolver );
         final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
         functionDescr.setClassName( functionClassName );
+
+        this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
+
         Function function = new Function( functionDescr.getName(),
                                           this.ID );
         this.pkg.addFunction( function );
@@ -572,17 +576,21 @@ public class JavaDialect
         mapping.setStartLine( functionDescr.getLine() );
         mapping.setOffset( functionDescr.getOffset() );
         this.pkg.getDialectDatas().getLineMappings().put( functionClassName,
-                                                          mapping );      
+                                                          mapping );
     }
-    
-	public void postCompileAddFunction(FunctionDescr functionDescr,
-			TypeResolver typeResolver) {
+
+    public void preCompileAddFunction(FunctionDescr functionDescr,
+                                      TypeResolver typeResolver) {
         final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
-        
-        this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );   
-        
+        this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );
+    }
+
+    public void postCompileAddFunction(FunctionDescr functionDescr,
+                                       TypeResolver typeResolver) {
+        final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
+
         this.packageBuilder.getDialectRegistry().addStaticImport( functionClassName + "." + functionDescr.getName() );
-	}    
+    }
 
     /**
      * This adds a compile "task" for when the compiler of
@@ -687,4 +695,5 @@ public class JavaDialect
     public String getId() {
         return ID;
     }
+
 }

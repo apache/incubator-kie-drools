@@ -30,19 +30,20 @@ import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 
 /**
- * A Dialect implementation handles the building and execution of code expressions and blocks for a rule.
- * This api is considered unstable, and subject to change. Those wishing to implement their own dialects
- * should look ove the MVEL and Java dialect implementations.
- *
+ * A Dialect implementation handles the building and execution of code
+ * expressions and blocks for a rule. This api is considered unstable, and
+ * subject to change. Those wishing to implement their own dialects should look
+ * ove the MVEL and Java dialect implementations.
+ * 
  */
 public interface Dialect {
     String getId();
-    
+
     void init(PackageBuilder builder);
-    
+
     // this is needed because some dialects use other dialects
     // to build complex expressions. Example: java dialect uses MVEL
-    // to execute complex expressions 
+    // to execute complex expressions
     String getExpressionDialectName();
 
     Map getBuilders();
@@ -66,13 +67,13 @@ public interface Dialect {
     ReturnValueBuilder getReturnValueBuilder();
 
     ConsequenceBuilder getConsequenceBuilder();
-    
+
     ActionBuilder getActionBuilder();
-    
+
     ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder();
 
     RuleClassBuilder getRuleClassBuilder();
-    
+
     ProcessClassBuilder getProcessClassBuilder();
 
     FromBuilder getFromBuilder();
@@ -94,7 +95,7 @@ public interface Dialect {
     void compileAll();
 
     void addRule(final RuleBuildContext context);
-    
+
     void addProcess(final ProcessBuildContext context);
 
     void addFunction(final FunctionDescr functionDescr,
@@ -109,7 +110,7 @@ public interface Dialect {
     void init(Package pkg);
 
     void init(RuleDescr ruleDescr);
-    
+
     void init(ProcessDescr processDescr);
 
     /**
@@ -121,18 +122,21 @@ public interface Dialect {
 
         /**
          * Returns the list<String> of all used identifiers
+         * 
          * @return
          */
         public List getIdentifiers();
 
         /**
          * Returns the array of lists<String> of bound identifiers
+         * 
          * @return
          */
         public List[] getBoundIdentifiers();
 
         /**
          * Returns the list<String> of not bounded identifiers
+         * 
          * @return
          */
         public List getNotBoundedIdentifiers();
@@ -146,7 +150,10 @@ public interface Dialect {
 
     }
 
-	void postCompileAddFunction(FunctionDescr functionDescr,
-								TypeResolver typeResolver);
+    void postCompileAddFunction(FunctionDescr functionDescr,
+                                TypeResolver typeResolver);
+
+    void preCompileAddFunction(FunctionDescr functionDescr,
+                               TypeResolver typeResolver);
 
 }
