@@ -435,6 +435,12 @@ public class PackageBuilderConfigurationTest extends TestCase {
             // TODO Auto-generated method stub
             return null;
         }
+
+		public void postCompileAddFunction(FunctionDescr functionDescr,
+				TypeResolver typeResolver) {
+			// TODO Auto-generated method stub
+			
+		}
     }
 
     public static class MockEvalBuilder
