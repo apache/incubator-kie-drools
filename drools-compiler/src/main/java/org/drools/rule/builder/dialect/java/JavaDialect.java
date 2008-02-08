@@ -572,13 +572,17 @@ public class JavaDialect
         mapping.setStartLine( functionDescr.getLine() );
         mapping.setOffset( functionDescr.getOffset() );
         this.pkg.getDialectDatas().getLineMappings().put( functionClassName,
-                                                          mapping );
+                                                          mapping );      
+    }
+    
+	public void postCompileAddFunction(FunctionDescr functionDescr,
+			TypeResolver typeResolver) {
+        final String functionClassName = this.pkg.getName() + "." + StringUtils.ucFirst( functionDescr.getName() );
         
-
         this.pkg.addStaticImport( functionClassName + "." + functionDescr.getName() );   
         
         this.packageBuilder.getDialectRegistry().addStaticImport( functionClassName + "." + functionDescr.getName() );
-    }
+	}    
 
     /**
      * This adds a compile "task" for when the compiler of

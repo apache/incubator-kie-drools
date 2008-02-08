@@ -146,4 +146,7 @@ public interface Dialect {
 
     }
 
+	void postCompileAddFunction(FunctionDescr functionDescr,
+								TypeResolver typeResolver);
+
 }

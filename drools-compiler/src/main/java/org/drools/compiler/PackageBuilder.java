@@ -302,6 +302,11 @@ public class PackageBuilder {
 
                 // We need to compile all the functions now, so scripting languages like mvel can find them
                 this.dialectRegistry.compileAll();
+                
+                for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {
+                	FunctionDescr functionDescr = (FunctionDescr) it.next();
+                    postCompileAddFunction( functionDescr );
+                }                
             }
 
             // iterate and compile
@@ -390,6 +395,10 @@ public class PackageBuilder {
     private void addFunction(final FunctionDescr functionDescr) {
         this.dialect.addFunction( functionDescr,
                                   getTypeResolver() );
+    }
+    
+    private void postCompileAddFunction(final FunctionDescr functionDescr) {
+        this.dialect.postCompileAddFunction( functionDescr, getTypeResolver() );
     }
 
     private void addFactTemplate(final FactTemplateDescr factTemplateDescr) {
