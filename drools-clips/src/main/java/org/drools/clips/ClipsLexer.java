@@ -1,4 +1,4 @@
-// $ANTLR 3.0.1 C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g 2008-02-05 16:37:47
+// $ANTLR 3.0.1 C:\\dev\\drools\\trunk\\drools-clips\\src\\main\\resources\\org\\drools\\cips\\Clips.g 2008-02-07 02:53:25
 
 	package org.drools.clips;
 

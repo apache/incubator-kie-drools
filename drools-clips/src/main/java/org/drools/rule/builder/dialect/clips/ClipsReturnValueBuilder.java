@@ -29,7 +29,7 @@ public class ClipsReturnValueBuilder extends MVELReturnValueBuilder {
         }
         
         returnValueRestrictionDescr.setContent( builder.toString() );
-        context.getRuleDescr().setConsequence( builder.toString() );
+        context.getRuleDescr().setDialect( "mvel" );
         
         super.build(context, usedIdentifiers, previousDeclarations, localDeclarations, returnValueRestriction, returnValueRestrictionDescr );
     }

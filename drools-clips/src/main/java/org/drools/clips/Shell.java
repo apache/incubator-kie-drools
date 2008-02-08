@@ -25,17 +25,21 @@ import org.drools.base.ClassTypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.MVELDialectData;
+import org.drools.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.spi.GlobalResolver;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
 import org.mvel.ast.Function;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.compiler.ExpressionCompiler;
+import org.mvel.debug.DebugTools;
 import org.mvel.util.CompilerTools;
 
 public class Shell
@@ -94,7 +98,7 @@ public class Shell
         addRouter( "t",
                    System.out );
     }
-    
+
     public StatefulSession getStatefulSession() {
         return this.session;
     }
@@ -127,6 +131,25 @@ public class Shell
         }
     }
 
+    public void importHandler(ImportDescr descr) {
+        String importText = descr.getTarget().trim();
+
+        this.typeResolver.addImport( descr.getTarget() );
+
+        if ( importText.endsWith( "*" ) ) {
+            this.dynamicImports.add( importText );
+        } else {
+            Class cls;
+            try {
+                cls = this.typeResolver.resolveType( importText );
+            } catch ( ClassNotFoundException e ) {
+                throw new RuntimeException( "Unable to resolve : " + importText );
+            }
+            this.directImports.put( cls.getSimpleName(),
+                                    cls );
+        }
+    }    
+    
     public void functionHandler(FunctionDescr functionDescr) {
         Appendable builder = new StringBuilderAppendable();
 
@@ -156,33 +179,24 @@ public class Shell
                                    builder );
         }
         builder.append( "}" );
+      
+        functionDescr.setContent( builder.toString() );
+        functionDescr.setDialect( "mvel" );
 
-        ExpressionCompiler compiler = new ExpressionCompiler( builder.toString() );
-        Serializable s1 = compiler.compile();
-        Map<String, org.mvel.ast.Function> map = CompilerTools.extractAllDeclaredFunctions( (CompiledExpression) s1 );
-        for ( org.mvel.ast.Function function : map.values() ) {
-            addFunction( function );
-        }
+        PackageDescr pkgDescr = createPackageDescr( "MAIN" );
+        pkgDescr.addFunction( functionDescr );
 
-    }
-
-    public void importHandler(ImportDescr descr) {
-        String importText = descr.getTarget().trim();
-
-        this.typeResolver.addImport( descr.getTarget() );
-
-        if ( importText.endsWith( "*" ) ) {
-            this.dynamicImports.add( importText );
-        } else {
-            Class cls;
-            try {
-                cls = this.typeResolver.resolveType( importText );
-            } catch ( ClassNotFoundException e ) {
-                throw new RuntimeException( "Unable to resolve : " + importText );
-            }
-            this.directImports.put( cls.getSimpleName(),
-                                    cls );
-        }
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        conf.getDialectConfiguration( "mvel" );
+        MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) conf.getDialectConfiguration( "mvel" );
+        mvelConf.setLangLevel( 5 ); 
+        
+        PackageBuilder pkgBuilder = new PackageBuilder( conf );
+        pkgBuilder.addPackage( pkgDescr );
+                
+        if ( pkgBuilder.getErrors().isEmpty() ) {
+            this.ruleBase.addPackage( pkgBuilder.getPackage() );
+        }        
     }
 
     public void lispFormHandler(LispForm lispForm) {
@@ -206,6 +220,11 @@ public class Shell
 
         ExpressionCompiler expr = new ExpressionCompiler( appendable.toString() );
         Serializable executable = expr.compile( context );
+
+        if (  this.ruleBase.getPackage( "MAIN" ) != null ) {
+            MVELDialectData data = (MVELDialectData)  this.ruleBase.getPackage( "MAIN" ).getDialectDatas().getDialectData( "mvel" );
+            factory.setNextFactory( data.getFunctionFactory() );
+        }
 
         MVEL.executeExpression( executable,
                                 this,
@@ -342,6 +361,8 @@ public class Shell
 
     private PackageDescr createPackageDescr(String moduleName) {
         PackageDescr pkg = new PackageDescr( moduleName );
+        pkg.addAttribute( new AttributeDescr( "dialect",
+                                              "clips" ) );
 
         for ( Iterator it = this.typeResolver.getImports().iterator(); it.hasNext(); ) {
             pkg.addImport( new ImportDescr( (String) it.next() ) );
