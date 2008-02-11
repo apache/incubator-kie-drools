@@ -17,7 +17,6 @@ package org.drools.event;
  */
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -37,7 +36,7 @@ public class AgendaEventSupport
      * 
      */
     private static final long serialVersionUID = 400L;
-    private final List<AgendaEventListener>        listeners        = new CopyOnWriteArrayList<AgendaEventListener>();
+    private final List<AgendaEventListener> listeners = new CopyOnWriteArrayList<AgendaEventListener>();
 
     public AgendaEventSupport() {
     }
@@ -52,8 +51,7 @@ public class AgendaEventSupport
         this.listeners.remove( listener );
     }
 
-    public List getEventListeners() {
-        
+    public List<AgendaEventListener> getEventListeners() {
         return Collections.unmodifiableList( this.listeners );
     }
 
@@ -73,9 +71,8 @@ public class AgendaEventSupport
 
         final ActivationCreatedEvent event = new ActivationCreatedEvent( activation );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).activationCreated( event,
-                                                                               workingMemory );
+        for ( AgendaEventListener listener: listeners) {
+            listener.activationCreated( event, workingMemory );
         }
     }
 
@@ -101,9 +98,8 @@ public class AgendaEventSupport
 
         final BeforeActivationFiredEvent event = new BeforeActivationFiredEvent( activation );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).beforeActivationFired( event,
-                                                                                   workingMemory );
+        for ( AgendaEventListener listener: listeners) {
+            listener.beforeActivationFired( event, workingMemory );
         }
     }
 
@@ -115,9 +111,8 @@ public class AgendaEventSupport
 
         final AfterActivationFiredEvent event = new AfterActivationFiredEvent( activation );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).afterActivationFired( event,
-                                                                                  workingMemory );
+        for ( AgendaEventListener listener: listeners) {
+            listener.afterActivationFired( event, workingMemory );
         }
     }
 
@@ -129,9 +124,8 @@ public class AgendaEventSupport
 
         final AgendaGroupPoppedEvent event = new AgendaGroupPoppedEvent( agendaGroup );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).agendaGroupPopped( event,
-                                                                               workingMemory );
+        for ( AgendaEventListener listener: listeners) {
+            listener.agendaGroupPopped( event, workingMemory );
         }
     }
 
@@ -143,9 +137,8 @@ public class AgendaEventSupport
 
         final AgendaGroupPushedEvent event = new AgendaGroupPushedEvent( agendaGroup );
 
-        for ( int i = 0, size = this.listeners.size(); i < size; i++ ) {
-            ((AgendaEventListener) this.listeners.get( i )).agendaGroupPushed( event,
-                                                                               workingMemory );
+        for ( AgendaEventListener listener: listeners) {
+            listener.agendaGroupPushed( event, workingMemory );
         }
     }
 
