@@ -36,6 +36,25 @@ public class ScenarioXMLPersistenceTest extends TestCase {
 
 	}
 
+	public void testTrimUneededSection() {
+		Scenario sc = getDemo();
+		Scenario orig = getDemo();
+		sc.fixtures.add(new ExecutionTrace());
+
+
+		assertEquals(orig.fixtures.size() + 1, sc.fixtures.size());
+		String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
+		Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
+
+		assertEquals(orig.fixtures.size(), sc_.fixtures.size());
+
+
+
+
+
+
+	}
+
 	private Scenario getDemo() {
         //Sample data
         FactData d1 = new FactData("Driver", "d1", ls(new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}), false);

@@ -45,6 +45,9 @@ public class ScenarioXMLPersistence {
 
 
     public String marshal(Scenario sc) {
+    	if (sc.fixtures.size() > 1  && sc.fixtures.get(sc.fixtures.size() - 1) instanceof ExecutionTrace) {
+    		sc.fixtures.remove(sc.fixtures.size() - 1);
+    	}
     	return xt.toXML(sc);
     }
 
