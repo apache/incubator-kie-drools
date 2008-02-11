@@ -18,7 +18,6 @@ package org.drools.audit;
 
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +44,12 @@ import com.thoughtworks.xstream.XStream;
  */
 public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 
-    private final List events            = new ArrayList();
+    private final List<LogEvent> events  = new ArrayList<LogEvent>();
     private String     fileName          = "event";
     private int        maxEventsInMemory = 1000;
     private int        nbOfFile          = 0;
+    private boolean    split             = true;
+    private boolean    initialized       = false;
 
     /**
      * Creates a new WorkingMemoryFileLogger for the given working memory.
@@ -78,27 +79,47 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      * The log is automatically cleared afterwards.
      */
     public void writeToDisk() {
-        ObjectOutputStream out = null; 
+        if (!initialized) {
+            initializeLog();
+        }
+        FileWriter fileWriter = null;
         try {
+            fileWriter = new FileWriter(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), !split );
             final XStream xstream = new XStream();
-            out = xstream.createObjectOutputStream( new FileWriter( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
-                                                                                             false ) );
-            out.writeObject( this.events );
-            this.nbOfFile++;
+            for (LogEvent event : this.events) {
+                fileWriter.write(xstream.toXML(event) + "\n");
+            }
+            if (split) {
+                this.nbOfFile++;
+                initialized = false;
+            }
             clear();
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {
             t.printStackTrace( System.err );
         } finally {
-            if( out != null ) { try { out.close(); } catch(Exception e) {} }
+            if( fileWriter != null ) { try { fileWriter.close(); } catch(Exception e) {} }
+        }
+    }
+
+    private void initializeLog() {
+        try {
+            FileWriter writer = new FileWriter(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), false);
+            writer.append("<object-stream>\n");
+            writer.close();
+            initialized = true;
+        } catch ( final FileNotFoundException exc ) {
+            throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
+        } catch ( final Throwable t ) {
+            t.printStackTrace( System.err );
         }
     }
 
     /**
      * Clears all the events in the log.
      */
-    public void clear() {
+    private void clear() {
         this.events.clear();
     }
 
@@ -121,6 +142,10 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         if ( this.events.size() > this.maxEventsInMemory ) {
             writeToDisk();
         }
+    }
+    
+    public void setSplit(boolean split) {
+        this.split = split;
     }
 
 }
