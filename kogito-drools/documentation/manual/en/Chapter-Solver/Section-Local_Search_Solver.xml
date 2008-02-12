@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Local search solver</title>
 
@@ -32,9 +34,9 @@
 
     <para>An algorithm that checks every possible solution (even with pruning)
     can easily run for a couple of years on a single real-life planning
-    problem. Most of the time, we 're happy with a feasible solution found in
+    problem. Most of the time, we are happy with a feasible solution found in
     a limited amount of time. Local search tends to find a feasible solution
-    relatively fast. Because it acts very much like a human, it's also pretty
+    relatively fast. Because it acts very much like a human, it is also pretty
     natural to program.</para>
 
     <para>Local search solves a problem making a move on the current solution
@@ -78,10 +80,6 @@
       <title>A single move (4 queens example)</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata fileref="singleMoveNQueens04.svg" format="SVG" />
-        </imageobject>
-
         <imageobject>
           <imagedata fileref="singleMoveNQueens04.png" format="PNG" />
         </imageobject>
@@ -272,10 +270,6 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="possibleMovesNQueens04.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
           <imagedata fileref="possibleMovesNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
@@ -340,10 +334,6 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="decideNextStepNQueens04.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
           <imagedata fileref="decideNextStepNQueens04.png" format="PNG" />
         </imageobject>
       </mediaobject>
@@ -364,10 +354,6 @@
       <title>All steps (4 queens example)</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata fileref="allStepsNQueens04.svg" format="SVG" />
-        </imageobject>
-
         <imageobject>
           <imagedata fileref="allStepsNQueens04.png" format="PNG" />
         </imageobject>
@@ -414,12 +400,6 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
     <para>Notice that the logging used the <literal>toString()</literal>
     method from our <literal>Move</literal> implementation: <literal>[Queen-1]
     1 @ 0 =&gt; 3</literal>.</para>
-
-    <para>The local search solver solves the 4 queens problem in 3 steps, by
-    evaluating only 37 possible solutions (3 steps with 12 moves each + 1
-    starting solution), which is only fraction of all 256 possible solutions.
-    It solves 16 queens in 31 steps, by evaluating only 7441 out of
-    18446744073709551616 possible solutions.</para>
   </section>
 
   <section>
@@ -479,10 +459,6 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
       <title>Decide the next step at step 0 (4 queens example)</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata fileref="decideNextStepNQueens04.svg" format="SVG" />
-        </imageobject>
-
         <imageobject>
           <imagedata fileref="decideNextStepNQueens04.png" format="PNG" />
         </imageobject>
@@ -673,10 +649,6 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
 
         <para>Generates a random number for each accepted move and if it's
         below the move's accept chance, it picks it as the next move.</para>
-
-        <programlisting>    &lt;forager&gt;
-        &lt;foragerType&gt;FIRST_RANDOMLY_ACCEPTED&lt;/foragerType&gt;
-    &lt;/forager&gt;</programlisting>
       </section>
     </section>
   </section>
@@ -722,12 +694,6 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
       <programlisting>    &lt;finish&gt;
         &lt;maximumHouresSpend&gt;1&lt;/maximumHouresSpend&gt;
     &lt;/finish&gt;</programlisting>
-
-      <para>Notice that if you use this finish, you will most likely sacrifice
-      reproducability. The best solution will depend on real-time process
-      speed, not only because it influences the amount of steps taken, but
-      also because time gradient based algoritms (such as simulated annealing)
-      will probably act differently on each run.</para>
     </section>
 
     <section>

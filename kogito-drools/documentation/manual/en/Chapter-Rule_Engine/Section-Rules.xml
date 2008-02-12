@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Knowledge Representation</title>
 
@@ -237,11 +239,7 @@ public void cheddarCheese(Cheese cheese) {
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="Male_People.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="Male_People.png" format="PNG" />
+		<imagedata align="center" fileref="Male_People.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -275,7 +273,7 @@ public void cheddarCheese(Cheese cheese) {
 
     <programlisting>
       
-      Person( eyeColour == "blue"|| == "green" )
+      Person( eyeColour == "blue"||"green" )
       
     </programlisting>
 

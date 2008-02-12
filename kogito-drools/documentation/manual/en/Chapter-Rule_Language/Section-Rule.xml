@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Rule</title>
 
@@ -6,12 +8,8 @@
     <title>rule</title>
 
     <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="rule.svg" format="SVG" role="" />
-      </imageobject>
-
-      <imageobject>
-        <imagedata align="center" fileref="rule.png" format="PNG" role="" />
+     <imageobject>
+	     <imagedata align="center" fileref="rule.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -82,153 +80,140 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="rule_attributes.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="rule_attributes.png" format="PNG" />
+		<imagedata align="center" fileref="rule_attributes.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <section>
-      <title>no-loop</title>
-
-      <para>default value : false</para>
-
-      <para>type : Boolean</para>
-
-      <para>When the Rule's consequence modifies a fact it may cause the Rule
-      to activate again, causing recursion. Setting no-loop to true means the
-      attempt to create the Activation for the current set of data will be
-      ignored.</para>
-    </section>
-
-    <section>
-      <title>lock-on-active</title>
-
-      <para>default value : false</para>
-
-      <para>type : Boolean</para>
-
-      <para>when a ruleflow-group becomes active or an agenda-group receives
-      the focus any rules that ahve lock-on-active set to try cannot place
-      activations onto the agenda, the rules are matched and the resulting
-      activations discarded. This is a stronger version of no-loop. It's
-      idealy for calculation rules where you have a number of rules that will
-      modify a fact and you don't want any rule re-matching and firing. In
-      summary fire these currently active rules and only these rules, no
-      matter how the data changes, do not allow any more activations for the
-      rules with the attribute set to true. When the ruleflow-group is no
-      longer active or agenda-group loses the focus those rules with
-      lock-on-active set to true can once again add activations onto the
-      agenda.</para>
-    </section>
-
-    <section>
-      <title>salience</title>
-
-      <para>default value : 0</para>
-
-      <para>type : integer</para>
-
-      <para>Each rule has a salience attribute that can be assigned an Integer
-      number, defaults to zero, the Integer and can be negative or positive.
-      Salience is a form of priority where rules with higher salience values
-      are given higher priority when ordered in the Activation queue.</para>
-    </section>
-
-    <section>
-      <title>agenda-group</title>
-
-      <para>default value : MAIN</para>
-
-      <para>type : String</para>
-
-      <para>Agenda group's allow the user to partition the Agenda providing
-      more execution control. Only rules in the focus group are allowed to
-      fire.</para>
-    </section>
-
-    <section>
-      <title>auto-focus</title>
-
-      <para>default value false</para>
-
-      <para>type : Boolean</para>
-
-      <para>When a rule is activated if the <literal>auto-focus value is true
-      and the Rule's </literal> <literal>agenda-group</literal> does not have
-      focus then it is given focus, allowing the rule to potentially
-      fire.</para>
-    </section>
-
-    <section>
-      <title>activation-group</title>
-
-      <para>default value : N/A</para>
-
-      <para>type : String</para>
-
-      <para>Rules that belong to the same named activation-group will only
-      fire exclusively. In other words, the first rule in an activation-group
-      to fire will cancel the other rules activations (stop them from firing).
-      The Activation group attribute is any string, as long as the string is
-      identical for all the rules you need to be in the one group.</para>
-
-      <para>NOTE: this used to be called Xor group, but technically its not
-      quite an Xor, but you may hear people mention Xor group, just swap that
-      term in your mind with activation-group.</para>
-    </section>
-
-    <section>
-      <title>dialect</title>
-
-      <para>default value : as specified by the package</para>
-
-      <para>type : String</para>
-
-      <para>possible values: "java" or "mvel"</para>
-
-      <para>The dialect species the language to be used for any code
-      expressions in the LHS or the RHS code block. Currently two dialects are
-      available, Java and MVEL. While the dialect can be specified at the
-      package level, this attribute allows the package definition to be
-      overridden.</para>
-    </section>
-
-    <section>
-      <title>date-effective</title>
-
-      <para>default value : N/A</para>
-
-      <para>type : String, which contains a Date/Time definition</para>
-
-      <para>A rule can only activate if the current date and time is after
-      date-effective attribute.</para>
-    </section>
-
-    <section>
-      <title>date-exptires</title>
-
-      <para>default value : N/A</para>
-
-      <para>type : String, which contains a Date/Time definition</para>
-
-      <para>A rule cannot activate if the current date and time is after
-      date-expires attribute.</para>
-    </section>
-
-    <section>
-      <title>duration</title>
-
-      <para>default value : no default value</para>
-
-      <para>type : long</para>
-
-      <para>The duration dictates that the rule will fire after a specified
-      duration, if it is still true.</para>
-    </section>
+    <variablelist>
+	<varlistentry>
+		<term>no-loop</term>
+	
+		<listitem>
+		<para>default value : false</para>
+	
+			<para>type : Boolean</para>
+	
+			<para>When the Rule's consequence modifies a fact it may cause the Rule to activate again, causing recursion. Setting no-loop to true means the attempt to create the Activation for the current set of data will be ignored.</para>
+		</listitem>
+				
+		</varlistentry>
+	
+		<varlistentry>
+			<term>lock-on-active</term>
+	
+			<listitem>
+				<para>default value : false</para>
+		
+				<para>type : Boolean</para>
+		
+				<para>when a ruleflow-group becomes active or an agenda-group receives the focus any rules that ahve lock-on-active set to try cannot place activations onto the agenda, the rules are matched and the resulting activations discarded. This is a stronger version of no-loop. It's ideally for calculation rules where you have a number of rules that will modify a fact and you don't want any rule re-matching and firing. In summary fire these currently active rules and only these rules, no matter how the data changes, do not allow any more activations for the rules with the attribute set to true. When the ruleflow-group is no longer active or agenda-group loses the focus those rules with lock-on-active set to true can once again add activations onto the agenda.</para>
+			</listitem>
+		</varlistentry>
+	
+		<varlistentry>
+			<term>salience</term>
+	
+			<listitem>
+				<para>default value : 0</para>
+	
+				<para>type : integer</para>
+	
+				<para>Each rule has a salience attribute that can be assigned an Integer number, defaults to zero, the Integer and can be negative or positive. Salience is a form of priority where rules with higher salience values are given higher priority when ordered in the Activation queue.</para>
+			</listitem>
+		</varlistentry>
+	
+	
+		<varlistentry>
+			<term>agenda-group</term>
+	
+			<listitem>
+				<para>default value : MAIN</para>
+		
+				<para>type : String</para>
+		
+				<para>Agenda group's allow the user to partition the Agenda providing more execution control. Only rules in the focus group are allowed to fire.</para>
+			</listitem>
+		</varlistentry>
+	
+		<varlistentry>
+			<term>auto-focus</term>
+	
+			<listitem>
+				<para>default value false</para>
+				
+				<para>type : Boolean</para>
+				
+				<para>When a rule is activated if the <literal>auto-focus value is true and the Rule's </literal> <literal>agenda-group</literal> does not have focus then it is given focus, allowing the rule to potentially fire.</para>
+			</listitem>
+		</varlistentry>
+	
+		<varlistentry>
+			<term>activation-group</term>
+	
+			<listitem>
+				<para>default value : N/A</para>
+				
+				<para>type : String</para>
+				
+				<para>Rules that belong to the same named activation-group will only fire exclusively. In other words, the first rule in an activation-group to fire will cancel the other rules activations (stop them from firing). The Activation group attribute is any string, as long as the string is identical for all the rules you need to be in the one group.</para>
+				
+				<para>NOTE: this used to be called Xor group, but technically its not quite an Xor, but you may hear people mention Xor group, just swap that term in your mind with activation-group.</para>
+			</listitem>
+		</varlistentry>
+	
+		<varlistentry>
+			<term>dialect</term>
+	
+			<listitem>
+				<para>default value : as specified by the package</para>
+				
+				<para>type : String</para>
+				
+				<para>possible values: "java" or "mvel"</para>
+				
+				<para>The dialect species the language to be used for any code
+				expressions in the LHS or the RHS code block. Currently two dialects are available, Java and MVEL. While the dialect can be specified at the package level, this attribute allows the package definition to be overridden.</para>
+			</listitem>
+		</varlistentry>
+	
+	
+		<varlistentry>
+			<term>date-effective</term>
+	
+			<listitem>
+				<para>default value : N/A</para>	
+				
+				<para>type : String, which contains a Date/Time definition</para>
+				
+				<para>A rule can only activate if the current date and time is after date-effective attribute.</para>
+			</listitem>
+		</varlistentry>
+	
+		<varlistentry>	
+			<term>date-exptires</term>
+	
+			<listitem>
+				<para>default value : N/A</para>
+				
+				<para>type : String, which contains a Date/Time definition</para>
+				
+				<para>A rule cannot activate if the current date and time is after date-expires attribute.</para>
+			</listitem>
+		</varlistentry>
+	
+		<varlistentry>
+			<term>duration</term>
+	
+			<listitem>
+				<para>default value : no default value</para>
+	
+				<para>type : long</para>
+	
+				<para>The duration dictates that the rule will fire after a specified duration, if it is still true.</para>
+			</listitem>
+		</varlistentry>
+	</variablelist>
 
     <example>
       <title>Some attribute examples</title>
@@ -255,11 +240,7 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="lhs.svg" format="SVG" role="" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="lhs.png" format="PNG" role="" />
+		<imagedata align="center" fileref="lhs.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -305,12 +286,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="patternER.svg" format="SVG"
-                       role="" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="patternER.png" format="PNG"
+		  <imagedata align="center" fileref="patternER.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -325,12 +301,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="pattern.svg" format="SVG"
-                       role="" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="pattern.png" format="PNG"
+		  <imagedata align="center" fileref="pattern.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -367,12 +338,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="constraints.svg" format="SVG"
-                       role="" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="constraints.png" format="PNG"
+		  <imagedata align="center" fileref="constraints.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -383,12 +349,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="constraint.svg" format="SVG"
-                       role="" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="constraint.png" format="PNG"
+		  <imagedata align="center" fileref="constraint.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -398,13 +359,9 @@ end</programlisting>
         <title>Group Constraint</title>
 
         <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="constraintGroup.svg"
-                       format="SVG" role="" />
-          </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="constraintGroup.png"
+		  <imagedata align="center" fileref="constraintGroup.png"
                        format="PNG" role="" />
           </imageobject>
         </mediaobject>
@@ -496,13 +453,9 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
           <title>fieldConstraint</title>
 
           <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="fieldConstraint.svg"
-                         format="SVG" role="" />
-            </imageobject>
 
             <imageobject>
-              <imagedata align="center" fileref="fieldConstraint.png"
+		    <imagedata align="center" fileref="fieldConstraint.png"
                          format="PNG" role="" />
             </imageobject>
           </mediaobject>
@@ -515,13 +468,9 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
           <title>restriction</title>
 
           <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="restriction.svg" format="SVG"
-                         role="" />
-            </imageobject>
 
             <imageobject>
-              <imagedata align="center" fileref="restriction.png" format="PNG"
+		    <imagedata align="center" fileref="restriction.png" format="PNG"
                          role="" />
             </imageobject>
           </mediaobject>
@@ -563,11 +512,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="literal.svg" format="SVG" />
-              </imageobject>
-
-              <imageobject>
-                <imagedata align="center" fileref="literal.png" format="PNG" />
+		      <imagedata align="center" fileref="literal.png" format="PNG" />
               </imageobject>
             </mediaobject>
           </figure>
@@ -577,12 +522,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="qualifiedIdentifier.svg"
-                           format="SVG" />
-              </imageobject>
-
-              <imageobject>
-                <imagedata align="center" fileref="qualifiedIdentifier.png"
+		      <imagedata align="center" fileref="qualifiedIdentifier.png"
                            format="PNG" />
               </imageobject>
             </mediaobject>
@@ -592,13 +532,9 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
             <title>variable</title>
 
             <mediaobject>
-              <imageobject>
-                <imagedata align="center" fileref="identifier.svg"
-                           format="SVG" />
-              </imageobject>
 
               <imageobject>
-                <imagedata align="center" fileref="identifier.png"
+		      <imagedata align="center" fileref="identifier.png"
                            format="PNG" />
               </imageobject>
             </mediaobject>
@@ -609,12 +545,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="returnValue.svg"
-                           format="SVG" />
-              </imageobject>
-
-              <imageobject>
-                <imagedata align="center" fileref="returnValue.png"
+		      <imagedata align="center" fileref="returnValue.png"
                            format="PNG" />
               </imageobject>
             </mediaobject>
@@ -639,12 +570,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="singleValueRestriction.svg"
-                           format="SVG" role="" />
-              </imageobject>
-
-              <imageobject>
-                <imagedata align="center" fileref="singleValueRestriction.png"
+		      <imagedata align="center" fileref="singleValueRestriction.png"
                            format="PNG" role="" />
               </imageobject>
             </mediaobject>
@@ -658,12 +584,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
               <mediaobject>
                 <imageobject>
-                  <imagedata align="center" fileref="operator.svg"
-                             format="SVG" />
-                </imageobject>
-
-                <imageobject>
-                  <imagedata align="center" fileref="operator.png"
+			<imagedata align="center" fileref="operator.png"
                              format="PNG" />
                 </imageobject>
               </mediaobject>
@@ -817,12 +738,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
 
               <mediaobject>
                 <imageobject>
-                  <imagedata align="center" fileref="literalRestriction.svg"
-                             format="SVG" />
-                </imageobject>
-
-                <imageobject>
-                  <imagedata align="center" fileref="literalRestriction.png"
+			<imagedata align="center" fileref="literalRestriction.png"
                              format="PNG" />
                 </imageobject>
               </mediaobject>
@@ -908,13 +824,9 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
               <title>variableRestriction</title>
 
               <mediaobject>
-                <imageobject>
-                  <imagedata align="center" fileref="variableRestriction.svg"
-                             format="SVG" />
-                </imageobject>
 
                 <imageobject>
-                  <imagedata align="center" fileref="variableRestriction.png"
+			<imagedata align="center" fileref="variableRestriction.png"
                              format="PNG" />
                 </imageobject>
               </mediaobject>
@@ -964,12 +876,7 @@ Cheesery( cheeses contains $stilton )</programlisting>
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-                             fileref="returnValueRestriction.svg" format="SVG" />
-                </imageobject>
-
-                <imageobject>
-                  <imagedata align="center"
-                             fileref="returnValueRestriction.png" format="PNG" />
+			     fileref="returnValueRestriction.png" format="PNG" />
                 </imageobject>
               </mediaobject>
             </figure>
@@ -1009,13 +916,7 @@ Person( age == ( girlAge + 2) ), sex == 'M' )
             <mediaobject>
               <imageobject>
                 <imagedata align="center"
-                           fileref="compoundValueRestriction.svg" format="SVG"
-                           role="" />
-              </imageobject>
-
-              <imageobject>
-                <imagedata align="center"
-                           fileref="compoundValueRestriction.png" format="PNG"
+			   fileref="compoundValueRestriction.png" format="PNG"
                            role="" />
               </imageobject>
             </mediaobject>
@@ -1045,12 +946,7 @@ Cheese( type in ( "stilton", "cheddar", $cheese )
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="multiRestriction.svg"
-                           format="SVG" role="" />
-              </imageobject>
-
-              <imageobject>
-                <imagedata align="center" fileref="multiRestriction.png"
+		      <imagedata align="center" fileref="multiRestriction.png"
                            format="PNG" role="" />
               </imageobject>
             </mediaobject>
@@ -1061,12 +957,7 @@ Cheese( type in ( "stilton", "cheddar", $cheese )
 
             <mediaobject>
               <imageobject>
-                <imagedata align="center" fileref="restrictionGroup.svg"
-                           format="SVG" role="" />
-              </imageobject>
-
-              <imageobject>
-                <imagedata align="center" fileref="restrictionGroup.png"
+		      <imagedata align="center" fileref="restrictionGroup.png"
                            format="PNG" role="" />
               </imageobject>
             </mediaobject>
@@ -1092,12 +983,7 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" ) // mixing muti 
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="inlineEvalConstraint.svg"
-                         format="SVG" />
-            </imageobject>
-
-            <imageobject>
-              <imagedata align="center" fileref="inlineEvalConstraint.png"
+		    <imagedata align="center" fileref="inlineEvalConstraint.png"
                          format="PNG" />
             </imageobject>
           </mediaobject>
@@ -1178,12 +1064,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="prefixAnd.svg" format="SVG"
-                       role="" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="prefixAnd.png" format="PNG"
+		  <imagedata align="center" fileref="prefixAnd.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -1217,12 +1098,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="infixAnd.svg" format="SVG"
-                       role="" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="infixAnd.png" format="PNG"
+		  <imagedata align="center" fileref="infixAnd.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -1257,12 +1133,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="orPrefix.svg" format="SVG"
-                       role="" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="prefixOr.png" format="PNG"
+		  <imagedata align="center" fileref="prefixOr.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -1286,12 +1157,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="infixOr.svg" format="SVG"
-                       role="" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="infixOr.png" format="PNG"
+		  <imagedata align="center" fileref="infixOr.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -1340,11 +1206,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="eval.svg" format="SVG" role="" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="eval.png" format="PNG" role="" />
+		  <imagedata align="center" fileref="eval.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1383,12 +1245,9 @@ eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a functio
         <title>not</title>
 
         <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="not.svg" format="SVG" role="" />
-          </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="not.png" format="PNG" role="" />
+		  <imagedata align="center" fileref="not.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1424,12 +1283,9 @@ not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' inf
         <title>exists</title>
 
         <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="exists.svg" format="SVG" />
-          </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="exists.png" format="PNG" />
+		  <imagedata align="center" fileref="exists.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1468,12 +1324,9 @@ exists ( Bus(color == "red") and Bus(color == "blue")) // exists with nested 'an
         <title>forall</title>
 
         <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="forall.svg" format="SVG" />
-          </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="forall.png" format="PNG" />
+		  <imagedata align="center" fileref="forall.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1567,11 +1420,7 @@ end
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="from.svg" format="SVG" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="from.png" format="PNG" />
+		  <imagedata align="center" fileref="from.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1647,12 +1496,9 @@ end
         <title>collect</title>
 
         <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="collect.svg" format="SVG" />
-          </imageobject>
 
           <imageobject>
-            <imagedata align="center" fileref="collect.png" format="PNG" />
+		  <imagedata align="center" fileref="collect.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1725,11 +1571,7 @@ end
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="accumulate.svg" format="SVG" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="accumulate.png" format="PNG" />
+		  <imagedata align="center" fileref="accumulate.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>

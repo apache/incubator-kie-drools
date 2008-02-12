@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Domain Specific Languages</title>
 
@@ -186,6 +188,7 @@ builder.addPackageFromDrl( source, dsl );
     can do things like:</para>
 
     <example>
+	    <title>Chaining DSL Expressions</title>
       <programlisting>There is a person called Bob who is happy
   Or
 There is a person called Mike who is sad

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>The Drools Rule Engine</title>
 
@@ -22,11 +24,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="Authoring.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="Authoring.png" format="PNG" />
+		<imagedata align="center" fileref="Authoring.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -46,11 +44,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="Runtime.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="Runtime.png" format="PNG" />
+		<imagedata align="center" fileref="Runtime.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -64,11 +58,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="PackageBuilder.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="PackageBuilder.png" format="PNG" />
+		<imagedata align="center" fileref="PackageBuilder.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -76,12 +66,12 @@
     <para>Four classes are used for authoring: DrlParser, XmlParser,
     ProcessBuilder and PackageBuilder. The two parser classes produce "descr"
     (description) AST models from a provided Reader instance. ProcessBuilder
-    reads in an xstream serialisation representation of the Rule Flow.
+    reads in an xstream serialization representation of the Rule Flow.
     PackageBuilder provides convienience APIs so that you can mostly forget
     about those classes. The three convenience methods are
     "addPackageFromDrl", "addPackageFromXml" and addRuleFlow - all take an
     instance of Reader as an argument. The example below shows how to build a
-    package that includes both XML, DRL and rule files and a ruleflow file,
+    package that includes both XML and DRL rule files and a ruleflow file,
     which are in the classpath. Note that all added package sources must be of
     the same package namespace for the current PackageBuilder instance!</para>
 
@@ -117,13 +107,9 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
       <title>PackageBuilderConfiguration</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="PackageBuilderConfiguration.svg"
-                     format="SVG" />
-        </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="PackageBuilderConfiguration.png"
+		<imagedata align="center" fileref="PackageBuilderConfiguration.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -140,11 +126,11 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
     droosl-compiler jar has the default settings in its META-INF
     directory.</para>
 
-    <para>Currently the PackageBulderConfiguration handles the registry of
+    <para>Currently the PackageBuilderConfiguration handles the registry of
     Accumulate functions, registry of Dialects and the main
     ClassLoader.</para>
 
-    <para>Drools has a pluggeable Dialect system, which allows other languages
+    <para>Drools has a pluggable Dialect system, which allows other languages
     to compile and execution expressions and blocks, the two currently
     supported dialects are Java and MVEL. Each has its own
     DialectConfiguration Implementation; the javadocs provide details for each
@@ -155,12 +141,7 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="JavaDialectConfiguration.svg"
-                     format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="JavaDialectConfiguration.png"
+		<imagedata align="center" fileref="JavaDialectConfiguration.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -228,12 +209,7 @@ PackageBuilder builder = new PackageBuilder( conf );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="JavaDialectConfiguration.svg"
-                     format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="MVELDialectConfiguration.png"
+		<imagedata align="center" fileref="MVELDialectConfiguration.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -248,11 +224,7 @@ PackageBuilder builder = new PackageBuilder( conf );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RuleBaseFactory.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="RuleBaseFactory.png" format="PNG" />
+		<imagedata align="center" fileref="RuleBaseFactory.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -274,11 +246,7 @@ ruleBase.addPackage( pkg  );        </programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RuleBase.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="RuleBase.png" format="PNG" />
+		<imagedata align="center" fileref="RuleBase.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -335,12 +303,7 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RuleBaseConfiguration.svg"
-                     format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="RuleBaseConfiguration.png"
+		<imagedata align="center" fileref="RuleBaseConfiguration.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -355,11 +318,7 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="StatefulSession.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="WorkingMemory.png" format="PNG" />
+		<imagedata align="center" fileref="WorkingMemory.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -422,7 +381,7 @@ FactHandle stiltonHandle = session.insert( stilton );      </programlisting>
 
       <para>Equality means the Working Memory uses a HashMap to store all
       asserted Objects. New instance assertions will only return a new
-      FactHandle if a no equal classes have been asserted.</para>
+      FactHandle if a not equal classes have been asserted.</para>
     </section>
 
     <section>
@@ -454,7 +413,7 @@ session.retract( stiltonHandle );            </programlisting>
       parameter - this allows you to specify new instances for immutable
       objects. The update() method can only be used with objects that have
       shadow proxies turned on. If you do not use shadow proxies then you must
-      call session.modifyRestract() before making your changes and
+      call session.modifyRetract() before making your changes and
       session.modifyInsert() after the changes.</para>
 
       <programlisting>Cheese stilton = new Cheese("stilton");
@@ -479,7 +438,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
       <para>With the Rule Base now aware of the global identifier and its type
       any sessions are now able to call session.setGlobal; failure to declare
       the global type and identifier first will result in an exception being
-      thrown. to set the global on the session use
+      thrown. To set the global on the session use
       session.setGlobal(identifier, value);</para>
 
       <programlisting>List list = new ArrayList();
@@ -517,14 +476,14 @@ session.setGlobal("list", list);           </programlisting>
       notify the rule engine.</para>
 
       <para>Drools 4.0 has full support for Shadow Facts implemented as
-      transparent lazy proxies. Shadow facts are enable by default and are not
+      transparent lazy proxies. Shadow facts are enabled by default and are not
       visible from external code, not even inside code blocks on rules.</para>
 
       <para>Although shadow facts are a great way of ensuring the engine
       integrity, they add some overhead to the the reasoning process. As so,
       Drools 4.0 supports fine grained control over them with the ability to
       enable/disable them for each individual class. To disable shadow fact
-      for all classes set the following property in a configuration file of
+      for all classes set the following property in a configuration file or
       system property:</para>
 
       <programlisting>drools.shadowProxy = false</programlisting>
@@ -621,18 +580,14 @@ public void setState(final String newState) {
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="WorkingMemory.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="StatefulSession.png" format="PNG" />
+		<imagedata align="center" fileref="StatefulSession.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
 
     <para>The StatefulSession extends the WorkingMemory class. It simply adds
     async methods and a dispose() method. The ruleBase retains a reference to
-    each StatefulSession is creates, so that it can update them when new rules
+    each StatefulSession it creates, so that it can update them when new rules
     are added, dispose() is needed to release the StatefulSession reference
     from the RuleBase, without it you can get memory leaks.</para>
 
@@ -650,13 +605,9 @@ public void setState(final String newState) {
       <title>StatelessSession</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="StatelessSession.svg"
-                     format="SVG" />
-        </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="StatelessSession.png"
+		<imagedata align="center" fileref="StatelessSession.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -672,7 +623,7 @@ public void setState(final String newState) {
 session.execute( new Cheese( "cheddar" ) );</programlisting>
     </example>
 
-    <para>The api is reduced for the problem domain and is thus much simpler;
+    <para>The API is reduced for the problem domain and is thus much simpler;
     which in turn can make maintenance of those services easier. The RuleBase
     never retains a reference to the StatelessSession, thus dispose() is not
     needed, and they only have an execute() method that takes an object, an
@@ -696,20 +647,16 @@ session.execute( new Cheese( "cheddar" ) );</programlisting>
     environments such as JEE.</para>
 
     <para>StatelessSessions also support sequential mode, which is a special
-    optimised mode that uses less memory and executes faster; please see the
+    optimized mode that uses less memory and executes faster; please see the
     Sequential section for more details.</para>
 
     <figure>
       <title>StatelessSessionResult</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="StatelessSessionResult.svg"
-                     format="SVG" />
-        </imageobject>
 
         <imageobject>
-          <imagedata align="center" fileref="StatelessSessionResult.png"
+		<imagedata align="center" fileref="StatelessSessionResult.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -717,9 +664,9 @@ session.execute( new Cheese( "cheddar" ) );</programlisting>
 
     <para>StatelessSession.executeWithResults(....) returns a minimal api to
     examine the sessions data. The inserted Objects can be iterated over,
-    querries can be executed and globals retrieved. Once the
-    StatelessSessionResult is serialised it loses the reference to the
-    underlying WorkingMemory and RuleBase, so querries can no longer be
+    queries can be executed and globals retrieved. Once the
+    StatelessSessionResult is serialized it loses the reference to the
+    underlying WorkingMemory and RuleBase, so queries can no longer be
     executed, however globals can still be retrieved and objects iterated. To
     retrieve globals they must be exported from the StatelessSession; the
     GlobalExporter strategy is set with StatelessSession.setGlobalExporter(
@@ -728,11 +675,11 @@ session.execute( new Cheese( "cheddar" ) );</programlisting>
     CopyIdentifiersGlobalExporter copies named identifiers into a new
     GlobalResovler that is passed to the StatelessSessionResult; the
     constructor takes a String[] array of identifiers, if no identifiers are
-    specified it copies all identifiers declaredin the RuleBase.
+    specified it copies all identifiers declared in the RuleBase.
     ReferenceOriginalGlobalExporter just passes a reference to the original
-    Global Resolver; the later should be used with care as identifier
+    Global Resolver; the latter should be used with care as identifier
     instances can be changed at any time by the StatelessSession and the
-    GlobalResolver may not be serialisable freindly.</para>
+    GlobalResolver may not be serializable freindly.</para>
 
     <example>
       <title>GlobalExporter with StatelessSessions</title>
@@ -752,11 +699,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="Agenda.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="Agenda.png" format="PNG" />
+		<imagedata align="center" fileref="Agenda.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -792,11 +735,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="Two_Phase.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="Two_Phase.png" format="PNG" />
+		<imagedata align="center" fileref="Two_Phase.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -814,13 +753,13 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
       instance, firing ruleA may cause ruleB to be removed from the
       agenda).</para>
 
-      <para>The default conflict resolution strategies emplyed by Drools are:
+      <para>The default conflict resolution strategies employed by Drools are:
       Salience and LIFO (last in, first out).</para>
 
       <para>The most visible one is "salience" or priority, in which case a
       user can specify that a certain rule has a higher priority (by giving it
-      a higher number) then other rules. In that case, the higher salience
-      rule will always be preferred. LIFO priorities based on the assigned
+      a higher number) than other rules. In that case, the higher salience
+      rule will always be preferred. LIFO priorities are based on the assigned
       Working Memory Action counter value, multiple rules created from the
       same action have the same value - execution of these are considered
       arbitrary.</para>
@@ -846,7 +785,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
       <para>They are sometimes known as "modules" in CLIPS terminology. Agenda
       groups are a handy way to create a "flow" between grouped rules. You can
       switch the group which has focus either from within the rule engine, or
-      from the API. If you rules have a clear need for multiple "phases" or
+      from the API. If your rules have a clear need for multiple "phases" or
       "sequences" of processing, consider using agenda-groups for this
       purpose.</para>
 
@@ -866,16 +805,12 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="AgendaFilter.svg" format="SVG" />
-          </imageobject>
-
-          <imageobject>
-            <imagedata align="center" fileref="AgendaFilter.png" format="PNG" />
+		  <imagedata align="center" fileref="AgendaFilter.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
 
-      <para>Filters are optional implementations of a the filter interface
+      <para>Filters are optional implementations of the filter interface
       which are used to allow/or deny an activation from firing (what you
       filter on, is entirely up to the implementation). Drools provides the
       following convenience default implementations</para>
@@ -914,8 +849,8 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
     <para>In a regular insert, you need to explicitly retract a fact. With
     logical assertions, the fact that was asserted will be automatically
     retracted when the conditions that asserted it in the first place are no
-    longer true (it's actually more clever then that! If there are no possible
-    conditions that could support the logical assertion, only then will it be
+    longer true. (It's actually more clever then that! If there are no possible
+    conditions that could support the logical assertion, only then it will be
     retracted).</para>
 
     <para>Normal insertions are said to be “STATED” (ie The Fact has been
@@ -946,12 +881,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="Stated_Assertion.svg"
-                     format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="Stated_Assertion.png"
+		<imagedata align="center" fileref="Stated_Assertion.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -962,12 +892,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="Logical_Assertion.svg"
-                     format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="Logical_Assertion.png"
+		<imagedata align="center" fileref="Logical_Assertion.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -1044,12 +969,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="WorkingMemoryEventListener.svg"
-                     format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="WorkingMemoryEventListener.png"
+		<imagedata align="center" fileref="WorkingMemoryEventListener.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -1060,12 +980,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="AgendaEventListener.svg"
-                     format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="AgendaEventListener.png"
+		<imagedata align="center" fileref="AgendaEventListener.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -1076,18 +991,13 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RuleFlowEventListener.svg"
-                     format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="RuleFlowEventListener.png"
+		<imagedata align="center" fileref="RuleFlowEventListener.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <para>Both stateful and statless sessions implement the EventManager
+    <para>Both stateful and stateless sessions implement the EventManager
     interface, which allows event listeners to be added to the session.</para>
 
     <figure>
@@ -1095,11 +1005,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="EventManager.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="EventManager.png" format="PNG" />
+		<imagedata align="center" fileref="EventManager.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -1221,7 +1127,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
     probably not of an advantage and an Object list can be used.</para>
 
     <para>Sequential mode can only be used with a StatelessSession and is off
-    by default. To turn on either set the RuleBaseConfiguration.setSequentail
+    by default. To turn on either set the RuleBaseConfiguration.setSequential
     to true or set the rulebase.conf property drools.sequential to true.
     Sequential mode can fallback to a dynamic agenda with setSequentialAgenda
     to either SequentialAgenda.SEQUENTIAL or SequentialAgenda.DYNAMIC setter

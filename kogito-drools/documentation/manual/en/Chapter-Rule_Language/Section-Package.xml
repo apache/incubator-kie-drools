@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Package</title>
 
@@ -33,12 +35,9 @@
     <title>package</title>
 
     <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="package.svg" format="SVG" role="" />
-      </imageobject>
 
       <imageobject>
-        <imagedata align="center" fileref="package.png" format="PNG" role="" />
+	      <imagedata align="center" fileref="package.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -50,12 +49,9 @@
       <title>import</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata fileref="import.svg" format="SVG" />
-        </imageobject>
 
         <imageobject>
-          <imagedata fileref="import.png" format="PNG" />
+		<imagedata fileref="import.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -73,12 +69,9 @@
       <title>expander</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata fileref="expander.svg" format="SVG" />
-        </imageobject>
 
         <imageobject>
-          <imagedata fileref="expander.png" format="PNG" />
+		<imagedata fileref="expander.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -100,12 +93,9 @@
       <title>global</title>
 
       <mediaobject>
-        <imageobject>
-          <imagedata fileref="global.svg" format="SVG" />
-        </imageobject>
 
         <imageobject>
-          <imagedata fileref="global.png" format="PNG" />
+		<imagedata fileref="global.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>

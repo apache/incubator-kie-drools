@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Rule Flow</title>
 
@@ -7,7 +9,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="RuleFlow.png" format="PNG" role="" />
+	      <imagedata align="center" fileref="RuleFlow.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -56,7 +58,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RuleFlowSimple.png" format="PNG"
+		<imagedata align="center" fileref="RuleFlowSimple.png" format="PNG"
                      role="" />
         </imageobject>
       </mediaobject>
@@ -88,7 +90,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RFNewWizard.png" format="PNG"
+		<imagedata align="center" fileref="RFNewWizard.png" format="PNG"
                      role="" />
         </imageobject>
       </mediaobject>
@@ -109,7 +111,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RFNameGroups.png" format="PNG"
+		<imagedata align="center" fileref="RFNameGroups.png" format="PNG"
                      role="" />
         </imageobject>
       </mediaobject>
@@ -129,7 +131,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RFGroupProperties.png"
+		<imagedata align="center" fileref="RFGroupProperties.png"
                      format="PNG" role="" />
         </imageobject>
       </mediaobject>
@@ -157,7 +159,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RFComplex.png" format="PNG"
+		<imagedata align="center" fileref="RFComplex.png" format="PNG"
                      role="" />
         </imageobject>
       </mediaobject>
@@ -182,7 +184,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RFSplitType.png" format="PNG"
+		<imagedata align="center" fileref="RFSplitType.png" format="PNG"
                      role="" />
         </imageobject>
       </mediaobject>
@@ -206,7 +208,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RFEditConstraints.png"
+		<imagedata align="center" fileref="RFEditConstraints.png"
                      format="PNG" role="" />
         </imageobject>
       </mediaobject>
@@ -221,7 +223,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="RFConstraintEditor.png"
+		<imagedata align="center" fileref="RFConstraintEditor.png"
                      format="PNG" role="" />
         </imageobject>
       </mediaobject>
@@ -293,7 +295,7 @@ packageBuilder.addRuleFlow(rfm);
           <title>The different types of ruleflow nodes</title>
            <mediaobject>
              <imageobject>
-               <imagedata align="center" fileref="ruleflow_nodes.png" format="PNG" role="" />
+		     <imagedata align="center" fileref="ruleflow_nodes.png" format="PNG" role="" />
              </imageobject>
            </mediaobject>
         </figure>

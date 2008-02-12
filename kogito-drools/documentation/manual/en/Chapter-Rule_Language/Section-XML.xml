@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>XML Rule Language</title>
 
@@ -319,8 +321,10 @@ XmlPackageReader - reading XML.
 </programlisting> Using combinations of the above, you can convert between any
     format (including round trip). Note that DSLs will not be preserved (from
     DRLs that are using a DSL) - but they will be able to be converted.</para>
+
+<para>Feel free to make use of XSLT to provide all sorts of possibilities
+  for XML, XSLT and its ilk are what make XML powerful.</para>
+
   </section>
 
-  <para>Feel free to make use of XSLT to provide all sorts of possibilities
-  for XML, XSLT and its ilk are what make XML powerful.</para>
 </section>
