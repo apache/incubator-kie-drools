@@ -35,7 +35,7 @@ public class JoinInstance extends NodeInstanceImpl {
 
     private static final long serialVersionUID = 400L;
     
-    private final Map<Node, Integer> triggers = new HashMap<Node, Integer>();
+    private final Map<Long, Integer> triggers = new HashMap<Long, Integer>();
     
     protected Join getJoin() {
         return (Join) getNode();
@@ -53,13 +53,13 @@ public class JoinInstance extends NodeInstanceImpl {
                 break;
             case Join.TYPE_AND :
                 Node node = getNodeInstanceContainer().getNodeContainer().getNode( from.getNodeId() );
-                Integer count = (Integer) this.triggers.get( node );
+                Integer count = (Integer) this.triggers.get( node.getId() );
                 if ( count == null ) {
-                    this.triggers.put( node,
-                                       new Integer( 1 ) );
+                    this.triggers.put( node.getId(),
+                                       1 );
                 } else {
-                    this.triggers.put( node,
-                                       new Integer( count.intValue() + 1 ) );
+                    this.triggers.put( node.getId(),
+                                       count.intValue() + 1 );
                 }
                 if (checkAllActivated()) {
                     decreaseAllTriggers();
@@ -69,7 +69,7 @@ public class JoinInstance extends NodeInstanceImpl {
             case Join.TYPE_DISCRIMINATOR :
                 boolean triggerCompleted = triggers.isEmpty();
                 node = getNodeInstanceContainer().getNodeContainer().getNode( from.getNodeId() );
-                triggers.put( node, new Integer( 1 ) );
+                triggers.put( node.getId(), new Integer( 1 ) );
                 if (checkAllActivated()) {
                     resetAllTriggers();
                 }
@@ -86,7 +86,7 @@ public class JoinInstance extends NodeInstanceImpl {
         // check whether all parent nodes have been triggered 
         for ( final Iterator<Connection> it = getJoin().getDefaultIncomingConnections().iterator(); it.hasNext(); ) {
             final Connection connection = it.next();
-            if ( this.triggers.get( connection.getFrom() ) == null ) {
+            if ( this.triggers.get( connection.getFrom().getId() ) == null ) {
                 return false;
             }
         }
@@ -97,12 +97,12 @@ public class JoinInstance extends NodeInstanceImpl {
         // decrease trigger count for all incoming connections
         for ( final Iterator<Connection> it = getJoin().getDefaultIncomingConnections().iterator(); it.hasNext(); ) {
             final Connection connection = it.next();
-            final Integer count = (Integer) this.triggers.get( connection.getFrom() );
+            final Integer count = (Integer) this.triggers.get( connection.getFrom().getId() );
             if ( count.intValue() == 1 ) {
-                this.triggers.remove( connection.getFrom() );
+                this.triggers.remove( connection.getFrom().getId() );
             } else {
-                this.triggers.put( connection.getFrom(),
-                                   new Integer( count.intValue() - 1 ) );
+                this.triggers.put( connection.getFrom().getId(),
+                                   count.intValue() - 1 );
             }
         }
     }
