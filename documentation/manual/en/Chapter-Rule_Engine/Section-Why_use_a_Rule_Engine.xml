@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Why use a Rule Engine?</title>
 
@@ -100,11 +102,11 @@
       <listitem>
         <para>Understandable Rules</para>
 
-        <para>By creating object models and optionally Domain Specific
+        <para>By creating object models and, optionally, Domain Specific
         Languages that model your problem domain you can set yourself up to
-        write rules that look very close to natural language. They lend
+        write rules that are very close to natural language. They lend
         themselves to logic that is understandable to, possibly nontechnical,
-        domain experts as they are expressed in their language. (as all the
+        domain experts as they are expressed in their language (as all the
         program plumbing, the "How", is in the usual code, hidden
         away).</para>
       </listitem>
@@ -119,7 +121,7 @@
     answer, some more explanation is required. The reason why there is no
     "traditional" approach is possibly one of the following: <itemizedlist>
         <listitem>
-          <para>The problem is just too fiddly for traditional code.</para>
+          <para>The problem is just too fiddle for traditional code.</para>
 
           <para>The problem may not be complex, but you can't see a
           non-fragile way of building it.</para>
@@ -239,11 +241,11 @@
 
     <para>Many people have also implemented data-driven systems successfully
     in the past (where there are control tables that store meta-data that
-    changes your applications behavior) - these can work well when the control
-    can remain very limited. However, they can quickly grow out of control if
-    extended to much (such that only the original creators can change the
-    applications behavior) or they cause the application to stagnate as they
-    are too inflexible.</para>
+    changes your applications behavior) - these can work well when the
+    control can remain very limited. However, they can quickly grow out of
+    control if extended to much (such that only the original creators can
+    change the applications behavior) or they cause the application to
+    stagnate as they are too inflexible.</para>
   </section>
 
   <section>

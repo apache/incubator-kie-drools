@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>What is a Rule Engine?</title>
 
@@ -97,7 +99,7 @@ then
 
     <para>Drools implements and extends the <indexterm>
         <primary>Rete</primary>
-      </indexterm> Rete algorith, <indexterm>
+      </indexterm> Rete algorithm, <indexterm>
         <primary>Leaps</primary>
       </indexterm> Leaps use to be supported but was removed due to poor
     maintenance. The Drools <indexterm>
@@ -130,17 +132,13 @@ then
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="Rule_Engine.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="Rule_Engine.png" format="PNG" />
+		<imagedata align="center" fileref="Rule_Engine.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
 
     <para>A Production Rule System's Inference Engine is stateful and able to
-    enforce truthfulness - called Truth Maintence. A logical relationship can
+    enforce truthfulness - called Truth Maintenance. A logical relationship can
     be declared by actions which means the action's state depends on the
     inference remaining true; when it is no longer true the logical dependent
     action is undone. The "Honest Politician" is an example of Truth
@@ -168,7 +166,7 @@ then
     Forward Chaining and Backward Chaining; systems that implement both are
     called Hybrid Production Rule Systems. Understanding these two modes of
     operation are key to understanding why a Production Rule System is
-    different and how to get the best from them. Forward chaing is
+    different and how to get the best from them. Forward chaining is
     'data-driven' and thus reactionary - facts are asserted into the working
     memory which results in one or more rules being concurrently true and
     scheduled for execution by the Agenda - we start with a fact, it
@@ -180,12 +178,7 @@ then
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="Forward_Chaining.svg"
-                     format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="Forward_Chaining.png"
+		<imagedata align="center" fileref="Forward_Chaining.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -204,12 +197,7 @@ then
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="Backward_Chaining.svg"
-                     format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata align="center" fileref="Backward_Chaining.png"
+		<imagedata align="center" fileref="Backward_Chaining.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>

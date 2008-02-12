@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Rete Algorithm</title>
 
@@ -23,11 +25,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="Rete_Nodes.svg" format="SVG" />
-      </imageobject>
-
-      <imageobject>
-        <imagedata align="center" fileref="Rete_Nodes.png" format="PNG" />
+	      <imagedata align="center" fileref="Rete_Nodes.png" format="PNG" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -53,11 +51,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="Object_Type_Nodes.svg" format="SVG" />
-      </imageobject>
-
-      <imageobject>
-        <imagedata align="center" fileref="Object_Type_Nodes.png" format="PNG" />
+	      <imagedata align="center" fileref="Object_Type_Nodes.png" format="PNG" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -77,12 +71,9 @@
     <title>AlphaNodes</title>
 
     <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="Alpha_Nodes.svg" format="SVG" />
-      </imageobject>
 
       <imageobject>
-        <imagedata align="center" fileref="Alpha_Nodes.png" format="PNG" />
+	      <imagedata align="center" fileref="Alpha_Nodes.png" format="PNG" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -100,7 +91,7 @@
   fields, to each other. The objects may be the same or different types. By
   convention we refer to the two inputs as left and right. The left input for
   a BetaNode is generally a list of objects; in Drools this is a Tuple. The
-  right input is a single object. Two Nots can be used to implement 'exists'
+  right input is a single object. Two Nodes can be used to implement 'exists'
   checks. BetaNodes also have memory. The left input is called the Beta Memory
   and remembers all incoming tuples. The right input is called the Alpha
   Memory and remembers all incoming objects. Drools extends Rete by
@@ -117,11 +108,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="Join_Node.svg" format="SVG" />
-      </imageobject>
-
-      <imageobject>
-        <imagedata align="center" fileref="Join_Node.png" format="PNG" />
+	      <imagedata align="center" fileref="Join_Node.png" format="PNG" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -173,12 +160,9 @@
     <title>Node Sharing</title>
 
     <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="Node_Sharing.svg" format="SVG" />
-      </imageobject>
 
       <imageobject>
-        <imagedata align="center" fileref="Node_Sharing.png" format="PNG" />
+	      <imagedata align="center" fileref="Node_Sharing.png" format="PNG" />
       </imageobject>
     </mediaobject>
   </figure>
