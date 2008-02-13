@@ -598,8 +598,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       </imageobject>
     </mediaobject>
 
-    <para>The graph is created with the Java Universal Network/Graph Framework
-    (<ulink url="http://jung.sourceforge.net/">JUNG</ulink>). The Rete View is
+    <para>The Rete View is
     an advanced feature which takes full advantage of the Eclipse Graphical Editing Framework (GEF).</para>
 
     <para>The Rete view works only in Drools Rule Projects, where the Drools
