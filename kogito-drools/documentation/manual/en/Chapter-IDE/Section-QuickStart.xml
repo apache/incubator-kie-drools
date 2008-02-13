@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Introduction</title>
 
@@ -598,8 +600,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
 
     <para>The graph is created with the Java Universal Network/Graph Framework
     (<ulink url="http://jung.sourceforge.net/">JUNG</ulink>). The Rete View is
-    an advanced feature which is still in experimental state. It uses Swing
-    inside eclipse. In future it will maybe improved using SWT or GEF.</para>
+    an advanced feature which takes full advantage of the Eclipse Graphical Editing Framework (GEF).</para>
 
     <para>The Rete view works only in Drools Rule Projects, where the Drools
     Builder is set in the project´s properties.</para>
