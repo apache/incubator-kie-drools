@@ -1,0 +1,255 @@
+<org.drools.ruleflow.core.RuleFlowProcess id="1">
+  <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess$WorkflowProcessNodeContainer" id="2">
+    <outer-class reference="1"/>
+    <nodes id="3">
+      <entry>
+        <long>1</long>
+        <org.drools.workflow.core.node.StartNode id="4">
+          <id>1</id>
+          <name>Start</name>
+          <incomingConnections id="5"/>
+          <outgoingConnections id="6">
+            <entry>
+              <string>DROOLS_DEFAULT</string>
+              <list id="7">
+                <org.drools.workflow.core.impl.ConnectionImpl id="8">
+                  <from class="org.drools.workflow.core.node.StartNode" reference="4"/>
+                  <to class="org.drools.workflow.core.node.Split" id="9">
+                    <type>1</type>
+                    <constraints id="10"/>
+                    <id>2</id>
+                    <name>Split</name>
+                    <incomingConnections id="11">
+                      <entry>
+                        <string>DROOLS_DEFAULT</string>
+                        <list id="12">
+                          <org.drools.workflow.core.impl.ConnectionImpl reference="8"/>
+                        </list>
+                      </entry>
+                    </incomingConnections>
+                    <outgoingConnections id="13">
+                      <entry>
+                        <string>DROOLS_DEFAULT</string>
+                        <list id="14">
+                          <org.drools.workflow.core.impl.ConnectionImpl id="15">
+                            <from class="org.drools.workflow.core.node.Split" reference="9"/>
+                            <to class="org.drools.workflow.core.node.WorkItemNode" id="16">
+                              <work class="org.drools.process.core.impl.WorkImpl" id="17">
+                                <name>Log</name>
+                                <parameters id="18">
+                                  <entry>
+                                    <string>Message</string>
+                                    <string>This is the first log message</string>
+                                  </entry>
+                                </parameters>
+                              </work>
+                              <inMapping id="19"/>
+                              <outMapping id="20"/>
+                              <id>3</id>
+                              <name>Log</name>
+                              <incomingConnections id="21">
+                                <entry>
+                                  <string>DROOLS_DEFAULT</string>
+                                  <list id="22">
+                                    <org.drools.workflow.core.impl.ConnectionImpl reference="15"/>
+                                  </list>
+                                </entry>
+                              </incomingConnections>
+                              <outgoingConnections id="23">
+                                <entry>
+                                  <string>DROOLS_DEFAULT</string>
+                                  <list id="24">
+                                    <org.drools.workflow.core.impl.ConnectionImpl id="25">
+                                      <from class="org.drools.workflow.core.node.WorkItemNode" reference="16"/>
+                                      <to class="org.drools.workflow.core.node.Join" id="26">
+                                        <type>1</type>
+                                        <id>6</id>
+                                        <name>Join</name>
+                                        <incomingConnections id="27">
+                                          <entry>
+                                            <string>DROOLS_DEFAULT</string>
+                                            <list id="28">
+                                              <org.drools.workflow.core.impl.ConnectionImpl reference="25"/>
+                                              <org.drools.workflow.core.impl.ConnectionImpl id="29">
+                                                <from class="org.drools.workflow.core.node.WorkItemNode" id="30">
+                                                  <work class="org.drools.process.core.impl.WorkImpl" id="31">
+                                                    <name>Email</name>
+                                                    <parameters id="32">
+                                                      <entry>
+                                                        <string>Text</string>
+                                                        <string>This is an urgent email !</string>
+                                                      </entry>
+                                                      <entry>
+                                                        <string>Subject</string>
+                                                        <string>Urgent!</string>
+                                                      </entry>
+                                                      <entry>
+                                                        <string>To</string>
+                                                        <string>you@mail.com</string>
+                                                      </entry>
+                                                      <entry>
+                                                        <string>From</string>
+                                                        <string>me@mail.com</string>
+                                                      </entry>
+                                                    </parameters>
+                                                  </work>
+                                                  <inMapping id="33"/>
+                                                  <outMapping id="34"/>
+                                                  <id>5</id>
+                                                  <name>Email</name>
+                                                  <incomingConnections id="35">
+                                                    <entry>
+                                                      <string>DROOLS_DEFAULT</string>
+                                                      <list id="36">
+                                                        <org.drools.workflow.core.impl.ConnectionImpl id="37">
+                                                          <from class="org.drools.workflow.core.node.Split" reference="9"/>
+                                                          <to class="org.drools.workflow.core.node.WorkItemNode" reference="30"/>
+                                                          <fromType>DROOLS_DEFAULT</fromType>
+                                                          <toType>DROOLS_DEFAULT</toType>
+                                                        </org.drools.workflow.core.impl.ConnectionImpl>
+                                                      </list>
+                                                    </entry>
+                                                  </incomingConnections>
+                                                  <outgoingConnections id="38">
+                                                    <entry>
+                                                      <string>DROOLS_DEFAULT</string>
+                                                      <list id="39">
+                                                        <org.drools.workflow.core.impl.ConnectionImpl reference="29"/>
+                                                      </list>
+                                                    </entry>
+                                                  </outgoingConnections>
+                                                  <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                                </from>
+                                                <to class="org.drools.workflow.core.node.Join" reference="26"/>
+                                                <fromType>DROOLS_DEFAULT</fromType>
+                                                <toType>DROOLS_DEFAULT</toType>
+                                              </org.drools.workflow.core.impl.ConnectionImpl>
+                                            </list>
+                                          </entry>
+                                        </incomingConnections>
+                                        <outgoingConnections id="40">
+                                          <entry>
+                                            <string>DROOLS_DEFAULT</string>
+                                            <list id="41">
+                                              <org.drools.workflow.core.impl.ConnectionImpl id="42">
+                                                <from class="org.drools.workflow.core.node.Join" reference="26"/>
+                                                <to class="org.drools.workflow.core.node.WorkItemNode" id="43">
+                                                  <work class="org.drools.process.core.impl.WorkImpl" id="44">
+                                                    <name>Log</name>
+                                                    <parameters id="45">
+                                                      <entry>
+                                                        <string>Message</string>
+                                                        <string>This is the second log message</string>
+                                                      </entry>
+                                                    </parameters>
+                                                  </work>
+                                                  <inMapping id="46"/>
+                                                  <outMapping id="47"/>
+                                                  <id>4</id>
+                                                  <name>Log</name>
+                                                  <incomingConnections id="48">
+                                                    <entry>
+                                                      <string>DROOLS_DEFAULT</string>
+                                                      <list id="49">
+                                                        <org.drools.workflow.core.impl.ConnectionImpl reference="42"/>
+                                                      </list>
+                                                    </entry>
+                                                  </incomingConnections>
+                                                  <outgoingConnections id="50">
+                                                    <entry>
+                                                      <string>DROOLS_DEFAULT</string>
+                                                      <list id="51">
+                                                        <org.drools.workflow.core.impl.ConnectionImpl id="52">
+                                                          <from class="org.drools.workflow.core.node.WorkItemNode" reference="43"/>
+                                                          <to class="org.drools.workflow.core.node.EndNode" id="53">
+                                                            <id>7</id>
+                                                            <name>End</name>
+                                                            <incomingConnections id="54">
+                                                              <entry>
+                                                                <string>DROOLS_DEFAULT</string>
+                                                                <list id="55">
+                                                                  <org.drools.workflow.core.impl.ConnectionImpl reference="52"/>
+                                                                </list>
+                                                              </entry>
+                                                            </incomingConnections>
+                                                            <outgoingConnections id="56"/>
+                                                            <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                                          </to>
+                                                          <fromType>DROOLS_DEFAULT</fromType>
+                                                          <toType>DROOLS_DEFAULT</toType>
+                                                        </org.drools.workflow.core.impl.ConnectionImpl>
+                                                      </list>
+                                                    </entry>
+                                                  </outgoingConnections>
+                                                  <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                                </to>
+                                                <fromType>DROOLS_DEFAULT</fromType>
+                                                <toType>DROOLS_DEFAULT</toType>
+                                              </org.drools.workflow.core.impl.ConnectionImpl>
+                                            </list>
+                                          </entry>
+                                        </outgoingConnections>
+                                        <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                                      </to>
+                                      <fromType>DROOLS_DEFAULT</fromType>
+                                      <toType>DROOLS_DEFAULT</toType>
+                                    </org.drools.workflow.core.impl.ConnectionImpl>
+                                  </list>
+                                </entry>
+                              </outgoingConnections>
+                              <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                            </to>
+                            <fromType>DROOLS_DEFAULT</fromType>
+                            <toType>DROOLS_DEFAULT</toType>
+                          </org.drools.workflow.core.impl.ConnectionImpl>
+                          <org.drools.workflow.core.impl.ConnectionImpl reference="37"/>
+                        </list>
+                      </entry>
+                    </outgoingConnections>
+                    <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+                  </to>
+                  <fromType>DROOLS_DEFAULT</fromType>
+                  <toType>DROOLS_DEFAULT</toType>
+                </org.drools.workflow.core.impl.ConnectionImpl>
+              </list>
+            </entry>
+          </outgoingConnections>
+          <nodeContainer class="org.drools.ruleflow.core.RuleFlowProcess" reference="1"/>
+        </org.drools.workflow.core.node.StartNode>
+      </entry>
+      <entry>
+        <long>2</long>
+        <org.drools.workflow.core.node.Split reference="9"/>
+      </entry>
+      <entry>
+        <long>3</long>
+        <org.drools.workflow.core.node.WorkItemNode reference="16"/>
+      </entry>
+      <entry>
+        <long>4</long>
+        <org.drools.workflow.core.node.WorkItemNode reference="43"/>
+      </entry>
+      <entry>
+        <long>5</long>
+        <org.drools.workflow.core.node.WorkItemNode reference="30"/>
+      </entry>
+      <entry>
+        <long>6</long>
+        <org.drools.workflow.core.node.Join reference="26"/>
+      </entry>
+      <entry>
+        <long>7</long>
+        <org.drools.workflow.core.node.EndNode reference="53"/>
+      </entry>
+    </nodes>
+    <lastNodeId>7</lastNodeId>
+  </nodeContainer>
+  <id>com.sample.ruleflow</id>
+  <name>workitems</name>
+  <version>1</version>
+  <type>RuleFlow</type>
+  <packageName>com.sample</packageName>
+  <variableScope class="org.drools.process.core.impl.VariableScopeImpl" id="57">
+    <variables id="58"/>
+  </variableScope>
+</org.drools.ruleflow.core.RuleFlowProcess>
