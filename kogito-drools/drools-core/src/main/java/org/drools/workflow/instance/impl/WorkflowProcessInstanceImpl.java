@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.Agenda;
 import org.drools.WorkingMemory;
@@ -50,7 +51,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     private InternalWorkingMemory workingMemory;
     private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
     private long nodeInstanceCounter = 0;
-    private List<WorkItemListener> workItemListeners = new ArrayList<WorkItemListener>();
+    private List<WorkItemListener> workItemListeners = new CopyOnWriteArrayList<WorkItemListener>();
 
     public WorkflowProcess getWorkflowProcess() {
         return (WorkflowProcess) getProcess();
