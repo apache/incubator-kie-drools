@@ -11,5 +11,7 @@ public interface WorkDefinitionExtension {
     String getExplanationText();
     
     String getIcon();
+    
+    String getCustomEditor();
 
 }
