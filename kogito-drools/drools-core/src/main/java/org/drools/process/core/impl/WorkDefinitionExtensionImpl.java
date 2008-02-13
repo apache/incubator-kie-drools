@@ -13,6 +13,7 @@ public class WorkDefinitionExtensionImpl extends WorkDefinitionImpl implements W
     private String displayName;
     private String explanationText;
     private String icon;
+    private String editor;
     
     public String getDisplayName() {
         return displayName;
@@ -36,6 +37,14 @@ public class WorkDefinitionExtensionImpl extends WorkDefinitionImpl implements W
     
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getCustomEditor() {
+        return editor;
+    }
+    
+    public void setCustomEditor(String editor) {
+        this.editor = editor;
     }
     
 }
