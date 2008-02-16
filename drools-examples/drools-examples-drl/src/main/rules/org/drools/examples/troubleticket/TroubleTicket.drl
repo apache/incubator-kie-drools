@@ -1,7 +1,7 @@
-package org.drools.examples
+package org.drools.examples.troubleticket
 
-import org.drools.examples.TroubleTicketExample.Customer;
-import org.drools.examples.TroubleTicketExample.Ticket;
+import org.drools.examples.troubleticket.Customer;
+import org.drools.examples.troubleticket.Ticket;
 
 rule "New Ticket"
 	salience 10
@@ -18,8 +18,7 @@ rule "Silver Priority"
 		customer : Customer( subscription == "Silver" )	
 		ticket : Ticket( customer == customer, status == "New" )	
 	then
-		ticket.setStatus( "Escalate" );
-		update( ticket );		
+		modify( ticket ) { setStatus( "Escalate" ) };
 end
 
 rule "Gold Priority"
@@ -28,8 +27,7 @@ rule "Gold Priority"
 		customer : Customer( subscription == "Gold" )	
 		ticket : Ticket( customer == customer, status == "New" )	
 	then
-		ticket.setStatus( "Escalate" );	
-		update( ticket );		
+		modify( ticket ) { setStatus( "Escalate" ) };		
 end
 
 rule "Platinum Priority"
@@ -37,8 +35,7 @@ rule "Platinum Priority"
 		customer : Customer( subscription == "Platinum" )	
 		ticket : Ticket( customer == customer, status == "New" )	
 	then;
-		ticket.setStatus( "Escalate" );
-		update( ticket );
+		modify( ticket ) { setStatus( "Escalate" ) };
 end
 
 rule "Escalate"

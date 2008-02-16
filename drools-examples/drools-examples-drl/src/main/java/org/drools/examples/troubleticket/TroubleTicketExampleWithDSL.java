@@ -1,4 +1,4 @@
-package org.drools.examples;
+package org.drools.examples.troubleticket;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -30,12 +30,16 @@ public class TroubleTicketExampleWithDSL {
         logger.setFileName( "log/state" );
 
         final Customer a = new Customer( "A",
+                                         "Drools",
                                          "Gold" );
         final Customer b = new Customer( "B",
+                                         "Drools",
                                          "Platinum" );
         final Customer c = new Customer( "C",
+                                         "Drools",
                                          "Silver" );
         final Customer d = new Customer( "D",
+                                         "Drools",
                                          "Silver" );
 
         final Ticket t1 = new Ticket( a );
@@ -66,6 +70,8 @@ public class TroubleTicketExampleWithDSL {
         } catch ( final InterruptedException e ) {
             e.printStackTrace();
         }
+        
+        System.err.println( "[[ awake ]]" );
 
         session.fireAllRules();
 
@@ -81,67 +87,6 @@ public class TroubleTicketExampleWithDSL {
 
     private static InputStreamReader getSource() {
         return new InputStreamReader( TroubleTicketExampleWithDSL.class.getResourceAsStream( "TroubleTicketWithDSL.dslr" ) );
-    }
-
-    public static class Customer {
-        private String name;
-        private String subscription;
-
-        public Customer() {
-
-        }
-
-        public Customer(final String name,
-                        final String subscription) {
-            super();
-            this.name = name;
-            this.subscription = subscription;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public String getSubscription() {
-            return this.subscription;
-        }
-
-        public String toString() {
-            return "[Customer " + this.name + " : " + this.subscription + "]";
-        }
-
-    }
-
-    public static class Ticket {
-        private Customer customer;
-        private String   status;
-
-        public Ticket() {
-
-        }
-
-        public Ticket(final Customer customer) {
-            super();
-            this.customer = customer;
-            this.status = "New";
-        }
-
-        public String getStatus() {
-            return this.status;
-        }
-
-        public void setStatus(final String status) {
-            this.status = status;
-        }
-
-        public Customer getCustomer() {
-            return this.customer;
-        }
-
-        public String toString() {
-            return "[Ticket " + this.customer + " : " + this.status + "]";
-        }
-
     }
 
 }
