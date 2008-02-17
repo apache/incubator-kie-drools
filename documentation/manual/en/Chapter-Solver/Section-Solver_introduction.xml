@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
-]>
 <section>
   <title>Solver introduction</title>
 
@@ -35,7 +33,7 @@
       <listitem>
         <para><ulink
         url="http://en.wikipedia.org/wiki/Travelling_salesman_problem">The
-        traveling salesmen problem</ulink></para>
+        traveling salesman problem</ulink></para>
       </listitem>
 
       <listitem>
@@ -121,7 +119,7 @@
   </section>
 
   <section>
-    <title>Getting started with the examples</title>
+    <title>Building drools-solver and running an example</title>
 
     <para>No releases have been made yet, but you can easily build it from
     source yourself. Check out drools from subversion and do a maven 2 build
@@ -133,390 +131,31 @@ $ cd drools
 $ mvn -Psolver -Dmaven.test.skip clean install
 ...</programlisting>
 
-    <para>Now you will If you want to use a stable version of drools, add this
-    /drools-solver/pom.xml </para>
-
-    <para>After that, you can run any example directly from the command line
-    like this:</para>
+    <para>After that, you can run any example directly from the command line,
+    for example to run the n queens example, run:</para>
 
     <programlisting>$ cd drools-solver/drools-solver-examples/
 $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.nqueens.app.NQueensApp"
-...
-$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.lessonschedule.app.LessonScheduleApp"
-...
-$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.simple.SimpleTravelingTournamentApp"
-...
-$ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament.app.smart.SmartTravelingTournamentApp"
 ...</programlisting>
 
-    <para>You will use the latest, unstable revision of drools. If you would
-    rather use a stable version of drools, edit
-    <literal>/drools-solver/drools-solver-examples/pom.xml</literal> and
-    overwrite the drools jar versions, before runing the example:</para>
-
-    <programlisting>    &lt;dependencies&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.drools&lt;/groupId&gt;
-            &lt;artifactId&gt;drools-core&lt;/artifactId&gt;
-            &lt;version&gt;4.0.2&lt;/version&gt;
-        &lt;/dependency&gt;
-        &lt;dependency&gt;
-            &lt;groupId&gt;org.drools&lt;/groupId&gt;
-            &lt;artifactId&gt;drools-compiler&lt;/artifactId&gt;
-            &lt;version&gt;4.0.2&lt;/version&gt;
-        &lt;/dependency&gt;
-
-        ...
-
-     &lt;/dependencies&gt;</programlisting>
-
-    <para>Here's a screenshot of the n queens example, which is a simple
-    example:</para>
-
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="screenshotSolvedNQueens8.png" format="PNG" />
-      </imageobject>
-    </mediaobject>
-  </section>
-
-  <section>
-    <title>The 4 queens example</title>
-
-    <section>
-      <title>Problem statement</title>
-
-      <para>The <emphasis>n queens puzzle</emphasis> is a puzzle with the
-      follow constraints:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Use a chessboard of n rows and n columns.</para>
-        </listitem>
-
-        <listitem>
-          <para>Place n queens on the chessboard.</para>
-        </listitem>
-
-        <listitem>
-          <para>No 2 queens can attack each other. Note that a queen can
-          attack any other queen on the same horizontal, vertical or diagonal
-          line.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>The most common n queens puzzle is the 8 queens puzzle, with
-      <emphasis>n = 8</emphasis>. We 'll explain drools-solver using the 4
-      queens puzzle as the primary example.</para>
-
-      <para>A proposed solution could be:</para>
-
-      <figure>
-        <title>A wrong solution for the 4 queens puzzle</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="partiallySolvedNQueens04Explained.png"
-                       format="PNG" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>The above solution is wrong because queens A1 and B0 can attack
-      each other (as can queens B0 and D0). Removing queen B0 would respect
-      the "no 2 queens can attack each other" constraint, but would break the
-      "place n queens" constraint.</para>
-    </section>
-
-    <section>
-      <title>Solution(s)</title>
-
-      <para>Below is a correct solution:</para>
-
-      <figure>
-        <title>A correct solution for the 4 queens puzzle</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="solvedNQueens04.png"
-                       format="PNG" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>All the constraints have been met, so the solution is correct.
-      Note that most n queens puzzles have multiple correct solutions. We 'll
-      focus on finding a single correct solution for a given n, not on finding
-      the number of possible correct solutions for a given n.</para>
-    </section>
-
-    <section>
-      <title>Class diagram</title>
-
-      <para>Use a good domain model and it will be easier to understand and
-      solve your problem with drools-solver. We 'll use this domain model for
-      the n queens example:</para>
-
-      <figure>
-        <title>NQueens domain diagram</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="nQueensDomainDiagram.png"
-                       format="PNG" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>A <literal>Queen</literal> instance has an x (its column, for
-      example: 0 is column A, 1 is column B, ...) and a y (its row, for
-      example: 0 is row 0, 1 is row 1, ...). Based on the x and y, the
-      ascending diagonal line as well as the descending diagonal line can be
-      calculated. The x and y indexes start from the upper left corner of the
-      chessboard.</para>
-
-      <table>
-        <title>A solution for the 4 queens puzzle shown in the domain
-        model</title>
-
-        <tgroup cols="6">
-          <thead>
-            <row>
-              <entry align="center">A solution</entry>
-
-              <entry align="center">Queen</entry>
-
-              <entry>x</entry>
-
-              <entry>y</entry>
-
-              <entry>ascendingD (x + y)</entry>
-
-              <entry>descendingD (x - y)</entry>
-            </row>
-          </thead>
-
-          <tbody>
-            <row>
-              <entry morerows="3"><mediaobject>
-                  <imageobject>
-                    <imagedata fileref="partiallySolvedNQueens04Explained.png"
-                               format="PNG" />
-                  </imageobject>
-                </mediaobject></entry>
-
-              <entry>A1</entry>
-
-              <entry>0</entry>
-
-              <entry>1</entry>
-
-              <entry>1 (**)</entry>
-
-              <entry>-1</entry>
-            </row>
-
-            <row>
-              <entry>B0</entry>
-
-              <entry>1</entry>
-
-              <entry>0 (*)</entry>
-
-              <entry>1 (**)</entry>
-
-              <entry>1</entry>
-            </row>
-
-            <row>
-              <entry>C2</entry>
-
-              <entry>2</entry>
-
-              <entry>2</entry>
-
-              <entry>4</entry>
-
-              <entry>0</entry>
-            </row>
-
-            <row>
-              <entry>D0</entry>
-
-              <entry>3</entry>
-
-              <entry>0 (*)</entry>
-
-              <entry>3</entry>
-
-              <entry>3</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
-
-      <para>A single <literal>NQueens</literal> instance contains a list of
-      all <literal>Queen</literal> instances. It is the
-      <literal>Solution</literal> implementation which will be supplied to and
-      retrieved from drools-solver. Notice that in the 4 queens example,
-      NQueens's <literal>getN()</literal> method will always return 4.</para>
-
-      <para>You can find the source code of this example (as well as well as
-      several other examples) in the drools-solver-examples src
-      distribution.</para>
-    </section>
-  </section>
-
-  <section>
-    <title>Types of solvers</title>
-
-    <para>Different solvers solve problems in different ways. Each type has
-    advantages and disadvantages. We 'll roughly discuss a few of the solver
-    types here. You can safely skip this section.</para>
-
-    <section>
-      <title>Brute force</title>
-
-      <para>Brute force creates and evaluates every possible solution, usually
-      by creating a search tree.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It finds an optimal solution. If there is more then 1 optimal
-          solution, it finds all optimal solutions.</para>
-        </listitem>
-
-        <listitem>
-          <para>It is straightforward and simple to implement.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It has a horrible performance and scalability. Mostly unusable
-          for a real-world problem due to time constraints.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Brute force is currently not implemented in drools-solver. But we
-      have plans to implement it in the future, as a reference for validating
-      the output of the other solver types.</para>
-    </section>
-
-    <section>
-      <title>Branch and bound</title>
-
-      <para>Branch and bound is an improvement over brute force, as it prunes
-      away subsets of solutions which cannot have a better solution than the
-      best solution already found at that point.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It finds an optimal solution. If there is more then 1 optimal
-          solution, it can find all optimal solutions if needed.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It still scales very badly.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Branch and bound is currently not implemented in
-      drools-solver.</para>
-    </section>
-
-    <section>
-      <title>Simplex</title>
-
-      <para>Simplex turns all constraints into a big equation, which it
-      transmutes into a mathematical function without local optima. It then
-      finds an optimal solution to the planning problem by finding an optima
-      of that mathematical function.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It finds an optimal solution.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It's usually rather complex and mathematical to implement
-          constraints.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Drools-solver does not currently implement simplex.</para>
-    </section>
-
-    <section>
-      <title>Local search (tabu search, simulated annealing, ...)</title>
-
-      <para>Local search starts from an initial solution and evolves that
-      single solution into a better and better solution. It uses a single
-      search path of solutions. At each solution in this path it evaluates a
-      number of possible moves on the solution and applies the most suitable
-      move to take the step to the next solution.</para>
-
-      <para>Local search works a lot like a human planner: it uses a single
-      search path and moves facts around to find a good feasible
-      solution.</para>
-
-      <para>A simple local search can easily get stuck in a local optima, but
-      improvements (such as tabu search and simulated annealing) address this
-      problem.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It's relatively simple and natural to implement constraints
-          (at least in drools-solver's implementation).</para>
-        </listitem>
-
-        <listitem>
-          <para>It's very scalable, even when adding extra constraints (at
-          least in drools-solver's implementation).</para>
-        </listitem>
-
-        <listitem>
-          <para>It generally needs to worry about less negative hard
-          constraints, because the move pattern can fulfill a number of the
-          negative hard constraints.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It does not know when it has found an optimal solution.</para>
-        </listitem>
-
-        <listitem>
-          <para>If the optimal score is unknown (which is usually the case),
-          it must be told when to stop looking (for example based on time
-          spend, user input, ...).</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Drools-solver implements local search, including tabu search and
-      simulated annealing.</para>
-    </section>
+    <para>You will use drools-solver with the latest, unstable snapshot of the
+    drools rule engine. If you would rather use a stable version of the drools
+    rule engine, edit <literal>/drools-solver/pom.xml</literal> and overwrite
+    the drools jar versions, before building and running the examples:</para>
+
+    <programlisting>    &lt;dependencyManagement&gt;
+        &lt;dependencies&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;org.drools&lt;/groupId&gt;
+                &lt;artifactId&gt;drools-core&lt;/artifactId&gt;
+                &lt;version&gt;4.0.3&lt;/version&gt;
+            &lt;/dependency&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;org.drools&lt;/groupId&gt;
+                &lt;artifactId&gt;drools-compiler&lt;/artifactId&gt;
+                &lt;version&gt;4.0.3&lt;/version&gt;
+            &lt;/dependency&gt;
+        &lt;/dependencies&gt;
+    &lt;/dependencyManagement&gt;</programlisting>
   </section>
 </section>

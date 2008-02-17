@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
-]>
 <section>
   <title>Score calculation with a rule engine</title>
 
@@ -20,11 +18,11 @@
       line</title>
 
       <programlisting>rule "multipleQueensHorizontal"
-  when
-    $q1 : Queen($id : id, $y : y);
-    $q2 : Queen(id &gt; $id, y == $y);
-  then
-    // trigger a change in the score
+    when
+        $q1 : Queen($id : id, $y : y);
+        $q2 : Queen(id &gt; $id, y == $y);
+    then
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
 end</programlisting>
     </example>
 
@@ -38,6 +36,10 @@ end</programlisting>
       <title>Starting solution for the 4 queens puzzle</title>
 
       <mediaobject>
+        <imageobject>
+          <imagedata fileref="unsolvedNQueens04.svg" format="SVG" />
+        </imageobject>
+
         <imageobject>
           <imagedata fileref="unsolvedNQueens04.png" format="PNG" />
         </imageobject>
@@ -144,29 +146,39 @@ end</programlisting>
     <programlisting>global SimpleScoreCalculator scoreCalculator;
 
 rule "multipleQueensHorizontal"
-  when
-    $q1 : Queen($id : id, $y : y);
-    $q2 : Queen(id &gt; $id, y == $y);
-  then
-    insertLogical(new WorkaroundMultiplePatternAccumulate("multipleQueensHorizontal", $q1, $q2));
+    when
+        $q1 : Queen($id : id, $y : y);
+        $q2 : Queen(id &gt; $id, y == $y);
+    then
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensHorizontal", $q1, $q2));
 end
 
+// multipleQueensVertical is obsolete because it is always 0
+
 rule "multipleQueensAscendingDiagonal"
-  // ...
+    when
+        $q1 : Queen($id : id, $ascendingD : ascendingD);
+        $q2 : Queen(id &gt; $id, ascendingD == $ascendingD);
+    then
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensAscendingDiagonal", $q1, $q2));
 end
 
 rule "multipleQueensDescendingDiagonal"
-  // ...
+    when
+        $q1 : Queen($id : id, $descendingD : descendingD);
+        $q2 : Queen(id &gt; $id, descendingD == $descendingD);
+    then
+        insertLogical(new UnweightedConstraintOccurrence("multipleQueensDescendingDiagonal", $q1, $q2));
 end
 
-rule "constraintsBroken"
-  when
-    $hardConstraintCount : Number() from accumulate(
-       $w : WorkaroundMultiplePatternAccumulate(),
-       count($w)
-    );
-  then
-    scoreCalculator.setScore(- $hardConstraintCount);
+rule "hardConstraintsBroken"
+    when
+        $occurrenceCount : Number() from accumulate(
+            $unweightedConstraintOccurrence : UnweightedConstraintOccurrence(),
+            count($unweightedConstraintOccurrence)
+        );
+    then
+        scoreCalculator.setScore(- $occurrenceCount.intValue());
 end</programlisting>
 
     <para>Optionally, you can also weigh your constraints differently, by
@@ -182,27 +194,27 @@ end</programlisting>
 
     <programlisting>// Warning: This currently triggers backwards chaining instead of forward chaining and seriously hurts performance and scalability.
 rule "constraintsBroken"
-  when
-    $multipleQueensHorizontal : Long()
-    from accumulate(
-        $q1 : Queen($id : id, $y : y)
-        and Queen(id &gt; $id, y == $y),
-       count($q1)
-    );
-    $multipleQueensAscendingDiagonal : Long()
-    from accumulate(
-        $q2 : Queen($id : id, $ascendingD : ascendingD)
-        and Queen(id &gt; $id, ascendingD == $ascendingD),
-       count($q2)
-    );
-    $multipleQueensDescendingDiagonal : Long()
-    from accumulate(
-        $q3 : Queen($id : id, $descendingD : descendingD)
-        and Queen(id &gt; $id, descendingD == $descendingD),
-       count($q3)
-    );
-  then
-    scoreCalculator.setScore(- (5 * $multipleQueensHorizontal) - $multipleQueensAscendingDiagonal - $multipleQueensDescendingDiagonal);
+    when
+        $multipleQueensHorizontal : Long()
+        from accumulate(
+            $q1 : Queen($id : id, $y : y)
+            and Queen(id &gt; $id, y == $y),
+           count($q1)
+        );
+        $multipleQueensAscendingDiagonal : Long()
+        from accumulate(
+            $q2 : Queen($id : id, $ascendingD : ascendingD)
+            and Queen(id &gt; $id, ascendingD == $ascendingD),
+           count($q2)
+        );
+        $multipleQueensDescendingDiagonal : Long()
+        from accumulate(
+            $q3 : Queen($id : id, $descendingD : descendingD)
+            and Queen(id &gt; $id, descendingD == $descendingD),
+           count($q3)
+        );
+    then
+        scoreCalculator.setScore(- (5 * $multipleQueensHorizontal) - $multipleQueensAscendingDiagonal - $multipleQueensDescendingDiagonal);
 end</programlisting>
   </section>
 
