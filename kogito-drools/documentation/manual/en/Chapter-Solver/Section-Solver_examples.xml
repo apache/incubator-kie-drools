@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Solver examples</title>
 
@@ -759,6 +761,78 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
               <entry>1</entry>
 
               <entry>1.44349601026818742275741580e+51</entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>exam_comp_set5</entry>
+
+              <entry>8719</entry>
+
+              <entry>1018</entry>
+
+              <entry>42</entry>
+
+              <entry>3</entry>
+
+              <entry></entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>exam_comp_set6</entry>
+
+              <entry>7909</entry>
+
+              <entry>242</entry>
+
+              <entry>16</entry>
+
+              <entry>8</entry>
+
+              <entry></entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>exam_comp_set7</entry>
+
+              <entry>13795</entry>
+
+              <entry>1096</entry>
+
+              <entry>80</entry>
+
+              <entry>28</entry>
+
+              <entry></entry>
+
+              <entry>?</entry>
+
+              <entry>1?</entry>
+            </row>
+
+            <row>
+              <entry>exam_comp_set8</entry>
+
+              <entry>7718</entry>
+
+              <entry>598</entry>
+
+              <entry>80</entry>
+
+              <entry>8</entry>
+
+              <entry></entry>
 
               <entry>?</entry>
 

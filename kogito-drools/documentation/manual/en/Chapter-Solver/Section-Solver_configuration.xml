@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+]>
 <section>
   <title>Solver configuration</title>
 
@@ -259,28 +261,7 @@
     <para>A Solver can only solve 1 problem at a time.</para>
 
     <para>You need to present the problem as a starting
-    <literal>Solution</literal> instance to the solver. Usually you will make
-    that starting solution with a simple filler algorithm. For example for 4
-    queens we use a starting solution with all queens on a different x and on
-    the same y (with y = 0).</para>
-
-    <figure>
-      <title>Starting solution for the 4 queens puzzle</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="unsolvedNQueens04.svg" format="SVG" />
-        </imageobject>
-
-        <imageobject>
-          <imagedata fileref="unsolvedNQueens04.png" format="PNG" />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>The starting solution will probably be far from optimal (or even
-    feasible), but that's OK, as it's the solver's job to find a much better
-    solution.</para>
+    <literal>Solution</literal> instance to the solver.</para>
 
     <para>You need to implement the <literal>Solution</literal>
     interface:</para>
@@ -293,7 +274,8 @@
 
 }</programlisting>
 
-    <para>For example:</para>
+    <para>For example, an NQueens instance just holds a list of all it's
+    queens:</para>
 
     <programlisting>public class NQueens implements Solution {
 
@@ -356,6 +338,114 @@
         clone.lessonList = clonedLessonList;
         return clone;
     }</programlisting>
+    </section>
+  </section>
+
+  <section>
+    <title>The starting solution</title>
+
+    <para>First, you will need to make a starting solution and set that on the
+    solver:</para>
+
+    <programlisting>solver.setStartingSolution(startingSolution);</programlisting>
+  </section>
+
+  <section>
+    <title>A simple filler algorithm</title>
+
+    <para>For 4 queens we use a simple filler algorithm that creates a
+    starting solution with all queens on a different x and on the same y (with
+    y = 0).</para>
+
+    <figure>
+      <title>Starting solution for the 4 queens puzzle</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="unsolvedNQueens04.svg" format="SVG" />
+        </imageobject>
+
+        <imageobject>
+          <imagedata fileref="unsolvedNQueens04.png" format="PNG" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Here's how we generate it:</para>
+
+    <programlisting>    private NQueens createNQueens(int n) {
+        NQueens nQueens = new NQueens();
+        nQueens.setId(0L);
+        List&lt;Queen&gt; queenList = new ArrayList&lt;Queen&gt;(n);
+        for (int i = 0; i &lt; n; i++) {
+            Queen queen = new Queen();
+            queen.setId((long) i);
+            queen.setX(i); // Different column
+            queen.setY(0); // Same row
+            queenList.add(queen);
+        }
+        nQueens.setQueenList(queenList);
+        return nQueens;
+    }</programlisting>
+
+    <para>The starting solution will probably be far from optimal (or even
+    feasible). Here it's actually the worst possible solution. However, we 'll
+    let the solver find a much better solution for us anyway.</para>
+
+    <section>
+      <title>StartingSolutionInitializer</title>
+
+      <para>For large problems, a simple filler algorithm like
+      <literal>createNQueens(int)</literal> doesn't suffice. A (local search)
+      solver starting from a bad starting solution wastes a lot of time to
+      reach a solution which an initializer algorithm can generate in a
+      fraction of that time.</para>
+
+      <para>An initializer algorithm ussually works something like this:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>It sorts the unplanned elements in a queue according to some
+          general rules, for example by exam student size.</para>
+        </listitem>
+
+        <listitem>
+          <para>Next, it plans them in the order they come from the queue.
+          Each element is put the best still available spot.</para>
+        </listitem>
+
+        <listitem>
+          <para>It doesn't change an already planned element. It exits when
+          the queue is empty and all elements are planned.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Such an algorithm is very deterministic: it's really fast, but you
+      can't give it more time to generate an even better solution. In some
+      cases the solution it generates will be feasible, but in most cases it
+      won't. You 'll need a real solver to get to a feasible or more optimal
+      solution. Nevertheless you 'll want to such an initializer to give the
+      real solver a serious head start. You can do this by implementing the
+      <literal>StartingSolutionInitializer</literal> interface:</para>
+
+      <programlisting>TODO
+TODO
+TODO</programlisting>
+
+      <para>You'll need to set a (uninitialized) solution on the solver. Once
+      the solver starts, it will first call the
+      <literal>StartingSolutionInitializer</literal> to initialize the
+      solution.</para>
+
+      <para>Here's an example on how you add the
+      <literal>StartingSolutionInitializer</literal> to the configuration:
+      </para>
+
+      <programlisting>&lt;localSearchSolver&gt;
+    ...
+    &lt;startingSolutionInitializerClass&gt;org.drools.solver.examples.itc2007.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer&lt;/startingSolutionInitializerClass&gt;
+    ...
+&lt;/localSearchSolver&gt;</programlisting>
     </section>
   </section>
 
