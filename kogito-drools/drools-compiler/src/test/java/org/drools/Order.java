@@ -17,6 +17,7 @@
 package org.drools;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +34,8 @@ public class Order {
     private Map items;
 
     private OrderStatus status;
+    
+    private Date date;
 
     public Order() {
         this( 0, "Bob" );
@@ -42,6 +45,7 @@ public class Order {
         this.number = number;
         this.items = new HashMap();
         this.customer = customer;
+        this.date = new Date();
     }
 
     /**
@@ -137,6 +141,20 @@ public class Order {
         public void setActive(boolean active) {
             this.active = active;
         }
+    }
+
+    /**
+     * @return the date
+     */
+    public Date getDate() {
+        return date;
+    }
+
+    /**
+     * @param date the date to set
+     */
+    public void setDate(Date date) {
+        this.date = date;
     }
 
 }

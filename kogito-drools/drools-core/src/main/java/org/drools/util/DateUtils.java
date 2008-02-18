@@ -30,13 +30,17 @@ public class DateUtils {
     private static final long       serialVersionUID    = 400L;
     private static final String     DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
     private static final String     DATE_FORMAT_MASK    = getDateFormatMask();
-    private static SimpleDateFormat df = new SimpleDateFormat( DATE_FORMAT_MASK );
+    private static ThreadLocal<SimpleDateFormat> df = new ThreadLocal<SimpleDateFormat>() {
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat( DATE_FORMAT_MASK );
+        };
+    };
     
     
     /** Use the simple date formatter to read the date from a string */
     public static Date parseDate(final String input) {
         try {
-            return df.parse( input );
+            return df.get().parse( input );
         } catch ( final ParseException e ) {
             throw new IllegalArgumentException( "Invalid date input format: [" + input + "] it should follow: [" + DATE_FORMAT_MASK + "]" );
         }
