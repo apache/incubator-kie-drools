@@ -24,12 +24,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import junit.framework.TestCase;
 
 import org.drools.Child;
 import org.drools.GrandParent;
+import org.drools.Order;
 import org.drools.Parent;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -207,4 +209,53 @@ public class MultithreadTest extends TestCase {
         }
     }
 
+    public void testMultithreadDateStringConstraints() {
+        try {
+            final int THREAD_COUNT = 10;
+            final PackageBuilder packageBuilder = new PackageBuilder();
+            packageBuilder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MultithreadDateStringConstraints.drl" ) ) );
+            final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            ruleBase.addPackage( packageBuilder.getPackage() );
+            final Vector errors = new Vector();
+            
+            final Thread t[] = new Thread[THREAD_COUNT];
+            for(int j=0;j<10;j++)
+            {
+                for (int i = 0; i < t.length; i++) {
+                    t[i] = new Thread() {
+                        public void run() {
+                            try {
+                                final int ITERATIONS = 300;
+                                StatefulSession session = ruleBase.newStatefulSession();
+                                List results = new ArrayList();
+                                session.setGlobal( "results", results );
+                                for( int k = 0; k < ITERATIONS; k++ ) {
+                                    session.insert( new Order() );
+                                }
+                                session.fireAllRules();
+                                session.dispose();
+                                if( results.size() != ITERATIONS ) {
+                                    errors.add( "Rules did not fired correctly. Expected: "+ITERATIONS+". Actual: "+results.size() );
+                                }
+                            } catch( Exception ex ) {
+                                ex.printStackTrace();
+                                errors.add( ex );
+                            }
+                        }
+                        
+                    };
+                    t[i].start();
+                }
+                for (int i = 0; i < t.length; i++) {
+                    t[i].join();
+                }
+            }
+            if( !errors.isEmpty() ) {
+                fail(" Errors occured during execution ");
+            }
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( "Should not raise exception" );
+        }
+    }
 }

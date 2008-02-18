@@ -1,0 +1,10 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "Should fire"
+when
+    $d : Order( date > "12-SEP-1978", number > "-1" )
+then
+    results.add( $d );
+end
