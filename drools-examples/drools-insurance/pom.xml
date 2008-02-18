@@ -13,17 +13,17 @@
     </description>
 
     <build>
-	    <finalName>drools-insurance</finalName>	
-	    <resources>
-	      <resource>
-	        <directory>src/main/resources</directory>
-	      </resource>
-	      <resource>
-	        <directory>src/main/rules</directory>
-	      </resource>
-	    </resources>
+      <finalName>drools-insurance</finalName>
+      <resources>
+        <resource>
+          <directory>src/main/resources</directory>
+        </resource>
+        <resource>
+          <directory>src/main/rules</directory>
+        </resource>
+      </resources>
 
-	
+
         <pluginManagement>
             <plugins>
                 <!--
@@ -237,19 +237,19 @@
     <pluginRepositories/>
 
     <dependencies>
-	    <dependency>
-	      <groupId>javax.servlet</groupId>
-	      <artifactId>servlet-api</artifactId>
-		  <version>2.3</version>
-	    </dependency>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+      <version>2.3</version>
+      </dependency>
 
       <dependency>
         <groupId>org.eclipse.jdt</groupId>
         <artifactId>core</artifactId>
         <version>3.2.3.v_686_R32x</version>
       </dependency>
-	
-	
+
+
         <!-- Testing -->
         <dependency>
             <groupId>junit</groupId>
