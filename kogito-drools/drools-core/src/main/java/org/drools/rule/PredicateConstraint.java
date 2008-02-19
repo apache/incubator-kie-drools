@@ -22,8 +22,6 @@ import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Extractor;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Restriction;
@@ -35,10 +33,8 @@ import org.drools.spi.Restriction;
  * 
  * @author etirelli
  */
-public class PredicateConstraint
+public class PredicateConstraint extends MutableTypeConstraint
     implements
-    BetaNodeFieldConstraint,
-    AlphaNodeFieldConstraint,
     Restriction {
 
     /**

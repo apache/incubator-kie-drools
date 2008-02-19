@@ -21,20 +21,12 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
 import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.ReturnValueExpression;
 
-public class ReturnValueConstraint
-    implements
-    BetaNodeFieldConstraint,
-    AlphaNodeFieldConstraint {
+public class ReturnValueConstraint extends MutableTypeConstraint {
 
-    /**
-     * 
-     */
     private static final long            serialVersionUID = 400L;
 
     private final FieldExtractor         fieldExtractor;

@@ -150,4 +150,8 @@ public class TupleStartEqualsConstraint
             this.right = null;
         }         
     }
+
+    public ConstraintType getType() {
+        return ConstraintType.BETA;
+    }
 }
