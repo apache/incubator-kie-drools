@@ -173,6 +173,15 @@ class LogicTransformer {
                     }
                 }
             }
+        } else if ( element instanceof EvalCondition ) {
+            Declaration[] decl = ((EvalCondition) element).getRequiredDeclarations();
+            for ( int i = 0; i < decl.length; i++ ) {
+                Declaration resolved = resolver.getDeclaration( decl[i].getIdentifier() );
+                if ( resolved != null && resolved != decl[i] ) {
+                    ((EvalCondition) element).replaceDeclaration( decl[i],
+                                                                  resolved );
+                }
+            }
         } else {
             contextStack.push( element );
             for ( Iterator it = element.getNestedElements().iterator(); it.hasNext(); ) {

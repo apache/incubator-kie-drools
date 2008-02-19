@@ -8,6 +8,10 @@ public class FactA {
     public FactA() {
     }
 
+    public FactA( String f1 ) {
+        this.field1 = f1;
+    }
+
     public FactA(final String f1,
                  final Integer f2,
                  final Float f3) {

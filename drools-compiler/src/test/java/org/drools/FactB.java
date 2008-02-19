@@ -8,6 +8,10 @@ public class FactB {
     public FactB() {
     }
 
+    public FactB( String f1 ) {
+        this.f1 = f1;
+    }
+
     public FactB(final String a,
                  final Integer b,
                  final Float c) {

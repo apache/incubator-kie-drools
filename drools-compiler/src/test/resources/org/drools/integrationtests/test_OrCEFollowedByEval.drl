@@ -1,0 +1,12 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test eval with OR"
+when
+    FactA( $a : field1 )
+    $f : FactB( $b : f1 ) or $f : FactB( $b : f1 == "X" )
+    eval( $a.equals( $b ) ) 
+then
+    results.add( $f );
+end

@@ -17,6 +17,10 @@ public class FactC {
 
     }
 
+    public FactC( String f1 ) {
+        this.f1 = f1;
+    }
+
     public String getF1() {
         return this.f1;
     }
