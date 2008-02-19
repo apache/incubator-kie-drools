@@ -14,7 +14,7 @@ end
 
 rule "Cheese not matches"
     when
-        brie : Cheese( type not matches "(stil.*|mu\w*|brie\d|aged.*)" )
+        brie : Cheese( type not matches "(stil.*|mu\w*|brie\d|aged.*|.*prov.*)" )
     then
 		list.add( brie );
 end   
@@ -27,3 +27,10 @@ rule "Cheese matches with space"
 		list.add( stilton );
 end   
 
+rule "Cheese matches with ^ and escaped s"
+	salience -20
+    when
+        prov : Cheese( type matches "^provolone\s*" )
+    then
+		list.add( prov );
+end   

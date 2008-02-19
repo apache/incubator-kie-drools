@@ -3303,6 +3303,10 @@ public class MiscTest extends TestCase {
                                               10 );
         final Cheese muzzarella2 = new Cheese( "muzzarella2",
                                                10 );
+        final Cheese provolone = new Cheese( "provolone",
+                                              10 );
+        final Cheese provolone2 = new Cheese( "another cheese (provolone)",
+                                               10 );
         workingMemory.insert( stilton );
         workingMemory.insert( stilton2 );
         workingMemory.insert( agedStilton );
@@ -3310,10 +3314,13 @@ public class MiscTest extends TestCase {
         workingMemory.insert( brie2 );
         workingMemory.insert( muzzarella );
         workingMemory.insert( muzzarella2 );
+        workingMemory.insert( provolone );
+        workingMemory.insert( provolone2 );
 
         workingMemory.fireAllRules();
 
-        assertEquals( 3,
+        System.out.println(list.toString());
+        assertEquals( 4,
                       list.size() );
 
         assertEquals( stilton,
@@ -3322,6 +3329,8 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
         assertEquals( agedStilton,
                       list.get( 2 ) );
+        assertEquals( provolone,
+                      list.get( 3 ) );
     }
 
     public void testAutomaticBindings() throws Exception {
