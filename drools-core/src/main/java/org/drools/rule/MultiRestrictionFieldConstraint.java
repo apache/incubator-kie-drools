@@ -3,19 +3,11 @@ package org.drools.rule;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.ReteTuple;
-import org.drools.spi.AlphaNodeFieldConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Restriction;
 
-public class MultiRestrictionFieldConstraint
-    implements
-    AlphaNodeFieldConstraint,
-    BetaNodeFieldConstraint {
+public class MultiRestrictionFieldConstraint extends MutableTypeConstraint {
 
-    /**
-     * 
-     */
     private static final long    serialVersionUID = 400L;
 
     private final FieldExtractor extractor;

@@ -23,5 +23,5 @@ public interface ContextEntry
     public void resetTuple();
     
     public void resetFactHandle();
-
+    
 }

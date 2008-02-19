@@ -139,4 +139,8 @@ public class InstanceEqualsConstraint
             this.right = null;
         }         
     }
+
+    public ConstraintType getType() {
+        return ConstraintType.BETA;
+    }
 }

@@ -3245,7 +3245,7 @@ public class MiscTest extends TestCase {
         chili2.setAge( 38 );
         chili2.setHair( "indigigo" );
 
-        final Person oldChili1 = new Person( "old chili2" );
+        final Person oldChili1 = new Person( "old chili1" );
         oldChili1.setAge( 45 );
         oldChili1.setHair( "green" );
 
@@ -3277,7 +3277,6 @@ public class MiscTest extends TestCase {
                       results.get( 2 ) );
         assertEquals( veryold,
                       results.get( 3 ) );
-
     }
 
     public void testMatchesNotMatchesCheese() throws Exception {

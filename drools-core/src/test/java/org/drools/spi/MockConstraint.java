@@ -95,4 +95,8 @@ public class MockConstraint
         return this.isAllowed;
     }
 
+    public ConstraintType getType() {
+        return ConstraintType.BETA;
+    }
+
 }

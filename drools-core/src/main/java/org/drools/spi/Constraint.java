@@ -1,5 +1,7 @@
 package org.drools.spi;
 
+import java.io.Serializable;
+
 import org.drools.rule.Declaration;
 
 /*
@@ -46,4 +48,61 @@ public interface Constraint
      * @return
      */
     public Object clone();
+
+    /**
+     * Returns the type of the constraint, either ALPHA, BETA or UNKNOWN
+     * 
+     * @return
+     */
+    public ConstraintType getType();
+    
+    /**
+     * A java 1.4 type-safe enum
+     */
+    public static class ConstraintType implements Serializable {
+        
+        private static final long serialVersionUID = 4865182371013556266L;
+        
+        public static final ConstraintType UNKNOWN = new ConstraintType(0, "UNKNOWN");
+        public static final ConstraintType ALPHA = new ConstraintType(1, "ALPHA");
+        public static final ConstraintType BETA = new ConstraintType(2, "BETA");
+        
+        private final int type; 
+        private final String desc;
+        
+        private ConstraintType( int type, String desc ) {
+            this.type = type;
+            this.desc = desc;
+        }
+
+        /**
+         * @inheritDoc
+         *
+         * @see java.lang.Object#hashCode()
+         */
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + type;
+            return result;
+        }
+
+        /**
+         * @inheritDoc
+         *
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            final ConstraintType other = (ConstraintType) obj;
+            if ( type != other.type ) return false;
+            return true;
+        }
+        
+        public String toString() {
+            return "ConstraintType::"+this.desc;
+        }
+    }
 }

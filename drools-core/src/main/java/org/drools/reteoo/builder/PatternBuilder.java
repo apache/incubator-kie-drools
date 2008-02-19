@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.common.InstanceNotEqualsConstraint;
@@ -32,12 +33,14 @@ import org.drools.reteoo.PropagationQueuingNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;
+import org.drools.rule.MutableTypeConstraint;
 import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
+import org.drools.spi.Constraint.ConstraintType;
 
 /**
  * A builder for patterns
@@ -141,21 +144,14 @@ public class PatternBuilder
             }
 
             final Constraint constraint = (Constraint) object;
-            final Declaration[] declarations = constraint.getRequiredDeclarations();
-
-            boolean isAlphaConstraint = true;
-            for ( int i = 0; isAlphaConstraint && i < declarations.length; i++ ) {
-                if ( !declarations[i].isGlobal() && declarations[i].getPattern() != pattern ) {
-                    isAlphaConstraint = false;
-                }
-            }
-
-            if ( isAlphaConstraint ) {
+            if ( constraint.getType().equals( Constraint.ConstraintType.ALPHA ) ) {
                 alphaConstraints.add( constraint );
-            } else {
+            } else if ( constraint.getType().equals( Constraint.ConstraintType.BETA ) ) {
                 utils.checkUnboundDeclarations( context,
                                                 constraint.getRequiredDeclarations() );
                 betaConstraints.add( constraint );
+            } else {
+                throw new RuntimeDroolsException( "Unknown constraint type: "+constraint.getType()+". This is a bug. Please contact development team.");
             }
         }
     }

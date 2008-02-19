@@ -17,9 +17,9 @@ package org.drools.common;
  */
 
 import org.drools.reteoo.ReteTuple;
-import org.drools.rule.Pattern;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
+import org.drools.rule.Pattern;
 import org.drools.spi.BetaNodeFieldConstraint;
 
 public class InstanceNotEqualsConstraint
@@ -90,6 +90,10 @@ public class InstanceNotEqualsConstraint
     
     public Object clone() {
         return new InstanceNotEqualsConstraint( this.otherPattern );
+    }
+
+    public ConstraintType getType() {
+        return ConstraintType.BETA;
     }
 
     public static class InstanceNotEqualsConstraintContextEntry
