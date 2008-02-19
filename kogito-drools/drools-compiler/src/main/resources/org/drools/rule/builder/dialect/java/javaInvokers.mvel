@@ -197,7 +197,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         @end{}    
         
         ((@{ruleClassName}.@{className})context).init(
-            @foreach{declarations as declr} @{declr.identifier}@end{","}@if{globals != empty},@end{}
+            @foreach{declarations as declr} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
 	        @foreach{globals as identifier} @{identifier}@end{","} );
         
     }
@@ -268,7 +268,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         @end{}    
         
         return ((@{ruleClassName}.@{className})context).getResult(
-            @foreach{declarations as declr} @{declr.identifier}@end{","}@if{globals != empty},@end{}
+            @foreach{declarations as declr} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
 	        @foreach{globals as identifier} @{identifier}@end{","} );
     }
     
