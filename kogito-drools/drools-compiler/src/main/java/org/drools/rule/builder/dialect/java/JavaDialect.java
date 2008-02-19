@@ -1,5 +1,9 @@
 package org.drools.rule.builder.dialect.java;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -121,7 +125,7 @@ public class JavaDialect
 
     // a map of registered builders
     private static Map                               builders;
-
+    
     public JavaDialect() {
 
     }
@@ -381,14 +385,11 @@ public class JavaDialect
         final String[] classes = new String[this.generatedClassList.size()];
         this.generatedClassList.toArray( classes );
         
-//        if( true ) {
-//            for( int i = 0; i < classes.length; i++ ) {
-//                System.out.println("CLASS: "+classes[i]);
-//                System.out.println("---------------------------");
-//                System.out.println(new String( this.src.getBytes( classes[i] )));
-//                System.out.println("===========================");
-//            }
-//        }
+        File dumpDir = this.configuration.getPackageBuilderConfiguration().getDumpDir(); 
+        if(  dumpDir != null ) {
+            dumpResources( classes,
+                           dumpDir );
+        }
 
         final CompilationResult result = this.compiler.compile( classes,
                                                                 this.src,
@@ -429,6 +430,35 @@ public class JavaDialect
 
         // We've compiled everthing, so clear it for the next set of additions
         this.generatedClassList.clear();
+    }
+
+    /**
+     * @param classes
+     * @param dumpDir
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private void dumpResources(final String[] classes,
+                               File dumpDir) {
+        for( int i = 0; i < classes.length; i++ ) {
+            File target = new File( dumpDir, classes[i] );
+            FileOutputStream out = null;
+            try {
+                File parent = target.getParentFile();
+                if( parent != null && ! parent.exists() ) {
+                    parent.mkdirs();
+                }
+                target.createNewFile();
+                out = new FileOutputStream( target );
+                out.write( this.src.getBytes( classes[i] ) );
+            } catch ( FileNotFoundException e ) {
+                e.printStackTrace();
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            } finally {
+                if( out != null ) try { out.close(); } catch (Exception e) {}
+            }
+        }
     }
 
     /**
