@@ -1,12 +1,10 @@
 package org.drools.rule.builder.dialect.java;
 
 import java.util.Arrays;
-import java.util.Properties;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectConfiguration;
-import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 
 /**

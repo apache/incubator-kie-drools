@@ -16,6 +16,7 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
+import java.io.File;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,6 +56,7 @@ import org.mvel.MVEL;
  * drools.dialect.default = <String>
  * drools.accumulate.function.<function name> = <qualified class>
  * drools.evaluator.<ident> = <qualified class>
+ * drools.dump.dir = <String>
  * 
  * default dialect is java.
  * Available preconfigured Accumulate functions are:
@@ -85,6 +87,8 @@ public class PackageBuilderConfiguration {
     private SemanticModules            semanticModules;
 
     private ProcessNodeBuilderRegistry nodeBuilderRegistry;
+
+    private File                       dumpDirectory;
 
     /**
      * Constructor that sets the parent class loader for the package being built/compiled
@@ -144,6 +148,8 @@ public class PackageBuilderConfiguration {
         buildAccumulateFunctionsMap();
 
         buildEvaluatorRegistry();
+
+        buildDumpDirectory();
     }
 
     public ChainedProperties getChainedProperties() {
@@ -469,6 +475,29 @@ public class PackageBuilderConfiguration {
      */
     public void addEvaluatorDefinition(EvaluatorDefinition def) {
         this.evaluatorRegistry.addEvaluatorDefinition( def );
+    }
+
+    private void buildDumpDirectory() {
+        String dumpStr = this.chainedProperties.getProperty( "drools.dump.dir",
+                                                             null );
+        if ( dumpStr != null ) {
+            this.dumpDirectory = new File( dumpStr );
+            if ( !dumpDirectory.isDirectory() || !dumpDirectory.canWrite() || !dumpDirectory.canRead() ) {
+                this.dumpDirectory = null;
+                throw new RuntimeDroolsException( "Drools dump directory is not accessible: " + dumpStr );
+            }
+        }
+    }
+
+    public File getDumpDir() {
+        return this.dumpDirectory;
+    }
+
+    public void setDumpDir(File dumpDir) {
+        if ( !dumpDir.isDirectory() || !dumpDir.canWrite() || !dumpDir.canRead() ) {
+            throw new RuntimeDroolsException( "Drools dump directory is not accessible: " + dumpDir.toString() );
+        }
+        this.dumpDirectory = dumpDir;
     }
 
 }
