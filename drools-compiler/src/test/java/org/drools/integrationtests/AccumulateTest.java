@@ -1124,4 +1124,34 @@ public class AccumulateTest extends TestCase {
                       results.get( 0 ) );
     }
 
+    public void testAccumulateGlobals() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateGlobals.drl" ) );
+        final RuleBase ruleBase = loadRuleBase( reader );
+
+        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+
+        wm.setGlobal( "results",
+                      results );
+        wm.setGlobal( "globalValue",
+                      new Integer(50) );
+
+        wm.insert( new Cheese( "stilton",
+                               10 ) );
+        wm.insert( new Cheese( "brie",
+                               5 ) );
+        wm.insert( new Cheese( "provolone",
+                               150 ) );
+        wm.insert( new Cheese( "brie",
+                               20 ) );
+
+        wm.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( new Integer( 100 ),
+                      results.get( 0 ) );
+    }
 }

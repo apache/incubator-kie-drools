@@ -30,7 +30,7 @@ public static class @{className} {
     public @{className}() {
     }
 
-    public void init(@foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
+    public void init(@foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{} 
                      @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} @end{","}
                      ) throws Exception {
         @{initCode}
@@ -56,7 +56,7 @@ public static class @{className} {
         @{reverseCode}
     }
     
-    public Object getResult(@foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier}@end{","}@if{globals != empty},@end{} 
+    public Object getResult(@foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{} 
                             @foreach{globalTypes as type, globals as identifier}@{type} @{identifier} @end{","}
                            ) throws Exception {
         return ( @{resultCode} );

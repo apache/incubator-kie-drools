@@ -380,6 +380,15 @@ public class JavaDialect
         }
         final String[] classes = new String[this.generatedClassList.size()];
         this.generatedClassList.toArray( classes );
+        
+//        if( true ) {
+//            for( int i = 0; i < classes.length; i++ ) {
+//                System.out.println("CLASS: "+classes[i]);
+//                System.out.println("---------------------------");
+//                System.out.println(new String( this.src.getBytes( classes[i] )));
+//                System.out.println("===========================");
+//            }
+//        }
 
         final CompilationResult result = this.compiler.compile( classes,
                                                                 this.src,
