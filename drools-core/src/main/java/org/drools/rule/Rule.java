@@ -229,6 +229,10 @@ public class Rule
         return this.pkg;
     }
 
+    public void setPackage( String pkg ) {
+        this.pkg = pkg;
+    }
+
     /**
      * Retrieve the name of this rule.
      *
@@ -491,8 +495,7 @@ public class Rule
 
     public boolean equals(Object obj) {
         if ( this == obj ) return true;
-        if ( !super.equals( obj ) ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( obj == null || getClass() != obj.getClass() ) return false;
         final Rule other = (Rule) obj;
         if ( name == null ) {
             if ( other.name != null ) return false;
