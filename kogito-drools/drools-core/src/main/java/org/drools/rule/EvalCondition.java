@@ -85,7 +85,7 @@ public class EvalCondition extends ConditionalElement {
 
     public Object clone() {
         final EvalCondition eval = new EvalCondition( this.expression,
-                                                      this.requiredDeclarations );
+                                                      (Declaration[]) this.requiredDeclarations.clone() );
         return eval;
     }
 
@@ -142,6 +142,15 @@ public class EvalCondition extends ConditionalElement {
 
     public boolean isPatternScopeDelimiter() {
         return true;
+    }
+
+    public void replaceDeclaration(Declaration declaration,
+                                   Declaration resolved) {
+        for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
+            if ( this.requiredDeclarations[i].equals( declaration ) ) {
+                this.requiredDeclarations[i] = resolved;
+            }
+        }
     }
 
 };
