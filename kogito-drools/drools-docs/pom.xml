@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>drools</artifactId>
+    <groupId>org.drools</groupId>
+    <version>5.0.0.SNAPSHOT</version>
+  </parent>
+
+  <artifactId>drools-docs</artifactId>
+  <packaging>pom</packaging>
+  <name>Drools :: Documentation</name>
+
+      <repositories>
+        <repository>          
+          <id>snapshots.jboss.org</id>
+          <url>http://snapshots.jboss.org/maven2</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>repository.jboss.org</id>
+          <url>http://repository.jboss.org/maven2</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>repository.jboss.org</id>
+          <url>http://repository.jboss.org/maven2</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+          <id>snapshots.jboss.org</id>
+          <url>http://snapshots.jboss.org/maven2</url>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+  
+  <modules>
+      <module>drools-docs-userguide</module>
+      <module>drools-docs-brms</module>
+      <module>drools-docs-solver</module>
+      <module>drools-docs-examples</module>
+  </modules>
+  
+  <dependencies>
+     <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-userguide</artifactId>
+        <version>${project.version}</version>  
+     </dependency>
+     
+     <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-brms</artifactId>
+        <version>${project.version}</version>  
+     </dependency>
+     
+     <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-solver</artifactId>
+        <version>${project.version}</version>  
+     </dependency>
+     
+     <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-docs-examples</artifactId>
+        <version>${project.version}</version>  
+     </dependency>               
+     
+     
+  </dependencies>
+
+
+</project>
