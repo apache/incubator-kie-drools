@@ -52,33 +52,33 @@
       <module>drools-docs-examples</module>
   </modules>
   
-  <dependencies>
-     <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-userguide</artifactId>
-        <version>${project.version}</version>  
-     </dependency>
-     
-     <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-brms</artifactId>
-        <version>${project.version}</version>  
-     </dependency>
-     
-     <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-solver</artifactId>
-        <version>${project.version}</version>  
-     </dependency>
-     
-     <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-examples</artifactId>
-        <version>${project.version}</version>  
-     </dependency>               
-     
-     
-  </dependencies>
+  <dependencyManagement>  
+      <dependencies>
+         <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-docs-userguide</artifactId>
+            <version>${project.version}</version>  
+         </dependency>
+         
+         <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-docs-brms</artifactId>
+            <version>${project.version}</version>  
+         </dependency>
+         
+         <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-docs-solver</artifactId>
+            <version>${project.version}</version>  
+         </dependency>
+         
+         <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-docs-examples</artifactId>
+            <version>${project.version}</version>  
+         </dependency>                         
+      </dependencies>
+  </dependencyManagement>
 
 
 </project>
