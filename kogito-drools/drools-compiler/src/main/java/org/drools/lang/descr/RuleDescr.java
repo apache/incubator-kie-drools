@@ -90,16 +90,18 @@ public class RuleDescr extends BaseDescr implements Dialectable {
     }
 
     public void addAttribute(final AttributeDescr attribute) {
-        if ( this.attributes == Collections.EMPTY_LIST ) {
-            this.attributes = new ArrayList();
+        if( attribute != null ) {
+            if ( this.attributes == Collections.EMPTY_LIST ) {
+                this.attributes = new ArrayList();
+            }
+            
+            if ( "dialect".equals( attribute.getName() ) ) {
+                // set dialect specifically as its to drive the build process.
+                this.dialect = attribute.getValue();
+            }
+            
+            this.attributes.add( attribute );
         }
-        
-        if ( "dialect".equals( attribute.getName() ) ) {
-            // set dialect specifically as its to drive the build process.
-            this.dialect = attribute.getValue();
-        }
-        
-        this.attributes.add( attribute );
     }
 
     public void setAttributes(final List attributes) {
