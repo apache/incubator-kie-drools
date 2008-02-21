@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -70,7 +71,6 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.ruleflow.instance.RuleFlowProcessInstanceFactory;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
@@ -140,7 +140,9 @@ public abstract class AbstractWorkingMemory
     /** Rule-firing agenda. */
     protected DefaultAgenda                              agenda;
 
-    protected final List                                 actionQueue                                   = new ArrayList();
+    protected final Queue<WorkingMemoryAction>           actionQueue                                   = new LinkedList<WorkingMemoryAction>();
+    
+    protected boolean                                    evaluatingActionQueue;
 
     protected final ReentrantLock                        lock                                          = new ReentrantLock();
 
@@ -1409,17 +1411,15 @@ public abstract class AbstractWorkingMemory
     }
 
     public void executeQueuedActions() {
-        while ( !actionQueue.isEmpty() ) {
-            final WorkingMemoryAction action = (WorkingMemoryAction) actionQueue.get( 0 );
-            actionQueue.remove( 0 );
-            action.execute( this );
+        if( ! evaluatingActionQueue ) {
+            evaluatingActionQueue = true;
+            WorkingMemoryAction action = null;
+            
+            while ( ( action = actionQueue.poll() ) != null ) {
+                action.execute( this );
+            }
+            evaluatingActionQueue = false;
         }
-        // for ( final Iterator it = this.actionQueue.iterator(); it.hasNext();
-        // ) {
-        // final WorkingMemoryAction action = (WorkingMemoryAction) it.next();
-        // it.remove();
-        // action.execute( this );
-        // }
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
