@@ -2,14 +2,13 @@ package org.drools.analytics;
 
 import java.io.InputStreamReader;
 
+import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.analytics.dao.AnalyticsResult;
-import org.drools.analytics.report.components.AnalyticsMessageBase;
 import org.drools.analytics.report.components.Severity;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.PackageDescr;
-
-import junit.framework.TestCase;
 
 public class AnalyzerTest extends TestCase {
 

@@ -28,6 +28,10 @@ function boolean checkDates(Date d1, Date d2, boolean up) {
 		return ( 0 == c1.compareTo( c2 ) );
 }
 
+function String hello(String name) {
+    return "Hello "+name+"!";
+}
+
 # If all ranges are not checked for a field.
 # 
 # Type: Warning

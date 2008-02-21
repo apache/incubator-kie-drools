@@ -8,8 +8,14 @@ import org.drools.analytics.components.Field.FieldType;
 import org.drools.analytics.report.components.Subsumption;
 
 
+
 #
-# TODO:
+# Fires when two restrictions are subsumptant.
+# Creates a Subsumption object.
+#
+# Depandencies: None
+#
+# Example 1: P( x > 10 ) and P( x > 100 )
 #
 rule "Find subsumptant restrictions, greater than"
 	when
@@ -31,7 +37,12 @@ rule "Find subsumptant restrictions, greater than"
 end
 
 #
-# TODO:
+# Fires when two restrictions are subsumptant.
+# Creates a Subsumption object.
+#
+# Depandencies: None
+#
+# Example 1: P( x < 10 ) and P( x < 100 )
 #
 rule "Find subsumptant restrictions, less than"
 	when
