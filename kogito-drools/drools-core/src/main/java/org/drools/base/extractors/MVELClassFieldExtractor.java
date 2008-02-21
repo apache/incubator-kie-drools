@@ -43,7 +43,6 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
 
     private CompiledExpression mvelExpression = null;
     private Map extractors = null;
-    private Map variables = null; 
 
     public MVELClassFieldExtractor(Class clazz,
                                    String fieldName,
@@ -52,7 +51,6 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
                Object.class, // fieldType
                ValueType.determineValueType( Object.class ) ); // value type
         this.extractors = new HashMap();
-        this.variables = new HashMap();
 
         ExpressionCompiler compiler = new ExpressionCompiler( fieldName );
         this.mvelExpression = compiler.compile();
@@ -70,14 +68,15 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
      * @see org.drools.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)
      */
     public Object getValue(InternalWorkingMemory workingMemory, Object object) {
+        Map variables = new HashMap();
         for( Iterator it = this.extractors.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry entry = (Map.Entry) it.next();
             String var = (String) entry.getKey();
             FieldExtractor extr = (FieldExtractor) entry.getValue();
             
-            this.variables.put( var, extr.getValue( workingMemory, object ));
+            variables.put( var, extr.getValue( workingMemory, object ));
         }
-        return MVEL.executeExpression( mvelExpression, this.variables );
+        return MVEL.executeExpression( mvelExpression, variables );
     }
 
 }
