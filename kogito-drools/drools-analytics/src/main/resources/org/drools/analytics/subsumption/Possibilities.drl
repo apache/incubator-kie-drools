@@ -13,6 +13,18 @@ import org.drools.analytics.report.components.RedundancyType;
 
 #declare any global variables here
 
+#
+# Fires when two pattern possibilities are subsumptant.
+# Creates a Subsumption object.
+#
+# Depandencies: Needs at least one rule.
+#
+#		package org.drools.analytics.redundancy.patterns
+#			rule "Find redundant Patterns with restrictions"
+#			rule "Find redundant Patterns without restrictions"
+#
+# Example 1: P( x == 10 ) and P( x == 10 && y == 20 )
+#
 rule "Find subsumptant pattern possibilities"
 	when
 		
@@ -67,11 +79,18 @@ rule "Find subsumptant pattern possibilities"
 		insert( new Subsumption( $pp1, $pp2 ) );
 end
 
-
 #
-# Finds subsumptant rule possibilities
+# Fires when two pattern possibilities are subsumptant.
+# Creates a Subsumption object.
 #
-# Depandencies: TODO: Dependencies 
+# Depandencies: Needs at least one rule from either one of the following packages.
+#
+#		package org.drools.analytics.subsumption.patterns
+#			rule "Find subsumptant pattern possibilities"
+#
+#		package org.drools.analytics.redundancy.patterns
+#			rule "Find redundant Patterns with restrictions"
+#			rule "Find redundant Patterns without restrictions"
 #
 rule "Find subsumptant rule possibilities"
 	when
@@ -126,31 +145,4 @@ rule "Find subsumptant rule possibilities"
 		insert( new Subsumption( $rp1, $rp2 ) );
 end
 
-rule "XXX: test rule"
-	when
-		$redundancy :Redundancy(
-			left.causeType == CauseType.RULE
-		)
-
-		# Find two RulePossibilities.
-		$rp1 :RulePossibility(
-			eval( ruleId == $redundancy.getLeft().getId() )
-		)
-		$rp2 :RulePossibility(
-			eval( ruleId == $redundancy.getRight().getId() )
-		)
-		
-		forall(
-			$pp :PatternPossibility(
-				this memberOf $rp1.items
-			)
-
-			Redundancy(
-				left == $pp,
-				right memberOf $rp2.items
-			)
-		)
-	then
-		System.out.println( "pim" );
-end
 

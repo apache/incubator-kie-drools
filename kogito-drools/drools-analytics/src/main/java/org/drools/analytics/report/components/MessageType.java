@@ -10,6 +10,7 @@ public class MessageType {
 	public static final MessageType MISSING_COMPONENT = new MessageType(5);
 	public static final MessageType OPTIMISATION = new MessageType(6);
 	public static final MessageType INCOHERENCE = new MessageType(7);
+	public static final MessageType OVERLAP = new MessageType(8);
 
 	public final int index;
 
