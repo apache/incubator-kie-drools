@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
-]>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <section>
   <title>Solver examples</title>
 
@@ -223,14 +223,14 @@
     </section>
 
     <section>
-      <title>Class diagram</title>
+      <title>Domain class diagram</title>
 
       <para>Use a good domain model and it will be easier to understand and
       solve your problem with drools-solver. We 'll use this domain model for
       the n queens example:</para>
 
       <figure>
-        <title>NQueens domain diagram</title>
+        <title>NQueens domain class diagram</title>
 
         <mediaobject>
           <imageobject>
@@ -656,12 +656,102 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
     <section>
       <title>Problem statement</title>
 
-      <para>Schedule exams with a number of hard and soft constraints. It uses
-      large data sets of real-life universities.</para>
+      <para>Schedule each exam into a period and into a room. Multiple exams
+      can share the same room during the same period.</para>
+
+      <para>There are a number of hard constraints that cannot be
+      broken:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Exam conflict: 2 exams that share students should not occur in
+          the same period.</para>
+        </listitem>
+
+        <listitem>
+          <para>Room capacity: A room's seating capacity should suffice at all
+          times</para>
+        </listitem>
+
+        <listitem>
+          <para>Period duration: A period's duration should suffice for all of
+          its exams.</para>
+        </listitem>
+
+        <listitem>
+          <para>Period related hard constraints should be fulfilled:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Coincidence: 2 exams should use the same period (but
+              possible another room).</para>
+            </listitem>
+
+            <listitem>
+              <para>Exclusion: 2 exams should not use the same period.</para>
+            </listitem>
+
+            <listitem>
+              <para>After: 1 exam should occur in a period after another
+              exam's period.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Room related hard constraints should be fulfilled:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Exclusive: 1 exam should not have to share its room with
+              any other exam.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>There are also a number of soft constraints that should be
+      minimized (each of which has parameterized penalty's):</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>2 exams in a row.</para>
+        </listitem>
+
+        <listitem>
+          <para>2 exams in a day.</para>
+        </listitem>
+
+        <listitem>
+          <para>Period spread: 2 exams that share students should have a
+          number of periods between them.</para>
+        </listitem>
+
+        <listitem>
+          <para>Mixed durations: 2 exams that share a room should not have
+          different durations.</para>
+        </listitem>
+
+        <listitem>
+          <para>Front load: large exams should be scheduled earlier in the
+          schedule.</para>
+        </listitem>
+
+        <listitem>
+          <para>Period penalty: some periods have penalty when used.</para>
+        </listitem>
+
+        <listitem>
+          <para>Room penalty: some rooms have a penalty when used.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>It uses large test data sets of real-life universities.</para>
 
       <para><ulink
       url="http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm">You
-      can find a detailed description of this problem here.</ulink></para>
+      can find a more detailed description of this problem
+      here.</ulink></para>
     </section>
 
     <section>
@@ -859,6 +949,29 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.solver.examples.travelingtournament
           </tbody>
         </tgroup>
       </table>
+    </section>
+
+    <section>
+      <title>Domain class diagram</title>
+
+      <para>Below you can see the main examination domain classes:</para>
+
+      <figure>
+        <title>Examination domain class diagram</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="examinationDomainDiagram.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Notice that we've split up the exam concept into an
+      <literal>Exam</literal> class and a <literal>Topic</literal> class. The
+      <literal>Exam</literal> instances change during solving, when they get
+      another period or room. The <literal>Topic</literal>,
+      <literal>Period</literal> and <literal>Room</literal> instances never
+      change during solving.</para>
     </section>
   </section>
 </section>
