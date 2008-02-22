@@ -523,6 +523,9 @@ public class PatternBuilder
         if ( container == null ) {
             pattern.addConstraint( predicateConstraint );
         } else {
+            if( predicateConstraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
+                this.setConstraintType( pattern, (MutableTypeConstraint) predicateConstraint );
+            }
             container.addConstraint( predicateConstraint );
         }
 
