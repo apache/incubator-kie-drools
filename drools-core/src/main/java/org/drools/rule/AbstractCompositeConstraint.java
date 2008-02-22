@@ -24,7 +24,6 @@ import org.drools.reteoo.ReteTuple;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
-import org.drools.spi.Constraint.ConstraintType;
 import org.drools.util.ArrayUtils;
 
 /**
@@ -37,6 +36,11 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
     protected AlphaNodeFieldConstraint[] alphaConstraints     = new AlphaNodeFieldConstraint[0];
     protected BetaNodeFieldConstraint[]  betaConstraints      = new BetaNodeFieldConstraint[0];
     protected Declaration[]              requiredDeclarations = new Declaration[0];
+
+    public AbstractCompositeConstraint() {
+        super();
+        this.setType( Constraint.ConstraintType.ALPHA );
+    }
 
     /**
      * Adds an alpha constraint to the multi field OR constraint
@@ -72,6 +76,7 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
                               tmp.length );
             this.betaConstraints[this.betaConstraints.length - 1] = constraint;
             this.updateRequiredDeclarations( constraint );
+            this.setType( Constraint.ConstraintType.BETA );
         }
     }
 
@@ -179,26 +184,8 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
                                                                                                                    other.requiredDeclarations );
     }
 
-    public AbstractCompositeConstraint() {
-        super();
-    }
-
     public abstract Object clone();
     
-    public void setType(ConstraintType type) {
-        super.setType( type );
-        for( int i = 0; i < alphaConstraints.length; i++ ) {
-            if( this.alphaConstraints[i] instanceof MutableTypeConstraint ) {
-                ((MutableTypeConstraint)this.alphaConstraints[i]).setType( type );
-            }
-        }
-        for( int i = 0; i < betaConstraints.length; i++ ) {
-            if( this.betaConstraints[i] instanceof MutableTypeConstraint ) {
-                ((MutableTypeConstraint)this.betaConstraints[i]).setType( type );
-            }
-        }
-    }
-
     /**
      * A context entry for composite restrictions
      * 

@@ -1,0 +1,12 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "deep nested constraints"
+when
+    Person( $likes : likes )
+    Cheese( ( ( type == "stilton" || type == $likes ) && ( price < 10 || price > 50 ) ) || eval( type.equals("brie") ) )
+then
+    results.add( "OK" );
+end
+ 

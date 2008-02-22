@@ -4841,6 +4841,33 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    public void testDeepNestedConstraints() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeepNestedConstraints.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "results",
+                                 list );
+
+        workingMemory.insert( new Person( "bob",
+                                          "muzzarela" ) );
+        workingMemory.insert( new Cheese( "brie",
+                                          10 ) );
+        workingMemory.insert( new Cheese( "muzzarela",
+                                          80 ) );
+
+        workingMemory.fireAllRules();
+
+        assertEquals( "should have fired twice",
+                      2,
+                      list.size() );
+    }
+
     public void testGetFactHandleEqualityBehavior() throws Exception {
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
