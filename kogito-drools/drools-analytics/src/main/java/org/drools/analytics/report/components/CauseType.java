@@ -16,6 +16,7 @@ public class CauseType {
 	public static final CauseType CONSTRAINT = new CauseType(11);
 	public static final CauseType CONSEQUENCE = new CauseType(12);
 	public static final CauseType SUBSUMPTION = new CauseType(13);
+	public static final CauseType OPPOSITES = new CauseType(14);
 
 	public final int index;
 
