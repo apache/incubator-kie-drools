@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
-]>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <section>
   <title>Local search solver</title>
 
@@ -167,13 +167,23 @@
 
     <programlisting>    public void doMove(WorkingMemory workingMemory) {
         FactHandle queenHandle = workingMemory.getFactHandle(queen);
+        workingMemory.modifyRetract(queenHandle); // before changes are made
         queen.setY(toY);
-        workingMemory.update(queenHandle, queen);
+        workingMemory.modifyInsert(queenHandle, queen); // after changes are made
     }</programlisting>
+
+    <para>Drools-solver disables shadow facts for increased performance, so
+    you cannot use the <literal>workingMemory.update(FactHandle,
+    Object)</literal> method, instead you need to call the
+    <literal>workingMemory.modifyRetract(FactHandle)</literal> method before
+    modifying the fact and the <literal>workingMemory.modifyInsert(FactHandle,
+    Object)</literal> method after modifying the fact. Note that you can alter
+    multiple facts in a single move and effectively create a big move (also
+    known as a coarse-grained move).</para>
 
     <para>Drools-solver automatically filters out <emphasis>non doable
     moves</emphasis> by calling the <literal>isDoable(WorkingMemory)</literal>
-    method. A <emphasis>non doable move</emphasis> is:</para>
+    method on a move. A <emphasis>non doable move</emphasis> is:</para>
 
     <itemizedlist>
       <listitem>
@@ -296,18 +306,18 @@
     you can reach any solution from any solution. Otherwise you're already
     excluding solutions at the start. Especially if you're using only big
     moves, you should check it. Just because big moves outperform small moves
-    in a short test run, it doesn't mean that they will outperform them on a
+    in a short test run, it doesn't mean that they will outperform them in a
     long test run.</para>
 
     <para>You can mix different move types. Usually you're better off
-    preferring small moves over big moves because the score delta calculation
-    will pay off more. However, as the traveling tournament example proves, if
-    you can remove a hard constraint by using a certain set of big moves, you
-    can win performance and scalability. Try it yourself: run both the simple
-    (small moves) and the smart (big moves) version of the traveling
-    tournament example. The smart version evaluates a lot less unfeasible
-    solutions, which enables it to outperform and outscale the simple
-    version.</para>
+    preferring small (fine-grained) moves over big (course-grained) moves
+    because the score delta calculation will pay off more. However, as the
+    traveling tournament example proves, if you can remove a hard constraint
+    by using a certain set of big moves, you can win performance and
+    scalability. Try it yourself: run both the simple (small moves) and the
+    smart (big moves) version of the traveling tournament example. The smart
+    version evaluates a lot less unfeasible solutions, which enables it to
+    outperform and outscale the simple version.</para>
 
     <para>Move generation currently happens with a
     <literal>MoveFactory</literal>:</para>
@@ -733,8 +743,8 @@ INFO  New score (-3.0) is better then last best score (-6.0). Updating best solu
 
       <para>Note that if you use this finish, you will most likely sacrifice
       reproducability. The best solution will depend on available CPU time,
-      not only because it influences the amount of steps taken, but
-      also because time gradient based algorithms (such as simulated annealing)
+      not only because it influences the amount of steps taken, but also
+      because time gradient based algorithms (such as simulated annealing)
       will probably act differently on each run.</para>
     </section>
 
