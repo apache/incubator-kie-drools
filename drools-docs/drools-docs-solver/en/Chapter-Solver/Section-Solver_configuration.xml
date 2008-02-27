@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
-]>
+<!DOCTYPE section PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <section>
   <title>Solver configuration</title>
 
@@ -401,7 +401,8 @@
       reach a solution which an initializer algorithm can generate in a
       fraction of that time.</para>
 
-      <para>An initializer algorithm ussually works something like this:</para>
+      <para>An initializer algorithm ussually works something like
+      this:</para>
 
       <itemizedlist>
         <listitem>
@@ -428,18 +429,24 @@
       real solver a serious head start. You can do this by implementing the
       <literal>StartingSolutionInitializer</literal> interface:</para>
 
-      <programlisting>TODO
-TODO
-TODO</programlisting>
+      <programlisting>public interface StartingSolutionInitializer extends SolverAware {
+
+    boolean isSolutionInitialized(Solution solution);
+
+    void initializeSolution(Solution solution);
+
+}</programlisting>
 
       <para>You'll need to set a (uninitialized) solution on the solver. Once
       the solver starts, it will first call the
       <literal>StartingSolutionInitializer</literal> to initialize the
-      solution.</para>
+      solution. If the <literal>StartingSolutionInitializer</literal> adds,
+      edits or removes facts it needs to notify the workingMemory about this.
+      It can use score calculation during its intialization process.</para>
 
       <para>Here's an example on how you add the
-      <literal>StartingSolutionInitializer</literal> to the configuration:
-      </para>
+      <literal>StartingSolutionInitializer</literal> to the
+      configuration:</para>
 
       <programlisting>&lt;localSearchSolver&gt;
     ...
