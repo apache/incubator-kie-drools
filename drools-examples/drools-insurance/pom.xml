@@ -1,283 +1,275 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.acme.insurance</groupId>
-    <artifactId>insurance</artifactId>
-    <packaging>war</packaging>
-    <name>DroolsInsurance</name>
-    <version>5.0.0.SNAPSHOT</version>
-    <description>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.acme.insurance</groupId>
+	<artifactId>insurance</artifactId>
+	<packaging>war</packaging>
+	<name>DroolsInsurance</name>
+	<version>5.0.0.SNAPSHOT</version>
+	<description>
     </description>
 
-    <build>
-      <finalName>drools-insurance</finalName>
-      <resources>
-        <resource>
-          <directory>src/main/resources</directory>
-        </resource>
-        <resource>
-          <directory>src/main/rules</directory>
-        </resource>
-      </resources>
-
-
-        <pluginManagement>
-            <plugins>
-                <!--
+	<build>
+		<finalName>drools-insurance</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/rules</directory>
+			</resource>
+		</resources>
+		<pluginManagement>
+			<plugins>
+<!--
                     Last time synchronized with the latest plugin releases:
                     2006-06-21
                     See http://news.gmane.org/gmane.comp.apache.maven.announce
                 -->
-
-                <!-- Building -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-help-plugin</artifactId>
-                    <version>2.0.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>2.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.0.1</version>
-                    <configuration>
-                        <source>1.5</source>
-                        <target>1.5</target>
+<!-- Building -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-help-plugin</artifactId>
+					<version>2.0.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>2.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.0.1</version>
+					<configuration>
+						<source>1.5</source>
+						<target>1.5</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.2</version>
+					<configuration>
+						<testFailureIgnore>true</testFailureIgnore>
+					</configuration>
+				</plugin>
+<!-- Packaging -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.0</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>test-jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.0.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-archetype-plugin</artifactId>
+					<version>1.0-alpha-4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.0-beta-4</version>
+					<configuration>
+<!--<tagBase>-->
+<!--https://taseree.svn.sourceforge.net/svnroot/taseree/tags-->
+<!--</tagBase>-->
+					</configuration>
+				</plugin>
+<!-- IDE -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<version>2.2</version>
+					<configuration>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.2</version>
-                    <configuration>
-                        <testFailureIgnore>true</testFailureIgnore>
-                    </configuration>
-                </plugin>
-
-                <!-- Packaging -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.0</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>test-jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.0.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-archetype-plugin</artifactId>
-                    <version>1.0-alpha-4</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>2.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.2</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.0-beta-4</version>
-                    <configuration>
-                        <!--<tagBase>-->
-                            <!--https://taseree.svn.sourceforge.net/svnroot/taseree/tags-->
-                        <!--</tagBase>-->
-                    </configuration>
-                </plugin>
-
-                <!-- IDE -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-eclipse-plugin</artifactId>
-                    <version>2.2</version>
-                    <configuration>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-idea-plugin</artifactId>
-                    <version>2.0</version>
-                    <configuration>
-                        <downloadSources>true</downloadSources>
-                    </configuration>
-                </plugin>
-
-                <!--Site -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>2.0-beta-5</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>2.0.1</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-report-plugin</artifactId>
-                    <version>2.0</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jxr-plugin</artifactId>
-                    <version>2.0</version>
-                </plugin>
-                <!--<plugin>-->
-                    <!--<groupId>org.codehaus.mojo</groupId>-->
-                    <!--<artifactId>taglist-maven-plugin</artifactId>-->
-                    <!--<version>???</version>-->
-                <!--</plugin>-->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-pmd-plugin</artifactId>
-                    <version>2.0</version>
-                </plugin>
-                <!--
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-idea-plugin</artifactId>
+					<version>2.0</version>
+					<configuration>
+						<downloadSources>true</downloadSources>
+					</configuration>
+				</plugin>
+<!--Site -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>2.0-beta-5</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>2.0.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-report-plugin</artifactId>
+					<version>2.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jxr-plugin</artifactId>
+					<version>2.0</version>
+				</plugin>
+<!--<plugin>-->
+<!--<groupId>org.codehaus.mojo</groupId>-->
+<!--<artifactId>taglist-maven-plugin</artifactId>-->
+<!--<version>???</version>-->
+<!--</plugin>-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-pmd-plugin</artifactId>
+					<version>2.0</version>
+				</plugin>
+<!--
                     TODO checkstyle rules must be configured so it no longer
                     generates a 4 mb file which is hard to site-deploy...
                 -->
-                <!--<plugin>-->
-                    <!--<groupId>org.apache.maven.plugins</groupId>-->
-                    <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
-                    <!--<version>2.1</version>-->
-                <!--</plugin>-->
-                <!--
+<!--<plugin>-->
+<!--<groupId>org.apache.maven.plugins</groupId>-->
+<!--<artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--<version>2.1</version>-->
+<!--</plugin>-->
+<!--
                     TODO Changelog is unfinished:
                     - has also a problem with the netbeans (cvs)lib dependency
                     - is moving from mojo.codehaus.org to maven.apache.org
                 -->
-                <!--<plugin>-->
-                    <!--<groupId>org.apache.maven.plugins</groupId>-->
-                    <!--<artifactId>maven-changelog-plugin</artifactId>-->
-                    <!--<version>???</version>-->
-                <!--</plugin>-->
-
-            </plugins>
-        </pluginManagement>
-        <plugins>
+<!--<plugin>-->
+<!--<groupId>org.apache.maven.plugins</groupId>-->
+<!--<artifactId>maven-changelog-plugin</artifactId>-->
+<!--<version>???</version>-->
+<!--</plugin>-->
+			</plugins>
+		</pluginManagement>
+		<plugins>
         </plugins>
-    </build>
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>taglist-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-            </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
-            <!--</plugin>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-changelog-plugin</artifactId>-->
-            <!--</plugin>-->
-        </plugins>
-    </reporting>
-
-    <repositories>
-        <repository>
-            <id>jbossRepository</id>
-            <name>JBoss repository</name>
-            <url>http://repository.jboss.com/maven2</url>
-        </repository>
-    </repositories>
-    <pluginRepositories/>
-
-    <dependencies>
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-      <version>2.3</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.jdt</groupId>
-        <artifactId>core</artifactId>
-        <version>3.2.3.v_686_R32x</version>
-      </dependency>
-
-
-        <!-- Testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-
-
-        <!-- Drools -->
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-core</artifactId>
-            <version>5.0.0.SNAPSHOT</version>
-        </dependency>
-
-    </dependencies>
-    <dependencyManagement>
-        <dependencies/>
-    </dependencyManagement>
-
-    <distributionManagement>
-        <!--<site>-->
-            <!--<id>shell.sourceforge.net</id>-->
-            <!--<url>-->
-                <!--scp://shell.sourceforge.net/home/groups/t/ta/taseree/htdocs/-->
-            <!--</url>-->
-        <!--</site>-->
-    </distributionManagement>
-
+	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+			</plugin>
+<!--<plugin>-->
+<!--<groupId>org.apache.maven.plugins</groupId>-->
+<!--<artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--</plugin>-->
+<!--<plugin>-->
+<!--<groupId>org.apache.maven.plugins</groupId>-->
+<!--<artifactId>maven-changelog-plugin</artifactId>-->
+<!--</plugin>-->
+		</plugins>
+	</reporting>
+	<repositories>
+		
+		<repository>
+	      <id>Maven Snapshots</id>
+	      <url>http://snapshots.jboss.org/maven2</url>
+	      <snapshots>
+	        <enabled>true</enabled>
+	      </snapshots>
+	      <releases>
+	        <enabled>false</enabled>
+	      </releases>
+	    </repository>
+	    
+		<repository>
+			<id>jbossRepository</id>
+			<name>JBoss repository</name>
+			<url>http://repository.jboss.com/maven2</url>
+		</repository>
+	</repositories>
+	<pluginRepositories/>
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jdt</groupId>
+			<artifactId>core</artifactId>
+			<version>3.2.3.v_686_R32x</version>
+		</dependency>
+<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+<!-- Drools -->
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>drools-core</artifactId>
+			<version>5.0.0.SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+	<dependencyManagement>
+		<dependencies/>
+	</dependencyManagement>
+	<distributionManagement>
+<!--<site>-->
+<!--<id>shell.sourceforge.net</id>-->
+<!--<url>-->
+<!--scp://shell.sourceforge.net/home/groups/t/ta/taseree/htdocs/-->
+<!--</url>-->
+<!--</site>-->
+	</distributionManagement>
 </project>
