@@ -63,6 +63,7 @@ import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.reteoo.ClassObjectTypeConf;
+import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.FactTemplateTypeConf;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
@@ -117,10 +118,6 @@ public abstract class AbstractWorkingMemory
     /** Global values which are associated with this memory. */
     protected GlobalResolver                             globalResolver;
 
-    protected static final Object                        NULL                                          = new Serializable() {
-                                                                                                           private static final long serialVersionUID = 400L;
-                                                                                                       };
-
     /** The eventSupport */
     protected WorkingMemoryEventSupport                  workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
 
@@ -172,8 +169,9 @@ public abstract class AbstractWorkingMemory
     private TimeMachine                                  timeMachine                                   = new TimeMachine();
 
     private Map<EntryPoint, Map<Object, ObjectTypeConf>> typeConfMap;
-
-    private SessionClock                                 sessionClock;
+    
+    private EntryPoint                                   entryPoint;
+    private EntryPointNode                               entryPointNode;
 
     // ------------------------------------------------------------
     // Constructors
@@ -187,6 +185,7 @@ public abstract class AbstractWorkingMemory
      */
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
+                                 //final EntryPoint entryPoint,
                                  final FactHandleFactory handleFactory) {
         this.id = id;
         this.ruleBase = ruleBase;
@@ -220,6 +219,9 @@ public abstract class AbstractWorkingMemory
                                            new RuleFlowProcessInstanceFactory() );
 
         this.typeConfMap = new ConcurrentHashMap<EntryPoint, Map<Object, ObjectTypeConf>>();
+        
+//        this.entryPoint = entryPoint;
+//        this.entryPointNode = this.ruleBase.getRete().getEntryPointNode( this.entryPoint );
     }
 
     // ------------------------------------------------------------

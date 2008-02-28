@@ -179,19 +179,20 @@ abstract public class AbstractRuleBase
 
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        final ObjectOutput out = new ObjectOutputStream( bos );
-        out.writeObject( this.id );
-        out.writeObject( this.processes );
-        out.writeObject( this.agendaGroupRuleTotals );
-        out.writeObject( this.factHandleFactory );
-        out.writeObject( this.globals );
-        out.writeObject( this.config );
+        //final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        //final ObjectOutput out = new ObjectOutputStream( bos );
+        
+        stream.writeObject( this.id );
+        stream.writeObject( this.processes );
+        stream.writeObject( this.agendaGroupRuleTotals );
+        stream.writeObject( this.factHandleFactory );
+        stream.writeObject( this.globals );
+        stream.writeObject( this.config );
 
         this.eventSupport.removeEventListener( RuleBaseEventListener.class );
-        out.writeObject( this.eventSupport );
+        stream.writeObject( this.eventSupport );
 
-        stream.writeObject( bos.toByteArray() );
+        //stream.writeObject( bos.toByteArray() );
     }
 
     /**
@@ -222,23 +223,17 @@ abstract public class AbstractRuleBase
             this.packageClassLoader.addClassLoader( ((Package) it.next()).getDialectDatas().getClassLoader() );
         }
 
-        // Return the rules stored as a byte[]
-        final byte[] bytes = (byte[]) stream.readObject();
+        this.id = (String) stream.readObject();
+        this.processes = (Map) stream.readObject();
+        this.agendaGroupRuleTotals = (Map) stream.readObject();
+        this.factHandleFactory = (FactHandleFactory) stream.readObject();
+        this.globals = (Map) stream.readObject();
 
-        //  Use a custom ObjectInputStream that can resolve against a given classLoader
-        final DroolsObjectInputStream childStream = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ),
-                                                                                 this.packageClassLoader );
-        childStream.setRuleBase( this );
-
-        this.id = (String) childStream.readObject();
-        this.processes = (Map) childStream.readObject();
-        this.agendaGroupRuleTotals = (Map) childStream.readObject();
-        this.factHandleFactory = (FactHandleFactory) childStream.readObject();
-        this.globals = (Map) childStream.readObject();
-
-        this.config = (RuleBaseConfiguration) childStream.readObject();
-        this.config.setClassLoader( childStream.getClassLoader() );
-        this.eventSupport = (RuleBaseEventSupport) childStream.readObject();
+        this.config = (RuleBaseConfiguration) stream.readObject();
+        
+        this.config.setClassLoader( this.packageClassLoader );
+        
+        this.eventSupport = (RuleBaseEventSupport) stream.readObject();
         this.eventSupport.setRuleBase( this );
 
         this.statefulSessions = new ObjectHashSet();
