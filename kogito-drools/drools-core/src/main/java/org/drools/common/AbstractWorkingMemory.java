@@ -50,6 +50,7 @@ import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.MapGlobalResolver;
 import org.drools.base.ShadowProxy;
+import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -1623,6 +1624,14 @@ public abstract class AbstractWorkingMemory
      */
     public void setTimeMachine(TimeMachine timeMachine) {
         this.timeMachine = timeMachine;
+    }
+
+    public ExecutorService getExecutorService() {
+        return null; // no executor service
+    }
+
+    public void setExecutorService(ExecutorService executor) {
+        // no executor service, so nothing to set
     }
 
     /**

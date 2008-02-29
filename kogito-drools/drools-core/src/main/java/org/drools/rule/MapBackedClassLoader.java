@@ -13,12 +13,12 @@ public class MapBackedClassLoader extends ClassLoader
     implements
     DroolsClassLoader,
     Serializable {
-	
-	private static final long serialVersionUID = 400L;
 
-	private static final ProtectionDomain PROTECTION_DOMAIN;
-    
-    private Map store;
+    private static final long             serialVersionUID = 400L;
+
+    private static final ProtectionDomain PROTECTION_DOMAIN;
+
+    private Map                           store;
 
     static {
         PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
@@ -26,28 +26,35 @@ public class MapBackedClassLoader extends ClassLoader
                 return MapBackedClassLoader.class.getProtectionDomain();
             }
         } );
-    }    
+    }
 
     public MapBackedClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
         this.store = new HashMap();
     }
-    
+
+    public MapBackedClassLoader(final ClassLoader parentClassLoader,
+                                final Map store) {
+        super( parentClassLoader );
+        this.store = store;
+    }
+
     public void addResource(String className,
                             byte[] bytes) {
-        addClass(className, 
-                 bytes);
+        addClass( className,
+                  bytes );
     }
-    
+
     private String convertResourcePathToClassName(final String pName) {
-    	return pName.replaceAll(".java$|.class$", "").replace('/', '.');
+        return pName.replaceAll( ".java$|.class$",
+                                 "" ).replace( '/',
+                                               '.' );
     }
-    
 
     public void addClass(final String className,
                          byte[] bytes) {
-    	
-        this.store.put( convertResourcePathToClassName(className),
+
+        this.store.put( convertResourcePathToClassName( className ),
                         bytes );
     }
 
@@ -115,4 +122,7 @@ public class MapBackedClassLoader extends ClassLoader
         }
     }
 
+    public Map getStore() {
+        return this.store;
+    }
 }
