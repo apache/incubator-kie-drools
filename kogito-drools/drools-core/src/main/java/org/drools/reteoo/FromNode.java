@@ -118,6 +118,10 @@ public class FromNode extends TupleSource
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
         final ReteTuple tuple = memory.betaMemory.getTupleMemory().remove( leftTuple );
 
+        if ( tuple == null ) {
+            return;
+        }
+
         final LinkedList list = (LinkedList) memory.betaMemory.getCreatedHandles().remove( tuple );
         // if tuple was propagated
         if ( list != null ) {

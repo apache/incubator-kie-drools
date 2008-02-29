@@ -175,7 +175,9 @@ public class CollectNode extends BetaNode
                              final InternalWorkingMemory workingMemory) {
 
         final CollectMemory memory = (CollectMemory) workingMemory.getNodeMemory( this );
-        memory.betaMemory.getTupleMemory().remove( leftTuple );
+        if( memory.betaMemory.getTupleMemory().remove( leftTuple ) == null ) {
+            return;
+        }
         CollectResult result = (CollectResult) memory.betaMemory.getCreatedHandles().remove( leftTuple );
         final InternalFactHandle handle = result.handle;
 

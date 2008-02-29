@@ -4618,4 +4618,43 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( b.getObject() ) );
     }
 
+    public void testNPEOnMVELAlphaPredicates() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NPEOnMVELPredicate.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final StatefulSession session = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        session.setGlobal( "results",
+                                 list );
+        
+        Cheese cheese = new Cheese( "stilton", 10 );
+        Cheesery cheesery = new Cheesery();
+        cheesery.addCheese( cheese );
+        Person bob = new Person( "bob", "stilton" );
+        Cheese cheese2 = new Cheese();
+        bob.setCheese( cheese2 );
+
+        FactHandle p = session.insert( bob );
+        FactHandle c = session.insert( cheesery );
+
+        session.fireAllRules();
+
+        assertEquals( "should not have fired",
+                      0,
+                      list.size() );
+        
+        cheese2.setType( "stilton" );
+        
+        session.update( p, bob );
+        session.fireAllRules();
+        
+        assertEquals( 1,
+                      list.size() );
+        
+    }
+    
 }

@@ -1,0 +1,11 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test NPE on mvel predicate"
+when
+    $p : Person( cheese.type != null )
+    $q : Cheese( ) from $p.cheese
+then
+    results.add( $q );
+end
