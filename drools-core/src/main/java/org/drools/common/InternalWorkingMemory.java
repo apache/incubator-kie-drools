@@ -6,6 +6,7 @@ import java.util.concurrent.locks.Lock;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
@@ -19,7 +20,6 @@ import org.drools.rule.TimeMachine;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
-import org.drools.util.ObjectHashMap;
 
 public interface InternalWorkingMemory
     extends
@@ -106,4 +106,8 @@ public interface InternalWorkingMemory
      * @return
      */
     public Map<Object, ObjectTypeConf> getObjectTypeConfMap(EntryPoint entryPoint);
+
+    public ExecutorService getExecutorService();
+
+    public void setExecutorService(ExecutorService executor);
 }

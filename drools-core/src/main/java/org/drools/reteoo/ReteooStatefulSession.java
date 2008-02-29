@@ -102,4 +102,11 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         return this.ruleBaseListeners;
     }
 
+    public ExecutorService getExecutorService() {
+        return executor;
+    }
+
+    public void setExecutorService(ExecutorService executor) {
+        this.executor = executor;
+    }
 }

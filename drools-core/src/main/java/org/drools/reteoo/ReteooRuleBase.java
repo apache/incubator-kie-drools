@@ -146,7 +146,9 @@ public class ReteooRuleBase extends AbstractRuleBase {
      * 
      */
     public void writeExternal(final ObjectOutput stream) throws IOException {
-        doWriteExternal( stream );
+        final Object[] objects = new Object[]{this.rete, this.reteooBuilder};
+        doWriteExternal( stream,
+                         objects );
     }
 
     /**
@@ -157,18 +159,12 @@ public class ReteooRuleBase extends AbstractRuleBase {
      */
     public void readExternal(final ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
-        doReadExternal( stream );
+        final Object[] objects = new Object[2];
+        doReadExternal( stream,
+                        objects );
 
-        // rebuild the Rete network from the pkg information
-        this.reteooBuilder = new ReteooBuilder( this );
-        this.rete = new Rete( this );
-        synchronized ( this.pkgs ) {
-            for ( Package pkg : this.pkgs.values() ) {
-                for ( Rule rule : pkg.getRules() ) {
-                    addRule( rule );
-                }
-            }
-        }
+        this.rete = (Rete) objects[0];
+        this.reteooBuilder = (ReteooBuilder) objects[1];
     }
 
     // ------------------------------------------------------------

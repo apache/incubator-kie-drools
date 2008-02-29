@@ -21,6 +21,7 @@ import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -476,6 +477,16 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public ObjectStore getObjectStore() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public ExecutorService getExecutorService() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setExecutorService(ExecutorService executor) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

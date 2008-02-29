@@ -14,11 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
@@ -312,6 +315,59 @@ public class MarshallingTest extends TestCase {
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
         assertTrue( IteratorToList.convert( workingMemory.iterateObjects() ).contains( bob ) );
         assertTrue( IteratorToList.convert( workingMemory.iterateObjects() ).contains( new Person( "help" ) ) );
+    }
+
+    public void testSerializeAdd() throws Exception {
+
+        //Create a rulebase, a session, and test it
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase( );
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) ) );
+        Package pkg = serialisePackage( builder.getPackage() );
+        ruleBase.addPackage( pkg );
+        
+        StatefulSession session = ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        session.setGlobal( "list", list );
+        
+        InternalFactHandle stilton = (InternalFactHandle) session.insert( new Cheese( "stilton", 10 ) );
+        InternalFactHandle brie = (InternalFactHandle) session.insert( new Cheese( "brie", 10 ) );
+        session.fireAllRules();
+        
+        assertEquals( list.size(), 1 );
+        assertEquals( "stilton", list.get( 0 ));
+        
+        byte[] serializedSession = serializeOut( session );
+        session.dispose();
+        
+        byte[] serializedRulebase = serializeOut( ruleBase );
+        
+        // now recreate the rulebase, deserialize the session and test it
+        ruleBase = (RuleBase) serializeIn( serializedRulebase );
+        
+        session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
+        list = (List) session.getGlobal( "list" );
+        
+        assertNotNull( list );
+        assertEquals( list.size(), 1 );
+        assertEquals( "stilton", list.get( 0 ));
+        
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3.drl" ) ) );
+        pkg = serialisePackage( builder.getPackage() );
+        ruleBase.addPackage( pkg );
+        
+        InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton", 10 ) );
+        InternalFactHandle brie2 = (InternalFactHandle) session.insert( new Cheese( "brie", 10 ) );
+        InternalFactHandle bob = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
+        session.fireAllRules();
+        
+        assertEquals( list.size(), 3 );
+        assertEquals( bob.getObject(), list.get( 1 ));
+        assertEquals( "stilton", list.get( 2 ));
+        
+        session.dispose();
+        
     }
 
     protected RuleBase getRuleBase() throws Exception {
