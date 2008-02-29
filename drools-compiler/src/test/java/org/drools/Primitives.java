@@ -1,5 +1,7 @@
 package org.drools;
 
+import java.util.Arrays;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,7 +18,10 @@ package org.drools;
  * limitations under the License.
  */
 
-public class Primitives {
+public class Primitives implements java.io.Serializable {
+
+    private static final long serialVersionUID = -3006488134941876318L;
+
     private boolean  booleanPrimitive;
 
     private char     charPrimitive;
@@ -154,5 +159,57 @@ public class Primitives {
     public void setObject(Object object) {
         this.object = object;
     }
+
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode( arrayAttribute );
+        result = prime * result + (booleanPrimitive ? 1231 : 1237);
+        result = prime * result + ((booleanWrapper == null) ? 0 : booleanWrapper.hashCode());
+        result = prime * result + charPrimitive;
+        result = prime * result + Float.floatToIntBits( doublePrimitive );
+        result = prime * result + Float.floatToIntBits( floatPrimitive );
+        result = prime * result + intPrimitive;
+        result = prime * result + (int) (longPrimitive ^ (longPrimitive >>> 32));
+        result = prime * result + ((object == null) ? 0 : object.hashCode());
+        result = prime * result + Arrays.hashCode( primitiveArrayAttribute );
+        result = prime * result + shortPrimitive;
+        result = prime * result + Arrays.hashCode( stringArray );
+        result = prime * result + ((stringAttribute == null) ? 0 : stringAttribute.hashCode());
+        return result;
+    }
+
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        final Primitives other = (Primitives) obj;
+        if ( !Arrays.equals( arrayAttribute,
+                             other.arrayAttribute ) ) return false;
+        if ( booleanPrimitive != other.booleanPrimitive ) return false;
+        if ( booleanWrapper == null ) {
+            if ( other.booleanWrapper != null ) return false;
+        } else if ( !booleanWrapper.equals( other.booleanWrapper ) ) return false;
+        if ( bytePrimitive != other.bytePrimitive ) return false;
+        if ( charPrimitive != other.charPrimitive ) return false;
+        if ( Float.floatToIntBits( doublePrimitive ) != Float.floatToIntBits( other.doublePrimitive ) ) return false;
+        if ( Float.floatToIntBits( floatPrimitive ) != Float.floatToIntBits( other.floatPrimitive ) ) return false;
+        if ( intPrimitive != other.intPrimitive ) return false;
+        if ( longPrimitive != other.longPrimitive ) return false;
+        if ( object == null ) {
+            if ( other.object != null ) return false;
+        } else if ( !object.equals( other.object ) ) return false;
+        if ( !Arrays.equals( primitiveArrayAttribute,
+                             other.primitiveArrayAttribute ) ) return false;
+        if ( shortPrimitive != other.shortPrimitive ) return false;
+        if ( !Arrays.equals( stringArray,
+                             other.stringArray ) ) return false;
+        if ( stringAttribute == null ) {
+            if ( other.stringAttribute != null ) return false;
+        } else if ( !stringAttribute.equals( other.stringAttribute ) ) return false;
+        return true;
+    }
+    
+    
 
 }
