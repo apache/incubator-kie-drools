@@ -27,6 +27,7 @@ import org.drools.reteoo.TupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.util.AbstractHashTable;
 import org.drools.util.FactHashTable;
 import org.drools.util.FactHandleIndexHashTable;
 import org.drools.util.LinkedList;

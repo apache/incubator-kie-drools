@@ -197,7 +197,9 @@ public class AccumulateNode extends BetaNode {
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
-        memory.betaMemory.getTupleMemory().remove( leftTuple );
+        if( memory.betaMemory.getTupleMemory().remove( leftTuple ) == null) {
+            return;
+        }
         final AccumulateResult accresult = (AccumulateResult) memory.betaMemory.getCreatedHandles().remove( leftTuple );
 
         // if tuple was propagated
