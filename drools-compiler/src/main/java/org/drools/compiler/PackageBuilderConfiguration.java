@@ -177,14 +177,15 @@ public class PackageBuilderConfiguration {
 
     public void addDialect(String dialectName,
                            String dialectClass) {
-        try {
-            Class cls = classLoader.loadClass( dialectClass );
+    	Class cls = null;
+    	try {
+            cls = classLoader.loadClass( dialectClass );
             DialectConfiguration dialectConf = (DialectConfiguration) cls.newInstance();
             dialectConf.init( this );
             addDialect( dialectName,
                         dialectConf );
         } catch ( Exception e ) {
-            throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + "'",
+            throw new RuntimeDroolsException( "Unable to load dialect '" + dialectClass + ":" + dialectName + ":" + ((cls!=null) ? cls.getName() : "null") + "'",
                                               e );
         }
     }
