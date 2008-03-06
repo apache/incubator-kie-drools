@@ -2,13 +2,13 @@ package org.drools.decisiontable.parser;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,6 @@ import java.util.Properties;
 
 import org.drools.decisiontable.model.Condition;
 import org.drools.decisiontable.model.Consequence;
-import org.drools.decisiontable.model.Duration;
 import org.drools.decisiontable.model.Global;
 import org.drools.decisiontable.model.Import;
 import org.drools.decisiontable.model.Package;
@@ -36,26 +35,26 @@ import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 /**
  * @author <a href="mailto:shaun.addison@gmail.com"> Shaun Addison </a><a
  *         href="mailto:michael.neale@gmail.com"> Michael Neale </a>
- * 
+ *
  * Define a ruleset spreadsheet which contains one or more decision tables.
- * 
+ *
  * Stay calm, deep breaths... this is a little bit scary, its where it all
  * happens.
- * 
+ *
  * A table is identifed by a cell beginning with the text "RuleTable". The first
  * row after the table identifier defines the column type: either a condition
  * ("C") or consequence ("A" for action), and so on.
- * 
+ *
  * The second row contains ObjectType declarations (optionally, or can be left blank).
  * If cells are merged, then all snippets below the merged bit will become part of
  * the same column as seperate constraints.
- * 
+ *
  * The third row identifies the java code block associated with the condition
  * or consequence. This code block will include a parameter marker for the
  * attribute defined by that column.
- * 
+ *
  * The third row is a label for the attribute associated with that column.
- * 
+ *
  * All subsequent rows identify rules with the set.
  */
 public class DefaultRuleSheetListener
@@ -155,7 +154,7 @@ public class DefaultRuleSheetListener
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see my.hssf.util.SheetListener#startSheet(java.lang.String)
      */
     public void startSheet(final String name) {
@@ -164,7 +163,7 @@ public class DefaultRuleSheetListener
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see my.hssf.util.SheetListener#finishSheet()
      */
     public void finishSheet() {
@@ -175,7 +174,7 @@ public class DefaultRuleSheetListener
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see my.hssf.util.SheetListener#newRow()
      */
     public void newRow(final int rowNumber,
@@ -210,7 +209,7 @@ public class DefaultRuleSheetListener
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see my.hssf.util.SheetListener#newCell(int, int, java.lang.String)
      */
     public void newCell(final int row,
@@ -372,7 +371,7 @@ public class DefaultRuleSheetListener
      * This is for handling a row where an object declaration may appear,
      * this is the row immediately above the snippets.
      * It may be blank, but there has to be a row here.
-     * 
+     *
      * Merged cells have "special meaning" which is why this is so freaking hard.
      * A future refactor may be to move away from an "event" based listener.
      */
@@ -537,7 +536,7 @@ public class DefaultRuleSheetListener
             this._currentRule.setNoLoop( value );
         } else if ( actionType.type == ActionType.RULEFLOWGROUP ) {
             this._currentRule.setRuleFlowGroup( value );
-        } 
+        }
         else if ( actionType.type == ActionType.DURATION ) // if the actionType
         // type is DURATION
         // then creates a
@@ -571,15 +570,12 @@ public class DefaultRuleSheetListener
 
     }
 
-    // 08 - 16 - 2005 RIK: This function creates a new DURATION 
+    // 08 - 16 - 2005 RIK: This function creates a new DURATION
     private void createDuration(final int column,
                                 final String value,
                                 final ActionType actionType) {
 
-        final Duration dur = new Duration();
-        dur.setSnippet( value );
-        dur.setComment( cellComment( column ) );
-        this._currentRule.setDuration( dur );
+        this._currentRule.setDuration( value );
     }
 
     private boolean isCellValueEmpty(final String value) {

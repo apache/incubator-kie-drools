@@ -2,13 +2,13 @@ package org.drools.decisiontable.model;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
- * 
+ *
  * Tests how the rule parse tree renders itself to a rule XML fragment.
  */
 public class RuleRenderTest extends TestCase {
@@ -58,24 +58,25 @@ public class RuleRenderTest extends TestCase {
         assertTrue( drl.indexOf( "#rule comments" ) > -1 );
 
     }
-    
+
     public void testAttributes() throws Exception {
         Rule rule = new Rule("la", new Integer(42), 2);
-        
+
         rule.setActivationGroup( "foo" );
         rule.setNoLoop( "true" );
         rule.setRuleFlowGroup( "ruleflowgroup" );
-        
+        rule.setDuration("42");
         DRLOutput out = new DRLOutput();
         rule.renderDRL( out );
-        
+
         String result = out.toString();
-        
+
         assertTrue(result.indexOf( "ruleflow-group \"ruleflowgroup\"" ) > -1 );
         assertTrue(result.indexOf( "no-loop true" ) > -1);
         assertTrue(result.indexOf( "activation-group \"foo\"" ) > -1);
-        
-    }    
+        assertTrue(result.indexOf( "duration 42" ) > -1);
+
+    }
 
     public void testSalienceCalculator() {
         final int rowNumber = 2;
@@ -119,7 +120,7 @@ public class RuleRenderTest extends TestCase {
     }
 
     /**
-     * This checks that if the rule has "nil" salience, then 
+     * This checks that if the rule has "nil" salience, then
      * no salience value should be put in the rule definition.
      * This allows default salience to work as advertised.
      *
