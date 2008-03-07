@@ -8,11 +8,11 @@
   installation, usage and administration.</para>
 
   <figure>
-    <title>The BRMS in action</title>
+    <title>The BRMS main screen</title>
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="Intro1.png" format="PNG"
+        <imagedata align="center" fileref="NewMainScreen.png" format="PNG"
                    scalefit="1" />
       </imageobject>
     </mediaobject>
