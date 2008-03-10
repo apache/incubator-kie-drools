@@ -10,13 +10,13 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.drools.Agenda;
-import org.drools.EntryPointInterface;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.concurrent.Future;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleBaseEventListener;
@@ -406,11 +406,6 @@ public class ExternalSheetListenerTest extends TestCase {
                     return null;
                 }
 
-                public EntryPointInterface getEntryPoint(String id) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
                 public Collection getProcessInstances() {
                     // TODO Auto-generated method stub
                     return null;
@@ -435,6 +430,11 @@ public class ExternalSheetListenerTest extends TestCase {
 				}
 
                 public FactHandle getFactHandleByIdentity(Object object) {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String id) {
                     // TODO Auto-generated method stub
                     return null;
                 }
