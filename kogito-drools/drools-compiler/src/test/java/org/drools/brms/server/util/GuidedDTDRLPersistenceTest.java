@@ -106,6 +106,10 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		String drl = p.marshal(dt);
 		System.err.println(drl);
 
+		assertTrue(drl.indexOf("from row number") > -1);
+		assertTrue(drl.indexOf("rating == ( age * 0.2 )") > 0);
+		assertTrue(drl.indexOf("f2 : Driver( eval( age > 7 ))") > 0);
+		assertTrue(drl.indexOf("rating == ( age * 0.3 )") > drl.indexOf("rating == ( age * 0.2 )"));
 
 	}
 
