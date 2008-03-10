@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.Agenda;
-import org.drools.EntryPointInterface;
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.ObjectFilter;
@@ -458,7 +458,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public EntryPointInterface getEntryPoint(String id) {
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String id) {
         // TODO Auto-generated method stub
         return null;
     }
