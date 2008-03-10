@@ -46,6 +46,7 @@ public class GuidedDTDRLPersistence {
 			doConditions(dt.attributeCols.size(), dt.conditionCols, row, rm);
 			doActions(dt.attributeCols.size() + dt.conditionCols.size(), dt.actionCols, row, rm);
 
+			sb.append("#from row number: " + (i + 1) + "\n");
 			String rule = BRDRLPersistence.getInstance().marshal(rm);
 			sb.append(rule);
 			sb.append("\n");
