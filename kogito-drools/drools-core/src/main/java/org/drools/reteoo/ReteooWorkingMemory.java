@@ -59,29 +59,13 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
      *            The backing rule-base.
      */
     public ReteooWorkingMemory(final int id,
-                               final InternalRuleBase ruleBase) {
+                               final InternalRuleBase ruleBase ) {
         super( id,
                ruleBase,
                ruleBase.newFactHandleFactory() );
         this.agenda = new DefaultAgenda( this );
     }
-
-    public void doInsert(final InternalFactHandle handle,
-                               final Object object,
-                               final PropagationContext propagationContext) throws FactException {
-        this.ruleBase.assertObject( handle,
-                                    object,
-                                    propagationContext,
-                                    this );
-    }
-
-    public void doRetract(final InternalFactHandle handle,
-                          final PropagationContext propagationContext) {
-        this.ruleBase.retractObject( handle,
-                                     propagationContext,
-                                     this );
-    }
-
+    
     public QueryResults getQueryResults(final String query) {
         return getQueryResults( query, null );
     }
@@ -91,11 +75,11 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         Object object = new DroolsQuery( query, arguments );
         InternalFactHandle handle = this.handleFactory.newFactHandle( object, false, 0, this );
         
-        insert( EntryPoint.DEFAULT, // query dummy objects always use default entry point
-                handle,
+        insert( handle,
                 object,
                 null,
-                null );
+                null,
+                this.typeConfReg.getObjectTypeConf( this.entryPoint, object ));
         
         final QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
         Query queryObj = null;

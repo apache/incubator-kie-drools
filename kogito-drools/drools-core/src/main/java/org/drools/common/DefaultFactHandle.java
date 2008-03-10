@@ -35,7 +35,7 @@ public class DefaultFactHandle
      */
     private static final long serialVersionUID = 400L;
     /** Handle id. */
-    private long              id;
+    private int               id;
     private long              recency;
     private Object            object;
     private EqualityKey       key;
@@ -50,7 +50,7 @@ public class DefaultFactHandle
 
     }
 
-    public DefaultFactHandle(final long id,
+    public DefaultFactHandle(final int id,
                              final Object object) {
         this( id,
               object,
@@ -63,7 +63,7 @@ public class DefaultFactHandle
      * @param id
      *            Handle id.
      */
-    public DefaultFactHandle(final long id,
+    public DefaultFactHandle(final int id,
                              final Object object,
                              final long recency) {
         this.id = id;
@@ -99,7 +99,7 @@ public class DefaultFactHandle
      * @see Object
      */
     public int hashCode() {
-        return (int) (this.id ^ (this.id >>> 32));
+        return this.id;
     }
 
     /**

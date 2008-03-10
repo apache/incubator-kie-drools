@@ -20,6 +20,7 @@ package org.drools.reteoo;
 import org.drools.TemporalSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.concurrent.ExecutorService;
+import org.drools.rule.EntryPoint;
 import org.drools.temporal.SessionClock;
 
 /**
@@ -33,13 +34,13 @@ public class ReteooTemporalSession<T extends SessionClock> extends ReteooStatefu
     TemporalSession<T> {
 
     private static final long serialVersionUID = -2129661675928809928L;
-    
-    private T sessionClock;
 
-    public ReteooTemporalSession(int id,
-                                         InternalRuleBase ruleBase,
-                                         ExecutorService executorService,
-                                         T clock) {
+    private T                 sessionClock;
+
+    public ReteooTemporalSession(final int id,
+                                 final InternalRuleBase ruleBase,
+                                 final ExecutorService executorService,
+                                 final T clock) {
         super( id,
                ruleBase,
                executorService );
@@ -49,5 +50,5 @@ public class ReteooTemporalSession<T extends SessionClock> extends ReteooStatefu
     public T getSessionClock() {
         return this.sessionClock;
     }
-    
+
 }
