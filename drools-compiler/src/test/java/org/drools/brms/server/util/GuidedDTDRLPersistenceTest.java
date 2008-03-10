@@ -6,11 +6,15 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.brl.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brl.ActionRetractFact;
+import org.drools.brms.client.modeldriven.brl.ActionSetField;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
 import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brl.RuleAttribute;
 import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.brms.client.modeldriven.dt.ActionCol;
 import org.drools.brms.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.brms.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.brms.client.modeldriven.dt.ActionSetFieldCol;
@@ -18,10 +22,10 @@ import org.drools.brms.client.modeldriven.dt.AttributeCol;
 import org.drools.brms.client.modeldriven.dt.ConditionCol;
 import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
 
-public class GuidedDTBRLPersistenceTest extends TestCase {
+public class GuidedDTDRLPersistenceTest extends TestCase {
 
 
-	public void testOneRule() throws Exception {
+	public void test2Rules() throws Exception {
 		GuidedDecisionTable dt = new GuidedDecisionTable();
 		dt.tableName = "michael";
 
@@ -67,7 +71,7 @@ public class GuidedDTBRLPersistenceTest extends TestCase {
 
 		ActionInsertFactCol ins = new ActionInsertFactCol();
 		ins.boundName = "ins";
-		ins.type = "Cheese";
+		ins.factType = "Cheese";
 		ins.factField = "price";
 		ins.type = SuggestionCompletionEngine.TYPE_NUMERIC;
 		dt.actionCols.add(ins);
@@ -98,13 +102,15 @@ public class GuidedDTBRLPersistenceTest extends TestCase {
 
 
 
-
+		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+		String drl = p.marshal(dt);
+		System.err.println(drl);
 
 
 	}
 
 	public void testCellVal() {
-		GuidedDTBRLPersistence p = new GuidedDTBRLPersistence();
+		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		assertFalse(p.validCell(null));
 		assertFalse(p.validCell(""));
 		assertFalse(p.validCell("  "));
@@ -112,13 +118,13 @@ public class GuidedDTBRLPersistenceTest extends TestCase {
 	}
 
 	public void testName() {
-		GuidedDTBRLPersistence p = new GuidedDTBRLPersistence();
+		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		assertEquals("42_hey", p.getName("XXX", "42", "hey"));
 		assertEquals("42_XXX", p.getName("XXX", "42", ""));
 	}
 
 	public void testAttribs() {
-		GuidedDTBRLPersistence p = new GuidedDTBRLPersistence();
+		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		String[] row = new String[] {"1", "desc", "a", ""};
 
 		List<AttributeCol> attributeCols = new ArrayList<AttributeCol>();
@@ -152,7 +158,7 @@ public class GuidedDTBRLPersistenceTest extends TestCase {
 	}
 
 	public void testLHS() {
-		GuidedDTBRLPersistence p = new GuidedDTBRLPersistence();
+		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		String[] row = new String[] {"1", "desc", "a", "mike", "33 + 1", "age > 6", "stilton"};
 
 		List<ConditionCol> cols = new ArrayList<ConditionCol>();
@@ -226,6 +232,82 @@ public class GuidedDTBRLPersistenceTest extends TestCase {
 		assertEquals("stilton", cons.value);
 		assertEquals(ISingleFieldConstraint.TYPE_LITERAL, cons.constraintValueType);
 	}
+
+	public void testRHS() {
+		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+		String[] row = new String[] {"1", "desc", "a", "a condition", "actionsetfield1", "actionsetfield2", "retract", "actioninsertfact1", "actioninsertfact2"};
+
+		List<ActionCol> cols = new ArrayList<ActionCol>();
+		ActionSetFieldCol asf1 = new ActionSetFieldCol();
+		asf1.boundName = "a";
+		asf1.factField = "field1";
+
+		asf1.type = SuggestionCompletionEngine.TYPE_STRING;
+		cols.add(asf1);
+
+		ActionSetFieldCol asf2 = new ActionSetFieldCol();
+		asf2.boundName = "a";
+		asf2.factField = "field2";
+		asf2.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+		cols.add(asf2);
+
+		ActionRetractFactCol ret = new ActionRetractFactCol();
+		ret.boundName = "ret";
+		cols.add(ret);
+
+		ActionInsertFactCol ins1 = new ActionInsertFactCol();
+		ins1.boundName = "ins";
+		ins1.factType = "Cheese";
+		ins1.factField = "price";
+		ins1.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+		cols.add(ins1);
+
+		ActionInsertFactCol ins2 = new ActionInsertFactCol();
+		ins2.boundName = "ins";
+		ins2.factType = "Cheese";
+		ins2.factField = "type";
+		ins2.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+		cols.add(ins2);
+
+
+		RuleModel rm = new RuleModel();
+		p.doActions(2, cols, row, rm);
+		assertEquals(3, rm.rhs.length);
+
+		//examine the set field action that is produced
+		ActionSetField a1 = (ActionSetField) rm.rhs[0];
+		assertEquals("a", a1.variable);
+		assertEquals(2, a1.fieldValues.length);
+
+		assertEquals("field1", a1.fieldValues[0].field);
+		assertEquals("actionsetfield1", a1.fieldValues[0].value);
+		assertEquals(SuggestionCompletionEngine.TYPE_STRING, a1.fieldValues[0].type);
+
+		assertEquals("field2", a1.fieldValues[1].field);
+		assertEquals("actionsetfield2", a1.fieldValues[1].value);
+		assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, a1.fieldValues[1].type);
+
+
+		//examine the retract
+		ActionRetractFact a2 = (ActionRetractFact) rm.rhs[1];
+		assertEquals("ret", a2.variableName);
+
+		//examine the insert
+		ActionInsertFact a3 = (ActionInsertFact) rm.rhs[2];
+		assertEquals("Cheese", a3.factType);
+		assertEquals(2, a3.fieldValues.length);
+
+		assertEquals("price", a3.fieldValues[0].field);
+		assertEquals("actioninsertfact1", a3.fieldValues[0].value);
+		assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, a3.fieldValues[0].type);
+
+		assertEquals("type", a3.fieldValues[1].field);
+		assertEquals("actioninsertfact2", a3.fieldValues[1].value);
+		assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, a3.fieldValues[1].type);
+
+
+	}
+
 
 
 }

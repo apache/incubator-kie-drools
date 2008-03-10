@@ -1,16 +1,23 @@
 package org.drools.brms.server.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
+import org.drools.brms.client.modeldriven.brl.ActionInsertFact;
+import org.drools.brms.client.modeldriven.brl.ActionRetractFact;
+import org.drools.brms.client.modeldriven.brl.ActionSetField;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
+import org.drools.brms.client.modeldriven.brl.IAction;
 import org.drools.brms.client.modeldriven.brl.IPattern;
 import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brl.RuleAttribute;
 import org.drools.brms.client.modeldriven.brl.RuleModel;
 import org.drools.brms.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.brms.client.modeldriven.dt.ActionCol;
+import org.drools.brms.client.modeldriven.dt.ActionInsertFactCol;
+import org.drools.brms.client.modeldriven.dt.ActionRetractFactCol;
+import org.drools.brms.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.brms.client.modeldriven.dt.AttributeCol;
 import org.drools.brms.client.modeldriven.dt.ConditionCol;
 import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
@@ -20,7 +27,7 @@ import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
  * @author Michael Neale
  *
  */
-public class GuidedDTBRLPersistence {
+public class GuidedDTDRLPersistence {
 
 
 	public String marshal(GuidedDecisionTable dt) {
@@ -38,6 +45,10 @@ public class GuidedDTBRLPersistence {
 			doAttribs(dt.attributeCols, row, rm);
 			doConditions(dt.attributeCols.size(), dt.conditionCols, row, rm);
 			doActions(dt.attributeCols.size() + dt.conditionCols.size(), dt.actionCols, row, rm);
+
+			String rule = BRDRLPersistence.getInstance().marshal(rm);
+			sb.append(rule);
+			sb.append("\n");
 		}
 
 
@@ -45,9 +56,63 @@ public class GuidedDTBRLPersistence {
 
 	}
 
-	void doActions(int condAndAttrs, List actionCols, String[] row, RuleModel rm) {
+	void doActions(int condAndAttrs, List<ActionCol> actionCols, String[] row, RuleModel rm) {
+		List<LabelledAction> actions = new ArrayList<LabelledAction>();
+		for (int i = 0; i < actionCols.size(); i++) {
+			ActionCol c = actionCols.get(i);
+			String cell = row[condAndAttrs + i + 2];
+			if (validCell(cell)) {
+				if (c instanceof ActionInsertFactCol) {
+					ActionInsertFactCol ac = (ActionInsertFactCol)c;
+					LabelledAction a = find(actions, ac.boundName);
+					if (a == null) {
+						a = new LabelledAction();
+						a.boundName  = ac.boundName;
+						ActionInsertFact ins = new ActionInsertFact(ac.factType);
+						a.action = ins;
+						actions.add(a);
+					}
+					ActionInsertFact ins = (ActionInsertFact) a.action;
+					ActionFieldValue val = new ActionFieldValue(ac.factField, cell, ac.type);
+					ins.addFieldValue(val);
+				} else if (c instanceof ActionRetractFactCol) {
+					ActionRetractFactCol rf = (ActionRetractFactCol)c;
+					LabelledAction a = find(actions, rf.boundName);
+					if (a == null) {
+						a = new LabelledAction();
+						a.action = new ActionRetractFact(rf.boundName);
+						a.boundName = rf.boundName;
+						actions.add(a);
+					}
+				} else if (c instanceof ActionSetFieldCol) {
+					ActionSetFieldCol sf = (ActionSetFieldCol)c;
+					LabelledAction a = find(actions, sf.boundName);
+					if (a == null) {
+						a = new LabelledAction();
+						a.boundName = sf.boundName;
+						a.action = new ActionSetField(sf.boundName);
+						actions.add(a);
+					}
+					ActionSetField asf = (ActionSetField) a.action;
+					ActionFieldValue val = new ActionFieldValue(sf.factField, cell, sf.type);
+					asf.addFieldValue(val);
+				}
+			}
+		}
 
+		rm.rhs = new IAction[actions.size()];
+		for (int i = 0; i < rm.rhs.length; i++) {
+			rm.rhs[i] = actions.get(i).action;
+		}
+	}
 
+	private LabelledAction find(List<LabelledAction> actions, String boundName) {
+		for (LabelledAction labelledAction : actions) {
+			if (labelledAction.boundName.equals(boundName)) {
+				return labelledAction;
+			}
+		}
+		return null;
 	}
 
 	void doConditions(int numOfAttributes, List<ConditionCol> conditionCols, String[] row, RuleModel rm) {
@@ -100,10 +165,10 @@ public class GuidedDTBRLPersistence {
 		return null;
 	}
 
-	void doAttribs(List attributeCols, String[] row, RuleModel rm) {
+	void doAttribs(List<AttributeCol> attributeCols, String[] row, RuleModel rm) {
 		List<RuleAttribute> attribs = new ArrayList<RuleAttribute>();
 		for (int j = 0; j < attributeCols.size(); j++) {
-			AttributeCol at = (AttributeCol) attributeCols.get(j);
+			AttributeCol at = attributeCols.get(j);
 			String cell = row[j + 2];
 			if (validCell(cell)) {
 				attribs.add(new RuleAttribute(at.attr, cell));
@@ -120,6 +185,11 @@ public class GuidedDTBRLPersistence {
 
 	boolean validCell(String c) {
 		return c !=null && !c.trim().equals("");
+	}
+
+	private class LabelledAction {
+		String boundName;
+		IAction action;
 	}
 
 }
