@@ -23,20 +23,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.process.core.Process;
-import org.drools.util.StringUtils;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -83,6 +79,8 @@ public class Package
 
     //    private JavaDialectData         packageCompilationData;
     private DialectDatas                   dialectDatas;
+    
+    private Map<String, TypeDeclaration>   typeDeclarations;
 
     /** This is to indicate the the package has no errors during the compilation/building phase */
     private boolean                        valid            = true;
@@ -123,6 +121,7 @@ public class Package
                    ClassLoader parentClassLoader) {
         this.name = name;
         this.imports = new HashMap<String, ImportDeclaration>();
+        this.typeDeclarations = new HashMap<String, TypeDeclaration>();
         this.staticImports = Collections.EMPTY_SET;
         this.rules = new LinkedHashMap();
         this.ruleFlows = Collections.EMPTY_MAP;
@@ -151,6 +150,7 @@ public class Package
         stream.writeObject( this.name );
         stream.writeObject( this.imports );
         stream.writeObject( this.staticImports );
+        stream.writeObject( this.typeDeclarations );
         stream.writeObject( this.functions );
         stream.writeObject( this.factTemplates );
         stream.writeObject( this.ruleFlows );
@@ -178,6 +178,7 @@ public class Package
         this.name = (String) stream.readObject();
         this.imports = (Map<String, ImportDeclaration>) stream.readObject();
         this.staticImports = (Set) stream.readObject();
+        this.typeDeclarations = (Map<String, TypeDeclaration>) stream.readObject();
         this.functions = (Map) stream.readObject();
         this.factTemplates = (Map) stream.readObject();
         this.ruleFlows = (Map) stream.readObject();
@@ -222,6 +223,22 @@ public class Package
 
     public Map<String, ImportDeclaration> getImports() {
         return this.imports;
+    }
+    
+    public void addTypeDeclaration( final TypeDeclaration typeDecl ) {
+        this.typeDeclarations.put( typeDecl.getTypeName(), typeDecl );
+    }
+    
+    public void removeTypeDeclaration( final String type ) {
+        this.typeDeclarations.remove( type );
+    }
+    
+    public Map<String, TypeDeclaration> getTypeDeclarations() {
+        return this.typeDeclarations;
+    }
+    
+    public TypeDeclaration getTypeDeclaration( String type ) {
+        return this.typeDeclarations.get( type );
     }
 
     public void addStaticImport(final String functionImport) {
@@ -469,23 +486,14 @@ public class Package
         if ( clazz == null ) {
             return false;
         }
-        // check if clazz is resolved by any of the import declarations
-        for ( ImportDeclaration imp : this.imports.values() ) {
-            if ( imp.isEvent() && imp.matches( clazz ) ) {
+
+        // check if clazz is resolved by any of the type declarations
+        for( TypeDeclaration type : this.typeDeclarations.values() ) {
+            if( type.matches( clazz ) && type.getRole() == TypeDeclaration.Role.EVENT ) {
                 return true;
             }
-        }
-        // if it is not resolved, try superclass 
-        if ( this.isEvent( clazz.getSuperclass() ) ) {
-            return true;
         }
 
-        // if it is no resolved, try interfaces
-        for ( Class interf : clazz.getInterfaces() ) {
-            if ( this.isEvent( interf ) ) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -498,5 +506,6 @@ public class Package
         this.staticImports.clear();
         this.globals.clear();
         this.factTemplates.clear();
+        this.typeDeclarations.clear();
     }
 }

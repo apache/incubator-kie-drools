@@ -43,10 +43,12 @@ import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.process.core.Process;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.xml.XmlPackageReader;
@@ -367,12 +369,13 @@ public class PackageBuilder {
         final List imports = packageDescr.getImports();
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             ImportDescr importEntry = (ImportDescr) it.next();
-            ImportDeclaration importDecl = new ImportDeclaration( importEntry.getTarget(),
-                                                                  importEntry.isEvent() );
+            ImportDeclaration importDecl = new ImportDeclaration( importEntry.getTarget() );
             pkg.addImport( importDecl );
             this.typeResolver.addImport( importDecl.getTarget() );
             this.dialectRegistry.addImport( importDecl.getTarget() );
         }
+
+        processTypeDeclarations( packageDescr );
 
         for ( final Iterator it = packageDescr.getFunctionImports().iterator(); it.hasNext(); ) {
             String importEntry = ((FunctionImportDescr) it.next()).getTarget();
@@ -395,6 +398,64 @@ public class PackageBuilder {
                 this.results.add( new GlobalError( identifier,
                                                    global.getLine() ) );
             }
+        }
+
+    }
+
+    /**
+     * @param packageDescr
+     */
+    private void processTypeDeclarations(final PackageDescr packageDescr) {
+        for ( TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations() ) {
+            TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
+
+            // is it a regular fact or an event?
+            String role = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_ROLE );
+            if ( role != null ) {
+                type.setRole( TypeDeclaration.Role.parseRole( role ) );
+            }
+
+            // is it a POJO or a template?
+            String templateName = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_TEMPLATE );
+            if( templateName != null ) {
+                type.setFormat( TypeDeclaration.Format.TEMPLATE );
+                FactTemplate template = this.pkg.getFactTemplate( templateName );
+                if( template != null ) {
+                    type.setTypeTemplate( template );
+                } else {
+                    this.results.add( new TypeDeclarationError( "Template not found '" + template + "' for type '" + type.getTypeName() + "'",
+                                                                typeDescr.getLine() ) );
+                }
+            } else {
+                String className = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_CLASS );
+                if ( className == null ) {
+                    className = type.getTypeName();
+                }
+                type.setFormat( TypeDeclaration.Format.POJO );
+                Class clazz;
+                try {
+                    clazz = typeResolver.resolveType( className );
+                    type.setTypeClass( clazz );
+                } catch ( final ClassNotFoundException e ) {
+                    this.results.add( new TypeDeclarationError( "Class not found '" + className + "' for type '" + type.getTypeName() + "'",
+                                                                typeDescr.getLine() ) );
+                }
+            }
+
+            String clockStrategy = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_CLOCK_STRATEGY );
+            if ( clockStrategy != null ) {
+                type.setClockStrategy( TypeDeclaration.ClockStrategy.parseClockStrategy( clockStrategy ) );
+            }
+            String timestamp = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_TIMESTAMP );
+            if ( timestamp != null ) {
+                type.setTimestampAttribute( timestamp );
+            }
+            String duration = typeDescr.getAttribute( TypeDeclarationDescr.ATTR_DURATION );
+            if ( duration != null ) {
+                type.setDurationAttribute( duration );
+            }
+            
+            this.pkg.addTypeDeclaration( type );
         }
     }
 

@@ -76,17 +76,6 @@ public class NamedEntryPoint
      */
     public FactHandle insert(final Object object) throws FactException {
         return insert( object, /* Not-Dynamic */
-                       0,
-                       false,
-                       false,
-                       null,
-                       null );
-    }
-
-    public FactHandle insert(final Object object,
-                             final long duration) throws FactException {
-        return insert( object, /* Not-Dynamic */
-                       duration,
                        false,
                        false,
                        null,
@@ -96,18 +85,6 @@ public class NamedEntryPoint
     public FactHandle insert(final Object object,
                              final boolean dynamic) throws FactException {
         return insert( object,
-                       0,
-                       dynamic,
-                       false,
-                       null,
-                       null );
-    }
-
-    public FactHandle insert(final Object object,
-                             final long duration,
-                             final boolean dynamic) throws FactException {
-        return insert( object,
-                       duration,
                        dynamic,
                        false,
                        null,
@@ -115,7 +92,6 @@ public class NamedEntryPoint
     }
 
     protected FactHandle insert(final Object object,
-                                final long duration,
                                 final boolean dynamic,
                                 boolean logical,
                                 final Rule rule,
@@ -130,7 +106,6 @@ public class NamedEntryPoint
 
         InternalFactHandle handle = this.handleFactory.newFactHandle( object,
                                                                       typeConf.isEvent(),
-                                                                      duration,
                                                                       wm );
         this.objectStore.addHandle( handle,
                                     object );

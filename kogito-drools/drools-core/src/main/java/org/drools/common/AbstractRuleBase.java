@@ -35,17 +35,14 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.drools.FactException;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
-import org.drools.RuleIntegrationException;
 import org.drools.StatefulSession;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.RuleBaseEventSupport;
-import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.objenesis.Objenesis;
 import org.drools.objenesis.ObjenesisStd;
 import org.drools.process.core.Process;
@@ -55,8 +52,8 @@ import org.drools.rule.ImportDeclaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
-import org.drools.rule.JavaDialectData;
 import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.ObjectHashSet;
@@ -76,50 +73,52 @@ abstract public class AbstractRuleBase
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected String                                id;
+    protected String                                   id;
 
-    protected int                                   workingMemoryCounter;
+    protected int                                      workingMemoryCounter;
 
-    protected RuleBaseConfiguration                 config;
+    protected RuleBaseConfiguration                    config;
 
-    protected Map<String, Package>                  pkgs;
+    protected Map<String, Package>                     pkgs;
 
-    protected Map                                   processes;
+    protected Map                                      processes;
 
-    protected Map                                   agendaGroupRuleTotals;
+    protected Map                                      agendaGroupRuleTotals;
 
-    protected transient CompositePackageClassLoader packageClassLoader;
+    protected transient CompositePackageClassLoader    packageClassLoader;
 
-    protected transient MapBackedClassLoader        classLoader;
+    protected transient MapBackedClassLoader           classLoader;
 
     private transient Objenesis                     objenesis;
 
     /** The fact handle factory. */
     protected FactHandleFactory                     factHandleFactory;
 
-    protected Map                                   globals;
+    protected Map                                      globals;
 
-    private ReloadPackageCompilationData            reloadPackageCompilationData = null;
+    private ReloadPackageCompilationData               reloadPackageCompilationData = null;
 
-    private RuleBaseEventSupport                    eventSupport                 = new RuleBaseEventSupport( this );
+    private RuleBaseEventSupport                       eventSupport                 = new RuleBaseEventSupport( this );
 
     /**
      * WeakHashMap to keep references of WorkingMemories but allow them to be
      * garbage collected
      */
-    protected transient ObjectHashSet               statefulSessions;
+    protected transient ObjectHashSet                  statefulSessions;
 
     // wms used for lock list during dynamic updates
-    InternalWorkingMemory[]                         wms;
+    InternalWorkingMemory[]                            wms;
 
     // indexed used to track invariant lock
-    int                                             lastAquiredLock;
+    int                                                lastAquiredLock;
 
     // lock for entire rulebase, used for dynamic updates
-    protected final ReentrantLock                   lock                         = new ReentrantLock();
+    protected final ReentrantLock                      lock                         = new ReentrantLock();
 
     private int                                     additionsSinceLock;
     private int                                     removalsSinceLock;
+
+    private transient Map<Class< ? >, TypeDeclaration> classTypeDeclaration;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
@@ -163,6 +162,8 @@ abstract public class AbstractRuleBase
         this.globals = new HashMap();
         this.statefulSessions = new ObjectHashSet();
         this.objenesis = createObjenesis();
+
+        this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
     }
 
     // ------------------------------------------------------------
@@ -209,7 +210,7 @@ abstract public class AbstractRuleBase
      */
     public void doReadExternal(final ObjectInput stream,
                                final Object[] objects) throws IOException,
-                                                      ClassNotFoundException {
+                                                        ClassNotFoundException {
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules        
         this.pkgs = (Map) stream.readObject();
         Map store = (Map) stream.readObject();
@@ -247,6 +248,7 @@ abstract public class AbstractRuleBase
 
         this.config = (RuleBaseConfiguration) childStream.readObject();
         this.config.setClassLoader( childStream.getClassLoader() );
+
         this.eventSupport = (RuleBaseEventSupport) childStream.readObject();
         this.eventSupport.setRuleBase( this );
 
@@ -256,6 +258,8 @@ abstract public class AbstractRuleBase
             objects[i] = childStream.readObject();
         }
         childStream.close();
+        
+        this.populateTypeDeclarationMaps();
     }
 
     /**
@@ -264,6 +268,15 @@ abstract public class AbstractRuleBase
      */
     protected Objenesis createObjenesis() {
         return new ObjenesisStd( true );
+    }
+
+    private void populateTypeDeclarationMaps() {
+        this.classTypeDeclaration = new HashMap<Class<?>, TypeDeclaration>();
+        for( Package pkg : this.pkgs.values() ) {
+            for( TypeDeclaration type : pkg.getTypeDeclarations().values() ) {
+                this.classTypeDeclaration.put( type.getTypeClass(), type );
+            }
+        }
     }
 
     /**
@@ -419,6 +432,15 @@ abstract public class AbstractRuleBase
             }
             this.globals.putAll( newGlobals );
 
+            // Add type declarations
+            for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+                // should we allow overrides?
+                if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
+                    this.classTypeDeclaration.put( type.getTypeClass(),
+                                                   type );
+                }
+            }
+            
             final Rule[] rules = newPkg.getRules();
 
             for ( int i = 0; i < rules.length; ++i ) {
@@ -473,6 +495,18 @@ abstract public class AbstractRuleBase
         }
         globals.putAll( newPkg.getGlobals() );
 
+        // add type declarations
+        for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+            // should we allow overrides?
+            if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
+                this.classTypeDeclaration.put( type.getTypeClass(),
+                                               type );
+            }
+            if ( !pkg.getTypeDeclarations().containsKey( type.getTypeName() ) ) {
+                pkg.addTypeDeclaration( type );
+            }
+        }
+        
         //Add rules into the RuleBase package
         //as this is needed for individual rule removal later on
         final Rule[] newRules = newPkg.getRules();
@@ -498,6 +532,10 @@ abstract public class AbstractRuleBase
             this.reloadPackageCompilationData = new ReloadPackageCompilationData();
         }
         this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectDatas() );
+    }
+    
+    public TypeDeclaration getTypeDeclaration(Class< ? > clazz) {
+        return this.classTypeDeclaration.get( clazz );
     }
 
     private synchronized void addRule(final Package pkg,

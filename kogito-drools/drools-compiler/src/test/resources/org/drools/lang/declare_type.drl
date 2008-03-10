@@ -1,0 +1,8 @@
+package org.drools;
+
+declare CallEvent {
+    type event,
+    class org.drools.events.Call,
+    duration_attribute duration,
+    clock_strategy pseudo
+}

@@ -36,6 +36,7 @@ public class PackageDescr extends BaseDescr {
     private List              factTemplates    = Collections.EMPTY_LIST;
     private List              functions        = Collections.EMPTY_LIST;
     private List              rules            = Collections.EMPTY_LIST;
+    private List<TypeDeclarationDescr> typeDeclarations     = Collections.emptyList();
 
     public PackageDescr(final String name) {
         this( name,
@@ -145,5 +146,16 @@ public class PackageDescr extends BaseDescr {
 
     public List getRules() {
         return this.rules;
+    }
+
+    public void addTypeDeclaration(TypeDeclarationDescr declaration) {
+        if ( this.typeDeclarations == Collections.EMPTY_LIST ) {
+            this.typeDeclarations = new ArrayList<TypeDeclarationDescr>();
+        }
+        this.typeDeclarations.add( declaration );
+    }
+    
+    public List<TypeDeclarationDescr> getTypeDeclarations() {
+        return this.typeDeclarations;
     }
 }

@@ -601,17 +601,6 @@ public abstract class AbstractWorkingMemory
      */
     public FactHandle insert(final Object object) throws FactException {
         return insert( object, /* Not-Dynamic */
-                       0,
-                       false,
-                       false,
-                       null,
-                       null );
-    }
-
-    public FactHandle insert(final Object object,
-                             final long duration) throws FactException {
-        return insert( object, /* Not-Dynamic */
-                       duration,
                        false,
                        false,
                        null,
@@ -623,17 +612,6 @@ public abstract class AbstractWorkingMemory
      */
     public FactHandle insertLogical(final Object object) throws FactException {
         return insert( object, //Not-Dynamic 
-                       0,
-                       false,
-                       true,
-                       null,
-                       null );
-    }
-
-    public FactHandle insertLogical(final Object object,
-                                    final long duration) throws FactException {
-        return insert( object, /* Not-Dynamic */
-                       duration,
                        false,
                        true,
                        null,
@@ -643,18 +621,6 @@ public abstract class AbstractWorkingMemory
     public FactHandle insert(final Object object,
                              final boolean dynamic) throws FactException {
         return insert( object,
-                       0,
-                       dynamic,
-                       false,
-                       null,
-                       null );
-    }
-
-    public FactHandle insert(final Object object,
-                             final long duration,
-                             final boolean dynamic) throws FactException {
-        return insert( object,
-                       duration,
                        dynamic,
                        false,
                        null,
@@ -664,36 +630,10 @@ public abstract class AbstractWorkingMemory
     public FactHandle insertLogical(final Object object,
                                     final boolean dynamic) throws FactException {
         return insert( object,
-                       0,
                        dynamic,
                        true,
                        null,
                        null );
-    }
-
-    public FactHandle insertLogical(final Object object,
-                                    final long duration,
-                                    final boolean dynamic) throws FactException {
-        return insert( object,
-                       duration,
-                       dynamic,
-                       true,
-                       null,
-                       null );
-    }
-
-    public FactHandle insert(final Object object,
-                             final boolean dynamic,
-                             boolean logical,
-                             final Rule rule,
-                             final Activation activation) throws FactException {
-        return this.insert( object,
-                            0,
-                            dynamic,
-                            logical,
-                            rule,
-                            activation );
-
     }
 
     //    protected FactHandle insert(final EntryPoint entryPoint,
@@ -712,7 +652,6 @@ public abstract class AbstractWorkingMemory
     //    }
 
     public FactHandle insert(final Object object,
-                             final long duration,
                              final boolean dynamic,
                              boolean logical,
                              final Rule rule,
@@ -730,7 +669,6 @@ public abstract class AbstractWorkingMemory
         if ( isSequential() ) {
             handle = this.handleFactory.newFactHandle( object,
                                                        typeConf.isEvent(),
-                                                       duration,
                                                        this );
             this.objectStore.addHandle( handle,
                                         object );
@@ -789,7 +727,6 @@ public abstract class AbstractWorkingMemory
                     // assert
                     handle = this.handleFactory.newFactHandle( object,
                                                                typeConf.isEvent(),
-                                                               duration,
                                                                this );
                     this.objectStore.addHandle( handle,
                                                 object );
@@ -844,7 +781,6 @@ public abstract class AbstractWorkingMemory
                             key.setStatus( EqualityKey.STATED );
                             handle = this.handleFactory.newFactHandle( object,
                                                                        typeConf.isEvent(),
-                                                                       duration,
                                                                        this );
                             handle.setEqualityKey( key );
                             key.addFactHandle( handle );
@@ -856,7 +792,6 @@ public abstract class AbstractWorkingMemory
                     } else {
                         handle = this.handleFactory.newFactHandle( object,
                                                                    typeConf.isEvent(),
-                                                                   duration,
                                                                    this );
                         this.objectStore.addHandle( handle,
                                                     object );
@@ -888,7 +823,6 @@ public abstract class AbstractWorkingMemory
                 }
                 handle = this.handleFactory.newFactHandle( object,
                                                            typeConf.isEvent(),
-                                                           duration,
                                                            this );
                 this.objectStore.addHandle( handle,
                                             object );

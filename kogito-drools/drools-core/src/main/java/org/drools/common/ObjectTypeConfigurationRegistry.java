@@ -59,10 +59,8 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
                                                            this.ruleBase );           
                 this.typeConfMap.put( object, objectTypeConf );
             } else {
-                final boolean isEvent = this.ruleBase.isEvent( cls );
                 objectTypeConf = new ClassObjectTypeConf( entrypoint,
                                                           cls,
-                                                          isEvent,
                                                           this.ruleBase );
                 this.typeConfMap.put( cls, objectTypeConf );
             }            
