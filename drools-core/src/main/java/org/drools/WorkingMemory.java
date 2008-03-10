@@ -16,6 +16,7 @@ package org.drools;
  * limitations under the License.
  */
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -35,7 +36,7 @@ import org.drools.spi.GlobalResolver;
  * in WorkingMemories from an InputStream.
  * 
  */
-public interface WorkingMemory extends WorkingMemoryEventManager {
+public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryEntryPoint {
 
     /**
      * Returns the Agenda for this WorkingMemory. While the WorkingMemory interface is considered public, the Agenda interface 
@@ -205,34 +206,6 @@ public interface WorkingMemory extends WorkingMemoryEventManager {
         
 
     /**
-     * Assert a fact.
-     * 
-     * @param object
-     *            The fact object.
-     * 
-     * @return The new fact-handle associated with the object.
-     * 
-     * @throws FactException
-     *             If a RuntimeException error occurs.
-     */
-    FactHandle insert(Object object) throws FactException;
-    
-    /**
-     * Assert a fact with inherent duration.
-     * 
-     * @param object
-     *            The fact object.
-     * @param duration
-     *            The duration of the fact.
-     * 
-     * @return The new fact-handle associated with the object.
-     * 
-     * @throws FactException
-     *             If a RuntimeException error occurs.
-     */
-    FactHandle insert(Object object, long duration) throws FactException;
-
-    /**
      * Retrieve the QueryResults of the specified query.
      *
      * @param query
@@ -261,89 +234,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager {
      * @throws IllegalArgumentException 
      *         if no query named "query" is found in the rulebase         
      */    
-    public QueryResults getQueryResults(String query, Object[] arguments);
-
-    /**
-     * Insert a fact registering JavaBean <code>PropertyChangeListeners</code>
-     * on the Object to automatically trigger <code>update</code> calls
-     * if <code>dynamic</code> is <code>true</code>.
-     * 
-     * @param object
-     *            The fact object.
-     * @param dynamic
-     *            true if Drools should add JavaBean
-     *            <code>PropertyChangeListeners</code> to the object.
-     * 
-     * @return The new fact-handle associated with the object.
-     * 
-     * @throws FactException
-     *             If a RuntimeException error occurs.
-     */
-    FactHandle insert(Object object,
-                            boolean dynamic) throws FactException;
-    
-    /**
-     * Insert a fact with inherent duration registering JavaBean 
-     * <code>PropertyChangeListeners</code> on the Object to 
-     * automatically trigger <code>update</code> calls
-     * if <code>dynamic</code> is <code>true</code>.
-     * 
-     * @param object
-     *            The fact object.
-     * @param duration
-     *            The duration of the fact.
-     * @param dynamic
-     *            true if Drools should add JavaBean
-     *            <code>PropertyChangeListeners</code> to the object.
-     * 
-     * @return The new fact-handle associated with the object.
-     * 
-     * @throws FactException
-     *             If a RuntimeException error occurs.
-     */
-    FactHandle insert(Object object,
-    				  long duration,
-                      boolean dynamic) throws FactException;
-
-    /**
-     * Retract a fact.
-     * 
-     * @param handle
-     *            The fact-handle associated with the fact to retract.
-     * 
-     * @throws FactException
-     *             If a RuntimeException error occurs.
-     */
-    void retract(FactHandle handle) throws FactException;
-
-    /**
-     * Inform the WorkingMemory that a Fact has been modified and that it
-     * should now update the network.
-     * 
-     * @param handle
-     *            The fact-handle associated with the fact to modify.
-     * @param object
-     *            The new value of the fact.
-     * 
-     * @throws FactException
-     *             If a RuntimeException error occurs.
-     */
-    void update(FactHandle handle,
-                      Object object) throws FactException;
-    
-    /**
-     * 
-     * @param factHandle
-     */
-    public void modifyRetract(final FactHandle factHandle);
-    
-    /**
-     * 
-     * @param factHandle
-     * @param object
-     */
-    public void modifyInsert(final FactHandle factHandle,
-                             final Object object);    
+    public QueryResults getQueryResults(String query, Object[] arguments);  
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
@@ -413,6 +304,6 @@ public interface WorkingMemory extends WorkingMemoryEventManager {
      * @param id the id of the entry point, as defined in the rules file
      * @return
      */
-    public EntryPointInterface getEntryPoint( String id );
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint( String id );
     
 }

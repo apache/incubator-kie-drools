@@ -22,10 +22,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
@@ -101,26 +103,11 @@ public class EntryPointNode extends ObjectSource
     public EntryPoint getEntryPoint() {
         return entryPoint;
     }
-
-    /**
-     * This is the entry point into the network for all asserted Facts. Iterates a cache
-     * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
-     * exist it first iterates and builds the cache.
-     *
-     * @param handle
-     *            The FactHandle of the fact to assert
-     * @param context
-     *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action
-     * @param workingMemory
-     *            The working memory session.
-     */
+    
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
+                             final ObjectTypeConf objectTypeConf,
                              final InternalWorkingMemory workingMemory) {
-
-        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( this.entryPoint,
-                                                                         handle.getObject() );
-
         // checks if shadow is enabled
         if ( objectTypeConf.isShadowEnabled() ) {
             // need to improve this
@@ -140,6 +127,24 @@ public class EntryPointNode extends ObjectSource
                                          context,
                                          workingMemory );
         }
+    }    
+
+    /**
+     * This is the entry point into the network for all asserted Facts. Iterates a cache
+     * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
+     * exist it first iterates and builds the cache.
+     *
+     * @param handle
+     *            The FactHandle of the fact to assert
+     * @param context
+     *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action
+     * @param workingMemory
+     *            The working memory session.
+     */
+    public void assertObject(final InternalFactHandle handle,
+                             final PropagationContext context,
+                             final InternalWorkingMemory workingMemory) {
+        // do nothing, dummy method to impl the interface
     }
 
     /**
@@ -153,11 +158,10 @@ public class EntryPointNode extends ObjectSource
      */
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
+                              final ObjectTypeConf objectTypeConf,                              
                               final InternalWorkingMemory workingMemory) {
         final Object object = handle.getObject();
-
-        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( this.entryPoint,
-                                                                         object );
+        
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {
@@ -170,6 +174,12 @@ public class EntryPointNode extends ObjectSource
                                           context,
                                           workingMemory );
         }
+    }
+    
+    public void retractObject(final InternalFactHandle handle,
+                              final PropagationContext context,        
+                              final InternalWorkingMemory workingMemory) {
+        // do nothing, dummy method to impl the interface                
     }
 
     /**
@@ -249,9 +259,12 @@ public class EntryPointNode extends ObjectSource
                            final InternalWorkingMemory workingMemory) {
         // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.
         final ObjectTypeNode node = (ObjectTypeNode) sink;
+                
         final ObjectType newObjectType = node.getObjectType();
 
-        for ( ObjectTypeConf objectTypeConf : workingMemory.getObjectTypeConfMap( this.entryPoint ).values() ) {
+        InternalWorkingMemoryEntryPoint wmEntryPoint = ( InternalWorkingMemoryEntryPoint ) workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
+        
+        for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {            
             if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();

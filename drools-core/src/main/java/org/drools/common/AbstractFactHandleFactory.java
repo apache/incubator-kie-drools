@@ -16,6 +16,9 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.drools.WorkingMemory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.PrimitiveLongStack;
@@ -29,46 +32,58 @@ public abstract class AbstractFactHandleFactory
      */
     private static final long          serialVersionUID = 400L;
 
-    protected final PrimitiveLongStack factHandlePool   = new PrimitiveLongStack();
+//    protected final PrimitiveLongStack factHandlePool   = new PrimitiveLongStack();
 
     /** The fact id. */
-    private long                       id;
+    private AtomicInteger              id;
 
     /** The number of facts created - used for recency. */
-    private long                       counter;
+    private AtomicLong                 counter;
+    
+    public AbstractFactHandleFactory() {
+        this.id = new AtomicInteger(-1);
+        this.counter = new AtomicLong(-1);
+    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
      */
-    public final InternalFactHandle newFactHandle( final Object object, final boolean isEvent, final WorkingMemory workingMemory ) {
-        if ( !this.factHandlePool.isEmpty() ) {
-            return newFactHandle( this.factHandlePool.pop(),
-                                  object, 
-                                  isEvent,
-                                  0,
-                                  workingMemory );
-        }
+    public final InternalFactHandle newFactHandle(final Object object,
+                                                  final boolean isEvent,
+                                                  final WorkingMemory workingMemory) {
+// @FIXME make id re-cycling thread safe        
+//        if ( !this.factHandlePool.isEmpty() ) {
+//            return newFactHandle( this.factHandlePool.pop(),
+//                                  object,
+//                                  isEvent,
+//                                  0,
+//                                  workingMemory );
+//        }
 
-        return newFactHandle( this.id++,
+        return newFactHandle( this.id.incrementAndGet(),
                               object,
                               isEvent,
                               0,
                               workingMemory );
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
      */
-    public final InternalFactHandle newFactHandle( final Object object, final boolean isEvent, long duration, final WorkingMemory workingMemory ) {
-        if ( !this.factHandlePool.isEmpty() ) {
-            return newFactHandle( this.factHandlePool.pop(),
-                                  object, 
-                                  isEvent,
-                                  duration,
-                                  workingMemory );
-        }
+    public final InternalFactHandle newFactHandle(final Object object,
+                                                  final boolean isEvent,
+                                                  long duration,
+                                                  final WorkingMemory workingMemory) {
+// @FIXME make id re-cycling thread safe                
+//        if ( !this.factHandlePool.isEmpty() ) {
+//            return newFactHandle( this.factHandlePool.pop(),
+//                                  object,
+//                                  isEvent,
+//                                  duration,
+//                                  workingMemory );
+//        }
 
-        return newFactHandle( this.id++,
+        return newFactHandle( this.id.incrementAndGet(),
                               object,
                               isEvent,
                               duration,
@@ -78,29 +93,29 @@ public abstract class AbstractFactHandleFactory
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    protected final InternalFactHandle newFactHandle(final long id,
+    protected final InternalFactHandle newFactHandle(final int id,
                                                      final Object object,
-                                                     final boolean isEvent, 
-                                                     final WorkingMemory workingMemory ) {
+                                                     final boolean isEvent,
+                                                     final WorkingMemory workingMemory) {
         return newFactHandle( id,
                               object,
-                              this.counter++,
+                              this.counter.incrementAndGet(),
                               isEvent,
                               0,
                               workingMemory );
     }
-    
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    protected final InternalFactHandle newFactHandle(final long id,
+    protected final InternalFactHandle newFactHandle(final int id,
                                                      final Object object,
                                                      final boolean isEvent,
                                                      final long duration,
-                                                     final WorkingMemory workingMemory ) {
+                                                     final WorkingMemory workingMemory) {
         return newFactHandle( id,
                               object,
-                              this.counter++,
+                              this.counter.incrementAndGet(),
                               isEvent,
                               duration,
                               workingMemory );
@@ -109,31 +124,32 @@ public abstract class AbstractFactHandleFactory
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    protected abstract InternalFactHandle newFactHandle(final long id,
+    protected abstract InternalFactHandle newFactHandle(final int id,
                                                         final Object object,
                                                         final long recency,
-                                                        final boolean isEvent, 
-                                                        final WorkingMemory workingMemory );
-    
+                                                        final boolean isEvent,
+                                                        final WorkingMemory workingMemory);
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    protected abstract InternalFactHandle newFactHandle(final long id,
+    protected abstract InternalFactHandle newFactHandle(final int id,
                                                         final Object object,
                                                         final long recency,
                                                         final boolean isEvent,
                                                         final long duration,
-                                                        final WorkingMemory workingMemory );
+                                                        final WorkingMemory workingMemory);
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#increaseFactHandleRecency(org.drools.FactHandle)
      */
     public final void increaseFactHandleRecency(final InternalFactHandle factHandle) {
-        factHandle.setRecency( this.counter++ );
+        factHandle.setRecency( this.counter.incrementAndGet() );
     }
 
     public void destroyFactHandle(final InternalFactHandle factHandle) {
-        this.factHandlePool.push( factHandle.getId() );
+// @FIXME make id re-cycling thread safe                
+//        this.factHandlePool.push( factHandle.getId() );
         factHandle.invalidate();
     }
 

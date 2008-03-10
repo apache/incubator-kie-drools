@@ -28,11 +28,15 @@ import org.drools.temporal.SessionClock;
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
 
     private static final long serialVersionUID = 400L;
+    
+    public ReteooFactHandleFactory() {
+        super();
+    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    protected final InternalFactHandle newFactHandle(final long id,
+    protected final InternalFactHandle newFactHandle(final int id,
                                                      final Object object,
                                                      final long recency,
                                                      final boolean isEvent,
@@ -54,7 +58,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
      */
-    protected final InternalFactHandle newFactHandle(final long id,
+    protected final InternalFactHandle newFactHandle(final int id,
                                                      final Object object,
                                                      final long recency,
                                                      final boolean isEvent,

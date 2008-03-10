@@ -29,6 +29,7 @@ import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
@@ -108,9 +109,12 @@ public class Rete extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        EntryPointNode node = this.entryPoints.get( context.getEntryPoint() );
+        EntryPoint entryPoint = context.getEntryPoint();
+        EntryPointNode node = this.entryPoints.get( entryPoint );
+        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(  entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
         node.assertObject( handle,
                            context,
+                           typeConf,
                            workingMemory );
     }
 
@@ -126,9 +130,12 @@ public class Rete extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        EntryPointNode node = this.entryPoints.get( context.getEntryPoint() );
+        EntryPoint entryPoint = context.getEntryPoint();
+        EntryPointNode node = this.entryPoints.get( entryPoint );
+        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(  entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
         node.retractObject( handle,
                             context,
+                            typeConf,
                             workingMemory );
     }
 

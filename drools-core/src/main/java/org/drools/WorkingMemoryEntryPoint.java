@@ -25,10 +25,9 @@ import java.io.Serializable;
  *  
  * @author etirelli
  */
-public interface EntryPointInterface
+public interface WorkingMemoryEntryPoint
     extends
     Serializable {
-    
     /**
      * Assert a fact.
      * 
@@ -41,7 +40,22 @@ public interface EntryPointInterface
      *             If a RuntimeException error occurs.
      */
     FactHandle insert(Object object) throws FactException;
-
+    
+    /**
+     * Assert a fact with inherent duration.
+     * 
+     * @param object
+     *            The fact object.
+     * @param duration
+     *            The duration of the fact.
+     * 
+     * @return The new fact-handle associated with the object.
+     * 
+     * @throws FactException
+     *             If a RuntimeException error occurs.
+     */
+    FactHandle insert(Object object, long duration) throws FactException;
+    
     /**
      * Insert a fact registering JavaBean <code>PropertyChangeListeners</code>
      * on the Object to automatically trigger <code>update</code> calls
@@ -60,6 +74,29 @@ public interface EntryPointInterface
      */
     FactHandle insert(Object object,
                             boolean dynamic) throws FactException;
+    
+    /**
+     * Insert a fact with inherent duration registering JavaBean 
+     * <code>PropertyChangeListeners</code> on the Object to 
+     * automatically trigger <code>update</code> calls
+     * if <code>dynamic</code> is <code>true</code>.
+     * 
+     * @param object
+     *            The fact object.
+     * @param duration
+     *            The duration of the fact.
+     * @param dynamic
+     *            true if Drools should add JavaBean
+     *            <code>PropertyChangeListeners</code> to the object.
+     * 
+     * @return The new fact-handle associated with the object.
+     * 
+     * @throws FactException
+     *             If a RuntimeException error occurs.
+     */
+    FactHandle insert(Object object,
+                      long duration,
+                      boolean dynamic) throws FactException;
 
     /**
      * Retract a fact.
@@ -99,8 +136,8 @@ public interface EntryPointInterface
      * @param object
      */
     public void modifyInsert(final FactHandle factHandle,
-                             final Object object);    
-
+                             final Object object); 
     
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);    
 
 }
