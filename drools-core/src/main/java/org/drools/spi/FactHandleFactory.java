@@ -41,13 +41,6 @@ public interface FactHandleFactory
     public InternalFactHandle newFactHandle(Object object, boolean isEvent, WorkingMemory workingMemory );
     
     /**
-     * Construct a handle with a new id and a duration.
-     * 
-     * @return The handle.
-     */
-    public InternalFactHandle newFactHandle(Object object, boolean isEvent, long duration, WorkingMemory workingMemory );
-
-    /**
      * Increases the recency of the FactHandle
      * 
      * @param factHandle

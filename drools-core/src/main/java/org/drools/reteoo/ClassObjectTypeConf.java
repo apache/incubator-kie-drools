@@ -37,6 +37,7 @@ import org.drools.objenesis.instantiator.ObjectInstantiator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.ObjectType;
 
 public class ClassObjectTypeConf
@@ -44,24 +45,27 @@ public class ClassObjectTypeConf
     ObjectTypeConf,
     Serializable {
 
-    private final Class                    cls;
+    private static final long serialVersionUID = 8218802585428841926L;
+    
+    private final Class<?>                 cls;
     private transient InternalRuleBase     ruleBase;
     private ObjectTypeNode[]               objectTypeNodes;
 
     protected boolean                      shadowEnabled;
-    protected Class                        shadowClass;
+    protected Class<ShadowProxy>           shadowClass;
     protected transient ObjectInstantiator instantiator;
 
     private ObjectTypeNode                 concreteObjectTypeNode;
     private EntryPoint                     entryPoint;
 
     public ClassObjectTypeConf(final EntryPoint entryPoint,
-                               final Class clazz,
-                               final boolean isEvent,
+                               final Class<?> clazz,
                                final InternalRuleBase ruleBase) {
         this.cls = clazz;
         this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
+        TypeDeclaration type = ruleBase.getTypeDeclaration( clazz );
+        final boolean isEvent = type != null && type.getRole() == TypeDeclaration.Role.EVENT; 
 
         ObjectType objectType = new ClassObjectType( clazz,
                                                      isEvent );
@@ -147,7 +151,7 @@ public class ClassObjectTypeConf
      * This will return the package name - if the package is null, it will
      * work it out from the class name (this is in cases where funky classloading is used).
      */
-    public static String getPackageName(Class clazz,
+    public static String getPackageName(Class<?> clazz,
                                         Package pkg) {
         String pkgName = "";
         if ( pkg == null ) {

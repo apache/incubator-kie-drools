@@ -56,29 +56,6 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
     }
     
     /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
-     */
-    protected final InternalFactHandle newFactHandle(final int id,
-                                                     final Object object,
-                                                     final long recency,
-                                                     final boolean isEvent,
-                                                     final long duration,
-                                                     final WorkingMemory workingMemory ) {
-        if ( isEvent ) {
-            SessionClock clock = ((TemporalSession) workingMemory).getSessionClock(); 
-            return new EventFactHandle( id,
-                                        object,
-                                        recency,
-                                        clock.getCurrentTime(),
-                                        duration );  // primitive events have 0 duration
-        } else {
-            return new DefaultFactHandle( id,
-                                          object,
-                                          recency );
-        }
-    }
-
-    /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newInstance()
      */
     public FactHandleFactory newInstance() {

@@ -39,6 +39,7 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.StockTick;
 import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
@@ -69,6 +70,7 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.process.core.Process;
 import org.drools.process.core.Variable;
@@ -83,6 +85,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
@@ -194,7 +197,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       ((JavaDialectData)pkg.getDialectDatas().getDialectData( "java" )).list().length );
 
         builder.addPackage( packageDescr );
-        
+
         pkg = builder.getPackage();
 
         rule = pkg.getRule( "rule-1" );
@@ -1005,7 +1008,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         PackageBuilder builder = new PackageBuilder();
         PackageDescr pkgDescr = new PackageDescr( "org.test" );
         builder.addPackage( pkgDescr );
-        
+
         final Field dialectField = builder.getClass().getDeclaredField( "dialect" );
         dialectField.setAccessible( true );
         JavaDialect dialect = (JavaDialect) dialectField.get( builder );
@@ -1018,11 +1021,11 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // test JANINO with property settings
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
         builder = new PackageBuilder( conf );
         builder.addPackage( pkgDescr );
-        
+
         dialect = (JavaDialect) dialectField.get( builder );
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( JaninoJavaCompiler.class,
@@ -1030,15 +1033,40 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // test eclipse jdt core with property settings and default source level
         conf = new PackageBuilderConfiguration();
-        javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
+        javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         builder = new PackageBuilder( conf );
         builder.addPackage( pkgDescr );
-        
+
         dialect = (JavaDialect) dialectField.get( builder );
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( EclipseJavaCompiler.class,
                     compiler.getClass() );
+    }
+
+    public void testTypeDeclaration() throws Exception {
+        PackageDescr pkgDescr = new PackageDescr( "org.test" );
+        TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
+        typeDescr.addAttribute( TypeDeclarationDescr.ATTR_ROLE,
+                                "event" );
+        typeDescr.addAttribute( TypeDeclarationDescr.ATTR_CLASS,
+                                "org.drools.StockTick" );
+        pkgDescr.addTypeDeclaration( typeDescr );
+
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackage( pkgDescr );
+
+        Package pkg = builder.getPackage();
+        assertEquals( 1,
+                      pkg.getTypeDeclarations().size() );
+
+        TypeDeclaration type = pkg.getTypeDeclaration( "StockTick" );
+        assertEquals( "StockTick",
+                      type.getTypeName() );
+        assertEquals( TypeDeclaration.Role.EVENT,
+                      type.getRole() );
+        assertEquals( StockTick.class,
+                      type.getTypeClass() );
     }
 
     public void testPackageMerge() throws Exception {
@@ -1252,21 +1280,19 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( pkg.getRuleFlows().containsKey( "1" ) );
 
     }
-    
+
     public void testJaninoWithStaticImports() throws Exception {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) cfg.getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
-        
-        
-        PackageBuilder bldr = new PackageBuilder(cfg);
-        bldr.addPackageFromDrl( new StringReader("package testBuilderPackageConfig \n import java.util.List") );
-        bldr.addPackageFromDrl( new StringReader("function void doSomething() {\n System.err.println(List.class.toString()); }"));
-        
-        assertFalse(bldr.hasErrors());
-        
+
+        PackageBuilder bldr = new PackageBuilder( cfg );
+        bldr.addPackageFromDrl( new StringReader( "package testBuilderPackageConfig \n import java.util.List" ) );
+        bldr.addPackageFromDrl( new StringReader( "function void doSomething() {\n System.err.println(List.class.toString()); }" ) );
+
+        assertFalse( bldr.hasErrors() );
+
     }
-    
 
     class MockRuleFlow
         implements
@@ -1293,9 +1319,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         public String getVersion() {
             return null;
         }
-        
+
         public String getPackageName() {
-        	return null;
+            return null;
         }
 
         public void setId(String id) {
@@ -1309,7 +1335,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         public void setVersion(String version) {
         }
-        
+
         public void setPackageName(String packageName) {
         }
 

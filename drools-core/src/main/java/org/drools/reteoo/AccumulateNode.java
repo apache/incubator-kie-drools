@@ -393,7 +393,7 @@ public class AccumulateNode extends BetaNode {
 
         // First alpha node filters
         boolean isAllowed = true;
-        final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result, false, 0, workingMemory ); // so far, result is not an event
+        final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result, false, workingMemory ); // so far, result is not an event
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( createdHandle,
                                                        workingMemory,

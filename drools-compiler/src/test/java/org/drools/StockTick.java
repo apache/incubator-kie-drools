@@ -5,6 +5,7 @@ public class StockTick {
     private String company;
     private double price;
     private long time;
+    private long duration;
     
     public StockTick() {
     }
@@ -18,6 +19,19 @@ public class StockTick {
         this.company = company;
         this.price = price;
         this.time = time;
+    }
+
+    public StockTick(long seq,
+                     String company,
+                     double price,
+                     long time, 
+                     long duration ) {
+        super();
+        this.seq = seq;
+        this.company = company;
+        this.price = price;
+        this.time = time;
+        this.duration = duration;
     }
 
     public String getCompany() {
@@ -47,6 +61,20 @@ public class StockTick {
     
     public String toString() {
         return "StockTick( "+this.seq+" : " +this.company +" : "+ this.price +" )";
+    }
+
+    /**
+     * @return the duration
+     */
+    public long getDuration() {
+        return duration;
+    }
+
+    /**
+     * @param duration the duration to set
+     */
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
 }

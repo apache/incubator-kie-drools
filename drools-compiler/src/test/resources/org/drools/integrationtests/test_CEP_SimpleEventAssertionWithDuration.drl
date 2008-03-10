@@ -4,7 +4,7 @@ import org.drools.StockTick;
 
 declare StockTick {
     role event,
-    clock_strategy pseudo
+    duration_attribute duration
 }
 
 global java.util.List results;
