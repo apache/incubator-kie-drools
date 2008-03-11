@@ -77,7 +77,7 @@ public class Jsr94EventFactHandle extends EventFactHandle
     Jsr94EventFactHandle(final long id,
                          final Object object,
                          final long recency) {
-        super( id,
+        super( (int) id,
                object,
                recency );
     }
@@ -96,7 +96,7 @@ public class Jsr94EventFactHandle extends EventFactHandle
                                 final long recency,
                                 final long timestamp,
                                 final long duration) {
-        super( id,
+        super( (int) id,
                object,
                recency,
                timestamp,

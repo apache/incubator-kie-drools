@@ -32,7 +32,7 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 
 	private static final long serialVersionUID = 4964273923122006124L;
 
-	protected final InternalFactHandle newFactHandle(final long id,
+	protected final InternalFactHandle newFactHandle(final int id,
 			final Object object, final long recency, final boolean isEvent,
 			final WorkingMemory workingMemory) {
 		return this.newFactHandle(id, object, recency, isEvent, 0,
@@ -44,7 +44,7 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 	 * 
 	 * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)
 	 */
-	protected final InternalFactHandle newFactHandle(final long id,
+	protected final InternalFactHandle newFactHandle(final int id,
 			final Object object, final long recency, final boolean isEvent,
 			final long duration, final WorkingMemory workingMemory) {
 		if (isEvent) {
