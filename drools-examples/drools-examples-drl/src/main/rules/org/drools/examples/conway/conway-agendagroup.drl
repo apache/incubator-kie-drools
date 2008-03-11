@@ -59,8 +59,7 @@ when
 #	A live cell has fewer than 2 live neighbors
 	theCell: Cell(liveNeighbors < 2, cellState == CellState.LIVE, phase == Phase.EVALUATE)
 then
-	theCell.setPhase(Phase.KILL);
-	update( theCell );
+	modify( theCell ) {setPhase(Phase.KILL)}
 end
 
 rule "Kill The Overcrowded"
@@ -70,8 +69,7 @@ when
 #	A live cell has more than 3 live neighbors
 	theCell: Cell(liveNeighbors > 3, cellState == CellState.LIVE, phase == Phase.EVALUATE)
 then
-	theCell.setPhase(Phase.KILL);
-	update( theCell );
+	modify( theCell ) {setPhase(Phase.KILL)}
 end
 
 rule "Give Birth"
@@ -81,8 +79,7 @@ when
 #	A dead cell has 3 live neighbors
 	theCell: Cell(liveNeighbors == 3, cellState == CellState.DEAD, phase == Phase.EVALUATE)
 then
-	theCell.setPhase(Phase.BIRTH);
-	update( theCell );
+	modify( theCell ){setPhase(Phase.BIRTH)}
 end
 
 rule "reset calculate"
@@ -99,9 +96,7 @@ rule "kill"
 when
 	theCell: Cell(phase == Phase.KILL)
 then
-	theCell.setCellState(CellState.DEAD);
-	theCell.setPhase(Phase.DONE);	
-	update( theCell );
+	modify( theCell ) {setCellState(CellState.DEAD), setPhase(Phase.DONE) }
 end	
  
 rule "birth"
@@ -110,9 +105,7 @@ rule "birth"
 when
 	theCell: Cell(phase == Phase.BIRTH)
 then
-	theCell.setCellState(CellState.LIVE);
-	theCell.setPhase(Phase.DONE);
-	update( theCell );	
+	modify( theCell ){setCellState(CellState.LIVE), setPhase(Phase.DONE) }
 end	
 
 rule "Calculate Live"
@@ -122,9 +115,7 @@ when
 	theCell: Cell(cellState == CellState.LIVE)
 	Neighbor(cell == theCell, $neighbor : neighbor)	
 then
-	$neighbor.setLiveNeighbors( $neighbor.getLiveNeighbors() + 1 );
-	$neighbor.setPhase( Phase.EVALUATE );	
-	update( $neighbor );
+	modify( $neighbor ) {setLiveNeighbors( $neighbor.getLiveNeighbors() + 1 ), setPhase( Phase.EVALUATE )}
 end	
 
 rule "Calculate Dead"
@@ -134,9 +125,7 @@ when
 	theCell: Cell(cellState == CellState.DEAD)
     Neighbor(cell == theCell, $neighbor : neighbor )
 then
-	$neighbor.setLiveNeighbors( $neighbor.getLiveNeighbors() - 1 );
-	$neighbor.setPhase( Phase.EVALUATE );
-	update( $neighbor );	
+	modify( $neighbor ) {setLiveNeighbors( $neighbor.getLiveNeighbors() - 1 ), setPhase( Phase.EVALUATE )}
 end	
 
 rule "Kill All"
@@ -145,6 +134,5 @@ rule "Kill All"
 when
 	theCell: Cell(cellState == CellState.LIVE)
 then
-	theCell.setCellState(CellState.DEAD);
-	update( theCell );
+	modify( theCell ) {setCellState(CellState.DEAD)}
 end
