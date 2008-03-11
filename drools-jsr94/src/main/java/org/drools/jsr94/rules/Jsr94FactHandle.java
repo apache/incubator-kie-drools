@@ -77,7 +77,7 @@ public class Jsr94FactHandle extends DefaultFactHandle
     Jsr94FactHandle(final long id,
                     final Object object,
                     final long recency) {
-        super( id,
+        super( (int) id,
                object,
                recency );
     }
