@@ -48,6 +48,7 @@ import org.drools.objenesis.ObjenesisStd;
 import org.drools.process.core.Process;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.DialectDatas;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.MapBackedClassLoader;
@@ -754,17 +755,16 @@ abstract public class AbstractRuleBase
                                                                                       this.packageClassLoader );
         streamWithLoader.setRuleBase( this );
 
-        final StatefulSession session = (StatefulSession) streamWithLoader.readObject();
+        final StatefulSession session = (StatefulSession) streamWithLoader.readObject();                
 
         synchronized ( this.pkgs ) {
             ((InternalWorkingMemory) session).setRuleBase( this );
             ((InternalWorkingMemory) session).setId( (nextWorkingMemoryCounter()) );
+                        
 
             ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );
-
-            executor.setCommandExecutor( new CommandExecutor( session ) );
-            
-            ((InternalWorkingMemory) session).setExecutorService( executor );
+            executor.setCommandExecutor( new CommandExecutor( session ) );            
+            ((InternalWorkingMemory) session).setExecutorService( executor );            
 
             if ( keepReference ) {
                 addStatefulSession( session );
