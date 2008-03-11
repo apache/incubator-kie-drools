@@ -18,6 +18,7 @@ package org.drools.common;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -94,86 +95,86 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
-    protected static final Class[]                 ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
-    private static final int                       NODE_MEMORIES_ARRAY_GROWTH                    = 32;
+    protected static final Class[]                      ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    private static final int                            NODE_MEMORIES_ARRAY_GROWTH                    = 32;
 
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected long                                 id;
+    protected long                                      id;
 
     /** The arguments used when adding/removing a property change listener. */
-    protected final Object[]                       addRemovePropertyChangeListenerArgs           = new Object[]{this};
+    protected final Object[]                            addRemovePropertyChangeListenerArgs           = new Object[]{this};
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected final NodeMemories                   nodeMemories;
+    protected final NodeMemories                        nodeMemories;
 
-    protected final ObjectStore                    objectStore;
+    protected final ObjectStore                         objectStore;
 
-    protected Map                                  queryResults                                  = Collections.EMPTY_MAP;
+    protected Map                                       queryResults                                  = Collections.EMPTY_MAP;
 
     /** Global values which are associated with this memory. */
-    protected GlobalResolver                       globalResolver;
+    protected GlobalResolver                            globalResolver;
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport            workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
+    protected WorkingMemoryEventSupport                 workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
 
-    protected AgendaEventSupport                   agendaEventSupport                            = new AgendaEventSupport();
+    protected AgendaEventSupport                        agendaEventSupport                            = new AgendaEventSupport();
 
-    protected RuleFlowEventSupport                 workflowEventSupport                          = new RuleFlowEventSupport();
+    protected RuleFlowEventSupport                      workflowEventSupport                          = new RuleFlowEventSupport();
 
-    protected List                                 __ruleBaseEventListeners                      = new LinkedList();
+    protected List                                      __ruleBaseEventListeners                      = new LinkedList();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected transient InternalRuleBase           ruleBase;
+    protected transient InternalRuleBase                ruleBase;
 
-    protected final FactHandleFactory              handleFactory;
+    protected final FactHandleFactory                   handleFactory;
 
-    protected final TruthMaintenanceSystem         tms;
+    protected final TruthMaintenanceSystem              tms;
 
     /** Rule-firing agenda. */
-    protected DefaultAgenda                        agenda;
+    protected DefaultAgenda                             agenda;
 
-    protected final Queue<WorkingMemoryAction>     actionQueue                                   = new LinkedList<WorkingMemoryAction>();
+    protected final Queue<WorkingMemoryAction>          actionQueue                                   = new LinkedList<WorkingMemoryAction>();
 
-    protected boolean                              evaluatingActionQueue;
+    protected boolean                                   evaluatingActionQueue;
 
-    protected final ReentrantLock                  lock                                          = new ReentrantLock();
+    protected final ReentrantLock                       lock                                          = new ReentrantLock();
 
-    protected final boolean                        discardOnLogicalOverride;
+    protected final boolean                             discardOnLogicalOverride;
 
     /**
      * This must be thread safe as it is incremented and read via different EntryPoints
      */
-    protected AtomicLong                           propagationIdCounter;
+    protected AtomicLong                                propagationIdCounter;
 
-    private final boolean                          maintainTms;
+    private final boolean                               maintainTms;
 
-    private final boolean                          sequential;
+    private final boolean                               sequential;
 
-    private List                                   liaPropagations                               = Collections.EMPTY_LIST;
+    private List                                        liaPropagations                               = Collections.EMPTY_LIST;
 
     /** Flag to determine if a rule is currently being fired. */
-    protected boolean                              firing;
+    protected boolean                                   firing;
 
-    protected boolean                              halt;
+    protected boolean                                   halt;
 
-    private Map                                    processInstances                              = new HashMap();
+    private Map                                         processInstances                              = new HashMap();
 
-    private int                                    processCounter;
+    private int                                         processCounter;
 
-    private WorkItemManager                        workItemManager;
+    private WorkItemManager                             workItemManager;
 
-    private Map<String, ProcessInstanceFactory>    processInstanceFactories                      = new HashMap();
+    private Map<String, ProcessInstanceFactory>         processInstanceFactories                      = new HashMap();
 
-    private TimeMachine                            timeMachine                                   = new TimeMachine();
+    private TimeMachine                                 timeMachine                                   = new TimeMachine();
 
-    protected ObjectTypeConfigurationRegistry        typeConfReg;
+    protected transient ObjectTypeConfigurationRegistry typeConfReg;
 
-    protected EntryPoint                           entryPoint;
-    protected EntryPointNode                       entryPointNode;
+    protected EntryPoint                                entryPoint;
+    protected transient EntryPointNode                  entryPointNode;
 
-    protected Map<String, WorkingMemoryEntryPoint> entryPoints;
+    protected Map<String, WorkingMemoryEntryPoint>      entryPoints;
 
     // ------------------------------------------------------------
     // Constructors
@@ -204,7 +205,7 @@ public abstract class AbstractWorkingMemory
         }
 
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
-        
+
         this.propagationIdCounter = new AtomicLong();
 
         this.objectStore = new SingleThreadedObjectStore( conf,
@@ -219,26 +220,27 @@ public abstract class AbstractWorkingMemory
 
         this.workItemManager = new WorkItemManager( this );
         this.processInstanceFactories.put( RuleFlowProcess.RULEFLOW_TYPE,
-                                           new RuleFlowProcessInstanceFactory() );
-
-        this.typeConfReg = new ObjectTypeConfigurationRegistry( this.ruleBase );
-
-        this.entryPoint = EntryPoint.DEFAULT;
-        this.entryPointNode = this.ruleBase.getRete().getEntryPointNode( this.entryPoint );
-
+                                           new RuleFlowProcessInstanceFactory() );        
         this.entryPoints = new ConcurrentHashMap();
         this.entryPoints.put( "DEFAULT",
                               this );
-    }
-
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
-
+        
+        this.entryPoint = EntryPoint.DEFAULT;
+        initTransient();
+    }        
+    
     public void setRuleBase(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
         this.nodeMemories.setRuleBaseReference( this.ruleBase );
+        initTransient();
     }
+    
+
+    private void initTransient() {
+        this.entryPointNode = this.ruleBase.getRete().getEntryPointNode( this.entryPoint );
+        this.typeConfReg = new ObjectTypeConfigurationRegistry( this.ruleBase );
+    }
+        
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport) {
         this.workingMemoryEventSupport = workingMemoryEventSupport;
@@ -1192,10 +1194,10 @@ public abstract class AbstractWorkingMemory
                                                                                       this.agenda.getActiveActivations(),
                                                                                       this.agenda.getDormantActivations(),
                                                                                       entryPoint );
-            
-           ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                         object );
-                                                
+
+            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                                          object );
+
             this.entryPointNode.retractObject( handle,
                                                propagationContext,
                                                typeConf,
@@ -1469,21 +1471,20 @@ public abstract class AbstractWorkingMemory
     public void setTimeMachine(TimeMachine timeMachine) {
         this.timeMachine = timeMachine;
     }
-    
+
     public ExecutorService getExecutorService() {
         return null; // no executor service
     }
 
     public void setExecutorService(ExecutorService executor) {
         // no executor service, so nothing to set
-    }    
+    }
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
         WorkingMemoryEntryPoint wmEntryPoint = this.entryPoints.get( name );
         if ( wmEntryPoint == null ) {
             EntryPoint entryPoint = new EntryPoint( name );
             EntryPointNode entryPointNode = this.ruleBase.getRete().getEntryPointNode( entryPoint );
-
 
             if ( entryPointNode != null ) {
                 wmEntryPoint = new NamedEntryPoint( entryPoint,
@@ -1568,9 +1569,9 @@ public abstract class AbstractWorkingMemory
     //        }
     //
     //    }
-    
+
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         return this.typeConfReg;
-    }    
+    }
 
 }

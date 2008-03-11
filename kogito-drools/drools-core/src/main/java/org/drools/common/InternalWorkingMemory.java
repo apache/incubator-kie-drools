@@ -12,6 +12,7 @@ import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
+import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
@@ -93,5 +94,5 @@ public interface InternalWorkingMemory
 
     public ExecutorService getExecutorService();
 
-    public void setExecutorService(ExecutorService executor);
+    public void setExecutorService(ExecutorService executor);    
 }

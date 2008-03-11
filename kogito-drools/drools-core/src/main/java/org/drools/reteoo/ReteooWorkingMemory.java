@@ -29,6 +29,7 @@ import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.RuleBaseEventListener;
@@ -64,7 +65,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                ruleBase,
                ruleBase.newFactHandleFactory() );
         this.agenda = new DefaultAgenda( this );
-    }
+    }    
     
     public QueryResults getQueryResults(final String query) {
         return getQueryResults( query, null );
