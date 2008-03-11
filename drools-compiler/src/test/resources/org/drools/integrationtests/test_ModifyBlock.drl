@@ -1,0 +1,12 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test modify block"
+when
+    $p: Person( status == "hungry" )
+    $c: Cheese( )
+then
+    modify( $c ) {setPrice (10) }
+    modify( $p ) {setStatus("fine") }
+end

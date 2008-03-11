@@ -180,6 +180,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             }
 
             // adding modify expression
+            consequence.append( "{\n" );
             consequence.append( ret.getName() );
             consequence.append( " __obj__ = (" );
             consequence.append( ret.getName() );
@@ -188,6 +189,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             consequence.append( ";\n" );
             // adding the modifyRetract call:
             consequence.append( "modifyRetract( __obj__ );\n" );
+            
 
             // adding each of the expressions:
             for ( Iterator exprIt = d.getExpressions().iterator(); exprIt.hasNext(); ) {
@@ -197,6 +199,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             }
             // adding the modifyInsert call:
             consequence.append( "modifyInsert( __obj__ );" );
+            consequence.append( "}\n" );
         }
         consequence.append( originalCode.substring( lastAdded ) );
 
