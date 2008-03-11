@@ -2,6 +2,7 @@ package org.drools.benchmark.manners;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,6 +17,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.rule.Package;
 
 public class MannersBenchmark {
@@ -32,7 +34,10 @@ public class MannersBenchmark {
 	private int maxHobbies = 3;
 
 	public static void main(final String[] args) throws Exception {
-		PackageBuilder builder = new PackageBuilder();
+	    PackageBuilderConfiguration config = new PackageBuilderConfiguration();
+	    config.setDumpDir( new File("/stash") );
+	    
+		PackageBuilder builder = new PackageBuilder(config);
 		builder.addPackageFromDrl(new InputStreamReader(MannersBenchmark.class
 				.getResourceAsStream("manners.drl")));
 		Package pkg = builder.getPackage();

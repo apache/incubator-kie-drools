@@ -14,13 +14,11 @@ rule assignFirstSeat
         Path path = new Path( count.getValue(), 1, guestName );
         insert( path );
         
-        count.setValue(  count.getValue() + 1 );        
-        update( count );
+        modify( count ) { setValue ( count.getValue() + 1 )  }
 
 		System.out.println( "assign first seat :  " + seating + " : " + path );
 
-        context.setState( Context.ASSIGN_SEATS );        
-        update( context );
+        modify( context ) { setState( Context.ASSIGN_SEATS ) } 
 end
 
 rule findSeating
@@ -50,11 +48,8 @@ rule findSeating
 
 	   System.err.println( "find seating : " + seating + " : " + path + " : " + chosen);
 
-       count.setValue(  countValue + 1 );
-       update( count );       
-
-       context.setState( Context.MAKE_PATH );
-       update( context );
+       modify( count ) {setValue(  countValue + 1 )}        
+       modify( context ) {setState( Context.MAKE_PATH )} 
 end
 
 rule makePath
@@ -72,11 +67,9 @@ rule pathDone
         context : Context( state == Context.MAKE_PATH ) 
         seating : Seating( pathDone == false ) 
     then
-        seating.setPathDone( true ); 
-        update( seating );
+        modify( seating ) {setPathDone( true )} 
         
-        context.setState( Context.CHECK_DONE ); 
-		update( context );
+		modify( context ) {setState( Context.CHECK_DONE)}
 end
 
 
@@ -86,16 +79,14 @@ rule areWeDone
         LastSeat( lastSeat: seat )
         Seating( rightSeat == lastSeat ) 
     then
-        context.setState(Context.PRINT_RESULTS ); 
-        update( context );
+        modify( context ) {setState(Context.PRINT_RESULTS )}
 end
 
 rule continue
     when
         context : Context( state == Context.CHECK_DONE ) 
     then
-        context.setState( Context.ASSIGN_SEATS ); 
-        update( context );
+        modify( context ) {setState( Context.ASSIGN_SEATS )}
 end
 
 
