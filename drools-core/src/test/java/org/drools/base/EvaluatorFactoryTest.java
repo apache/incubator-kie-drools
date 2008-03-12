@@ -103,7 +103,6 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {Boolean.FALSE, "!=", "xyz", Boolean.FALSE},
                                  {Boolean.FALSE, "!=", "true", Boolean.TRUE},
                                  {Boolean.FALSE, "!=", "false", Boolean.FALSE}
-
         };
 
         runEvaluatorTest( data,
@@ -158,6 +157,10 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {"foo", "matches", ".*foo", Boolean.TRUE},
                                  {"foo", "matches", "bar", Boolean.FALSE},
                                  {null, "matches", ".*foo", Boolean.FALSE},
+                                 {"something", "matches", "something", Boolean.TRUE},
+                                 {"something", "matches", "hello ;=", Boolean.FALSE},
+                                 {"something", "not matches", "something", Boolean.FALSE},
+                                 {"something", "not matches", "hello ;=", Boolean.TRUE},
                                  {"foo", "==", null, Boolean.FALSE},
                                  {"foo", "!=", null, Boolean.TRUE},
                                  {null, "==", null, Boolean.TRUE},
