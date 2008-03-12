@@ -3499,6 +3499,31 @@ public class MiscTest extends TestCase {
             fail( "unexpected exception: " + e.getMessage() );
         }
     }
+    
+    public void testMergePackageWithSameRuleNames() throws Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MergePackageWithSameRuleNames1.drl" ) ) );
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MergePackageWithSameRuleNames2.drl" ) ) );
+        ruleBase.addPackage( builder.getPackage() );
+
+        StatefulSession session = ruleBase.newStatefulSession();
+        final List results = new ArrayList();
+        session.setGlobal( "results",
+                           results );
+
+        session.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
+
+        assertEquals( "rule1 for the package2",
+                      results.get( 0 ) );
+    }
+    
 
     public void testRuleReplacement() throws Exception {
         // test rule replacement
