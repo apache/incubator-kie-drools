@@ -191,6 +191,7 @@ public class ObjectTypeNode extends ObjectSource
                                context,
                                workingMemory );
         }
+        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
     }
 
     /**
@@ -293,7 +294,6 @@ public class ObjectTypeNode extends ObjectSource
      */
     protected void addObjectSink(final ObjectSink objectSink) {
         super.addObjectSink( objectSink );
-        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
     }
 
     /**
@@ -301,7 +301,6 @@ public class ObjectTypeNode extends ObjectSource
      */
     protected void removeObjectSink(final ObjectSink objectSink) {
         super.removeObjectSink( objectSink );
-        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
     }
 
     /**
@@ -313,24 +312,24 @@ public class ObjectTypeNode extends ObjectSource
      */
     private boolean canSkipOnModify(final Sink[] sinks) {
         // If we have no alpha or beta node with constraints on this ObjectType, we can just skip modifies
-        return false;
-        //boolean hasConstraints = false;
-        //for ( int i = 0; i < sinks.length && !hasConstraints; i++ ) {
-        //    if ( sinks[i] instanceof AlphaNode ) {
-        //        hasConstraints = this.usesDeclaration( ((AlphaNode) sinks[i]).getConstraint() );
-        //    } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
-        //        hasConstraints = this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
-        //    }
-        //    if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
-       //         hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
-        //    } else if ( sinks[i] instanceof TupleSource ) {
-        //        hasConstraints = !this.canSkipOnModify( ((TupleSource) sinks[i]).getSinkPropagator().getSinks() );
-        //    }
-        //}
+        boolean hasConstraints = false;
+        for ( int i = 0; i < sinks.length && !hasConstraints; i++ ) {
+            if ( sinks[i] instanceof AlphaNode || sinks[i] instanceof AccumulateNode || sinks[i] instanceof CollectNode || sinks[i] instanceof FromNode ) {
+                hasConstraints = true;
+            } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
+                hasConstraints = this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
+            }
+            if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
+                hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
+            } else if ( !hasConstraints && sinks[i] instanceof TupleSource ) {
+                hasConstraints = !this.canSkipOnModify( ((TupleSource) sinks[i]).getSinkPropagator().getSinks() );
+            }
+        }
 
         // Can only skip if we have no constraints
-        //return !hasConstraints;
+        return !hasConstraints;
     }
+
 
     private boolean usesDeclaration(final Constraint[] constraints) {
         boolean usesDecl = false;
