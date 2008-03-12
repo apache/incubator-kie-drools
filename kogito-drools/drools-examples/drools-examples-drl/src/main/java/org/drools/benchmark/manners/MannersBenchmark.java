@@ -10,10 +10,13 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseConfigurationTest;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
@@ -41,9 +44,13 @@ public class MannersBenchmark {
 		builder.addPackageFromDrl(new InputStreamReader(MannersBenchmark.class
 				.getResourceAsStream("manners.drl")));
 		Package pkg = builder.getPackage();
+		
 
-		// add the package to a rulebase
-		final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setShadowProxy( false );
+        
+        // add the package to a rulebase
+		final RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
 		ruleBase.addPackage(pkg);
 
 		StatefulSession session = ruleBase.newStatefulSession();
