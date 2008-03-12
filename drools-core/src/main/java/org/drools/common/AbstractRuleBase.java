@@ -179,7 +179,10 @@ abstract public class AbstractRuleBase
     public void doWriteExternal(final ObjectOutput stream,
                                 final Object[] objects) throws IOException {        
         stream.writeObject( this.pkgs );
-        stream.writeObject( this.classLoader.getStore() );
+        
+        synchronized ( this.classLoader.getStore() ) {
+            stream.writeObject( this.classLoader.getStore() );
+        }
 
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
