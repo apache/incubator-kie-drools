@@ -10,7 +10,6 @@ public class DefaultConsequenceExceptionHandler implements ConsequenceExceptionH
     public void handleException(Activation activation,
                                 WorkingMemory workingMemory,
                                 Exception exception) {
-        exception.printStackTrace();
         throw new ConsequenceException( exception,
                                         activation.getRule() );
     }
