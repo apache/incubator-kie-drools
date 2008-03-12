@@ -719,6 +719,38 @@ public class MiscTest extends TestCase {
         
     }    
     
+    public void testMVELConsequenceWithMapsAndArrays() throws Exception {
+        String rule = "package org.test;\n";
+        rule += "import java.util.ArrayList\n";
+        rule += "import java.util.HashMap\n";
+        rule += "global java.util.List list\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "    dialect \"mvel\"";
+        rule += "when\n";
+        rule += "then\n";
+        rule += "    m = new HashMap();\n";
+        rule += "    l = new ArrayList();\n";
+        rule += "    l.add(\"first\");\n";
+        rule += "    m.put(\"content\", l);\n";
+        rule += "    System.out.println(m[\"content\"][0]);\n";
+        rule += "    list.add(m[\"content\"][0]);\n";
+        rule += "end";
+        
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ));
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage(pkg);
+        final StatefulSession session = ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        session.setGlobal( "list", list );
+        session.fireAllRules();
+        
+        assertEquals( 1, list.size() );
+        assertEquals( "first", list.get( 0 ) );                        
+    }       
+    
     public void testCell() throws Exception {
         final Cell cell1 = new Cell( 9 );
         final Cell cell = new Cell( 0 );
