@@ -817,7 +817,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <itemizedlist>
         <listitem>
-          <para>RuleNameEndWithAgendaFilter</para>
+          <para>RuleNameEndsWithAgendaFilter</para>
         </listitem>
 
         <listitem>
@@ -834,8 +834,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
       </itemizedlist>
 
       <para>To use a filter specify it while calling FireAllRules. The
-      following example will filter out all rules ending with the text
-      "Test":</para>
+      following example will only allow activation of rules ending with the test <emphasis>Test</emphasis>. All others will be filtered out:</para>
 
       <programlisting>workingMemory.fireAllRules( new RuleNameEndsWithAgendaFilter( "Test" ) );      </programlisting>
     </section>
