@@ -40,10 +40,10 @@ public abstract class WaltzBenchmark {
             PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "waltz.drl" ) ) );
             Package pkg = builder.getPackage();
-            
             //add the package to a rulebase
             RuleBaseConfiguration conf = new RuleBaseConfiguration();
             //conf.setAlphaMemory( true );
+            conf.setShadowProxy( false );
             final RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
             ruleBase.addPackage( pkg );
             
