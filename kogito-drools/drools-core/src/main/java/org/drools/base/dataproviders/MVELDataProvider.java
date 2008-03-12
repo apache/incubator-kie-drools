@@ -11,6 +11,7 @@ import org.drools.rule.Declaration;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.drools.util.ArrayIterator;
 import org.mvel.MVEL;
 
 public class MVELDataProvider
@@ -52,12 +53,15 @@ public class MVELDataProvider
 
         //this.expression.
         final Object result = MVEL.executeExpression( this.expression,
-                                                      factory );
+                                                      factory );                
+        
         if ( result instanceof Collection ) {
             return ((Collection) result).iterator();
         } else if ( result instanceof Iterator ) {
             return (Iterator) result;
-        } else if ( result != null ){
+        } else if ( result.getClass().isArray() ) { 
+        	return new ArrayIterator( result );
+        } else if( result != null ){
             return Collections.singletonList( result ).iterator();
         } else {
             return Collections.EMPTY_LIST.iterator();
