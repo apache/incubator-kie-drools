@@ -697,6 +697,28 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    // @FIXME
+    public void FIXME_testBigDecimalWithFromAndEval() throws Exception {
+        String rule = "package org.test;\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "when\n";
+        rule += "    $dec : java.math.BigDecimal() from java.math.BigDecimal.TEN;\n";
+        rule += "    eval( $dec.compareTo(java.math.BigDecimal.ONE) > 0 )\n";
+        rule += "then\n";
+        rule += "    System.out.println(\"OK!\");\n";
+        rule += "end";
+        
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ));
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage(pkg);
+        final StatefulSession session = ruleBase.newStatefulSession();
+        session.fireAllRules();
+        
+    }    
+    
     public void testCell() throws Exception {
         final Cell cell1 = new Cell( 9 );
         final Cell cell = new Cell( 0 );
