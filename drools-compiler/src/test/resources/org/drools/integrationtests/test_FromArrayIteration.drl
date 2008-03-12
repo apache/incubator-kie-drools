@@ -1,0 +1,14 @@
+package org.drools.test;
+
+import  org.drools.DomainObject
+import  org.drools.DomainObjectHolder;
+
+global java.util.List list
+
+rule "Test Rule"
+when
+    $holder : DomainObjectHolder()
+    $object : DomainObject( $message : message) from $holder.objects;
+then
+    list.add( $message );
+end 

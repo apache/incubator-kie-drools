@@ -46,6 +46,7 @@ import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.Cheesery;
 import org.drools.Child;
+import org.drools.DomainObjectHolder;
 import org.drools.FactA;
 import org.drools.FactB;
 import org.drools.FactC;
@@ -4234,6 +4235,29 @@ public class MiscTest extends TestCase {
         assertSame( order1.getStatus(),
                     list.get( 0 ) );
     }
+    
+    public void testFromArrayIteration() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromArrayIteration.drl" ) ) );
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+
+        final WorkingMemory session = ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        
+        session.setGlobal( "list", list );
+        session.insert( new DomainObjectHolder() );
+        
+        session.fireAllRules();
+        
+        assertEquals( 3, list.size() );
+        
+        assertEquals( "Message3" , list.get(0));
+        assertEquals( "Message2" , list.get(1));
+        assertEquals( "Message1" , list.get(2));
+        
+    }
 
     public void testSubNetworks() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -4452,8 +4476,8 @@ public class MiscTest extends TestCase {
         assertEquals( "should not have fired",
                       0,
                       list.size() );
-    }
-
+    }    
+    
     public void testModifyRetractAndModifyInsert() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyRetractInsert.drl" ) ) );
@@ -4505,8 +4529,7 @@ public class MiscTest extends TestCase {
         
         assertEquals( 10, c.getPrice() );
         assertEquals( "fine", bob.getStatus() );
-    }
-    
+    }    
 
     // this test requires mvel 1.2.19. Leaving it commented until mvel is released.
     public void testJavaModifyBlock() throws Exception {
