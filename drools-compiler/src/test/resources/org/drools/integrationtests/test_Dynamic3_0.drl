@@ -1,0 +1,13 @@
+package org.drools.newtest;
+
+import org.drools.Person; 
+
+global java.util.List results
+
+rule "match Person"
+        salience 30
+    when
+        $person : Person()
+    then
+        results.add( $person );
+end    

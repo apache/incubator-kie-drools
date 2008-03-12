@@ -1,0 +1,13 @@
+package org.drools.test;
+
+import org.drools.Address; 
+
+global java.util.List results;
+
+rule "match SerializeAddress"
+        salience 10
+    when
+        $address : Address()
+    then
+		results.add( $address );
+end  

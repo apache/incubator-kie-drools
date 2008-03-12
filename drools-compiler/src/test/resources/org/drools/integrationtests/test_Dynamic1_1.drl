@@ -1,0 +1,13 @@
+package org.drools.test;
+
+import org.drools.Cheese;
+
+global java.util.List results;
+
+rule "like brie"
+        salience 20
+    when
+        $cheese : Cheese( type:type == "brie" ) 
+    then
+        results.add( $cheese );
+end  

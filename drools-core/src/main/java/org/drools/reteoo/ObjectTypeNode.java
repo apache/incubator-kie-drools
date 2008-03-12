@@ -313,22 +313,23 @@ public class ObjectTypeNode extends ObjectSource
      */
     private boolean canSkipOnModify(final Sink[] sinks) {
         // If we have no alpha or beta node with constraints on this ObjectType, we can just skip modifies
-        boolean hasConstraints = false;
-        for ( int i = 0; i < sinks.length && !hasConstraints; i++ ) {
-            if ( sinks[i] instanceof AlphaNode ) {
-                hasConstraints = this.usesDeclaration( ((AlphaNode) sinks[i]).getConstraint() );
-            } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
-                hasConstraints = this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
-            }
-            if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
-                hasConstraints = this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
-            } else if ( sinks[i] instanceof TupleSource ) {
-                hasConstraints = this.canSkipOnModify( ((TupleSource) sinks[i]).getSinkPropagator().getSinks() );
-            }
-        }
+        return false;
+        //boolean hasConstraints = false;
+        //for ( int i = 0; i < sinks.length && !hasConstraints; i++ ) {
+        //    if ( sinks[i] instanceof AlphaNode ) {
+        //        hasConstraints = this.usesDeclaration( ((AlphaNode) sinks[i]).getConstraint() );
+        //    } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
+        //        hasConstraints = this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
+        //    }
+        //    if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
+       //         hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
+        //    } else if ( sinks[i] instanceof TupleSource ) {
+        //        hasConstraints = !this.canSkipOnModify( ((TupleSource) sinks[i]).getSinkPropagator().getSinks() );
+        //    }
+        //}
 
         // Can only skip if we have no constraints
-        return !hasConstraints;
+        //return !hasConstraints;
     }
 
     private boolean usesDeclaration(final Constraint[] constraints) {
