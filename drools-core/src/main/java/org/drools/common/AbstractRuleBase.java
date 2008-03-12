@@ -448,9 +448,6 @@ abstract public class AbstractRuleBase
             final Rule[] rules = newPkg.getRules();
 
             for ( int i = 0; i < rules.length; ++i ) {
-                if ( pkg != null && pkg.getRule( rules[i].getName() ) != null ) {
-                    removeRule( pkg, pkg.getRule( rules[i].getName() ) );
-                }
                 addRule( newPkg,
                          rules[i] );
             }
@@ -519,9 +516,13 @@ abstract public class AbstractRuleBase
         final Rule[] newRules = newPkg.getRules();
         for ( int i = 0; i < newRules.length; i++ ) {
             final Rule newRule = newRules[i];
-            if ( pkg.getRule( newRule.getName() ) == null ) {
-                pkg.addRule( newRule );
+            
+            // remove the rule if it already exists
+            if ( pkg.getRule( newRule.getName() ) != null ) {
+                removeRule( pkg, pkg.getRule( newRule.getName() ) );
             }
+            
+            pkg.addRule( newRule );
         }
 
         //and now the rule flows
