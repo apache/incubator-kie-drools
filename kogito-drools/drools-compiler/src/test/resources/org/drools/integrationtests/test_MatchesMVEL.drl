@@ -1,0 +1,12 @@
+package org.drools;
+
+import java.util.Map;
+
+global java.util.List results;
+
+rule "Matches mvel"
+when
+    Map( this["content"] matches "hello ;=" )
+then
+    results.add( "OK" );
+end

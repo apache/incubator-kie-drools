@@ -707,18 +707,18 @@ public class MiscTest extends TestCase {
         rule += "then\n";
         rule += "    System.out.println(\"OK!\");\n";
         rule += "end";
-        
+
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ));
+        builder.addPackageFromDrl( new StringReader( rule ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage(pkg);
+        ruleBase.addPackage( pkg );
         final StatefulSession session = ruleBase.newStatefulSession();
         session.fireAllRules();
-        
-    }    
-    
+
+    }
+
     public void testMVELConsequenceWithMapsAndArrays() throws Exception {
         String rule = "package org.test;\n";
         rule += "import java.util.ArrayList\n";
@@ -735,22 +735,25 @@ public class MiscTest extends TestCase {
         rule += "    System.out.println(m[\"content\"][0]);\n";
         rule += "    list.add(m[\"content\"][0]);\n";
         rule += "end";
-        
+
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ));
+        builder.addPackageFromDrl( new StringReader( rule ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage(pkg);
+        ruleBase.addPackage( pkg );
         final StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
-        session.setGlobal( "list", list );
+        session.setGlobal( "list",
+                           list );
         session.fireAllRules();
-        
-        assertEquals( 1, list.size() );
-        assertEquals( "first", list.get( 0 ) );                        
-    }       
-    
+
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( "first",
+                      list.get( 0 ) );
+    }
+
     public void testCell() throws Exception {
         final Cell cell1 = new Cell( 9 );
         final Cell cell = new Cell( 0 );
@@ -3052,9 +3055,9 @@ public class MiscTest extends TestCase {
         final Cheese muzzarella2 = new Cheese( "muzzarella2",
                                                10 );
         final Cheese provolone = new Cheese( "provolone",
-                                              10 );
+                                             10 );
         final Cheese provolone2 = new Cheese( "another cheese (provolone)",
-                                               10 );
+                                              10 );
         workingMemory.insert( stilton );
         workingMemory.insert( stilton2 );
         workingMemory.insert( agedStilton );
@@ -3067,7 +3070,7 @@ public class MiscTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        System.out.println(list.toString());
+        System.out.println( list.toString() );
         assertEquals( 4,
                       list.size() );
 
@@ -3102,12 +3105,35 @@ public class MiscTest extends TestCase {
         workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
-
         assertEquals( 1,
                       list.size() );
 
         assertEquals( bob,
                       list.get( 0 ) );
+    }
+
+    public void testMatchesMVEL() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesMVEL.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final StatefulSession session = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        session.setGlobal( "results",
+                           results );
+
+        Map map = new HashMap();
+        map.put( "content",
+                 "hello ;=" );
+        session.insert( map );
+
+        session.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
     }
 
     public void testAutomaticBindingsErrors() throws Exception {
@@ -3551,7 +3577,7 @@ public class MiscTest extends TestCase {
             fail( "unexpected exception: " + e.getMessage() );
         }
     }
-    
+
     public void testMergePackageWithSameRuleNames() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MergePackageWithSameRuleNames1.drl" ) ) );
@@ -3575,7 +3601,6 @@ public class MiscTest extends TestCase {
         assertEquals( "rule1 for the package2",
                       results.get( 0 ) );
     }
-    
 
     public void testRuleReplacement() throws Exception {
         // test rule replacement
@@ -4312,7 +4337,7 @@ public class MiscTest extends TestCase {
         assertSame( order1.getStatus(),
                     list.get( 0 ) );
     }
-    
+
     public void testFromArrayIteration() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromArrayIteration.drl" ) ) );
@@ -4322,18 +4347,23 @@ public class MiscTest extends TestCase {
 
         final WorkingMemory session = ruleBase.newStatefulSession();
         List list = new ArrayList();
-        
-        session.setGlobal( "list", list );
+
+        session.setGlobal( "list",
+                           list );
         session.insert( new DomainObjectHolder() );
-        
+
         session.fireAllRules();
-        
-        assertEquals( 3, list.size() );
-        
-        assertEquals( "Message3" , list.get(0));
-        assertEquals( "Message2" , list.get(1));
-        assertEquals( "Message1" , list.get(2));
-        
+
+        assertEquals( 3,
+                      list.size() );
+
+        assertEquals( "Message3",
+                      list.get( 0 ) );
+        assertEquals( "Message2",
+                      list.get( 1 ) );
+        assertEquals( "Message1",
+                      list.get( 2 ) );
+
     }
 
     public void testSubNetworks() throws Exception {
@@ -4553,8 +4583,8 @@ public class MiscTest extends TestCase {
         assertEquals( "should not have fired",
                       0,
                       list.size() );
-    }    
-    
+    }
+
     public void testModifyRetractAndModifyInsert() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyRetractInsert.drl" ) ) );
@@ -4580,7 +4610,7 @@ public class MiscTest extends TestCase {
                       1,
                       list.size() );
     }
-    
+
     public void testModifyBlock() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyBlock.drl" ) ) );
@@ -4596,17 +4626,19 @@ public class MiscTest extends TestCase {
 
         Person bob = new Person( "Bob" );
         bob.setStatus( "hungry" );
-        
+
         Cheese c = new Cheese();
-        
+
         workingMemory.insert( bob );
         workingMemory.insert( c );
 
         workingMemory.fireAllRules();
-        
-        assertEquals( 10, c.getPrice() );
-        assertEquals( "fine", bob.getStatus() );
-    }    
+
+        assertEquals( 10,
+                      c.getPrice() );
+        assertEquals( "fine",
+                      bob.getStatus() );
+    }
 
     // this test requires mvel 1.2.19. Leaving it commented until mvel is released.
     public void testJavaModifyBlock() throws Exception {
@@ -4758,12 +4790,14 @@ public class MiscTest extends TestCase {
 
         final List list = new ArrayList();
         session.setGlobal( "results",
-                                 list );
-        
-        Cheese cheese = new Cheese( "stilton", 10 );
+                           list );
+
+        Cheese cheese = new Cheese( "stilton",
+                                    10 );
         Cheesery cheesery = new Cheesery();
         cheesery.addCheese( cheese );
-        Person bob = new Person( "bob", "stilton" );
+        Person bob = new Person( "bob",
+                                 "stilton" );
         Cheese cheese2 = new Cheese();
         bob.setCheese( cheese2 );
 
@@ -4775,15 +4809,16 @@ public class MiscTest extends TestCase {
         assertEquals( "should not have fired",
                       0,
                       list.size() );
-        
+
         cheese2.setType( "stilton" );
-        
-        session.update( p, bob );
+
+        session.update( p,
+                        bob );
         session.fireAllRules();
-        
+
         assertEquals( 1,
                       list.size() );
-        
+
     }
-    
+
 }
