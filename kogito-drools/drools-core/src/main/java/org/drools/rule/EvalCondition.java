@@ -79,7 +79,7 @@ public class EvalCondition extends ConditionalElement {
                                              workingMemory,
                                              context );
         } catch ( final Exception e ) {
-        	throw new RuntimeDroolsException( this.getEvalExpression() + " : " + e );
+        	throw new RuntimeDroolsException( this.getEvalExpression() + " : " + e, e );
         }
     }
 
