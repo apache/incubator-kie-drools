@@ -28,7 +28,7 @@ public class HelloWorldExample {
 
         final PackageBuilder builder = new PackageBuilder();
 
-        //this wil parse and compile in one step
+        //this will parse and compile in one step
         builder.addPackageFromDrl( source );
         
         // Check the builder for errors

@@ -48,7 +48,7 @@ public class DroolsUtil
    
       PackageBuilder builder = new PackageBuilder();
    
-      //this wil parse and compile in one step
+      //this will parse and compile in one step
       //NOTE: There are 2 methods here, the one argument one is for normal DRL.
       builder.addPackageFromDrl( source );
    
