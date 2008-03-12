@@ -1,0 +1,13 @@
+package org.drools.test;
+
+import org.drools.Cheese; 
+
+global java.util.List results
+
+rule "like stilton"
+        salience 50
+    when
+        $cheese :Cheese( type:type == "stilton" )
+    then
+        results.add( $cheese );
+end  

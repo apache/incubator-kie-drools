@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
+import org.drools.Address;
 import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.Primitives;
@@ -27,9 +30,8 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
-import junit.framework.TestCase;
-
 public class MarshallingTest extends TestCase {
+    
     public void testSerializable() throws Exception {
 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
@@ -435,6 +437,429 @@ public class MarshallingTest extends TestCase {
 
     }
 
+    /*
+     *  Here I am inserting data points which are not used by any rule (e.g Person).
+     *  Later adding rule (e.g. Rule: 'match Person') for those data points.
+     *  
+     *  Result: Pkg/Rule addition is failing with ClassCastException
+     */
+    public void testSerializeAdd2() throws Exception {
+
+        //Create a rulebase, a session, and test it
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_0.drl" ) ) );
+        Package pkg = serialisePackage( builder.getPackage() );
+        ruleBase.addPackage( pkg );
+
+        List results = new ArrayList();
+        StatefulSession session = ruleBase.newStatefulSession();
+        session.setGlobal( "results",
+                           results );
+
+        InternalFactHandle stilton1 = (InternalFactHandle) session.insert( new Cheese( "stilton",
+                                                                                       10 ) );
+        session.insert( new Cheese( "brie",
+                                    10 ) );
+        InternalFactHandle bob = (InternalFactHandle) session.insert( new Person( "bob",
+                                                                                  10 ) );
+
+        // fire rules
+        session.fireAllRules();
+        // check the results are correct
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( stilton1.getObject(),
+                      results.get( 0 ) );
+
+        // serialize session and rulebase out
+        byte[] serializedSession = serializeOut( session );
+        byte[] serializedRulebase = serializeOut( ruleBase );
+        session.dispose();
+
+        // now deserialize the rulebase, deserialize the session and test it
+        ruleBase = (RuleBase) serializeIn( serializedRulebase );
+        session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
+
+        // dynamically add a new package
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3_0.drl" ) ) );
+        pkg = serialisePackage( builder.getPackage() );
+        ruleBase.addPackage( pkg );
+
+        InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton",
+                                                                                       20 ) );
+        session.insert( new Cheese( "brie",
+                                    20 ) );
+        InternalFactHandle mark = (InternalFactHandle) session.insert( new Person( "mark",
+                                                                                   20 ) );
+        session.fireAllRules();
+
+        results = (List) session.getGlobal( "results" );
+        assertEquals( 4,
+                      results.size() );
+        assertEquals( bob.getObject(),
+                      results.get( 1 ) );
+        assertEquals( stilton2.getObject(),
+                      results.get( 2 ) );
+        assertEquals( mark.getObject(),
+                      results.get( 3 ) );
+
+        serializedSession = null;
+        serializedRulebase = null;
+
+        serializedSession = serializeOut( session );
+        serializedRulebase = serializeOut( ruleBase );
+
+        // dispose session
+        session.dispose();
+
+    }
+
+    /*
+     *  Here I am inserting data points(e.g. Cheese) with  'stilton' / 'brie' as type value.
+     *  Initially I had only 1 rule ('like stilton') for data points(e.g. Cheese) having type as 'stilton'.
+     *
+     *  Later added new rule ('like brie')  for data points(e.g. Cheese) having type as 'brie'. 
+     *  
+     *  Result: new rule is not getting fired for new data points having type as 'brie'.
+     *          Only for old data points having type as 'brie' the new rule got fired.
+     */
+    public void testSerializeAdd_newRuleNotFiredForNewData() throws Exception {
+        //Create a rulebase, a session, and test it
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_0.drl" ) ) );
+        Package pkg = serialisePackage( builder.getPackage() );
+        ruleBase.addPackage( pkg );
+
+        List results = new ArrayList();
+        StatefulSession session = ruleBase.newStatefulSession();
+        session.setGlobal( "results",
+                           results );
+
+        InternalFactHandle stilton1 = (InternalFactHandle) session.insert( new Cheese( "stilton",
+                                                                                       10 ) );
+        InternalFactHandle brie1 = (InternalFactHandle) session.insert( new Cheese( "brie",
+                                                                                    10 ) );
+        session.fireAllRules();
+
+        byte[] serializedSession = serializeOut( session );
+        byte[] serializedRulebase = serializeOut( ruleBase );
+
+        session.dispose();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( stilton1.getObject(),
+                      results.get( 0 ) );
+
+        // now recreate the rulebase, deserialize the session and test it
+        ruleBase = (RuleBase) serializeIn( serializedRulebase );
+        session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
+        results = (List) session.getGlobal( "results" );
+
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_1.drl" ) ) );
+        pkg = serialisePackage( builder.getPackage() );
+        ruleBase.addPackage( pkg );
+        
+        InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton",
+                                    20 ) );
+        InternalFactHandle brie2 = (InternalFactHandle) session.insert( new Cheese( "brie",
+                                    20 ) );
+        InternalFactHandle brie3 = (InternalFactHandle) session.insert( new Cheese( "brie",
+                                    30 ) );
+        session.fireAllRules();
+        assertEquals( 5,
+                      results.size() );
+        assertEquals( brie1.getObject(),
+                      results.get( 1 ) );
+        assertEquals( stilton2.getObject(),
+                      results.get( 2 ) );
+        assertEquals( brie2.getObject(),
+                      results.get( 4 ) );
+        assertEquals( brie3.getObject(),
+                      results.get( 3 ) );
+
+        serializedSession = null;
+        serializedRulebase = null;
+
+        serializedSession = serializeOut( session );
+        serializedRulebase = serializeOut( ruleBase );
+
+        session.dispose();
+    }
+
+    /*
+     *  Works Fine if both the scenarios mentioned above are skipped. 
+     */
+    public void testSerializeAdd3() throws Exception {
+        //Create a rulebase, a session, and test it
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase( );
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_0.drl" ) ) );
+        Package pkg = serialisePackage( builder.getPackage() );
+        ruleBase.addPackage( pkg );
+        
+        List results = new ArrayList();
+        StatefulSession session = ruleBase.newStatefulSession();
+        session.setGlobal( "results",
+                           results );
+
+        InternalFactHandle stilton1 = (InternalFactHandle) session.insert( new Cheese( "stilton",
+                                                                                       10 ) );
+        InternalFactHandle brie1 = (InternalFactHandle) session.insert( new Cheese( "brie",
+                                                                                    10 ) );
+        session.fireAllRules();
+
+        byte[] serializedSession = serializeOut( session );
+        byte[] serializedRulebase = serializeOut( ruleBase );
+
+        session.dispose();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( stilton1.getObject(),
+                      results.get( 0 ) );
+
+        // now recreate the rulebase, deserialize the session and test it
+        ruleBase = (RuleBase) serializeIn( serializedRulebase );
+        session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
+        results = (List) session.getGlobal( "results" );
+        
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3_0.drl" ) ) );
+        pkg = serialisePackage( builder.getPackage() );
+        
+        ruleBase.addPackage( pkg );
+        
+        InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton", 20 ) );
+        InternalFactHandle brie2 = (InternalFactHandle) session.insert( new Cheese( "brie", 20 ) );
+        InternalFactHandle bob1 = (InternalFactHandle) session.insert( new Person( "bob", 20 ) );
+        InternalFactHandle bob2 = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
+        session.fireAllRules();
+ 
+        assertEquals( 4,
+                      results.size() );
+        assertEquals( stilton2.getObject(),
+                      results.get( 1 ) );
+        assertEquals( bob2.getObject(),
+                      results.get( 2 ) );
+        assertEquals( bob1.getObject(),
+                      results.get( 3 ) );
+
+        serializedSession = null;
+        serializedRulebase = null;
+        
+        serializedSession = serializeOut( session );
+        serializedRulebase = serializeOut( ruleBase );
+        
+        session.dispose();
+        
+        // now recreate the rulebase, deserialize the session and test it
+        ruleBase = (RuleBase) serializeIn( serializedRulebase );
+        session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
+        results = (List) session.getGlobal( "results" );
+        
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_2.drl" ) ) );
+        pkg = serialisePackage( builder.getPackage() );
+        ruleBase.addPackage( pkg );
+        
+        InternalFactHandle stilton3 = (InternalFactHandle) session.insert( new Cheese( "stilton", 40 ) );
+        InternalFactHandle brie3 = (InternalFactHandle) session.insert( new Cheese( "brie", 40 ) );
+        InternalFactHandle bob3 = (InternalFactHandle) session.insert( new Person( "bob", 40 ) );
+        InternalFactHandle bob4 = (InternalFactHandle) session.insert( new Person( "bob", 40 ) );
+        InternalFactHandle addr1 = (InternalFactHandle) session.insert( new Address( "bangalore" ) );
+        InternalFactHandle addr2 = (InternalFactHandle) session.insert( new Address( "India" ) );
+        
+        session.fireAllRules();
+ 
+        assertEquals( 9,
+                      results.size() );
+        assertEquals( stilton3.getObject(),
+                      results.get( 4 ) );
+        assertEquals( bob4.getObject(),
+                      results.get( 5 ) );
+        assertEquals( bob3.getObject(),
+                      results.get( 6 ) );
+        assertEquals( addr2.getObject(),
+                      results.get( 7 ) );
+        assertEquals( addr1.getObject(),
+                      results.get( 8 ) );
+
+        serializedSession = null;
+        serializedRulebase = null;
+        
+        serializedSession = serializeOut( session );
+        serializedRulebase = serializeOut( ruleBase );
+        
+        session.dispose();
+        
+        // now recreate the rulebase, deserialize the session and test it
+        ruleBase = (RuleBase) serializeIn( serializedRulebase );
+        session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
+        results = (List) session.getGlobal( "results" );
+        
+        InternalFactHandle stilton4 = (InternalFactHandle) session.insert( new Cheese( "stilton", 50 ) );
+        InternalFactHandle brie4 = (InternalFactHandle) session.insert( new Cheese( "brie", 50 ) );
+        InternalFactHandle bob5 = (InternalFactHandle) session.insert( new Person( "bob", 50 ) );
+        InternalFactHandle bob6 = (InternalFactHandle) session.insert( new Person( "bob", 50 ) );
+        InternalFactHandle addr3 = (InternalFactHandle) session.insert( new Address( "Tripura" ) );
+        InternalFactHandle addr4 = (InternalFactHandle) session.insert( new Address( "Agartala" ) );
+        
+        session.fireAllRules();
+ 
+        assertEquals( 14,
+                      results.size() );
+        assertEquals( stilton4.getObject(),
+                      results.get( 9 ) );
+        assertEquals( bob6.getObject(),
+                      results.get( 10 ) );
+        assertEquals( bob5.getObject(),
+                      results.get( 11 ) );
+        assertEquals( addr4.getObject(),
+                      results.get( 12 ) );
+        assertEquals( addr3.getObject(),
+                      results.get( 13 ) );
+
+        serializedSession = null;
+        serializedRulebase = null;
+        
+        serializedSession = serializeOut( session );
+        serializedRulebase = serializeOut( ruleBase );
+        
+        session.dispose();
+       
+    }
+    
+    /*
+     * I have tried both the scenarios
+     * 1. Remove a rule from a pkg.
+     * 2. Remove a pkg
+     * 
+     * But both cases after inserting associated data points (i.e data points which are used to fire/activate the removed rule)
+     * session.fireAllRules() is throwing NoClassDefFoundError
+     * 
+     */
+    public void testSerializeAddRemove_NoClassDefFoundError() throws Exception {
+
+        //Create a rulebase, a session, and test it
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase( );
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_0.drl" ) ) );
+        Package pkg = serialisePackage( builder.getPackage() );
+        ruleBase.addPackage( pkg );
+        
+        List results = new ArrayList();
+        StatefulSession session = ruleBase.newStatefulSession();
+        session.setGlobal( "results",
+                           results );
+
+        InternalFactHandle stilton1 = (InternalFactHandle) session.insert( new Cheese( "stilton",
+                                                                                       10 ) );
+        InternalFactHandle brie1 = (InternalFactHandle) session.insert( new Cheese( "brie",
+                                                                                    10 ) );
+        session.fireAllRules();
+
+        byte[] serializedSession = serializeOut( session );
+        byte[] serializedRulebase = serializeOut( ruleBase );
+
+        session.dispose();
+
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( stilton1.getObject(),
+                      results.get( 0 ) );
+
+        // now recreate the rulebase, deserialize the session and test it
+        ruleBase = (RuleBase) serializeIn( serializedRulebase );
+        session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
+        results = (List) session.getGlobal( "results" );
+        
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic3_0.drl" ) ) );
+        pkg = serialisePackage( builder.getPackage() );
+        
+        ruleBase.addPackage( pkg );
+        
+        InternalFactHandle stilton2 = (InternalFactHandle) session.insert( new Cheese( "stilton", 20 ) );
+        InternalFactHandle brie2 = (InternalFactHandle) session.insert( new Cheese( "brie", 20 ) );
+        InternalFactHandle bob1 = (InternalFactHandle) session.insert( new Person( "bob", 20 ) );
+        InternalFactHandle bob2 = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
+        session.fireAllRules();
+ 
+        assertEquals( 4,
+                      results.size() );
+        assertEquals( stilton2.getObject(),
+                      results.get( 1 ) );
+        assertEquals( bob2.getObject(),
+                      results.get( 2 ) );
+        assertEquals( bob1.getObject(),
+                      results.get( 3 ) );
+
+        serializedSession = null;
+        serializedRulebase = null;
+        
+        serializedSession = serializeOut( session );
+        serializedRulebase = serializeOut( ruleBase );
+        
+        session.dispose();
+        
+        // now recreate the rulebase, deserialize the session and test it
+        ruleBase = (RuleBase) serializeIn( serializedRulebase );
+        session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
+        results = (List) session.getGlobal( "results" );
+       
+        // CASE 1: remove rule
+        ruleBase.removeRule("org.drools.test", "like stilton");
+        
+        InternalFactHandle stilton3 = (InternalFactHandle) session.insert( new Cheese( "stilton", 20 ) );
+        InternalFactHandle brie3 = (InternalFactHandle) session.insert( new Cheese( "brie", 20 ) );
+        InternalFactHandle bob3 = (InternalFactHandle) session.insert( new Person( "bob", 20 ) );
+        InternalFactHandle bob4 = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
+        session.fireAllRules();
+ 
+        assertEquals( 6,
+                      results.size() );
+        assertEquals( bob4.getObject(),
+                      results.get( 4 ) );
+        assertEquals( bob3.getObject(),
+                      results.get( 5 ) );
+
+
+        // now recreate the rulebase, deserialize the session and test it
+        ruleBase = (RuleBase) serializeIn( serializedRulebase );
+        session = ruleBase.newStatefulSession( new ByteArrayInputStream( serializedSession ) );
+        results = (List) session.getGlobal( "results" );
+       
+        // CASE 2: remove pkg
+        ruleBase.removePackage("org.drools.test");
+        
+        InternalFactHandle stilton4 = (InternalFactHandle) session.insert( new Cheese( "stilton", 20 ) );
+        InternalFactHandle brie4 = (InternalFactHandle) session.insert( new Cheese( "brie", 20 ) );
+        InternalFactHandle bob5 = (InternalFactHandle) session.insert( new Person( "bob", 20 ) );
+        InternalFactHandle bob6 = (InternalFactHandle) session.insert( new Person( "bob", 30 ) );
+        session.fireAllRules();
+ 
+        assertEquals( 6,
+                      results.size() );
+        assertEquals( bob6.getObject(),
+                      results.get( 4 ) );
+        assertEquals( bob5.getObject(),
+                      results.get( 5 ) );
+        
+        serializedSession = null;
+        serializedRulebase = null;
+        
+        serializedSession = serializeOut( session );
+        serializedRulebase = serializeOut( ruleBase );
+        
+        session.dispose();
+       
+    }
+    
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
@@ -446,7 +871,7 @@ public class MarshallingTest extends TestCase {
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
     }
-    
+
     protected Package serialisePackage(Package pkg) {
         try {
             byte[] bytes = serializeOut( pkg );
@@ -455,7 +880,7 @@ public class MarshallingTest extends TestCase {
             throw new RuntimeException( "trouble serialising package.",
                                         e );
         }
-    }    
+    }
 
     protected Object serializeIn(final byte[] bytes) throws IOException,
                                                     ClassNotFoundException {

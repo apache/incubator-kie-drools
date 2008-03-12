@@ -93,7 +93,7 @@ public abstract class ObjectSource extends BaseNode
      *            <code>FactHandleImpl</code>.
      */
     protected void addObjectSink(final ObjectSink objectSink) {
-        if ( this.sink == EmptyObjectSinkAdapter.getInstance() ) {
+        if ( this.sink instanceof EmptyObjectSinkAdapter ) {
             this.sink = new SingleObjectSinkAdapter( objectSink );
         } else if ( this.sink instanceof SingleObjectSinkAdapter ) {
             final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter( this.alphaNodeHashingThreshold );
@@ -112,7 +112,7 @@ public abstract class ObjectSource extends BaseNode
      *            The <code>ObjectSink</code> to remove
      */
     protected void removeObjectSink(final ObjectSink objectSink) {
-        if ( this.sink == EmptyObjectSinkAdapter.getInstance() ) {
+        if ( this.sink instanceof EmptyObjectSinkAdapter ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
 
