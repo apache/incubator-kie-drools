@@ -80,7 +80,7 @@
     <title>How to build a rule flow</title>
 
     <para>Ruleflows can only be created by using the graphical ruleflow editor which is
-    part of the Drools plugin for Eclipse.  Once you have set up a Drools project (check
+    part of the Drools plug-in for Eclipse.  Once you have set up a Drools project (check
     the IDE chapter if you do not know how to do this), you can start adding ruleflows.
     When in a project, use "control+N" to launch the new wizard, or right-click the directory
     you would like to put your ruleflow in and select "New ... Other ...":</para>
@@ -102,7 +102,7 @@
     <para>Next you will see the graphical ruleflow editor. Now would be a good time to
     switch to the "Drools perspective" (if you haven't done so already) - this will tweak the UI so
     it is optimal for rules. Then ensure that you can see the "properties"
-    panel down the bottom of the eclipse window, as it will be necessary to fill in the different
+    panel down the bottom of the Eclipse window, as it will be necessary to fill in the different
     properties of the elements in your ruleflow.  If you cannot see the properties view, open it using
     the Menu Window - Show View - Other ..., and under the General folder select the Properties view.</para>
 

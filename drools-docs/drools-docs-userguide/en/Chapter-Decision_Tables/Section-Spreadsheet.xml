@@ -175,7 +175,7 @@
     case, it will generate: Person(age=="42") etc (where 42 comes from row
     18). In the above example, the "==" is implicit (if you just put a field
     name, it will assume that you are looking for exact matches). Also note
-    that you can have a ObjectType declaration span columns (via merged cells)
+    that you can have an ObjectType declaration span columns (via merged cells)
     - and that means that all columns below the merged range will be combined
     into the one set of constraints.</para>
 
@@ -340,7 +340,7 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
               <entry>Import</entry>
 
               <entry>The cell to the right contains a comma separated list of
-              java classes to import</entry>
+              Java classes to import</entry>
 
               <entry>optional</entry>
             </row>
@@ -419,7 +419,7 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
               <entry>Variables</entry>
 
               <entry>The cell immediately to the right can contain global
-              declarations which drools supports. This is a type, followed by a
+              declarations which Drools supports. This is a type, followed by a
               variable name. (if multiple variables are needed, comma separate
               them).</entry>
 
@@ -484,7 +484,7 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
     the rules if needed).</para>
 
     <para>To get started, you can find a sample spreadsheet and base it on
-    that. Alternatively, if you are using the plug in (Rule Workbench IDE) the
+    that. Alternatively, if you are using the plug-in (Rule Workbench IDE) the
     wizard can generate a spreadsheet for you from a template (to edit it you
     will need to use an xls compatible spreadsheet editor). <screenshot>
         <screeninfo>Wizard in the IDE</screeninfo>
@@ -577,4 +577,5 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
       http://www.drools.org/Business+rules+in+decision+tables+explained</para>
     </section>
   </section>
+  
 </section>

@@ -41,8 +41,7 @@
   it. This way, if an application asserts a new account, it won't propagate to
   the nodes for the Order object. In Drools when an object is asserted it
   retrieves a list of valid ObjectTypesNodes via a lookup in a HashMap from
-  the object's Class; if this list doesn't exist it scans all the ObjectTypde
-  nodes finding valid matches which it caches in the list. This enables Drools
+  the object's Class; if this list doesn't exist it scans all the ObjectTypeNodes finding valid matches which it caches in the list. This enables Drools
   to match against any Class type that matches with an
   <literal>instanceof</literal> check.</para>
 
@@ -56,7 +55,7 @@
     </mediaobject>
   </figure>
 
-  <para>ObjectTypdeNodes can propagate to AlphaNodes, LeftInputAdapterNodes
+  <para>ObjectTypeNodes can propagate to AlphaNodes, LeftInputAdapterNodes
   and BetaNodes. AlphaNodes are used to evaluate literal conditions. Although
   the 1982 paper only covers equality conditions, many RETE implementations
   support other operations. For example, Account.name == "Mr Trout" is a
@@ -78,10 +77,10 @@
     </mediaobject>
   </figure>
 
-  <para>Drools extends Rete by optimizing the propagation from ObjectTypdeNode
+  <para>Drools extends Rete by optimizing the propagation from ObjectTypeNode
   to AlphaNode using hashing. Each time an AlphaNode is added to an
-  ObjectTypdeNode it adds the literal value as a key to the HashMap with the
-  AlphaNode as the value. When a new instance enters the ObjectTypde node,
+  ObjectTypeNode it adds the literal value as a key to the HashMap with the
+  AlphaNode as the value. When a new instance enters the ObjectType node,
   rather than propagating to each AlphaNode, it can instead retrieve the
   correct AlphaNode from the HashMap - avoiding unnecessary literal
   checks.</para>

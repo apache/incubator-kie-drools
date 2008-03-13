@@ -480,7 +480,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
           <title>JavaBeans as facts</title>
 
           <para>A field is an accessible method on the object. If your model
-          objects follow the java bean pattern, then fields are exposed using
+          objects follow the Java bean pattern, then fields are exposed using
           "getXXX" or "isXXX" methods (these are methods that take no
           arguments, and return something). You can access fields either by
           using the bean-name convention (so "getType" can be accessed as
@@ -607,7 +607,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
                 </indexterm>Regular Expression. Typically that regexp is a
               String, but variables that resolve to a valid regexp are also
               allowed. It is important to note that <emphasis>different from
-              java</emphasis>, if you write a String regexp directly on the
+              Java</emphasis>, if you write a String regexp directly on the
               source file, <emphasis>you don't need to escape '\'</emphasis>.
               Example:</para>
 
@@ -627,7 +627,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
               fields. Returns true when the match is false. Typically that
               regexp is a String, but variables that resolve to a valid regexp
               are also allowed.It is important to note that
-              <emphasis>different from java</emphasis>, if you write a String
+              <emphasis>different from Java</emphasis>, if you write a String
               regexp directly on the source file, <emphasis>you don't need to
               escape '\'</emphasis>. Example:</para>
 
@@ -751,7 +751,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
             <simplesect>
               <title>Numeric</title>
 
-              <para>All standard java numeric primitives are supported.</para>
+              <para>All standard Java numeric primitives are supported.</para>
 
               <example>
                 <title>Numeric Literal Restriction</title>
@@ -851,7 +851,7 @@ Cheese( type == likes )</programlisting>
               <para>'likes' is our variable, our Declaration, that is bound to
               the favouriteCheese field for any matching Person instance and
               is used to constrain the type of Cheese in the following
-              Pattern. Any valid java variable name can be used, including
+              Pattern. Any valid Java variable name can be used, including
               '$'; which you will often see used to help differentiate
               declarations from fields. The example below shows a declaration
               bound to the Patterns Object Type instance itself and used with
@@ -1530,7 +1530,7 @@ end
       <para>The <emphasis role="bold">collect</emphasis> CE result pattern can
       be any concrete class that implements tha java.util.Collection interface
       and provides a default no-arg public constructor. I.e., you can use
-      default java collections like ArrayList, LinkedList, HashSet, etc, or
+      default Java collections like ArrayList, LinkedList, HashSet, etc, or
       your own class, as long as it implements the java.util.Collection
       interface and provide a default no-arg public constructor.</para>
 
@@ -1675,7 +1675,7 @@ end
       result with the Number() pattern and if the double value is greater than
       100, the rule will fire.</para>
 
-      <para>The example used java as the semantic dialect, and as such, note
+      <para>The example used Java as the semantic dialect, and as such, note
       that the usage of ';' is mandatory in the init, action and reverse code
       blocks. The result is an expression and as such, it does not admit ';'.
       If the user uses any other dialect, he must comply to that dialect
@@ -1775,7 +1775,7 @@ end
         needed, custom, domain specific functions can easily be added to the
         engine and rules can start to use them without any restrictions. To
         implement a new Accumulate Functions all one needs to do is to create
-        a java class that implements the
+        a Java class that implements the
         org.drools.base.acumulators.AccumulateFunction interface and add a
         line to the configuration file or set a system property to let the
         engine know about the new function. As an example of an Accumulate
@@ -1919,7 +1919,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     cuts to the KnowldgeHelper instance (refer to the KnowledgeHelper
     interface for more advanced operations). The KnowledgeHelper interface is
     made available to the RHS code block as a variable called "drools". If you
-    provide "Property Change Listeners" to your java beans that you are
+    provide "Property Change Listeners" to your Java beans that you are
     inserting into the engine, you can avoid the need to call "update" when
     the object changes.</para>
   </section>

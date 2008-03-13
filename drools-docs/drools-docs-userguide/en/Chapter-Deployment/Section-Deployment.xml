@@ -212,7 +212,7 @@ name=MyConfig</programlisting>
 
       <para>Use the PackageBuilder class out of process, and then use
       getPackage() to get the Package object. You can then (for example)
-      serialize the Package object to a file (using standard java
+      serialize the Package object to a file (using standard Java
       serialization). The runtime system, which only needs drools-core, can
       then load the file using
       RuleBaseFactory.newRuleBase().addPackage(deserialized package
@@ -287,4 +287,5 @@ name=MyConfig</programlisting>
     <para>A future release of Drools will contain a rule repository (server)
     component that will directly support the above patterns, and more.</para>
   </section>
+  
 </section>

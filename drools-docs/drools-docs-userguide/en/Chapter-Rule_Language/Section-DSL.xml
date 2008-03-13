@@ -67,7 +67,7 @@
     part on the right of the "=" is the mapping into the rule language (of
     course the form of this depends on if you are talking about the RHS or the
     LHS - if its the LHS, then its the normal LHS syntax, if its the RHS then
-    its fragments of java code for instance).</para>
+    its fragments of Java code for instance).</para>
 
     <para>The parser will take the expression you specify, and extract the
     values that match where the {something} (named Tokens) appear in the
