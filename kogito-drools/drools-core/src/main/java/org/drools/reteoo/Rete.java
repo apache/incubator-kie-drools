@@ -167,6 +167,10 @@ public class Rete extends ObjectSource
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 
+    public void networkUpdated() {
+        // nothing to do
+    }
+    
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,

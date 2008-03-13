@@ -113,6 +113,10 @@ public class EvalConditionNode extends TupleSource
         }
     }
 
+    public void networkUpdated() {
+        this.tupleSource.networkUpdated();
+    }
+
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------

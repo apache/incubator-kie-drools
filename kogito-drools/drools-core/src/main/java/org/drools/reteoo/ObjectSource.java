@@ -130,6 +130,10 @@ public abstract class ObjectSource extends BaseNode
     public abstract void updateSink(ObjectSink sink,
                                     PropagationContext context,
                                     InternalWorkingMemory workingMemory);
+    
+    public void networkUpdated() {
+        this.objectSource.networkUpdated();
+    }
 
     public ObjectSinkPropagator getSinkPropagator() {
         return this.sink;

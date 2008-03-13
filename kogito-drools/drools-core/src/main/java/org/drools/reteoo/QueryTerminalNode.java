@@ -150,6 +150,10 @@ public final class QueryTerminalNode extends BaseNode
         }
     }
 
+    public void networkUpdated() {
+        this.tupleSource.networkUpdated();
+    }
+    
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,

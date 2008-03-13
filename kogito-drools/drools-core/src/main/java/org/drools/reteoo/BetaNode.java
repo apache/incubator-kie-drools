@@ -109,10 +109,15 @@ abstract class BetaNode extends TupleSource
      * @see org.drools.reteoo.BaseNode#attach()
      */
     public void attach() {
-        this.leftInput.addTupleSink( this );
         this.rightInput.addObjectSink( this );
+        this.leftInput.addTupleSink( this );
     }
 
+    public void networkUpdated() {
+        this.rightInput.networkUpdated();
+        this.leftInput.networkUpdated();
+    }
+    
     public List getRules() {
         final List list = new ArrayList();
 
@@ -145,12 +150,12 @@ abstract class BetaNode extends TupleSource
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.leftInput.updateSink( this,
-                                       propagationContext,
-                                       workingMemory );
             this.rightInput.updateSink( this,
                                         propagationContext,
                                         workingMemory );
+            this.leftInput.updateSink( this,
+                                       propagationContext,
+                                       workingMemory );
         }
 
     }
