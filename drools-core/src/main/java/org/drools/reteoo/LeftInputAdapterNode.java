@@ -97,6 +97,10 @@ public class LeftInputAdapterNode extends TupleSource
         }
     }
 
+    public void networkUpdated() {
+        this.objectSource.networkUpdated();
+    }
+    
     /**
      * Takes the asserted <code>FactHandleImpl</code> received from the <code>ObjectSource</code> and puts it
      * in a new <code>ReteTuple</code> before propagating to the <code>TupleSinks</code>

@@ -27,6 +27,7 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.EvalCondition;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -191,7 +192,6 @@ public class ObjectTypeNode extends ObjectSource
                                context,
                                workingMemory );
         }
-        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
     }
 
     /**
@@ -220,6 +220,10 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
+    public void networkUpdated() {
+        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
+    }
+    
     /**
      * OTN needs to override remove to avoid releasing the node ID, since OTN are 
      * never removed from the rulebase in the current implementation
@@ -318,6 +322,8 @@ public class ObjectTypeNode extends ObjectSource
                 hasConstraints = true;
             } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
                 hasConstraints = this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
+            } else if ( sinks[i] instanceof EvalConditionNode ) {
+                hasConstraints = this.usesDeclaration( ((EvalConditionNode)sinks[i]).getCondition() );
             }
             if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
                 hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
@@ -342,6 +348,15 @@ public class ObjectTypeNode extends ObjectSource
     private boolean usesDeclaration(final Constraint constraint) {
         boolean usesDecl = false;
         final Declaration[] declarations = constraint.getRequiredDeclarations();
+        for ( int j = 0; !usesDecl && j < declarations.length; j++ ) {
+            usesDecl = (declarations[j].getPattern().getObjectType() == this.objectType);
+        }
+        return usesDecl;
+    }
+
+    private boolean usesDeclaration(final EvalCondition condition) {
+        boolean usesDecl = false;
+        final Declaration[] declarations = condition.getRequiredDeclarations();
         for ( int j = 0; !usesDecl && j < declarations.length; j++ ) {
             usesDecl = (declarations[j].getPattern().getObjectType() == this.objectType);
         }
