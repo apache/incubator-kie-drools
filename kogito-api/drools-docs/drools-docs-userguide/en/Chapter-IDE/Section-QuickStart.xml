@@ -7,7 +7,7 @@
   <para>
     The IDE provides developers (and very technical users) with an environment to edit and test rules in various formats, and integrate it deeply with their applications. In cases where you prefer business rules and web tooling, you will want to look at the BRMS (but using the BRMS and the IDE together is not uncommon).</para>
 
-  <para>The Drools IDE is delivered as an eclipse plugin, which
+  <para>The Drools IDE is delivered as an Eclipse plug-in, which
   allows you to author and manage rules from within Eclipse, as well as
   integrate rules with your application. This is an optional tool, and not all
   components are required to be used, you can use what components are relevant
@@ -20,7 +20,7 @@
   on Eclipse, and integrators are free to use their tools of choice, as always
   ! Plenty of people use IntelliJ with rules, for instance.</para>
 
-  <para>Note you can get the plug in either as a zip to download, or from an
+  <para>Note you can get the plug-in either as a zip to download, or from an
   update site (refer to the chapter on installation).</para>
 
   <figure>
@@ -106,7 +106,7 @@
     </orderedlist>
 
     <para>You can see the above features make use of Eclipse infrastructure
-    and features. All of the power of eclipse is available.</para>
+    and features. All of the power of Eclipse is available.</para>
   </section>
 
   <section>
@@ -126,7 +126,7 @@
       </mediaobject>
     </figure>
 
-      <para>When you choose to create a new "rule project" - you will get a choice to add some default artifacts to it (like rules, decision tables, ruleflows etc). These can serve as a starting point, and will give you something executable to play with (which you can then modify and mould to your needs). The simplest case (a hello world rule) is shown below. Feel free to experiment with the plugin at this point.</para>
+      <para>When you choose to create a new "rule project" - you will get a choice to add some default artifacts to it (like rules, decision tables, ruleflows etc). These can serve as a starting point, and will give you something executable to play with (which you can then modify and mould to your needs). The simplest case (a hello world rule) is shown below. Feel free to experiment with the plug-in at this point.</para>
 
     <figure>
       <title>New rule project result</title>
@@ -139,16 +139,16 @@
     </figure>
 
     <para>The newly created project contains an example rule file (Sample.drl)
-    in the src/rules dir and an example java file (DroolsTest.java) that can
-    be used to execute the rules in a Drools engine in the folder src/java, in
+    in the src/rules dir and an example Java file (DroolsTest.Java) that can
+    be used to execute the rules in a Drools engine in the folder src/Java, in
     the com.sample package. All the others jars that are necessary during
     execution are also added to the classpath in a custom classpath container
-    called Drools Library. Rules do not have to be kept in "java"
+    called Drools Library. Rules do not have to be kept in "Java"
     projects at all, this is just a convenience for people who are already
-    using eclipse as their Java IDE.</para>
+    using Eclipse as their Java IDE.</para>
 
-    <para>Important note: The Drools plug in adds a "Drools Builder"
-    capability to your eclipse instance. This means you can enable a builder
+    <para>Important note: The Drools plug-in adds a "Drools Builder"
+    capability to your Eclipse instance. This means you can enable a builder
     on any project that will build and validate your rules when resources
     change. This happens automatically with the Rule Project Wizard, but you
     can also enable it manually on any project. One downside of this is if you
@@ -183,7 +183,7 @@
     of location, typically you would create a top level /rules directory to
     store your rules if you are creating a rule project, and store it in a
     suitably named subdirectory. The package name is mandatory, and is similar
-    to a package name in java (ie. its a namespace that groups like rules
+    to a package name in Java (ie. its a namespace that groups like rules
     together).</para>
 
     <figure>
@@ -206,7 +206,7 @@
 
     <para>The rule editor is where rule managers and developers will be
     spending most of their time. The rule editor follows the pattern of a
-    normal text editor in eclipse, with all the normal features of a text
+    normal text editor in Eclipse, with all the normal features of a text
     editor. On top of this, the rule editor provides pop up content
     assistance. You invoke popup content assistance the "normal" way by
     pressing Control + Space at the same time.</para>
@@ -536,7 +536,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       loaded for editing). The Rule language mapping is the "code" for the
       rules - which the language expression will be compiled to by the rule
       engine compiler. For form of this Rule language depends if it is for a
-      condition or action part of a rule (it may be a snippet of java, for
+      condition or action part of a rule (it may be a snippet of Java, for
       instance). The "scope" item indicates where the expression is targeted:
       is it for the "when" part of the rule (LHS)? the "then" part (RHS)? Or
       anywhere?</para>
@@ -567,7 +567,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
       to 2 constraints on a fact of type Person (ie the person object has the
       age field as less than {age}, and the location value is the string of
       {value}, where {age} and {value} are pulled out of the original rule
-      source. The Rule mapping may be a java expression (such as if the scope
+      source. The Rule mapping may be a Java expression (such as if the scope
       was "then"). If you did not wish to use a language mapping for a
       particular rule in a drl, prefix the expression with &gt; and the
       compiler will not try to translate it according to the language
@@ -590,7 +590,7 @@ String outputDRL = write.marshall(read.unmarshal(brl));
 
     <para>There is no export function, which creates a gif or jpeg picture, in
     the current release. Please use ctrl + alt + print to create a copy of
-    your current eclipse window and cut it off.</para>
+    your current Eclipse window and cut it off.</para>
 
     <mediaobject>
       <imageobject>
@@ -621,10 +621,10 @@ String outputDRL = write.marshall(read.unmarshal(brl));
     permanent generation max size. Both SUN and IBM jdk have a permanent
     generation, whereas BEA JRockit does not.</para>
 
-    <para>To increase the permanent generation, start eclipse with
+    <para>To increase the permanent generation, start Eclipse with
     -XX:MaxPermSize=###m</para>
 
-    <para>Example: c:\eclipse\eclipse.exe -XX:MaxPermSize=128m</para>
+    <para>Example: c:\Eclipse\Eclipse.exe -XX:MaxPermSize=128m</para>
 
     <para>Rulesets of 4,000 rules or greater should set the permanent
     generation to atleast 128Mb.</para>
@@ -715,11 +715,11 @@ String outputDRL = write.marshall(read.unmarshal(brl));
             <listitem>
               <para>Change the name of your debug configuration to something meaningful.
           You can just accept the defaults for all other properties.  For more information
-          about these properties, please check the eclipse jdt documentation.</para>
+          about these properties, please check the Eclipse jdt documentation.</para>
             </listitem>
             <listitem>
               <para>Click the "Debug" button on the bottom to start debugging your application. You only have to define your debug configuration once.  The next time you try to run your Drools application, you don't have to create a new one but select the one you defined previously by selecting it in the tree on the left, as a sub-element of the "Drools Application"
-     tree node, and then click the Debug button.  The eclipse toolbar also contains shortcut
+     tree node, and then click the Debug button.  The Eclipse toolbar also contains shortcut
      buttons to quickly re-execute the one of your previous configurations (at least when the
      Java, Java Debug, or Drools perspective has been selected).
               </para>

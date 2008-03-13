@@ -25,7 +25,7 @@
 
   <para>The following rail road diagram shows all the components that may make
   up a package. Note that a package MUST have a namespace and be declared
-  using standard java conventions for package names; i.e. no spaces, unlike
+  using standard Java conventions for package names; i.e. no spaces, unlike
   rule names which allow spaces. In terms of the order of elements, they can
   appear in any order in the rule file, with the exception of the "package"
   and "expander" statements being at the top of the file, before any rules
@@ -59,7 +59,7 @@
     <para>Import statements work like import statements in Java. You need to
     specify the fully qualified paths and type names for any objects you want
     to use in the rules. Drools automatically imports classes from the same
-    named java package and from the java.lang package.</para>
+    named Java package and from the java.lang package.</para>
   </section>
 
   <section>

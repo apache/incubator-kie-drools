@@ -2,19 +2,19 @@
 <section>
   <title>Installing and using</title>
 
-  <para>Drools provides an eclipse based IDE (which is optional), but at its
+  <para>Drools provides an Eclipse-based IDE (which is optional), but at its
   core only Java 1.4 (J2SE) is required.</para>
 
-  <para>A simple way to get started is to download and install the eclipse
-  plug in - this will also require the Eclipse GEF framework to be installed
+  <para>A simple way to get started is to download and install the Eclipse
+  plug-in - this will also require the Eclipse GEF framework to be installed
   (see below, if you don't have it installed already). This will provide you
   with all the dependencies you need to get going: you can simply create a new
   rule project and everything will be done for you. Refer to the chapter on
   the Rule Workbench and IDE for detailed instructions on this. Installing the
-  eclipse plugin is generally as simple as unzipping a file into your eclipse
-  plugin directory.</para>
+  Eclipse plug-in is generally as simple as unzipping a file into your Eclipse
+  plug-in directory.</para>
 
-  <para>Use of the eclipse plug in is not required. Rule files are just
+  <para>Use of the Eclipse plug-in is not required. Rule files are just
   textual input (or spreadsheets as the case may be) and the IDE (also known
   as the Rule Workbench) is just a convenience. People have integrated the
   rule engine in many ways, there is no "one size fits all".</para>
@@ -60,7 +60,7 @@
         this is essentially a layer over the drools-compiler component. Note
         that due to the nature of the JSR-94 specification, not all features
         are easily exposed via this interface. In some cases, it will be
-        easier to go direct to the drools API, but in some environments the
+        easier to go direct to the Drools API, but in some environments the
         JSR-94 is mandated.</para>
       </listitem>
 
@@ -107,23 +107,23 @@
   <section>
     <title>Installing IDE (Rule Workbench)</title>
 
-    <para>The rule workbench (for Eclipse) requires that you have eclipse 3.2
+    <para>The rule workbench (for Eclipse) requires that you have Eclipse 3.2
     or greater, as well as Eclipse GEF 3.2 or greater. You can install it
-    either by downloading the plugin or, or using the update site.</para>
+    either by downloading the plug-in or, or using the update site.</para>
 
     <para>Another option is to use the JBoss IDE, which comes with all the
-    plug in requirements pre packaged, as well as a choice of other tools
+    plug-in requirements pre packaged, as well as a choice of other tools
     separate to rules. You can choose just to install rules from the "bundle"
     that JBoss IDE ships with.</para>
 
     <section>
       <title>Installing GEF (a required dependency)</title>
 
-      <para>GEF is the eclipse Graphical Editing Framework, which is used for
-      graph viewing components in the plug in.</para>
+      <para>GEF is the Eclipse Graphical Editing Framework, which is used for
+      graph viewing components in the plug-in.</para>
 
       <para>If you don't have GEF installed, you can install it using the
-      built in update mechanism (or downloading GEF from the eclipse.org
+      built in update mechanism (or downloading GEF from the Eclipse.org
       website not recommended). JBoss IDE has GEF already, as do many other "distributions" of
       Eclipse, so this step may be redundant for some people.</para>
 
@@ -131,7 +131,7 @@
       from the help menu. Then you choose the Calisto update site:</para>
 
 	  <para>If you aren't using Calisto you can use the following update site do download GEF</para>
-	  <programlisting>http://europa-mirror1.eclipse.org/tools/gef/update-site/releases/</programlisting>
+	  <programlisting>http://europa-mirror1.Eclipse.org/tools/gef/update-site/releases/</programlisting>
 	
       <screenshot>
         <mediaobject>
@@ -141,7 +141,7 @@
         </mediaobject>
       </screenshot>
 
-      <para>Next you choose the GEF plug in:</para>
+      <para>Next you choose the GEF plug-in:</para>
 
       <screenshot>
         <mediaobject>
@@ -151,34 +151,34 @@
         </mediaobject>
       </screenshot>
 
-      <para>Press next, and agree to install the plug in (an eclipse restart
+      <para>Press next, and agree to install the plug-in (an Eclipse restart
       may be required). Once this is completed, then you can continue on
-      installing the rules plug in.</para>
+      installing the rules plug-in.</para>
     </section>
 
     <section>
       <title>Installing from zip file</title>
 
       <para>To install from the zip file, download and unzip the file. Inside
-      the zip you will see a plugin directory, and the plugin jar itself. You
-      place the plugin jar into your eclipse applications plugin directory,
-      and restart eclipse.</para>
+      the zip you will see a plug-in directory, and the plug-in jar itself. You
+      place the plug-in jar into your Eclipse applications plug-in directory,
+      and restart Eclipse.</para>
     </section>
 
     <section>
       <title>Installing from the update site</title>
 
-      <para>Using the update site is a handy way to install the plug in, and
-      keep it up to date (the eclipse platform will check for updates as
+      <para>Using the update site is a handy way to install the plug-in, and
+      keep it up to date (the Eclipse platform will check for updates as
       needed). It gives you a good chance of staying up to date with
       improvements, fixes etc.</para>
 
       <para>Some firewalls may cause trouble with using update sites in
-      eclipse, if you have issues, then install it manually from the plugin.
-      Also, if you have previously installed the plug in manually, you will
-      need to manually remove it from your plug in directory.</para>
+      Eclipse, if you have issues, then install it manually from the plug-in.
+      Also, if you have previously installed the plug-in manually, you will
+      need to manually remove it from your plug-in directory.</para>
 
-      <para>Step 1. Use the eclipse help menu to find the feature installer.
+      <para>Step 1. Use the Eclipse help menu to find the feature installer.
       <screenshot>
           <screeninfo>Access the software updates menu</screeninfo>
 

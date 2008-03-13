@@ -66,7 +66,7 @@
         <para>Speed and Scalability</para>
 
         <para>The Rete algorithm, Leaps algorithm, and its descendants such as
-        Drools' Reteoo (and Leaps), provide very efficient ways of matching
+        Drools' ReteOO (and Leaps), provide very efficient ways of matching
         rule patterns to your domain object data. These are especially
         efficient when you have datasets that do not change entirely (as the
         rule engine can remember past matches). These algorithms are battle
