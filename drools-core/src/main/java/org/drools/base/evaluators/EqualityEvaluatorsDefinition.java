@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,11 +37,11 @@ import org.drools.util.DateUtils;
 /**
  * This class defines the default built in equality
  * evaluators == and !=
- * 
+ *
  * @author etirelli
  */
 public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
-    
+
     private static final String[] SUPPORTED_IDS = { Operator.EQUAL.getOperatorString(), Operator.NOT_EQUAL.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
         private static final long serialVersionUID = 4782368623L;
@@ -94,7 +94,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             addEvaluator( ValueType.STRING_TYPE,        Operator.NOT_EQUAL,     StringNotEqualEvaluator.INSTANCE );
         }
     };
-    
+
     /**
      * @inheridDoc
      */
@@ -137,12 +137,12 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     public boolean supportsType(ValueType type) {
         return this.evaluators.supportsType( type );
     }
-    
+
     /*  *********************************************************
      *           Evaluator Implementations
      *  *********************************************************
      */
-    
+
     static class ArrayEqualEvaluator extends BaseEvaluator {
 
         private static final long     serialVersionUID = 400L;
@@ -211,7 +211,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ArrayNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ArrayNotEqualEvaluator();
@@ -278,7 +278,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigDecimalEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalEqualEvaluator();
@@ -292,7 +292,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getValue();
+            final Object value2 = object2.getBigDecimalValue();
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -337,7 +337,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigDecimalNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalNotEqualEvaluator();
@@ -351,7 +351,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getValue();
+            final Object value2 = object2.getBigDecimalValue();
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -395,7 +395,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigIntegerEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerEqualEvaluator();
@@ -409,7 +409,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getValue();
+            final Object value2 = object2.getBigIntegerValue();
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -453,7 +453,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigIntegerNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerNotEqualEvaluator();
@@ -467,7 +467,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getValue();
+            final Object value2 = object2.getBigDecimalValue();
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -527,7 +527,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return false;
             }
-            
+
             return extractor.getBooleanValue( workingMemory, object1 ) == object2.getBooleanValue();
         }
 
@@ -538,7 +538,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return false;
             }
-            
+
             return context.declaration.getExtractor().getBooleanValue( workingMemory, left ) == ((BooleanVariableContextEntry) context).right;
         }
 
@@ -549,7 +549,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return false;
             }
-            
+
             return context.extractor.getBooleanValue( workingMemory, object2 ) == ((BooleanVariableContextEntry) context).left;
         }
 
@@ -562,7 +562,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return false;
             }
-            
+
             return extractor1.getBooleanValue( workingMemory, object1 ) == extractor2.getBooleanValue( workingMemory, object2 );
         }
 
@@ -574,7 +574,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BooleanNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BooleanNotEqualEvaluator();
@@ -592,7 +592,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return true;
             }
-            
+
             return extractor.getBooleanValue( workingMemory, object1 ) != object2.getBooleanValue();
         }
 
@@ -613,7 +613,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return true;
             }
-            
+
             return context.extractor.getBooleanValue( workingMemory, object2 ) != ((BooleanVariableContextEntry) context).left;
         }
 
@@ -626,7 +626,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return true;
             }
-            
+
             return extractor1.getBooleanValue( workingMemory, object1 ) != extractor1.getBooleanValue( workingMemory, object2 );
         }
 
@@ -637,7 +637,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ByteEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteEqualEvaluator();
@@ -655,7 +655,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return false;
             }
-            
+
             return extractor.getByteValue( workingMemory, object1 ) == object2.getByteValue();
         }
 
@@ -666,7 +666,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return false;
             }
-            
+
             return context.declaration.getExtractor().getByteValue( workingMemory, left ) == ((LongVariableContextEntry) context).right;
         }
 
@@ -677,7 +677,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return false;
             }
-            
+
             return ((LongVariableContextEntry) context).left == context.extractor.getByteValue( workingMemory, right );
         }
 
@@ -690,7 +690,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return false;
             }
-            
+
             return extractor1.getByteValue( workingMemory, object1 ) == extractor2.getByteValue( workingMemory, object2 );
         }
 
@@ -702,7 +702,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ByteNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteNotEqualEvaluator();
@@ -720,7 +720,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return true;
             }
-            
+
             return extractor.getByteValue( workingMemory, object1 ) != object2.getByteValue();
         }
 
@@ -731,7 +731,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return true;
             }
-            
+
             return context.declaration.getExtractor().getByteValue( workingMemory, left ) != ((LongVariableContextEntry) context).right;
         }
 
@@ -742,7 +742,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return true;
             }
-            
+
             return ((LongVariableContextEntry) context).left != context.extractor.getByteValue( workingMemory, object2 );
         }
 
@@ -755,7 +755,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return true;
             }
-            
+
             return extractor1.getByteValue( workingMemory, object1 ) != extractor2.getByteValue( workingMemory, object2 );
         }
 
@@ -766,7 +766,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class CharacterEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterEqualEvaluator();
@@ -784,7 +784,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return false;
             }
-            
+
             return extractor.getCharValue( workingMemory, object1 ) == object2.getCharValue();
         }
 
@@ -795,7 +795,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return false;
             }
-            
+
             return context.declaration.getExtractor().getCharValue( workingMemory, left ) == ((CharVariableContextEntry) context).right;
         }
 
@@ -806,7 +806,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return false;
             }
-            
+
             return ((CharVariableContextEntry) context).left == context.extractor.getCharValue( workingMemory, right );
         }
 
@@ -819,7 +819,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return false;
             }
-            
+
             return extractor1.getCharValue( workingMemory, object1 ) == extractor2.getCharValue( workingMemory, object2 );
         }
 
@@ -830,7 +830,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class CharacterNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterNotEqualEvaluator();
@@ -848,7 +848,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return true;
             }
-            
+
             return extractor.getCharValue( workingMemory, object1 ) != object2.getCharValue();
         }
 
@@ -859,7 +859,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return true;
             }
-            
+
             return context.declaration.getExtractor().getCharValue( workingMemory, left ) != ((CharVariableContextEntry) context).right;
         }
 
@@ -870,7 +870,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return true;
             }
-            
+
             return ((CharVariableContextEntry) context).left != context.extractor.getCharValue( workingMemory, right );
         }
 
@@ -883,7 +883,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return true;
             }
-            
+
             return extractor1.getCharValue( workingMemory, object1 ) != extractor2.getCharValue( workingMemory, object2 );
         }
 
@@ -894,7 +894,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DateEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateEqualEvaluator();
@@ -967,7 +967,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DateNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateNotEqualEvaluator();
@@ -1039,7 +1039,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DoubleEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleEqualEvaluator();
@@ -1079,7 +1079,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return false;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left == context.extractor.getDoubleValue( workingMemory, right );
         }
@@ -1093,7 +1093,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return false;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getDoubleValue( workingMemory, object1 ) == extractor2.getDoubleValue( workingMemory, object2 );
         }
@@ -1105,7 +1105,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DoubleNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleNotEqualEvaluator();
@@ -1123,7 +1123,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return true;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return extractor.getDoubleValue( workingMemory, object1 ) != object2.getDoubleValue();
         }
@@ -1135,7 +1135,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return true;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getDoubleValue( workingMemory, left ) != ((DoubleVariableContextEntry) context).right;
         }
@@ -1147,7 +1147,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return true;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left != context.extractor.getDoubleValue( workingMemory, right );
         }
@@ -1161,7 +1161,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return true;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getDoubleValue( workingMemory, object1 ) != extractor2.getDoubleValue( workingMemory, object2 );
         }
@@ -1173,7 +1173,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class FactTemplateEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FactTemplateEqualEvaluator();
@@ -1232,7 +1232,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class FactTemplateNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FactTemplateNotEqualEvaluator();
@@ -1287,7 +1287,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             return "FactTemplate !=";
         }
     }
-    
+
     static class FloatEqualEvaluator extends BaseEvaluator {
 
         private static final long     serialVersionUID = 400L;
@@ -1306,7 +1306,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return false;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return extractor.getFloatValue( workingMemory, object1 ) == object2.getFloatValue();
         }
@@ -1318,7 +1318,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return false;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getFloatValue( workingMemory, left ) == ((DoubleVariableContextEntry) context).right;
         }
@@ -1330,7 +1330,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return false;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left == context.extractor.getFloatValue( workingMemory, right );
         }
@@ -1344,7 +1344,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return false;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getFloatValue( workingMemory, object1 ) == extractor2.getFloatValue( workingMemory, object2 );
         }
@@ -1356,7 +1356,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class FloatNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatNotEqualEvaluator();
@@ -1374,7 +1374,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return true;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return extractor.getFloatValue( workingMemory, object1 ) != object2.getFloatValue();
         }
@@ -1386,7 +1386,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return true;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return context.declaration.getExtractor().getFloatValue( workingMemory, left ) != ((DoubleVariableContextEntry) context).right;
         }
@@ -1398,7 +1398,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return true;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return ((DoubleVariableContextEntry) context).left != context.extractor.getFloatValue( workingMemory, right );
         }
@@ -1412,7 +1412,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return true;
             }
-            
+
             // TODO: we are not handling delta right now... maybe we should
             return extractor1.getFloatValue( workingMemory, object1 ) != extractor2.getFloatValue( workingMemory, object2 );
         }
@@ -1424,7 +1424,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class IntegerEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerEqualEvaluator();
@@ -1442,7 +1442,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return false;
             }
-            
+
             return extractor.getIntValue( workingMemory, object1 ) == object2.getIntValue();
         }
 
@@ -1453,8 +1453,8 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return false;
             }
-            
-            return context.declaration.getExtractor().getIntValue( workingMemory, left ) == ((LongVariableContextEntry) context).right; 
+
+            return context.declaration.getExtractor().getIntValue( workingMemory, left ) == ((LongVariableContextEntry) context).right;
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
@@ -1464,20 +1464,20 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return false;
             }
-            
+
             return context.extractor.getIntValue( workingMemory, object2 ) == ((LongVariableContextEntry) context).left;
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor1,
                                 final Object object1,
-                                final Extractor extractor2, final Object object2) {            
+                                final Extractor extractor2, final Object object2) {
             if (extractor1.isNullValue( workingMemory, object1 )) {
                 return extractor2.isNullValue( workingMemory, object2 );
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return false;
             }
-            
+
             return extractor1.getIntValue( workingMemory, object1 ) == extractor2.getIntValue( workingMemory, object2 );
         }
 
@@ -1489,7 +1489,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class IntegerNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerNotEqualEvaluator();
@@ -1501,13 +1501,13 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
-                                final Object object1, final FieldValue object2) {                     
+                                final Object object1, final FieldValue object2) {
             if ( extractor.isNullValue( workingMemory, object1 ) ) {
                 return !object2.isNull();
             } else if ( object2.isNull() ) {
                 return true;
             }
-            
+
             return extractor.getIntValue( workingMemory, object1 ) != object2.getIntValue();
         }
 
@@ -1518,7 +1518,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return true;
             }
-            
+
             return context.declaration.getExtractor().getIntValue( workingMemory, left ) != ((LongVariableContextEntry) context).right;
         }
 
@@ -1529,7 +1529,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return true;
             }
-            
+
             return context.extractor.getIntValue( workingMemory, object2 ) != ((LongVariableContextEntry) context).left;
         }
 
@@ -1542,7 +1542,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return true;
             }
-            
+
             return extractor1.getIntValue( workingMemory, object1 ) != extractor2.getIntValue( workingMemory, object2 );
         }
 
@@ -1553,7 +1553,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class LongEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongEqualEvaluator();
@@ -1571,7 +1571,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return false;
             }
-            
+
             return extractor.getLongValue( workingMemory, object1 ) == object2.getLongValue();
         }
 
@@ -1582,7 +1582,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return false;
             }
-            
+
             return context.declaration.getExtractor().getLongValue( workingMemory, left ) == ((LongVariableContextEntry) context).right;
         }
 
@@ -1593,7 +1593,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return false;
             }
-            
+
             return ((LongVariableContextEntry) context).left == context.extractor.getLongValue( workingMemory, right );
         }
 
@@ -1606,7 +1606,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return false;
             }
-            
+
             return extractor1.getLongValue( workingMemory, object1 ) == extractor2.getLongValue( workingMemory, object2 );
         }
 
@@ -1617,7 +1617,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class LongNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongNotEqualEvaluator();
@@ -1635,7 +1635,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return true;
             }
-            
+
             return extractor.getLongValue( workingMemory, object1 ) != object2.getLongValue();
         }
 
@@ -1646,7 +1646,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return true;
             }
-            
+
             return context.declaration.getExtractor().getLongValue( workingMemory, left ) != ((LongVariableContextEntry) context).right;
         }
 
@@ -1657,7 +1657,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return true;
             }
-            
+
             return ((LongVariableContextEntry) context).left != context.extractor.getLongValue( workingMemory, right );
         }
 
@@ -1670,7 +1670,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return true;
             }
-            
+
             return extractor1.getLongValue( workingMemory, object1 ) != extractor2.getLongValue( workingMemory, object2 );
         }
 
@@ -1681,12 +1681,12 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ObjectEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectEqualEvaluator();
-        private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();   
-        
+        private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();
+
         private ObjectEqualEvaluator() {
             super( ValueType.OBJECT_TYPE,
                    Operator.EQUAL );
@@ -1753,11 +1753,11 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ObjectNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectNotEqualEvaluator();
-        private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();           
+        private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();
 
         private ObjectNotEqualEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -1824,7 +1824,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ShortEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortEqualEvaluator();
@@ -1842,7 +1842,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return false;
             }
-            
+
             return extractor.getShortValue( workingMemory, object1 ) == object2.getShortValue();
         }
 
@@ -1853,7 +1853,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return false;
             }
-            
+
             return context.declaration.getExtractor().getShortValue( workingMemory, left ) == ((LongVariableContextEntry) context).right;
         }
 
@@ -1864,7 +1864,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return false;
             }
-            
+
             return ((LongVariableContextEntry) context).left == context.extractor.getShortValue( workingMemory, right );
         }
 
@@ -1877,7 +1877,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return false;
             }
-            
+
             return extractor1.getShortValue( workingMemory, object1 ) == extractor2.getShortValue( workingMemory, object2 );
         }
 
@@ -1888,7 +1888,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ShortNotEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortNotEqualEvaluator();
@@ -1906,7 +1906,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( object2.isNull() ) {
                 return true;
             }
-            
+
             return extractor.getShortValue( workingMemory, object1 ) != object2.getShortValue();
         }
 
@@ -1917,7 +1917,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isRightNull() ) {
                 return true;
             }
-            
+
             return context.declaration.getExtractor().getShortValue( workingMemory, left ) != ((LongVariableContextEntry) context).right;
         }
 
@@ -1928,7 +1928,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if ( context.isLeftNull() ) {
                 return true;
             }
-            
+
             return ((LongVariableContextEntry) context).left != context.extractor.getShortValue( workingMemory, right );
         }
 
@@ -1941,7 +1941,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             } else if (extractor2.isNullValue( workingMemory, object2 )) {
                 return true;
             }
-            
+
             return extractor1.getShortValue( workingMemory, object1 ) != extractor2.getShortValue( workingMemory, object2 );
         }
 
@@ -2087,8 +2087,8 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                 } else {
                     throw new ClassCastException( "Not possible to convert "+arg1.getClass()+" into a double value to compare it to "+arg0.getClass() );
                 }
-                return val0 == val1; // in the future we may need to handle rounding errors 
-            } 
+                return val0 == val1; // in the future we may need to handle rounding errors
+            }
             if( arg0 instanceof String ) {
                 return arg0.equals( arg1.toString() );
             }
@@ -2105,6 +2105,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             return arg0.equals( arg1 );
         }
     }
-    
+
 
 }

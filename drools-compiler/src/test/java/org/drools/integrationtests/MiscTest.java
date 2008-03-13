@@ -28,6 +28,7 @@ import java.io.ObjectOutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -696,6 +697,31 @@ public class MiscTest extends TestCase {
         assertEquals( 1,
                       list.size() );
     }
+
+	public void testBigDecimalIntegerLiteral() throws Exception {
+
+		final PackageBuilder builder = new PackageBuilder();
+		builder.addPackageFromDrl(new InputStreamReader(getClass()
+				.getResourceAsStream("big_decimal_and_literal.drl")));
+		final Package pkg = builder.getPackage();
+
+		final RuleBase ruleBase = getRuleBase();
+		ruleBase.addPackage(pkg);
+		final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+		final List list = new ArrayList();
+		workingMemory.setGlobal("list", list);
+
+		final PersonInterface bill = new Person("bill", null, 12);
+		bill.setBigDecimal(new BigDecimal("42"));
+		bill.setBigInteger(new BigInteger("42"));
+
+		workingMemory.insert(bill);
+		workingMemory.fireAllRules();
+
+		assertEquals(6, list.size());
+	}
+
 
     // @FIXME
     public void FIXME_testBigDecimalWithFromAndEval() throws Exception {
