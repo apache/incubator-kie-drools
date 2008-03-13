@@ -33,7 +33,7 @@
     between XML formats). Note you can always generate normal DRL as
     well.</para>
 
-    <para>Alternatively you may be embedding drools in a product that already
+    <para>Alternatively you may be embedding Drools in a product that already
     uses XML for configuration, so you would like the rules to be in an XML
     format. You may be creating your own rule language on XML - note that you
     can always use the AST objects directly to create your own rule language
@@ -283,7 +283,7 @@
     specify a type (class) and perhaps bind a variable to an instance of that
     class. Nested under the pattern object are constraints and conditional
 	elements that have to be met. The Predicate and Return Value constraints 
-	allow java expressions to be embedded.</para>
+	allow Java expressions to be embedded.</para>
 
     <para>That leaves the conditional elements, not, exists, and, or etc. They
     work like their DRL counterparts. Elements that are nested under and an
@@ -292,7 +292,7 @@
     for the existence or non existence of a fact meeting its
     constraints.</para>
 
-    <para>The Eval element allows the execution of a valid snippet of java
+    <para>The Eval element allows the execution of a valid snippet of Java
     code - as long as it evaluates to a boolean (do not end it with a
     semi-colon, as it is just a fragment) - this can include calling a
     function. The Eval is less efficient then then columns, as the rule engine

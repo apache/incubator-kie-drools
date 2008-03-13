@@ -512,7 +512,7 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
       does not help to use update(). The only way to safely change an
       attribute of a fact whose shadow fact is disabled is to call
       modifyRetract() before changing the attribute, change the attribute and
-      call modifyAssert().</remark>
+      call modifyInsert().</remark>
     </section>
 
     <section>
@@ -523,7 +523,7 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
       means that the engine will automatically know when a fact has changed,
       and behave accordingly (you don't need to tell it that it is modified).
       There are proxy libraries that can help automate this (a future version
-      of drools will bundle some to make it easier). To use the Object in
+      of Drools will bundle some to make it easier). To use the Object in
       dynamic mode specify true for the second assertObject parameter.</para>
 
       <programlisting>Cheese stilton = new Cheese("stilton");
@@ -568,7 +568,7 @@ public void setState(final String newState) {
       external source). For instance, if a new working memory is created, and
       no facts are asserted, calling the fireAllRules will cause the Initial
       Fact to propagate, possibly activating rules (otherwise, nothing would
-      happen as there area no other facts to start with).</para>
+      happen as there are no other facts to start with).</para>
     </section>
   </section>
 
@@ -633,14 +633,14 @@ session.execute( new Cheese( "cheddar" ) );</programlisting>
     need access to any results information they can use the executeWithResults
     method, which returns a StatelessSessionResult. The reason for this is in
     remoting situations you do not always want the return payload, so this way
-    its optional.</para>
+    it's optional.</para>
 
     <para>setAgendaFilter, setGlobal and setGlobalResolver share their state
     across sessions; so each call to execute() will use the set AgendaFilter,
     or see any previous set globals etc.</para>
 
     <para>StatelessSessions do not currently support
-    propertyChangeLissteners.</para>
+    propertyChangeListeners.</para>
 
     <para>Async versions of the Execute method are supported, remember to
     override the ExecutorService implementation when in special managed thread
@@ -663,7 +663,7 @@ session.execute( new Cheese( "cheddar" ) );</programlisting>
     </figure>
 
     <para>StatelessSession.executeWithResults(....) returns a minimal api to
-    examine the sessions data. The inserted Objects can be iterated over,
+    examine the session's data. The inserted Objects can be iterated over,
     queries can be executed and globals retrieved. Once the
     StatelessSessionResult is serialized it loses the reference to the
     underlying WorkingMemory and RuleBase, so queries can no longer be
@@ -679,7 +679,7 @@ session.execute( new Cheese( "cheddar" ) );</programlisting>
     ReferenceOriginalGlobalExporter just passes a reference to the original
     Global Resolver; the latter should be used with care as identifier
     instances can be changed at any time by the StatelessSession and the
-    GlobalResolver may not be serializable freindly.</para>
+    GlobalResolver may not be serializable friendly.</para>
 
     <example>
       <title>GlobalExporter with StatelessSessions</title>
@@ -716,7 +716,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
     <orderedlist>
       <listitem>
         <para>Working Memory Actions - this is where most of the work takes
-        place - in either the Consequence or the main java application
+        place - in either the Consequence or the main Java application
         process. Once the Consequence has finished or the main Java
         application process calls fireAllRules() the engine switches to the
         Agenda Evaluation phase.</para>
@@ -791,7 +791,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <para>Each time setFocus(...) is called it pushes that Agenda Group onto
       a stack, when the focus group is empty it is popped off and the next one
-      of the stack evaluates. An Agenda Group can appear in multiple locations
+      on the stack evaluates. An Agenda Group can appear in multiple locations
       on the stack. The default Agenda Group is "MAIN", all rules which do not
       specify an Agenda Group are placed there, it is also always the first
       group on the Stack and given focus as default.</para>
@@ -1030,7 +1030,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
     <programlisting>session.addEventListener( new DebugWorkingMemoryEventListener() );        </programlisting>
 
-    <para>The Eclipse based Rule IDE also provides an audit logger and
+    <para>The Eclipse-based Rule IDE also provides an audit logger and
     graphical viewer, so that the rule engine can log events for later
     viewing, and auditing.</para>
   </section>

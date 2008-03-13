@@ -184,7 +184,7 @@ end
     and as so, it is a safe tool to use for upgrade large sets of rule
     files.</para>
 
-    <para>The drools update tool can be found as a maven project in the
+    <para>The Drools update tool can be found as a maven project in the
     following source repository
     http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/experimental/drools-update/
     you just need to check it out, and execute the maven clean install action
@@ -248,7 +248,7 @@ end
     <title>Rule flow Update for 4.0.2</title>
 
     <para>
-    	The Rule flow feature was updated for 4.0.2, and now all your ruleflows must decalre a package name.
+    	The Rule flow feature was updated for 4.0.2, and now all your ruleflows must declare a package name.
     </para>
 
   <figure>
@@ -263,4 +263,5 @@ end
     </figure>
 
   </section>
+  
 </section>

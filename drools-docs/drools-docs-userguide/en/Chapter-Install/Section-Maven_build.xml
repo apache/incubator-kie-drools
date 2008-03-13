@@ -8,21 +8,21 @@
     <para>Now that we have the source the next step is to build and install
     the source. Since version 3.1 Drools uses <indexterm>  Maven 2 </indexterm> to build the system. There are two profiles
     available which enable the associated modules "documentation" and
-    "eclipse"; this enables quicker building of the core modules for
-    developers. The eclipse profile will download eclipse into the
-    drools-eclipse folder, which is over 100MB download (It depends on your operating system), however this only
-    needs to be done once; if you wish you can move that eclipse download into
+    "Eclipse"; this enables quicker building of the core modules for
+    developers. The Eclipse profile will download Eclipse into the
+    drools-Eclipse folder, which is over 100MB download (It depends on your operating system), however this only
+    needs to be done once; if you wish you can move that Eclipse download into
     another location and specify it with
-    -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror. The
-    following builds all the jars, the documentation and the eclipse zip with
-    a local folder specified to avoid downloading eclipse:</para>
+    -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror. The
+    following builds all the jars, the documentation and the Eclipse zip with
+    a local folder specified to avoid downloading Eclipse:</para>
 
-    <para><programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror </programlisting></para>
+    <para><programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror </programlisting></para>
 
     <para>You can produce distribution builds, which puts everything into
     zips, as follows:
-<programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror
-mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly:assembly -DlocalEclipseDrop=/folder/jboss-rules/local-eclipse-drop-mirror
+<programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror
+mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly:assembly -DlocalEclipseDrop=/folder/jboss-rules/local-Eclipse-drop-mirror
 </programlisting></para>
 
     <para>Note that install must be done first as javadoc:javadoc won't work
@@ -82,9 +82,9 @@ mvn -Ddocumentation -Declipse -Dmaven.test.skip package javadoc:javadoc assembly
       </listitem>
 
       <listitem>
-        <para>eclipse</para>
+        <para>Eclipse</para>
 
-        <para>Documentation suitable for including in an eclipse plugin</para>
+        <para>Documentation suitable for including in an Eclipse plug-in</para>
       </listitem>
     </itemizedlist>
 

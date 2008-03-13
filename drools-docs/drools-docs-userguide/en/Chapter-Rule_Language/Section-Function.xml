@@ -19,7 +19,7 @@
   </figure>
 
   <para>Functions are a way to put semantic code in your rule source file, as
-  opposed to in normal java classes. They can't do anything more then what you
+  opposed to in normal Java classes. They can't do anything more then what you
   can do with helper classes (in fact, the compiler generates the helper class
   for you behind the scenes). The main advantage of using functions in a rule
   is that you can keep the logic all in one place, and you can change the
@@ -37,7 +37,7 @@
 </programlisting>
 
   <para>Note that the "function" keyword is used, even though its not really
-  part of java. Parameters to the function are just like a normal method (and
+  part of Java. Parameters to the function are just like a normal method (and
   you don't have to have parameters if they are not needed). Return type is
   just like a normal method.</para>
 
