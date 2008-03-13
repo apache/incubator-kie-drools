@@ -314,6 +314,7 @@ public void cheddarCheese(Cheese cheese) {
     private String studentName;
     private int score;
     
+    }
     </programlisting>
 
     <para>Java is Turing complete in that you can write code, among other
@@ -345,7 +346,7 @@ public void cheddarCheese(Cheese cheese) {
 
     <programlisting>
 
-      select 
+select
     * 
 from 
     Students s 
