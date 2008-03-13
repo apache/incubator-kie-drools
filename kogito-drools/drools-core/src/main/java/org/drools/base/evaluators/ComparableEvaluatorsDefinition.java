@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,13 +37,13 @@ import org.drools.spi.FieldValue;
 import org.drools.util.DateUtils;
 
 /**
- * This class defines all the comparable built in 
+ * This class defines all the comparable built in
  * evaluators like >, >=, etc.
- * 
+ *
  * @author etirelli
  */
 public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
-    
+
     private static final String[] SUPPORTED_IDS = { Operator.LESS.getOperatorString(), Operator.LESS_OR_EQUAL.getOperatorString(),
                                                     Operator.GREATER.getOperatorString(), Operator.GREATER_OR_EQUAL.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
@@ -123,7 +123,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             addEvaluator( ValueType.PSHORT_TYPE,        Operator.GREATER_OR_EQUAL,    ShortGreaterOrEqualEvaluator.INSTANCE );
         }
     };
-    
+
     /**
      * @inheridDoc
      */
@@ -147,8 +147,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                                   final String operatorId,
                                   final boolean isNegated,
                                   final String parameterText) {
-        return this.evaluators.getEvaluator( type, 
-                                             Operator.determineOperator( operatorId, 
+        return this.evaluators.getEvaluator( type,
+                                             Operator.determineOperator( operatorId,
                                                                          isNegated ) );
     }
 
@@ -167,14 +167,14 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     public boolean supportsType(ValueType type) {
         return this.evaluators.supportsType( type );
     }
-    
+
     /*  *********************************************************
      *           Evaluator Implementations
      *  *********************************************************
      */
     static class BigDecimalLessEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalLessEvaluator();
@@ -191,7 +191,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) object2.getValue() ) < 0;
+            return comp.compareTo( object2.getBigDecimalValue() ) < 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -230,7 +230,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigDecimalLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalLessOrEqualEvaluator();
@@ -247,7 +247,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) object2.getValue() ) <= 0;
+            return comp.compareTo( object2.getBigDecimalValue() ) <= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -286,7 +286,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigDecimalGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalGreaterEvaluator();
@@ -303,7 +303,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) object2.getValue() ) > 0;
+            return comp.compareTo( object2.getBigDecimalValue() ) > 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -342,7 +342,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigDecimalGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new BigDecimalGreaterOrEqualEvaluator();
@@ -359,7 +359,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) object2.getValue() ) >= 0;
+            return comp.compareTo( object2.getBigDecimalValue() ) >= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -398,7 +398,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigIntegerLessEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerLessEvaluator();
@@ -415,7 +415,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) object2.getValue() ) < 0;
+            return comp.compareTo( object2.getBigIntegerValue() ) < 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -454,7 +454,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigIntegerLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerLessOrEqualEvaluator();
@@ -471,7 +471,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) object2.getValue() ) <= 0;
+            return comp.compareTo( object2.getBigIntegerValue() ) <= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -510,7 +510,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigIntegerGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerGreaterEvaluator();
@@ -527,7 +527,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) object2.getValue() ) > 0;
+            return comp.compareTo( object2.getBigIntegerValue() ) > 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -566,7 +566,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class BigIntegerGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new BigIntegerGreaterOrEqualEvaluator();
@@ -583,7 +583,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) object2.getValue() ) >= 0;
+            return comp.compareTo( object2.getBigIntegerValue() ) >= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -619,10 +619,10 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return "BigInteger >=";
         }
     }
-    
+
     static class ByteLessEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteLessEvaluator();
@@ -674,7 +674,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ByteLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteLessOrEqualEvaluator();
@@ -726,7 +726,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ByteGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteGreaterEvaluator();
@@ -778,7 +778,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ByteGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new ByteGreaterOrEqualEvaluator();
@@ -830,7 +830,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class CharacterLessEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterLessEvaluator();
@@ -882,7 +882,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class CharacterLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterLessOrEqualEvaluator();
@@ -934,7 +934,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class CharacterGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterGreaterEvaluator();
@@ -986,7 +986,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class CharacterGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new CharacterGreaterOrEqualEvaluator();
@@ -1038,7 +1038,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DateLessEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateLessEvaluator();
@@ -1088,6 +1088,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
             final Date value2 = (Date) extractor2.getValue( workingMemory, object2 );
+            if (null == value2) throw new NullPointerException(extractor2.toString());
             return value1.compareTo( value2 ) < 0;
         }
 
@@ -1098,7 +1099,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DateLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateLessOrEqualEvaluator();
@@ -1148,6 +1149,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
             final Date value2 = (Date) extractor2.getValue( workingMemory, object2 );
+            if (null == value2) throw new NullPointerException(extractor2.toString());
             return value1.compareTo( value2 ) <= 0;
         }
 
@@ -1158,7 +1160,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DateGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateGreaterEvaluator();
@@ -1208,6 +1210,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
             final Date value2 = (Date) extractor2.getValue( workingMemory, object2 );
+            if (null == value2) throw new NullPointerException(extractor2.toString());
             return value1.compareTo( value2 ) > 0;
         }
 
@@ -1218,7 +1221,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DateGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new DateGreaterOrEqualEvaluator();
@@ -1268,6 +1271,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
             final Date value2 = (Date) extractor2.getValue( workingMemory, object2 );
+            if (null == value2) throw new NullPointerException(extractor2.toString());
             return value1.compareTo( value2 ) >= 0;
         }
 
@@ -1278,7 +1282,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DoubleLessEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleLessEvaluator();
@@ -1334,7 +1338,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DoubleLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleLessOrEqualEvaluator();
@@ -1390,7 +1394,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DoubleGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleGreaterEvaluator();
@@ -1446,7 +1450,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class DoubleGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new DoubleGreaterOrEqualEvaluator();
@@ -1499,10 +1503,10 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return "Double >=";
         }
     }
-    
+
     static class FloatLessEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatLessEvaluator();
@@ -1558,7 +1562,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class FloatLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatLessOrEqualEvaluator();
@@ -1614,7 +1618,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class FloatGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatGreaterEvaluator();
@@ -1670,7 +1674,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class FloatGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new FloatGreaterOrEqualEvaluator();
@@ -1723,10 +1727,10 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return "Float >=";
         }
     }
-    
+
     static class IntegerLessEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerLessEvaluator();
@@ -1778,7 +1782,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class IntegerLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerLessOrEqualEvaluator();
@@ -1830,7 +1834,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class IntegerGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerGreaterEvaluator();
@@ -1882,7 +1886,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class IntegerGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new IntegerGreaterOrEqualEvaluator();
@@ -1931,10 +1935,10 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return "Integer >=";
         }
     }
-    
+
     static class LongLessEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongLessEvaluator();
@@ -1986,7 +1990,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class LongLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongLessOrEqualEvaluator();
@@ -2038,7 +2042,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class LongGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongGreaterEvaluator();
@@ -2090,7 +2094,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class LongGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new LongGreaterOrEqualEvaluator();
@@ -2139,12 +2143,12 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return "Long >=";
         }
     }
-    
+
     static class ObjectLessEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectLessEvaluator();
         private static final ObjectComparator comparator = new ObjectComparator();
-        
+
 
         private ObjectLessEvaluator() {
             super( ValueType.OBJECT_TYPE,
@@ -2197,7 +2201,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ObjectLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectLessOrEqualEvaluator();
@@ -2254,7 +2258,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ObjectGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectGreaterEvaluator();
@@ -2311,7 +2315,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ObjectGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectGreaterOrEqualEvaluator();
@@ -2368,7 +2372,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ShortLessEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortLessEvaluator();
@@ -2420,7 +2424,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ShortLessOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortLessOrEqualEvaluator();
@@ -2472,7 +2476,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ShortGreaterEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortGreaterEvaluator();
@@ -2524,7 +2528,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
     static class ShortGreaterOrEqualEvaluator extends BaseEvaluator {
         /**
-         * 
+         *
          */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortGreaterOrEqualEvaluator();
@@ -2574,10 +2578,10 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    
+
     protected static class ObjectComparator implements Comparator {
         // this is a stateless object, and so, can be shared among threads
-        // PLEASE: do not add state to it, unless you remove all concurrent 
+        // PLEASE: do not add state to it, unless you remove all concurrent
         // calls to this class instances
 
         public int compare(Object arg0,
@@ -2599,7 +2603,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 if( arg1 instanceof Number ) {
                     val1 = ((Number) arg1).longValue();
                 } else if( arg1 instanceof String ) {
-                    val1 = Long.parseLong( ( String ) arg1 ); 
+                    val1 = Long.parseLong( ( String ) arg1 );
                 } else {
                     throw new ClassCastException( "Not possible to convert "+arg1.getClass()+" into a long value to compare it to "+arg0.getClass() );
                 }
@@ -2619,7 +2623,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 } catch( NumberFormatException nfe ) {
                     return ( (String) arg0).compareTo( arg1.toString() );
                 }
-                
+
             }
             try {
                 return ((Comparable)arg0).compareTo( arg1 );
@@ -2628,5 +2632,5 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
         }
     }
-    
+
 }

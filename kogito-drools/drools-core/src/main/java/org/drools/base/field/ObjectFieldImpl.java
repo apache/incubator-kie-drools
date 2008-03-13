@@ -2,13 +2,13 @@ package org.drools.base.field;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,8 @@ package org.drools.base.field;
  * limitations under the License.
  */
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 
 import org.drools.RuntimeDroolsException;
@@ -27,7 +29,7 @@ public class ObjectFieldImpl
 
     private static final long serialVersionUID = 400L;
     private final Object      value;
-    
+
     private final boolean     isCollection;
     private final boolean     isNumber;
     private final boolean     isBoolean;
@@ -65,7 +67,7 @@ public class ObjectFieldImpl
             return ((Number) this.value).byteValue();
         } else if( isString ) {
             return Byte.valueOf( (String) this.value ).byteValue();
-        } 
+        }
         throw new RuntimeDroolsException( "Conversion to byte not supported for type: " + this.value.getClass() );
     }
 
@@ -142,7 +144,7 @@ public class ObjectFieldImpl
             return 0;
         }
     }
-    
+
     public boolean isNull() {
         return value == null;
     }
@@ -162,12 +164,34 @@ public class ObjectFieldImpl
     public boolean isObjectField() {
         return true;
     }
-    
+
     public boolean isCollectionField() {
         return this.isCollection;
     }
-    
+
     public boolean isStringField() {
         return this.isString;
     }
+
+	public BigDecimal getBigDecimalValue() {
+		if (this.value instanceof BigDecimal) return (BigDecimal) this.value;
+		if (this.isNumber) {
+			return new BigDecimal(((Number) value).doubleValue());
+		} else if (this.isString) {
+			return new BigDecimal((String) value);
+		}
+		if (this.value == null) return null;
+        throw new RuntimeDroolsException( "Conversion to BigDecimal not supported for type: " + this.value.getClass() );
+	}
+
+	public BigInteger getBigIntegerValue() {
+		if (this.value instanceof BigInteger) return (BigInteger) this.value;
+		if (this.isNumber) {
+			return BigInteger.valueOf(((Number) value).longValue());
+		} else if (this.isString) {
+			return new BigInteger((String) value);
+		}
+		if (this.value == null) return null;
+        throw new RuntimeDroolsException( "Conversion to BigInteger not supported for type: " + this.value.getClass() );
+	}
 }

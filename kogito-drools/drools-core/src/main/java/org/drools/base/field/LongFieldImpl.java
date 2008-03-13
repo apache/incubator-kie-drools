@@ -1,5 +1,8 @@
 package org.drools.base.field;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldValue;
 
@@ -69,7 +72,7 @@ public class LongFieldImpl
     public int hashCode() {
         return (int) this.value;
     }
-    
+
     public boolean isNull() {
         return false;
     }
@@ -97,5 +100,13 @@ public class LongFieldImpl
     public boolean isStringField() {
         return false;
     }
+
+	public BigDecimal getBigDecimalValue() {
+		return new BigDecimal(this.value);
+	}
+
+	public BigInteger getBigIntegerValue() {
+		return BigInteger.valueOf(this.value);
+	}
 
 }
