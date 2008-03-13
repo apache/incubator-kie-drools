@@ -7,15 +7,22 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.Lexer;
 import org.antlr.runtime.TokenStream;
+import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
+import org.drools.base.evaluators.SetEvaluatorsDefinition;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
 
 public class MVELDumperTest extends TestCase {
 
     private MVELDumper dumper;
-
+    
     protected void setUp() throws Exception {
         super.setUp();
+        
+        // configure operators
+        new SetEvaluatorsDefinition();
+        new MatchesEvaluatorsDefinition();
+        
         dumper = new MVELDumper();
     }
 
@@ -67,6 +74,18 @@ public class MVELDumperTest extends TestCase {
         
         FieldConstraintDescr fieldDescr = (FieldConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
         String result = dumper.dump( fieldDescr );
+        
+        assertEquals( expected, result );
+    }
+
+    public void testDumpWithDateAttr() throws Exception {
+        String input = "Person( son.birthDate == \"01-jan-2000\" )";
+        String expected = "son.birthDate == org.drools.util.DateUtils.parseDate( \"01-jan-2000\" )" ;
+        DRLParser parser = parse( input );
+        PatternDescr pattern = (PatternDescr) parser.fact( null );
+        
+        FieldConstraintDescr fieldDescr = (FieldConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        String result = dumper.dump( fieldDescr, true );
         
         assertEquals( expected, result );
     }
