@@ -312,7 +312,7 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
 
               <entry>Description</entry>
 
-              <entry>Is required?</entry>
+              <entry>Inclusion Status</entry>
             </row>
           </thead>
 
@@ -427,10 +427,9 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
             </row>
 
             <row>
-              <entry>UNLOOP</entry>
+              <entry>No-loop or Unloop</entry>
 
-              <entry>Indicates that if there cell values in this column, the
-              no-loop attribute should be set</entry>
+              <entry>Placed in the header of a table, no-loop or unloop will both complete the same function of not allowing a rule (row) to loop. For this option to function correctly, there must be a value (true or false) in the cell for the option to take effect. If the cell is left blank then this option will not be set for the row.</entry>
 
               <entry>optional</entry>
             </row>
