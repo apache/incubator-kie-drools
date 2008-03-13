@@ -37,12 +37,18 @@ import org.drools.util.ReflectiveVisitor;
 public class MVELDumper extends ReflectiveVisitor {
 
     private StringBuffer        mvelDump;
+    private boolean             isDateField;
     private static final String eol = System.getProperty( "line.separator" );
     private String              template;
     private String              fieldName;
 
     public String dump(FieldConstraintDescr fieldConstr) {
+        return this.dump( fieldConstr, false );
+    }
+
+    public String dump(FieldConstraintDescr fieldConstr, boolean isDateField ) {
         mvelDump = new StringBuffer();
+        this.isDateField = isDateField;
         this.visit( fieldConstr );
         return mvelDump.toString();
     }
@@ -74,6 +80,9 @@ public class MVELDumper extends ReflectiveVisitor {
             }
         } else if( descr.getType() == LiteralRestrictionDescr.TYPE_STRING ) {
             text = "\"" + text + "\"";
+            if( this.isDateField ) {
+                text = "org.drools.util.DateUtils.parseDate( "+text+" )";
+            }
         }
         this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), text );
     }
