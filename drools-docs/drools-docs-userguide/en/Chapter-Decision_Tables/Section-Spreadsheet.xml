@@ -463,6 +463,17 @@ If the template is [Foo(bar &lt; $1, baz == $2)] and the cell is [42,42] then th
 
         <mediaobject>
           <imageobject>
+            <imagedata fileref="Key.png" />
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+
+      <screenshot>
+        <screeninfo>Example usage of keywords for imports, functions
+        etc.</screeninfo>
+
+        <mediaobject>
+          <imageobject>
             <imagedata fileref="keywords.png" />
           </imageobject>
         </mediaobject>
