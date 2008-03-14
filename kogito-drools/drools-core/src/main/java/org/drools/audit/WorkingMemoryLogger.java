@@ -264,7 +264,7 @@ public abstract class WorkingMemoryLogger
                     // This handle is now invalid, probably due to an fact retraction
                     continue;
                 }
-                final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, workingMemory.getObject( handle ) );
+                final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, handleImpl.getObject() );
 
                 result.append( declaration.getIdentifier() );
                 result.append( "=" );
