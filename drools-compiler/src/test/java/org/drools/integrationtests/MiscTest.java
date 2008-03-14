@@ -82,6 +82,7 @@ import org.drools.TestParam;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
 import org.drools.audit.WorkingMemoryFileLogger;
+import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.base.ClassObjectFilter;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalFactHandle;
@@ -1258,6 +1259,45 @@ public class MiscTest extends TestCase {
         Package pkg = builder.getPackage();
         pkg.checkValidity();
     }
+    
+    /**
+     * @see JBRULES-1415 Certain uses of from causes NullPointerException in WorkingMemoryLogger
+     */
+    public void testFromDeclarationWithWorkingMemoryLogger() throws Exception {
+        String rule = "package org.test;\n";
+        rule += "import org.drools.Cheesery\n";
+        rule += "import org.drools.Cheese\n";
+        rule += "global java.util.List list\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "when\n";
+        rule += "    $cheesery : Cheesery()\n";
+        rule += "    Cheese( $type : type) from $cheesery.cheeses\n";
+        rule += "then\n";
+        rule += "    list.add( $type );\n";
+        rule += "end";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ));
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage(pkg);
+        final StatefulSession session = ruleBase.newStatefulSession();
+        
+        WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( session );
+        List list = new ArrayList();
+        session.setGlobal( "list", list );
+        
+        Cheesery cheesery = new Cheesery();
+        cheesery.addCheese(  new Cheese("stilton", 22) );
+        
+        session.insert( cheesery );
+        
+        session.fireAllRules();                 
+        
+        assertEquals( 1, list.size());
+        assertEquals( "stilton", list.get(0));
+}    
 
     public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
