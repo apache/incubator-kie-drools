@@ -44,6 +44,8 @@ public class GuidedDecisionTable implements PortableObject {
 	 */
 	public String[][] data;
 
+	//TODO: add in precondition(s)
+
 
 	public GuidedDecisionTable() {}
 
