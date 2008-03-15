@@ -1,14 +1,6 @@
 package org.drools.decisiontable.parser;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import junit.framework.TestCase;
-
 import org.drools.Agenda;
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -31,6 +23,16 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.temporal.SessionClock;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class ExternalSheetListenerTest extends TestCase {
 
@@ -438,7 +440,13 @@ public class ExternalSheetListenerTest extends TestCase {
                     // TODO Auto-generated method stub
                     return null;
                 }
-			};
+
+                public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+                }
+
+                public void writeExternal(ObjectOutput out) throws IOException {
+                }
+            };
 		}
 	}
 
