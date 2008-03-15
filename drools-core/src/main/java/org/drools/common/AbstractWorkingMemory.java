@@ -264,7 +264,8 @@ public abstract class AbstractWorkingMemory
         processInstanceFactories = (Map<String, ProcessInstanceFactory>)in.readObject();
         timeMachine = (TimeMachine)in.readObject();
         entryPoint = (EntryPoint)in.readObject();
-        entryPointNode = (EntryPointNode)in.readObject();
+        entryPoints = (Map<String, WorkingMemoryEntryPoint>)in.readObject();
+        initTransient();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -298,7 +299,7 @@ public abstract class AbstractWorkingMemory
         out.writeObject(processInstanceFactories);
         out.writeObject(timeMachine);
         out.writeObject(entryPoint);
-        out.writeObject(entryPointNode);
+        out.writeObject(entryPoints);
     }
 
     // ------------------------------------------------------------

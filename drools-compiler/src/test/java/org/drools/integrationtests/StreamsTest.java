@@ -20,7 +20,7 @@ package org.drools.integrationtests;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.drools.ClockType;
-import org.drools.EntryPointInterface;
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -158,7 +158,7 @@ public class StreamsTest extends TestCase {
                                          50,
                                          System.currentTimeMillis() );
 
-        EntryPointInterface entry = wm.getEntryPoint( "StockStream" );
+        WorkingMemoryEntryPoint entry = wm.getWorkingMemoryEntryPoint( "StockStream" );
 
         InternalFactHandle handle5 = (InternalFactHandle) entry.insert( tick5 );
         InternalFactHandle handle6 = (InternalFactHandle) entry.insert( tick6 );
