@@ -17,17 +17,19 @@
  */
 package org.drools;
 
+import java.io.Serializable;
+
 /**
  * A simple order event POJO
  * 
  * @author etirelli
  */
-public class OrderEvent {
-    
+public class OrderEvent implements Serializable {
+
     private String id;
     private String customer;
     private double total;
-    
+
     public OrderEvent(String id,
                       String customer,
                       double total) {

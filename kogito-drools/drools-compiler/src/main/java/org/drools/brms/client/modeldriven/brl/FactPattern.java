@@ -1,9 +1,13 @@
 package org.drools.brms.client.modeldriven.brl;
 
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+
 /**
  * A fact pattern is a declaration of a fact type, and its constraint,
  * and perhaps a variable that is it bound to
- * It is the equivalent of a "pattern" in drools terms. 
+ * It is the equivalent of a "pattern" in drools terms.
  * @author Michael Neale
  *
  */
@@ -24,8 +28,19 @@ public class FactPattern
         //this.constraints = new CompositeFieldConstraint();
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        constraintList  = (CompositeFieldConstraint)in.readObject();
+        factType  = (String)in.readObject();
+        boundName  = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(constraintList);
+        out.writeObject(factType);
+        out.writeObject(boundName);
+    }
     /**
-     * This will add a top level constraint.  
+     * This will add a top level constraint.
      */
     public void addConstraint(final FieldConstraint constraint) {
         if (constraintList == null) constraintList = new CompositeFieldConstraint();
@@ -46,12 +61,12 @@ public class FactPattern
             return false;
         }
     }
-    
+
     /**
      * This will return the list of field constraints that are in the root
      * CompositeFieldConstraint object.
      * If there is no root, then an empty array will be returned.
-     * 
+     *
      * @return an empty array, or the list of constraints (which may be composites).
      */
     public FieldConstraint[] getFieldConstraints() {

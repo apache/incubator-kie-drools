@@ -2,6 +2,8 @@ package org.drools.testframework;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 import java.util.List;
 
 import org.drools.ClockType;
@@ -124,7 +126,14 @@ public class MockRuleBase implements RuleBase {
 
     public void addPackage(Package pkg) {
         // TODO Auto-generated method stub
-        
+
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+    }
 }

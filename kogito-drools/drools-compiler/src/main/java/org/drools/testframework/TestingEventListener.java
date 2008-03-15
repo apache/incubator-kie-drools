@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
@@ -161,5 +164,12 @@ class NilConsequence implements Consequence {
 
 	public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) throws Exception {
 	}
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+    }
 }
 

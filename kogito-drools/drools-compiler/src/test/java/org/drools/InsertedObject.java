@@ -1,6 +1,8 @@
 package org.drools;
 
-public class InsertedObject {
+import java.io.Serializable;
+
+public class InsertedObject implements Serializable {
     private String value;
 
     public String getValue() {
@@ -24,7 +26,7 @@ public class InsertedObject {
         result = PRIME * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
-    
+
     public boolean equals(Object obj) {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
@@ -35,7 +37,7 @@ public class InsertedObject {
         } else if ( !value.equals( other.value ) ) return false;
         return true;
     }
-    
-    
+
+
 
 }

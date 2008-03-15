@@ -1,6 +1,8 @@
 package org.drools;
 
-public class Guess {
+import java.io.Serializable;
+
+public class Guess implements Serializable {
 
     private Integer value;
 

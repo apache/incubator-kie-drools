@@ -1,12 +1,12 @@
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,9 @@ package org.drools.lang.descr;
 
 import java.util.Collections;
 import java.util.List;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 /**
  * A descr class for accumulate node
@@ -40,6 +43,34 @@ public class AccumulateDescr extends PatternSourceDescr
     private boolean           externalFunction = false;
     private String            functionIdentifier;
     private String            expression;
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        input           = (BaseDescr)in.readObject();
+        initCode        = (String)in.readObject();
+        actionCode      = (String)in.readObject();
+        reverseCode     = (String)in.readObject();
+        resultCode      = (String)in.readObject();
+        declarations    = (String[])in.readObject();
+        className       = (String)in.readObject();
+        externalFunction    = in.readBoolean();
+        functionIdentifier  = (String)in.readObject();
+        expression          = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(input);
+        out.writeObject(initCode);
+        out.writeObject(actionCode);
+        out.writeObject(reverseCode);
+        out.writeObject(resultCode);
+        out.writeObject(declarations);
+        out.writeObject(className);
+        out.writeBoolean(externalFunction);
+        out.writeObject(functionIdentifier);
+        out.writeObject(expression);
+    }
     
     public int getLine() {
         return this.input.getLine();
@@ -92,8 +123,8 @@ public class AccumulateDescr extends PatternSourceDescr
     public void addDescr(final BaseDescr patternDescr) {
         throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
     }
-    
-    public void insertBeforeLast(final Class clazz ,final BaseDescr baseDescr ) { 
+
+    public void insertBeforeLast(final Class clazz ,final BaseDescr baseDescr ) {
         throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
     }
 
@@ -154,19 +185,19 @@ public class AccumulateDescr extends PatternSourceDescr
     }
 
     public void setInput(BaseDescr input) {
-        this.input = input; 
+        this.input = input;
     }
-    
+
     public boolean isSinglePattern() {
-        return this.input instanceof PatternDescr; 
+        return this.input instanceof PatternDescr;
     }
 
     public boolean isMultiPattern() {
-        return ! ( this.input instanceof PatternDescr ); 
+        return ! ( this.input instanceof PatternDescr );
     }
 
     public boolean hasValidInput() {
-        // TODO: need to check that there are no OR occurences 
+        // TODO: need to check that there are no OR occurences
         return this.input != null;
     }
 }

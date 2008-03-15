@@ -16,28 +16,8 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
 import org.drools.Address;
@@ -46,8 +26,8 @@ import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.Cheesery;
+import org.drools.Cheesery.Maturity;
 import org.drools.Child;
-import org.drools.DomainObjectHolder;
 import org.drools.FactA;
 import org.drools.FactB;
 import org.drools.FactC;
@@ -80,9 +60,7 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
-import org.drools.Cheesery.Maturity;
 import org.drools.audit.WorkingMemoryFileLogger;
-import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.base.ClassObjectFilter;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalFactHandle;
@@ -91,9 +69,9 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
-import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -112,14 +90,27 @@ import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
-import org.drools.rule.Rule;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Reader;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
@@ -136,15 +127,135 @@ public class MiscTest extends TestCase {
                                             config );
     }
 
+    public void testImportFunctions() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        final Cheese cheese = new Cheese( "stilton",
+                                          15 );
+        workingMemory.insert( cheese );
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+        workingMemory   = SerializationHelper.serializeObject(workingMemory);
+        workingMemory.fireAllRules();
+
+        list    = (List)workingMemory.getGlobal("list");
+        assertEquals( 4,
+                      list.size() );
+
+        assertEquals( "rule1",
+                      list.get( 0 ) );
+        assertEquals( "rule2",
+                      list.get( 1 ) );
+        assertEquals( "rule3",
+                      list.get( 2 ) );
+        assertEquals( "rule4",
+                      list.get( 3 ) );
+    }
+
+    public void testStaticFieldReference() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_StaticField.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+
+        final Cheesery cheesery1 = new Cheesery();
+        cheesery1.setStatus( Cheesery.SELLING_CHEESE );
+        cheesery1.setMaturity( Maturity.OLD );
+        workingMemory.insert( cheesery1 );
+
+        final Cheesery cheesery2 = new Cheesery();
+        cheesery2.setStatus( Cheesery.MAKING_CHEESE );
+        cheesery2.setMaturity( Maturity.YOUNG );
+        workingMemory.insert( cheesery2 );
+
+//        workingMemory   = SerializationHelper.serializeObject(workingMemory);
+//        list = (List) workingMemory.getGlobal( "list" );
+        workingMemory.fireAllRules();
+
+        assertEquals( 2,
+                      list.size() );
+
+        assertEquals( cheesery1,
+                      list.get( 0 ) );
+        assertEquals( cheesery2,
+                      list.get( 1 ) );
+    }
+
+    public void testPrimitiveArray() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_primitiveArray.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        final List result = new ArrayList();
+        workingMemory.setGlobal( "result",
+                                 result );
+
+        final Primitives p1 = new Primitives();
+        p1.setPrimitiveArrayAttribute( new int[]{1, 2, 3} );
+        p1.setArrayAttribute( new String[]{"a", "b"} );
+
+        workingMemory.insert( p1 );
+
+        workingMemory.fireAllRules();
+        assertEquals( 3,
+                      result.size() );
+        assertEquals( 3,
+                      ((Integer) result.get( 0 )).intValue() );
+        assertEquals( 2,
+                      ((Integer) result.get( 1 )).intValue() );
+        assertEquals( 3,
+                      ((Integer) result.get( 2 )).intValue() );
+
+    }
+
+    public void testMVELSoundex() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "MVEL_soundex.drl" ) );
+        RuleBase ruleBase = loadRuleBase( reader );
+
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        Cheese c = new Cheese( "fubar",
+                               2 );
+
+        workingMemory.insert( c );
+        workingMemory.fireAllRules();
+        assertEquals( 42,
+                      c.getPrice() );
+    }
+
     public void testGlobals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "globals_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -157,10 +268,11 @@ public class MiscTest extends TestCase {
                                            5 );
         workingMemory.insert( stilton );
 
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( new Integer( 5 ),
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
     }
 
     public void testGlobals2() throws Exception {
@@ -169,9 +281,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalsAsConstraints.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -187,23 +300,24 @@ public class MiscTest extends TestCase {
                                            5 );
         workingMemory.insert( stilton );
 
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 1,
-                      results.size() );
+                      ((List)workingMemory.getGlobal("results")).size() );
         assertEquals( "memberOf",
-                      results.get( 0 ) );
+                      ((List)workingMemory.getGlobal("results")).get( 0 ) );
 
         final Cheese brie = new Cheese( "brie",
                                         5 );
         workingMemory.insert( brie );
-
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 2,
-                      results.size() );
+                      ((List)workingMemory.getGlobal("results")).size() );
         assertEquals( "not memberOf",
-                      results.get( 1 ) );
+                      ((List)workingMemory.getGlobal("results")).get( 1 ) );
     }
 
     public void testCustomGlobalResolver() throws Exception {
@@ -211,8 +325,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Map map = new HashMap();
@@ -225,6 +340,12 @@ public class MiscTest extends TestCase {
                  string );
 
         workingMemory.setGlobalResolver( new GlobalResolver() {
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+            }
+
             public Object resolveGlobal(String identifier) {
                 return map.get( identifier );
             }
@@ -254,8 +375,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Map map = new HashMap();
@@ -278,6 +400,11 @@ public class MiscTest extends TestCase {
                          value );
             }
 
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+            }
         } );
 
         Cheese bree = new Cheese();
@@ -314,8 +441,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( drl ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -338,9 +466,9 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List events = new ArrayList();
@@ -384,8 +512,9 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -419,8 +548,9 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List list = new ArrayList();
@@ -445,8 +575,9 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -479,8 +610,9 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         // load up the rulebase
         return ruleBase;
     }
@@ -489,7 +621,7 @@ public class MiscTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_ExplicitAnd.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -502,6 +634,7 @@ public class MiscTest extends TestCase {
         workingMemory.insert( new Cheese( "brie",
                                           33 ) );
 
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
@@ -511,9 +644,9 @@ public class MiscTest extends TestCase {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "HelloWorld.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -526,6 +659,7 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( message );
         workingMemory.insert( "boo" );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
         assertTrue( message.isFired() );
         assertEquals( message,
@@ -533,31 +667,15 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void testMVELSoundex() throws Exception {
-
-        // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "MVEL_soundex.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        Cheese c = new Cheese( "fubar",
-                               2 );
-
-        workingMemory.insert( c );
-        workingMemory.fireAllRules();
-        assertEquals( 42,
-                      c.getPrice() );
-    }
-
     public void testLiteral() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -566,6 +684,7 @@ public class MiscTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         workingMemory.insert( stilton );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
 
         workingMemory.fireAllRules();
 
@@ -578,9 +697,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_with_boolean.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -591,6 +711,8 @@ public class MiscTest extends TestCase {
                                                  12 );
         bill.setAlive( true );
         workingMemory.insert( bill );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+
         workingMemory.fireAllRules();
 
         assertEquals( bill,
@@ -602,9 +724,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactTemplate.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -617,6 +740,8 @@ public class MiscTest extends TestCase {
         stilton.setFieldValue( "price",
                                new Integer( 100 ) );
         workingMemory.insert( stilton );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -636,9 +761,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PropertyChange.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -647,6 +773,7 @@ public class MiscTest extends TestCase {
         final State state = new State( "initial" );
         workingMemory.insert( state,
                               true );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -673,9 +800,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "big_decimal_and_comparable.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -693,92 +821,11 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( bill );
         workingMemory.insert( ben );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 1,
                       list.size() );
-    }
-
-	public void testBigDecimalIntegerLiteral() throws Exception {
-
-		final PackageBuilder builder = new PackageBuilder();
-		builder.addPackageFromDrl(new InputStreamReader(getClass()
-				.getResourceAsStream("big_decimal_and_literal.drl")));
-		final Package pkg = builder.getPackage();
-
-		final RuleBase ruleBase = getRuleBase();
-		ruleBase.addPackage(pkg);
-		final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-		final List list = new ArrayList();
-		workingMemory.setGlobal("list", list);
-
-		final PersonInterface bill = new Person("bill", null, 12);
-		bill.setBigDecimal(new BigDecimal("42"));
-		bill.setBigInteger(new BigInteger("42"));
-
-		workingMemory.insert(bill);
-		workingMemory.fireAllRules();
-
-		assertEquals(6, list.size());
-	}
-
-
-    // @FIXME
-    public void FIXME_testBigDecimalWithFromAndEval() throws Exception {
-        String rule = "package org.test;\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "when\n";
-        rule += "    $dec : java.math.BigDecimal() from java.math.BigDecimal.TEN;\n";
-        rule += "    eval( $dec.compareTo(java.math.BigDecimal.ONE) > 0 )\n";
-        rule += "then\n";
-        rule += "    System.out.println(\"OK!\");\n";
-        rule += "end";
-
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final StatefulSession session = ruleBase.newStatefulSession();
-        session.fireAllRules();
-
-    }
-
-    public void testMVELConsequenceWithMapsAndArrays() throws Exception {
-        String rule = "package org.test;\n";
-        rule += "import java.util.ArrayList\n";
-        rule += "import java.util.HashMap\n";
-        rule += "global java.util.List list\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "    dialect \"mvel\"";
-        rule += "when\n";
-        rule += "then\n";
-        rule += "    m = new HashMap();\n";
-        rule += "    l = new ArrayList();\n";
-        rule += "    l.add(\"first\");\n";
-        rule += "    m.put(\"content\", l);\n";
-        rule += "    System.out.println(m[\"content\"][0]);\n";
-        rule += "    list.add(m[\"content\"][0]);\n";
-        rule += "end";
-
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final StatefulSession session = ruleBase.newStatefulSession();
-        List list = new ArrayList();
-        session.setGlobal( "list",
-                           list );
-        session.fireAllRules();
-
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( "first",
-                      list.get( 0 ) );
     }
 
     public void testCell() throws Exception {
@@ -788,12 +835,14 @@ public class MiscTest extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "evalmodify.drl" ) ) );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
-        final WorkingMemory memory = ruleBase.newStatefulSession();
+        WorkingMemory memory = ruleBase.newStatefulSession();
         memory.insert( cell1 );
         memory.insert( cell );
+//        memory    = SerializationHelper.serializeObject(memory);
         memory.fireAllRules();
         assertEquals( 9,
                       cell.getValue() );
@@ -838,12 +887,14 @@ public class MiscTest extends TestCase {
                       ((AttributeDescr) ruleAttrs.get( 0 )).getValue() );
         assertEquals( "dialect",
                       ((AttributeDescr) ruleAttrs.get( 0 )).getName() );
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        final WorkingMemory memory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory memory = ruleBase.newStatefulSession();
 
         memory.insert( p );
+        memory    = SerializationHelper.serializeObject(memory);
         memory.fireAllRules();
 
     }
@@ -853,9 +904,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "or_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -881,6 +933,7 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( new Cheese( "stilton",
                                           5 ) );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         // now have one more
@@ -894,13 +947,15 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
         workingMemory.insert( stilton );
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         final QueryResults results = workingMemory.getQueryResults( "simple query" );
         assertEquals( 1,
                       results.size() );
@@ -913,7 +968,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "five",
                                  new Integer( 5 ) );
@@ -925,6 +980,7 @@ public class MiscTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         workingMemory.insert( stilton );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( stilton,
@@ -940,9 +996,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "five",
                                  new Integer( 5 ) );
@@ -954,6 +1011,7 @@ public class MiscTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         workingMemory.insert( stilton );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( stilton,
@@ -965,9 +1023,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test_more.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -975,6 +1034,7 @@ public class MiscTest extends TestCase {
 
         final Person foo = new Person( "foo" );
         workingMemory.insert( foo );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( foo,
@@ -986,9 +1046,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "returnvalue_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "two",
                                  new Integer( 2 ) );
@@ -1006,6 +1067,7 @@ public class MiscTest extends TestCase {
                                                  10 );
         workingMemory.insert( jane );
 
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( jane,
@@ -1019,8 +1081,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "two",
@@ -1052,9 +1115,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_behaviour.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final PersonInterface p1 = new Person( "michael",
                                                "food",
@@ -1065,8 +1129,8 @@ public class MiscTest extends TestCase {
         workingMemory.insert( p1 );
         workingMemory.insert( p2 );
 
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
-
     }
 
     public void testNullConstraint() throws Exception {
@@ -1074,9 +1138,10 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_constraint.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List foo = new ArrayList();
         workingMemory.setGlobal( "messages",
                                  foo );
@@ -1090,39 +1155,11 @@ public class MiscTest extends TestCase {
         workingMemory.insert( p1 );
         workingMemory.insert( p2 );
 
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
         assertEquals( 2,
                       foo.size() );
 
-    }
-
-    public void testImportFunctions() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        final Cheese cheese = new Cheese( "stilton",
-                                          15 );
-        workingMemory.insert( cheese );
-        final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
-                                 list );
-        workingMemory.fireAllRules();
-
-        assertEquals( 4,
-                      list.size() );
-
-        assertEquals( "rule1",
-                      list.get( 0 ) );
-        assertEquals( "rule2",
-                      list.get( 1 ) );
-        assertEquals( "rule3",
-                      list.get( 2 ) );
-        assertEquals( "rule4",
-                      list.get( 3 ) );
     }
 
     public void testBasicFrom() throws Exception {
@@ -1130,8 +1167,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_From.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list1 = new ArrayList();
@@ -1188,8 +1226,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
@@ -1259,45 +1298,6 @@ public class MiscTest extends TestCase {
         Package pkg = builder.getPackage();
         pkg.checkValidity();
     }
-    
-    /**
-     * @see JBRULES-1415 Certain uses of from causes NullPointerException in WorkingMemoryLogger
-     */
-    public void testFromDeclarationWithWorkingMemoryLogger() throws Exception {
-        String rule = "package org.test;\n";
-        rule += "import org.drools.Cheesery\n";
-        rule += "import org.drools.Cheese\n";
-        rule += "global java.util.List list\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "when\n";
-        rule += "    $cheesery : Cheesery()\n";
-        rule += "    Cheese( $type : type) from $cheesery.cheeses\n";
-        rule += "then\n";
-        rule += "    list.add( $type );\n";
-        rule += "end";
-
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ));
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage(pkg);
-        final StatefulSession session = ruleBase.newStatefulSession();
-        
-        WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( session );
-        List list = new ArrayList();
-        session.setGlobal( "list", list );
-        
-        Cheesery cheesery = new Cheesery();
-        cheesery.addCheese(  new Cheese("stilton", 22) );
-        
-        session.insert( cheesery );
-        
-        session.fireAllRules();                 
-        
-        assertEquals( 1, list.size());
-        assertEquals( "stilton", list.get(0));
-}    
 
     public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -1309,7 +1309,7 @@ public class MiscTest extends TestCase {
 
         RuntimeException runtime = null;
         // this should ralph all over the place.
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         try {
             ruleBase.addPackage( pkg );
             fail( "Should have thrown an exception as the rule is NOT VALID." );
@@ -1317,6 +1317,7 @@ public class MiscTest extends TestCase {
             assertNotNull( e.getMessage() );
             runtime = e;
         }
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         assertTrue( builder.getErrors().getErrors().length > 0 );
 
         final String pretty = builder.getErrors().toString();
@@ -1377,8 +1378,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionInConsequence.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1401,8 +1403,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "assert_retract.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1430,8 +1433,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_as_first_pattern.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese mussarela = new Cheese( "Mussarela",
@@ -1482,8 +1486,9 @@ public class MiscTest extends TestCase {
         CustomConsequenceExceptionHandler handler = new CustomConsequenceExceptionHandler();
         conf.setConsequenceExceptionHandler( handler );
 
-        final RuleBase ruleBase = getRuleBase( conf );
+        RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
@@ -1492,7 +1497,7 @@ public class MiscTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        assertTrue( handler.isCalled() );
+        assertTrue( ((CustomConsequenceExceptionHandler)((ReteooRuleBase)ruleBase).getConfiguration().getConsequenceExceptionHandler()).isCalled() );
     }
 
     public static class CustomConsequenceExceptionHandler
@@ -1511,6 +1516,13 @@ public class MiscTest extends TestCase {
             return this.called;
         }
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            called  = in.readBoolean();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeBoolean(called);
+        }
     }
 
     public void testFunctionException() throws Exception {
@@ -1518,8 +1530,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionException.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
@@ -1540,8 +1553,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalException.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
@@ -1562,8 +1576,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PredicateException.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
@@ -1584,8 +1599,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueException.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
@@ -1605,8 +1621,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MultiRestrictionFieldConstraint.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list1 = new ArrayList();
@@ -1683,6 +1700,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         List list = new ArrayList();
@@ -1765,8 +1783,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ContainsCheese.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1795,46 +1814,13 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
-    public void testStaticFieldReference() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_StaticField.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
-                                 list );
-
-        final Cheesery cheesery1 = new Cheesery();
-        cheesery1.setStatus( Cheesery.SELLING_CHEESE );
-        cheesery1.setMaturity( Maturity.OLD );
-        workingMemory.insert( cheesery1 );
-
-        final Cheesery cheesery2 = new Cheesery();
-        cheesery2.setStatus( Cheesery.MAKING_CHEESE );
-        cheesery2.setMaturity( Maturity.YOUNG );
-        workingMemory.insert( cheesery2 );
-
-        workingMemory.fireAllRules();
-
-        assertEquals( 2,
-                      list.size() );
-
-        assertEquals( cheesery1,
-                      list.get( 0 ) );
-        assertEquals( cheesery2,
-                      list.get( 1 ) );
-    }
-
     public void testDuplicateRuleNames() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName1.drl" ) ) );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName2.drl" ) ) );
@@ -1852,8 +1838,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( reader );
         final Package pkg1 = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         // Adding person with null name and likes attributes
@@ -1877,13 +1864,16 @@ public class MiscTest extends TestCase {
 
     }
 
+
+
     public void testEmptyRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyRule.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1901,8 +1891,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NoPatterns.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1921,8 +1912,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrWithBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1953,8 +1945,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( reader );
         final Package pkg1 = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List orderedFacts = new ArrayList();
@@ -1988,8 +1981,9 @@ public class MiscTest extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.fireAllRules();
@@ -2005,8 +1999,9 @@ public class MiscTest extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QueryWithParams.drl" ) ) );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.fireAllRules();
@@ -2046,8 +2041,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_TwoQuerries.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stinky",
@@ -2094,8 +2090,7 @@ public class MiscTest extends TestCase {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyTuple.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
+        RuleBase ruleBase = loadRuleBase( reader );
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         // 1st time
@@ -2188,8 +2183,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DoubleQueryWithExists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Person p1 = new Person( "p1",
@@ -2273,8 +2269,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionWithPrimitives.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2297,8 +2294,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueAndGlobal.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List matchlist = new ArrayList();
@@ -2338,8 +2336,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclaringAndUsingBindsInSamePattern.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase( config );
+        RuleBase ruleBase = getRuleBase( config );
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List sensors = new ArrayList();
@@ -2368,8 +2367,9 @@ public class MiscTest extends TestCase {
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_missing_import.drl" ) ) );
             final Package pkg = builder.getPackage();
 
-            final RuleBase ruleBase = getRuleBase();
+            RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg );
+            ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
             Assert.fail( "Should have thrown an InvalidRulePackage" );
         } catch ( final InvalidRulePackage e ) {
@@ -2386,8 +2386,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedConditionalElements.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2422,8 +2423,9 @@ public class MiscTest extends TestCase {
             builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclarationUsage.drl" ) ) );
             final Package pkg = builder.getPackage();
 
-            final RuleBase ruleBase = getRuleBase();
+            RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg );
+            ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
             fail( "Should have trown an exception" );
         } catch ( final InvalidRulePackage e ) {
@@ -2439,8 +2441,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_UnbalancedTrees.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
@@ -2465,41 +2468,12 @@ public class MiscTest extends TestCase {
     }
 
     public void testImportConflict() throws Exception {
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportConflict.drl" ) ) );
         final Package pkg = builder.getPackage();
         ruleBase.addPackage( pkg );
-    }
-
-    public void testPrimitiveArray() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_primitiveArray.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        final List result = new ArrayList();
-        workingMemory.setGlobal( "result",
-                                 result );
-
-        final Primitives p1 = new Primitives();
-        p1.setPrimitiveArrayAttribute( new int[]{1, 2, 3} );
-        p1.setArrayAttribute( new String[]{"a", "b"} );
-
-        workingMemory.insert( p1 );
-
-        workingMemory.fireAllRules();
-        assertEquals( 3,
-                      result.size() );
-        assertEquals( 3,
-                      ((Integer) result.get( 0 )).intValue() );
-        assertEquals( 2,
-                      ((Integer) result.get( 1 )).intValue() );
-        assertEquals( 3,
-                      ((Integer) result.get( 2 )).intValue() );
-
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
     }
 
     public void testEmptyIdentifier() throws Exception {
@@ -2507,8 +2481,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_emptyIdentifier.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List result = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -2531,8 +2506,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBinding.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final Map result = new HashMap();
         workingMemory.setGlobal( "results",
@@ -2588,8 +2564,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyInHirarchies.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.insert( new Child( "gp" ) );
@@ -2602,8 +2579,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SelfReference.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -2639,8 +2617,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NumberComparisons.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2696,8 +2675,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_skipModify.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -2725,8 +2705,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EventModel.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final List agendaList = new ArrayList();
@@ -2814,8 +2795,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_implicitDeclarations.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -2838,8 +2820,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_castsInsideEval.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "value",
@@ -2853,8 +2836,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_memberOf.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2891,8 +2875,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_contains_in_array.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2919,8 +2904,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_collectNodeSharing.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2946,8 +2932,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_nodeSharingNotExists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2979,8 +2966,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_nullBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3005,8 +2993,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RetractModifyWithFunction.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stilton",
@@ -3036,8 +3025,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConstraintConnectors.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3098,8 +3088,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesNotMatches.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3121,9 +3112,9 @@ public class MiscTest extends TestCase {
         final Cheese muzzarella2 = new Cheese( "muzzarella2",
                                                10 );
         final Cheese provolone = new Cheese( "provolone",
-                                             10 );
-        final Cheese provolone2 = new Cheese( "another cheese (provolone)",
                                               10 );
+        final Cheese provolone2 = new Cheese( "another cheese (provolone)",
+                                               10 );
         workingMemory.insert( stilton );
         workingMemory.insert( stilton2 );
         workingMemory.insert( agedStilton );
@@ -3136,7 +3127,7 @@ public class MiscTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        System.out.println( list.toString() );
+        System.out.println(list.toString());
         assertEquals( 4,
                       list.size() );
 
@@ -3155,8 +3146,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3171,35 +3163,12 @@ public class MiscTest extends TestCase {
         workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
+
         assertEquals( 1,
                       list.size() );
 
         assertEquals( bob,
                       list.get( 0 ) );
-    }
-
-    public void testMatchesMVEL() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesMVEL.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final StatefulSession session = ruleBase.newStatefulSession();
-
-        final List results = new ArrayList();
-        session.setGlobal( "results",
-                           results );
-
-        Map map = new HashMap();
-        map.put( "content",
-                 "hello ;=" );
-        session.insert( map );
-
-        session.fireAllRules();
-
-        assertEquals( 1,
-                      results.size() );
     }
 
     public void testAutomaticBindingsErrors() throws Exception {
@@ -3215,8 +3184,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QualifiedFieldReference.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3244,8 +3214,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewrite.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3314,8 +3285,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccess.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3345,8 +3317,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_halt.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3369,8 +3342,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_fireLimit.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3420,8 +3394,9 @@ public class MiscTest extends TestCase {
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
-        final RuleBase ruleBase = getRuleBase( conf );
+        RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3448,8 +3423,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_charComparisons.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3487,8 +3463,9 @@ public class MiscTest extends TestCase {
 
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setShareAlphaNodes( false );
-        final RuleBase ruleBase = getRuleBase( conf );
+        RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3519,8 +3496,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_functionCallingFunction.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3544,8 +3522,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_functionCallingFunction.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3566,8 +3545,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SelfReference2.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3614,9 +3594,10 @@ public class MiscTest extends TestCase {
             assertEquals( 1,
                           pkg2.getRules().length );
 
-            final RuleBase ruleBase = getRuleBase();
+            RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg1 );
             ruleBase.addPackage( pkg2 );
+            ruleBase    = SerializationHelper.serializeObject(ruleBase);
             final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
             final List results = new ArrayList();
@@ -3644,30 +3625,6 @@ public class MiscTest extends TestCase {
         }
     }
 
-    public void testMergePackageWithSameRuleNames() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MergePackageWithSameRuleNames1.drl" ) ) );
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-
-        builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MergePackageWithSameRuleNames2.drl" ) ) );
-        ruleBase.addPackage( builder.getPackage() );
-
-        StatefulSession session = ruleBase.newStatefulSession();
-        final List results = new ArrayList();
-        session.setGlobal( "results",
-                           results );
-
-        session.fireAllRules();
-
-        assertEquals( 1,
-                      results.size() );
-
-        assertEquals( "rule1 for the package2",
-                      results.get( 0 ) );
-    }
-
     public void testRuleReplacement() throws Exception {
         // test rule replacement
         try {
@@ -3679,8 +3636,9 @@ public class MiscTest extends TestCase {
             assertEquals( 1,
                           pkg1.getRules().length );
 
-            final RuleBase ruleBase = getRuleBase();
+            RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg1 );
+            ruleBase    = SerializationHelper.serializeObject(ruleBase);
             final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
             final List results = new ArrayList();
@@ -3721,8 +3679,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_bindings.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3747,8 +3706,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_multipleFroms.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3779,8 +3739,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHashing.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3805,8 +3766,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DefaultBetaConstraint.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3918,8 +3880,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_BooleanWrapper.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3956,6 +3919,7 @@ public class MiscTest extends TestCase {
         conf.setShadowProxy( true );
         RuleBase rb = RuleBaseFactory.newRuleBase( conf );
         rb.addPackage( builder.getPackage() );
+        rb    = SerializationHelper.serializeObject(rb);
         StatefulSession session = rb.newStatefulSession();
 
         List list1 = new ArrayList();
@@ -4014,8 +3978,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_IterateObjects.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -4043,8 +4008,9 @@ public class MiscTest extends TestCase {
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );
-        final RuleBase ruleBase = getRuleBase( conf );
+        RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         StatelessSession session = ruleBase.newStatelessSession();
         List list = new ArrayList();
@@ -4061,8 +4027,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new StringReader( rule ) );
         Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
@@ -4094,8 +4061,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewriteWithSpecialOperators.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4197,9 +4165,10 @@ public class MiscTest extends TestCase {
         final Package pkg = builder.getPackage();
         final Package pkg2 = builder2.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase.addPackage( pkg2 );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -4216,8 +4185,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoVivificationVR.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -4239,8 +4209,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyOnCollections.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -4264,8 +4235,9 @@ public class MiscTest extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.fireAllRules();
@@ -4285,8 +4257,9 @@ public class MiscTest extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedAccessors.drl" ) ) );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -4343,8 +4316,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Logger.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
@@ -4373,8 +4347,9 @@ public class MiscTest extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromNestedAccessors.drl" ) ) );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -4404,42 +4379,15 @@ public class MiscTest extends TestCase {
                     list.get( 0 ) );
     }
 
-    public void testFromArrayIteration() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromArrayIteration.drl" ) ) );
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-
-        final WorkingMemory session = ruleBase.newStatefulSession();
-        List list = new ArrayList();
-
-        session.setGlobal( "list",
-                           list );
-        session.insert( new DomainObjectHolder() );
-
-        session.fireAllRules();
-
-        assertEquals( 3,
-                      list.size() );
-
-        assertEquals( "Message3",
-                      list.get( 0 ) );
-        assertEquals( "Message2",
-                      list.get( 1 ) );
-        assertEquals( "Message1",
-                      list.get( 2 ) );
-
-    }
-
     public void testSubNetworks() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SubNetworks.drl" ) ) );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
 
         try {
             ruleBase.addPackage( builder.getPackage() );
+            ruleBase    = SerializationHelper.serializeObject(ruleBase);
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( "Should not raise any exception!" );
@@ -4451,8 +4399,9 @@ public class MiscTest extends TestCase {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FinalClass.drl" ) ) );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -4486,8 +4435,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewriteMatches.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4527,8 +4477,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4571,8 +4522,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion2.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4629,8 +4581,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AlphaEvalWithOrCE.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4656,8 +4609,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyRetractInsert.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4677,43 +4631,15 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
-    public void testModifyBlock() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyBlock.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
-        workingMemory.setGlobal( "results",
-                                 list );
-
-        Person bob = new Person( "Bob" );
-        bob.setStatus( "hungry" );
-
-        Cheese c = new Cheese();
-
-        workingMemory.insert( bob );
-        workingMemory.insert( c );
-
-        workingMemory.fireAllRules();
-
-        assertEquals( 10,
-                      c.getPrice() );
-        assertEquals( "fine",
-                      bob.getStatus() );
-    }
-
     // this test requires mvel 1.2.19. Leaving it commented until mvel is released.
     public void testJavaModifyBlock() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_JavaModifyBlock.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4743,8 +4669,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrCE.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4767,8 +4694,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeepNestedConstraints.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4792,8 +4720,9 @@ public class MiscTest extends TestCase {
     public void testGetFactHandleEqualityBehavior() throws Exception {
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
 
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final StatefulSession session = ruleBase.newStatefulSession();
 
         CheeseEqual cheese = new CheeseEqual( "stilton",
@@ -4807,8 +4736,9 @@ public class MiscTest extends TestCase {
     public void testGetFactHandleIdentityBehavior() throws Exception {
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.IDENTITY );
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
 
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final StatefulSession session = ruleBase.newStatefulSession();
 
         CheeseEqual cheese = new CheeseEqual( "stilton",
@@ -4826,8 +4756,9 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrCEFollowedByEval.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4850,20 +4781,19 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NPEOnMVELPredicate.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final StatefulSession session = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         session.setGlobal( "results",
-                           list );
+                                 list );
 
-        Cheese cheese = new Cheese( "stilton",
-                                    10 );
+        Cheese cheese = new Cheese( "stilton", 10 );
         Cheesery cheesery = new Cheesery();
         cheesery.addCheese( cheese );
-        Person bob = new Person( "bob",
-                                 "stilton" );
+        Person bob = new Person( "bob", "stilton" );
         Cheese cheese2 = new Cheese();
         bob.setCheese( cheese2 );
 
@@ -4878,8 +4808,7 @@ public class MiscTest extends TestCase {
 
         cheese2.setType( "stilton" );
 
-        session.update( p,
-                        bob );
+        session.update( p, bob );
         session.fireAllRules();
 
         assertEquals( 1,

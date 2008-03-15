@@ -2,13 +2,13 @@ package org.drools.lang.descr;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,14 +20,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 public class PackageDescr extends BaseDescr {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
-    private final String      name;
-    private final String      documentation;
+    private String      name;
+    private String      documentation;
 
     private List              imports          = Collections.EMPTY_LIST;
     private List              functionImports  = Collections.EMPTY_LIST;
@@ -36,7 +39,9 @@ public class PackageDescr extends BaseDescr {
     private List              factTemplates    = Collections.EMPTY_LIST;
     private List              functions        = Collections.EMPTY_LIST;
     private List              rules            = Collections.EMPTY_LIST;
-    private List<TypeDeclarationDescr> typeDeclarations     = Collections.emptyList();
+
+    public PackageDescr() {
+    }
 
     public PackageDescr(final String name) {
         this( name,
@@ -47,6 +52,32 @@ public class PackageDescr extends BaseDescr {
                         final String documentation) {
         this.name = name;
         this.documentation = documentation;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        name    = (String)in.readObject();
+        documentation   = (String)in.readObject();
+        imports    = (List)in.readObject();
+        functionImports    = (List)in.readObject();
+        attributes    = (List)in.readObject();
+        globals    = (List)in.readObject();
+        factTemplates    = (List)in.readObject();
+        functions    = (List)in.readObject();
+        rules    = (List)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(name);
+        out.writeObject(documentation);
+        out.writeObject(imports);
+        out.writeObject(functionImports);
+        out.writeObject(attributes);
+        out.writeObject(globals);
+        out.writeObject(factTemplates);
+        out.writeObject(functions);
+        out.writeObject(rules);
     }
 
     public String getName() {
@@ -139,23 +170,12 @@ public class PackageDescr extends BaseDescr {
             }
             if (!overridden) {
                 rule.addAttribute( at );
-            }            
+            }
         }
         this.rules.add( rule );
     }
 
     public List getRules() {
         return this.rules;
-    }
-
-    public void addTypeDeclaration(TypeDeclarationDescr declaration) {
-        if ( this.typeDeclarations == Collections.EMPTY_LIST ) {
-            this.typeDeclarations = new ArrayList<TypeDeclarationDescr>();
-        }
-        this.typeDeclarations.add( declaration );
-    }
-    
-    public List<TypeDeclarationDescr> getTypeDeclarations() {
-        return this.typeDeclarations;
     }
 }

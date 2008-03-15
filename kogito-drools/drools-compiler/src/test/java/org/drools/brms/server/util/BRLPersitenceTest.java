@@ -90,21 +90,21 @@ public class BRLPersitenceTest extends TestCase {
                       newXML );
 
     }
-    
+
     public void testCompositeConstraintsRoundTrip() throws Exception {
         RuleModel m = new RuleModel();
         m.name = "with composite";
-    
+
         FactPattern p1 = new FactPattern("Person");
         p1.boundName = "p1";
         m.addLhsItem( p1 );
-        
+
         FactPattern p = new FactPattern("Goober");
         m.addLhsItem( p );
         CompositeFieldConstraint comp = new CompositeFieldConstraint();
         comp.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_OR;
         p.addConstraint( comp );
-        
+
         final SingleFieldConstraint X = new SingleFieldConstraint();
         X.fieldName = "goo";
         X.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
@@ -116,7 +116,7 @@ public class BRLPersitenceTest extends TestCase {
         X.connectives[0].operator = "|| ==";
         X.connectives[0].value = "bar";
         comp.addConstraint( X );
-        
+
         final SingleFieldConstraint Y = new SingleFieldConstraint();
         Y.fieldName = "goo2";
         Y.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
@@ -131,47 +131,47 @@ public class BRLPersitenceTest extends TestCase {
         Q1.operator = "==";
         Q1.value = "whee";
         Q1.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
-        
+
         comp2.addConstraint( Q1 );
-        
+
         final SingleFieldConstraint Q2 = new SingleFieldConstraint();
         Q2.fieldName = "gabba";
         Q2.operator = "==";
         Q2.value = "whee";
         Q2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
-        
+
         comp2.addConstraint( Q2 );
-        
+
         //now nest it
         comp.addConstraint( comp2 );
-        
-        
-        
+
+
+
         final SingleFieldConstraint Z = new SingleFieldConstraint();
         Z.fieldName = "goo3";
         Z.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
         Z.value = "foo";
         Z.operator = "==";
-        
+
         p.addConstraint( Z );
-        
+
         ActionInsertFact ass = new ActionInsertFact("Whee");
         m.addRhsItem( ass );
 
-        
+
         String xml = BRXMLPersistence.getInstance().marshal( m );
         //System.err.println(xml);
-        
+
         RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( xml );
         assertNotNull(m2);
         assertEquals("with composite", m2.name);
-        
+
         assertEquals(m2.lhs.length, m.lhs.length);
         assertEquals(m2.rhs.length, m.rhs.length);
-        
-        
-        
-        
+
+
+
+
     }
 
     /**
@@ -180,17 +180,17 @@ public class BRLPersitenceTest extends TestCase {
      */
     public void testBackwardsCompat() throws Exception {
         RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( loadResource( "existing_brl.xml" ) );
-        
+
         assertNotNull(m2);
         assertEquals(3, m2.rhs.length);
     }
-    
+
     private String loadResource(final String name) throws Exception {
 
         //        System.err.println( getClass().getResource( name ) );
         final InputStream in = getClass().getResourceAsStream( name );
 
-    
+
         final Reader reader = new InputStreamReader( in );
 
         final StringBuffer text = new StringBuffer();
@@ -205,7 +205,7 @@ public class BRLPersitenceTest extends TestCase {
         }
 
         return text.toString();
-    }    
+    }
 
     private RuleModel getComplexModel() {
         final RuleModel m = new RuleModel();

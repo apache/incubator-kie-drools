@@ -19,9 +19,12 @@ package org.drools.rule.builder.dialect.java;
 import java.util.Iterator;
 
 import org.drools.lang.descr.ProcessDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.builder.ProcessBuildContext;
 import org.drools.rule.builder.ProcessClassBuilder;
+import org.drools.rule.builder.RuleBuildContext;
+import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.util.StringUtils;
 
 /**
@@ -47,7 +50,7 @@ public class JavaProcessClassBuilder
         buffer.append( "package " + context.getPkg().getName() + ";" + lineSeparator );
 
         for ( ImportDeclaration decl : context.getPkg().getImports().values() ) {
-            buffer.append( "import " +  decl.getTarget() + ";" + lineSeparator );
+            buffer.append( "import " +  ( decl.isEvent() ? "event " : "" ) + decl.getTarget() + ";" + lineSeparator );
         }
 
         for ( final Iterator it = context.getPkg().getStaticImports().iterator(); it.hasNext(); ) {

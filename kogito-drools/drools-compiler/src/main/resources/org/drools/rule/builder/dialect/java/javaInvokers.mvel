@@ -4,7 +4,7 @@ getMethodBytecode() ::=<<
 
 
         java.io.InputStream is = @{ruleClassName}.class.getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + ".class" );
-                
+
         java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
         byte[] data = new byte[1024];
         int byteCount;
@@ -12,20 +12,20 @@ getMethodBytecode() ::=<<
             while ( (byteCount = is.read( data,
                                  0,
                                  1024 )) > -1 )
-            {                    
+            {
                 bos.write(data, 0, byteCount);
             }
         } catch ( java.io.IOException e ) {
             throw new org.drools.RuntimeDroolsException("Unable getResourceAsStream for Class '@{ruleClassName}' ");
-        }               
-        
+        }
+
         org.drools.asm.ClassReader classReader = new org.drools.asm.ClassReader( bos.toByteArray() );
         classReader.accept( visit, true );
         org.drools.asm.util.TraceMethodVisitor trace = visit.getTrace();
-        return trace.getText();     
+        return trace.getText();
     }
 >>=::
-    
+
 
 equals() ::=<<
     public boolean equals(Object object) {
@@ -34,13 +34,13 @@ equals() ::=<<
         } else if ( object == this ){
             return true;
         }
-        
+
         if ( ! (object instanceof org.drools.spi.CompiledInvoker) ) {
             return false;
         }
-        
+
         org.drools.spi.CompiledInvoker other = ( org.drools.spi.CompiledInvoker ) object;
-        
+
         return org.drools.util.asm.MethodComparator.compareBytecode( getMethodBytecode(), other.getMethodBytecode() );
     }
 >>=::
@@ -54,21 +54,21 @@ hashCode() ::=<<
 returnValueInvoker() ::=<<
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression, org.drools.spi.CompiledInvoker, java.io.Externalizable
 {
     private static final long serialVersionUID  = 400L;
-    
+
     public Object createContext() { return null; }
-    
+
     public org.drools.spi.FieldValue evaluate(java.lang.Object object,
                             org.drools.spi.Tuple tuple,
-                            org.drools.rule.Declaration[] previousDeclarations, 
-                            org.drools.rule.Declaration[] localDeclarations, 
+                            org.drools.rule.Declaration[] previousDeclarations,
+                            org.drools.rule.Declaration[] localDeclarations,
                             org.drools.WorkingMemory workingMemory,
-                            Object context ) throws Exception {                               
+                            Object context ) throws Exception {
 
         @foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier} = ( @{type} ) previousDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) tuple.get( previousDeclarations[@{i0}] ) ).getObject() );
-        @end{}                
+        @end{}
         @if{readLocalsFromTuple}
           @foreach{localDeclarationTypes as type, localDeclarations as  declr} @{type} @{declr.identifier} = ( @{type} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) tuple.get( localDeclarations[@{i0}] ) ).getObject() );
           @end{}
@@ -78,97 +78,115 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueExpression
         @end{}
         @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
-        
-        return @{ruleClassName}.@{methodName}( 
+
+        return @{ruleClassName}.@{methodName}(
             @foreach{declarations as declr} @{declr.identifier}
-            @end{","}  @if{localDeclarations != empty && declarations != empty},@end{}       
+            @end{","}  @if{localDeclarations != empty && declarations != empty},@end{}
             @foreach{localDeclarations as declr} @{declr.identifier}
             @end{","}@if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
             @foreach{globals as identifier}@{identifier}
             @end{","} );
-    }    
-    
+    }
+
     @includeByRef{hashCode(hashCode = hashCode)}
-    
+
     @includeByRef{getMethodBytecode(package = package, ruleClassName = ruleClassName, methodName = methodName)}
-    
-    @includeByRef{equals()}       
-}     
+
+    @includeByRef{equals()}
+
+    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
+    }
+
+    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    }
+}
 >>=::
 
 predicateInvoker() ::=<<
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.PredicateExpression, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.drools.spi.PredicateExpression, org.drools.spi.CompiledInvoker, java.io.Externalizable
 {
     private static final long serialVersionUID  = 400L;
-    
+
     public Object createContext() { return null; }
-    
+
     public boolean evaluate(java.lang.Object object,
                             org.drools.spi.Tuple tuple,
-                            org.drools.rule.Declaration[] previousDeclarations, 
-                            org.drools.rule.Declaration[] localDeclarations, 
+                            org.drools.rule.Declaration[] previousDeclarations,
+                            org.drools.rule.Declaration[] localDeclarations,
                             org.drools.WorkingMemory workingMemory,
-                            Object context ) throws Exception {                               
+                            Object context ) throws Exception {
 
         @foreach{declarationTypes as type, declarations as  declr} @{type} @{declr.identifier} = ( @{type} ) previousDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) tuple.get( previousDeclarations[@{i0}] ) ).getObject() );
-        @end{}                
+        @end{}
         @foreach{localDeclarationTypes as type, localDeclarations as  declr} @{type} @{declr.identifier} = ( @{type} ) localDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, object );
         @end{}
         @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
-        
-        return @{ruleClassName}.@{methodName}( 
-            @foreach{declarations as declr} @{declr.identifier} 
-            @end{","}  @if{localDeclarations != empty && declarations != empty},@end{}       
-            @foreach{localDeclarations as declr} @{declr.identifier} 
+
+        return @{ruleClassName}.@{methodName}(
+            @foreach{declarations as declr} @{declr.identifier}
+            @end{","}  @if{localDeclarations != empty && declarations != empty},@end{}
+            @foreach{localDeclarations as declr} @{declr.identifier}
             @end{","}@if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
             @foreach{globals as identifier}@{identifier}
             @end{","} );
-    }    
-    
+    }
+
     @includeByRef{hashCode(hashCode = hashCode)}
-    
+
     @includeByRef{getMethodBytecode(package = package, ruleClassName = ruleClassName, methodName = methodName)}
-    
-    @includeByRef{equals()}       
-}     
+
+    @includeByRef{equals()}
+
+    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
+    }
+
+    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    }
+}
 >>=::
 
 evalInvoker() ::=<<
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.drools.spi.CompiledInvoker
+public class @{invokerClassName} implements org.drools.spi.EvalExpression, org.drools.spi.CompiledInvoker, java.io.Externalizable
 {
     private static final long serialVersionUID  = 400L;
 
-    // no need for context    
+    // no need for context
     public Object createContext() { return null; }
-    
+
     public boolean evaluate(org.drools.spi.Tuple tuple,
-                            org.drools.rule.Declaration[] declarations, 
+                            org.drools.rule.Declaration[] declarations,
                             org.drools.WorkingMemory workingMemory,
-                            Object context ) throws Exception {                             
+                            Object context ) throws Exception {
 
         @foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier} = ( @{type} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) tuple.get( declarations[@{i0}] ) ).getObject() );
-        @end{}                
+        @end{}
         @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}
-        
-        return @{ruleClassName}.@{methodName}( 
-            @foreach{declarations as declr} @{declr.identifier} 
+
+        return @{ruleClassName}.@{methodName}(
+            @foreach{declarations as declr} @{declr.identifier}
             @end{","} @if{globals != empty && declarations != empty},@end{}
             @foreach{globals as identifier}@{identifier}
             @end{","} );
-    }    
-    
+    }
+
     @includeByRef{hashCode(hashCode = hashCode)}
-    
+
     @includeByRef{getMethodBytecode(package = package, ruleClassName = ruleClassName, methodName = methodName)}
-    
-    @includeByRef{equals()}       
-}     
+
+    @includeByRef{equals()}
+
+    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
+    }
+
+    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    }
+}
 >>=::
 
 accumulateInvoker() ::=<<
@@ -181,11 +199,11 @@ import java.util.Collections;
 public class @{invokerClassName} implements org.drools.spi.Accumulator, org.drools.spi.CompiledInvoker
 {
     private static final long serialVersionUID  = 400L;
-    
+
     public Object createContext() {
         return new @{ruleClassName}.@{className}();
     }
-    
+
     public void init(java.lang.Object workingMemoryContext,
                      java.lang.Object context,
                      org.drools.spi.Tuple leftTuple,
@@ -194,12 +212,12 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         @foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier} = ( @{type} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
         @end{}
         @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
-        @end{}    
-        
+        @end{}
+
         ((@{ruleClassName}.@{className})context).init(
             @foreach{declarations as declr} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
 	        @foreach{globals as identifier} @{identifier}@end{","} );
-        
+
     }
 
     public void accumulate(java.lang.Object workingMemoryContext,
@@ -212,7 +230,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         @foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier} = ( @{type} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
         @end{}
         @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
-        @end{}    
+        @end{}
         @if{isMultiPattern}
           @foreach{innerDeclarations as declr} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( innerDeclarations[@{i0}] ) ).getObject() );
           @end{}
@@ -223,7 +241,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         ((@{ruleClassName}.@{className})context).accumulate(
             workingMemory,
             innerDeclarations,
-            handle.getObject()@if{declarations != empty},@end{} 
+            handle.getObject()@if{declarations != empty},@end{}
             @foreach{declarations as declr} @{declr.identifier}@end{","}@if{globals != empty},@end{}
 	        @foreach{globals as identifier} @{identifier}@end{","}@if{innerDeclarations != empty},@end{}
             @foreach{innerDeclarations as declr} @{declr.identifier}@end{","});
@@ -239,7 +257,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         @foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier} = ( @{type} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
         @end{}
         @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
-        @end{}    
+        @end{}
         @if{isMultiPattern}
           @foreach{innerDeclarations as declr} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( innerDeclarations[@{i0}] ) ).getObject() );
           @end{}
@@ -247,11 +265,11 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
           @foreach{innerDeclarations as declr} @{declr.extractor.extractToClassName} @{declr.identifier} = (@{declr.extractor.extractToClassName}) innerDeclarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, handle.getObject() );
           @end{}
         @end{}
-        
+
         ((@{ruleClassName}.@{className})context).reverse(
             workingMemory,
             innerDeclarations,
-            handle.getObject()@if{declarations != empty},@end{} 
+            handle.getObject()@if{declarations != empty},@end{}
             @foreach{declarations as declr} @{declr.identifier}@end{","}@if{globals != empty},@end{}
 	        @foreach{globals as identifier} @{identifier}@end{","}@if{innerDeclarations != empty},@end{}
             @foreach{innerDeclarations as declr} @{declr.identifier}@end{","});
@@ -265,13 +283,13 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
         @foreach{declarationTypes as type, declarations as declr} @{type} @{declr.identifier} = ( @{type} ) declarations[@{i0}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, ( (org.drools.common.InternalFactHandle) leftTuple.get( declarations[@{i0}] ) ).getObject() );
         @end{}
         @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
-        @end{}    
-        
+        @end{}
+
         return ((@{ruleClassName}.@{className})context).getResult(
             @foreach{declarations as declr} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
 	        @foreach{globals as identifier} @{identifier}@end{","} );
     }
-    
+
     public boolean supportsReverse() {
         return @{supportsReverse};
     }
@@ -279,14 +297,14 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
     public Object createWorkingMemoryContext() {
         return null;
     }
-    
+
     @includeByRef{hashCode(hashCode = hashCode)}
-    
-    @includeByRef{equals()}       
+
+    @includeByRef{equals()}
 
     public java.util.List getMethodBytecode() {
         java.io.InputStream is = @{ruleClassName}.class.getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + "$@{className}" + ".class" );
-                
+
         java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
         byte[] data = new byte[1024];
         int byteCount;
@@ -294,84 +312,108 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
             while ( (byteCount = is.read( data,
                                  0,
                                  1024 )) > -1 )
-            {                    
+            {
                 bos.write(data, 0, byteCount);
             }
         } catch ( java.io.IOException e ) {
             throw new org.drools.RuntimeDroolsException("Unable getResourceAsStream for Class '@{ruleClassName}$@{className}' ");
-        }               
-        return Collections.singletonList( bos );     
+        }
+        return Collections.singletonList( bos );
     }
-}     
+
+    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
+    }
+
+    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    }
+
+}
 >>=::
 
 consequenceInvoker() ::=<<
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.Consequence
+public class @{invokerClassName} implements org.drools.spi.Consequence, java.io.Externalizable
 {
     private static final long serialVersionUID  = 400L;
 
     public void evaluate(org.drools.spi.KnowledgeHelper knowledgeHelper,
-                         org.drools.WorkingMemory workingMemory) throws Exception {    
-                       
+                         org.drools.WorkingMemory workingMemory) throws Exception {
+
         org.drools.spi.Tuple tuple = knowledgeHelper.getTuple();
         org.drools.rule.Rule rule = knowledgeHelper.getRule();
-        org.drools.rule.Declaration[] declarations = rule.getDeclarations();                                                  
+        org.drools.rule.Declaration[] declarations = rule.getDeclarations();
 
         @foreach{declarationTypes as type, declarations as declr ,indexes as index, notPatterns as  notPattern}
-          org.drools.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( knowledgeHelper.getDeclaration( declarations[@{index}].getIdentifier() ) );        
+          org.drools.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( knowledgeHelper.getDeclaration( declarations[@{index}].getIdentifier() ) );
           @{type} @{declr.identifier} = ( @{type} )  declarations[@{index}].@{declr.nativeReadMethod.name}( (org.drools.common.InternalWorkingMemory) workingMemory, @{declr.identifier}__Handle__.getObject() );
           @if{notPattern}@{declr.identifier}__Handle__ =  (org.drools.common.InternalFactHandle) knowledgeHelper.getWorkingMemory().getFactHandle( @{declr.identifier} );@end{}
         @end{}
-        
-        @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" ); 
-        @end{}    
-        
-        @{ruleClassName}.@{methodName} ( 
+
+        @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+
+        @{ruleClassName}.@{methodName} (
             knowledgeHelper@if{declarations != empty},@end{}
             @foreach{declarations as declr} @{declr.identifier}, @{declr.identifier}__Handle__
             @end{","}@if{globals != empty},@end{}
 	        @foreach{globals as identifier} @{identifier}
 	        @end{","} );
     }
-}     
+    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
+    }
+
+    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    }
+}
 >>=::
 
 actionInvoker() ::=<<
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.Action
+public class @{invokerClassName} implements org.drools.spi.Action, java.io.Externalizable
 {
     private static final long serialVersionUID  = 400L;
 
-    public void execute(org.drools.WorkingMemory workingMemory) throws Exception {    
-                               
-        @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" ); 
-        @end{}    
-        
-        @{processClassName}.@{methodName} ( 
+    public void execute(org.drools.WorkingMemory workingMemory) throws Exception {
+
+        @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+
+        @{processClassName}.@{methodName} (
 	        @foreach{globals as identifier} @{identifier}
 	        @end{","} );
     }
-}     
+
+    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
+    }
+
+    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    }
+}
 >>=::
 
 returnValueEvaluatorInvoker() ::=<<
 package @{package};
 
-public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator
+public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator, java.io.Externalizable
 {
     private static final long serialVersionUID  = 400L;
 
-    public Object evaluate(org.drools.WorkingMemory workingMemory) throws Exception {    
-                               
-        @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" ); 
-        @end{}    
-        
-        return @{processClassName}.@{methodName} ( 
+    public Object evaluate(org.drools.WorkingMemory workingMemory) throws Exception {
+
+        @foreach{globalTypes as type, globals as identifier} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+        @end{}
+
+        return @{processClassName}.@{methodName} (
 	        @foreach{globals as identifier} @{identifier}
 	        @end{","} );
     }
-}     
+
+    public void writeExternal(java.io.ObjectOutput out) throws java.io.IOException {
+    }
+
+    public void readExternal(java.io.ObjectInput in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    }
+}
 >>=::

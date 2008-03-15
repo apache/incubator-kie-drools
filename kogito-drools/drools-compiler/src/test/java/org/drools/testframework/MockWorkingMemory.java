@@ -7,9 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.Agenda;
-import org.drools.WorkingMemoryEntryPoint;
+import org.drools.EntryPointInterface;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.ObjectFilter;
@@ -53,7 +56,21 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 	TimeMachine timeMachine = new TimeMachine();
 	Map<String, Object> globals = new HashMap<String, Object>();
 
-	public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        facts   = (List<Object>)in.readObject();
+        agendaEventListener   = (AgendaEventListener)in.readObject();
+        timeMachine   = (TimeMachine)in.readObject();
+        globals   = (Map<String, Object>)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(facts);
+        out.writeObject(agendaEventListener);
+        out.writeObject(timeMachine);
+        out.writeObject(globals);
+    }
+
+    public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
 		// TODO Auto-generated method stub
 
 	}
@@ -248,7 +265,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 		this.facts .add(object);
 		return new MockFactHandle(object.hashCode());
 	}
-	
+
 	public FactHandle insert(Object object, long duration)
 		throws FactException {
 		// TODO Auto-generated method stub
@@ -260,7 +277,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public FactHandle insert(Object object, long duration, boolean dynamic)
 			throws FactException {
 		// TODO Auto-generated method stub
@@ -409,17 +426,17 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     public void setId(long id) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void setRuleBase(InternalRuleBase ruleBase) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public void removeProcessInstance(ProcessInstance processInstance) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public ProcessInstance getProcessInstance(long id) {
@@ -458,7 +475,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String id) {
+    public EntryPointInterface getEntryPoint(String id) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -471,7 +488,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     public void registerProcessInstanceFactory(String type,
             ProcessInstanceFactory nodeInstanceFactory) {
         // TODO Auto-generated method stub
-        
+
     }
 
     public ObjectStore getObjectStore() {
@@ -486,7 +503,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     public void setExecutorService(ExecutorService executor) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

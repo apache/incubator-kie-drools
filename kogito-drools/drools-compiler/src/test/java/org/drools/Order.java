@@ -20,12 +20,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.Serializable;
 
 /**
  * @author etirelli
  *
  */
-public class Order {
+public class Order implements Serializable {
 
     private int number;
 
@@ -34,7 +35,7 @@ public class Order {
     private Map items;
 
     private OrderStatus status;
-    
+
     private Date date;
 
     public Order() {

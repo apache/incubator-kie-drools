@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,16 +16,21 @@
 
 package org.drools;
 
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 /**
  * @author etirelli
  *
  */
-public class OrderItem implements java.io.Serializable {
+public class OrderItem implements Externalizable {
     private static final long serialVersionUID = -7287814895557751224L;
-    
+
     public static final int TYPE_BOOK = 1;
     public static final int TYPE_CD = 2;
-    
+
     private String name;
     private int type;
     private int price;
@@ -52,6 +57,22 @@ public class OrderItem implements java.io.Serializable {
         this.price = price;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        name    = (String)in.readObject();
+        type    = in.readInt();
+        price   = in.readInt();
+        seq     = in.readInt();
+        order   = (Order)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(name);
+        out.writeInt(type);
+        out.writeInt(price);
+        out.writeInt(seq);
+        out.writeObject(order);
+    }
+
     public String getName() {
         return name;
     }
@@ -59,11 +80,11 @@ public class OrderItem implements java.io.Serializable {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public int getType() {
         return type;
     }
-    
+
     public void setType(int type) {
         this.type = type;
     }
@@ -141,7 +162,7 @@ public class OrderItem implements java.io.Serializable {
         }
         return true;
     }
-    
+
     public String toString() {
         return "OrderItem( order="+this.getOrder()+" seq="+this.getSeq()+")";
     }

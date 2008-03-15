@@ -1,37 +1,57 @@
 package org.drools.brms.client.modeldriven.testing;
 
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+
 public class VerifyRuleFired implements Expectation {
 
-	public String ruleName;
-	public Integer expectedCount;
+    public String ruleName;
+    public Integer expectedCount;
 
-	/**
-	 * This is a natural language explanation of this verification.
-	 * For reporting purposes.
-	 */
-	public String explanation;
+    /**
+     * This is a natural language explanation of this verification.
+     * For reporting purposes.
+     */
+    public String explanation;
 
-	/**
-	 * If this is true, then we expect it to fire at least once.
-	 * False means it should not fire at all (this is an alternative
-	 * to specifying an expected count).
-	 */
-	public Boolean expectedFire;
+    /**
+     * If this is true, then we expect it to fire at least once.
+     * False means it should not fire at all (this is an alternative
+     * to specifying an expected count).
+     */
+    public Boolean expectedFire;
 
+    public Boolean successResult;
+    public Integer actualResult;
 
-	public VerifyRuleFired() {}
-	public VerifyRuleFired(String ruleName, Integer expectedCount, Boolean expectedFire) {
-		this.ruleName = ruleName;
-		this.expectedCount = expectedCount;
-		this.expectedFire = expectedFire;
-	}
+    public VerifyRuleFired() {}
+    public VerifyRuleFired(String ruleName, Integer expectedCount, Boolean expectedFire) {
+        this.ruleName = ruleName;
+        this.expectedCount = expectedCount;
+        this.expectedFire = expectedFire;
+    }
 
-	public Boolean successResult;
-	public Integer actualResult;
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        ruleName    = (String)in.readObject();
+        expectedCount   = in.readInt();
+        explanation    = (String)in.readObject();
+        expectedFire    = in.readBoolean();
+        successResult   = in.readBoolean();
+        actualResult    = in.readInt();
+    }
 
-
-	public boolean wasSuccessful() {
-		return successResult.booleanValue();
-	}
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(ruleName);
+        out.writeInt(expectedCount);
+        out.writeObject(explanation);
+        out.writeBoolean(expectedFire);
+        out.writeBoolean(successResult);
+        out.writeInt(actualResult);
+    }
+    
+    public boolean wasSuccessful() {
+        return successResult.booleanValue();
+    }
 
 }

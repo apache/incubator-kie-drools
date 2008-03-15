@@ -1,6 +1,9 @@
 package org.drools.brms.client.modeldriven.testing;
 
 import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,5 +38,16 @@ public class ExecutionTrace implements Fixture {
 
 	public ExecutionTrace() {}
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        scenarioSimulatedDate   = (Date)in.readObject();
+        executionTimeResult     = in.readLong();
+        numberOfRulesFired      = in.readLong();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(scenarioSimulatedDate);
+        out.writeLong(executionTimeResult);
+        out.writeLong(numberOfRulesFired);
+    }
 
 }

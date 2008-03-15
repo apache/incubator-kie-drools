@@ -19,6 +19,9 @@ package org.drools.lang.descr;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 
 import org.drools.compiler.Dialect;
 import org.drools.rule.Dialectable;
@@ -41,6 +44,9 @@ public class RuleDescr extends BaseDescr implements Dialectable {
     private String            className;
 
 
+    public RuleDescr() {
+    }
+
     public RuleDescr(final String name) {
         this( name,
               "" );
@@ -53,14 +59,44 @@ public class RuleDescr extends BaseDescr implements Dialectable {
         this.documentation = documentation;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        name    = (String)in.readObject();
+        dialect    = (String)in.readObject();
+        documentation    = (String)in.readObject();
+        consequence    = in.readObject();
+        lhs    = (AndDescr)in.readObject();
+        consequenceLine    = in.readInt();
+        consequencePattern    = in.readInt();
+        offset    = in.readInt();
+        attributes    = (List)in.readObject();
+        salience    = (String)in.readObject();
+        className    = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(name);
+        out.writeObject(dialect);
+        out.writeObject(documentation);
+        out.writeObject(consequence);
+        out.writeObject(lhs);
+        out.writeInt(consequenceLine);
+        out.writeInt(consequencePattern);
+        out.writeInt(offset);
+        out.writeObject(attributes);
+        out.writeObject(salience);
+        out.writeObject(className);
+    }
+
     public String getName() {
         return this.name;
     }
-    
+
     public String getDialect() {
         return this.dialect;
     }
-    
+
     public void setDialect(String dialect) {
         this.dialect = dialect;
     }
@@ -94,12 +130,12 @@ public class RuleDescr extends BaseDescr implements Dialectable {
             if ( this.attributes == Collections.EMPTY_LIST ) {
                 this.attributes = new ArrayList();
             }
-            
+
             if ( "dialect".equals( attribute.getName() ) ) {
                 // set dialect specifically as its to drive the build process.
                 this.dialect = attribute.getValue();
             }
-            
+
             this.attributes.add( attribute );
         }
     }

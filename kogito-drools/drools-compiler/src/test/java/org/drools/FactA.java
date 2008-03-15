@@ -1,6 +1,8 @@
 package org.drools;
 
-public class FactA {
+import java.io.Serializable;
+
+public class FactA implements Serializable {
     String  field1;
     Integer field2;
     Float   field3;

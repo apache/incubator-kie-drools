@@ -1,10 +1,12 @@
 package org.drools;
 
+import java.io.Serializable;
+
 /**
  * A grand parent class
  * @author etirelli
  */
-public class GrandParent {
+public class GrandParent implements Serializable {
     private String name;
 
     public GrandParent() {
