@@ -16,12 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.List;
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
@@ -32,6 +26,12 @@ import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
@@ -141,8 +141,13 @@ abstract class BetaNode extends TupleSource
      * @see org.drools.reteoo.BaseNode#attach()
      */
     public void attach() {
-        this.leftInput.addTupleSink( this );
         this.rightInput.addObjectSink( this );
+        this.leftInput.addTupleSink( this );
+    }
+
+    public void networkUpdated() {
+        this.rightInput.networkUpdated();
+        this.leftInput.networkUpdated();
     }
 
     public List getRules() {
@@ -177,12 +182,12 @@ abstract class BetaNode extends TupleSource
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.leftInput.updateSink( this,
-                                       propagationContext,
-                                       workingMemory );
             this.rightInput.updateSink( this,
                                         propagationContext,
                                         workingMemory );
+            this.leftInput.updateSink( this,
+                                       propagationContext,
+                                       workingMemory );
         }
 
     }
