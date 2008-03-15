@@ -30,6 +30,7 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.CompositePackageClassLoader;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 
@@ -116,4 +117,12 @@ public interface InternalRuleBase
 	public Objenesis getObjenesis();
 	
 	public int getNodeCount();
+
+	/**
+	 * Returns the type declaration associated to the given class
+	 *
+	 * @param clazz
+	 * @return
+	 */
+    public TypeDeclaration getTypeDeclaration(Class<?> clazz);
 }

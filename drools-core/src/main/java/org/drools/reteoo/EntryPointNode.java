@@ -18,17 +18,11 @@ package org.drools.reteoo;
  * Created on January 8th, 2007
  */
 
-import java.io.Externalizable;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
@@ -38,6 +32,13 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A node that is an entry point into the Rete network.
@@ -119,25 +120,10 @@ public class EntryPointNode extends ObjectSource
         return entryPoint;
     }
 
-    /**
-     * This is the entry point into the network for all asserted Facts. Iterates a cache
-     * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
-     * exist it first iterates and builds the cache.
-     *
-     * @param handle
-     *            The FactHandle of the fact to assert
-     * @param context
-     *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action
-     * @param workingMemory
-     *            The working memory session.
-     */
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
+                             final ObjectTypeConf objectTypeConf,
                              final InternalWorkingMemory workingMemory) {
-
-        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( this.entryPoint,
-                                                                         handle.getObject() );
-
         // checks if shadow is enabled
         if ( objectTypeConf.isShadowEnabled() ) {
             // need to improve this
@@ -160,6 +146,24 @@ public class EntryPointNode extends ObjectSource
     }
 
     /**
+     * This is the entry point into the network for all asserted Facts. Iterates a cache
+     * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
+     * exist it first iterates and builds the cache.
+     *
+     * @param handle
+     *            The FactHandle of the fact to assert
+     * @param context
+     *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action
+     * @param workingMemory
+     *            The working memory session.
+     */
+    public void assertObject(final InternalFactHandle handle,
+                             final PropagationContext context,
+                             final InternalWorkingMemory workingMemory) {
+        // do nothing, dummy method to impl the interface
+    }
+
+    /**
      * Retract a fact object from this <code>RuleBase</code> and the specified
      * <code>WorkingMemory</code>.
      *
@@ -170,11 +174,10 @@ public class EntryPointNode extends ObjectSource
      */
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
+                              final ObjectTypeConf objectTypeConf,
                               final InternalWorkingMemory workingMemory) {
         final Object object = handle.getObject();
 
-        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( this.entryPoint,
-                                                                         object );
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {
@@ -187,6 +190,12 @@ public class EntryPointNode extends ObjectSource
                                           context,
                                           workingMemory );
         }
+    }
+
+    public void retractObject(final InternalFactHandle handle,
+                              final PropagationContext context,
+                              final InternalWorkingMemory workingMemory) {
+        // do nothing, dummy method to impl the interface
     }
 
     /**
@@ -268,7 +277,9 @@ public class EntryPointNode extends ObjectSource
         final ObjectTypeNode node = (ObjectTypeNode) sink;
         final ObjectType newObjectType = node.getObjectType();
 
-        for ( ObjectTypeConf objectTypeConf : workingMemory.getObjectTypeConfMap( this.entryPoint ).values() ) {
+        InternalWorkingMemoryEntryPoint wmEntryPoint = ( InternalWorkingMemoryEntryPoint ) workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
+
+        for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {
             if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();

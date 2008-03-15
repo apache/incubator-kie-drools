@@ -34,6 +34,7 @@ import org.drools.rule.InvalidPatternException;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.ObjectHashSet;
@@ -115,6 +116,8 @@ abstract public class AbstractRuleBase
     private int                                     additionsSinceLock;
     private int                                     removalsSinceLock;
 
+    private transient Map<Class< ? >, TypeDeclaration> classTypeDeclaration;
+
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
      * will result in an invalid state for the instance.
@@ -157,6 +160,8 @@ abstract public class AbstractRuleBase
         this.globals = new HashMap();
         this.statefulSessions = new ObjectHashSet();
         this.objenesis = createObjenesis();
+
+        this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
     }
 
     // ------------------------------------------------------------
@@ -274,6 +279,15 @@ abstract public class AbstractRuleBase
      */
     protected Objenesis createObjenesis() {
         return new ObjenesisStd( true );
+    }
+
+    private void populateTypeDeclarationMaps() {
+        this.classTypeDeclaration = new HashMap<Class<?>, TypeDeclaration>();
+        for( Package pkg : this.pkgs.values() ) {
+            for( TypeDeclaration type : pkg.getTypeDeclarations().values() ) {
+                this.classTypeDeclaration.put( type.getTypeClass(), type );
+            }
+        }
     }
 
     /**
@@ -429,6 +443,15 @@ abstract public class AbstractRuleBase
             }
             this.globals.putAll( newGlobals );
 
+            // Add type declarations
+            for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+                // should we allow overrides?
+                if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
+                    this.classTypeDeclaration.put( type.getTypeClass(),
+                                                   type );
+                }
+            }
+
             final Rule[] rules = newPkg.getRules();
 
             for ( int i = 0; i < rules.length; ++i ) {
@@ -483,14 +506,30 @@ abstract public class AbstractRuleBase
         }
         globals.putAll( newPkg.getGlobals() );
 
+        // add type declarations
+        for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
+            // should we allow overrides?
+            if ( !this.classTypeDeclaration.containsKey( type.getTypeClass() ) ) {
+                this.classTypeDeclaration.put( type.getTypeClass(),
+                                               type );
+            }
+            if ( !pkg.getTypeDeclarations().containsKey( type.getTypeName() ) ) {
+                pkg.addTypeDeclaration( type );
+            }
+        }
+
         //Add rules into the RuleBase package
         //as this is needed for individual rule removal later on
         final Rule[] newRules = newPkg.getRules();
         for ( int i = 0; i < newRules.length; i++ ) {
             final Rule newRule = newRules[i];
-            if ( pkg.getRule( newRule.getName() ) == null ) {
-                pkg.addRule( newRule );
+
+            // remove the rule if it already exists
+            if ( pkg.getRule( newRule.getName() ) != null ) {
+                removeRule( pkg, pkg.getRule( newRule.getName() ) );
             }
+
+            pkg.addRule( newRule );
         }
 
         //and now the rule flows
@@ -508,6 +547,10 @@ abstract public class AbstractRuleBase
             this.reloadPackageCompilationData = new ReloadPackageCompilationData();
         }
         this.reloadPackageCompilationData.addDialectDatas( pkg.getDialectDatas() );
+    }
+
+    public TypeDeclaration getTypeDeclaration(Class< ? > clazz) {
+        return this.classTypeDeclaration.get( clazz );
     }
 
     private synchronized void addRule(final Package pkg,
@@ -732,10 +775,9 @@ abstract public class AbstractRuleBase
             ((InternalWorkingMemory) session).setRuleBase( this );
             ((InternalWorkingMemory) session).setId( (nextWorkingMemoryCounter()) );
 
+
             ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );
-
             executor.setCommandExecutor( new CommandExecutor( session ) );
-
             ((InternalWorkingMemory) session).setExecutorService( executor );
 
             if ( keepReference ) {

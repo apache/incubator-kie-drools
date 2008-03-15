@@ -33,6 +33,7 @@ import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.RuleBaseEventListener;
@@ -49,7 +50,7 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
-public class ReteooWorkingMemory extends AbstractWorkingMemory implements Externalizable {
+public class ReteooWorkingMemory extends AbstractWorkingMemory {
 
     /**
      *
@@ -67,27 +68,11 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Extern
      *            The backing rule-base.
      */
     public ReteooWorkingMemory(final int id,
-                               final InternalRuleBase ruleBase) {
+                               final InternalRuleBase ruleBase ) {
         super( id,
                ruleBase,
                ruleBase.newFactHandleFactory() );
         this.agenda = new DefaultAgenda( this );
-    }
-
-    public void doInsert(final InternalFactHandle handle,
-                               final Object object,
-                               final PropagationContext propagationContext) throws FactException {
-        this.ruleBase.assertObject( handle,
-                                    object,
-                                    propagationContext,
-                                    this );
-    }
-
-    public void doRetract(final InternalFactHandle handle,
-                          final PropagationContext propagationContext) {
-        this.ruleBase.retractObject( handle,
-                                     propagationContext,
-                                     this );
     }
 
     public QueryResults getQueryResults(final String query) {
@@ -97,13 +82,13 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Extern
     public QueryResults getQueryResults(final String query, final Object[] arguments) {
 
         Object object = new DroolsQuery( query, arguments );
-        InternalFactHandle handle = this.handleFactory.newFactHandle( object, false, 0, this );
+        InternalFactHandle handle = this.handleFactory.newFactHandle( object, false, this );
 
-        insert( EntryPoint.DEFAULT, // query dummy objects always use default entry point
-                handle,
+        insert( handle,
                 object,
                 null,
-                null );
+                null,
+                this.typeConfReg.getObjectTypeConf( this.entryPoint, object ));
 
         final QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
         Query queryObj = null;

@@ -16,14 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
@@ -39,6 +31,13 @@ import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.PropagationContext;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * @author mproctor
@@ -143,12 +142,11 @@ public class ReteTest extends DroolsTestCase {
                                                        null ),
                            workingMemory );
 
-        final Map map = workingMemory.getObjectTypeConfMap( EntryPoint.DEFAULT );
-        ClassObjectTypeConf conf = (ClassObjectTypeConf) map.get( ArrayList.class );
+        ClassObjectTypeConf conf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), ArrayList.class );
         assertLength( 3,
                       conf.getObjectTypeNodes() );
 
-        conf = (ClassObjectTypeConf) map.get( LinkedList.class );
+        conf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), LinkedList.class );
         assertLength( 3,
                       conf.getObjectTypeNodes() );
 
@@ -249,8 +247,7 @@ public class ReteTest extends DroolsTestCase {
                     rete.getObjectTypeNodes( EntryPoint.DEFAULT ).get( new ClassObjectType( List.class ) ) );
 
         // ArrayConf should match two ObjectTypenodes for List and ArrayList
-        Map memory = workingMemory.getObjectTypeConfMap( EntryPoint.DEFAULT );
-        ObjectTypeConf arrayConf = (ObjectTypeConf) memory.get( ArrayList.class );
+        ClassObjectTypeConf arrayConf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), ArrayList.class );
         final ObjectTypeNode arrayOtn = arrayConf.getConcreteObjectTypeNode();
         assertEquals( 2,
                       arrayConf.getObjectTypeNodes().length );
