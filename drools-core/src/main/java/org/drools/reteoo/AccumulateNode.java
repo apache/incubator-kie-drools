@@ -16,12 +16,6 @@
 
 package org.drools.reteoo;
 
-import java.util.Arrays;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Externalizable;
-
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.BetaConstraints;
@@ -37,6 +31,12 @@ import org.drools.util.Entry;
 import org.drools.util.FactEntry;
 import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap.ObjectEntry;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
 
 /**
  * AccumulateNode
@@ -94,7 +94,7 @@ public class AccumulateNode extends BetaNode {
         out.writeObject(resultConstraints);
         out.writeObject(resultBinder);
     }
-    
+
     /**
      * @inheritDoc
      *
@@ -416,7 +416,7 @@ public class AccumulateNode extends BetaNode {
 
         // First alpha node filters
         boolean isAllowed = true;
-        final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result, false, 0, workingMemory ); // so far, result is not an event
+        final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result, false, workingMemory ); // so far, result is not an event
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( createdHandle,
                                                        workingMemory,

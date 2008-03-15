@@ -39,7 +39,7 @@ public class DefaultFactHandle
      */
     private static final long serialVersionUID = 400L;
     /** Handle id. */
-    private long              id;
+    private int               id;
     private long              recency;
     private Object            object;
     private EqualityKey       key;
@@ -47,7 +47,7 @@ public class DefaultFactHandle
     private boolean           shadowFact;
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeLong(id);
+        out.writeInt(id);
         out.writeLong(recency);
         out.writeObject(object);
         out.writeObject(key);
@@ -56,7 +56,7 @@ public class DefaultFactHandle
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        id  = in.readLong();
+        id  = in.readInt();
         recency = in.readLong();
         object  = in.readObject();
         key     = (EqualityKey)in.readObject();
@@ -70,7 +70,7 @@ public class DefaultFactHandle
     public DefaultFactHandle() {
     }
 
-    public DefaultFactHandle(final long id,
+    public DefaultFactHandle(final int id,
                              final Object object) {
         this( id,
               object,
@@ -83,7 +83,7 @@ public class DefaultFactHandle
      * @param id
      *            Handle id.
      */
-    public DefaultFactHandle(final long id,
+    public DefaultFactHandle(final int id,
                              final Object object,
                              final long recency) {
         this.id = id;
@@ -119,7 +119,7 @@ public class DefaultFactHandle
      * @see Object
      */
     public int hashCode() {
-        return (int) (this.id ^ (this.id >>> 32));
+        return this.id;
     }
 
     /**
