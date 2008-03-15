@@ -78,6 +78,12 @@ public class BaseNodeTest extends TestCase {
             return true;
         }
 
+        @Override
+        public void networkUpdated() {
+            // TODO Auto-generated method stub
+
+        }
+
     }
 
 }

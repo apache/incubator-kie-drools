@@ -16,16 +16,15 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.Serializable;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.
@@ -113,7 +112,7 @@ public abstract class ObjectSource extends BaseNode
      *            <code>FactHandleImpl</code>.
      */
     protected void addObjectSink(final ObjectSink objectSink) {
-        if ( EmptyObjectSinkAdapter.getInstance().equals(this.sink) ) {
+        if ( this.sink instanceof EmptyObjectSinkAdapter ) {
             this.sink = new SingleObjectSinkAdapter( objectSink );
         } else if ( this.sink instanceof SingleObjectSinkAdapter ) {
             final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter( this.alphaNodeHashingThreshold );
@@ -132,7 +131,7 @@ public abstract class ObjectSource extends BaseNode
      *            The <code>ObjectSink</code> to remove
      */
     protected void removeObjectSink(final ObjectSink objectSink) {
-        if ( this.sink == EmptyObjectSinkAdapter.getInstance() ) {
+        if ( this.sink instanceof EmptyObjectSinkAdapter ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
 
@@ -150,6 +149,10 @@ public abstract class ObjectSource extends BaseNode
     public abstract void updateSink(ObjectSink sink,
                                     PropagationContext context,
                                     InternalWorkingMemory workingMemory);
+
+    public void networkUpdated() {
+        this.objectSource.networkUpdated();
+    }
 
     public ObjectSinkPropagator getSinkPropagator() {
         return this.sink;

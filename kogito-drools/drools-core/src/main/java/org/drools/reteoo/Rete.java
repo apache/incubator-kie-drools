@@ -16,29 +16,23 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Externalizable;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.DroolsObjectInput;
-import org.drools.reteoo.builder.BuildContext;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
-import org.drools.util.FactEntry;
-import org.drools.util.FactHashTable;
-import org.drools.util.Iterator;
-import org.drools.util.ObjectHashMap;
-import org.drools.RuleBase;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Rete-OO network.
@@ -109,9 +103,12 @@ public class Rete extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        EntryPointNode node = this.entryPoints.get( context.getEntryPoint() );
+        EntryPoint entryPoint = context.getEntryPoint();
+        EntryPointNode node = this.entryPoints.get( entryPoint );
+        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(  entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
         node.assertObject( handle,
                            context,
+                           typeConf,
                            workingMemory );
     }
 
@@ -127,9 +124,12 @@ public class Rete extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        EntryPointNode node = this.entryPoints.get( context.getEntryPoint() );
+        EntryPoint entryPoint = context.getEntryPoint();
+        EntryPointNode node = this.entryPoints.get( entryPoint );
+        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(  entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
         node.retractObject( handle,
                             context,
+                            typeConf,
                             workingMemory );
     }
 
@@ -159,6 +159,10 @@ public class Rete extends ObjectSource
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
+    }
+
+    public void networkUpdated() {
+        // nothing to do
     }
 
     protected void doRemove(final RuleRemovalContext context,
