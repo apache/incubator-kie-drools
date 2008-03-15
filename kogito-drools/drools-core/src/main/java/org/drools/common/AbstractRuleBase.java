@@ -208,6 +208,7 @@ abstract public class AbstractRuleBase
         droolsStream.writeObject(lock);
         droolsStream.writeInt(additionsSinceLock);
         droolsStream.writeInt(removalsSinceLock);
+        droolsStream.writeObject(classTypeDeclaration);
         if (!isDrools) {
             bytes.close();
             out.writeObject(bytes.toByteArray());
@@ -267,6 +268,7 @@ abstract public class AbstractRuleBase
         lock            = (ReentrantLock)droolsStream.readObject();
         additionsSinceLock  = droolsStream.readInt();
         removalsSinceLock   = droolsStream.readInt();
+        classTypeDeclaration    = (Map<Class< ? >, TypeDeclaration>)droolsStream.readObject();
 
         if (!isDrools) {
             droolsStream.close();
