@@ -16,7 +16,7 @@ package org.drools;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.Externalizable;
 import java.util.List;
 
 import org.drools.event.AgendaEventListener;
@@ -30,7 +30,7 @@ import org.drools.event.WorkingMemoryEventListener;
 public interface WorkingMemoryEventManager
     extends
     RuleBaseEventManager,
-    Serializable {
+    Externalizable {
     /**
      * Add an event listener.
      * 

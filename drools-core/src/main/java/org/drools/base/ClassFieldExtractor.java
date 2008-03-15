@@ -2,13 +2,13 @@ package org.drools.base;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,33 +19,41 @@ package org.drools.base;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Externalizable;
 import java.lang.reflect.Method;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.DroolsObjectInput;
 import org.drools.spi.FieldExtractor;
 import org.drools.util.ClassUtils;
 
 /**
  * This provides access to fields, and what their numerical index/object type is.
- * This is basically a wrapper class around dynamically generated subclasses of 
+ * This is basically a wrapper class around dynamically generated subclasses of
  * BaseClassFieldExtractor,
- *  which allows serialization by regenerating the accessor classes 
+ *  which allows serialization by regenerating the accessor classes
  * when needed.
- * 
+ *
  * @author Michael Neale
  */
 public class ClassFieldExtractor
     implements
     FieldExtractor {
     /**
-     * 
+     *
      */
     private static final long        serialVersionUID = 400L;
     private String                   fieldName;
     private Class                    clazz;
     private transient FieldExtractor extractor;
+
+    public ClassFieldExtractor() {
+
+    }
 
     public ClassFieldExtractor(final Class clazz,
                                final String fieldName) {
@@ -73,27 +81,25 @@ public class ClassFieldExtractor
               factory );
     }
 
-    private void writeObject(ObjectOutputStream s) throws IOException {
+    public void writeExternal(ObjectOutput out) throws IOException {
         // Call even if there is no default serializable fields.
-        s.defaultWriteObject();
+        out.writeObject(clazz);
+        out.writeObject(fieldName);
     }
 
-    private void readObject(final ObjectInputStream is) throws ClassNotFoundException,
-                                                       IOException,
-                                                       Exception {
-        //always perform the default de-serialization first
-        is.defaultReadObject();
-        if ( is instanceof DroolsObjectInputStream ) {
-            DroolsObjectInputStream dois = (DroolsObjectInputStream) is;
-            this.extractor = dois.getExtractorFactory().getExtractor( this.clazz,
-                                                                      this.fieldName,
-                                                                      dois.getClassLoader() );
-        } else {
-            this.extractor = ClassFieldExtractorCache.getInstance().getExtractor( this.clazz,
-                                                                                  this.fieldName,
-                                                                                  this.clazz.getClassLoader() );
-
+    public void readExternal(final ObjectInput is) throws ClassNotFoundException,
+                                                       IOException {
+        clazz   = (Class)is.readObject();
+        fieldName   = (String)is.readObject();
+        if (is instanceof DroolsObjectInput) {
+            DroolsObjectInput   droolsInput = (DroolsObjectInput)is;
+            extractor = droolsInput.getExtractorFactory().getExtractor( clazz,
+                                                                        fieldName,
+                                                                        droolsInput.getClassLoader() );
         }
+        else
+            extractor   = ClassFieldExtractorCache.getInstance().getExtractor( clazz, fieldName,
+                                                                               getClass().getClassLoader());
     }
 
 //    private Object readResolve() {

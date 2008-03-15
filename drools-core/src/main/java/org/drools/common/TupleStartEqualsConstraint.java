@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,23 +21,27 @@ import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.spi.BetaNodeFieldConstraint;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * Checks if one tuple is the start subtuple of other tuple.
  * For instance, if we have two tuples:
- * 
+ *
  * T1 = [ a, b, c ]
  * T2 = [ a, b, c, d, e]
- * 
+ *
  * This constraint will evaluate to true as T1 is the starting subtuple
  * of T2. On the other hand, if we have:
- * 
+ *
  * T1 = [ a, c, b ]
  * T2 = [ a, b, c, d, e ]
- * 
+ *
  * This constraint will evaluate to false, as T1 is not the starting subtuple
  * of T2. Besides having the same elements, the order is different.
- * 
- * This constraint is used when joining subnetworks back into the main 
+ *
+ * This constraint is used when joining subnetworks back into the main
  * network.
  *
  * @author etirelli
@@ -49,12 +53,20 @@ public class TupleStartEqualsConstraint
 
     private static final long                       serialVersionUID = 400L;
 
-    private final Declaration[]                     declarations     = new Declaration[0];
+    private Declaration[]                     declarations     = new Declaration[0];
 
     private static final TupleStartEqualsConstraint INSTANCE         = new TupleStartEqualsConstraint();
 
     // this is a stateless constraint, so we can make it a singleton
-    private TupleStartEqualsConstraint() {
+    public TupleStartEqualsConstraint() {
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        declarations  = (Declaration[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(declarations);
     }
 
     public static TupleStartEqualsConstraint getInstance() {
@@ -64,7 +76,7 @@ public class TupleStartEqualsConstraint
     public Declaration[] getRequiredDeclarations() {
         return this.declarations;
     }
-    
+
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
     }
@@ -99,9 +111,9 @@ public class TupleStartEqualsConstraint
         }
         return false;
     }
-    
+
     public Object clone() {
-        return INSTANCE; 
+        return INSTANCE;
     }
 
     public static class TupleStartEqualsConstraintContextEntry
@@ -119,6 +131,20 @@ public class TupleStartEqualsConstraint
         private ContextEntry      entry;
 
         public TupleStartEqualsConstraintContextEntry() {
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            left        = (ReteTuple)in.readObject();
+            right       = (ReteTuple)in.readObject();
+            compareSize = in.readInt();
+            entry       = (ContextEntry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(left);
+            out.writeObject(right);
+            out.writeInt(compareSize);
+            out.writeObject(entry);
         }
 
         public ContextEntry getNext() {
@@ -141,14 +167,14 @@ public class TupleStartEqualsConstraint
             // it MUST be a rete tuple
             this.right = (ReteTuple) handle.getObject();
         }
-        
+
         public void resetTuple() {
             this.left = null;
         }
-        
+
         public void resetFactHandle() {
             this.right = null;
-        }         
+        }
     }
 
     public ConstraintType getType() {

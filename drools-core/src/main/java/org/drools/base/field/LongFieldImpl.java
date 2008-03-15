@@ -1,20 +1,34 @@
 package org.drools.base.field;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldValue;
 
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 public class LongFieldImpl
     implements
-    FieldValue {
+    FieldValue, Externalizable {
 
     private static final long serialVersionUID = 400L;
-    private final long        value;
+    private long        value;
+
+    public LongFieldImpl() {
+
+    }
 
     public LongFieldImpl(final long value) {
         this.value = value;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        value   = in.readLong();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong(value);
     }
 
     public Object getValue() {
@@ -100,13 +114,5 @@ public class LongFieldImpl
     public boolean isStringField() {
         return false;
     }
-
-	public BigDecimal getBigDecimalValue() {
-		return new BigDecimal(this.value);
-	}
-
-	public BigInteger getBigIntegerValue() {
-		return BigInteger.valueOf(this.value);
-	}
 
 }

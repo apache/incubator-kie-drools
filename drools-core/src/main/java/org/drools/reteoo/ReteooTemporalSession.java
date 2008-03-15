@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +20,16 @@ package org.drools.reteoo;
 import org.drools.TemporalSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.concurrent.ExecutorService;
-import org.drools.rule.EntryPoint;
 import org.drools.temporal.SessionClock;
+
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 /**
  * ReteooStatefulTemporalSession implements a temporal enabled session
  * for Reteoo rulebases
- * 
+ *
  * @author etirelli
  */
 public class ReteooTemporalSession<T extends SessionClock> extends ReteooStatefulSession
@@ -35,16 +38,29 @@ public class ReteooTemporalSession<T extends SessionClock> extends ReteooStatefu
 
     private static final long serialVersionUID = -2129661675928809928L;
 
-    private T                 sessionClock;
+    private T sessionClock;
 
-    public ReteooTemporalSession(final int id,
-                                 final InternalRuleBase ruleBase,
-                                 final ExecutorService executorService,
-                                 final T clock) {
+    public ReteooTemporalSession() {
+    }
+
+    public ReteooTemporalSession(int id,
+                                 InternalRuleBase ruleBase,
+                                 ExecutorService executorService,
+                                 T clock) {
         super( id,
                ruleBase,
                executorService );
         this.sessionClock = clock;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        sessionClock    = (T)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(sessionClock);
     }
 
     public T getSessionClock() {

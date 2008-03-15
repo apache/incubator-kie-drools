@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,18 +26,23 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
 
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.util.Map;
+
 /**
  * This class defines the matches evaluator
- * 
+ *
  * @author etirelli
  */
 public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
-    
+
     public static final Operator  MATCHES       = Operator.addOperatorToRegistry( "matches",
                                                                                   false );
     public static final Operator  NOT_MATCHES   = Operator.addOperatorToRegistry( "matches",
                                                                                   true );
-    
+
     private static final String[] SUPPORTED_IDS = { MATCHES.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
         private static final long serialVersionUID = 4782368623L;
@@ -46,7 +51,15 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
             addEvaluator( ValueType.STRING_TYPE,        NOT_MATCHES,     StringNotMatchesEvaluator.INSTANCE );
         }
     };
-    
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        evaluators  = (EvaluatorCache)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(evaluators);
+    }
+
     /**
      * @inheridDoc
      */
@@ -94,14 +107,15 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
      *           Evaluator Implementations
      *  *********************************************************
      */
-    static class StringMatchesEvaluator extends BaseEvaluator {
+    public static class StringMatchesEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringMatchesEvaluator();
 
-        private StringMatchesEvaluator() {
+
+        public StringMatchesEvaluator() {
             super( ValueType.STRING_TYPE,
                    MATCHES );
         }
@@ -152,14 +166,14 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class StringNotMatchesEvaluator extends BaseEvaluator {
+    public static class StringNotMatchesEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotMatchesEvaluator();
 
-        private StringNotMatchesEvaluator() {
+        public StringNotMatchesEvaluator() {
             super( ValueType.STRING_TYPE,
                    NOT_MATCHES );
         }

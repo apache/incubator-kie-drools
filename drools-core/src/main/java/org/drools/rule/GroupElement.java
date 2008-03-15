@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,10 @@ package org.drools.rule;
  */
 
 import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.Externalizable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,7 +30,7 @@ import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
 
-public class GroupElement extends ConditionalElement {
+public class GroupElement extends ConditionalElement implements Externalizable {
 
     private static final long serialVersionUID = 400L;
 
@@ -36,7 +40,7 @@ public class GroupElement extends ConditionalElement {
     public static final Type  NOT              = new NotType();
 
     private Type              type             = null;
-    private final List        children         = new ArrayList();
+    private List        children         = new ArrayList();
 
     public GroupElement() {
         this( AND );
@@ -46,12 +50,29 @@ public class GroupElement extends ConditionalElement {
         this.type = type;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        String  name    = (String)in.readObject();
+        if ("AND".equals(name))
+            type    = AND;
+        else if ("OR".equals(name))
+            type    = OR;
+        else if ("EXISTS".equals(name))
+            type    = EXISTS;
+        else
+            type    = NOT;
+        children = (List)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(type.toString());
+        out.writeObject(children);
+    }
     /**
      * Adds a child to the current GroupElement.
-     * 
+     *
      * Restrictions are:
      * NOT/EXISTS: can have only one child, either a single Pattern or another CE
-     * 
+     *
      * @param child
      */
     public void addChild(final RuleConditionElement child) {
@@ -62,7 +83,7 @@ public class GroupElement extends ConditionalElement {
     }
 
     /**
-     * Adds the given child as the (index)th child of the this GroupElement 
+     * Adds the given child as the (index)th child of the this GroupElement
      * @param index
      * @param rce
      */
@@ -101,14 +122,14 @@ public class GroupElement extends ConditionalElement {
      * Optimize the group element subtree by removing redundancies
      * like an AND inside another AND, OR inside OR, single branches
      * AND/OR, etc.
-     * 
+     *
      * LogicTransformer does further, more complicated, transformations
      */
     public void pack() {
         // we must clone, since we want to iterate only over the original list
         final Object[] clone = this.children.toArray();
         for ( int i = 0; i < clone.length; i++ ) {
-            // if child is also a group element, there may be 
+            // if child is also a group element, there may be
             // some possible clean up / optimizations to be done
             if ( clone[i] instanceof GroupElement ) {
                 final GroupElement childGroup = (GroupElement) clone[i];
@@ -127,7 +148,7 @@ public class GroupElement extends ConditionalElement {
                 this.children.addAll( group.getChildren() );
             }
         }
-        
+
     }
 
     /**
@@ -159,7 +180,7 @@ public class GroupElement extends ConditionalElement {
                     if ( child instanceof GroupElement ) {
                         final int previousSize = parent.getChildren().size();
                         ((GroupElement) child).pack( parent );
-                        // in case the child also added elements to the parent, 
+                        // in case the child also added elements to the parent,
                         // we need to compensate
                         index += (parent.getChildren().size() - previousSize);
                     }
@@ -184,7 +205,7 @@ public class GroupElement extends ConditionalElement {
                 this.pack();
             }
 
-            // also pack itself if it is a NOT 
+            // also pack itself if it is a NOT
         } else {
             this.pack();
         }
@@ -193,7 +214,7 @@ public class GroupElement extends ConditionalElement {
     /**
      * Traverses two trees and checks that they are structurally equal at all
      * levels
-     * 
+     *
      * @param e1
      * @param e2
      * @return
@@ -239,7 +260,7 @@ public class GroupElement extends ConditionalElement {
     /**
      * Clones all Conditional Elements but references the non ConditionalElement
      * children
-     * 
+     *
      * @param e1
      * @param e2
      * @return
@@ -295,7 +316,7 @@ public class GroupElement extends ConditionalElement {
     public String toString() {
         return this.type.toString() + this.children.toString();
     }
-    
+
     public List getNestedElements() {
         return this.children;
     }
@@ -309,7 +330,7 @@ public class GroupElement extends ConditionalElement {
      */
     public static interface Type
         extends
-        Serializable {
+        Externalizable {
 
         /**
          * Returns true if this CE type is an AND
@@ -342,12 +363,12 @@ public class GroupElement extends ConditionalElement {
          * visible outside of an element of this type
          */
         public Map getOuterDeclarations(List children);
-        
+
         /**
          * Returns true in case this RuleConditionElement delimits
          * a pattern visibility scope.
-         * 
-         * For instance, AND CE is not a scope delimiter, while 
+         *
+         * For instance, AND CE is not a scope delimiter, while
          * NOT CE is a scope delimiter
          * @return
          */
@@ -408,7 +429,7 @@ public class GroupElement extends ConditionalElement {
 
         private static final long serialVersionUID = 400L;
 
-        AndType() {
+        public AndType() {
         }
 
         public boolean isAnd() {
@@ -446,6 +467,13 @@ public class GroupElement extends ConditionalElement {
             return false;
         }
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+
+        }
     }
 
     /**
@@ -455,7 +483,7 @@ public class GroupElement extends ConditionalElement {
 
         private static final long serialVersionUID = 400L;
 
-        OrType() {
+        public OrType() {
         }
 
         public boolean isAnd() {
@@ -492,6 +520,13 @@ public class GroupElement extends ConditionalElement {
         public boolean isPatternScopeDelimiter() {
             return false;
         }
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+
+        }
     }
 
     /**
@@ -501,7 +536,7 @@ public class GroupElement extends ConditionalElement {
 
         private static final long serialVersionUID = 400L;
 
-        NotType() {
+        public NotType() {
         }
 
         public boolean isAnd() {
@@ -545,6 +580,13 @@ public class GroupElement extends ConditionalElement {
         public boolean isPatternScopeDelimiter() {
             return true;
         }
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+
+        }
     }
 
     /**
@@ -554,7 +596,7 @@ public class GroupElement extends ConditionalElement {
 
         private static final long serialVersionUID = 400L;
 
-        ExistsType() {
+        public ExistsType() {
         }
 
         public boolean isAnd() {
@@ -597,6 +639,13 @@ public class GroupElement extends ConditionalElement {
 
         public boolean isPatternScopeDelimiter() {
             return true;
+        }
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+
         }
     }
 

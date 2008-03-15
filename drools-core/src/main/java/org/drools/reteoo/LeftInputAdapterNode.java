@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,12 +28,16 @@ import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
 
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
- * then there are no BetaNodes to propagate to. <code>LeftInputAdapter</code> is used to adapt an ObjectSink propagation into a 
- * <code>TupleSource</code> which propagates a <code>ReteTuple</code> suitable fot the right <code>ReteTuple</code> side 
+ * then there are no BetaNodes to propagate to. <code>LeftInputAdapter</code> is used to adapt an ObjectSink propagation into a
+ * <code>TupleSource</code> which propagates a <code>ReteTuple</code> suitable fot the right <code>ReteTuple</code> side
  * of a <code>BetaNode</code>.
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
@@ -44,20 +48,24 @@ public class LeftInputAdapterNode extends TupleSource
     NodeMemory {
 
     /**
-     * 
+     *
      */
     private static final long  serialVersionUID = 400L;
-    private final ObjectSource objectSource;
+    private ObjectSource objectSource;
 
     private ObjectSinkNode     previousObjectSinkNode;
     private ObjectSinkNode     nextObjectSinkNode;
-    
-    private boolean           objectMemoryEnabled;    
+
+    private boolean           objectMemoryEnabled;
+
+    public LeftInputAdapterNode() {
+
+    }
 
     /**
-     * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a 
+     * Constructus a LeftInputAdapterNode with a unique id that receives <code>FactHandle</code> from a
      * parent <code>ObjectSource</code> and adds it to a given pattern in the resulting Tuples.
-     * 
+     *
      * @param id
      *      The unique id of this node in the current Rete network
      * @param source
@@ -75,6 +83,21 @@ public class LeftInputAdapterNode extends TupleSource
         setObjectMemoryEnabled( false );
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        objectSource    = (ObjectSource)in.readObject();
+        previousObjectSinkNode  = (ObjectSinkNode)in.readObject();
+        nextObjectSinkNode  = (ObjectSinkNode)in.readObject();
+        objectMemoryEnabled = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(objectSource);
+        out.writeObject(previousObjectSinkNode);
+        out.writeObject(nextObjectSinkNode);
+        out.writeBoolean(objectMemoryEnabled);
+    }
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()
      */
@@ -97,18 +120,14 @@ public class LeftInputAdapterNode extends TupleSource
         }
     }
 
-    public void networkUpdated() {
-        this.objectSource.networkUpdated();
-    }
-    
     /**
      * Takes the asserted <code>FactHandleImpl</code> received from the <code>ObjectSource</code> and puts it
      * in a new <code>ReteTuple</code> before propagating to the <code>TupleSinks</code>
-     * 
+     *
      * @param handle
      *            The asserted <code>FactHandle/code>.
      * @param context
-     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.           
+     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
@@ -132,13 +151,13 @@ public class LeftInputAdapterNode extends TupleSource
     }
 
     /**
-     * Retract an existing <code>FactHandleImpl</code> by placing it in a new <code>ReteTuple</code> before 
+     * Retract an existing <code>FactHandleImpl</code> by placing it in a new <code>ReteTuple</code> before
      * proagating to the <code>TupleSinks</code>
-     * 
+     *
      * @param handle
      *            The <code>FactHandle/code> to retract.
      * @param context
-     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.           
+     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
@@ -196,15 +215,15 @@ public class LeftInputAdapterNode extends TupleSource
                                   builder,
                                   this,
                                   workingMemories );
-    }    
-    
+    }
+
     public boolean isObjectMemoryEnabled() {
         return this.objectMemoryEnabled;
     }
 
     public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
         this.objectMemoryEnabled = objectMemoryEnabled;
-    }    
+    }
 
     /**
      * Returns the next node
@@ -216,7 +235,7 @@ public class LeftInputAdapterNode extends TupleSource
     }
 
     /**
-     * Sets the next node 
+     * Sets the next node
      * @param next
      *      The next ObjectSinkNode
      */
@@ -234,7 +253,7 @@ public class LeftInputAdapterNode extends TupleSource
     }
 
     /**
-     * Sets the previous node 
+     * Sets the previous node
      * @param previous
      *      The previous ObjectSinkNode
      */
@@ -299,14 +318,14 @@ public class LeftInputAdapterNode extends TupleSource
                                   final InternalWorkingMemory workingMemory) {
             throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
         }
-        
+
         public boolean isObjectMemoryEnabled() {
             throw new UnsupportedOperationException("ObjectSinkAdapters have no Object memory");
         }
 
         public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
             throw new UnsupportedOperationException("ObjectSinkAdapters have no Object memory");
-        }        
+        }
     }
 
 }

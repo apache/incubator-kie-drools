@@ -16,13 +16,11 @@
 
 package org.drools.reteoo;
 
-import org.drools.common.NetworkNode;
-
 /**
  * A markup interface for terminal nodes
  * 
  * @author etirelli
  */
-public interface TerminalNode extends NetworkNode {
+public interface TerminalNode {
 
 }

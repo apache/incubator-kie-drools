@@ -1,6 +1,10 @@
 package org.drools.base.dataproviders;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -11,18 +15,21 @@ import org.drools.rule.Declaration;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.util.ArrayIterator;
 import org.mvel.MVEL;
 
 public class MVELDataProvider
     implements
     DataProvider,
-    Serializable  {
+    Externalizable  {
 
     private static final long serialVersionUID = 1901006343031798173L;
-    
-    private final Serializable      expression;
-    private final DroolsMVELFactory prototype;
+
+    private Serializable      expression;
+    private DroolsMVELFactory prototype;
+
+    public MVELDataProvider() {
+
+    }
 
     public MVELDataProvider(final Serializable expression,
                             final DroolsMVELFactory factory) {
@@ -30,11 +37,21 @@ public class MVELDataProvider
         this.prototype = factory;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        expression  = (Serializable)in.readObject();
+        prototype   = (DroolsMVELFactory)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(expression);
+        out.writeObject(prototype);
+    }
+    
     public Declaration[] getRequiredDeclarations() {
         return new Declaration[]{};
         //return factory.getRequiredDeclarations();
     }
-    
+
     public Object createContext() {
         return this.prototype.clone();
     }
@@ -44,7 +61,7 @@ public class MVELDataProvider
                                final PropagationContext ctx,
                                final Object executionContext ) {
         DroolsMVELFactory factory = (DroolsMVELFactory) executionContext;
-        
+
         factory.setContext( tuple,
                                  null,
                                  null,
@@ -53,15 +70,12 @@ public class MVELDataProvider
 
         //this.expression.
         final Object result = MVEL.executeExpression( this.expression,
-                                                      factory );                
-        
+                                                      factory );
         if ( result instanceof Collection ) {
             return ((Collection) result).iterator();
         } else if ( result instanceof Iterator ) {
             return (Iterator) result;
-        } else if ( result.getClass().isArray() ) { 
-        	return new ArrayIterator( result );
-        } else if( result != null ){
+        } else if ( result != null ){
             return Collections.singletonList( result ).iterator();
         } else {
             return Collections.EMPTY_LIST.iterator();

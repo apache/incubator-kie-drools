@@ -16,8 +16,10 @@ package org.drools.base.field;
  * limitations under the License.
  */
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collection;
 
 import org.drools.RuntimeDroolsException;
@@ -25,19 +27,69 @@ import org.drools.spi.FieldValue;
 
 public class ObjectFieldImpl
     implements
-    FieldValue {
+    FieldValue,
+    Externalizable {
 
     private static final long serialVersionUID = 400L;
-    private final Object      value;
+    private Object            value;
 
-    private final boolean     isCollection;
-    private final boolean     isNumber;
-    private final boolean     isBoolean;
-    private final boolean     isCharacter;
-    private final boolean     isString;
+    // the isEnum attribute is used to support jdk 1.4 type safe enums, and so
+    // has a different behavior of the other booleans in this class
+    private boolean           isEnum;
+    private String            enumName;
+    private String            fieldName;
+
+    private transient boolean isCollection;
+    private transient boolean isNumber;
+    private transient boolean isBoolean;
+    private transient boolean isCharacter;
+    private transient boolean isString;
+
+    public ObjectFieldImpl() {
+        this( null );
+    }
 
     public ObjectFieldImpl(final Object value) {
         this.value = value;
+        this.isEnum = value instanceof Enum;
+        setBooleans();
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        isEnum = in.readBoolean();
+        enumName = (String) in.readObject();
+        fieldName = (String) in.readObject();
+        if ( !isEnum || enumName == null || fieldName == null ) {
+            value = in.readObject();
+        } else {
+            resolveEnumValue();
+        }
+        setBooleans();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeBoolean( isEnum );
+        out.writeObject( enumName );
+        out.writeObject( fieldName );
+        if ( !isEnum || enumName == null || fieldName == null ) {
+            out.writeObject( value );
+        }
+    }
+
+    private void resolveEnumValue() {
+        try {
+            final Class<?> staticClass = Class.forName( enumName );
+            value = staticClass.getField( fieldName ).get( null );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException("Error deserializing enum value "+enumName+"."+fieldName+" : "+e.getMessage());
+        }
+    }
+
+    /**
+     * @param value
+     */
+    private void setBooleans() {
         this.isCollection = value instanceof Collection;
         this.isNumber = value instanceof Number;
         this.isBoolean = value instanceof Boolean;
@@ -56,7 +108,7 @@ public class ObjectFieldImpl
     public boolean getBooleanValue() {
         if ( isBoolean ) {
             return ((Boolean) this.value).booleanValue();
-        } else if( isString ) {
+        } else if ( isString ) {
             return Boolean.valueOf( (String) this.value ).booleanValue();
         }
         throw new RuntimeDroolsException( "Conversion to boolean not supported for type: " + this.value.getClass() );
@@ -65,7 +117,7 @@ public class ObjectFieldImpl
     public byte getByteValue() {
         if ( isNumber ) {
             return ((Number) this.value).byteValue();
-        } else if( isString ) {
+        } else if ( isString ) {
             return Byte.valueOf( (String) this.value ).byteValue();
         }
         throw new RuntimeDroolsException( "Conversion to byte not supported for type: " + this.value.getClass() );
@@ -74,8 +126,8 @@ public class ObjectFieldImpl
     public char getCharValue() {
         if ( isCharacter ) {
             return ((Character) this.value).charValue();
-        } else if( isString && ((String) this.value).length() == 1 ) {
-            return ( (String) this.value ).charAt( 0 );
+        } else if ( isString && ((String) this.value).length() == 1 ) {
+            return ((String) this.value).charAt( 0 );
         }
         throw new RuntimeDroolsException( "Conversion to char not supported for type: " + this.value.getClass() );
     }
@@ -83,7 +135,7 @@ public class ObjectFieldImpl
     public double getDoubleValue() {
         if ( isNumber ) {
             return ((Number) this.value).doubleValue();
-        } else if( isString ) {
+        } else if ( isString ) {
             return Double.valueOf( (String) this.value ).doubleValue();
         }
         throw new RuntimeDroolsException( "Conversion to double not supported for type: " + this.value.getClass() );
@@ -92,7 +144,7 @@ public class ObjectFieldImpl
     public float getFloatValue() {
         if ( isNumber ) {
             return ((Number) this.value).floatValue();
-        } else if( isString ) {
+        } else if ( isString ) {
             return Float.valueOf( (String) this.value ).floatValue();
         }
         throw new RuntimeDroolsException( "Conversion to float not supported for type: " + this.value.getClass() );
@@ -101,7 +153,7 @@ public class ObjectFieldImpl
     public int getIntValue() {
         if ( isNumber ) {
             return ((Number) this.value).intValue();
-        } else if( isString ) {
+        } else if ( isString ) {
             return Integer.valueOf( (String) this.value ).intValue();
         }
         throw new RuntimeDroolsException( "Conversion to int not supported for type: " + this.value.getClass() );
@@ -110,7 +162,7 @@ public class ObjectFieldImpl
     public long getLongValue() {
         if ( isNumber ) {
             return ((Number) this.value).longValue();
-        } else if( isString ) {
+        } else if ( isString ) {
             return Long.valueOf( (String) this.value ).longValue();
         }
         throw new RuntimeDroolsException( "Conversion to long not supported for type: " + this.value.getClass() );
@@ -119,7 +171,7 @@ public class ObjectFieldImpl
     public short getShortValue() {
         if ( isNumber ) {
             return ((Number) this.value).shortValue();
-        } else if( isString ) {
+        } else if ( isString ) {
             return Short.valueOf( (String) this.value ).shortValue();
         }
         throw new RuntimeDroolsException( "Conversion to short not supported for type: " + this.value.getClass() );
@@ -173,25 +225,28 @@ public class ObjectFieldImpl
         return this.isString;
     }
 
-	public BigDecimal getBigDecimalValue() {
-		if (this.value instanceof BigDecimal) return (BigDecimal) this.value;
-		if (this.isNumber) {
-			return new BigDecimal(((Number) value).doubleValue());
-		} else if (this.isString) {
-			return new BigDecimal((String) value);
-		}
-		if (this.value == null) return null;
-        throw new RuntimeDroolsException( "Conversion to BigDecimal not supported for type: " + this.value.getClass() );
-	}
+    public boolean isEnum() {
+        return isEnum;
+    }
 
-	public BigInteger getBigIntegerValue() {
-		if (this.value instanceof BigInteger) return (BigInteger) this.value;
-		if (this.isNumber) {
-			return BigInteger.valueOf(((Number) value).longValue());
-		} else if (this.isString) {
-			return new BigInteger((String) value);
-		}
-		if (this.value == null) return null;
-        throw new RuntimeDroolsException( "Conversion to BigInteger not supported for type: " + this.value.getClass() );
-	}
+    public void setEnum(boolean isEnum) {
+        this.isEnum = isEnum;
+    }
+
+    public String getEnumName() {
+        return enumName;
+    }
+
+    public void setEnumName(String enumName) {
+        this.enumName = enumName;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
 }

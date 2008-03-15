@@ -1,12 +1,12 @@
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,9 +19,14 @@ package org.drools.common;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleRemovalContext;
 
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 /**
  * The base class for all Rete nodes.
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
@@ -29,17 +34,29 @@ import org.drools.reteoo.RuleRemovalContext;
 public abstract class BaseNode
     implements
     NetworkNode {
-    protected final int id;
+    protected int id;
+
+    public BaseNode() {
+
+    }
 
     /**
      * All nodes have a unique id, set in the constructor.
-     * 
+     *
      * @param id
      *      The unique id
      */
     public BaseNode(final int id) {
         super();
         this.id = id;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        id  = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(id);
     }
 
     /* (non-Javadoc)
@@ -55,14 +72,7 @@ public abstract class BaseNode
     public abstract void attach();
 
     public abstract void attach(InternalWorkingMemory[] workingMemories);
-    
-    /**
-     * A method that is called for all nodes whose network bellow them 
-     * changed, after the change is complete, providing them with an oportunity
-     * for state update
-     */
-    public abstract void networkUpdated();
-    
+
     public void remove(RuleRemovalContext context,
                        ReteooBuilder builder,
                        BaseNode node,
@@ -92,14 +102,14 @@ public abstract class BaseNode
      */
     public abstract boolean isInUse();
 
-    /** 
-     * The hashCode return is simply the unique id of the node. It is expected that base classes will also implement equals(Object object). 
+    /**
+     * The hashCode return is simply the unique id of the node. It is expected that base classes will also implement equals(Object object).
      */
     public int hashCode() {
         return this.id;
     }
 
     public String toString() {
-        return "[" + this.getClass().getSimpleName() + "(" + this.id + ")]";
+        return "[" + this.getClass().getName() + "(" + this.id + ")]";
     }
 }

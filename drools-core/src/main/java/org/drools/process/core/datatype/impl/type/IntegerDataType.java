@@ -18,6 +18,10 @@ package org.drools.process.core.datatype.impl.type;
 
 import org.drools.process.core.datatype.DataType;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * Representation of an integer datatype.
  * 
@@ -28,6 +32,12 @@ public class IntegerDataType
     DataType {
 
     private static final long serialVersionUID = 400L;
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+    }
 
     public boolean verifyDataType(final Object value) {
         if ( value instanceof Integer ) {

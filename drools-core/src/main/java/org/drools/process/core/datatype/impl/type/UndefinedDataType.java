@@ -18,6 +18,10 @@ package org.drools.process.core.datatype.impl.type;
 
 import org.drools.process.core.datatype.DataType;
 
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+
 /**
  * Representation of an undefined datatype.
  * 
@@ -27,6 +31,12 @@ public final class UndefinedDataType implements DataType {
 
     private static final long serialVersionUID = 400L;
     private static UndefinedDataType instance;
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+    }
 
     public static UndefinedDataType getInstance() {
         if (instance == null) {

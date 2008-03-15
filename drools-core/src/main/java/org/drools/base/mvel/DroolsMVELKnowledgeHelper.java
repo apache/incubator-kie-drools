@@ -1,6 +1,10 @@
 package org.drools.base.mvel;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.spi.KnowledgeHelper;
 import org.mvel.integration.VariableResolver;
@@ -8,15 +12,26 @@ import org.mvel.integration.VariableResolver;
 public class DroolsMVELKnowledgeHelper
     implements
     VariableResolver,
-    Serializable  {
+    Externalizable  {
 
     private static final long serialVersionUID = 9175428283083361478L;
     
     private DroolsMVELFactory factory;
     public static final String DROOLS = "drools";
 
+    public DroolsMVELKnowledgeHelper() {
+    }
+
     public DroolsMVELKnowledgeHelper(final DroolsMVELFactory factory) {
         this.factory = factory;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        factory = (DroolsMVELFactory)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(factory);
     }
 
     public String getName() {

@@ -1,6 +1,9 @@
 package org.drools.base.evaluators;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +12,7 @@ import org.drools.RuntimeDroolsException;
 
 public class Operator
     implements
-    Serializable {
+    Externalizable {
 
     private static final long                  serialVersionUID = 400L;
 
@@ -34,12 +37,12 @@ public class Operator
                                                                                          false );
 
     /**
-     * Creates a new Operator instance for the given parameters, 
+     * Creates a new Operator instance for the given parameters,
      * adds it to the registry and return it
-     * 
+     *
      * @param operatorId the identification symbol of the operator
      * @param isNegated true if it is negated
-     * 
+     *
      * @return the newly created operator
      */
     public static Operator addOperatorToRegistry(final String operatorId,
@@ -54,10 +57,10 @@ public class Operator
 
     /**
      * Returns the operator instance for the given parameters
-     * 
+     *
      * @param operatorId the identification symbol of the operator
      * @param isNegated true if it is negated
-     * 
+     *
      * @return the operator in case it exists
      */
     public static Operator determineOperator(final String operatorId,
@@ -79,6 +82,20 @@ public class Operator
     private String  operator;
     private boolean isNegated;
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        operator    = (String)in.readObject();
+        isNegated   = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(operator);
+        out.writeBoolean(isNegated);
+    }
+
+    public Operator() {
+        
+    }
+
     private Operator(final String operator,
                      final boolean isNegated) {
         this.operator = operator;
@@ -97,7 +114,7 @@ public class Operator
     public String getOperatorString() {
         return this.operator;
     }
-    
+
     public boolean isNegated() {
         return this.isNegated;
     }

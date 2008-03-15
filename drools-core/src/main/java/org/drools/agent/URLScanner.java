@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.io.ObjectOutput;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.rule.Package;
 
 public class URLScanner extends PackageProvider {
@@ -122,7 +124,7 @@ public class URLScanner extends PackageProvider {
         if (local.exists()) local.delete();
 
         try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(local));
+            ObjectOutput out = new DroolsObjectOutputStream(new FileOutputStream(local));
             out.writeObject( p );
             out.flush();
             out.close();

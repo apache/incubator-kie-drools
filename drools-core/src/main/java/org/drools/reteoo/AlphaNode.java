@@ -2,20 +2,23 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.Externalizable;
 
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
@@ -34,11 +37,11 @@ import org.drools.util.Iterator;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
- * to apply <code>FieldConstraint<.code>s on asserted fact 
+ * to apply <code>FieldConstraint<.code>s on asserted fact
  * objects where the <code>FieldConstraint</code>s have no dependencies on any other of the facts in the current <code>Rule</code>.
- * 
+ *
  *  @see AlphaNodeFieldConstraint
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
@@ -49,12 +52,12 @@ public class AlphaNode extends ObjectSource
     NodeMemory {
 
     /**
-     * 
+     *
      */
     private static final long              serialVersionUID = 400L;
 
     /** The <code>FieldConstraint</code> */
-    private final AlphaNodeFieldConstraint constraint;
+    private AlphaNodeFieldConstraint constraint;
 
     private ObjectSinkNode                 previousObjectSinkNode;
     private ObjectSinkNode                 nextObjectSinkNode;
@@ -63,13 +66,17 @@ public class AlphaNode extends ObjectSource
 
     private boolean                        objectMemoryAllowed;
 
+    public AlphaNode() {
+
+    }
+
     /**
      * Construct an <code>AlphaNode</code> with a unique id using the provided
      * <code>FieldConstraint</code> and the given <code>ObjectSource</code>.
-     * Set the boolean flag to true if the node is supposed to have local 
-     * memory, or false otherwise. Memory is optional for <code>AlphaNode</code>s 
-     * and is only of benefic when adding additional <code>Rule</code>s at runtime. 
-     * 
+     * Set the boolean flag to true if the node is supposed to have local
+     * memory, or false otherwise. Memory is optional for <code>AlphaNode</code>s
+     * and is only of benefic when adding additional <code>Rule</code>s at runtime.
+     *
      * @param id Node's ID
      * @param constraint Node's constraints
      * @param objectSource Node's object source
@@ -91,9 +98,26 @@ public class AlphaNode extends ObjectSource
         }
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        constraint  = (AlphaNodeFieldConstraint)in.readObject();
+        previousObjectSinkNode  = (ObjectSinkNode)in.readObject();
+        nextObjectSinkNode  = (ObjectSinkNode)in.readObject();
+        objectMemoryEnabled = in.readBoolean();
+        objectMemoryAllowed = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(constraint);
+        out.writeObject(previousObjectSinkNode);
+        out.writeObject(nextObjectSinkNode);
+        out.writeBoolean(objectMemoryEnabled);
+        out.writeBoolean(objectMemoryAllowed);
+    }
     /**
      * Retruns the <code>FieldConstraint</code>
-     * 
+     *
      * @return <code>FieldConstraint</code>
      */
     public AlphaNodeFieldConstraint getConstraint() {
@@ -102,7 +126,7 @@ public class AlphaNode extends ObjectSource
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.drools.reteoo.BaseNode#attach()
      */
     public void attach() {
@@ -233,7 +257,7 @@ public class AlphaNode extends ObjectSource
         return memory;
     }
 
-    /** 
+    /**
      * @inheritDoc
      */
     protected void addObjectSink(final ObjectSink objectSink) {
@@ -250,7 +274,7 @@ public class AlphaNode extends ObjectSource
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(final Object object) {
@@ -277,7 +301,7 @@ public class AlphaNode extends ObjectSource
     }
 
     /**
-     * Sets the next node 
+     * Sets the next node
      * @param next
      *      The next ObjectSinkNode
      */
@@ -295,7 +319,7 @@ public class AlphaNode extends ObjectSource
     }
 
     /**
-     * Sets the previous node 
+     * Sets the previous node
      * @param previous
      *      The previous ObjectSinkNode
      */
@@ -305,12 +329,21 @@ public class AlphaNode extends ObjectSource
 
     public static class AlphaMemory
         implements
-        Serializable {
+        Externalizable {
         private static final long serialVersionUID = -5852576405010023458L;
 
         public FactHashTable      facts;
         public ContextEntry       context;
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            facts   = (FactHashTable)in.readObject();
+            context = (ContextEntry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(facts);
+            out.writeObject(context);
+        }
     }
 
     /**

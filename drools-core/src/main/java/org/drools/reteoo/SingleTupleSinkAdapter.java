@@ -4,13 +4,29 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 public class SingleTupleSinkAdapter
     implements
     TupleSinkPropagator {
     private TupleSink sink;
 
+    public SingleTupleSinkAdapter() {
+        
+    }
+
     public SingleTupleSinkAdapter(final TupleSink sink) {
         this.sink = sink;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        sink   = (TupleSink)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sink);
     }
 
     public void propagateAssertTuple(final ReteTuple tuple,

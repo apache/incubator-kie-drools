@@ -1,6 +1,9 @@
 package org.drools.base.mvel;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,7 +26,7 @@ import org.mvel.integration.impl.StaticMethodImportResolverFactory;
 public class DroolsMVELFactory extends BaseVariableResolverFactory
     implements
     LocalVariableResolverFactory,
-    Serializable,
+    Externalizable,
     Cloneable {
 
     private static final long serialVersionUID = 400L;
@@ -55,6 +58,10 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                                              new MVELCalendarCoercion() );
     }
 
+    public DroolsMVELFactory() {
+        
+    }
+
     public DroolsMVELFactory(final Map previousDeclarations,
                              final Map localDeclarations,
                              final Map globals) {
@@ -82,35 +89,27 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         }
     }
 
-    //    public void writeExternal(final ObjectOutput stream) throws IOException {
-    //        setNextFactory( null );
-    //        stream.writeObject( this.previousDeclarations );
-    //        stream.writeObject( this.localDeclarations );
-    //        stream.writeObject( this.globals );
-    //        stream.writeObject( this.variableResolvers );
-    //    }
-    //
-    //    public void readExternal(final ObjectInput stream) throws IOException,
-    //                                                      ClassNotFoundException {
-    //        DroolsObjectInputStream droolsInputStream = (DroolsObjectInputStream) stream;
-    //
-    //        this.previousDeclarations = (Map) droolsInputStream.readObject();
-    //        this.localDeclarations = (Map) droolsInputStream.readObject();
-    //        this.globals = (Map) droolsInputStream.readObject();
-    //        this.variableResolvers = (Map) droolsInputStream.readObject();
-    //
-    //        StaticMethodImportResolverFactory factory = new StaticMethodImportResolverFactory();
-    //        setNextFactory( factory );
-    //
-    //        Package pkg = droolsInputStream.getPackage();
-    //        ClassLoader classLoader = pkg.getPackageCompilationData().getClassLoader();
-    //        for ( Iterator it = pkg.getStaticImports().iterator(); it.hasNext(); ) {
-    //            String staticImportEntry = (String) it.next();
-    //            addStaticImport( factory,
-    //                             staticImportEntry,
-    //                             classLoader );
-    //        }
-    //    }
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        tupleObjects    = (Object[])in.readObject();
+        knowledgeHelper    = (KnowledgeHelper)in.readObject();
+        object    = in.readObject();
+        localDeclarations    = (Map)in.readObject();
+        previousDeclarations    = (Map)in.readObject();
+        globals    = (Map)in.readObject();
+        workingMemory    = (WorkingMemory)in.readObject();
+        localVariables    = (Map)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(tupleObjects);
+        out.writeObject(knowledgeHelper);
+        out.writeObject(object);
+        out.writeObject(localDeclarations);
+        out.writeObject(previousDeclarations);
+        out.writeObject(globals);
+        out.writeObject(workingMemory);
+        out.writeObject(localVariables);
+    }
 
     public static void addStaticImport(StaticMethodImportResolverFactory factory,
                                        String staticImportEntry,

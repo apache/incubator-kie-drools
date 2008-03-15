@@ -2,13 +2,13 @@ package org.drools.util;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,20 +17,36 @@ package org.drools.util;
  */
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 public class PrimitiveLongStack
     implements
-    Serializable {
+    Externalizable {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
-    private final int         tableSize;
+    private int         tableSize;
     private int               currentPageId;
     private Page              currentPage;
 
     public PrimitiveLongStack() {
         this( 256 );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        tableSize   = in.readInt();
+        currentPageId   = in.readInt();
+        currentPage     = (Page)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(tableSize);
+        out.writeInt(currentPageId);
+        out.writeObject(currentPage);
     }
 
     public PrimitiveLongStack(final int tableSize) {
@@ -77,18 +93,22 @@ public class PrimitiveLongStack
         return this.currentPageId == 0 && this.currentPage.getPosition() == -1;
     }
 
-    private static final class Page
+    public static final class Page
         implements
-        Serializable {
+        Externalizable {
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 400L;
-        private final int         pageId;
+        private int         pageId;
         private Page              nextSibling;
         private Page              previousSibling;
         private long[]            table;
         private int               lastKey;
+
+        public Page() {
+
+        }
 
         Page(final Page previousSibling,
              final int nodeId,
@@ -103,6 +123,22 @@ public class PrimitiveLongStack
 
             // initiate tree;
             this.table = new long[tableSize];
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            pageId  = in.readInt();
+            nextSibling = (Page)in.readObject();
+            previousSibling = (Page)in.readObject();
+            table = (long[])in.readObject();
+            lastKey  = in.readInt();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(pageId);
+            out.writeObject(nextSibling);
+            out.writeObject(previousSibling);
+            out.writeObject(table);
+            out.writeInt(lastKey);
         }
 
         public int getNodeId() {
@@ -138,5 +174,6 @@ public class PrimitiveLongStack
             this.previousSibling = null;
             this.table = null;
         }
+
     }
 }

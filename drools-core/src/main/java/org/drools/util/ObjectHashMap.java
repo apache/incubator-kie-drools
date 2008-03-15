@@ -1,11 +1,16 @@
 /**
- * 
+ *
  */
 package org.drools.util;
 
 import org.drools.util.AbstractHashTable.EqualityEquals;
 
-public class ObjectHashMap extends AbstractHashTable {
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.Externalizable;
+
+public class ObjectHashMap extends AbstractHashTable implements Externalizable {
 
     private static final long serialVersionUID = 400L;
 
@@ -19,15 +24,15 @@ public class ObjectHashMap extends AbstractHashTable {
         super( capacity,
                loadFactor );
     }
-    
+
     public ObjectHashMap(final Entry[] table) {
         super( 0.75f, table);
-    }      
-    
+    }
+
     public ObjectHashMap(final float loadFactor,
-                             final Entry[] table) {
+                         final Entry[] table) {
         super(loadFactor, table);
-    }     
+    }
 
     public Object put(final Object key,
                       final Object value) {
@@ -140,12 +145,30 @@ public class ObjectHashMap extends AbstractHashTable {
 
         private Entry             next;
 
+        public ObjectEntry() {
+
+        }
+
         public ObjectEntry(final Object key,
                            final Object value,
                            final int hashCode) {
             this.key = key;
             this.value = value;
             this.hashCode = hashCode;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            key = in.readObject();
+            value   = in.readObject();
+            hashCode    = in.readInt();
+            next    = (Entry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(key);
+            out.writeObject(value);
+            out.writeInt(hashCode);
+            out.writeObject(next);
         }
 
         public Object getValue() {

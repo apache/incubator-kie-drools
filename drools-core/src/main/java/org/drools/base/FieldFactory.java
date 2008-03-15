@@ -16,29 +16,23 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Date;
-
 import org.drools.base.field.BooleanFieldImpl;
 import org.drools.base.field.DoubleFieldImpl;
 import org.drools.base.field.LongFieldImpl;
 import org.drools.base.field.ObjectFieldImpl;
 import org.drools.spi.FieldValue;
-import org.drools.util.DateUtils;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class FieldFactory {
     private static final FieldFactory INSTANCE = new FieldFactory();
-
-    private static final String     DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
-    private static final String     DATE_FORMAT_MASK    = getDateFormatMask();
 
     public static FieldFactory getInstance() {
         return FieldFactory.INSTANCE;
     }
 
     private FieldFactory() {
-
     }
 
     public static FieldValue getFieldValue(final String value,
@@ -85,8 +79,8 @@ public class FieldFactory {
         } else if ( valueType == ValueType.STRING_TYPE ) {
             field = new ObjectFieldImpl( value.intern() );
         } else if ( valueType == ValueType.DATE_TYPE ) {
-            Date date = DateUtils.parseDate( value );
-            field = new ObjectFieldImpl( date );
+            //MN: I think its fine like this, seems to work !
+            field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.ARRAY_TYPE ) {
             //MN: I think its fine like this.
             field = new ObjectFieldImpl( value );
@@ -115,49 +109,49 @@ public class FieldFactory {
                 field = new LongFieldImpl( ((String) value).charAt(0) );
             } else {
                 field = new LongFieldImpl( ((Character) value).charValue() );
-            } 
+            }
         } else if ( valueType == ValueType.PBYTE_TYPE ) {
             if( value instanceof String ) {
                 field = new LongFieldImpl( Byte.parseByte( (String) value) );
             } else {
                 field = new LongFieldImpl( ((Number) value).byteValue() );
-            } 
+            }
         } else if ( valueType == ValueType.PSHORT_TYPE ) {
             if( value instanceof String ) {
                 field = new LongFieldImpl( Short.parseShort( (String) value) );
             } else {
                 field = new LongFieldImpl( ((Number) value).shortValue() );
-            } 
+            }
         } else if ( valueType == ValueType.PINTEGER_TYPE ) {
             if( value instanceof String ) {
                 field = new LongFieldImpl( Integer.parseInt( stripNumericType( (String) value ) ) );
             } else {
                 field = new LongFieldImpl( ((Number) value).intValue() );
-            } 
+            }
         } else if ( valueType == ValueType.PLONG_TYPE ) {
             if( value instanceof String ) {
                 field = new LongFieldImpl( Long.parseLong( stripNumericType( (String) value ) ) );
             } else {
                 field = new LongFieldImpl( ((Number) value).longValue() );
-            } 
+            }
         } else if ( valueType == ValueType.PFLOAT_TYPE ) {
             if( value instanceof String ) {
                 field = new DoubleFieldImpl( Float.parseFloat( stripNumericType( (String) value ) ) );
             } else {
                 field = new DoubleFieldImpl( ((Number) value).floatValue() );
-            } 
+            }
         } else if ( valueType == ValueType.PDOUBLE_TYPE ) {
             if( value instanceof String ) {
                 field = new DoubleFieldImpl( Double.parseDouble( stripNumericType( (String) value ) ) );
             } else {
                 field = new DoubleFieldImpl( ((Number) value).doubleValue() );
-            } 
+            }
         } else if ( valueType == ValueType.PBOOLEAN_TYPE ) {
             if( value instanceof String ) {
                 field = new BooleanFieldImpl( Boolean.valueOf( (String) value).booleanValue() );
             } else {
                 field = new BooleanFieldImpl( ((Boolean) value).booleanValue() );
-            } 
+            }
         } else if ( valueType == ValueType.CHAR_TYPE ) {
             field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.BYTE_TYPE ) {
@@ -178,12 +172,7 @@ public class FieldFactory {
             field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.DATE_TYPE ) {
             //MN: I think its fine like this, seems to work !
-            if( value instanceof String ) {
-                Date date = DateUtils.parseDate( (String) value );
-                field = new ObjectFieldImpl( date );
-            } else {
-                field = new ObjectFieldImpl( value );
-            }
+            field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.ARRAY_TYPE ) {
             //MN: I think its fine like this.
             field = new ObjectFieldImpl( value );
@@ -244,12 +233,4 @@ public class FieldFactory {
         return value;
     }
 
-    /** Check for the system property override, if it exists */
-    private static String getDateFormatMask() {
-        String fmt = System.getProperty( "drools.dateformat" );
-        if ( fmt == null ) {
-            fmt = FieldFactory.DEFAULT_FORMAT_MASK;
-        }
-        return fmt;
-    }
 }

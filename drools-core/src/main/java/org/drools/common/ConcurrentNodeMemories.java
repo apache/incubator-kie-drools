@@ -1,12 +1,12 @@
 /*
  * Copyright 2008 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,10 +21,13 @@ package org.drools.common;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * A concurrent implementation for the node memories interface
- * 
+ *
  * @author etirelli
  */
 public class ConcurrentNodeMemories
@@ -32,10 +35,14 @@ public class ConcurrentNodeMemories
     NodeMemories {
 
     private static final long serialVersionUID = -2032997426288974117L;
-    
+
     private AtomicReferenceArray<Object> memories;
     private Lock                         lock;
-    private transient InternalRuleBase   rulebase;
+    private InternalRuleBase   rulebase;
+
+    public ConcurrentNodeMemories() {
+
+    }
 
     public ConcurrentNodeMemories(InternalRuleBase rulebase) {
         this.rulebase = rulebase;
@@ -43,6 +50,17 @@ public class ConcurrentNodeMemories
         this.lock = new ReentrantLock();
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        lock        = (Lock)in.readObject();
+        rulebase    = (InternalRuleBase)in.readObject();
+        memories    = (AtomicReferenceArray<Object>)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(lock);
+        out.writeObject(rulebase);
+        out.writeObject(memories);
+    }
     /**
      * @inheritDoc
      *

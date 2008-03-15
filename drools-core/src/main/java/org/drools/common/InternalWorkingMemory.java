@@ -12,7 +12,6 @@ import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
-import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
@@ -90,9 +89,25 @@ public interface InternalWorkingMemory
 	public void setTimeMachine(TimeMachine tm);
     
     public void removeProcessInstance(ProcessInstance processInstance);
-       
+    
+    /**
+     * Returns the ObjectTypeConfiguration object for the given object
+     * or creates a new one if none is found in the cache
+     * 
+     * @param object
+     * @return
+     */
+    public ObjectTypeConf getObjectTypeConf(EntryPoint entryPoint, Object object);
+    
+    /**
+     * Returns the Map<Object key, ObjectTypeConf conf> of object type
+     * confs in this working memory
+     *  
+     * @return
+     */
+    public Map<Object, ObjectTypeConf> getObjectTypeConfMap(EntryPoint entryPoint);
 
     public ExecutorService getExecutorService();
 
-    public void setExecutorService(ExecutorService executor);    
+    public void setExecutorService(ExecutorService executor);
 }

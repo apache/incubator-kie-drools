@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,10 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
@@ -24,20 +28,20 @@ import org.drools.spi.PropagationContext;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
- * 
+ *
  * <p>
  * Nodes that propagate <code>Tuples</code> extend this class.
  * </p>
- * 
+ *
  * @see TupleSource
  * @see ReteTuple
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public abstract class TupleSource extends BaseNode
     implements
-    Serializable {
+    Externalizable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -48,10 +52,13 @@ public abstract class TupleSource extends BaseNode
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public TupleSource() {
+
+    }
 
     /**
      * Single parameter constructor that specifies the unique id of the node.
-     * 
+     *
      * @param id
      */
     TupleSource(final int id) {
@@ -62,17 +69,26 @@ public abstract class TupleSource extends BaseNode
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        sink    = (TupleSinkPropagator)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(sink);
+    }
 
     /**
      * Adds the <code>TupleSink</code> so that it may receive
      * <code>Tuples</code> propagated from this <code>TupleSource</code>.
-     * 
+     *
      * @param tupleSink
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
     protected void addTupleSink(final TupleSink tupleSink) {
-        if ( this.sink instanceof EmptyTupleSinkAdapter ) {
+        if ( this.sink == EmptyTupleSinkAdapter.getInstance() ) {
             this.sink = new SingleTupleSinkAdapter( tupleSink );
         } else if ( this.sink instanceof SingleTupleSinkAdapter ) {
             final CompositeTupleSinkAdapter sinkAdapter = new CompositeTupleSinkAdapter();
@@ -86,12 +102,12 @@ public abstract class TupleSource extends BaseNode
 
     /**
      * Removes the <code>TupleSink</code>
-     * 
+     *
      * @param tupleSink
      *            The <code>TupleSink</code> to remove
      */
     protected void removeTupleSink(final TupleSink tupleSink) {
-        if ( this.sink instanceof EmptyTupleSinkAdapter ) {
+        if ( this.sink == EmptyTupleSinkAdapter.getInstance() ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
 
@@ -113,7 +129,7 @@ public abstract class TupleSource extends BaseNode
     public abstract void updateSink(TupleSink sink,
                                     PropagationContext context,
                                     InternalWorkingMemory workingMemory);
-    
+
     public boolean isInUse() {
         return this.sink.size() > 0;
     }

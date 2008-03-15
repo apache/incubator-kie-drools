@@ -3,7 +3,10 @@
  */
 package org.drools.base;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
 
 import org.drools.StatefulSession;
 import org.drools.event.BeforeRuleBaseUnlockedEvent;
@@ -13,11 +16,20 @@ import org.drools.spi.RuleBaseUpdateListener;
 public class FireAllRulesRuleBaseUpdateListener extends DefaultRuleBaseEventListener
     implements
     RuleBaseUpdateListener,
-    Serializable {
+    Externalizable {
     private StatefulSession session;
 
     public FireAllRulesRuleBaseUpdateListener() {
+    }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        session = (StatefulSession)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(session);
     }
 
     public void setSession(StatefulSession session) {

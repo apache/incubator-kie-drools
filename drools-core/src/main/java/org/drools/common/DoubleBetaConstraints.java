@@ -2,23 +2,19 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
@@ -29,6 +25,7 @@ import org.drools.reteoo.TupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.util.AbstractHashTable.FieldIndex;
 import org.drools.util.FactHandleIndexHashTable;
 import org.drools.util.FactHashTable;
 import org.drools.util.FactList;
@@ -36,24 +33,31 @@ import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
 import org.drools.util.TupleIndexHashTable;
-import org.drools.util.AbstractHashTable.FieldIndex;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DoubleBetaConstraints
     implements
-    Serializable,
     BetaConstraints {
 
     /**
-     * 
+     *
      */
     private static final long             serialVersionUID = 400L;
 
-    private final BetaNodeFieldConstraint constraint0;
-    private final BetaNodeFieldConstraint constraint1;
+    private BetaNodeFieldConstraint constraint0;
+    private BetaNodeFieldConstraint constraint1;
 
     private boolean                       indexed0;
     private boolean                       indexed1;
 
+    public DoubleBetaConstraints() {
+
+    }
     public DoubleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                  final RuleBaseConfiguration conf) {
         this( constraints,
@@ -70,7 +74,7 @@ public class DoubleBetaConstraints
         } else {
             final int depth = conf.getCompositeKeyDepth();
 
-            // Determine  if this constraints are indexable           
+            // Determine  if this constraints are indexable
             final boolean i0 = isIndexable( constraints[0] );
             final boolean i1 = isIndexable( constraints[1] );
 
@@ -94,6 +98,21 @@ public class DoubleBetaConstraints
         this.constraint1 = constraints[1];
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        constraint0 = (BetaNodeFieldConstraint)in.readObject();
+        constraint1 = (BetaNodeFieldConstraint)in.readObject();
+        indexed0    = in.readBoolean();
+        indexed1    = in.readBoolean();
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(constraint0);
+        out.writeObject(constraint1);
+        out.writeBoolean(indexed0);
+        out.writeBoolean(indexed1);
+
+    }
     private void swap(final BetaNodeFieldConstraint[] constraints,
                       final int p1,
                       final int p2) {
@@ -249,10 +268,10 @@ public class DoubleBetaConstraints
 
     /**
      * Determine if another object is equal to this.
-     * 
+     *
      * @param object
      *            The object to test.
-     * 
+     *
      * @return <code>true</code> if <code>object</code> is equal to this,
      *         otherwise <code>false</code>.
      */

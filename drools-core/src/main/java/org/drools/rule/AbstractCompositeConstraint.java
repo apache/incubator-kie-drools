@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,9 @@
 package org.drools.rule;
 
 import java.util.Arrays;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
@@ -28,7 +31,7 @@ import org.drools.util.ArrayUtils;
 
 /**
  * A superclass for all composite constraints, like "OR" and "AND"
- * 
+ *
  * @author etirelli
  */
 public abstract class AbstractCompositeConstraint extends MutableTypeConstraint {
@@ -42,9 +45,22 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
         this.setType( Constraint.ConstraintType.ALPHA );
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        alphaConstraints        = (AlphaNodeFieldConstraint[])in.readObject();
+        betaConstraints         = (BetaNodeFieldConstraint[])in.readObject();
+        requiredDeclarations    = (Declaration[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(alphaConstraints);
+        out.writeObject(betaConstraints);
+        out.writeObject(requiredDeclarations);
+    }
     /**
      * Adds an alpha constraint to the multi field OR constraint
-     * 
+     *
      * @param constraint
      */
     public void addAlphaConstraint(AlphaNodeFieldConstraint constraint) {
@@ -81,13 +97,13 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
     }
 
     /**
-     * Adds a constraint too all lists it belongs to by checking for its type 
+     * Adds a constraint too all lists it belongs to by checking for its type
      * @param constraint
      */
     public void addConstraint(Constraint constraint) {
-        if ( constraint.getType() == ConstraintType.ALPHA ) {
+        if ( ConstraintType.ALPHA.equals(constraint.getType())) {
             this.addAlphaConstraint( (AlphaNodeFieldConstraint) constraint );
-        } else if ( constraint.getType() == ConstraintType.BETA ) {
+        } else if ( ConstraintType.BETA.equals(constraint.getType())) {
             this.addBetaConstraint( (BetaNodeFieldConstraint) constraint );
         } else {
             throw new RuntimeDroolsException( "Constraint type MUST be known in advance.");
@@ -96,7 +112,7 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
 
     /**
      * Updades the cached required declaration array
-     * 
+     *
      * @param constraint
      */
     protected void updateRequiredDeclarations(Constraint constraint) {
@@ -185,10 +201,10 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
     }
 
     public abstract Object clone();
-    
+
     /**
      * A context entry for composite restrictions
-     * 
+     *
      * @author etirelli
      */
     protected static class MultiFieldConstraintContextEntry
@@ -197,11 +213,14 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
 
         private static final long    serialVersionUID = 400L;
 
-        public final ContextEntry[]  alphas;
-        public final ContextEntry[]  betas;
+        public ContextEntry[]  alphas;
+        public ContextEntry[]  betas;
         public ContextEntry          next;
         public InternalWorkingMemory workingMemory;
         public InternalFactHandle    handle;
+
+        public MultiFieldConstraintContextEntry() {
+        }
 
         public MultiFieldConstraintContextEntry(final AlphaNodeFieldConstraint[] alphas,
                                                 final BetaNodeFieldConstraint[] betas) {
@@ -215,6 +234,22 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
             }
         }
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            alphas  = (ContextEntry[])in.readObject();
+            betas   = (ContextEntry[])in.readObject();
+            next  = (ContextEntry)in.readObject();
+            workingMemory  = (InternalWorkingMemory)in.readObject();
+            handle  = (InternalFactHandle)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(alphas);
+            out.writeObject(betas);
+            out.writeObject(next);
+            out.writeObject(workingMemory);
+            out.writeObject(handle);
+        }
+        
         public ContextEntry getNext() {
             return this.next;
         }

@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,19 +25,28 @@ import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 import org.drools.spi.Restriction;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+
 public class LiteralRestriction
     implements
-    Restriction {
+    Restriction, Externalizable {
 
     private static final long          serialVersionUID     = 400L;
 
-    private final FieldValue           field;
+    private FieldValue           field;
 
-    private final Evaluator            evaluator;
+    private Evaluator            evaluator;
 
-    private final FieldExtractor       extractor;
+    private FieldExtractor       extractor;
 
     private static final Declaration[] requiredDeclarations = new Declaration[0];
+
+    public LiteralRestriction() {
+        this(null, null, null);
+    }
 
     public LiteralRestriction(final FieldValue field,
                               final Evaluator evaluator,
@@ -47,6 +56,17 @@ public class LiteralRestriction
         this.extractor = fieldExtractor;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        field   = (FieldValue)in.readObject();
+        evaluator   = (Evaluator)in.readObject();
+        extractor   = (FieldExtractor)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(field);
+        out.writeObject(evaluator);
+        out.writeObject(extractor);
+    }
     public Evaluator getEvaluator() {
         return this.evaluator;
     }
@@ -137,8 +157,23 @@ public class LiteralRestriction
         public Object             object;
         public ContextEntry       next;
 
+        public LiteralContextEntry() {
+        }
+
         public LiteralContextEntry(final FieldExtractor extractor) {
             this.extractor = extractor;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            extractor   = (FieldExtractor)in.readObject();
+            object      = in.readObject();
+            next        = (ContextEntry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(extractor);
+            out.writeObject(object);
+            out.writeObject(next);
         }
 
         public FieldExtractor getFieldExtractor() {

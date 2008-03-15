@@ -3,6 +3,10 @@ package org.drools.spi;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
@@ -14,13 +18,13 @@ import org.drools.util.ClassUtils;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,16 +34,27 @@ import org.drools.util.ClassUtils;
 
 public class PatternExtractor
     implements
-    Extractor {
+    Extractor, Externalizable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
     private ObjectType        objectType;
 
+    public PatternExtractor() {
+        this(null);
+    }
     public PatternExtractor(final ObjectType objectType) {
         this.objectType = objectType;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        objectType  = (ObjectType)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(objectType);
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {

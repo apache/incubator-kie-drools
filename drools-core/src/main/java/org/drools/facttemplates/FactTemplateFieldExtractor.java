@@ -1,6 +1,9 @@
 package org.drools.facttemplates;
 
 import java.lang.reflect.Method;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ValueType;
@@ -16,10 +19,24 @@ public class FactTemplateFieldExtractor
     private FactTemplate      factTemplate;
     private int               fieldIndex;
 
+    public FactTemplateFieldExtractor() {
+
+    }
+
     public FactTemplateFieldExtractor(final FactTemplate factTemplate,
                                       final int fieldIndex) {
         this.factTemplate = factTemplate;
         this.fieldIndex = fieldIndex;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        factTemplate    = (FactTemplate)in.readObject();
+        fieldIndex      = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(factTemplate);
+        out.writeInt(fieldIndex);
     }
 
     public ValueType getValueType() {

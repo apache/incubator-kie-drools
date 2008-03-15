@@ -1,18 +1,22 @@
 package org.drools.spi;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.rule.Declaration;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,9 +30,9 @@ public interface Constraint
     Cloneable {
 
     /**
-     * Returns all the declarations required by the given 
+     * Returns all the declarations required by the given
      * constraint implementation.
-     * 
+     *
      * @return
      */
     Declaration[] getRequiredDeclarations();
@@ -36,7 +40,7 @@ public interface Constraint
     /**
      * A constraint may be required to replace an old
      * declaration object by a new updated one
-     * 
+     *
      * @param oldDecl
      * @param newDecl
      */
@@ -51,30 +55,43 @@ public interface Constraint
 
     /**
      * Returns the type of the constraint, either ALPHA, BETA or UNKNOWN
-     * 
+     *
      * @return
      */
     public ConstraintType getType();
-    
+
     /**
      * A java 1.4 type-safe enum
      */
-    public static class ConstraintType implements Serializable {
-        
+    public static class ConstraintType implements Externalizable {
+
         private static final long serialVersionUID = 4865182371013556266L;
-        
+
         public static final ConstraintType UNKNOWN = new ConstraintType(0, "UNKNOWN");
         public static final ConstraintType ALPHA = new ConstraintType(1, "ALPHA");
         public static final ConstraintType BETA = new ConstraintType(2, "BETA");
-        
-        private final int type; 
-        private final String desc;
-        
+
+        private int type;
+        private String desc;
+
+        public ConstraintType() {
+
+        }
+
         private ConstraintType( int type, String desc ) {
             this.type = type;
             this.desc = desc;
         }
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            type    = in.readInt();
+            desc    = (String)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(type);
+            out.writeObject(desc);
+        }
         /**
          * @inheritDoc
          *
@@ -100,7 +117,7 @@ public interface Constraint
             if ( type != other.type ) return false;
             return true;
         }
-        
+
         public String toString() {
             return "ConstraintType::"+this.desc;
         }

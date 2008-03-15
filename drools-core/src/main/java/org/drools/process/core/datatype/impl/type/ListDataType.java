@@ -16,11 +16,13 @@ package org.drools.process.core.datatype.impl.type;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import org.drools.process.core.datatype.DataType;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.List;
-
-import org.drools.process.core.datatype.DataType;
 
 /**
  * Representation of a list datatype.
@@ -28,11 +30,19 @@ import org.drools.process.core.datatype.DataType;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ListDataType implements DataType, Serializable {
+public class ListDataType implements DataType {
 
     private static final long serialVersionUID = 400L;
 
     private DataType dataType;
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        dataType    = (DataType)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(dataType);
+    }
 
     public void setDataType(final DataType dataType) {
         this.dataType = dataType;

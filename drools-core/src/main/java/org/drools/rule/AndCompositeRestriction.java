@@ -10,6 +10,9 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
 
     private static final long serialVersionUID = 400L;
 
+    public AndCompositeRestriction() {
+    }
+
     public AndCompositeRestriction(final Restriction[] restriction) {
         super( restriction );
     }
@@ -52,7 +55,7 @@ public class AndCompositeRestriction extends AbstractCompositeRestriction {
         }
         return true;
     }
-    
+
     public Object clone() {
         Restriction[] clone = new Restriction[ this.restrictions.length ];
         for( int i = 0; i < clone.length; i++ ) {

@@ -3,15 +3,19 @@ package org.drools.reteoo;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,14 +25,17 @@ import org.drools.common.InternalFactHandle;
 
 public class InitialFactHandle extends DefaultFactHandle {
     /**
-     * 
+     *
      */
     private static final long        serialVersionUID = 400L;
 
-    private final InternalFactHandle delegate;
+    private InternalFactHandle delegate;
 
     private Object                   object;
 
+    public InitialFactHandle() {
+
+    }
     public InitialFactHandle(final InternalFactHandle delegate) {
         super();
         this.delegate = delegate;
@@ -38,6 +45,17 @@ public class InitialFactHandle extends DefaultFactHandle {
     // ----------------------------------------------------------------------
     // Instance members
     // ----------------------------------------------------------------------
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        delegate    = (InternalFactHandle)in.readObject();
+        object      = in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(delegate);
+        out.writeObject(object);
+    }
 
     /**
      * @see Object

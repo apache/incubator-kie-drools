@@ -1,12 +1,12 @@
 /*
  * Copyright 2008 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,10 @@
  */
 package org.drools.reteoo;
 
-import java.io.Serializable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.Externalizable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -33,7 +36,7 @@ import org.drools.spi.PropagationContext;
  * A node that will add the propagation to the working memory actions queue,
  * in order to allow multiple threads to concurrently assert objects to multiple
  * entry points.
- * 
+ *
  * @author etirelli
  *
  */
@@ -43,7 +46,7 @@ public class PropagationQueuingNode extends ObjectSource
     NodeMemory {
 
     private static final long serialVersionUID = -615639068150958767L;
-    
+
     // should we make this one configurable?
     private static final int PROPAGATION_SLICE_LIMIT = 1000;
 
@@ -51,11 +54,14 @@ public class PropagationQueuingNode extends ObjectSource
     private ObjectSinkNode    nextObjectSinkNode;
     private PropagateAction   action;
 
+    public PropagationQueuingNode() {
+    }
+
     /**
      * Construct a <code>PropagationQueuingNode</code> that will queue up
      * propagations until it the engine reaches a safe propagation point,
      * when all the queued facts are propagated.
-     * 
+     *
      * @param id Node's ID
      * @param constraint Node's constraints
      * @param objectSource Node's object source
@@ -68,6 +74,20 @@ public class PropagationQueuingNode extends ObjectSource
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.action = new PropagateAction( this );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        previousObjectSinkNode  = (ObjectSinkNode)in.readObject();
+        nextObjectSinkNode      = (ObjectSinkNode)in.readObject();
+        action                  = (PropagateAction)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(previousObjectSinkNode);
+        out.writeObject(nextObjectSinkNode);
+        out.writeObject(action);
     }
 
     /**
@@ -126,7 +146,7 @@ public class PropagationQueuingNode extends ObjectSource
         }
         this.objectSource.remove( context,
                                   builder,
-                                  this, 
+                                  this,
                                   workingMemories );
     }
 
@@ -201,11 +221,11 @@ public class PropagationQueuingNode extends ObjectSource
 
     /**
      * Propagate all queued actions (asserts and retracts).
-     * 
-     * This method implementation is based on optimistic behavior to avoid the 
+     *
+     * This method implementation is based on optimistic behavior to avoid the
      * use of locks. There may eventually be a minimum wasted effort, but overall
      * it will be better than paying for the lock's cost.
-     * 
+     *
      * @param workingMemory
      */
     public void propagateActions(InternalWorkingMemory workingMemory) {
@@ -219,7 +239,7 @@ public class PropagationQueuingNode extends ObjectSource
         for( int counter = 0; next != null && counter < PROPAGATION_SLICE_LIMIT; next = memory.getNext(), counter++ ) {
             next.execute( this.sink, workingMemory );
         }
-        
+
         if( memory.hasNext() ) {
             // add action to the queue again.
             memory.isQueued().set( true );
@@ -240,12 +260,12 @@ public class PropagationQueuingNode extends ObjectSource
 
     /**
      * Memory implementation for the node
-     * 
+     *
      * @author etirelli
      */
-    private static class PropagationQueueingNodeMemory
+    public static class PropagationQueueingNodeMemory
         implements
-        Serializable {
+        Externalizable {
 
         private static final long             serialVersionUID = 7372028632974484023L;
 
@@ -258,6 +278,16 @@ public class PropagationQueuingNode extends ObjectSource
             super();
             this.queue = new ConcurrentLinkedQueue<Action>();
             this.isQueued = new AtomicBoolean( false );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            queue   = (ConcurrentLinkedQueue<Action>)in.readObject();
+            isQueued    = (AtomicBoolean)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(queue);
+            out.writeObject(isQueued);
         }
 
         public boolean isEmpty() {
@@ -283,16 +313,30 @@ public class PropagationQueuingNode extends ObjectSource
 
     private static abstract class Action
         implements
-        Serializable {
+        Externalizable {
 
-        protected final InternalFactHandle handle;
-        protected final PropagationContext context;
+        protected InternalFactHandle handle;
+        protected PropagationContext context;
+
+        public Action() {
+
+        }
 
         public Action(InternalFactHandle handle,
                       PropagationContext context) {
             super();
             this.handle = handle;
             this.context = context;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            handle  = (InternalFactHandle)in.readObject();
+            context  = (PropagationContext)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(handle);
+            out.writeObject(context);
         }
 
         public abstract void execute(final ObjectSinkPropagator sink,
@@ -319,6 +363,9 @@ public class PropagationQueuingNode extends ObjectSource
     private static class RetractAction extends Action {
         private static final long serialVersionUID = -84784886430845209L;
 
+        public RetractAction() {
+
+        }
         public RetractAction(final InternalFactHandle handle,
                              final PropagationContext context) {
             super( handle,
@@ -337,11 +384,11 @@ public class PropagationQueuingNode extends ObjectSource
     /**
      * This is the action that is added to the working memory actions queue, so that
      * this node propagation can be triggered at a safe point
-     * 
+     *
      * @author etirelli
      *
      */
-    private static class PropagateAction
+    public static class PropagateAction
         implements
         WorkingMemoryAction {
 
@@ -349,8 +396,20 @@ public class PropagationQueuingNode extends ObjectSource
 
         private PropagationQueuingNode node;
 
+        public PropagateAction() {
+
+        }
+
         public PropagateAction(PropagationQueuingNode node) {
             this.node = node;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            node    = (PropagationQueuingNode)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(node);
         }
 
         public void execute(InternalWorkingMemory workingMemory) {

@@ -4,6 +4,10 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 public class CompositeTupleSinkAdapter
     implements
     TupleSinkPropagator {
@@ -11,6 +15,14 @@ public class CompositeTupleSinkAdapter
 
     public CompositeTupleSinkAdapter() {
         this.sinks = new TupleSinkNodeList();
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        sinks   = (TupleSinkNodeList)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sinks);
     }
 
     public void addTupleSink(final TupleSink sink) {

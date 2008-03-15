@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,18 +27,22 @@ import org.drools.spi.Extractor;
 import org.drools.spi.FieldValue;
 import org.mvel.Soundex;
 
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 /**
  * This class defines the soundslike evaluator
- * 
+ *
  * @author etirelli
  */
 public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
-    
+
     public static final Operator  SOUNDSLIKE       = Operator.addOperatorToRegistry( "soundslike",
                                                                                      false );
     public static final Operator  NOT_SOUNDSLIKE   = Operator.addOperatorToRegistry( "soundslike",
                                                                                      true );
-    
+
     private static final String[] SUPPORTED_IDS = { SOUNDSLIKE.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
         private static final long serialVersionUID = 4782368623L;
@@ -47,7 +51,15 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
             addEvaluator( ValueType.STRING_TYPE,        NOT_SOUNDSLIKE,     StringNotSoundsLikeEvaluator.INSTANCE );
         }
     };
-    
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        evaluators  = (EvaluatorCache)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(evaluators);
+    }
+
     /**
      * @inheridDoc
      */
@@ -71,8 +83,8 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
                                   final String operatorId,
                                   final boolean isNegated,
                                   final String parameterText) {
-        return this.evaluators.getEvaluator( type, 
-                                             Operator.determineOperator( operatorId, 
+        return this.evaluators.getEvaluator( type,
+                                             Operator.determineOperator( operatorId,
                                                                          isNegated ) );
     }
 
@@ -91,17 +103,17 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
     public boolean supportsType(ValueType type) {
         return this.evaluators.supportsType( type );
     }
-    
+
     /*  *********************************************************
      *           Evaluator Implementations
      *  *********************************************************
      */
-    static class StringSoundsLikeEvaluator extends BaseEvaluator {
+    public static class StringSoundsLikeEvaluator extends BaseEvaluator {
 
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringSoundsLikeEvaluator();
 
-        private StringSoundsLikeEvaluator() {
+        public StringSoundsLikeEvaluator() {
             super( ValueType.STRING_TYPE,
                    SOUNDSLIKE );
         }
@@ -152,13 +164,13 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
             return "Strings sound alike";
         }
     }
-    
-    static class StringNotSoundsLikeEvaluator extends BaseEvaluator {
+
+    public static class StringNotSoundsLikeEvaluator extends BaseEvaluator {
 
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotSoundsLikeEvaluator();
 
-        private StringNotSoundsLikeEvaluator() {
+        public StringNotSoundsLikeEvaluator() {
             super( ValueType.STRING_TYPE,
                    NOT_SOUNDSLIKE );
         }
@@ -209,6 +221,6 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
             return "Strings not sound alike";
         }
     }
-    
+
 
 }

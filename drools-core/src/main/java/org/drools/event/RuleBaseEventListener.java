@@ -1,10 +1,11 @@
 package org.drools.event;
 
 import java.util.EventListener;
+import java.io.Externalizable;
 
 public interface RuleBaseEventListener
     extends
-    EventListener {
+    EventListener, Externalizable {
 
     /**
      * Method called before a new package is added to the rule base

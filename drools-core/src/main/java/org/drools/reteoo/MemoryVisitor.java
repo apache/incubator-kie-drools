@@ -2,6 +2,10 @@ package org.drools.reteoo;
 
 import java.lang.reflect.Field;
 import java.util.Map;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.RuleTerminalNode.TerminalNodeMemory;
@@ -13,15 +17,28 @@ import org.drools.util.FactHashTable;
 import org.drools.util.ReflectiveVisitor;
 import org.drools.util.FactHandleIndexHashTable.FieldIndexEntry;
 
-public class MemoryVisitor extends ReflectiveVisitor {
+public class MemoryVisitor extends ReflectiveVisitor implements Externalizable {
     private InternalWorkingMemory workingMemory;
     private int                   indent = 0;
 
     /**
      * Constructor.
      */
+    public MemoryVisitor() {
+    }
+
     public MemoryVisitor(final InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        workingMemory   = (InternalWorkingMemory)in.readObject();
+        indent          = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(workingMemory);
+        out.writeInt(indent);
     }
 
     /**

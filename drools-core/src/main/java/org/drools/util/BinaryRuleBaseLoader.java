@@ -14,7 +14,7 @@ import org.drools.rule.Package;
  * This loads up rulebases from binary packages.
  * Can work with an existing or a new rulebase.
  * This is useful for deployment.
- * 
+ *
  * @author Michael Neale
  */
 public class BinaryRuleBaseLoader {
@@ -29,7 +29,7 @@ public class BinaryRuleBaseLoader {
      */
     public BinaryRuleBaseLoader() {
         this( RuleBaseFactory.newRuleBase(), null );
-    }    
+    }
 
     /**
      * This will add any binary packages to the rulebase.
@@ -52,17 +52,17 @@ public class BinaryRuleBaseLoader {
             if ( classLoader == null ) {
                 classLoader = this.getClass().getClassLoader();
             }
-        }        
+        }
         this.ruleBase = rb;
         this.classLoader = classLoader;
     }
-    
+
     /**
      * This will add the BINARY package to the rulebase.
      * Uses the member ClassLoader as the Package's internal parent classLoader
      * which is Thread.currentThread.getContextClassLoader if not user specified
      * @param in An input stream to the serialized package.
-     */    
+     */
     public void addPackage(InputStream in) {
         addPackage(in, this.classLoader);
     }
@@ -70,15 +70,15 @@ public class BinaryRuleBaseLoader {
     /**
      * This will add the BINARY package to the rulebase.
      * @param in An input stream to the serialized package.
-     * @param optional classLoader used as the parent ClassLoader for the Package's internal ClassLaoder  
-     */    
+     * @param classLoader used as the parent ClassLoader for the Package's internal ClassLaoder
+     */
     public void addPackage(InputStream in, ClassLoader classLoader) {
         if ( classLoader == null ) {
             classLoader = this.classLoader;
         }
-        
+
         try {
-            ObjectInputStream oin = new DroolsObjectInputStream( in, classLoader);
+            DroolsObjectInputStream oin = new DroolsObjectInputStream( in, classLoader);
             Object opkg = oin.readObject();
             if ( !(opkg instanceof Package) ) {
                 throw new IllegalArgumentException( "Can only add instances of org.drools.rule.Package to a rulebase instance." );

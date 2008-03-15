@@ -181,8 +181,6 @@ public class ReteooRuleBuilder {
             ((BaseNode) terminal).attach( context.getWorkingMemories() );
         }
 
-        ((BaseNode) terminal).networkUpdated();
-        
         return terminal;
     }
 

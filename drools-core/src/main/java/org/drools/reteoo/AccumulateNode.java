@@ -1,12 +1,12 @@
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,10 @@
 package org.drools.reteoo;
 
 import java.util.Arrays;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Externalizable;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
@@ -39,7 +43,7 @@ import org.drools.util.ObjectHashMap.ObjectEntry;
  * A beta node capable of doing accumulate logic.
  *
  * Created: 04/06/2006
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a> 
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * @version $Id$
  */
@@ -47,10 +51,13 @@ public class AccumulateNode extends BetaNode {
 
     private static final long                serialVersionUID = 400L;
 
-    private final boolean                    unwrapRightObject;
-    private final Accumulate                 accumulate;
-    private final AlphaNodeFieldConstraint[] resultConstraints;
-    private final BetaConstraints            resultBinder;
+    private boolean                    unwrapRightObject;
+    private Accumulate                 accumulate;
+    private AlphaNodeFieldConstraint[] resultConstraints;
+    private BetaConstraints            resultBinder;
+
+    public AccumulateNode() {
+    }
 
     public AccumulateNode(final int id,
                           final TupleSource leftInput,
@@ -72,24 +79,40 @@ public class AccumulateNode extends BetaNode {
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        unwrapRightObject   = in.readBoolean();
+        accumulate          = (Accumulate)in.readObject();
+        resultConstraints   = (AlphaNodeFieldConstraint[])in.readObject();
+        resultBinder        = (BetaConstraints)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeBoolean(unwrapRightObject);
+        out.writeObject(accumulate);
+        out.writeObject(resultConstraints);
+        out.writeObject(resultBinder);
+    }
+    
     /**
      * @inheritDoc
-     * 
+     *
      *  When a new tuple is asserted into an AccumulateNode, do this:
-     *  
+     *
      *  1. Select all matching objects from right memory
      *  2. Execute the initialization code using the tuple + matching objects
      *  3. Execute the accumulation code for each combination of tuple+object
      *  4. Execute the return code
      *  5. Create a new CalculatedObjectHandle for the resulting object and add it to the tuple
      *  6. Propagate the tuple
-     *  
+     *
      *  The initialization, accumulation and return codes, in JBRules, are assembled
      *  into a generated method code and called once for the whole match, as you can see
      *  bellow:
-     *  
+     *
      *   Object result = this.accumulator.accumulate( ... );
-     *  
+     *
      */
     public void assertTuple(final ReteTuple leftTuple,
                             final PropagationContext context,
@@ -125,7 +148,7 @@ public class AccumulateNode extends BetaNode {
                                                        handle ) ) {
                 if ( this.unwrapRightObject ) {
                     // if there is a subnetwork, handle must be unwrapped
-                    ReteTuple tuple = (ReteTuple) handle.getObject(); 
+                    ReteTuple tuple = (ReteTuple) handle.getObject();
                     handle = tuple.getLastHandle();
                     this.accumulate.accumulate( memory.workingMemoryContext,
                                                 accContext,
@@ -141,14 +164,14 @@ public class AccumulateNode extends BetaNode {
                 }
             }
         }
-        
+
         this.constraints.resetTuple( memory.betaMemory.getContext() );
 
         final Object result = this.accumulate.getResult( memory.workingMemoryContext,
                                                          accContext,
                                                          leftTuple,
                                                          workingMemory );
-        
+
         if( result == null ) {
             throw new RuntimeDroolsException("Accumulate must not return a null value.");
         }
@@ -188,10 +211,10 @@ public class AccumulateNode extends BetaNode {
 
     /**
      * @inheritDoc
-     * 
+     *
      * As the accumulate node will always propagate the tuple,
      * it must always also retreat it.
-     * 
+     *
      */
     public void retractTuple(final ReteTuple leftTuple,
                              final PropagationContext context,
@@ -209,7 +232,7 @@ public class AccumulateNode extends BetaNode {
                                              context,
                                              workingMemory );
 
-            // Destroying the acumulate result object 
+            // Destroying the acumulate result object
             workingMemory.getFactHandleFactory().destroyFactHandle( accresult.handle );
         }
 
@@ -217,12 +240,12 @@ public class AccumulateNode extends BetaNode {
 
     /**
      * @inheritDoc
-     * 
+     *
      *  When a new object is asserted into an AccumulateNode, do this:
-     *  
+     *
      *  1. Select all matching tuples from left memory
      *  2. For each matching tuple, call a modify tuple
-     *  
+     *
      */
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
@@ -263,13 +286,13 @@ public class AccumulateNode extends BetaNode {
                 }
             }
         }
-        
+
         this.constraints.resetFactHandle( memory.betaMemory.getContext() );
     }
 
     /**
      *  @inheritDoc
-     *  
+     *
      *  If an object is retract, call modify tuple for each
      *  tuple match.
      */
@@ -306,7 +329,7 @@ public class AccumulateNode extends BetaNode {
                 }
             }
         }
-        
+
         this.constraints.resetFactHandle( memory.betaMemory.getContext() );
     }
 
@@ -326,7 +349,7 @@ public class AccumulateNode extends BetaNode {
                                              context,
                                              workingMemory );
 
-            // Destroying the acumulate result object 
+            // Destroying the acumulate result object
             workingMemory.getFactHandleFactory().destroyFactHandle( accresult.handle );
             accresult.handle = null;
         }
@@ -356,8 +379,8 @@ public class AccumulateNode extends BetaNode {
                                         tuple,
                                         handle,
                                         workingMemory );
-        } else if ( context.getType() == PropagationContext.MODIFICATION || 
-                context.getType() == PropagationContext.RULE_ADDITION || 
+        } else if ( context.getType() == PropagationContext.MODIFICATION ||
+                context.getType() == PropagationContext.RULE_ADDITION ||
                 context.getType() == PropagationContext.RULE_REMOVAL ) {
             // modification
             if ( isAssert ) {
@@ -393,7 +416,7 @@ public class AccumulateNode extends BetaNode {
 
         // First alpha node filters
         boolean isAllowed = true;
-        final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result, false, workingMemory ); // so far, result is not an event
+        final InternalFactHandle createdHandle = workingMemory.getFactHandleFactory().newFactHandle( result, false, 0, workingMemory ); // so far, result is not an event
         for ( int i = 0, length = this.resultConstraints.length; i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( createdHandle,
                                                        workingMemory,
@@ -417,7 +440,7 @@ public class AccumulateNode extends BetaNode {
             } else {
                 workingMemory.getFactHandleFactory().destroyFactHandle( createdHandle );
             }
-            
+
             this.resultBinder.resetTuple( memory.resultsContext );
         } else {
             workingMemory.getFactHandleFactory().destroyFactHandle( createdHandle );
@@ -488,18 +511,44 @@ public class AccumulateNode extends BetaNode {
         return memory;
     }
 
-    public static class AccumulateMemory {
+    public static class AccumulateMemory implements Externalizable {
         private static final long serialVersionUID = 400L;
-        
+
         public Object workingMemoryContext;
         public BetaMemory betaMemory;
         public ContextEntry[] resultsContext;
         public ContextEntry[] alphaContexts;
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            workingMemoryContext   = in.readObject();
+            betaMemory      = (BetaMemory)in.readObject();
+            resultsContext  = (ContextEntry[])in.readObject();
+            alphaContexts   = (ContextEntry[])in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(workingMemoryContext);
+            out.writeObject(betaMemory);
+            out.writeObject(resultsContext);
+            out.writeObject(alphaContexts);
+        }
+
     }
 
-    private static class AccumulateResult {
+    public static class AccumulateResult implements Externalizable {
         // keeping attributes public just for performance
         public InternalFactHandle handle;
         public Object             context;
-    }      
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            handle   = (InternalFactHandle)in.readObject();
+            context   = in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(handle);
+            out.writeObject(context);
+        }
+
+    }
 }

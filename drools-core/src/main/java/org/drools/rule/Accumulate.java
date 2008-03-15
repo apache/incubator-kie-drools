@@ -1,12 +1,12 @@
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,9 @@ package org.drools.rule;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
@@ -39,6 +42,10 @@ public class Accumulate extends ConditionalElement
     private RuleConditionElement source;
     private Declaration[]        requiredDeclarations;
     private Declaration[]        innerDeclarations;
+
+    public Accumulate() {
+
+    }
 
     public Accumulate(final RuleConditionElement source) {
 
@@ -69,6 +76,20 @@ public class Accumulate extends ConditionalElement
         this.accumulator = accumulator;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        accumulator = (Accumulator)in.readObject();
+        source = (RuleConditionElement)in.readObject();
+        requiredDeclarations = (Declaration[])in.readObject();
+        innerDeclarations = (Declaration[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(accumulator);
+        out.writeObject(source);
+        out.writeObject(requiredDeclarations);
+        out.writeObject(innerDeclarations);
+    }
+
     public Accumulator getAccumulator() {
         return this.accumulator;
     }
@@ -83,7 +104,7 @@ public class Accumulate extends ConditionalElement
 
     /**
      * Executes the initialization block of code
-     * 
+     *
      * @param leftTuple tuple causing the rule fire
      * @param declarations previous declarations
      * @param workingMemory
@@ -106,7 +127,7 @@ public class Accumulate extends ConditionalElement
 
     /**
      * Executes the accumulate (action) code for the given fact handle
-     * 
+     *
      * @param leftTuple
      * @param handle
      * @param declarations
@@ -134,7 +155,7 @@ public class Accumulate extends ConditionalElement
 
     /**
      * Executes the reverse (action) code for the given fact handle
-     * 
+     *
      * @param leftTuple
      * @param handle
      * @param declarations
@@ -162,7 +183,7 @@ public class Accumulate extends ConditionalElement
 
     /**
      * Gets the result of the accummulation
-     * 
+     *
      * @param leftTuple
      * @param declarations
      * @param workingMemory

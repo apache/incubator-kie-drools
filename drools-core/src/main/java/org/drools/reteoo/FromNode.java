@@ -1,6 +1,9 @@
 package org.drools.reteoo;
 
 import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -24,7 +27,7 @@ public class FromNode extends TupleSource
     TupleSinkNode,
     NodeMemory {
     /**
-     * 
+     *
      */
     private static final long          serialVersionUID = 400L;
 
@@ -37,6 +40,9 @@ public class FromNode extends TupleSource
     private TupleSinkNode              nextTupleSinkNode;
 
     protected boolean                  tupleMemoryEnabled;
+
+    public FromNode() {
+    }
 
     public FromNode(final int id,
                     final DataProvider dataProvider,
@@ -51,8 +57,29 @@ public class FromNode extends TupleSource
         this.tupleMemoryEnabled = false;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        dataProvider            = (DataProvider)in.readObject();
+        tupleSource             = (TupleSource)in.readObject();
+        alphaConstraints        = (AlphaNodeFieldConstraint[])in.readObject();
+        betaConstraints         = (BetaConstraints)in.readObject();
+        previousTupleSinkNode   = (TupleSinkNode)in.readObject();
+        nextTupleSinkNode       = (TupleSinkNode)in.readObject();
+        tupleMemoryEnabled      = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(dataProvider);
+        out.writeObject(tupleSource);
+        out.writeObject(alphaConstraints);
+        out.writeObject(betaConstraints);
+        out.writeObject(previousTupleSinkNode);
+        out.writeObject(nextTupleSinkNode);
+        out.writeBoolean(tupleMemoryEnabled);
+    }
     /**
-     * @inheritDoc 
+     * @inheritDoc
      */
     public void assertTuple(final ReteTuple leftTuple,
                             final PropagationContext context,
@@ -155,10 +182,6 @@ public class FromNode extends TupleSource
         }
     }
 
-    public void networkUpdated() {
-        this.tupleSource.networkUpdated();
-    }
-    
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
@@ -231,7 +254,7 @@ public class FromNode extends TupleSource
     }
 
     /**
-     * Sets the next node 
+     * Sets the next node
      * @param next
      *      The next TupleSinkNode
      */
@@ -249,7 +272,7 @@ public class FromNode extends TupleSource
     }
 
     /**
-     * Sets the previous node 
+     * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode
      */

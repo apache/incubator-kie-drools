@@ -1,14 +1,18 @@
 package org.drools.util;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,9 +22,9 @@ package org.drools.util;
 
 /**
  * Provides a abstract base implementation that an object can extend so that it can be used in a LinkedList.
- * 
+ *
  * @see LinkedList
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
@@ -38,6 +42,16 @@ public class AbstractBaseLinkedListNode
      * Empty Constructor
      */
     public AbstractBaseLinkedListNode() {
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        previous    = (LinkedListNode)in.readObject();
+        next    = (LinkedListNode)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(previous);
+        out.writeObject(next);
     }
 
     /* (non-Javadoc)

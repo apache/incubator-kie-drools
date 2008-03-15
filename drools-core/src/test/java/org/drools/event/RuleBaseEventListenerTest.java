@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,6 +38,10 @@ import org.drools.spi.Consequence;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
+
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 /**
  * @author etirelli
@@ -87,6 +91,13 @@ public class RuleBaseEventListenerTest extends TestCase {
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) throws Exception {
             }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         } );
 
         final Rule rule2 = new Rule( "test2" );
@@ -107,6 +118,13 @@ public class RuleBaseEventListenerTest extends TestCase {
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) throws Exception {
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         } );
 
@@ -216,9 +234,36 @@ public class RuleBaseEventListenerTest extends TestCase {
         private int    beforeRuleRemoved    = 0;
         private int    afterRuleRemoved     = 0;
 
+        public TestRuleBaseListener() {
+        }
+
         public TestRuleBaseListener(String id) {
             super();
             this.id = id;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            id  = (String)in.readObject();
+            beforePackageAdded  = in.readInt();
+            afterPackageAdded  = in.readInt();
+            beforePackageRemoved  = in.readInt();
+            afterPackageRemoved  = in.readInt();
+            beforeRuleAdded  = in.readInt();
+            afterRuleAdded  = in.readInt();
+            beforeRuleRemoved  = in.readInt();
+            afterRuleRemoved  = in.readInt();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(id);
+            out.writeInt(beforePackageAdded);
+            out.writeInt(afterPackageAdded);
+            out.writeInt(beforePackageRemoved);
+            out.writeInt(afterPackageRemoved);
+            out.writeInt(beforeRuleAdded);
+            out.writeInt(afterRuleAdded);
+            out.writeInt(beforeRuleRemoved);
+            out.writeInt(afterRuleRemoved);
         }
 
         public void afterPackageAdded(AfterPackageAddedEvent event) {
@@ -299,32 +344,32 @@ public class RuleBaseEventListenerTest extends TestCase {
 
         public void afterFunctionRemoved(AfterFunctionRemovedEvent event) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void afterRuleBaseLocked(AfterRuleBaseLockedEvent event) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void afterRuleBaseUnlocked(AfterRuleBaseUnlockedEvent event) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void beforeFunctionRemoved(BeforeFunctionRemovedEvent event) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void beforeRuleBaseLocked(BeforeRuleBaseLockedEvent event) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
             // TODO Auto-generated method stub
-            
+
         }
 
     }

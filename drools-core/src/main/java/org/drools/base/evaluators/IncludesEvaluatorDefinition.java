@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,9 @@ package org.drools.base.evaluators;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
@@ -35,7 +38,7 @@ import org.drools.spi.FieldValue;
 
 /**
  * The implementation of the 'includes' evaluator definition
- * 
+ *
  * @author mgroch
  */
 public class IncludesEvaluatorDefinition
@@ -46,10 +49,18 @@ public class IncludesEvaluatorDefinition
                                                                                   false );
     public static final Operator  INCLUDES_NOT   = Operator.addOperatorToRegistry( "includes",
                                                                                   true );
-    
+
     private static final String[] SUPPORTED_IDS = { INCLUDES.getOperatorString() };
-    
+
     private Map<String, IncludesEvaluator> cache        = Collections.emptyMap();
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        cache  = (Map<String, IncludesEvaluator>)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(cache);
+    }
 
     /**
      * @inheridDoc
@@ -131,9 +142,12 @@ public class IncludesEvaluatorDefinition
      */
     public static class IncludesEvaluator extends BaseEvaluator {
 		private static final long serialVersionUID = -5947397607962049251L;
-		
+
 		private long                  startMinDev, startMaxDev;
         private long                  endMinDev, endMaxDev;
+
+        public IncludesEvaluator() {
+        }
 
         public IncludesEvaluator(final ValueType type,
                               final boolean isNegated,
@@ -142,12 +156,28 @@ public class IncludesEvaluatorDefinition
                    isNegated ? INCLUDES_NOT : INCLUDES );
             this.parseParameters( parameters );
         }
-        
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal(in);
+            startMinDev = in.readLong();
+            startMaxDev = in.readLong();
+            endMinDev   = in.readLong();
+            endMaxDev   = in.readLong();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal(out);
+            out.writeLong(startMinDev);
+            out.writeLong(startMaxDev);
+            out.writeLong(endMinDev);
+            out.writeLong(endMaxDev);
+        }
+
         @Override
         public Object prepareObject(InternalFactHandle handle) {
             return handle;
         }
-        
+
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
                                 final Object object1,
@@ -158,16 +188,16 @@ public class IncludesEvaluatorDefinition
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                 final VariableContextEntry context,
                 final Object left) {
-			
+
         	if ( context.rightNull ) {
         		return false;
 				}
 			long distStart = ((EventFactHandle) left ).getStartTimestamp() - ((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp();
 			long distEnd = ((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp() - ((EventFactHandle) left ).getEndTimestamp();
-			return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev 
+			return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev
 					&& distEnd >= this.endMinDev && distEnd <= this.endMaxDev );
 		}
-			
+
 		public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
 			               final VariableContextEntry context,
 			               final Object right) {
@@ -177,10 +207,10 @@ public class IncludesEvaluatorDefinition
 			}
 			long distStart = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() - ((EventFactHandle) right ).getStartTimestamp();
 			long distEnd = ((EventFactHandle) right ).getEndTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
-			return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev 
+			return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev
 					&& distEnd >= this.endMinDev && distEnd <= this.endMaxDev );
 		}
-			
+
 		public boolean evaluate(InternalWorkingMemory workingMemory,
 			     final Extractor extractor1,
 			     final Object object1,
@@ -192,7 +222,7 @@ public class IncludesEvaluatorDefinition
 			}
 			long distStart = ((EventFactHandle) object2 ).getStartTimestamp() - ((EventFactHandle) object1 ).getStartTimestamp();
 			long distEnd = ((EventFactHandle) object1 ).getEndTimestamp() - ((EventFactHandle) object2 ).getEndTimestamp();
-			return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev 
+			return this.getOperator().isNegated() ^ ( distStart >= this.startMinDev && distStart <= this.startMaxDev
 					&& distEnd >= this.endMinDev && distEnd <= this.endMaxDev );
 		}
 
@@ -228,9 +258,9 @@ public class IncludesEvaluatorDefinition
         }
 
         /**
-         * This methods tries to parse the string of parameters to customize 
+         * This methods tries to parse the string of parameters to customize
          * the evaluator.
-         * 
+         *
          * @param parameters
          */
         private void parseParameters(String parameters) {
@@ -246,19 +276,19 @@ public class IncludesEvaluatorDefinition
             try {
                 String[] ranges = parameters.split( "," );
                 if ( ranges.length == 1 ) {
-                    // deterministic point in time for deviation of the starts of the intervals 
+                    // deterministic point in time for deviation of the starts of the intervals
                     this.startMinDev = Long.parseLong( ranges[0] );
                     this.startMaxDev = this.startMinDev;
                     this.endMinDev = this.startMinDev;
                     this.endMaxDev = this.startMinDev;
                 } else if ( ranges.length == 2 ) {
-                    // deterministic points in time for deviations of the starts and the ends of the intervals 
+                    // deterministic points in time for deviations of the starts and the ends of the intervals
                     this.startMinDev = Long.parseLong( ranges[0] );
                     this.startMaxDev = this.startMinDev;
                     this.endMinDev = Long.parseLong( ranges[1] );
                     this.endMaxDev = this.endMinDev;
                 } else if ( ranges.length == 4 ) {
-                    // ranges for deviations of the starts and the ends of the intervals 
+                    // ranges for deviations of the starts and the ends of the intervals
                 	this.startMinDev = Long.parseLong( ranges[0] );
                     this.startMaxDev = Long.parseLong( ranges[1] );
                     this.endMinDev = Long.parseLong( ranges[2] );

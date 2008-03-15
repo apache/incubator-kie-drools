@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,10 @@ package org.drools.rule;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 /**
  * This class defines a Rete "Entry Point".
@@ -28,33 +32,44 @@ import java.util.Map;
  * network is not shared among separate entry points
  * and this allows them to safelly run in parallel
  * and concurrent modes.
- * 
+ *
  * @author etirelli
  *
  */
 public class EntryPoint extends ConditionalElement
     implements
-    PatternSource {
+    PatternSource, Externalizable {
 
     public static final EntryPoint DEFAULT = new EntryPoint("DEFAULT");
-    
+
     private static final long serialVersionUID = 1435985794248365232L;
-    
-    private final String entryPointId;
-    
+
+    private String entryPointId;
+
+    public EntryPoint() {
+
+    }
     /**
      * Constructor.
-     * 
+     *
      * @param entryPointId the ID for this entry point
      */
     public EntryPoint( final String entryPointId ) {
         this.entryPointId = entryPointId;
     }
 
-    /** 
-     * There is not reason to clone this object since it is stateless. 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        entryPointId    = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(entryPointId);
+    }
+
+    /**
+     * There is not reason to clone this object since it is stateless.
      * So a clone() call will return the instance itself.
-     *  
+     *
      * @see org.drools.rule.ConditionalElement#clone()
      */
     @Override
@@ -62,10 +77,10 @@ public class EntryPoint extends ConditionalElement
         return this;
     }
 
-    /** 
+    /**
      * It is not possible to declare any new variables, so always
      * return an Empty Map
-     * 
+     *
      * @see org.drools.rule.RuleConditionElement#getInnerDeclarations()
      */
     public Map getInnerDeclarations() {
@@ -75,7 +90,7 @@ public class EntryPoint extends ConditionalElement
     /**
      * It is not possible to nest elements inside an entry point, so
      * always return an empty list.
-     * 
+     *
      * @see org.drools.rule.RuleConditionElement#getNestedElements()
      */
     public List getNestedElements() {
@@ -85,22 +100,22 @@ public class EntryPoint extends ConditionalElement
     /**
      * It is not possible to declare and export any variables,
      * so always return an empty map
-     * 
+     *
      * @see org.drools.rule.RuleConditionElement#getOuterDeclarations()
      */
     public Map getOuterDeclarations() {
         return Collections.EMPTY_MAP;
     }
 
-    /** 
+    /**
      * Not possible to resolve any declaration, so always return null.
-     * 
+     *
      * @see org.drools.rule.RuleConditionElement#resolveDeclaration(java.lang.String)
      */
     public Declaration resolveDeclaration(String identifier) {
         return null;
     }
-    
+
     /**
      * Returns this entry point ID
      * @return

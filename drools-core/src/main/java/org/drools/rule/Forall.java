@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,10 +22,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 
 /**
  * The forall conditional element.
- * 
+ *
  * @author etirelli
  */
 public class Forall extends ConditionalElement {
@@ -53,6 +56,15 @@ public class Forall extends ConditionalElement {
         this.remainingPatterns = remainingPatterns;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        basePattern = (Pattern)in.readObject();
+        remainingPatterns = (List)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(basePattern);
+        out.writeObject(remainingPatterns);
+    }
     /* (non-Javadoc)
      * @see org.drools.rule.ConditionalElement#clone()
      */

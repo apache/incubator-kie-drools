@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ValueType;
@@ -34,16 +37,18 @@ import org.mvel.MVEL;
 /**
  * A class field extractor that uses MVEL engine to extract the actual value for a given
  * expression. We use MVEL to resolve nested accessor expressions.
- * 
+ *
  * @author etirelli
  */
 public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
-    
+
     private static final long serialVersionUID = 400L;
 
     private CompiledExpression mvelExpression = null;
     private Map extractors = null;
 
+    public MVELClassFieldExtractor() {
+    }
     public MVELClassFieldExtractor(Class clazz,
                                    String fieldName,
                                    ClassLoader classLoader) {
@@ -54,14 +59,26 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
 
         ExpressionCompiler compiler = new ExpressionCompiler( fieldName );
         this.mvelExpression = compiler.compile();
-        
+
         Set inputs = compiler.getParserContextState().getInputs().keySet();
         for( Iterator it = inputs.iterator(); it.hasNext(); ) {
             String basefield = (String) it.next();
-                        
+
             Extractor extr = ClassFieldExtractorCache.getInstance().getExtractor(  clazz, basefield, classLoader );
             this.extractors.put( basefield, extr );
         }
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        mvelExpression  = (CompiledExpression)in.readObject();
+        extractors  = (Map)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(mvelExpression);
+        out.writeObject(extractors);
     }
 
     /* (non-Javadoc)
@@ -73,7 +90,7 @@ public class MVELClassFieldExtractor extends BaseObjectClassFieldExtractor {
             Map.Entry entry = (Map.Entry) it.next();
             String var = (String) entry.getKey();
             FieldExtractor extr = (FieldExtractor) entry.getValue();
-            
+
             variables.put( var, extr.getValue( workingMemory, object ));
         }
         return MVEL.executeExpression( mvelExpression, variables );

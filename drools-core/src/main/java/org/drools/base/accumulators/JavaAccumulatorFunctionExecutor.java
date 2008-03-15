@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,9 +24,13 @@ import org.drools.spi.Accumulator;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
 
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+
 /**
  * An MVEL accumulator function executor implementation
- * 
+ *
  * @author etirelli
  */
 public class JavaAccumulatorFunctionExecutor
@@ -36,11 +40,25 @@ public class JavaAccumulatorFunctionExecutor
     private static final long           serialVersionUID = 400L;
 
     private ReturnValueExpression expression;
-    private final AccumulateFunction   function;
+    private AccumulateFunction   function;
+
+    public JavaAccumulatorFunctionExecutor() {
+
+    }
 
     public JavaAccumulatorFunctionExecutor(final AccumulateFunction function) {
         super();
         this.function = function;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        expression  = (ReturnValueExpression)in.readObject();
+        function    = (AccumulateFunction)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(expression);
+        out.writeObject(function);
     }
 
     /* (non-Javadoc)
@@ -122,7 +140,7 @@ public class JavaAccumulatorFunctionExecutor
     }
 
     public Object createWorkingMemoryContext() {
-        // no working memory context needed 
+        // no working memory context needed
         return null;
     }
 }

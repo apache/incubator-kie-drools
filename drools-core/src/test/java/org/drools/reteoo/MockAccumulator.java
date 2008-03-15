@@ -1,12 +1,12 @@
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,9 @@ package org.drools.reteoo;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
@@ -27,7 +30,7 @@ import org.drools.spi.Tuple;
 
 /**
  * A Mock accumulate object.
- * 
+ *
  * @author etirelli
  *
  */
@@ -41,6 +44,17 @@ public class MockAccumulator
     private List              matchingObjects  = Collections.EMPTY_LIST;
     private WorkingMemory     workingMemory    = null;
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        leftTuple   = (Tuple)in.readObject();
+        matchingObjects = (List)in.readObject();
+        workingMemory = (WorkingMemory)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(leftTuple);
+        out.writeObject(matchingObjects);
+        out.writeObject(workingMemory);
+    }
     public Tuple getLeftTuple() {
         return this.leftTuple;
     }
@@ -52,7 +66,7 @@ public class MockAccumulator
     public WorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
-    
+
     public Object createContext() {
         return this;
     }

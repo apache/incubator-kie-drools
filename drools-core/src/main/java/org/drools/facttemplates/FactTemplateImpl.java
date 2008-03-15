@@ -12,18 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  */
 package org.drools.facttemplates;
 
 import java.util.Arrays;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 
 import org.drools.rule.Package;
 
 /**
  * @author Peter Lin
  * Deftemplate is equivalent to CLIPS deftemplate<br/>
- * 
+ *
  * Some general design notes about the current implementation. In the
  * case where a class is declared to create the deftemplate, the order
  * of the slots are based on java Introspection. In the case where an
@@ -56,6 +59,10 @@ public class FactTemplateImpl
     private Package         pkg;
     private String          name;
 
+    public FactTemplateImpl() {
+        
+    }
+
     public FactTemplateImpl(final Package pkg,
                             final String name,
                             final FieldTemplate[] fields) {
@@ -63,6 +70,18 @@ public class FactTemplateImpl
         this.name = name;
         this.fields = fields;
         this.pkg.addFactTemplate( this );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        pkg     = (Package)in.readObject();
+        name    = (String)in.readObject();
+        fields  = (FieldTemplate[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(pkg);
+        out.writeObject(name);
+        out.writeObject(fields);
     }
 
     public Package getPackage() {
@@ -150,7 +169,7 @@ public class FactTemplateImpl
         final StringBuffer buf = new StringBuffer();
         buf.append( "(" + this.name + " " );
         //        for (int idx=0; idx < this.slots.length; idx++){
-        //            buf.append("(" + this.slots[idx].getName() + 
+        //            buf.append("(" + this.slots[idx].getName() +
         //                    " (type " + ConversionUtils.getTypeName(
         //                            this.slots[idx].getValueType()) +
         //                    ") ) ");

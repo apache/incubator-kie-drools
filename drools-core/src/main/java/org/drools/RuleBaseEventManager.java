@@ -16,7 +16,7 @@ package org.drools;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.Externalizable;
 import java.util.List;
 
 import org.drools.event.RuleBaseEventListener;
@@ -27,7 +27,7 @@ import org.drools.event.RuleBaseEventListener;
  */
 public interface RuleBaseEventManager
     extends
-    Serializable {
+    Externalizable {
     /**
      * Add an event listener.
      * 

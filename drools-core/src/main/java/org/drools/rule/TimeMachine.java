@@ -1,6 +1,10 @@
 package org.drools.rule;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 import java.util.Calendar;
 
 /**
@@ -9,9 +13,15 @@ import java.util.Calendar;
  *
  * @author Michael Neale
  */
-public class TimeMachine implements Serializable {
+public class TimeMachine implements Externalizable {
 
     private static final long serialVersionUID = 400L;
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+    }
 
 	public Calendar getNow() {
 		return Calendar.getInstance();

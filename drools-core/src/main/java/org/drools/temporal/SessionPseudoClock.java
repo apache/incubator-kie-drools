@@ -17,6 +17,10 @@
  */
 package org.drools.temporal;
 
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 /**
  * A SessionPseudoClock is a clock that allows the user to explicitly 
  * control current time.
@@ -27,20 +31,28 @@ package org.drools.temporal;
 public class SessionPseudoClock
     implements
     SessionClock {
-    
+
     private long timer;
 
     public SessionPseudoClock() {
         this.timer = 0;
     }
-    
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        timer   = in.readLong();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong(timer);
+    }
+
     /* (non-Javadoc)
-     * @see org.drools.temporal.SessionClock#getCurrentTime()
-     */
+    * @see org.drools.temporal.SessionClock#getCurrentTime()
+    */
     public long getCurrentTime() {
         return this.timer;
     }
-    
+
     public long advanceTime( long millisecs ) {
         this.timer += millisecs;
         return this.timer;

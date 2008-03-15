@@ -3,6 +3,10 @@ package org.drools.reteoo;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
@@ -23,7 +27,6 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.ReteooRuleBase.InitialFactHandleDummyObject;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
-import org.drools.rule.EntryPoint;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.GlobalExporter;
@@ -31,13 +34,13 @@ import org.drools.spi.GlobalResolver;
 
 public class ReteooStatelessSession
     implements
-    StatelessSession {
+    StatelessSession, Externalizable {
     //private WorkingMemory workingMemory;
 
     private InternalRuleBase            ruleBase;
     private AgendaFilter                agendaFilter;
     private GlobalResolver              globalResolver            = new MapGlobalResolver();
-    
+
     private GlobalExporter              globalExporter;
 
     /** The eventSupport */
@@ -47,10 +50,26 @@ public class ReteooStatelessSession
 
     protected RuleFlowEventSupport      ruleFlowEventSupport      = new RuleFlowEventSupport();
 
+    public ReteooStatelessSession() {
+    }
+
     public ReteooStatelessSession(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        ruleBase        = (InternalRuleBase)in.readObject();
+        agendaFilter    = (AgendaFilter)in.readObject();
+        globalResolver  = (GlobalResolver)in.readObject();
+        globalExporter  = (GlobalExporter)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(ruleBase);
+        out.writeObject(agendaFilter);
+        out.writeObject(globalResolver);
+        out.writeObject(globalExporter);
+    }
     public InternalWorkingMemory newWorkingMemory() {
         synchronized ( this.ruleBase.getPackagesMap() ) {
             InternalWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
@@ -107,7 +126,7 @@ public class ReteooStatelessSession
     public List getRuleFlowEventListeners() {
         return this.ruleFlowEventSupport.getEventListeners();
     }
-    
+
     public void addEventListener(RuleBaseEventListener listener) {
         this.ruleBase.addEventListener( listener );
     }
@@ -133,7 +152,7 @@ public class ReteooStatelessSession
     public void setGlobalResolver(GlobalResolver globalResolver) {
         this.globalResolver = globalResolver;
     }
-    
+
     public void setGlobalExporter(GlobalExporter globalExporter) {
         this.globalExporter = globalExporter;
     }
@@ -198,7 +217,7 @@ public class ReteooStatelessSession
 
         wm.insert( object );
         wm.fireAllRules( this.agendaFilter );
-        
+
         GlobalResolver globalResolver = null;
         if ( this.globalExporter != null ) {
             globalResolver = this.globalExporter.export( wm );
@@ -214,7 +233,7 @@ public class ReteooStatelessSession
             wm.insert( array[i] );
         }
         wm.fireAllRules( this.agendaFilter );
-        
+
         GlobalResolver globalResolver = null;
         if ( this.globalExporter != null ) {
             globalResolver = this.globalExporter.export( wm );
@@ -236,6 +255,6 @@ public class ReteooStatelessSession
             globalResolver = this.globalExporter.export( wm );
         }
         return new ReteStatelessSessionResult( wm,
-                                               globalResolver );        
+                                               globalResolver );
     }
 }

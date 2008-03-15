@@ -1,17 +1,20 @@
 package org.drools.util;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 import java.util.NoSuchElementException;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +25,7 @@ import java.util.NoSuchElementException;
 /**
  * This is a simple linked linked implementation. Each node must implement </code>LinkedListNode<code> so that it references
  * the node before and after it. This way a node can be removed without having to scan the list to find it. This class
- * does not provide an Iterator implementation as its designed for efficiency and not genericity. There are a number of 
+ * does not provide an Iterator implementation as its designed for efficiency and not genericity. There are a number of
  * ways to iterate the list.
  * <p>
  * Simple iterator:
@@ -30,7 +33,7 @@ import java.util.NoSuchElementException;
  * for ( LinkedListNode node = list.getFirst(); node != null; node =  node.getNext() ) {
  * }
  * </pre>
- * 
+ *
  * Iterator that pops the first entry:
  * <pre>
  * for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
@@ -44,7 +47,7 @@ import java.util.NoSuchElementException;
  */
 public class LinkedList
     implements
-    Serializable {
+    Externalizable {
     private static final long  serialVersionUID = 400L;
 
     private LinkedListNode     firstNode;
@@ -61,10 +64,23 @@ public class LinkedList
         this.iterator = new LinkedListIterator();
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        firstNode   = (LinkedListNode)in.readObject();
+        lastNode    = (LinkedListNode)in.readObject();
+        size        = in.readInt();
+        iterator    = (LinkedListIterator)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(firstNode);
+        out.writeObject(lastNode);
+        out.writeInt(size);
+        out.writeObject(iterator);
+    }
     /**
-     * Add a <code>LinkedListNode</code> to the list. If the <code>LinkedList</code> is empty then the first and 
+     * Add a <code>LinkedListNode</code> to the list. If the <code>LinkedList</code> is empty then the first and
      * last nodes are set to the added node.
-     * 
+     *
      * @param node
      *      The <code>LinkedListNode</code> to be added
      */
@@ -84,7 +100,7 @@ public class LinkedList
      * Removes a <code>LinkedListNode</code> from the list. This works by attach the previous reference to the child reference.
      * When the node to be removed is the first node it calls <code>removeFirst()</code>. When the node to be removed is the last node
      * it calls <code>removeLast()</code>.
-     * 
+     *
      * @param node
      *      The <code>LinkedListNode</code> to be removed.
      */
@@ -121,9 +137,9 @@ public class LinkedList
     }
 
     /**
-     * Remove the first node from the list. The next node then becomes the first node. If this is the last 
+     * Remove the first node from the list. The next node then becomes the first node. If this is the last
      * node then both first and last node references are set to null.
-     * 
+     *
      * @return
      *      The first <code>LinkedListNode</code>.
      */
@@ -175,9 +191,9 @@ public class LinkedList
     }
 
     /**
-     * Remove the last node from the list. The previous node then becomes the last node. If this is the last 
+     * Remove the last node from the list. The previous node then becomes the last node. If this is the last
      * node then both first and last node references are set to null.
-     * 
+     *
      * @return
      *      The first <code>LinkedListNode</code>.
      */
@@ -206,7 +222,7 @@ public class LinkedList
     }
 
     /**
-     * Iterates the list removing all the nodes until there are no more nodes to remove. 
+     * Iterates the list removing all the nodes until there are no more nodes to remove.
      */
     public void clear() {
         while ( removeFirst() != null ) {
@@ -266,10 +282,10 @@ public class LinkedList
      * Returns a list iterator
      * @return
      */
-    public class LinkedListIterator
+    public static class LinkedListIterator
         implements
         Iterator,
-        Serializable {
+        Externalizable {
         private LinkedList     list;
         private LinkedListNode current;
 
@@ -286,16 +302,31 @@ public class LinkedList
             this.current = this.current.getNext();
             return node;
         }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            list    = (LinkedList)in.readObject();
+            current = (LinkedListNode)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(list);
+            out.writeObject(current);
+        }
+
     }
 
     public static class JavaUtilIterator
         implements
         java.util.Iterator,
-        Serializable {
+        Externalizable {
         private LinkedList     list;
         private LinkedListNode currentNode;
         private LinkedListNode nextNode;
         private boolean        immutable;
+
+        public JavaUtilIterator() {
+
+        }
 
         public JavaUtilIterator(final LinkedList list) {
             this( list,
@@ -307,6 +338,20 @@ public class LinkedList
             this.list = list;
             this.nextNode = this.list.getFirst();
             this.immutable = immutable;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            list    = (LinkedList)in.readObject();
+            currentNode = (LinkedListNode)in.readObject();
+            nextNode = (LinkedListNode)in.readObject();
+            immutable   = in.readBoolean();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(list);
+            out.writeObject(currentNode);
+            out.writeObject(nextNode);
+            out.writeBoolean(immutable);
         }
 
         public boolean hasNext() {

@@ -3,10 +3,10 @@
  */
 package org.drools.concurrent;
 
-import java.io.Serializable;
-
 import org.drools.WorkingMemory;
 
-public interface Command extends Serializable {
+import java.io.Externalizable;
+
+public interface Command extends Externalizable {
     void execute(WorkingMemory workingMemory);
 }

@@ -1,16 +1,20 @@
 package org.drools;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,13 +24,23 @@ import java.io.Serializable;
 
 public class CheeseEqual
     implements
-    Serializable {
+    Externalizable {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
     protected String          type;
     protected int             price;
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(type);
+        out.writeInt(price);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        type    = (String)in.readObject();
+        price   = in.readInt();
+    }
 
     public CheeseEqual() {
 

@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,10 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.Externalizable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -31,25 +34,28 @@ import org.w3c.dom.views.AbstractView;
 
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly
- * It maintains a Map to track the classes with the same Equality, using the  
+ * It maintains a Map to track the classes with the same Equality, using the
  * EqualityKey. The EqualityKey has an internal datastructure which references
  * all the handles which are equal. Secondly It maintains another map tracking
  * the  justificiations for logically asserted facts.
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  *
  */
 public class TruthMaintenanceSystem
     implements
-    Serializable {
+    Externalizable {
 
     private static final long           serialVersionUID = 400L;
 
-    private final AbstractWorkingMemory workingMemory;
+    private AbstractWorkingMemory workingMemory;
 
-    private final PrimitiveLongMap      justifiedMap;
+    private PrimitiveLongMap      justifiedMap;
 
-    private final ObjectHashMap         assertMap;
+    private ObjectHashMap         assertMap;
+
+    public TruthMaintenanceSystem() {
+    }
 
     public TruthMaintenanceSystem(final AbstractWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
@@ -58,6 +64,18 @@ public class TruthMaintenanceSystem
                                                   32 );
         this.assertMap = new ObjectHashMap();
         this.assertMap.setComparator( EqualityKeyComparator.getInstance() );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        workingMemory   = (AbstractWorkingMemory)in.readObject();
+        justifiedMap   = (PrimitiveLongMap)in.readObject();
+        assertMap   = (ObjectHashMap)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(workingMemory);
+        out.writeObject(justifiedMap);
+        out.writeObject(assertMap);
     }
 
     public PrimitiveLongMap getJustifiedMap() {
@@ -90,9 +108,9 @@ public class TruthMaintenanceSystem
      * An Activation is no longer true so it no longer justifies  any  of the logical facts
      * it logically  asserted. It iterates  over the Activation's LinkedList of DependencyNodes
      * it retrieves the justitication  set for each  DependencyNode's FactHandle and  removes
-     * itself. If the Set is empty it retracts the FactHandle from the WorkingMemory. 
-     * 
-     * @param activation 
+     * itself. If the Set is empty it retracts the FactHandle from the WorkingMemory.
+     *
+     * @param activation
      * @param context
      * @param rule
      * @throws FactException
@@ -122,12 +140,15 @@ public class TruthMaintenanceSystem
     public static class LogicalRetractCallback
         implements
         WorkingMemoryAction {
-        private final TruthMaintenanceSystem tms;
-        private final LogicalDependency      node;
-        private final Set                    set;
-        private final InternalFactHandle     handle;
-        private final PropagationContext     context;
+        private TruthMaintenanceSystem tms;
+        private LogicalDependency      node;
+        private Set                    set;
+        private InternalFactHandle     handle;
+        private PropagationContext     context;
 
+        public LogicalRetractCallback() {
+
+        }
         public LogicalRetractCallback(TruthMaintenanceSystem tms,
                                       LogicalDependency node,
                                       Set set,
@@ -138,6 +159,22 @@ public class TruthMaintenanceSystem
             this.set = set;
             this.handle = handle;
             this.context = context;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            tms         = (TruthMaintenanceSystem)in.readObject();
+            node         = (LogicalDependency)in.readObject();
+            set         = (Set)in.readObject();
+            handle         = (InternalFactHandle)in.readObject();
+            context         = (PropagationContext)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(tms);
+            out.writeObject(node);
+            out.writeObject(set);
+            out.writeObject(handle);
+            out.writeObject(context);
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
@@ -159,13 +196,13 @@ public class TruthMaintenanceSystem
 
     /**
      * The FactHandle is being removed from the system so remove any logical dependencies
-     * between the  justified FactHandle and its justifiers. Removes the FactHandle key 
-     * from the justifiedMap. It then iterates over all the LogicalDependency nodes, if any, 
-     * in the returned Set and removes the LogicalDependency node from the LinkedList maintained 
+     * between the  justified FactHandle and its justifiers. Removes the FactHandle key
+     * from the justifiedMap. It then iterates over all the LogicalDependency nodes, if any,
+     * in the returned Set and removes the LogicalDependency node from the LinkedList maintained
      * by the Activation.
-     * 
+     *
      * @see LogicalDependency
-     * 
+     *
      * @param handle - The FactHandle to be removed
      * @throws FactException
      */
@@ -181,7 +218,7 @@ public class TruthMaintenanceSystem
 
     /**
      * Adds a justification for the FactHandle to the justifiedMap.
-     * 
+     *
      * @param handle
      * @param activation
      * @param context

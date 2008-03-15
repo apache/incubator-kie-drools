@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,6 +22,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 
 import org.drools.spi.Constraint;
 import org.drools.spi.Extractor;
@@ -31,21 +35,25 @@ import org.drools.spi.Constraint.ConstraintType;
 
 public class Pattern
     implements
-    RuleConditionElement {
+    RuleConditionElement, Externalizable {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
-    private final ObjectType  objectType;
-    private List              constraints      = Collections.EMPTY_LIST;
-    final Declaration         declaration;
+    private ObjectType  objectType;
+    private List        constraints      = Collections.EMPTY_LIST;
+    Declaration         declaration;
     private Map               declarations;
-    private final int         index;
+    private int         index;
     private PatternSource     source;
 
     // this is the offset of the related fact inside a tuple. i.e:
-    // the position of the related fact inside the tuple; 
+    // the position of the related fact inside the tuple;
     private int               offset;
+
+    public Pattern() {
+        this(0, null);
+    }
 
     public Pattern(final int index,
                    final ObjectType objectType) {
@@ -94,6 +102,26 @@ public class Pattern
         } else {
             this.declaration = null;
         }
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        objectType  = (ObjectType)in.readObject();
+        constraints = (List)in.readObject();
+        declaration =  (Declaration)in.readObject();
+        declarations = (Map)in.readObject();
+        index       = in.readInt();
+        source      = (PatternSource)in.readObject();
+        offset      = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(objectType);
+        out.writeObject(constraints);
+        out.writeObject(declaration);
+        out.writeObject(declarations);
+        out.writeInt(index);
+        out.writeObject(source);
+        out.writeInt(offset);
     }
 
     public Object clone() {
@@ -194,9 +222,9 @@ public class Pattern
     }
 
     /**
-     * The offset of the fact related to this pattern 
+     * The offset of the fact related to this pattern
      * inside the tuple
-     * 
+     *
      * @return the offset
      */
     public int getOffset() {
@@ -275,7 +303,7 @@ public class Pattern
     public List getNestedElements() {
         return this.source != null ? Collections.singletonList( this.source ) : Collections.EMPTY_LIST;
     }
-    
+
     public boolean isPatternScopeDelimiter() {
         return true;
     }
@@ -293,7 +321,7 @@ public class Pattern
             }
         }
 
-        ConstraintType type = isAlphaConstraint ? ConstraintType.ALPHA : ConstraintType.BETA; 
+        ConstraintType type = isAlphaConstraint ? ConstraintType.ALPHA : ConstraintType.BETA;
         constraint.setType( type );
     }
 }

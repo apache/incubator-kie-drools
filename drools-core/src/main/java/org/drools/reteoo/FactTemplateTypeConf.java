@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,10 @@
 package org.drools.reteoo;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalRuleBase;
@@ -31,13 +35,16 @@ import org.drools.spi.ObjectType;
 public class FactTemplateTypeConf
     implements
     ObjectTypeConf,
-    Serializable {
+    Externalizable {
 
     private static final long serialVersionUID = 4493660262148247467L;
 
     private FactTemplate     factTemplate;
     private ObjectTypeNode   concreteObjectTypeNode;
     private ObjectTypeNode[] cache;
+
+    public FactTemplateTypeConf() {
+    }
 
     public FactTemplateTypeConf(final EntryPoint entryPoint,
                                 final FactTemplate factTemplate,
@@ -59,13 +66,25 @@ public class FactTemplateTypeConf
                 context.setObjectTypeNodeMemoryEnabled( true );
                 context.setTerminalNodeMemoryEnabled( true );
             }
-            // there must exist an ObjectTypeNode for this concrete class                
+            // there must exist an ObjectTypeNode for this concrete class
             this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( context,
                                                                                objectType );
         }
         this.cache = new ObjectTypeNode[]{this.concreteObjectTypeNode};
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        factTemplate            = (FactTemplate)in.readObject();
+        concreteObjectTypeNode  = (ObjectTypeNode)in.readObject();
+        cache                   = (ObjectTypeNode[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(factTemplate);
+        out.writeObject(concreteObjectTypeNode);
+        out.writeObject(cache);
+    }
+    
     public ObjectTypeNode getConcreteObjectTypeNode() {
         return this.concreteObjectTypeNode;
     }

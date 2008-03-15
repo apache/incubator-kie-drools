@@ -2,13 +2,13 @@ package org.drools.util;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,19 +16,22 @@ package org.drools.util;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 public class BinaryHeapQueue
     implements
     Queue,
-    Serializable {
+    Externalizable {
     /** The default capacity for a binary heap. */
     private final static int DEFAULT_CAPACITY = 13;
 
     /** The comparator used to order the elements */
-    private final Comparator comparator;
+    private Comparator comparator;
 
     /** The number of elements currently in this heap. */
     private int              size;
@@ -36,6 +39,9 @@ public class BinaryHeapQueue
     /** The elements in this heap. */
     private Queueable[]      elements;
 
+    public BinaryHeapQueue() {
+
+    }
     /**
      * Constructs a new <code>BinaryHeap</code> that will use the given
      * comparator to order its elements.
@@ -68,6 +74,17 @@ public class BinaryHeapQueue
     }
 
     //-----------------------------------------------------------------------
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        comparator  = (Comparator)in.readObject();
+        elements    = (Queueable[])in.readObject();
+        size        = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(comparator);
+        out.writeObject(elements);
+        out.writeInt(size);
+    }
 
     /**
      * Clears all elements from queue.

@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,9 @@ package org.drools.rule;
  */
 
 import java.beans.IntrospectionException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
@@ -58,16 +61,16 @@ public class FieldConstraintTest extends TestCase {
 
     /**
      * <pre>
-     *        
-     *         
+     *
+     *
      *                ( Cheese (type &quot;cheddar&quot;) )
-     *          
-     *         
+     *
+     *
      * </pre>
-     * 
+     *
      * This is currently the same as using a ReturnValueConstraint just that it
      * doesn't need any requiredDeclarations
-     * 
+     *
      * @throws IntrospectionException
      */
     public void testLiteralConstraint() throws IntrospectionException {
@@ -110,13 +113,13 @@ public class FieldConstraintTest extends TestCase {
 
     /**
      * <pre>
-     *        
-     *         
+     *
+     *
      *                Cheese( price == 5 )
-     *          
-     *         
+     *
+     *
      * </pre>
-     * 
+     *
      * @throws IntrospectionException
      */
     public void testPrimitiveLiteralConstraint() throws IntrospectionException {
@@ -159,14 +162,14 @@ public class FieldConstraintTest extends TestCase {
 
     /**
      * <pre>
-     *        
-     *         
-     *                (Cheese (price ?price1 ) 
+     *
+     *
+     *                (Cheese (price ?price1 )
      *                (Cheese (price ?price2&amp;:(= ?price2 (* 2 ?price1) )
-     *          
-     *         
+     *
+     *
      * </pre>
-     * 
+     *
      * @throws IntrospectionException
      */
     public void testPredicateConstraint() throws IntrospectionException {
@@ -198,7 +201,7 @@ public class FieldConstraintTest extends TestCase {
         final PredicateExpression evaluator = new PredicateExpression() {
 
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -221,6 +224,11 @@ public class FieldConstraintTest extends TestCase {
                 return null;
             }
 
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+            }
         };
 
         final PredicateConstraint constraint1 = new PredicateConstraint( evaluator,
@@ -249,15 +257,15 @@ public class FieldConstraintTest extends TestCase {
 
     /**
      * <pre>
-     *        
-     *         
-     *                (Cheese (price ?price ) 
+     *
+     *
+     *                (Cheese (price ?price )
      *                (Cheese (price =(* 2 ?price) )
      *                (Cheese (price &gt;(* 2 ?price) )
-     *          
-     *         
+     *
+     *
      * </pre>
-     * 
+     *
      * @throws IntrospectionException
      */
     public void testReturnValueConstraint() throws IntrospectionException {
@@ -279,7 +287,7 @@ public class FieldConstraintTest extends TestCase {
 
         final ReturnValueExpression isDoubleThePrice = new ReturnValueExpression() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -297,6 +305,13 @@ public class FieldConstraintTest extends TestCase {
 
             public Object createContext() {
                 return null;
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -355,16 +370,16 @@ public class FieldConstraintTest extends TestCase {
 
     /**
      * <pre>
-     *        
-     *         
-     *                type == &quot;cheddar&quot &amp;&amp; price &gt; 10 
-     *          
-     *         
+     *
+     *
+     *                type == &quot;cheddar&quot &amp;&amp; price &gt; 10
+     *
+     *
      * </pre>
-     * 
+     *
      * Test the use of the composite AND constraint. Composite AND constraints are only
      * used when nested inside other field constraints, as the top level AND is implicit
-     * 
+     *
      * @throws IntrospectionException
      */
     public void testCompositeAndConstraint() {
@@ -432,15 +447,15 @@ public class FieldConstraintTest extends TestCase {
 
     /**
      * <pre>
-     *        
-     *         
-     *                Cheese( type == &quot;cheddar&quot || price &gt; 10 ) 
-     *          
-     *         
+     *
+     *
+     *                Cheese( type == &quot;cheddar&quot || price &gt; 10 )
+     *
+     *
      * </pre>
-     * 
-     * Test the use of the composite OR constraint. 
-     * 
+     *
+     * Test the use of the composite OR constraint.
+     *
      * @throws IntrospectionException
      */
     public void testCompositeOrConstraint() {
@@ -507,15 +522,15 @@ public class FieldConstraintTest extends TestCase {
 
     /**
      * <pre>
-     *        
-     *         
-     *                Cheese( ( type == &quot;cheddar&quot &amp;&amp; price &gt; 10) || ( type == &quote;stilton&quote; && price &lt; 10 ) ) 
-     *          
-     *         
+     *
+     *
+     *                Cheese( ( type == &quot;cheddar&quot &amp;&amp; price &gt; 10) || ( type == &quote;stilton&quote; && price &lt; 10 ) )
+     *
+     *
      * </pre>
-     * 
-     * Test the use of the composite OR constraint. 
-     * 
+     *
+     * Test the use of the composite OR constraint.
+     *
      * @throws IntrospectionException
      */
     public void testNestedCompositeConstraints() {

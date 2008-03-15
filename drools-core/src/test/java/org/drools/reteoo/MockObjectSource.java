@@ -16,14 +16,17 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class MockObjectSource extends ObjectSource {
     /**
@@ -37,9 +40,26 @@ public class MockObjectSource extends ObjectSource {
 
     private List              facts;
 
+    public MockObjectSource() {
+    }
+
     public MockObjectSource(final int id) {
         super( id );
         this.facts = new ArrayList();
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        attached    = in.readInt();
+        updated    = in.readInt();
+        facts = (List)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeInt(attached);
+        out.writeInt(updated);
+        out.writeObject(facts);
     }
 
     public void attach() {

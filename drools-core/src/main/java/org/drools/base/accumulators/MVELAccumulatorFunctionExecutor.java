@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,9 @@
 package org.drools.base.accumulators;
 
 import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
@@ -30,7 +33,7 @@ import org.mvel.MVEL;
 
 /**
  * An MVEL accumulator function executor implementation
- * 
+ *
  * @author etirelli
  */
 public class MVELAccumulatorFunctionExecutor
@@ -40,9 +43,13 @@ public class MVELAccumulatorFunctionExecutor
     private static final long        serialVersionUID = 400L;
 
     private final Object             dummy            = new Object();
-    private final DroolsMVELFactory  model;
-    private final Serializable       expression;
-    private final AccumulateFunction function;
+    private DroolsMVELFactory  model;
+    private Serializable       expression;
+    private AccumulateFunction function;
+
+    public MVELAccumulatorFunctionExecutor() {
+
+    }
 
     public MVELAccumulatorFunctionExecutor(final DroolsMVELFactory factory,
                                            final Serializable expression,
@@ -51,6 +58,18 @@ public class MVELAccumulatorFunctionExecutor
         this.model = factory;
         this.expression = expression;
         this.function = function;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        model       = (DroolsMVELFactory)in.readObject();
+        expression  = (Serializable)in.readObject();
+        function    = (AccumulateFunction)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(model);
+        out.writeObject(expression);
+        out.writeObject(function);
     }
 
     /* (non-Javadoc)

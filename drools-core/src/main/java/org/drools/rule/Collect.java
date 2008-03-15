@@ -1,12 +1,12 @@
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
@@ -37,11 +40,24 @@ public class Collect extends ConditionalElement
     private Pattern           sourcePattern;
     private Pattern           resultPattern;
 
+    public Collect() {
+    }
+
     public Collect(final Pattern sourcePattern,
                    final Pattern resultPattern) {
 
         this.sourcePattern = sourcePattern;
         this.resultPattern = resultPattern;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        sourcePattern   = (Pattern)in.readObject();
+        resultPattern   = (Pattern)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(sourcePattern);
+        out.writeObject(resultPattern);
     }
 
     public Object clone() {

@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.EvaluatorDefinition;
@@ -43,7 +46,7 @@ import junit.framework.TestCase;
 
 /**
  * Test coverage for the temporal evaluators.
- * 
+ *
  * @author Tino Breddin
  */
 public class TemporalEvaluatorFactoryTest extends TestCase {
@@ -130,7 +133,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
 		EventFactHandle bar = new EventFactHandle(2, "bar", 1, 2, 2);
 		EventFactHandle drool = new EventFactHandle(1, "drool", 1, 5, 3);
 
-		final Object[][] data = { 
+		final Object[][] data = {
 				{ foo, "before", drool, Boolean.TRUE },
 				{ foo, "before", bar, Boolean.FALSE },
 				{ drool, "before", foo, Boolean.FALSE },
@@ -194,7 +197,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
 
 		runEvaluatorTest(data, ValueType.OBJECT_TYPE);
 	}
-	
+
 	public void testCoincides() {
 		registry
 				.addEvaluatorDefinition("org.drools.base.evaluators.CoincidesEvaluatorDefinition");
@@ -204,7 +207,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
 		EventFactHandle drool = new EventFactHandle(1, "drool", 1, 2, 2);
 		EventFactHandle mole = new EventFactHandle(1, "mole", 1, 1, 2);
 
-		final Object[][] data = { 
+		final Object[][] data = {
 				{ foo, "coincides", bar, Boolean.TRUE },
 				{ foo, "coincides", drool, Boolean.FALSE },
 				{ foo, "coincides", mole, Boolean.FALSE },
@@ -272,7 +275,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
 					evaluator);
 			checkEvaluatorMethodCachedLeft(valueType, extractor, row, evaluator);
 			checkEvaluatorMethodWithFieldValue(valueType, extractor, row, evaluator);
-			
+
 
 			assertEquals(valueType, evaluator.getValueType());
 
@@ -435,10 +438,15 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
 		}
 	}
 
-	private static class MockExtractor implements FieldExtractor {
+	public static class MockExtractor implements FieldExtractor {
 
 		private static final long serialVersionUID = 400L;
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
 		public boolean getBooleanValue(InternalWorkingMemory workingMemory,
 				final Object object) {
 			return object != null ? ((Boolean) object).booleanValue() : false;

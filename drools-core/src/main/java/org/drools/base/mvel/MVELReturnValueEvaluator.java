@@ -1,28 +1,45 @@
 package org.drools.base.mvel;
 
-import java.io.Serializable;
-
 import org.drools.WorkingMemory;
 import org.drools.rule.MVELDialectData;
 import org.drools.rule.Package;
 import org.drools.spi.ReturnValueEvaluator;
-import org.mvel.compiler.CompiledExpression;
 import org.mvel.MVEL;
+import org.mvel.compiler.CompiledExpression;
 import org.mvel.debug.DebugTools;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 
 public class MVELReturnValueEvaluator
     implements
     ReturnValueEvaluator,
-    Serializable {
+    Externalizable {
     private static final long       serialVersionUID = 400L;
 
-    private final Serializable      expr;
-    private final DroolsMVELFactory prototype;
+    private Serializable      expr;
+    private DroolsMVELFactory prototype;
+
+    public MVELReturnValueEvaluator() {
+    }
 
     public MVELReturnValueEvaluator(final Serializable expr,
                                     final DroolsMVELFactory factory) {
         this.expr = expr;
         this.prototype = factory;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        expr    = (Serializable)in.readObject();
+        prototype   = (DroolsMVELFactory)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(expr);
+        out.writeObject(prototype);
     }
 
     public String getDialect() {

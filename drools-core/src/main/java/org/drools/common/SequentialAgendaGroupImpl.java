@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,14 +24,18 @@ import org.drools.util.BinaryHeapQueue;
 import org.drools.util.PrimitiveLongMap;
 import org.drools.util.Queueable;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
- * <code>ActivationQueue</code>s. The <code>AgendaGroup</code> also maintains a <code>Map</code> of <code>ActivationQueues</code> 
+ * <code>ActivationQueue</code>s. The <code>AgendaGroup</code> also maintains a <code>Map</code> of <code>ActivationQueues</code>
  * for requested salience values.
- * 
+ *
  * @see PriorityQueue
  * @see ActivationQueue
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
@@ -42,29 +46,46 @@ public class SequentialAgendaGroupImpl
 
     private static final long     serialVersionUID = 400L;
 
-    private final String          name;
+    private String          name;
 
     /** Items in the agenda. */
     //private final BinaryHeapQueue queue;
     private PrimitiveLongMap     queue;
 
     private boolean               active;
-    
+
     private long                  index;
+
+    public SequentialAgendaGroupImpl() {
+
+    }
 
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
-     * 
+     *
      * @param name
      *      The <AgendaGroup> name.
      */
-    
-    
+
+
     public SequentialAgendaGroupImpl(final String name, final ConflictResolver conflictResolver) {
         this.name = name;
         this.queue = new PrimitiveLongMap();//new BinaryHeapQueue( conflictResolver );
-    }    
+    }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        name    = (String)in.readObject();
+        queue   = (PrimitiveLongMap)in.readObject();
+        active  = in.readBoolean();
+        index   = in.readLong();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(name);
+        out.writeObject(queue);
+        out.writeBoolean(active);
+        out.writeLong(index);
+    }
     /* (non-Javadoc)
      * @see org.drools.spi.AgendaGroup#getName()
      */
@@ -94,7 +115,7 @@ public class SequentialAgendaGroupImpl
             return null;
         }
         return ( Activation ) this.queue.get( index );
-//        
+//
 //        if ( index > this.queue.size() ) {
 //            return null;
 //        } else {
@@ -113,7 +134,7 @@ public class SequentialAgendaGroupImpl
     /**
      * Iterates a PriorityQueue removing empty entries until it finds a populated entry and return true,
      * otherwise it returns false;
-     * 
+     *
      * @param priorityQueue
      * @return
      */

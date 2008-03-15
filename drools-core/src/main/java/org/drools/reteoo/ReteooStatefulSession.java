@@ -5,11 +5,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.WorkingMemoryEntryPoint;
 import org.drools.FactHandle;
 import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
-//import org.drools.common.AbstractWorkingMemory.EntryPointInterfaceImpl;
 import org.drools.concurrent.AssertObject;
 import org.drools.concurrent.AssertObjects;
 import org.drools.concurrent.ExecutorService;
@@ -18,7 +16,6 @@ import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
 import org.drools.event.RuleBaseEventListener;
-import org.drools.rule.EntryPoint;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.RuleBaseUpdateListener;
 import org.drools.spi.RuleBaseUpdateListenerFactory;
@@ -29,8 +26,12 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
 
     private static final long serialVersionUID = -5360554247241558374L;
     private transient ExecutorService executor;
-    
+
     private transient List                          ruleBaseListeners;
+
+    public ReteooStatefulSession() {
+
+    }
 
     public ReteooStatefulSession(final int id,
                                  final InternalRuleBase ruleBase,
@@ -79,7 +80,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         this.executor.submit( fireAllRules );
         return fireAllRules;
     }
-    
+
     public void dispose() {
         this.ruleBase.disposeStatefulSession( this );
         this.workingMemoryEventSupport.reset();
@@ -104,12 +105,6 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         }
         return this.ruleBaseListeners;
     }
-    
-//    public StatefulSession getEntryPoint(String id) {        
-//        EntryPoint ep = new EntryPoint( id );
-//        return new EntryPointInterfaceImpl( ep,
-//                                            this );
-//    }    
 
     public ExecutorService getExecutorService() {
         return executor;

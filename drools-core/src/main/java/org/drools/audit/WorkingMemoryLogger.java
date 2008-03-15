@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.WorkingMemoryEventManager;
 import org.drools.FactHandle;
@@ -91,7 +94,10 @@ public abstract class WorkingMemoryLogger
     RuleFlowEventListener,
     RuleBaseEventListener {
 
-    private final List    filters = new ArrayList();
+    private List    filters = new ArrayList();
+
+    public WorkingMemoryLogger() {
+    }
 
     /**
      * Creates a new working memory logger for the given working memory.
@@ -103,6 +109,14 @@ public abstract class WorkingMemoryLogger
         workingMemoryEventManager.addEventListener( (AgendaEventListener) this );
         workingMemoryEventManager.addEventListener( (RuleFlowEventListener) this );
         workingMemoryEventManager.addEventListener( (RuleBaseEventListener) this );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        filters = (List)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(filters);
     }
 
     /**
@@ -264,7 +278,7 @@ public abstract class WorkingMemoryLogger
                     // This handle is now invalid, probably due to an fact retraction
                     continue;
                 }
-                final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, handleImpl.getObject() );
+                final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, workingMemory.getObject( handle ) );
 
                 result.append( declaration.getIdentifier() );
                 result.append( "=" );

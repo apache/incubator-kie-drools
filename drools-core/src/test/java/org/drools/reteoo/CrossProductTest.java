@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,9 @@ package org.drools.reteoo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
@@ -63,7 +66,7 @@ public class CrossProductTest extends TestCase {
         rule.setConsequence( new Consequence() {
 
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -74,6 +77,13 @@ public class CrossProductTest extends TestCase {
                 CrossProductTest.this.values.add( new String[]{s1, s2} );
             }
 
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         } );
 
         this.pkg = new Package( "org.drools" );

@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,10 @@ package org.drools.reteoo;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -29,7 +33,6 @@ import org.drools.common.DefaultAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.RuleBaseEventListener;
@@ -41,47 +44,67 @@ import org.drools.spi.PropagationContext;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
- * 
+ *
  * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
-public class ReteooWorkingMemory extends AbstractWorkingMemory {
+public class ReteooWorkingMemory extends AbstractWorkingMemory implements Externalizable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
 
+    public ReteooWorkingMemory() {
+
+    }
+
     /**
      * Construct.
-     * 
+     *
      * @param ruleBase
      *            The backing rule-base.
      */
     public ReteooWorkingMemory(final int id,
-                               final InternalRuleBase ruleBase ) {
+                               final InternalRuleBase ruleBase) {
         super( id,
                ruleBase,
                ruleBase.newFactHandleFactory() );
         this.agenda = new DefaultAgenda( this );
-    }    
-    
+    }
+
+    public void doInsert(final InternalFactHandle handle,
+                               final Object object,
+                               final PropagationContext propagationContext) throws FactException {
+        this.ruleBase.assertObject( handle,
+                                    object,
+                                    propagationContext,
+                                    this );
+    }
+
+    public void doRetract(final InternalFactHandle handle,
+                          final PropagationContext propagationContext) {
+        this.ruleBase.retractObject( handle,
+                                     propagationContext,
+                                     this );
+    }
+
     public QueryResults getQueryResults(final String query) {
         return getQueryResults( query, null );
     }
-    
+
     public QueryResults getQueryResults(final String query, final Object[] arguments) {
 
         Object object = new DroolsQuery( query, arguments );
-        InternalFactHandle handle = this.handleFactory.newFactHandle( object, false, this );
-        
-        insert( handle,
+        InternalFactHandle handle = this.handleFactory.newFactHandle( object, false, 0, this );
+
+        insert( EntryPoint.DEFAULT, // query dummy objects always use default entry point
+                handle,
                 object,
                 null,
-                null,
-                this.typeConfReg.getObjectTypeConf( this.entryPoint, object ));
-        
+                null );
+
         final QueryTerminalNode node = (QueryTerminalNode) this.queryResults.remove( query );
         Query queryObj = null;
         List list = null;
@@ -98,26 +121,26 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             }
 
             this.handleFactory.destroyFactHandle( handle );
-            
+
             if ( queryObj == null ) {
                 throw new IllegalArgumentException( "Query '" + query + "' does not exist" );
             }
             list = Collections.EMPTY_LIST;
         } else {
             list = (List) this.getNodeMemory( node );
-            
+
             if ( list == null ) {
                 list = Collections.EMPTY_LIST;
             } else {
                 this.clearNodeMemory( node );
             }
             queryObj = (Query) node.getRule();
-            
+
             this.handleFactory.destroyFactHandle( handle );
         }
-        
-        
-        
+
+
+
 
         return new QueryResults( list,
                                  queryObj,
@@ -146,6 +169,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
 
         private Activation         activationOrigin;
 
+        public WorkingMemoryReteAssertAction() {
+
+        }
+
         public WorkingMemoryReteAssertAction(final InternalFactHandle factHandle,
                                              final boolean removeLogical,
                                              final boolean updateEqualsMap,
@@ -157,6 +184,22 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             this.updateEqualsMap = updateEqualsMap;
             this.ruleOrigin = ruleOrigin;
             this.activationOrigin = activationOrigin;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            factHandle  = (InternalFactHandle)in.readObject();
+            removeLogical   = in.readBoolean();
+            updateEqualsMap   = in.readBoolean();
+            ruleOrigin  = (Rule)in.readObject();
+            activationOrigin  = (Activation)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(factHandle);
+            out.writeBoolean(removeLogical);
+            out.writeBoolean(updateEqualsMap);
+            out.writeObject(ruleOrigin);
+            out.writeObject(activationOrigin);
         }
 
         public void execute(InternalWorkingMemory workingMemory) {

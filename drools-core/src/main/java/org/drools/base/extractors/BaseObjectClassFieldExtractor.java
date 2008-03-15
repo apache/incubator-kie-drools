@@ -11,6 +11,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
 
     private static final long serialVersionUID = 400L;
 
+    public BaseObjectClassFieldExtractor() {
+
+    }
+
     protected BaseObjectClassFieldExtractor(final int index,
                                             final Class fieldType,
                                             final ValueType valueType) {
@@ -28,10 +32,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
     public abstract Object getValue(InternalWorkingMemory workingMemory, Object object);
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
-        // this can be improved by generating specific 
+        // this can be improved by generating specific
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( workingMemory, object );
-        
+
         if ( value instanceof Boolean ) {
             return ((Boolean) value).booleanValue();
         }
@@ -39,10 +43,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
     }
 
     public byte getByteValue(InternalWorkingMemory workingMemory, final Object object) {
-        // this can be improved by generating specific 
+        // this can be improved by generating specific
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( workingMemory, object );
-        
+
         if ( value instanceof Number ) {
             return ((Number) value).byteValue();
         }
@@ -50,10 +54,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
     }
 
     public char getCharValue(InternalWorkingMemory workingMemory, final Object object) {
-        // this can be improved by generating specific 
+        // this can be improved by generating specific
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( workingMemory, object );
-        
+
         if ( value instanceof Character ) {
             return ((Character) value).charValue();
         } else if( value instanceof String && ((String)value).length() == 1 ) {
@@ -63,10 +67,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
     }
 
     public double getDoubleValue(InternalWorkingMemory workingMemory, final Object object) {
-        // this can be improved by generating specific 
+        // this can be improved by generating specific
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( workingMemory, object );
-        
+
         if ( value instanceof Number ) {
             return ((Number) value).doubleValue();
         }
@@ -74,10 +78,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
     }
 
     public float getFloatValue(InternalWorkingMemory workingMemory, final Object object) {
-        // this can be improved by generating specific 
+        // this can be improved by generating specific
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( workingMemory, object );
-        
+
         if ( value instanceof Number ) {
             return ((Number) value).floatValue();
         }
@@ -85,10 +89,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
     }
 
     public int getIntValue(InternalWorkingMemory workingMemory, final Object object) {
-        // this can be improved by generating specific 
+        // this can be improved by generating specific
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( workingMemory, object );
-        
+
         if ( value instanceof Number ) {
             return ((Number) value).intValue();
         }
@@ -96,10 +100,10 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
     }
 
     public long getLongValue(InternalWorkingMemory workingMemory, final Object object) {
-        // this can be improved by generating specific 
+        // this can be improved by generating specific
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( workingMemory, object );
-        
+
         if ( value instanceof Number ) {
             return ((Number) value).longValue();
         }
@@ -107,7 +111,7 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
     }
 
     public short getShortValue(InternalWorkingMemory workingMemory, final Object object) {
-        // this can be improved by generating specific 
+        // this can be improved by generating specific
         // bytecode generation in the subclass, avoiding the if instanceof
         final Object value = getValue( workingMemory, object );
 
@@ -116,7 +120,7 @@ public abstract class BaseObjectClassFieldExtractor extends BaseClassFieldExtrac
         }
         throw new RuntimeDroolsException( "Conversion to short not supported from " + value.getClass().getName() );
     }
-    
+
     public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
         if (object == null) {
             return true;

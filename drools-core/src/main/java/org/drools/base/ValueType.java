@@ -1,6 +1,9 @@
 package org.drools.base;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
@@ -10,7 +13,7 @@ import org.drools.facttemplates.FactTemplate;
 
 public class ValueType
     implements
-    Serializable {
+    Externalizable {
 
     private static final long      serialVersionUID  = 400L;
 
@@ -90,9 +93,13 @@ public class ValueType
                                                                       BigInteger.class,
                                                                       SimpleValueType.OBJECT );
 
-    private final String           name;
-    private final Class            classType;
-    private final int              simpleType;
+    private String           name;
+    private Class            classType;
+    private int              simpleType;
+
+    public ValueType() {
+        this(null, null, 0);
+    }
 
     private ValueType(final String name,
                       final Class classType,
@@ -102,6 +109,17 @@ public class ValueType
         this.simpleType = simpleType;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        name        = (String)in.readObject();
+        classType   = (Class)in.readObject();
+        simpleType  = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(name);
+        out.writeObject(classType);
+        out.writeInt(simpleType);
+    }
     private Object readResolve() throws java.io.ObjectStreamException {
         return determineValueType( this.classType );
     }
@@ -185,8 +203,12 @@ public class ValueType
     public boolean equals(final Object object) {
         if ( object == this ) {
             return true;
+        } else if (object instanceof ValueType) {
+            ValueType   that    = (ValueType)object;
+            return classType == that.classType &&
+                   simpleType == that.simpleType &&
+                   (name == that.name || name != null && name.equals(that.name));
         }
-
         return false;
     }
 
@@ -195,7 +217,9 @@ public class ValueType
     }
 
     public boolean isNumber() {
-        return (this.simpleType == SimpleValueType.INTEGER || this.simpleType == SimpleValueType.DECIMAL || this.simpleType == SimpleValueType.CHAR);
+        return (this.simpleType == SimpleValueType.INTEGER ||
+                this.simpleType == SimpleValueType.DECIMAL ||
+                this.simpleType == SimpleValueType.CHAR);
     }
 
     public boolean isIntegerNumber() {

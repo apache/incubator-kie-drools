@@ -1,12 +1,12 @@
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,10 @@
 
 package org.drools;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,16 +43,16 @@ import org.mvel.MVEL;
 
 /**
  * RuleBaseConfiguration
- * 
+ *
  * A class to store RuleBase related configuration. It must be used at rule base instantiation time
  * or not used at all.
  * This class will automatically load default values from system properties, so if you want to set
- * a default configuration value for all your new rule bases, you can simply set the property as 
+ * a default configuration value for all your new rule bases, you can simply set the property as
  * a System property.
- * 
- * After RuleBase is created, it makes the configuration immutable and there is no way to make it 
+ *
+ * After RuleBase is created, it makes the configuration immutable and there is no way to make it
  * mutable again. This is to avoid inconsistent behavior inside rulebase.
- * 
+ *
  * NOTE: This API is under review and may change in the future.
  */
 
@@ -74,11 +77,11 @@ import org.mvel.MVEL;
  * drools.consequenceExceptionHandler = <qualified class name>
  * drools.ruleBaseUpdateHandler = <qualified class name>
  * drools.sessionClock = <qualified class name>
- * 
+ *
  */
 public class RuleBaseConfiguration
     implements
-    Serializable {
+    Externalizable {
     private static final long                  serialVersionUID = 400L;
 
     private ChainedProperties                  chainedProperties;
@@ -114,13 +117,65 @@ public class RuleBaseConfiguration
 
     private transient ClassLoader              classLoader;
 
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(chainedProperties);
+        out.writeBoolean(immutable);
+        out.writeBoolean(sequential);
+        out.writeObject(sequentialAgenda);
+        out.writeBoolean(maintainTms);
+        out.writeBoolean(removeIdentities);
+        out.writeBoolean(shareAlphaNodes);
+        out.writeBoolean(shareBetaNodes);
+        out.writeBoolean(alphaMemory);
+        out.writeInt(alphaNodeHashingThreshold);
+        out.writeInt(compositeKeyDepth);
+        out.writeBoolean(indexLeftBetaMemory);
+        out.writeBoolean(indexRightBetaMemory);
+        out.writeObject(assertBehaviour);
+        out.writeObject(logicalOverride);
+        out.writeObject(executorService);
+        out.writeObject(consequenceExceptionHandler);
+        out.writeObject(ruleBaseUpdateHandler);
+        out.writeObject(sessionClockClass);
+        out.writeObject(conflictResolver);
+        out.writeBoolean(shadowProxy);
+        out.writeObject(shadowProxyExcludes);
+        out.writeObject(processNodeInstanceFactoryRegistry);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        chainedProperties   = (ChainedProperties)in.readObject();
+        immutable   = in.readBoolean();
+        sequential = in.readBoolean();
+        sequentialAgenda    = (SequentialAgenda)in.readObject();
+        maintainTms = in.readBoolean();
+        removeIdentities = in.readBoolean();
+        shareAlphaNodes = in.readBoolean();
+        shareBetaNodes = in.readBoolean();
+        alphaMemory = in.readBoolean();
+        alphaNodeHashingThreshold   = in.readInt();
+        compositeKeyDepth   = in.readInt();
+        indexLeftBetaMemory = in.readBoolean();
+        indexRightBetaMemory = in.readBoolean();
+        assertBehaviour = (AssertBehaviour)in.readObject();
+        logicalOverride = (LogicalOverride)in.readObject();
+        executorService = (String)in.readObject();
+        consequenceExceptionHandler = (ConsequenceExceptionHandler)in.readObject();
+        ruleBaseUpdateHandler   = (String)in.readObject();
+        sessionClockClass   = (Class< ? extends SessionClock>)in.readObject();
+        conflictResolver    = (ConflictResolver)in.readObject();
+        shadowProxy = in.readBoolean();
+        shadowProxyExcludes = (Map)in.readObject();
+        processNodeInstanceFactoryRegistry  = (NodeInstanceFactoryRegistry)in.readObject();
+    }
+
     /**
      * Creates a new rulebase configuration using the provided properties
      * as configuration options. Also, if a Thread.currentThread().getContextClassLoader()
      * returns a non-null class loader, it will be used as the parent classloader
      * for this rulebase class loaders, otherwise, the RuleBaseConfiguration.class.getClassLoader()
      * class loader will be used.
-     *  
+     *
      * @param properties
      */
     public RuleBaseConfiguration(Properties properties) {
@@ -131,11 +186,11 @@ public class RuleBaseConfiguration
     /**
      * Creates a new rulebase with a default parent class loader set according
      * to the following algorithm:
-     * 
-     * If a Thread.currentThread().getContextClassLoader() returns a non-null class loader, 
-     * it will be used as the parent class loader for this rulebase class loaders, otherwise, 
+     *
+     * If a Thread.currentThread().getContextClassLoader() returns a non-null class loader,
+     * it will be used as the parent class loader for this rulebase class loaders, otherwise,
      * the RuleBaseConfiguration.class.getClassLoader() class loader will be used.
-     *  
+     *
      * @param properties
      */
     public RuleBaseConfiguration() {
@@ -146,7 +201,7 @@ public class RuleBaseConfiguration
     /**
      * A constructor that sets the parent classloader to be used
      * while dealing with this rule base
-     * 
+     *
      * @param classLoader
      */
     public RuleBaseConfiguration(ClassLoader classLoader) {
@@ -158,7 +213,7 @@ public class RuleBaseConfiguration
      * A constructor that sets the classloader to be used as the parent classloader
      * of this rule base classloaders, and the properties to be used
      * as base configuration options
-     * 
+     *
      * @param classLoder
      * @param properties
      */
@@ -248,8 +303,8 @@ public class RuleBaseConfiguration
     }
 
     /**
-     * Makes the configuration object immutable. Once it becomes immutable, 
-     * there is no way to make it mutable again. 
+     * Makes the configuration object immutable. Once it becomes immutable,
+     * there is no way to make it mutable again.
      * This is done to keep consistency.
      */
     public void makeImmutable() {
@@ -328,7 +383,7 @@ public class RuleBaseConfiguration
     }
 
     public void setAlphaNodeHashingThreshold(final int alphaNodeHashingThreshold) {
-        checkCanChange(); // throws an exception if a change isn't possible;        
+        checkCanChange(); // throws an exception if a change isn't possible;
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
 
@@ -388,7 +443,7 @@ public class RuleBaseConfiguration
     }
 
     public void setExecutorService(String executorService) {
-        checkCanChange(); // throws an exception if a change isn't possible;    	
+        checkCanChange(); // throws an exception if a change isn't possible;
         this.executorService = executorService;
     }
 
@@ -397,7 +452,7 @@ public class RuleBaseConfiguration
     }
 
     public void setConsequenceExceptionHandler(ConsequenceExceptionHandler consequenceExceptionHandler) {
-        checkCanChange(); // throws an exception if a change isn't possible;        
+        checkCanChange(); // throws an exception if a change isn't possible;
         this.consequenceExceptionHandler = consequenceExceptionHandler;
     }
 
@@ -406,14 +461,14 @@ public class RuleBaseConfiguration
     }
 
     public void setRuleBaseUpdateHandler(String ruleBaseUpdateHandler) {
-        checkCanChange(); // throws an exception if a change isn't possible;        
+        checkCanChange(); // throws an exception if a change isn't possible;
         this.ruleBaseUpdateHandler = ruleBaseUpdateHandler;
     }
 
     /**
      * Returns the actual class that is set to be used as the session clock
      * for sessions of this rulebase
-     *  
+     *
      * @return
      */
     public Class< ? extends SessionClock> getSessionClockClass() {
@@ -421,20 +476,20 @@ public class RuleBaseConfiguration
     }
 
     /**
-     * Sets the class whose instance is to be used as the session clock 
+     * Sets the class whose instance is to be used as the session clock
      * for sessions of this rulebase
-     * 
+     *
      * @param sessionClockClass
      */
     public void setSessionClockClass(Class< ? extends SessionClock> sessionClockClass) {
-        checkCanChange(); // throws an exception if a change isn't possible;        
+        checkCanChange(); // throws an exception if a change isn't possible;
         this.sessionClockClass = sessionClockClass;
     }
 
     /**
      * Sets the class name whose instance is to be used as the session clock
      * for sessions of this rulebase
-     * 
+     *
      * @param className
      */
     public void setSessionClockClass(String className) {
@@ -513,7 +568,7 @@ public class RuleBaseConfiguration
         String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( factoryLocation,
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
-        
+
         Map<Class< ? extends Node>, NodeInstanceFactory> map = (Map<Class< ? extends Node>, NodeInstanceFactory>) MVEL.eval( content,
                                                                                                                                            new HashMap() );
 
@@ -684,7 +739,7 @@ public class RuleBaseConfiguration
 
     public static class AssertBehaviour
         implements
-        Serializable {
+        Externalizable {
         private static final long           serialVersionUID = 400L;
 
         public static final AssertBehaviour IDENTITY         = new AssertBehaviour( 0 );
@@ -692,8 +747,31 @@ public class RuleBaseConfiguration
 
         private int                         value;
 
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            value   = in.readInt();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(value);
+        }
+
+        public AssertBehaviour() {
+
+        }
         private AssertBehaviour(final int value) {
             this.value = value;
+        }
+
+        public boolean equals(Object obj) {
+            if (obj == this)
+                return true;
+            else if (obj instanceof AssertBehaviour) {
+                AssertBehaviour that    = (AssertBehaviour)obj;
+
+                return value == that.value;
+            }
+            return false;
         }
 
         public static AssertBehaviour determineAssertBehaviour(final String value) {
@@ -724,13 +802,25 @@ public class RuleBaseConfiguration
 
     public static class LogicalOverride
         implements
-        Serializable {
+        Externalizable {
         private static final long           serialVersionUID = 400L;
 
         public static final LogicalOverride PRESERVE         = new LogicalOverride( 0 );
         public static final LogicalOverride DISCARD          = new LogicalOverride( 1 );
 
         private int                         value;
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            value   = in.readInt();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(value);
+        }
+
+        public LogicalOverride() {
+
+        }
 
         private LogicalOverride(final int value) {
             this.value = value;
@@ -757,6 +847,16 @@ public class RuleBaseConfiguration
             }
         }
 
+        public boolean equals(Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            else if (obj instanceof LogicalOverride) {
+                return value == ((LogicalOverride)obj).value;
+            }
+            return false;
+        }
+
         public String toString() {
             return "LogicalOverride : " + ((this.value == 0) ? "preserve" : "discard");
         }
@@ -764,13 +864,25 @@ public class RuleBaseConfiguration
 
     public static class SequentialAgenda
         implements
-        Serializable {
+        Externalizable {
         private static final long            serialVersionUID = 400L;
 
         public static final SequentialAgenda SEQUENTIAL       = new SequentialAgenda( 0 );
         public static final SequentialAgenda DYNAMIC          = new SequentialAgenda( 1 );
 
         private int                          value;
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            value   = in.readInt();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(value);
+        }
+
+        public SequentialAgenda() {
+
+        }
 
         private SequentialAgenda(final int value) {
             this.value = value;

@@ -18,6 +18,11 @@ package org.drools.reteoo;
 
 import org.drools.InitialFact;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * We dont want users to be able to instantiate InitialFact so we expose it as
  * an interface and make the class and its constructor package protected
@@ -26,20 +31,26 @@ import org.drools.InitialFact;
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
-final class InitialFactImpl
+public final class InitialFactImpl
     implements
-    InitialFact {
+    InitialFact, Externalizable {
     private static final InitialFact INSTANCE = new InitialFactImpl();
 
-    private final int                hashCode = "InitialFactImpl".hashCode();
+    private final int   hashCode = "InitialFactImpl".hashCode();
 
     public static InitialFact getInstance() {
         return InitialFactImpl.INSTANCE;
     }
 
-    private InitialFactImpl() {
+    public InitialFactImpl() {
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+    }
     public int hashCode() {
         return this.hashCode;
     }

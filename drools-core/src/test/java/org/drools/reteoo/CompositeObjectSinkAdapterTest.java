@@ -1,6 +1,9 @@
 package org.drools.reteoo;
 
 import java.lang.reflect.Method;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import junit.framework.TestCase;
 
@@ -24,7 +27,7 @@ import org.drools.spi.PropagationContext;
 public class CompositeObjectSinkAdapterTest extends TestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext   buildContext;
-    
+
     private EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     protected void setUp() throws Exception {
@@ -176,7 +179,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
                                                                                         "type",
                                                                                         this.getClass().getClassLoader() );
-        
+
         final LiteralConstraint lit = new LiteralConstraint( extractor,
                                                              equals.getEvaluator( ValueType.STRING_TYPE, Operator.EQUAL ),
                                                              new ObjectFieldImpl( "stilton" ) );
@@ -235,7 +238,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         FieldExtractor extractor = ClassFieldExtractorCache.getInstance().getExtractor( Cheese.class,
                                                                                         "charType",
                                                                                         this.getClass().getClassLoader() );
-        
+
         final LiteralConstraint lit = new LiteralConstraint( extractor,
                                                              equals.getEvaluator( extractor.getValueType(), Operator.EQUAL ),
                                                              new LongFieldImpl( 65 ) ); // chars are handled as integers
@@ -279,12 +282,12 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         //this should now be nicely hashed.
         assertNotNull( ad.hashedSinkMap );
         assertNull( ad.hashableSinks );
-        
+
         // test propagation
         Cheese cheese = new Cheese();
         cheese.setCharType( 'B' );
         CompositeObjectSinkAdapter.HashKey hashKey = new CompositeObjectSinkAdapter.HashKey();
-        
+
         // should find this
         hashKey.setValue( extractor.getIndex(),
                           cheese,
@@ -354,10 +357,15 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     }
 
-    static class MockExtractor
+    public static class MockExtractor
         implements
         FieldExtractor {
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
         public int getIndex() {
             //  Auto-generated method stub
             return 0;

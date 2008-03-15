@@ -1,9 +1,13 @@
 /**
- * 
+ *
  */
 package org.drools.util;
 
 import org.drools.util.AbstractHashTable.EqualityEquals;
+
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 public class ObjectHashSet extends AbstractHashTable {
 
@@ -123,7 +127,7 @@ public class ObjectHashSet extends AbstractHashTable {
 
         return this.table[index];
     }
-    
+
     public Object[] toArray(Object[] objects) {
         Iterator it = iterator();
         int i = 0;
@@ -145,12 +149,27 @@ public class ObjectHashSet extends AbstractHashTable {
 
         private Entry             next;
 
+        public ObjectEntry() {
+
+        }
+
         public ObjectEntry(final Object value,
                            final int hashCode) {
             this.value = value;
             this.hashCode = hashCode;
         }
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            value   = in.readObject();
+            hashCode    = in.readInt();
+            next    = (Entry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(value);
+            out.writeInt(hashCode);
+            out.writeObject(next);
+        }
         public Object getValue() {
             return this.value;
         }

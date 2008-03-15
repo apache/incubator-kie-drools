@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,17 +17,38 @@
  */
 package org.drools.base.accumulators;
 
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.Externalizable;
 
 /**
  * An implementation of an accumulator capable of calculating sum of values
- * 
+ *
  * @author etirelli
  *
  */
 public class SumAccumulateFunction implements AccumulateFunction {
 
-    protected static class SumData {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+    }
+
+    protected static class SumData implements Externalizable {
         public double total = 0;
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            total   = in.readDouble();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeDouble(total);
+        }
+
     }
 
     /* (non-Javadoc)

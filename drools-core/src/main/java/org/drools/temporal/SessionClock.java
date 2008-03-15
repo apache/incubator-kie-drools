@@ -17,13 +17,15 @@
  */
 package org.drools.temporal;
 
+import java.io.Externalizable;
+
 /**
  * A clock interface that all engine clocks must implement
  * 
  * @author etirelli
  */
-public interface SessionClock {
-    
+public interface SessionClock extends Externalizable {
+
     /**
      * Returns the current time. There is no semantics attached
      * to the long return value, so it will depend on the actual
@@ -35,5 +37,5 @@ public interface SessionClock {
      * 
      */
     public long getCurrentTime();
-    
+
 }
