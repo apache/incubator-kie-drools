@@ -19,7 +19,6 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.io.Externalizable;
 import java.util.Iterator;
 
@@ -83,7 +82,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     /**
      * Construct.
      *
-     * @param id
+     * @param rete
      *            The rete network.
      */
     public ReteooRuleBase(final String id) {

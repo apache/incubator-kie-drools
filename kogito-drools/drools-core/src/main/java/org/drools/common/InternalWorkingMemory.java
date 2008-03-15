@@ -1,8 +1,5 @@
 package org.drools.common;
 
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
@@ -13,21 +10,21 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.reteoo.LIANodePropagation;
-import org.drools.reteoo.ObjectTypeConf;
-import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 
+import java.util.concurrent.locks.Lock;
+
 public interface InternalWorkingMemory
     extends
     WorkingMemory {
     public long getId();
-    
+
     public void setId(long id);
-    
+
     void setRuleBase(final InternalRuleBase ruleBase);
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport);
@@ -37,7 +34,7 @@ public interface InternalWorkingMemory
     public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
 
     public void setRuleFlowEventSupport(RuleFlowEventSupport ruleFlowEventSupport);
-    
+
     public void registerProcessInstanceFactory(String type, ProcessInstanceFactory nodeInstanceFactory);
 
     public Object getNodeMemory(NodeMemory node);
@@ -47,7 +44,7 @@ public interface InternalWorkingMemory
     public long getNextPropagationIdCounter();
 
     //public ObjectHashMap getFactHandleMap()
-    
+
     public ObjectStore getObjectStore();
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem();
@@ -57,7 +54,7 @@ public interface InternalWorkingMemory
     public void queueWorkingMemoryAction(final WorkingMemoryAction action);
 
     public FactHandleFactory getFactHandleFactory();
-    
+
     /**
      * Looks for the fact handle associated to the given object
      * by looking up the object IDENTITY (==), even if rule base
@@ -87,25 +84,9 @@ public interface InternalWorkingMemory
 	public TimeMachine getTimeMachine();
 
 	public void setTimeMachine(TimeMachine tm);
-    
+
     public void removeProcessInstance(ProcessInstance processInstance);
-    
-    /**
-     * Returns the ObjectTypeConfiguration object for the given object
-     * or creates a new one if none is found in the cache
-     * 
-     * @param object
-     * @return
-     */
-    public ObjectTypeConf getObjectTypeConf(EntryPoint entryPoint, Object object);
-    
-    /**
-     * Returns the Map<Object key, ObjectTypeConf conf> of object type
-     * confs in this working memory
-     *  
-     * @return
-     */
-    public Map<Object, ObjectTypeConf> getObjectTypeConfMap(EntryPoint entryPoint);
+
 
     public ExecutorService getExecutorService();
 

@@ -16,20 +16,20 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import java.util.List;
-
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.QueryResults;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
-import org.drools.spi.AgendaGroup;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class SequentialKnowledgeHelper
     implements
@@ -41,7 +41,26 @@ public class SequentialKnowledgeHelper
     private GroupElement                       subrule;
     private Activation                         activation;
     private Tuple                              tuple;
-    private final InternalWorkingMemoryActions workingMemory;
+    private InternalWorkingMemoryActions workingMemory;
+
+    public SequentialKnowledgeHelper() {
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        rule            = (Rule)in.readObject();
+        subrule         = (GroupElement)in.readObject();
+        activation      = (Activation)in.readObject();
+        tuple           = (Tuple)in.readObject();
+        workingMemory   = (InternalWorkingMemoryActions)in.readObject();
+
+    }
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(rule);
+        out.writeObject(subrule);
+        out.writeObject(activation);
+        out.writeObject(tuple);
+        out.writeObject(workingMemory);
+    }
 
     public SequentialKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;

@@ -27,14 +27,13 @@ import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 
-import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class DefaultKnowledgeHelper
     implements
-    KnowledgeHelper, Externalizable {
+    KnowledgeHelper {
 
     private static final long                  serialVersionUID = 400L;
 
@@ -45,8 +44,8 @@ public class DefaultKnowledgeHelper
     private InternalWorkingMemoryActions workingMemory;
 
     public DefaultKnowledgeHelper() {
-
     }
+
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
     }
@@ -83,32 +82,12 @@ public class DefaultKnowledgeHelper
 
     public void insert(final Object object) throws FactException {
         insert( object,
-                0,
-                false );
-    }
-
-    public void insert(final Object object,
-                       final long duration) throws FactException {
-        insert( object,
-                duration,
                 false );
     }
 
     public void insert(final Object object,
                        final boolean dynamic) throws FactException {
         this.workingMemory.insert( object,
-                                   0,
-                                   dynamic,
-                                   false,
-                                   this.rule,
-                                   this.activation );
-    }
-
-    public void insert(final Object object,
-                       final long duration,
-                       final boolean dynamic) throws FactException {
-        this.workingMemory.insert( object,
-                                   duration,
                                    dynamic,
                                    false,
                                    this.rule,
@@ -117,31 +96,12 @@ public class DefaultKnowledgeHelper
 
     public void insertLogical(final Object object) throws FactException {
         insertLogical( object,
-                       0,
-                       false );
-    }
-
-    public void insertLogical(final Object object, final long duration) throws FactException {
-        insertLogical( object,
-                       duration,
                        false );
     }
 
     public void insertLogical(final Object object,
                               final boolean dynamic) throws FactException {
         this.workingMemory.insert( object,
-                                   0,
-                                   dynamic,
-                                   true,
-                                   this.rule,
-                                   this.activation );
-    }
-
-    public void insertLogical(final Object object,
-                              final long duration,
-                              final boolean dynamic) throws FactException {
-        this.workingMemory.insert( object,
-                                   duration,
                                    dynamic,
                                    true,
                                    this.rule,

@@ -17,43 +17,45 @@
  */
 package org.drools.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.io.ObjectInput;
-import java.io.Externalizable;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.FactException;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.ShadowProxy;
 import org.drools.base.ShadowProxyFactory;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.InternalRuleBase;
 import org.drools.common.DroolsObjectInput;
+import org.drools.common.InternalRuleBase;
 import org.drools.objenesis.instantiator.ObjectInstantiator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.TypeDeclaration;
 import org.drools.spi.ObjectType;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class ClassObjectTypeConf
     implements
     ObjectTypeConf,
     Externalizable {
 
-    private Class                    cls;
+    private static final long serialVersionUID = 8218802585428841926L;
+
+    private Class<?>                        cls;
     private transient InternalRuleBase     ruleBase;
     private ObjectTypeNode[]               objectTypeNodes;
 
     protected boolean                      shadowEnabled;
-    protected Class                        shadowClass;
+    protected Class<ShadowProxy>           shadowClass;
     protected transient ObjectInstantiator instantiator;
 
     private ObjectTypeNode                 concreteObjectTypeNode;
@@ -64,12 +66,13 @@ public class ClassObjectTypeConf
     }
 
     public ClassObjectTypeConf(final EntryPoint entryPoint,
-                               final Class clazz,
-                               final boolean isEvent,
+                               final Class<?> clazz,
                                final InternalRuleBase ruleBase) {
         this.cls = clazz;
         this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
+        TypeDeclaration type = ruleBase.getTypeDeclaration( clazz );
+        final boolean isEvent = type != null && type.getRole() == TypeDeclaration.Role.EVENT;
 
         ObjectType objectType = new ClassObjectType( clazz,
                                                      isEvent );
@@ -177,7 +180,7 @@ public class ClassObjectTypeConf
      * This will return the package name - if the package is null, it will
      * work it out from the class name (this is in cases where funky classloading is used).
      */
-    public static String getPackageName(Class clazz,
+    public static String getPackageName(Class<?> clazz,
                                         Package pkg) {
         String pkgName = "";
         if ( pkg == null ) {
@@ -247,6 +250,12 @@ public class ClassObjectTypeConf
 
         // ret now contains a superclass/interface that can be shadowed or null if none
         return ret;
+    }
+
+    private void readObject(ObjectInputStream stream) throws IOException,
+                                                     ClassNotFoundException {
+        stream.defaultReadObject();
+        this.ruleBase = ((DroolsObjectInput) stream).getRuleBase();
     }
 
     /**

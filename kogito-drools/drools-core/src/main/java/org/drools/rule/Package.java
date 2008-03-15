@@ -16,24 +16,24 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import org.drools.common.DroolsObjectInput;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
+import org.drools.facttemplates.FactTemplate;
+import org.drools.process.core.Process;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.common.DroolsObjectInput;
-import org.drools.facttemplates.FactTemplate;
-import org.drools.process.core.Process;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -81,6 +81,8 @@ public class Package
     //    private JavaDialectData         packageCompilationData;
     private DialectDatas                   dialectDatas;
 
+    private Map<String, TypeDeclaration>   typeDeclarations;
+
     /** This is to indicate the the package has no errors during the compilation/building phase */
     private boolean                        valid            = true;
 
@@ -120,6 +122,7 @@ public class Package
                    ClassLoader parentClassLoader) {
         this.name = name;
         this.imports = new HashMap<String, ImportDeclaration>();
+        this.typeDeclarations = new HashMap<String, TypeDeclaration>();
         this.staticImports = Collections.EMPTY_SET;
         this.rules = new LinkedHashMap();
         this.ruleFlows = Collections.EMPTY_MAP;
@@ -157,6 +160,7 @@ public class Package
             out = new DroolsObjectOutputStream(bytes);
         }
         out.writeObject( this.dialectDatas );
+        out.writeObject( this.typeDeclarations );
         out.writeObject( this.name );
         out.writeObject( this.imports );
         out.writeObject( this.staticImports );
@@ -194,6 +198,7 @@ public class Package
         if (!isDroolsStream)
             ((DroolsObjectInput)in).setClassLoader(this.dialectDatas.getClassLoader());
 
+        this.typeDeclarations   = (Map)in.readObject();
         this.name = (String) in.readObject();
         this.imports = (Map<String, ImportDeclaration>) in.readObject();
         this.staticImports = (Set) in.readObject();
@@ -237,6 +242,22 @@ public class Package
 
     public Map<String, ImportDeclaration> getImports() {
         return this.imports;
+    }
+
+    public void addTypeDeclaration( final TypeDeclaration typeDecl ) {
+        this.typeDeclarations.put( typeDecl.getTypeName(), typeDecl );
+    }
+
+    public void removeTypeDeclaration( final String type ) {
+        this.typeDeclarations.remove( type );
+    }
+
+    public Map<String, TypeDeclaration> getTypeDeclarations() {
+        return this.typeDeclarations;
+    }
+
+    public TypeDeclaration getTypeDeclaration( String type ) {
+        return this.typeDeclarations.get( type );
     }
 
     public void addStaticImport(final String functionImport) {
@@ -478,29 +499,20 @@ public class Package
     /**
      * Returns true if clazz is imported as an Event class in this package
      * @param clazz
-     * @return true if clazz is imported as an Event class in this package
+     * @return
      */
     public boolean isEvent(Class clazz) {
         if ( clazz == null ) {
             return false;
         }
-        // check if clazz is resolved by any of the import declarations
-        for ( ImportDeclaration imp : this.imports.values() ) {
-            if ( imp.isEvent() && imp.matches( clazz ) ) {
+
+        // check if clazz is resolved by any of the type declarations
+        for( TypeDeclaration type : this.typeDeclarations.values() ) {
+            if( type.matches( clazz ) && type.getRole() == TypeDeclaration.Role.EVENT ) {
                 return true;
             }
-        }
-        // if it is not resolved, try superclass
-        if ( this.isEvent( clazz.getSuperclass() ) ) {
-            return true;
         }
 
-        // if it is no resolved, try interfaces
-        for ( Class interf : clazz.getInterfaces() ) {
-            if ( this.isEvent( interf ) ) {
-                return true;
-            }
-        }
         return false;
     }
 
