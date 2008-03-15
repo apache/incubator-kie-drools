@@ -131,7 +131,7 @@ public class StreamsTest extends TestCase {
         assertNotNull( handle3 );
         assertNotNull( handle4 );
 
-// TODO need to fix those tests
+// @FIXME_testEventAssertion
 //       assertTrue( handle1.isEvent() );
 //        assertTrue( handle2.isEvent() );
 //        assertTrue( handle3.isEvent() );
@@ -171,7 +171,7 @@ public class StreamsTest extends TestCase {
         assertNotNull( handle7 );
         assertNotNull( handle8 );
 
-// TODO need to fix those tests
+// @FIXME_testEventAssertion
 //        assertTrue( handle5.isEvent() );
 //        assertTrue( handle6.isEvent() );
 //        assertTrue( handle7.isEvent() );
