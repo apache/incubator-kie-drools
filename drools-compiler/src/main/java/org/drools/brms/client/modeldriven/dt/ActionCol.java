@@ -2,17 +2,19 @@ package org.drools.brms.client.modeldriven.dt;
 
 import org.drools.brms.client.modeldriven.brl.PortableObject;
 
-/**
- * This is the config for an action column.
- * @author Michael Neale
- *
- */
-public abstract class ActionCol implements PortableObject {
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 
-	/**
-	 * The header to be displayed.
-	 */
-	public String header;
+public class ActionCol implements PortableObject {
 
+    public String header;
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        header  = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(header);
+    }
 }

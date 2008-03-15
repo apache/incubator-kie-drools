@@ -17,14 +17,10 @@
  */
 package org.drools.integrationtests;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-
+import junit.framework.Assert;
+import junit.framework.TestCase;
 import org.drools.ClockType;
-import org.drools.WorkingMemoryEntryPoint;
+import org.drools.EntryPointInterface;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -37,8 +33,11 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tests related to the stream support features
@@ -91,7 +90,7 @@ public class StreamsTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         // load up the rulebase
-        return ruleBase;
+        return SerializationHelper.serializeObject(ruleBase);
     }
 
     public void testEventAssertion() throws Exception {
@@ -159,7 +158,7 @@ public class StreamsTest extends TestCase {
                                          50,
                                          System.currentTimeMillis() );
 
-        WorkingMemoryEntryPoint entry = wm.getWorkingMemoryEntryPoint( "StockStream" );
+        EntryPointInterface entry = wm.getEntryPoint( "StockStream" );
 
         InternalFactHandle handle5 = (InternalFactHandle) entry.insert( tick5 );
         InternalFactHandle handle6 = (InternalFactHandle) entry.insert( tick6 );

@@ -2,8 +2,9 @@ package org.drools;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 
-public class State {
+public class State implements Serializable {
     private final PropertyChangeSupport changes = new PropertyChangeSupport( this );
 
     private String                      state;

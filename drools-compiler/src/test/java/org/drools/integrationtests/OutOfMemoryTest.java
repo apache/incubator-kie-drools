@@ -16,10 +16,7 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
-import java.io.InputStreamReader;
-
 import junit.framework.TestCase;
-
 import org.drools.Cheese;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -28,6 +25,8 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+
+import java.io.InputStreamReader;
 
 
 /** Run all the tests with the ReteOO engine implementation */
@@ -51,9 +50,10 @@ public class OutOfMemoryTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OutOfMemoryError.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+
         int i = 0;
         
         try {
@@ -74,8 +74,9 @@ public class OutOfMemoryTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OutOfMemory.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.insert( new Cheese( "stilton",

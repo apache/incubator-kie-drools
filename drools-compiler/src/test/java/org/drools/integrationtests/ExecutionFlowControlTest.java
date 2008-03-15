@@ -1,16 +1,10 @@
 package org.drools.integrationtests;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.drools.Cheese;
 import org.drools.FactHandle;
+import org.drools.Message;
 import org.drools.Person;
 import org.drools.PersonInterface;
 import org.drools.RuleBase;
@@ -24,19 +18,23 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.ProcessBuilder;
 import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.Message;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExecutionFlowControlTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -51,13 +49,79 @@ public class ExecutionFlowControlTest extends TestCase {
                                             config );
     }
 
+    public void testRuleFlowConstraintDialects() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ConstraintDialects.rfm" ) ) );
+
+        System.err.print( builder.getErrors() );
+
+        assertEquals( 0, builder.getErrors().getErrors().length );
+
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+
+        StatefulSession session = ruleBase.newStatefulSession();
+        List inList = new ArrayList();
+        List outList = new ArrayList();
+        session.setGlobal( "inList", inList );
+        session.setGlobal( "outList", outList );
+
+        inList.add( 1 );
+        inList.add( 3 );
+        inList.add( 6 );
+        inList.add( 25 );
+
+        FactHandle handle = session.insert( inList );
+        session.startProcess( "ConstraintDialects" );
+        assertEquals( 4, outList.size() );
+        assertEquals( "MVELCodeConstraint was here", outList.get( 0 ));
+        assertEquals( "JavaCodeConstraint was here", outList.get( 1 ));
+        assertEquals( "MVELRuleConstraint was here", outList.get( 2 ));
+        assertEquals( "JavaRuleConstraint was here", outList.get( 3 ));
+
+        outList.clear();
+        inList.remove( new Integer( 1 ) );
+        session.update( handle, inList );
+        session.startProcess( "ConstraintDialects" );
+        assertEquals( 3, outList.size() );
+        assertEquals( "JavaCodeConstraint was here", outList.get( 0 ));
+        assertEquals( "MVELRuleConstraint was here", outList.get( 1 ));
+        assertEquals( "JavaRuleConstraint was here", outList.get( 2 ));
+
+        outList.clear();
+        inList.remove( new Integer( 6 ) );
+        session.update( handle, inList );
+        session.startProcess( "ConstraintDialects" );
+        assertEquals( 2, outList.size() );
+        assertEquals( "JavaCodeConstraint was here", outList.get( 0 ));
+        assertEquals( "JavaRuleConstraint was here", outList.get( 1 ));
+
+        outList.clear();
+        inList.remove( new Integer( 3 ) );
+        session.update( handle, inList );
+        session.startProcess( "ConstraintDialects" );
+        assertEquals( 1, outList.size() );
+        assertEquals( "JavaRuleConstraint was here", outList.get( 0 ));
+
+        outList.clear();
+        inList.remove( new Integer( 25 ) );
+        session.update( handle, inList );
+        try {
+            session.startProcess( "ConstraintDialects" );
+            fail("This should have thrown an exception" );
+        } catch ( Exception e ) {
+        }
+    }
+
     public void testSalienceInteger() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceIntegerRule.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -86,8 +150,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceExpressionRule.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -122,8 +187,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "no-loop.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -147,8 +213,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActive.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -192,8 +259,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActiveWithUpdate.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -252,8 +320,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AgendaGroups.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -298,8 +367,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ActivationGroups.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -351,8 +421,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -381,8 +452,9 @@ public class ExecutionFlowControlTest extends TestCase {
     public void testInsertRetractNoloop() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Insert_Retract_Noloop.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
 
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory wm = ruleBase.newStatefulSession();
         wm.insert( new Cheese( "stilton",
                                      15 ) );
@@ -395,8 +467,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration_with_NoLoop.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -426,8 +499,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FireRuleAfterDuration.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -458,8 +532,9 @@ public class ExecutionFlowControlTest extends TestCase {
     public void testUpdateNoLoop() throws Exception {
         // JBRULES-780, throws a NullPointer or infinite loop if there is an issue
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_UpdateNoloop.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
 
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory wm = ruleBase.newStatefulSession();
         wm.insert( new Cheese( "stilton",
                                      15 ) );
@@ -470,8 +545,9 @@ public class ExecutionFlowControlTest extends TestCase {
     public void testUpdateActivationCreationNoLoop() throws Exception {
         // JBRULES-787, no-loop blocks all dependant tuples for update 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_UpdateActivationCreationNoLoop.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
 
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final InternalWorkingMemoryActions wm = (InternalWorkingMemoryActions) ruleBase.newStatefulSession();
         final List created = new ArrayList();
         final List cancelled = new ArrayList();
@@ -531,8 +607,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflowgroup.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
@@ -556,8 +633,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.drl" ) ) );
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
         final Package pkg = builder.getPackage();
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
@@ -591,8 +669,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ruleflowClear.drl" ) ) );
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ruleflowClear.rfm" ) ) );
         final Package pkg = builder.getPackage();
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
@@ -644,8 +723,9 @@ public class ExecutionFlowControlTest extends TestCase {
         builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "ruleflow.rfm" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
@@ -739,7 +819,8 @@ public class ExecutionFlowControlTest extends TestCase {
         
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+
         StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
         session.setGlobal( "list", list );
@@ -751,70 +832,6 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( "java was here", list.get( 1 ) );
     }
     
-    public void testRuleFlowConstraintDialects() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addRuleFlow( new InputStreamReader( getClass().getResourceAsStream( "test_ConstraintDialects.rfm" ) ) );
-        
-        System.err.print( builder.getErrors() );
-        
-        assertEquals( 0, builder.getErrors().getErrors().length );
-        
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-        
-        StatefulSession session = ruleBase.newStatefulSession();
-        List inList = new ArrayList();
-        List outList = new ArrayList();
-        session.setGlobal( "inList", inList );
-        session.setGlobal( "outList", outList );
-        
-        inList.add( 1 );
-        inList.add( 3 );
-        inList.add( 6 );
-        inList.add( 25 );
-        
-        FactHandle handle = session.insert( inList );        
-        session.startProcess( "ConstraintDialects" );        
-        assertEquals( 4, outList.size() );
-        assertEquals( "MVELCodeConstraint was here", outList.get( 0 ));
-        assertEquals( "JavaCodeConstraint was here", outList.get( 1 ));
-        assertEquals( "MVELRuleConstraint was here", outList.get( 2 ));
-        assertEquals( "JavaRuleConstraint was here", outList.get( 3 ));
-        
-        outList.clear();
-        inList.remove( new Integer( 1 ) );
-        session.update( handle, inList );
-        session.startProcess( "ConstraintDialects" );
-        assertEquals( 3, outList.size() );
-        assertEquals( "JavaCodeConstraint was here", outList.get( 0 ));
-        assertEquals( "MVELRuleConstraint was here", outList.get( 1 ));
-        assertEquals( "JavaRuleConstraint was here", outList.get( 2 ));      
-        
-        outList.clear();
-        inList.remove( new Integer( 6 ) );
-        session.update( handle, inList );
-        session.startProcess( "ConstraintDialects" );
-        assertEquals( 2, outList.size() );
-        assertEquals( "JavaCodeConstraint was here", outList.get( 0 ));
-        assertEquals( "JavaRuleConstraint was here", outList.get( 1 ));    
-        
-        outList.clear();
-        inList.remove( new Integer( 3 ) );        
-        session.update( handle, inList );
-        session.startProcess( "ConstraintDialects" );
-        assertEquals( 1, outList.size() );
-        assertEquals( "JavaRuleConstraint was here", outList.get( 0 ));          
-        
-        outList.clear();
-        inList.remove( new Integer( 25 ) );
-        session.update( handle, inList );
-        try {
-            session.startProcess( "ConstraintDialects" );
-            fail("This should have thrown an exception" );
-        } catch ( Exception e ) {
-        }                     
-    }    
-
     public void testLoadingRuleFlowInPackage7() throws Exception {
     	// loading a ruleflow with errors
         final PackageBuilder builder = new PackageBuilder();
@@ -845,7 +862,8 @@ public class ExecutionFlowControlTest extends TestCase {
     public void testDateEffective() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_EffectiveDate.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 

@@ -1,5 +1,9 @@
 package org.drools.brms.client.modeldriven.brl;
 
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+
 /**
  * This is used to specify that the bound fact should be retracted
  * when the rule fires.
@@ -19,4 +23,11 @@ public class ActionRetractFact
 
     public String variableName;
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        variableName    = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(variableName);
+    }
 }

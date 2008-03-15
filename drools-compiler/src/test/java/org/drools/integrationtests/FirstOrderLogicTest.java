@@ -1,15 +1,7 @@
 package org.drools.integrationtests;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
@@ -31,6 +23,13 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class FirstOrderLogicTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
 
@@ -48,7 +47,7 @@ public class FirstOrderLogicTest extends TestCase {
 
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
@@ -86,7 +85,7 @@ public class FirstOrderLogicTest extends TestCase {
     public void testCollectModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
@@ -157,8 +156,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ExistsWithBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -223,8 +223,9 @@ public class FirstOrderLogicTest extends TestCase {
         assertTrue( rule.isValid() );
         assertEquals( 0,
                       builder.getErrors().getErrors().length );
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -260,8 +261,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "exists_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -298,8 +300,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_exists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -341,8 +344,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Forall.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -377,8 +381,9 @@ public class FirstOrderLogicTest extends TestCase {
 
         final RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setRemoveIdentities( true );
-        final RuleBase ruleBase = getRuleBase( config );
+        RuleBase ruleBase = getRuleBase( config );
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -426,8 +431,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectWithNestedFrom.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List results = new ArrayList();
@@ -469,7 +475,7 @@ public class FirstOrderLogicTest extends TestCase {
     public void testCollectModifyAlphaRestriction() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectAlphaRestriction.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
         final List results = new ArrayList();
@@ -542,8 +548,9 @@ public class FirstOrderLogicTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         // load up the rulebase
         return ruleBase;
     }
@@ -553,8 +560,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ForallSinglePattern.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -651,9 +659,10 @@ public class FirstOrderLogicTest extends TestCase {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( FirstOrderLogicTest.class.getResourceAsStream( "test_NestedCorrelatedRulesWithForall.drl" ) ) );
 
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        rb.addPackage( builder.getPackage() );
-        StatefulSession session = rb.newStatefulSession();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        StatefulSession session = ruleBase.newStatefulSession();
 
         List list1 = new ArrayList();
         List list2 = new ArrayList();
@@ -715,8 +724,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromInsideNotAndExists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -753,8 +763,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrNesting.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -785,8 +796,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectMemberOfOperator.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -842,8 +854,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectContainsOperator.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -899,8 +912,9 @@ public class FirstOrderLogicTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ForallSinglePatternWithExists.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();

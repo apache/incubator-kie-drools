@@ -66,7 +66,6 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.lang.dsl.DefaultExpander;
 
@@ -3254,20 +3253,14 @@ public class RuleParserTest extends TestCase {
         RestrictionConnectiveDescr or = (RestrictionConnectiveDescr) fieldConstr.getRestrictions().get( 0 );
         LiteralRestrictionDescr gt1 = (LiteralRestrictionDescr) or.getRestrictions().get( 0 );
         LiteralRestrictionDescr eq1 = (LiteralRestrictionDescr) or.getRestrictions().get( 1 );
-
-        assertEquals( ">",
-                      gt1.getEvaluator() );
-        assertEquals( false,
-                      gt1.isNegated() );
-        assertEquals( 1,
-                      ((Number) eq1.getValue()).intValue() );
-        assertEquals( "==",
-                      eq1.getEvaluator() );
-        assertEquals( false,
-                      eq1.isNegated() );
-        assertEquals( 1,
-                      ((Number) eq1.getValue()).intValue() );
-
+        
+        assertEquals( ">", gt1.getEvaluator() );
+        assertEquals( false, gt1.isNegated() );
+        assertEquals( 1, ((Number) eq1.getValue()).intValue() );
+        assertEquals( "==", eq1.getEvaluator() );
+        assertEquals( false, eq1.isNegated() );
+        assertEquals( 1, ((Number) eq1.getValue()).intValue() );
+        
     }
 
     public void testSemicolon() throws Exception {
@@ -3520,7 +3513,7 @@ public class RuleParserTest extends TestCase {
         parser.normal_lhs_block( descrs );
         assertTrue( parser.hasErrors() );
     }
-
+    
     public void testRuleSingleLine() throws Exception {
         final String text = "rule \"another test\" salience 10 when eval( true ) then System.out.println(1); end";
         final CharStream charStream = new ANTLRStringStream( text );
@@ -3529,14 +3522,12 @@ public class RuleParserTest extends TestCase {
         final DRLParser parser = new DRLParser( tokenStream );
         parser.setLineOffset( 10 );
         RuleDescr rule = parser.rule();
-
+        
         assertFalse( parser.hasErrors() );
-        assertEquals( "another test",
-                      rule.getName() );
-        assertEquals( "System.out.println(1); ",
-                      rule.getConsequence() );
+        assertEquals( "another test", rule.getName() );
+        assertEquals( "System.out.println(1); ", rule.getConsequence());
     }
-
+    
     public void testRuleTwoLines() throws Exception {
         final String text = "rule \"another test\" salience 10 when eval( true ) then System.out.println(1);\n end";
         final CharStream charStream = new ANTLRStringStream( text );
@@ -3545,12 +3536,10 @@ public class RuleParserTest extends TestCase {
         final DRLParser parser = new DRLParser( tokenStream );
         parser.setLineOffset( 10 );
         RuleDescr rule = parser.rule();
-
+        
         assertFalse( parser.hasErrors() );
-        assertEquals( "another test",
-                      rule.getName() );
-        assertEquals( "System.out.println(1);\n ",
-                      rule.getConsequence() );
+        assertEquals( "another test", rule.getName() );
+        assertEquals( "System.out.println(1);\n ", rule.getConsequence());
     }
 
     public void testRuleParseLhs3() throws Exception {
@@ -3650,14 +3639,13 @@ public class RuleParserTest extends TestCase {
 
         assertTrue( "Parser should have raised errors",
                     parser.hasErrors() );
-
+        
         List errors = parser.getErrors();
-        assertEquals( 2,
-                      errors.size() );
-
+        assertEquals( 2, errors.size() );
+        
         assertTrue( errors.get( 0 ) instanceof MismatchedTokenException ); // "action" is a reserved word
         assertTrue( errors.get( 1 ) instanceof NoViableAltException ); // no title in the rule
-
+        
     }
 
     public void testCommaMisuse() throws Exception {
@@ -3667,11 +3655,10 @@ public class RuleParserTest extends TestCase {
 
             assertTrue( "Parser should have raised errors",
                         parser.hasErrors() );
-            assertEquals( 3,
-                          parser.getErrors().size() );
-
-        } catch ( NullPointerException npe ) {
-            fail( "Should not raise NPE" );
+            assertEquals( 3, parser.getErrors().size() );
+            
+        } catch( NullPointerException npe ) {
+            fail("Should not raise NPE");
         }
     }
 
@@ -3774,8 +3761,8 @@ public class RuleParserTest extends TestCase {
         assertTrue( re.isNegated() );
     }
 
-    public void testTypeDeclaration() throws Exception {
-        final DRLParser parser = parseResource( "declare_type.drl" );
+    public void testEventImport() throws Exception {
+        final DRLParser parser = parseResource( "import_event.drl" );
         parser.compilation_unit();
 
         assertFalse( "Parser should not raise errors: " + parser.getErrorMessages().toString(),
@@ -3783,20 +3770,15 @@ public class RuleParserTest extends TestCase {
 
         final PackageDescr pack = parser.getPackageDescr();
 
-        final List<TypeDeclarationDescr> declarations = pack.getTypeDeclarations();
+        final List imports = pack.getImports();
 
         assertEquals( 1,
-                      declarations.size() );
+                      imports.size() );
 
-        final TypeDeclarationDescr descr = declarations.get( 0 );
-        assertEquals( "event",
-                      descr.getAttribute( "type" ) );
-        assertEquals( "org.drools.events.Call",
-                      descr.getAttribute( "class" ) );
-        assertEquals( "duration",
-                      descr.getAttribute( "duration_attribute" ) );
-        assertEquals( "pseudo",
-                      descr.getAttribute( "clock_strategy" ) );
+        final ImportDescr descr = (ImportDescr) imports.get( 0 );
+
+        assertTrue( descr.isEvent() );
+
     }
 
     public void testEntryPoint() throws Exception {
@@ -3815,11 +3797,10 @@ public class RuleParserTest extends TestCase {
         FieldConstraintDescr fcd = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
         assertEquals( "symbol",
                       fcd.getFieldName() );
-
+        
         assertNotNull( pattern.getSource() );
         EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
-        assertEquals( "StreamA",
-                      entry.getEntryId() );
+        assertEquals( "StreamA", entry.getEntryId() );
     }
 
     private DRLParser parse(final String text) throws Exception {

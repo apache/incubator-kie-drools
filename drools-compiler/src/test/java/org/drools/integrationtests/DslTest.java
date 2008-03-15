@@ -50,10 +50,11 @@ public class DslTest extends TestCase {
         assertEquals( 0,
                       builder.getErrors().getErrors().length );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        WorkingMemory wm = ruleBase.newStatefulSession();
         wm.insert( new Person( "Bob",
                                "http://foo.bar" ) );
         wm.insert( new Cheese( "stilton",
@@ -62,6 +63,7 @@ public class DslTest extends TestCase {
         final List messages = new ArrayList();
         wm.setGlobal( "messages",
                       messages );
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         // should have fired
@@ -89,10 +91,11 @@ public class DslTest extends TestCase {
         assertEquals( 0,
                       builder.getErrors().getErrors().length );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        WorkingMemory wm = ruleBase.newStatefulSession();
         wm.insert( new Person( "rage" ) );
         wm.insert( new Cheese( "cheddar",
                                15 ) );
@@ -100,6 +103,7 @@ public class DslTest extends TestCase {
         final List messages = new ArrayList();
         wm.setGlobal( "messages",
                       messages );
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         // should have NONE, as both conditions should be false.
@@ -131,8 +135,9 @@ public class DslTest extends TestCase {
 
         builder.addPackageFromDrl( drlReader,
                                    dslReader );
-        final Package pkg = builder.getPackage();
+        Package pkg = builder.getPackage();
 
+        pkg = SerializationHelper.serializeObject(pkg);
         assertFalse( pkg.isValid() );
     }
 
@@ -154,10 +159,11 @@ public class DslTest extends TestCase {
         assertEquals( 0,
                       builder.getErrors().getErrors().length );
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        WorkingMemory wm = ruleBase.newStatefulSession();
         List results = new ArrayList();
         wm.setGlobal( "results",
                       results );
@@ -165,6 +171,7 @@ public class DslTest extends TestCase {
                                     42 );
         wm.insert( cheese );
 
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         // should have fired

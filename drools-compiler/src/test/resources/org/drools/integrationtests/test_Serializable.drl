@@ -17,7 +17,6 @@ rule "match Person 1"
         $person.setStatus("match Person ok");		
 end    
 
-
 rule "match Person 2"
 	agenda-group "xxx"	
 	salience ($age2 - $age1)
@@ -41,6 +40,7 @@ rule "match Person 3"
        exists Person( name == "mark" )       
     then
 end 
+
 
 rule "match Integer"
 	agenda-group "yyy"	

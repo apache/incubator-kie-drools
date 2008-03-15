@@ -82,11 +82,11 @@ public class DefaultExpander
                            mapping );
         for ( final Iterator it = mapping.getEntries().iterator(); it.hasNext(); ) {
             final DSLMappingEntry entry = (DSLMappingEntry) it.next();
-            if ( entry.getSection() == DSLMappingEntry.KEYWORD ) {
+            if ( DSLMappingEntry.KEYWORD.equals(entry.getSection()) ) {
                 this.keywords.add( entry );
-            } else if ( entry.getSection() == DSLMappingEntry.CONDITION ) {
+            } else if ( DSLMappingEntry.CONDITION.equals(entry.getSection()) ) {
                 this.condition.add( entry );
-            } else if ( entry.getSection() == DSLMappingEntry.CONSEQUENCE ) {
+            } else if ( DSLMappingEntry.CONSEQUENCE.equals(entry.getSection()) ) {
                 this.consequence.add( entry );
             } else {
                 // if any, then add to them both condition and consequence

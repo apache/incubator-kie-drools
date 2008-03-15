@@ -1,11 +1,6 @@
 package org.drools.integrationtests;
 
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
 import junit.framework.TestCase;
-
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
@@ -15,6 +10,10 @@ import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 import org.drools.concurrent.Future;
 import org.drools.rule.Package;
+
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StatefulSessionTest extends TestCase {
     final List list = new ArrayList();
@@ -141,7 +140,7 @@ public class StatefulSessionTest extends TestCase {
         
         int i = 0;
         while ( !futureFireAllRules.isDone() ) {
-            Thread.sleep( 300 );
+            Thread.sleep( 100 );
             if (i++ > 5) {
                 fail( "Future should have finished by now" );
             }
@@ -195,8 +194,9 @@ public class StatefulSessionTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         return ruleBase.newStatefulSession();
     }
 
@@ -205,10 +205,12 @@ public class StatefulSessionTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final StatefulSession session = ruleBase.newStatefulSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        StatefulSession session = ruleBase.newStatefulSession();
 
+//        session    = SerializationHelper.serializeObject(session);
         session.setGlobal( "list",
                            this.list );
         return session;

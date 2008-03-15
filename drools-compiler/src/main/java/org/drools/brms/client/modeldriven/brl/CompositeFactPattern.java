@@ -1,8 +1,12 @@
 package org.drools.brms.client.modeldriven.brl;
 
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
+
 /**
  * Represents first order logic like Or, Not, Exists.
- * 
+ *
  * @author Michael Neale
  */
 public class CompositeFactPattern
@@ -16,13 +20,24 @@ public class CompositeFactPattern
      * this will one of: [Not, Exist, Or]
      */
     public String              type;
-    
+
     /**
      * The patterns.
      */
     public FactPattern[]       patterns;
 
-    
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        type    = (String)in.readObject();
+        patterns    = (FactPattern[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(type);
+        out.writeObject(patterns);
+    }
+
+
     /**
      * This type should be from the contants in this class of course.
      */

@@ -1,5 +1,9 @@
 package org.drools;
 
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -11,7 +15,7 @@ public class Person
     Serializable,
     PersonInterface {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
     private String            name;
@@ -30,7 +34,34 @@ public class Person
     private Cheese            cheese;
 
     private List              addresses = new ArrayList();
-    
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        name    = (String)in.readObject();
+        likes    = (String)in.readObject();
+        age     = in.readInt();
+        bigDecimal    = (BigDecimal)in.readObject();
+        bigInteger    = (BigInteger)in.readObject();
+        hair    = (String)in.readObject();
+        sex     = in.readChar();
+        alive   = in.readBoolean();
+        status    = (String)in.readObject();
+        cheese    = (Cheese)in.readObject();
+        addresses    = (List)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(name);
+        out.writeObject(likes);
+        out.writeObject(bigDecimal);
+        out.writeObject(bigInteger);
+        out.writeObject(hair);
+        out.writeChar(sex);
+        out.writeBoolean(alive);
+        out.writeObject(status);
+        out.writeObject(cheese);
+        out.writeObject(addresses);
+    }
+
     public List getAddresses() {
         return addresses;
     }

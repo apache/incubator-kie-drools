@@ -1,5 +1,9 @@
 package org.drools.brms.client.modeldriven.brl;
 
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+
 /**
  * This holds values for rule attributes (eg salience, agenda-group etc).
  * @author Michael Neale
@@ -21,6 +25,16 @@ public class RuleAttribute
     public String value;
 
     public RuleAttribute() {
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        attributeName   = (String)in.readObject();
+        value   = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(attributeName);
+        out.writeObject(value);
     }
 
     public String toString() {

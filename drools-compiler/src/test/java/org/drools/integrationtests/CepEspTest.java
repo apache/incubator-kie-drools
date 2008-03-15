@@ -54,18 +54,19 @@ public class CepEspTest extends TestCase {
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         // load up the rulebase
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         return ruleBase;
     }
 
     public void testEventAssertion() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
+        WorkingMemory wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
         final List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -103,6 +104,7 @@ public class CepEspTest extends TestCase {
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
 
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         assertEquals( 2,
@@ -110,76 +112,12 @@ public class CepEspTest extends TestCase {
 
     }
 
-    public void FIXME_testEventAssertionWithDuration() throws Exception {
-        // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertionWithDuration.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
-
-        final WorkingMemory wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
-        final List results = new ArrayList();
-
-        wm.setGlobal( "results",
-                      results );
-
-        StockTick tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis(),
-                                         5 );
-        StockTick tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(),
-                                         10 );
-        StockTick tick3 = new StockTick( 3,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis(), 
-                                         8 );
-        StockTick tick4 = new StockTick( 4,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis(),
-                                         7);
-
-        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
-        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
-        InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
-        InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
-
-        assertNotNull( handle1 );
-        assertNotNull( handle2 );
-        assertNotNull( handle3 );
-        assertNotNull( handle4 );
-
-        assertTrue( handle1.isEvent() );
-        assertTrue( handle2.isEvent() );
-        assertTrue( handle3.isEvent() );
-        assertTrue( handle4.isEvent() );
-        
-        EventFactHandle eh1 = (EventFactHandle) handle1;
-        EventFactHandle eh2 = (EventFactHandle) handle2;
-        EventFactHandle eh3 = (EventFactHandle) handle3;
-        EventFactHandle eh4 = (EventFactHandle) handle4;
-        
-        assertEquals( tick1.getDuration(), eh1.getDuration() );
-        assertEquals( tick2.getDuration(), eh2.getDuration() );
-        assertEquals( tick3.getDuration(), eh3.getDuration() );
-        assertEquals( tick4.getDuration(), eh4.getDuration() );
-
-        wm.fireAllRules();
-
-        assertEquals( 2,
-                      results.size() );
-
-    }
-
-    public void FIXME_testTimeRelationalOperators() throws Exception {
+    public void testTimeRelationalOperators() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final TemporalSession<SessionPseudoClock> wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
+        TemporalSession<SessionPseudoClock> wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
         final SessionPseudoClock clock = wm.getSessionClock();
 
         clock.setStartupTime( 1000 );
@@ -227,57 +165,49 @@ public class CepEspTest extends TestCase {
         StockTick tick1 = new StockTick( 1,
                                          "DROO",
                                          50,
-                                         System.currentTimeMillis(),
-                                         3 );
+                                         System.currentTimeMillis() );
         StockTick tick2 = new StockTick( 2,
                                          "ACME",
                                          10,
-                                         System.currentTimeMillis(),
-                                         3 );
+                                         System.currentTimeMillis() );
         StockTick tick3 = new StockTick( 3,
                                          "ACME",
                                          10,
-                                         System.currentTimeMillis(),
-                                         3 );
+                                         System.currentTimeMillis() );
         StockTick tick4 = new StockTick( 4,
                                          "DROO",
                                          50,
-                                         System.currentTimeMillis(),
-                                         5 );
+                                         System.currentTimeMillis() );
         StockTick tick5 = new StockTick( 5,
                 						 "ACME",
                 						 10,
-                                         System.currentTimeMillis(),
-                                         5 );
+                						 System.currentTimeMillis() );
         StockTick tick6 = new StockTick( 6,
 										 "ACME",
 										 10,
-                                         System.currentTimeMillis(),
-                                         3 );
+										 System.currentTimeMillis() );
         StockTick tick7 = new StockTick( 7,
 				 						 "ACME",
 				 						 10,
-                                         System.currentTimeMillis(),
-                                         5 );
+				 						 System.currentTimeMillis() );
         StockTick tick8 = new StockTick( 8,
 										 "ACME",
 										 10,
-                                         System.currentTimeMillis(),
-                                         3 );
+										 System.currentTimeMillis() );
 
-        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1 );
+        InternalFactHandle handle1 = (InternalFactHandle) wm.insert( tick1, 3 );
         clock.advanceTime( 4 );
-        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2 );
+        InternalFactHandle handle2 = (InternalFactHandle) wm.insert( tick2, 3 );
         clock.advanceTime( 4 );
-        InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3 );
+        InternalFactHandle handle3 = (InternalFactHandle) wm.insert( tick3, 3 );
         clock.advanceTime( 4 );
-        InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4 );
-        InternalFactHandle handle5 = (InternalFactHandle) wm.insert( tick5 );
+        InternalFactHandle handle4 = (InternalFactHandle) wm.insert( tick4, 5 );
+        InternalFactHandle handle5 = (InternalFactHandle) wm.insert( tick5, 5 );
         clock.advanceTime( 1 );
-        InternalFactHandle handle6 = (InternalFactHandle) wm.insert( tick6 );
-        InternalFactHandle handle7 = (InternalFactHandle) wm.insert( tick7 );
+        InternalFactHandle handle6 = (InternalFactHandle) wm.insert( tick6, 3 );
+        InternalFactHandle handle7 = (InternalFactHandle) wm.insert( tick7, 5 );
         clock.advanceTime( 2 );
-        InternalFactHandle handle8 = (InternalFactHandle) wm.insert( tick8 );
+        InternalFactHandle handle8 = (InternalFactHandle) wm.insert( tick8, 3 );
         
         assertNotNull( handle1 );
         assertNotNull( handle2 );
@@ -296,6 +226,7 @@ public class CepEspTest extends TestCase {
         assertTrue( handle7.isEvent() );
         assertTrue( handle8.isEvent() );
 
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         assertEquals( 1,
@@ -370,12 +301,12 @@ public class CepEspTest extends TestCase {
 
     }
 
-    public void FIXME_testSimpleTimeWindow() throws Exception {
+    public void testSimpleTimeWindow() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleTimeWindow.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final TemporalSession<SessionPseudoClock> wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
+        TemporalSession<SessionPseudoClock> wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
         final List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -394,6 +325,7 @@ public class CepEspTest extends TestCase {
         assertEquals( 0,
                       handle1.getDuration() );
 
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         clock.advanceTime( 10000 ); // 10 seconds
@@ -438,6 +370,7 @@ public class CepEspTest extends TestCase {
         assertEquals( 0,
                       handle5.getDuration() );
 
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         clock.advanceTime( 10000 ); // 10 seconds
@@ -449,6 +382,7 @@ public class CepEspTest extends TestCase {
         assertEquals( 0,
                       handle6.getDuration() );
 
+        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
     }

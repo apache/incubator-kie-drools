@@ -1,6 +1,8 @@
 package org.drools;
 
-public class Precondition {
+import java.io.Serializable;
+
+public class Precondition implements Serializable {
     private String code;
     private String value;
 

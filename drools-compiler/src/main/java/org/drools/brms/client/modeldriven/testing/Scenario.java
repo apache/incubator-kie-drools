@@ -1,6 +1,9 @@
 package org.drools.brms.client.modeldriven.testing;
 
 import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,6 +58,22 @@ public class Scenario implements PortableObject {
 	public boolean inclusive = false;
 
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        maxRuleFirings  = in.readInt();
+        globals         = (List)in.readObject();
+        fixtures        = (List)in.readObject();
+        lastRunResult   = (Date)in.readObject();
+        rules           = (List)in.readObject();
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(maxRuleFirings);
+        out.writeObject(globals);
+        out.writeObject(fixtures);
+        out.writeObject(lastRunResult);
+        out.writeObject(rules);
+    }
 
 	/**
 	 * Returns true if this was a totally successful scenario, based on the results contained.

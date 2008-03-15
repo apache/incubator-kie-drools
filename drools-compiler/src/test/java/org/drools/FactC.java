@@ -1,6 +1,8 @@
 package org.drools;
 
-public class FactC {
+import java.io.Serializable;
+
+public class FactC implements Serializable {
     String  f1;
     Integer f2;
     Float   f3;

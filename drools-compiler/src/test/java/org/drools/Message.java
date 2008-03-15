@@ -6,8 +6,9 @@ package org.drools;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.io.Serializable;
 
-public class Message {
+public class Message implements Serializable {
 
     private String          message1 = "One";
     private String          message2 = "Two";
@@ -24,15 +25,15 @@ public class Message {
     private List    list     = new ArrayList();
     private int     number   = 0;
     private Date    birthday = new Date();
-    private boolean fired    = false;    
-    
+    private boolean fired    = false;
+
     public Message() {
     }
-    
+
     public Message(final String msg) {
         this.message = msg;
-    }    
-    
+    }
+
     public String getMessage() {
         return this.message;
     }
@@ -80,7 +81,7 @@ public class Message {
     public void setMessage4(final String message4) {
         this.message4 = message4;
     }
-    
+
     public boolean isFired() {
         return this.fired;
     }
@@ -115,5 +116,5 @@ public class Message {
 
     public void addToList(final String s) {
         this.list.add( s );
-    }    
+    }
 }

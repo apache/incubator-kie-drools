@@ -2,13 +2,13 @@ package org.drools.compiler;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,14 +39,15 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.StockTick;
 import org.drools.WorkingMemory;
+import org.drools.integrationtests.SerializationHelper;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.RuleFlowGroupNode;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
@@ -70,7 +71,6 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.process.core.Process;
 import org.drools.process.core.Variable;
@@ -85,7 +85,6 @@ import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
-import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
@@ -227,8 +226,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         ruleDescr.setConsequence( "map.put(\"value\", new Integer(1) );" );
         //check that packageDescr is serializable
-        final byte[] ast = serializeOut( packageDescr );
-        final PackageDescr back = (PackageDescr) serializeIn( ast );
+        final PackageDescr back = (PackageDescr) SerializationHelper.serializeObject( packageDescr );
         assertNotNull( back );
         assertEquals( "p1",
                       back.getName() );
@@ -240,11 +238,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
 
-        final byte[] bytes = serializeOut( pkg );
-
-        // Deserialize from a byte array
-
-        final Package newPkg = (Package) serializeIn( bytes );
+        final Package newPkg = SerializationHelper.serializeObject( pkg );
 
         final Rule newRule = newPkg.getRule( "rule-1" );
 
@@ -271,26 +265,6 @@ public class PackageBuilderTest extends DroolsTestCase {
                                            workingMemory );
         assertEquals( new Integer( 1 ),
                       map.get( "value" ) );
-    }
-
-    private Object serializeIn(final byte[] bytes) throws IOException,
-                                                  ClassNotFoundException {
-        final ObjectInput in = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ) );
-        final Object obj = in.readObject();
-        in.close();
-        return obj;
-    }
-
-    private byte[] serializeOut(final Object obj) throws IOException {
-        // Serialize to a byte array
-        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        final ObjectOutput out = new ObjectOutputStream( bos );
-        out.writeObject( obj );
-        out.close();
-
-        // Get the bytes of the serialized object
-        final byte[] bytes = bos.toByteArray();
-        return bytes;
     }
 
     public void testNoPackageName() throws Exception {
@@ -1021,7 +995,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // test JANINO with property settings
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
         builder = new PackageBuilder( conf );
         builder.addPackage( pkgDescr );
@@ -1033,7 +1007,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // test eclipse jdt core with property settings and default source level
         conf = new PackageBuilderConfiguration();
-        javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
+        javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         builder = new PackageBuilder( conf );
         builder.addPackage( pkgDescr );
@@ -1042,31 +1016,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         compiler = (JavaCompiler) compilerField.get( dialect );
         assertSame( EclipseJavaCompiler.class,
                     compiler.getClass() );
-    }
-
-    public void testTypeDeclaration() throws Exception {
-        PackageDescr pkgDescr = new PackageDescr( "org.test" );
-        TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
-        typeDescr.addAttribute( TypeDeclarationDescr.ATTR_ROLE,
-                                "event" );
-        typeDescr.addAttribute( TypeDeclarationDescr.ATTR_CLASS,
-                                "org.drools.StockTick" );
-        pkgDescr.addTypeDeclaration( typeDescr );
-
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( pkgDescr );
-
-        Package pkg = builder.getPackage();
-        assertEquals( 1,
-                      pkg.getTypeDeclarations().size() );
-
-        TypeDeclaration type = pkg.getTypeDeclaration( "StockTick" );
-        assertEquals( "StockTick",
-                      type.getTypeName() );
-        assertEquals( TypeDeclaration.Role.EVENT,
-                      type.getRole() );
-        assertEquals( StockTick.class,
-                      type.getTypeClass() );
     }
 
     public void testPackageMerge() throws Exception {
@@ -1240,10 +1189,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         //now serialization
         ByteArrayOutputStream data = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream( data );
+        ObjectOutput out = new DroolsObjectOutputStream( data );
         out.writeObject( pkg );
 
-        ObjectInputStream objIn = new DroolsObjectInputStream( new ByteArrayInputStream( data.toByteArray() ) );
+        ObjectInput objIn = new DroolsObjectInputStream( new ByteArrayInputStream( data.toByteArray() ) );
         Package pkg2 = (Package) objIn.readObject();
         assertNotNull( pkg2 );
 
@@ -1283,16 +1232,18 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     public void testJaninoWithStaticImports() throws Exception {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) cfg.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
 
-        PackageBuilder bldr = new PackageBuilder( cfg );
-        bldr.addPackageFromDrl( new StringReader( "package testBuilderPackageConfig \n import java.util.List" ) );
-        bldr.addPackageFromDrl( new StringReader( "function void doSomething() {\n System.err.println(List.class.toString()); }" ) );
 
-        assertFalse( bldr.hasErrors() );
+        PackageBuilder bldr = new PackageBuilder(cfg);
+        bldr.addPackageFromDrl( new StringReader("package testBuilderPackageConfig \n import java.util.List") );
+        bldr.addPackageFromDrl( new StringReader("function void doSomething() {\n System.err.println(List.class.toString()); }"));
+
+        assertFalse(bldr.hasErrors());
 
     }
+
 
     class MockRuleFlow
         implements
@@ -1321,7 +1272,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public String getPackageName() {
-            return null;
+        	return null;
         }
 
         public void setId(String id) {

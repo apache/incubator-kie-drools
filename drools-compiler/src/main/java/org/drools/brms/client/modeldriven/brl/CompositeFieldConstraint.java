@@ -1,5 +1,9 @@
 package org.drools.brms.client.modeldriven.brl;
 
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 /**
  * This is a field constraint that may span multiple fields.
  *
@@ -35,6 +39,15 @@ public class CompositeFieldConstraint implements FieldConstraint {
      */
     public FieldConstraint[] constraints = null;
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        compositeJunctionType   = (String)in.readObject();
+        constraints   = (FieldConstraint[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(compositeJunctionType);
+        out.writeObject(constraints);
+    }
     //Note this is a bit ugly, GWT had some early limitations which required this to kind of work this way.
     //when generics are available, could probably switch to it, but remember this is persistent stuff
     //so don't want to break backwards compat (as XStream is used)

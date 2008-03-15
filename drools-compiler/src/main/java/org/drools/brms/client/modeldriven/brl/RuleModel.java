@@ -2,6 +2,9 @@ package org.drools.brms.client.modeldriven.brl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class RuleModel
     implements
@@ -19,6 +22,21 @@ public class RuleModel
     public IPattern[]      lhs          = new IPattern[0];
     public IAction[]       rhs          = new IAction[0];
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        name    = (String)in.readObject();
+        modelVersion    = (String)in.readObject();
+        attributes    = (RuleAttribute[])in.readObject();
+        lhs    = (IPattern[])in.readObject();
+        rhs    = (IAction[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(name);
+        out.writeObject(modelVersion);
+        out.writeObject(attributes);
+        out.writeObject(lhs);
+        out.writeObject(rhs);
+    }
     /**
      * This will return the fact pattern that a variable is bound to.
      *

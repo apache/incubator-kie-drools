@@ -1,6 +1,8 @@
 package org.drools;
 
-public class Func {
+import java.io.Serializable;
+
+public class Func implements Serializable {
     public static void func() {
 
     }

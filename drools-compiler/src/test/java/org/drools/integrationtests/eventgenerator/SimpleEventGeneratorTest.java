@@ -1,21 +1,21 @@
 package org.drools.integrationtests.eventgenerator;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
-
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.integrationtests.SerializationHelper;
 import org.drools.integrationtests.eventgenerator.Event.EventType;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 
 public class SimpleEventGeneratorTest extends TestCase {
@@ -46,7 +46,7 @@ public class SimpleEventGeneratorTest extends TestCase {
 		final RuleBase ruleBase = getRuleBase();
 		ruleBase.addPackage( pkg );
 		// load up the rulebase
-		return ruleBase;
+		return SerializationHelper.serializeObject(ruleBase);
 	}
     
 	public void testEventGenerationMaxItems() throws DroolsParserException, IOException, Exception{

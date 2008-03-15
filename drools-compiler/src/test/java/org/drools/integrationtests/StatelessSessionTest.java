@@ -1,9 +1,6 @@
 package org.drools.integrationtests;
 
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-
+import junit.framework.TestCase;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.RuleBase;
@@ -11,16 +8,16 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
-import org.drools.WorkingMemory;
 import org.drools.base.CopyIdentifiersGlobalExporter;
 import org.drools.base.MapGlobalResolver;
 import org.drools.base.ReferenceOriginalGlobalExporter;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.drools.spi.GlobalExporter;
 import org.drools.spi.GlobalResolver;
 
-import junit.framework.TestCase;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StatelessSessionTest extends TestCase {
     final List list = new ArrayList();
@@ -261,10 +258,12 @@ public class StatelessSessionTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
+        RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final StatelessSession session = ruleBase.newStatelessSession();
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        StatelessSession session = ruleBase.newStatelessSession();
         
+        session    = SerializationHelper.serializeObject(session);
         session.setGlobalResolver( this.globalResolver );
 
         session.setGlobal( "list",

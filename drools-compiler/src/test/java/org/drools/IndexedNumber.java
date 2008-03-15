@@ -16,6 +16,8 @@
 
 package org.drools;
 
+import java.io.Serializable;
+
 /**
  * IndexedNumber
  *
@@ -25,7 +27,7 @@ package org.drools;
  * @version $Id$
  */
 
-public class IndexedNumber {
+public class IndexedNumber implements Serializable {
 
     private int     number = 0;
 

@@ -223,13 +223,13 @@ prolog
 statement
 	:	a=rule_attribute { this.packageDescr.addAttribute( a ); }
 	|	function_import_statement 
+	|	event_import_statement
 	|	import_statement 
 	|	global 
 	|	function 
 	|       t=template { this.packageDescr.addFactTemplate( $t.template ); }
 	|	r=rule { this.packageDescr.addRule( $r.rule ); }			
 	|	q=query	{ this.packageDescr.addRule( $q.query ); }
-	|       d=type_declaration { this.packageDescr.addTypeDeclaration( $d.declaration ); }
 	;
 	
 package_statement returns [String packageName]
@@ -274,6 +274,22 @@ function_import_statement
 	        }
 	        import_name[importDecl] opt_semicolon
 	;
+
+event_import_statement
+        @init {
+        	ImportDescr importDecl = null;
+        }
+	:	IMPORT EVENT 
+	        {
+	            importDecl = factory.createEventImport( );
+	            importDecl.setStartCharacter( ((CommonToken)$IMPORT).getStartIndex() );
+		    if (packageDescr != null) {
+			packageDescr.addImport( importDecl );
+		    }
+	        }
+	        import_name[importDecl] opt_semicolon
+	;
+
 
 import_name[ImportDescr importDecl] returns [String name]
 	@init {
@@ -371,31 +387,7 @@ argument returns [String name]
 	:	id=identifier { $name=$id.text; } ( '[' ']' { $name += "[]";})*
 	;
 	
-type_declaration returns [TypeDeclarationDescr declaration]
-        @init {
-                $declaration = factory.createTypeDeclaration();
-        }
-        :	DECLARE id=identifier 
-                        {
-                            $declaration.setTypeName( $id.text );
-                        }
-                LEFT_CURLY
-                        type_decl_attribute[$declaration] ( COMMA type_decl_attribute[$declaration] )*
-                RIGHT_CURLY
-        ;
-        
-type_decl_attribute[TypeDeclarationDescr declaration]
-        :	att=identifier 
-                ( val=STRING 
-                {
-                    $declaration.addAttribute( $att.text, getString( $val.text ) );
-                }
-                | cl=dotted_name
-                {
-                    $declaration.addAttribute( $att.text, $cl.text );
-                }
-                )
-        ;       
+
 
 query returns [QueryDescr query]
 	@init {
@@ -1800,8 +1792,6 @@ EVENT :		'event';
 
 GLOBAL	:	'global';
 	
-DECLARE	:	'declare';
-
 RULE    :	'rule';
 
 QUERY	:	'query';
@@ -1959,5 +1949,3 @@ MULTI_LINE_COMMENT
 MISC 	:
 		'!' | '@' | '$' | '%' | '^' | '*' | '_' | '-' | '+'  | '?' | '=' | '/' | '\'' | '\\' | '|' | '&'
 	;
-
-

@@ -1,6 +1,10 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +80,7 @@ import org.mvel.util.ParseTools;
 
 public class MVELDialect
     implements
-    Dialect {
+    Dialect, Externalizable {
 
     public final static String                           ID                          = "mvel";
 
@@ -126,6 +130,34 @@ public class MVELDialect
     public MVELDialect() {
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        interceptors    = (Map)in.readObject();
+        results         = (List)in.readObject();
+        src             = (MemoryResourceReader)in.readObject();
+        pkg             = (Package)in.readObject();
+        data            = (MVELDialectData)in.readObject();
+        configuration   = (MVELDialectConfiguration)in.readObject();
+        typeResolver             = (TypeResolver)in.readObject();
+        classFieldExtractorCache             = (ClassFieldExtractorCache)in.readObject();
+        analyzer             = (MVELExprAnalyzer)in.readObject();
+        imports             = (Map)in.readObject();
+        packageImports             = (Map)in.readObject();
+        strictMode             = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(interceptors);
+        out.writeObject(results);
+        out.writeObject(src);
+        out.writeObject(pkg);
+        out.writeObject(data);
+        out.writeObject(configuration);
+        out.writeObject(typeResolver);
+        out.writeObject(classFieldExtractorCache);
+        out.writeObject(analyzer);
+        out.writeObject(imports);
+        out.writeBoolean(strictMode);
+    }
     public static void setLanguageLevel(int level) {
         synchronized ( languageSet ) {
             // this synchronisation is needed as setLanguageLevel is now thread safe
