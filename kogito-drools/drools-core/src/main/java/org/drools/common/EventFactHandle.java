@@ -23,7 +23,7 @@ public class EventFactHandle extends DefaultFactHandle {
         this.duration = 0;
     }
 
-    public EventFactHandle(final long id,
+    public EventFactHandle(final int id,
                            final Object object) {
         super( id,
                object );
@@ -37,7 +37,7 @@ public class EventFactHandle extends DefaultFactHandle {
      * @param id
      *            Handle id.
      */
-    public EventFactHandle(final long id,
+    public EventFactHandle(final int id,
                            final Object object,
                            final long recency) {
         super( id,
@@ -56,7 +56,7 @@ public class EventFactHandle extends DefaultFactHandle {
      * @param timestamp the timestamp of the occurrence of this event
      * @param duration the duration of this event. May be 0 (zero) in case this is a primitive event.
      */
-    public EventFactHandle( final long id,
+    public EventFactHandle( final int id,
                             final Object object,
                             final long recency,
                             final long timestamp,
