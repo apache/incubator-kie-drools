@@ -1,22 +1,22 @@
 package org.drools.integrationtests;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.StringReader;
-
+import junit.framework.Assert;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 
-import junit.framework.Assert;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.StringReader;
 
 /**
  * This generates a large number of rules (complex ones) and then times
@@ -80,7 +80,7 @@ public class LargeRuleBase {
 			f.delete();
 
 		time = System.currentTimeMillis();
-		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(f));
+		ObjectOutput out = new DroolsObjectOutputStream(new FileOutputStream(f));
 		out.writeObject(rb);
 		out.flush();
 		out.close();
