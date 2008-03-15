@@ -17,6 +17,10 @@
 package org.drools.facttemplates;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.util.Arrays;
 
 //import woolfel.engine.rule.Rule;
@@ -30,7 +34,7 @@ import java.util.Arrays;
 public class FactImpl
     implements
     Fact,
-    Serializable {
+    Externalizable {
 
     private static int hashCode(final Object[] array) {
         final int PRIME = 31;
@@ -53,6 +57,9 @@ public class FactImpl
      */
     private long         id;
 
+    public FactImpl() {
+    }
+
     /**
      * this is the default constructor
      * @param instance
@@ -71,6 +78,20 @@ public class FactImpl
         this.factTemplate = template;
         this.values = new Object[template.getNumberOfFields()];
         this.id = id;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        factTemplate    = (FactTemplate)in.readObject();
+        values          = (Object[])in.readObject();
+        hashCode        = in.readInt();
+        id              = in.readLong();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(factTemplate);
+        out.writeObject(values);
+        out.writeInt(hashCode);
+        out.writeLong(id);
     }
 
     /**

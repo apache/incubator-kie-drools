@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectInput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,9 +65,6 @@ public class FileScanner extends PackageProvider {
     /**
      * Calculate a change set, based on last updated times.
      * (keep a map of files).
-     * @throws ClassNotFoundException
-     * @throws IOException
-     * @throws FileNotFoundException
      */
     private Package[] getChangeSet() {
         if ( this.files == null ) return new Package[0];
@@ -106,7 +104,7 @@ public class FileScanner extends PackageProvider {
     	} else {
 
 	        Package p1_ = null;
-	        ObjectInputStream in;
+	        ObjectInput in;
 	        try {
 	            in = new DroolsObjectInputStream( new FileInputStream( pkgFile ) );
 	            p1_ = (Package) in.readObject();

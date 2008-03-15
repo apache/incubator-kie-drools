@@ -3,11 +3,14 @@
  */
 package org.drools.concurrent;
 
+import org.drools.WorkingMemory;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.drools.WorkingMemory;
 
 public class AssertObjects
     implements
@@ -17,8 +20,23 @@ public class AssertObjects
     private volatile List results;
     private Exception     e;
 
+    public AssertObjects() {
+    }
+
     public AssertObjects(final Object object) {
         this.object = object;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        object  = in.readObject();
+        results = (List)in.readObject();
+        e       = (Exception)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(object);
+        out.writeObject(results);
+        out.writeObject(e);
     }
 
     public void execute(final WorkingMemory workingMemory) {

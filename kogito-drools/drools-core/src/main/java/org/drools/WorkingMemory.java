@@ -2,13 +2,13 @@ package org.drools;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package org.drools;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.io.Externalizable;
 
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
@@ -29,16 +30,16 @@ import org.drools.spi.GlobalResolver;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.
- * 
+ *
  * While this object can be serialised out, it cannot be serialised in. This is because
  * the RuleBase reference is transient. Please see the RuleBase interface for serializing
  * in WorkingMemories from an InputStream.
- * 
+ *
  */
-public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryEntryPoint {
+public interface WorkingMemory extends WorkingMemoryEventManager, Externalizable {
 
     /**
-     * Returns the Agenda for this WorkingMemory. While the WorkingMemory interface is considered public, the Agenda interface 
+     * Returns the Agenda for this WorkingMemory. While the WorkingMemory interface is considered public, the Agenda interface
      * is more subject to change.
      * @return
      *         the Agenda
@@ -48,7 +49,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
     /**
      * Set a specific instance as a global in this working memory. Null values will return doing nothing.
      * The global identifier and its type must be declared in the drl.
-     * 
+     *
      * @param identifier
      *            the identifier under which to populate the data
      * @param value
@@ -59,38 +60,38 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
 
     /**
      * Retrieve a specific instance of global data by identifier
-     * 
+     *
      * @return application data or null if nothing is set under this identifier
      */
     Object getGlobal(String identifier);
 
-    
+
     /**
      * Sets the GlobalResolver instance to be used when resolving globals, replaces the current GlobalResolver.
      * Typcicaly a delegating GlobalResolver is created that first gets a reference to the current GlobalResolver,
      * for delegating
-     * 
+     *
      * @param globalResolver
      */
     void setGlobalResolver(GlobalResolver globalResolver);
-    
+
     /**
      * Returns the current GlobalResolver
-     * 
+     *
      * @return
      */
     GlobalResolver getGlobalResolver();
 
     /**
      * Retrieve the <code>RuleBase</code> for this working memory.
-     * 
+     *
      * @return The <code>RuleBase</code>.
      */
     RuleBase getRuleBase();
 
     /**
      * Fire all items on the agenda until empty.
-     * 
+     *
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
@@ -98,15 +99,15 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
 
     /**
      * Fire all items on the agenda until empty, using the given AgendaFiler
-     * 
+     *
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
     void fireAllRules(AgendaFilter agendaFilter) throws FactException;
-      
+
     /**
      * Fire all items on the agenda until empty or at most 'fireLimit' rules have fired
-     * 
+     *
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
@@ -115,7 +116,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
     /**
      * Fire all items on the agenda using the given AgendaFiler
      * until empty or at most 'fireLimit' rules have fired
-     * 
+     *
      * @throws FactException
      *             If a RuntimeException error occurs.
      */
@@ -123,45 +124,45 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
 
     /**
      * Retrieve the object associated with a <code>FactHandle</code>.
-     * 
-     * 
+     *
+     *
      * @param handle
      *            The fact handle.
-     * 
+     *
      * @return The associated object.
      */
     Object getObject(FactHandle handle);
 
     /**
      * Retrieve the <code>FactHandle</code> associated with an Object.
-     * 
+     *
      * @param object
      *            The object.
-     * 
+     *
      * @return The associated fact handle.
      */
     FactHandle getFactHandle(Object object);
 
     FactHandle getFactHandleByIdentity(final Object object);
-        
+
     /**
-     * Returns an Iterator for the Objects in the Working Memory. This Iterator is not thread safe. 
+     * Returns an Iterator for the Objects in the Working Memory. This Iterator is not thread safe.
      * This means that any working memory actions during iteration may invalidate the iterator.
      * @return
      *     the Iterator
      */
     Iterator iterateObjects();
-    
+
     /**
      *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
      *  any objects that the ObjectFilter does not accept. This Iterator is not thread safe.
      * This means that any working memory actions during iteration may invalidate the iterator.
-     *  
+     *
      * @param filter
-     * 
+     *
      * @return
      *     the Iterator
-     */    
+     */
     Iterator iterateObjects(ObjectFilter filter);
 
     /**
@@ -169,21 +170,21 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * This means that any working memory actions during iteration may invalidate the iterator.
      * @return
      *     the Iterator
-     */    
+     */
     Iterator iterateFactHandles();
-    
+
     /**
      *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
      *  any objects that the ObjectFilter does not accept. This Iterator is not thread safe.
      * This means that any working memory actions during iteration may invalidate the iterator.
-     *  
+     *
      * @param filter
-     * 
+     *
      * @return
      *     the Iterator
-     */        
-    Iterator iterateFactHandles(ObjectFilter filter);    
-    
+     */
+    Iterator iterateFactHandles(ObjectFilter filter);
+
     /**
      * Returns the AgendaGroup which has the current WorkingMemory focus. The AgendaGroup interface is subject to change.
      * @return
@@ -200,9 +201,37 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
     /**
      * Set the focus to the specified AgendaGroup
      * @param focus
-     */    
+     */
     void setFocus(AgendaGroup focus);
-        
+
+
+    /**
+     * Assert a fact.
+     *
+     * @param object
+     *            The fact object.
+     *
+     * @return The new fact-handle associated with the object.
+     *
+     * @throws FactException
+     *             If a RuntimeException error occurs.
+     */
+    FactHandle insert(Object object) throws FactException;
+
+    /**
+     * Assert a fact with inherent duration.
+     *
+     * @param object
+     *            The fact object.
+     * @param duration
+     *            The duration of the fact.
+     *
+     * @return The new fact-handle associated with the object.
+     *
+     * @throws FactException
+     *             If a RuntimeException error occurs.
+     */
+    FactHandle insert(Object object, long duration) throws FactException;
 
     /**
      * Retrieve the QueryResults of the specified query.
@@ -212,33 +241,115 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      *
      * @return The QueryResults of the specified query.
      *         If no results match the query it is empty.
-     *         
-     * @throws IllegalArgumentException 
-     *         if no query named "query" is found in the rulebase         
+     *
+     * @throws IllegalArgumentException
+     *         if no query named "query" is found in the rulebase
      */
     public QueryResults getQueryResults(String query);
-    
+
     /**
      * Retrieve the QueryResults of the specified query and arguments
      *
      * @param query
      *            The name of the query.
-     *            
+     *
      * @param arguments
      *            The arguments used for the query
      *
      * @return The QueryResults of the specified query.
      *         If no results match the query it is empty.
-     *         
-     * @throws IllegalArgumentException 
-     *         if no query named "query" is found in the rulebase         
-     */    
-    public QueryResults getQueryResults(String query, Object[] arguments);  
+     *
+     * @throws IllegalArgumentException
+     *         if no query named "query" is found in the rulebase
+     */
+    public QueryResults getQueryResults(String query, Object[] arguments);
+
+    /**
+     * Insert a fact registering JavaBean <code>PropertyChangeListeners</code>
+     * on the Object to automatically trigger <code>update</code> calls
+     * if <code>dynamic</code> is <code>true</code>.
+     *
+     * @param object
+     *            The fact object.
+     * @param dynamic
+     *            true if Drools should add JavaBean
+     *            <code>PropertyChangeListeners</code> to the object.
+     *
+     * @return The new fact-handle associated with the object.
+     *
+     * @throws FactException
+     *             If a RuntimeException error occurs.
+     */
+    FactHandle insert(Object object,
+                            boolean dynamic) throws FactException;
+
+    /**
+     * Insert a fact with inherent duration registering JavaBean
+     * <code>PropertyChangeListeners</code> on the Object to
+     * automatically trigger <code>update</code> calls
+     * if <code>dynamic</code> is <code>true</code>.
+     *
+     * @param object
+     *            The fact object.
+     * @param duration
+     *            The duration of the fact.
+     * @param dynamic
+     *            true if Drools should add JavaBean
+     *            <code>PropertyChangeListeners</code> to the object.
+     *
+     * @return The new fact-handle associated with the object.
+     *
+     * @throws FactException
+     *             If a RuntimeException error occurs.
+     */
+    FactHandle insert(Object object,
+    				  long duration,
+                      boolean dynamic) throws FactException;
+
+    /**
+     * Retract a fact.
+     *
+     * @param handle
+     *            The fact-handle associated with the fact to retract.
+     *
+     * @throws FactException
+     *             If a RuntimeException error occurs.
+     */
+    void retract(FactHandle handle) throws FactException;
+
+    /**
+     * Inform the WorkingMemory that a Fact has been modified and that it
+     * should now update the network.
+     *
+     * @param handle
+     *            The fact-handle associated with the fact to modify.
+     * @param object
+     *            The new value of the fact.
+     *
+     * @throws FactException
+     *             If a RuntimeException error occurs.
+     */
+    void update(FactHandle handle,
+                      Object object) throws FactException;
+
+    /**
+     *
+     * @param factHandle
+     */
+    public void modifyRetract(final FactHandle factHandle);
+
+    /**
+     *
+     * @param factHandle
+     * @param object
+     */
+    public void modifyInsert(final FactHandle factHandle,
+                             final Object object);
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
      * Scheduler used for duration rules.
-     * 
+     *
      * @param handler
      */
     void setAsyncExceptionHandler(AsyncExceptionHandler handler);
@@ -258,20 +369,20 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @param group
      */
     public void clearActivationGroup(String group);
-    
+
     /**
      * Clears the RuleFlow group, cancelling all its Activations
      * @param group
      */
     public void clearRuleFlowGroup(String group);
-    
+
     /**
-     * Starts a new process instance for the process with the given id. 
+     * Starts a new process instance for the process with the given id.
      */
     ProcessInstance startProcess(String processId);
 
     /**
-     * Starts a new process instance for the process with the given id. 
+     * Starts a new process instance for the process with the given id.
      */
     ProcessInstance startProcess(String processId, Map<String, Object> parameters);
 
@@ -281,28 +392,28 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return the list of process instances
      */
     public Collection getProcessInstances();
-    
+
     /**
      * Returns the process instance with the given id.
      * @return the process instance with the given id
      */
     public ProcessInstance getProcessInstance(long id);
-    
+
     public WorkItemManager getWorkItemManager();
-    
+
     /**
      * Stops rule firing after the currect rule finishes executing
      *
      */
     public void halt();
-    
+
     /**
      * Returns the interface instance for a given entry point, so
      * that the application can manage entry-point-scoped facts.
-     *  
+     *
      * @param id the id of the entry point, as defined in the rules file
      * @return
      */
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint( String id );
-    
+    public EntryPointInterface getEntryPoint( String id );
+
 }

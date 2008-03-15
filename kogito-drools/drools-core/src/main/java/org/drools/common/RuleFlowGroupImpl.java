@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,9 @@ package org.drools.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.spi.Activation;
 import org.drools.util.Iterator;
@@ -31,8 +34,8 @@ import org.drools.util.LinkedList;
  * Deactivating the group removes all its activations from the agenda and
  * collects them until it is activated again.
  * By default, <code>RuleFlowGroups</code> are automatically deactivated when there are no more
- * activations in the <code>RuleFlowGroup</code>.  However, this can be configured.  
- * 
+ * activations in the <code>RuleFlowGroup</code>.  However, this can be configured.
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  *
@@ -42,21 +45,42 @@ public class RuleFlowGroupImpl implements InternalRuleFlowGroup {
     private static final long     serialVersionUID = 400L;
 
     private InternalWorkingMemory workingMemory;
-    private final String          name;
+    private String          name;
     private boolean               active           = false;
-    private final LinkedList      list;
+    private LinkedList      list;
     private boolean               autoDeactivate   = true;
     private List<RuleFlowGroupListener> listeners;
 
+    public RuleFlowGroupImpl() {
+
+    }
     /**
      * Construct a <code>RuleFlowGroupImpl</code> with the given name.
-     * 
+     *
      * @param name
      *      The RuleFlowGroup name.
      */
     public RuleFlowGroupImpl(final String name) {
         this.name = name;
         this.list = new LinkedList();
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        workingMemory   = (InternalWorkingMemory)in.readObject();
+        name   = (String)in.readObject();
+        active  = in.readBoolean();
+        list   = (LinkedList)in.readObject();
+        autoDeactivate  = in.readBoolean();
+        listeners   = (List<RuleFlowGroupListener>)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(workingMemory);
+        out.writeObject(name);
+        out.writeBoolean(active);
+        out.writeObject(list);
+        out.writeBoolean(autoDeactivate);
+        out.writeObject(listeners);
     }
 
     public String getName() {
@@ -163,7 +187,7 @@ public class RuleFlowGroupImpl implements InternalRuleFlowGroup {
             }
         }
     }
-    
+
     public void addRuleFlowGroupListener(RuleFlowGroupListener listener) {
         if (listeners == null) {
             listeners = new ArrayList<RuleFlowGroupListener>();
@@ -176,7 +200,7 @@ public class RuleFlowGroupImpl implements InternalRuleFlowGroup {
             listeners.remove(listener);
         }
     }
-    
+
     public void notifyRuleFlowGroupListeners() {
         if (listeners != null) {
             for (java.util.Iterator<RuleFlowGroupListener> iterator = listeners.iterator(); iterator.hasNext(); ) {
@@ -215,10 +239,20 @@ public class RuleFlowGroupImpl implements InternalRuleFlowGroup {
 
     public static class DeactivateCallback implements WorkingMemoryAction {
         private static final long serialVersionUID = 400L;
-        private final InternalRuleFlowGroup ruleFlowGroup;
+        private InternalRuleFlowGroup ruleFlowGroup;
 
+        public DeactivateCallback() {
+        }
         public DeactivateCallback(InternalRuleFlowGroup ruleFlowGroup) {
             this.ruleFlowGroup = ruleFlowGroup;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            ruleFlowGroup   = (InternalRuleFlowGroup)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(ruleFlowGroup);
         }
 
         public void execute(InternalWorkingMemory workingMemory) {

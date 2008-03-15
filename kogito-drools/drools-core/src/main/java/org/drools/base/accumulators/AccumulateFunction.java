@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,15 +17,15 @@
  */
 package org.drools.base.accumulators;
 
-import java.io.Serializable;
+import java.io.Externalizable;
 
 /**
  * An interface for accumulate external function implementations
- * 
+ *
  * @author etirelli
  *
  */
-public interface AccumulateFunction extends Serializable {
+public interface AccumulateFunction extends Externalizable {
 
     /**
      * Creates and returns a new context object
@@ -59,7 +59,7 @@ public interface AccumulateFunction extends Serializable {
 
     /**
      * Returns the current value in this accumulation session
-     * 
+     *
      * @param context
      * @return
      * @throws Exception
@@ -68,7 +68,7 @@ public interface AccumulateFunction extends Serializable {
 
     /**
      * True if the function supports reverse. False otherwise.
-     * 
+     *
      * @return
      */
     public boolean supportsReverse();

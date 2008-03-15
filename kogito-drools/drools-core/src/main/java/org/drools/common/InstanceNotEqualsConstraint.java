@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,24 +22,43 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.spi.BetaNodeFieldConstraint;
 
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+
 public class InstanceNotEqualsConstraint
     implements
     BetaNodeFieldConstraint {
 
     private static final long          serialVersionUID = 400L;
 
-    private static final Declaration[] declarations     = new Declaration[0];
+    private static Declaration[] declarations     = new Declaration[0];
 
     private Pattern                     otherPattern;
 
+    public InstanceNotEqualsConstraint() {
+
+    }
+
     public InstanceNotEqualsConstraint(final Pattern otherPattern) {
         this.otherPattern = otherPattern;
+
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        declarations    = (Declaration[])in.readObject();
+        otherPattern    = (Pattern)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(declarations);
+        out.writeObject(otherPattern);
     }
 
     public Declaration[] getRequiredDeclarations() {
         return InstanceNotEqualsConstraint.declarations;
     }
-    
+
     public void replaceDeclaration(Declaration oldDecl,
                                    Declaration newDecl) {
     }
@@ -87,7 +106,7 @@ public class InstanceNotEqualsConstraint
         final InstanceNotEqualsConstraint other = (InstanceNotEqualsConstraint) object;
         return this.otherPattern.equals( other.otherPattern );
     }
-    
+
     public Object clone() {
         return new InstanceNotEqualsConstraint( this.otherPattern );
     }
@@ -107,8 +126,25 @@ public class InstanceNotEqualsConstraint
         private Pattern            pattern;
         private ContextEntry      entry;
 
+        public InstanceNotEqualsConstraintContextEntry() {
+        }
+
         public InstanceNotEqualsConstraintContextEntry(final Pattern pattern) {
             this.pattern = pattern;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            left    = in.readObject();
+            right   = in.readObject();
+            pattern = (Pattern)in.readObject();
+            entry   = (ContextEntry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(left);
+            out.writeObject(right);
+            out.writeObject(pattern);
+            out.writeObject(entry);
         }
 
         public ContextEntry getNext() {
@@ -128,14 +164,14 @@ public class InstanceNotEqualsConstraint
                                          final InternalFactHandle handle) {
             this.right = handle.getObject();
         }
-        
+
         public void resetTuple() {
             this.left = null;
         }
-        
+
         public void resetFactHandle() {
             this.right = null;
-        }                
+        }
     }
 
 }

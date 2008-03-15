@@ -1,6 +1,9 @@
 package org.drools.base.extractors;
 
 import java.lang.reflect.Method;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
@@ -8,24 +11,40 @@ import org.drools.spi.Extractor;
 import org.drools.util.ClassUtils;
 
 public class ArrayExtractor implements Extractor {
-    private final Extractor arrayExtractor;    
-    private final int index;
-    private final Class type;
-    
+    private Extractor arrayExtractor;
+    private int index;
+    private Class type;
+
+    public ArrayExtractor() {
+
+    }
+
     public ArrayExtractor(Extractor arrayExtractor, int index, Class type) {
         this.arrayExtractor = arrayExtractor;
         this.index = index;
         this.type = type;
     }
-    
+
     public Class getExtractToClass() {
-        return type;        
+        return type;
     }
-    
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        arrayExtractor  = (Extractor)in.readObject();
+        index           = in.readInt();
+        type            = (Class)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(arrayExtractor);
+        out.writeInt(index);
+        out.writeObject(type);
+    }
+
     public String getExtractToClassName() {
-        return ClassUtils.canonicalName( type );        
+        return ClassUtils.canonicalName( type );
     }
-    
+
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, Object object) {
         Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return ( (Boolean)array[ this.index ]).booleanValue();
@@ -74,11 +93,11 @@ public class ArrayExtractor implements Extractor {
         Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
         return array[ this.index ] == null;
     }
-    
+
   public int getHashCode(InternalWorkingMemory workingMemory, Object object) {
       Object[] array = ( Object[] ) this.arrayExtractor.getValue( workingMemory, object );
       return array[ this.index ].hashCode();
-  }    
+  }
 
     public int hashCode() {
         final int PRIME = 31;

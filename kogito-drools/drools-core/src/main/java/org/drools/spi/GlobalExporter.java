@@ -1,9 +1,9 @@
 /**
- * 
+ *
  */
 package org.drools.spi;
 
-import java.io.Serializable;
+import java.io.Externalizable;
 
 import org.drools.WorkingMemory;
 
@@ -12,8 +12,8 @@ import org.drools.WorkingMemory;
  * globals using during the execute(...) method that returned the StatelessSessionResult.
  *
  */
-public interface GlobalExporter extends Serializable {
-    
+public interface GlobalExporter extends Externalizable {
+
     /**
      * This method is called internally by the StatelessSession, which will provide the WorkingMemory.
      * The returned GlobalResolver is used by the StatefulSessionResult

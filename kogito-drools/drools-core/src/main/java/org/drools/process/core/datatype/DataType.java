@@ -16,14 +16,14 @@ package org.drools.process.core.datatype;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.Externalizable;
 
 /**
  * Abstract representation of a datatype.
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public interface DataType extends Serializable {
+public interface DataType extends Externalizable {
 
     /**
      * Returns true if the given value is a valid value of this data type.

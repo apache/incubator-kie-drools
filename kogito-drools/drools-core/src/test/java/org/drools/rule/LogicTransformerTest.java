@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,34 +19,38 @@ package org.drools.rule;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.net.URL;
 
 import org.drools.DroolsTestCase;
+import org.drools.common.DroolsObjectOutputStream;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.base.ClassObjectType;
 import org.drools.spi.ObjectType;
 
 public class LogicTransformerTest extends DroolsTestCase {
     /**
      * (a||b)&&c
-     * 
+     *
      * <pre>
      *               and
      *               / \
-     *              or  c 
+     *              or  c
      *             /  \
      *            a    b
      * </pre>
-     * 
+     *
      * Should become (a&&c)||(b&&c)
-     * 
+     *
      * <pre>
-     *                 
+     *
      *               or
-     *              /  \  
-     *             /    \ 
-     *            /      \ 
-     *             and      and     
+     *              /  \
+     *             /    \
+     *            /      \
+     *             and      and
      *          / \      / \
      *         a   c    b   c
      * </pre>
@@ -99,19 +103,19 @@ public class LogicTransformerTest extends DroolsTestCase {
 
     /**
      * (a||b)&&c
-     * 
+     *
      * <pre>
      *                   And
      *                  /|\ \__
      *                _/ | \_  \_
-     *               /   |   \   \  
+     *               /   |   \   \
      *              or   |   or   not
      *             /   \ |  / \    |
      *            a    b c d   e   f
      * </pre>
-     * 
+     *
      * Should become (a&&c)||(b&&c)
-     * 
+     *
      * <pre>
      *                           /\
      *                         _/  \_
@@ -237,28 +241,28 @@ public class LogicTransformerTest extends DroolsTestCase {
 
     /**
      * This data structure is now valid
-     * 
+     *
      * (Not (OR (A B) ) )
-     * 
+     *
      * <pre>
      *             Not
-     *              | 
-     *             or   
+     *              |
+     *             or
      *            /  \
      *           a    b
      * </pre>
-     * 
+     *
      * Should become:
-     * 
+     *
      * <pre>
      *             And
-     *             / \ 
-     *           Not Not   
+     *             / \
+     *           Not Not
      *            |   |
      *            a   b
      * </pre>
-     * 
-     * 
+     *
+     *
      */
     public void testNotOrTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
@@ -301,21 +305,21 @@ public class LogicTransformerTest extends DroolsTestCase {
 
     /**
      * This data structure is now valid (Exists (OR (A B) ) )
-     * 
+     *
      * <pre>
      *             Exists
-     *              | 
-     *             or   
+     *              |
+     *             or
      *            /  \
      *           a    b
      * </pre>
-     * 
+     *
      * Should become:
-     * 
+     *
      * <pre>
      *              Or
-     *             /  \ 
-     *        Exists  Exists   
+     *             /  \
+     *        Exists  Exists
      *            |    |
      *            a    b
      * </pre>
@@ -410,25 +414,25 @@ public class LogicTransformerTest extends DroolsTestCase {
      * <pre>
      *                         _/|\_
      *                      __/  |  \__
-     *                     /     |     \ 
+     *                     /     |     \
      *                  __/      |      \__
      *                 /         |         \
      *                And       and        Not
      *               / | \      / \         |
      *             a  And d    e  Or        i
-     *                / \        /  \      
-     *               b  Not     h  Exists    
-     *                   |           |      
-     *                  Not          g   
-     *                   |           
-     *                   c         
+     *                / \        /  \
+     *               b  Not     h  Exists
+     *                   |           |
+     *                  Not          g
+     *                   |
+     *                   c
      * </pre>
-     * 
+     *
      *   It is important to ensure that the order of
      *   the elements is not changed after transformation
-     * 
+     *
      * <pre>
-     *                            Or 
+     *                            Or
      *                           _/ \__
      *                        __/      \___
      *                       /             \__
@@ -444,12 +448,12 @@ public class LogicTransformerTest extends DroolsTestCase {
      *                |                             |
      *                c                             c
      * </pre>
-     * 
+     *
      * @throws IOException
      * @throws ClassNotFoundException
-     * 
-     * 
-     * 
+     *
+     *
+     *
      */
     public void testProcessTree() throws IOException,
                                  ClassNotFoundException,
@@ -521,9 +525,9 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Uncomment this when you need to output a new known correct tree
         // result
-//        writeTree( result,
-//                   "correct_processTree1.dat" );
-        final ObjectInputStream ois = new ObjectInputStream( this.getClass().getResourceAsStream( "/correct_processTree1.dat" ) );
+        writeTree( result,
+                   "correct_processTree1.dat" );
+        final ObjectInput ois = new DroolsObjectInputStream( this.getClass().getResourceAsStream( "correct_processTree1.dat" ));
 
         final GroupElement[] correctResultRoot = (GroupElement[]) ois.readObject();
 
@@ -590,51 +594,51 @@ public class LogicTransformerTest extends DroolsTestCase {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * /**
-     * 
+     *
      * <pre>
      *                         _/|\_
      *                      __/  |  \__
-     *                     /     |     \ 
+     *                     /     |     \
      *                  __/      |      \__
      *                 /         |         \
      *                And       or         And
      *               /  \       / \        /  \
      *             a    Or     d   e      Not OR
-     *                 / \                |  / | 
+     *                 / \                |  / |
      *               b    c               f g Not
      *                                         |
      *                                         h
-     *                  
-     *                   
-     *                  
+     *
+     *
+     *
      * </pre>
-     * 
+     *
      * Each And is a Rete sub rule
-     * 
+     *
      * <pre>
-     *     
-     *    
-     *       And___     And___      And___      And___        And__    And___       And___    And___     
-     *      ||| |  \   ||| |  \     ||| |  \   ||| |  \     ||| |  \  ||| |  \     ||| |  \  ||| |  \ 
+     *
+     *
+     *       And___     And___      And___      And___        And__    And___       And___    And___
+     *      ||| |  \   ||| |  \     ||| |  \   ||| |  \     ||| |  \  ||| |  \     ||| |  \  ||| |  \
      *      abd Not g  abd Not Not  abe Not g  abe Not Not  acd Not g acd Not Not  ace Not g ace Not Not
-     *           |          |   |        |          |   |        |        |    |       |          |   |   
+     *           |          |   |        |          |   |        |        |    |       |          |   |
      *           f          f   h        f          f   h        f        f    h       f          f   h
-     *                        
-     *                        
+     *
+     *
      * </pre>
-     * 
+     *
      * @throws IOException
      * @throws ClassNotFoundException
-     * 
-     * 
-     * 
-     * 
+     *
+     *
+     *
+     *
      * @throws IOException
      * @throws ClassNotFoundException
-     * 
+     *
      */
     public void testTransform() throws IOException,
                                ClassNotFoundException,
@@ -698,14 +702,14 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Uncomment this when you need to output a new known correct tree
         // result
-//        writeTree( ands,
-//                   "correct_transform1.dat" );
+        writeTree( ands,
+                   "correct_transform1.dat" );
 
         // Now check the main tree
 
         // Get known correct tree
         // The binary stream was created from a handchecked correct output
-        final ObjectInputStream ois = new ObjectInputStream( this.getClass().getResourceAsStream( "/correct_transform1.dat" ) );
+        final ObjectInput ois = new DroolsObjectInputStream( this.getClass().getResourceAsStream( "correct_transform1.dat" ) );
         final GroupElement[] correctResultAnds = (GroupElement[]) ois.readObject();
 
         for ( int j = 0; j < ands.length; j++ ) {
@@ -720,10 +724,13 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         File file = new File( this.getClass().getResource( className.substring( className.lastIndexOf( '.' ) + 1 ) + ".class" ).getFile() );
 
-        file = new File( file.getParent(),
-                         fileName );
+        file = new File( file.getParent().replaceAll("%20", " "), fileName );
 
-        new ObjectOutputStream( new FileOutputStream( file ) ).writeObject( object );
+        ObjectOutput    out = new DroolsObjectOutputStream(new FileOutputStream( file ) );
+
+        out.writeObject( object );
+        out.flush();
+        out.close();
     }
 
 }

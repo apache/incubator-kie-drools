@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,9 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,21 +42,23 @@ import org.drools.util.AbstractHashTable.FieldIndex;
 
 public class TripleBetaConstraints
     implements
-    Serializable,
     BetaConstraints {
 
     /**
-     * 
+     *
      */
     private static final long             serialVersionUID = 400L;
 
-    private final BetaNodeFieldConstraint constraint0;
-    private final BetaNodeFieldConstraint constraint1;
-    private final BetaNodeFieldConstraint constraint2;
+    private BetaNodeFieldConstraint constraint0;
+    private BetaNodeFieldConstraint constraint1;
+    private BetaNodeFieldConstraint constraint2;
 
     private boolean                       indexed0;
     private boolean                       indexed1;
     private boolean                       indexed2;
+
+    public TripleBetaConstraints() {
+    }
 
     public TripleBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                  final RuleBaseConfiguration conf) {
@@ -73,7 +77,7 @@ public class TripleBetaConstraints
         } else {
             final int depth = conf.getCompositeKeyDepth();
 
-            // Determine  if this constraints are indexable               
+            // Determine  if this constraints are indexable
             final boolean i0 = isIndexable( constraints[0] );
             final boolean i1 = isIndexable( constraints[1] );
             final boolean i2 = isIndexable( constraints[2] );
@@ -112,6 +116,24 @@ public class TripleBetaConstraints
         this.constraint0 = constraints[0];
         this.constraint1 = constraints[1];
         this.constraint2 = constraints[2];
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        constraint0 = (BetaNodeFieldConstraint)in.readObject();
+        constraint1 = (BetaNodeFieldConstraint)in.readObject();
+        constraint2 = (BetaNodeFieldConstraint)in.readObject();
+        indexed0    = in.readBoolean();
+        indexed1    = in.readBoolean();
+        indexed2    = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(constraint0);
+        out.writeObject(constraint1);
+        out.writeObject(constraint2);
+        out.writeBoolean(indexed0);
+        out.writeBoolean(indexed1);
+        out.writeBoolean(indexed2);
     }
 
     private void swap(final BetaNodeFieldConstraint[] constraints,
@@ -294,10 +316,10 @@ public class TripleBetaConstraints
 
     /**
      * Determine if another object is equal to this.
-     * 
+     *
      * @param object
      *            The object to test.
-     * 
+     *
      * @return <code>true</code> if <code>object</code> is equal to this,
      *         otherwise <code>false</code>.
      */

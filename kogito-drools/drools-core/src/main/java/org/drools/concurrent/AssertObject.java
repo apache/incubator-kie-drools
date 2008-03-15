@@ -5,6 +5,10 @@ package org.drools.concurrent;
 
 import org.drools.WorkingMemory;
 
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+
 public class AssertObject
     implements
     Command,
@@ -13,8 +17,23 @@ public class AssertObject
     private volatile Object result;
     private Exception       e;
 
+    public AssertObject() {
+    }
+
     public AssertObject(final Object object) {
         this.object = object;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        object  = in.readObject();
+        result  = in.readObject();
+        e       = (Exception)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(object);
+        out.writeObject(result);
+        out.writeObject(e);
     }
 
     public void execute(final WorkingMemory workingMemory) {
@@ -27,16 +46,16 @@ public class AssertObject
 
     public Object getObject() {
         return this.result;
-    }    
+    }
 
     public boolean isDone() {
         return this.result != null;
     }
-    
+
     public boolean exceptionThrown() {
         return e != null;
     }
-    
+
     public Exception getException() {
         return this.e;
     }

@@ -16,7 +16,10 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.common.EventSupport;
 import org.drools.RuleBaseConfiguration;
@@ -57,7 +60,7 @@ public final class RuleTerminalNode extends BaseNode
     implements
     TupleSinkNode,
     NodeMemory,
-    TerminalNode {
+    TerminalNode, Externalizable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -69,13 +72,13 @@ public final class RuleTerminalNode extends BaseNode
      */
     private static final long  serialVersionUID = 400L;
     /** The rule to invoke upon match. */
-    private final Rule         rule;
+    private Rule         rule;
     /**
      * the subrule reference is needed to resolve declarations
      * because declarations may have different offsets in each subrule
      */
-    private final GroupElement subrule;
-    private final TupleSource  tupleSource;
+    private GroupElement subrule;
+    private TupleSource  tupleSource;
 
     private TupleSinkNode      previousTupleSinkNode;
     private TupleSinkNode      nextTupleSinkNode;
@@ -85,6 +88,9 @@ public final class RuleTerminalNode extends BaseNode
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public RuleTerminalNode() {
+
+    }
 
     /**
      * Construct.
@@ -109,6 +115,25 @@ public final class RuleTerminalNode extends BaseNode
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        sequence    = in.readInt();
+        rule        = (Rule)in.readObject();
+        subrule        = (GroupElement)in.readObject();
+        tupleSource        = (TupleSource)in.readObject();
+        previousTupleSinkNode   = (TupleSinkNode)in.readObject();
+        nextTupleSinkNode       = (TupleSinkNode)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeInt(sequence);
+        out.writeObject(rule);
+        out.writeObject(subrule);
+        out.writeObject(tupleSource);
+        out.writeObject(previousTupleSinkNode);
+        out.writeObject(nextTupleSinkNode);
+    }
 
     /**
      * Retrieve the <code>Action</code> associated with this node.
@@ -432,10 +457,6 @@ public final class RuleTerminalNode extends BaseNode
         }
     }
 
-    public void networkUpdated() {
-        this.tupleSource.networkUpdated();
-    }
-    
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
@@ -544,9 +565,9 @@ public final class RuleTerminalNode extends BaseNode
         return this.rule.equals( other.rule );
     }
 
-    class TerminalNodeMemory
+    public static class TerminalNodeMemory
         implements
-        Serializable {
+        Externalizable {
         private static final long serialVersionUID = 400L;
 
         private InternalAgendaGroup   agendaGroup;
@@ -561,6 +582,19 @@ public final class RuleTerminalNode extends BaseNode
             this.tupleMemory = new TupleHashTable();
         }
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            agendaGroup = (InternalAgendaGroup)in.readObject();
+            activationGroup = (ActivationGroup)in.readObject();
+            ruleFlowGroup = (RuleFlowGroup)in.readObject();
+            tupleMemory = (TupleHashTable)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(agendaGroup);
+            out.writeObject(activationGroup);
+            out.writeObject(ruleFlowGroup);
+            out.writeObject(tupleMemory);
+        }
         public InternalAgendaGroup getAgendaGroup() {
             return this.agendaGroup;
         }

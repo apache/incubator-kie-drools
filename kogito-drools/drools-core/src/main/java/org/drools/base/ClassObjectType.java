@@ -2,13 +2,13 @@ package org.drools.base;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,19 +18,24 @@ package org.drools.base;
 
 import org.drools.spi.ObjectType;
 
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.Externalizable;
+
 /**
  * Java class semantics <code>ObjectType</code>.
- * 
+ *
  * @author <a href="mailto:bob@werken.com">bob@werken.com </a>
- * 
+ *
  * @version $Id: ClassObjectType.java,v 1.5 2005/02/04 02:13:36 mproctor Exp $
  */
 public class ClassObjectType
     implements
-    ObjectType {
+    ObjectType, Externalizable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
 
@@ -45,9 +50,12 @@ public class ClassObjectType
     // Constructors
     // ------------------------------------------------------------
 
+    public ClassObjectType() {
+        this(null);
+    }
     /**
      * Creates a new class object type with shadow disabled.
-     * 
+     *
      * @param objectTypeClass
      *            Java object class.
      */
@@ -57,14 +65,29 @@ public class ClassObjectType
 
     /**
      * Creates a new class object type
-     * 
+     *
      * @param objectTypeClass the class represented by this class object type
      * @param isEvent true if it is an event class, false otherwise
      */
     public ClassObjectType(final Class objectTypeClass, final boolean isEvent) {
         this.objectTypeClass = objectTypeClass;
         this.isEvent = isEvent;
-        this.valueType = ValueType.determineValueType( objectTypeClass );
+        if (objectTypeClass != null)
+            this.valueType = ValueType.determineValueType( objectTypeClass );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        objectTypeClass = (Class)in.readObject();
+        valueType       = (ValueType)in.readObject();
+        if (valueType != null)
+            valueType   = ValueType.determineValueType(valueType.getClassType());
+        isEvent         = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(objectTypeClass);
+        out.writeObject(valueType);
+        out.writeBoolean(isEvent);
     }
 
     // ------------------------------------------------------------
@@ -73,7 +96,7 @@ public class ClassObjectType
 
     /**
      * Return the Java object class.
-     * 
+     *
      * @return The Java object class.
      */
     public Class getClassType() {
@@ -87,10 +110,10 @@ public class ClassObjectType
     /**
      * Determine if the passed <code>Class</code> matches to the object type
      * defined by this <code>objectType</code> instance.
-     * 
+     *
      * @param clazz
      *            The <code>Class</code> to test.
-     * 
+     *
      * @return <code>true</code> if the <code>Class</code> matches this
      *         object type, else <code>false</code>.
      */
@@ -101,10 +124,10 @@ public class ClassObjectType
     /**
      * Determine if the passed <code>Object</code> belongs to the object type
      * defined by this <code>objectType</code> instance.
-     * 
+     *
      * @param object
      *            The <code>Object</code> to test.
-     * 
+     *
      * @return <code>true</code> if the <code>Object</code> matches this
      *         object type, else <code>false</code>.
      */
@@ -142,10 +165,10 @@ public class ClassObjectType
 
     /**
      * Determine if another object is equal to this.
-     * 
+     *
      * @param object
      *            The object to test.
-     * 
+     *
      * @return <code>true</code> if <code>object</code> is equal to this,
      *         otherwise <code>false</code>.
      */
@@ -157,7 +180,7 @@ public class ClassObjectType
         if ( object == null || object.getClass() != ClassObjectType.class ) {
             return false;
         }
-        
+
         return this.objectTypeClass == ((ClassObjectType) object).objectTypeClass;
     }
 

@@ -1,11 +1,16 @@
 /**
- * 
+ *
  */
 package org.drools.util;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.ReteTuple;
 import org.drools.reteoo.TupleMemory;
+
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.Externalizable;
 
 public class TupleIndexHashTable extends AbstractHashTable
     implements
@@ -23,6 +28,9 @@ public class TupleIndexHashTable extends AbstractHashTable
     private int                             factSize;
 
     private Index                           index;
+
+    public TupleIndexHashTable() {
+    }
 
     public TupleIndexHashTable(final FieldIndex[] index) {
         this( 16,
@@ -61,6 +69,24 @@ public class TupleIndexHashTable extends AbstractHashTable
         }
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        startResult = in.readInt();
+        tupleValueIterator  = (FieldIndexHashTableIterator)in.readObject();
+        tupleValueFullIterator  = (FieldIndexHashTableFullIterator)in.readObject();
+        factSize    = in.readInt();
+        index       = (Index)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeInt(startResult);
+        out.writeObject(tupleValueIterator);
+        out.writeObject(tupleValueFullIterator);
+        out.writeInt(factSize);
+        out.writeObject(index);
+    }
+
     public Iterator iterator() {
         if ( this.tupleValueFullIterator == null ) {
             this.tupleValueFullIterator = new FieldIndexHashTableFullIterator( this );
@@ -81,7 +107,7 @@ public class TupleIndexHashTable extends AbstractHashTable
     public boolean isIndexed() {
         return true;
     }
-    
+
     public Index getIndex() {
         return this.index;
     }
@@ -100,11 +126,19 @@ public class TupleIndexHashTable extends AbstractHashTable
      */
     public static class FieldIndexHashTableIterator
         implements
-        Iterator {
+        Iterator, Externalizable {
         private Entry entry;
 
         public FieldIndexHashTableIterator() {
 
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            entry   = (Entry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(entry);
         }
 
         /* (non-Javadoc)
@@ -126,15 +160,34 @@ public class TupleIndexHashTable extends AbstractHashTable
 
     public static class FieldIndexHashTableFullIterator
         implements
-        Iterator {
+        Iterator, Externalizable {
         private AbstractHashTable hashTable;
         private Entry[]           table;
         private int               row;
         private int               length;
         private Entry             entry;
 
+        public FieldIndexHashTableFullIterator() {
+
+        }
         public FieldIndexHashTableFullIterator(final AbstractHashTable hashTable) {
             this.hashTable = hashTable;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            hashTable   = (AbstractHashTable)in.readObject();
+            table   = (Entry[])in.readObject();
+            row     = in.readInt();
+            length  = in.readInt();
+            entry   = (Entry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(hashTable);
+            out.writeObject(table);
+            out.writeInt(row);
+            out.writeInt(length);
+            out.writeObject(entry);
         }
 
         /* (non-Javadoc)
@@ -170,7 +223,7 @@ public class TupleIndexHashTable extends AbstractHashTable
             this.entry = null;
         }
     }
-    
+
     public Entry[] toArray() {
         Entry[] result = new Entry[this.factSize];
         int index = 0;
@@ -181,12 +234,12 @@ public class TupleIndexHashTable extends AbstractHashTable
                 while ( entry != null ) {
                     result[index++] = entry;
                     entry = entry.getNext();
-                }       
+                }
                 fieldIndexEntry  = ( FieldIndexEntry ) fieldIndexEntry.getNext();
             }
         }
         return result;
-    }       
+    }
 
     public void add(final ReteTuple tuple) {
         final FieldIndexEntry entry = getOrCreate( tuple );
@@ -205,7 +258,7 @@ public class TupleIndexHashTable extends AbstractHashTable
         final int index = indexOf( hashCode,
                                    this.table.length );
 
-        // search the table for  the Entry, we need to track previous  and next, so if the 
+        // search the table for  the Entry, we need to track previous  and next, so if the
         // Entry is empty after  its had the FactEntry removed, we must remove  it from the table
         FieldIndexEntry previous = (FieldIndexEntry) this.table[index];
         FieldIndexEntry current = previous;
@@ -272,7 +325,7 @@ public class TupleIndexHashTable extends AbstractHashTable
     /**
      * We use this method to aviod to table lookups for the same hashcode; which is what we would have to do if we did
      * a get and then a create if the value is null.
-     * 
+     *
      * @param value
      * @return
      */
@@ -317,13 +370,30 @@ public class TupleIndexHashTable extends AbstractHashTable
         private static final long serialVersionUID = 400L;
         private Entry             next;
         private ReteTuple         first;
-        private final int         hashCode;
+        private int         hashCode;
         private Index             index;
 
+        public FieldIndexEntry() {
+
+        }
         public FieldIndexEntry(final Index index,
                                final int hashCode) {
             this.index = index;
             this.hashCode = hashCode;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            next    = (Entry)in.readObject();
+            first   = (ReteTuple)in.readObject();
+            hashCode    = in.readInt();
+            index   = (Index)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(next);
+            out.writeObject(first);
+            out.writeInt(hashCode);
+            out.writeObject(index);
         }
 
         public Entry getNext() {

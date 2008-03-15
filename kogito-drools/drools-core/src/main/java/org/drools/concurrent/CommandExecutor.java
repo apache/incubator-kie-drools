@@ -3,11 +3,14 @@
  */
 package org.drools.concurrent;
 
-import java.io.Serializable;
+import org.drools.WorkingMemory;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import org.drools.WorkingMemory;
 
 /**
  * The CommandExecutor is a Producer/Consumer style classes that provides a queue of Commands
@@ -15,7 +18,7 @@ import org.drools.WorkingMemory;
  * called.
  *
  */
-public class CommandExecutor implements Runnable, Serializable {
+public class CommandExecutor implements Runnable, Externalizable {
 
     private static final long serialVersionUID = 5924295088331461167L;
     
@@ -24,12 +27,27 @@ public class CommandExecutor implements Runnable, Serializable {
     
     private volatile boolean run;
     
-    
+
+    public CommandExecutor() {
+    }
+
     public CommandExecutor(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;            
         this.queue = new LinkedBlockingQueue();
     }        
     
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        workingMemory   = (WorkingMemory)in.readObject();
+        queue           = (BlockingQueue)in.readObject();
+        run             = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(workingMemory);
+        out.writeObject(queue);
+        out.writeBoolean(run);
+    }
+
     /**
      * Allows the looping run() method to execute. 
      *

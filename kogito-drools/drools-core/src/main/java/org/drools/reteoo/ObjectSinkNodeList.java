@@ -1,18 +1,21 @@
 package org.drools.reteoo;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +26,7 @@ import java.util.NoSuchElementException;
 /**
  * This is a simple linked linked implementation. Each node must implement </code>LinkedListNode<code> so that it references
  * the node before and after it. This way a node can be removed without having to scan the list to find it. This class
- * does not provide an Iterator implementation as its designed for efficiency and not genericity. There are a number of 
+ * does not provide an Iterator implementation as its designed for efficiency and not genericity. There are a number of
  * ways to iterate the list.
  * <p>
  * Simple iterator:
@@ -31,7 +34,7 @@ import java.util.NoSuchElementException;
  * for ( LinkedListNode node = list.getFirst(); node != null; node =  node.getNext() ) {
  * }
  * </pre>
- * 
+ *
  * Iterator that pops the first entry:
  * <pre>
  * for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
@@ -45,7 +48,7 @@ import java.util.NoSuchElementException;
  */
 public class ObjectSinkNodeList
     implements
-    Serializable {
+    Externalizable {
     private static final long serialVersionUID = 400L;
 
     private ObjectSinkNode    firstNode;
@@ -60,10 +63,21 @@ public class ObjectSinkNodeList
 
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        firstNode   = (ObjectSinkNode)in.readObject();
+        lastNode    = (ObjectSinkNode)in.readObject();
+        size        = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(firstNode);
+        out.writeObject(lastNode);
+        out.writeInt(size);
+    }
     /**
-     * Add a <code>ObjectSinkNode</code> to the list. If the <code>LinkedList</code> is empty then the first and 
+     * Add a <code>ObjectSinkNode</code> to the list. If the <code>LinkedList</code> is empty then the first and
      * last nodes are set to the added node.
-     * 
+     *
      * @param node
      *      The <code>ObjectSinkNode</code> to be added
      */
@@ -83,7 +97,7 @@ public class ObjectSinkNodeList
      * Removes a <code>ObjectSinkNode</code> from the list. This works by attach the previous reference to the child reference.
      * When the node to be removed is the first node it calls <code>removeFirst()</code>. When the node to be removed is the last node
      * it calls <code>removeLast()</code>.
-     * 
+     *
      * @param node
      *      The <code>ObjectSinkNode</code> to be removed.
      */
@@ -123,9 +137,9 @@ public class ObjectSinkNodeList
     }
 
     /**
-     * Remove the first node from the list. The next node then becomes the first node. If this is the last 
+     * Remove the first node from the list. The next node then becomes the first node. If this is the last
      * node then both first and last node references are set to null.
-     * 
+     *
      * @return
      *      The first <code>ObjectSinkNode</code>.
      */
@@ -146,9 +160,9 @@ public class ObjectSinkNodeList
     }
 
     /**
-     * Remove the last node from the list. The previous node then becomes the last node. If this is the last 
+     * Remove the last node from the list. The previous node then becomes the last node. If this is the last
      * node then both first and last node references are set to null.
-     * 
+     *
      * @return
      *      The first <code>ObjectSinkNode</code>.
      */
@@ -177,7 +191,7 @@ public class ObjectSinkNodeList
     }
 
     /**
-     * Iterates the list removing all the nodes until there are no more nodes to remove. 
+     * Iterates the list removing all the nodes until there are no more nodes to remove.
      */
     public void clear() {
         while ( removeFirst() != null ) {

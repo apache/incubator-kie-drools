@@ -3,6 +3,9 @@ package org.drools.rule;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -15,10 +18,21 @@ public abstract class AbstractCompositeRestriction
 
     private static final long             serialVersionUID = 400L;
 
-    protected final Restriction[]         restrictions;
+    protected Restriction[]         restrictions;
+
+    public AbstractCompositeRestriction() {
+    }
 
     public AbstractCompositeRestriction(final Restriction[] restriction) {
         this.restrictions = restriction;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        restrictions    = (Restriction[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(restrictions);
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -95,6 +109,9 @@ public abstract class AbstractCompositeRestriction
 
         private ContextEntry      entry;
 
+        public CompositeContextEntry() {
+        }
+
         public CompositeContextEntry(final Restriction[] restrictions) {
             contextEntries = new ContextEntry[restrictions.length];
             for ( int i = 0; i < restrictions.length; i++ ) {
@@ -102,6 +119,15 @@ public abstract class AbstractCompositeRestriction
             }
         }
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            contextEntries  = (ContextEntry[])in.readObject();
+            entry  = (ContextEntry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(contextEntries);
+            out.writeObject(entry);
+        }
         public ContextEntry getNext() {
             return this.entry;
         }
@@ -125,18 +151,18 @@ public abstract class AbstractCompositeRestriction
                                                         tuple );
             }
         }
-        
+
         public void resetTuple() {
             for ( int i = 0, length = this.contextEntries.length; i < length; i++ ) {
                 this.contextEntries[i].resetTuple();
             }
         }
-        
+
         public void resetFactHandle() {
             for ( int i = 0, length = this.contextEntries.length; i < length; i++ ) {
                 this.contextEntries[i].resetFactHandle();
             }
-        }        
+        }
 
     }
 

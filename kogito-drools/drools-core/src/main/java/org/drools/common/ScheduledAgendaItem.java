@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,10 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.util.TimerTask;
 
 import org.drools.rule.GroupElement;
@@ -30,20 +33,20 @@ import org.drools.util.LinkedListNode;
 
 /**
  * Item entry in the <code>Agenda</code>.
- * 
+ *
  * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
 public class ScheduledAgendaItem extends TimerTask
     implements
     Activation,
-    Serializable,
+    Externalizable,
     LinkedListNode {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /**
-     * 
+     *
      */
     private static final long        serialVersionUID = 400L;
 
@@ -52,19 +55,19 @@ public class ScheduledAgendaItem extends TimerTask
     private LinkedListNode           next;
 
     /** The tuple. */
-    private final Tuple              tuple;
+    private Tuple              tuple;
 
     /** The rule. */
-    private final Rule               rule;
+    private Rule               rule;
 
     /** The subrule */
-    private final GroupElement       subrule;
+    private GroupElement       subrule;
 
-    private final InternalAgenda     agenda;
+    private InternalAgenda     agenda;
 
-    private final PropagationContext context;
+    private PropagationContext context;
 
-    private final long               activationNumber;
+    private long               activationNumber;
 
     private LinkedList               justified;
 
@@ -75,10 +78,13 @@ public class ScheduledAgendaItem extends TimerTask
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public ScheduledAgendaItem() {
+
+    }
 
     /**
      * Construct.
-     * 
+     *
      * @param tuple
      *            The tuple.
      * @param rule
@@ -101,17 +107,45 @@ public class ScheduledAgendaItem extends TimerTask
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        previous    = (LinkedListNode)in.readObject();
+        next    = (LinkedListNode)in.readObject();
+        tuple    = (Tuple)in.readObject();
+        rule    = (Rule)in.readObject();
+        subrule    = (GroupElement)in.readObject();
+        agenda    = (InternalAgenda)in.readObject();
+        context    = (PropagationContext)in.readObject();
+        activationNumber    = in.readLong();
+        justified    = (LinkedList)in.readObject();
+        activated    = in.readBoolean();
+        activationGroupNode    = (ActivationGroupNode)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(previous);
+        out.writeObject(next);
+        out.writeObject(tuple);
+        out.writeObject(rule);
+        out.writeObject(subrule);
+        out.writeObject(agenda);
+        out.writeObject(context);
+        out.writeLong(activationNumber);
+        out.writeObject(justified);
+        out.writeBoolean(activated);
+        out.writeObject(activationGroupNode);
+    }
+
     public PropagationContext getPropagationContext() {
         return this.context;
     }
-    
+
     public int getSalience() {
         throw new UnsupportedOperationException( "salience is now application to scheduled activations" );
     }
 
     /**
      * Retrieve the rule.
-     * 
+     *
      * @return The rule.
      */
     public Rule getRule() {
@@ -120,7 +154,7 @@ public class ScheduledAgendaItem extends TimerTask
 
     /**
      * Retrieve the tuple.
-     * 
+     *
      * @return The tuple.
      */
     public Tuple getTuple() {
@@ -205,7 +239,7 @@ public class ScheduledAgendaItem extends TimerTask
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(final Object object) {

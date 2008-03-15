@@ -2,13 +2,13 @@ package org.drools.util;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,35 +17,39 @@ package org.drools.util;
  */
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * 
+ *
  * @author Mark Proctor
  */
 public class PrimitiveLongMap
     implements
-    Serializable {
+    Externalizable {
     /**
-     * 
+     *
      */
     private static final long   serialVersionUID = 400L;
 
     private final static Object NULL             = new Serializable() {
 
                                                      /**
-                                                      * 
+                                                      *
                                                       */
                                                      private static final long serialVersionUID = 400L;
                                                  };
 
-    private final int           indexIntervals;
-    private final int           intervalShifts;
-    private final int           midIntervalPoint;
-    private final int           tableSize;
-    private final int           shifts;
-    private final int           doubleShifts;
+    private int           indexIntervals;
+    private int           intervalShifts;
+    private int           midIntervalPoint;
+    private int           tableSize;
+    private int           shifts;
+    private int           doubleShifts;
     private Page                firstPage;
     private Page                lastPage;
     private int                 lastPageId;
@@ -92,6 +96,36 @@ public class PrimitiveLongMap
         this.lastPageId = 0;
 
         init();
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        indexIntervals  = in.readInt();
+        intervalShifts  = in.readInt();
+        midIntervalPoint  = in.readInt();
+        tableSize  = in.readInt();
+        shifts  = in.readInt();
+        doubleShifts  = in.readInt();
+        firstPage   = (Page)in.readObject();
+        lastPage    = (Page)in.readObject();
+        lastPageId  = in.readInt();
+        maxKey  = in.readLong();
+        pageIndex   = (Page[])in.readObject();
+        totalSize  = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(indexIntervals);
+        out.writeInt(intervalShifts);
+        out.writeInt(midIntervalPoint);
+        out.writeInt(tableSize);
+        out.writeInt(shifts);
+        out.writeInt(doubleShifts);
+        out.writeObject(firstPage);
+        out.writeObject(lastPage);
+        out.writeInt(lastPageId);
+        out.writeLong(maxKey);
+        out.writeObject(pageIndex);
+        out.writeInt(totalSize);
     }
 
     private void init() {
@@ -175,7 +209,7 @@ public class PrimitiveLongMap
         }
         return value;
     }
-    
+
     /**
      * gets the next populated key, after the given key position.
      * @param key
@@ -184,7 +218,7 @@ public class PrimitiveLongMap
     public long getNext(long key) {
         final int currentPageId = (int) key >> this.doubleShifts;
         final int nextPageId = (int) (key+1) >> this.doubleShifts;
-        
+
         if ( currentPageId != nextPageId ) {
             Page page = findPage( key + 1);
             while ( page.isEmpty() ) {
@@ -194,15 +228,15 @@ public class PrimitiveLongMap
         } else {
             key += 1;
         }
-        
+
         while ( !containsKey( key ) && key <= this.maxKey ) {
             key++;
         }
-        
+
         if ( key > this.maxKey ) {
             key -= 1;
         }
-                                
+
         return key;
     }
 
@@ -315,21 +349,25 @@ public class PrimitiveLongMap
         return page;
     }
 
-    private static class Page
+    public static class Page
         implements
-        Serializable {
+        Externalizable {
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 400L;
-        private final int         pageSize;
-        private final int         pageId;
-        private final int         shifts;
-        private final int         tableSize;
+        private int         pageSize;
+        private int         pageId;
+        private int         shifts;
+        private int         tableSize;
         private Page              nextSibling;
         private Page              previousSibling;
         private Object[][]        tables;
         private int               filledSlots;
+
+        public Page() {
+
+        }
 
         Page(final Page previousSibling,
              final int pageId,
@@ -352,6 +390,28 @@ public class PrimitiveLongMap
             }
             this.pageId = pageId;
             this.pageSize = tableSize << this.shifts;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            pageSize    = in.readInt();
+            pageId      = in.readInt();
+            shifts      = in.readInt();
+            tableSize   = in.readInt();
+            nextSibling = (Page)in.readObject();
+            previousSibling = (Page)in.readObject();
+            tables      = (Object[][])in.readObject();
+            filledSlots = in.readInt();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(pageSize);
+            out.writeInt(pageId);
+            out.writeInt(shifts);
+            out.writeInt(tableSize);
+            out.writeObject(nextSibling);
+            out.writeObject(previousSibling);
+            out.writeObject(tables);
+            out.writeInt(filledSlots);
         }
 
         public int getPageId() {
@@ -389,7 +449,7 @@ public class PrimitiveLongMap
 
             // tables[table][slot]
             return this.tables[table][(int) key - offset];
-        }              
+        }
 
         public Object put(long key,
                           final Object newValue) {

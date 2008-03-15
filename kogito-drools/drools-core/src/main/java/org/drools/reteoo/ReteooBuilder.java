@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,14 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Externalizable;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,6 +44,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.reteoo.builder.ReteooRuleBuilder;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Rule;
@@ -43,22 +52,22 @@ import org.drools.spi.Salience;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
- * 
+ *
  * @see org.drools.rule.Package
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
- * 
+ *
  */
 public class ReteooBuilder
     implements
-    Serializable {
+    Externalizable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /**
-     * 
+     *
      */
     private static final long                 serialVersionUID = 400L;
 
@@ -79,6 +88,9 @@ public class ReteooBuilder
     // Constructors
     // ------------------------------------------------------------
 
+    public ReteooBuilder() {
+
+    }
     /**
      * Construct a <code>Builder</code> against an existing <code>Rete</code>
      * network.
@@ -92,23 +104,16 @@ public class ReteooBuilder
         this.ruleBuilder = new ReteooRuleBuilder();
     }
 
-    private void readObject(ObjectInputStream stream) throws IOException,
-                                                     ClassNotFoundException {
-        stream.defaultReadObject();
-        this.ruleBase = ((DroolsObjectInputStream) stream).getRuleBase();
-        this.ruleBuilder = new ReteooRuleBuilder();
-    }
-
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
 
     /**
      * Add a <code>Rule</code> to the network.
-     * 
+     *
      * @param rule
      *            The rule to add.
-     * 
+     *
      * @throws RuleIntegrationException
      *             if an error prevents complete construction of the network for
      *             the <code>Rule</code>.
@@ -241,16 +246,30 @@ public class ReteooBuilder
 
     public static class IdGenerator
         implements
-        Serializable {
+        Externalizable {
 
         private static final long serialVersionUID = 400L;
 
         private Queue<Integer>    recycledIds;
         private int               nextId;
 
+        public IdGenerator() {
+
+        }
+
         public IdGenerator(final int firstId) {
             this.nextId = firstId;
             this.recycledIds = new LinkedList<Integer>();
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            recycledIds = (Queue<Integer>)in.readObject();
+            nextId      = in.readInt();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(recycledIds);
+            out.writeInt(nextId);
         }
 
         public int getNextId() {
@@ -269,6 +288,52 @@ public class ReteooBuilder
             return this.nextId-1;
         }
 
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        boolean isDrools    = out instanceof DroolsObjectOutputStream;
+        DroolsObjectOutputStream    droolsStream;
+        ByteArrayOutputStream       bytes;
+
+        if (isDrools) {
+            bytes   = null;
+            droolsStream    = (DroolsObjectOutputStream)out;
+        } else {
+             bytes = new ByteArrayOutputStream();
+             droolsStream   = new DroolsObjectOutputStream((OutputStream)new ObjectOutputStream(bytes));
+        }
+        droolsStream.writeObject(rules);
+        droolsStream.writeObject(idGenerator);
+        droolsStream.writeBoolean(ordered);
+        droolsStream.writeObject(ruleBase);
+        if (!isDrools) {
+            bytes.close();
+            out.writeObject(bytes.toByteArray());
+        }
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        boolean isDrools    = in instanceof DroolsObjectInputStream;
+        DroolsObjectInputStream droolsStream;
+        ByteArrayInputStream    bytes;
+
+        if (isDrools) {
+            bytes           = null;
+            droolsStream    = (DroolsObjectInputStream)in;
+        } else {
+            bytes   = new ByteArrayInputStream((byte[])in.readObject());
+            droolsStream    = new DroolsObjectInputStream((InputStream)new ObjectInputStream(bytes));
+        }
+        this.rules          = (Map)in.readObject();
+        this.idGenerator    = (IdGenerator)in.readObject();
+        this.ordered        = in.readBoolean();
+
+        // TODO: possible null for rule base.
+        this.ruleBase       = (InternalRuleBase)droolsStream.readObject();
+        this.ruleBuilder    = new ReteooRuleBuilder();
+        if (!isDrools) {
+            bytes.close();
+        }
     }
 
 }

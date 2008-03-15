@@ -1,12 +1,12 @@
 /*
  * Copyright 2006 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,9 @@ package org.drools.spi;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
@@ -27,7 +30,7 @@ import org.drools.util.ClassUtils;
 
 /**
  * This is a global variable extractor used to get a global variable value
- * 
+ *
  * @author etirelli
  */
 public class GlobalExtractor
@@ -35,9 +38,12 @@ public class GlobalExtractor
     Extractor {
 
     private static final long serialVersionUID = 400L;
-    private final String            key;
-    private final ObjectType        objectType;
+    private String            key;
+    private ObjectType        objectType;
 
+    public GlobalExtractor() {
+
+    }
     public GlobalExtractor(final String key,
                            final Map map) {
         this.key = key;
@@ -46,6 +52,16 @@ public class GlobalExtractor
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
         return workingMemory.getGlobal( key );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        key = (String)in.readObject();
+        objectType  = (ObjectType)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(key);
+        out.writeObject(objectType);
     }
 
     public ObjectType getObjectType() {

@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,15 +24,23 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.FieldValue;
 
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
+
 public class LiteralConstraint
     implements
-    AlphaNodeFieldConstraint {
+    AlphaNodeFieldConstraint, Externalizable {
 
     private static final long        serialVersionUID = 400L;
 
-    private final FieldExtractor     extractor;
+    private FieldExtractor     extractor;
+    private LiteralRestriction restriction;
 
-    private final LiteralRestriction restriction;
+    public LiteralConstraint() {
+        this(null, null);
+    }
 
     public LiteralConstraint(final FieldExtractor extractor,
                              final Evaluator evaluator,
@@ -47,6 +55,16 @@ public class LiteralConstraint
                              final LiteralRestriction restriction) {
         this.extractor = extractor;
         this.restriction = restriction;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        extractor   = (FieldExtractor)in.readObject();
+        restriction = (LiteralRestriction)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(extractor);
+        out.writeObject(restriction);
     }
 
     public Evaluator getEvaluator() {

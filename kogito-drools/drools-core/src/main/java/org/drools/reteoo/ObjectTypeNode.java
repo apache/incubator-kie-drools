@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,10 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -27,7 +31,6 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
-import org.drools.rule.EvalCondition;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -46,18 +49,18 @@ import org.drools.util.Iterator;
  * <p>
  * Filters <code>Objects</code> coming from the <code>Rete</code> using a
  * <code>ObjectType</code> semantic module.
- * 
- * 
+ *
+ *
  * @see ObjectType
  * @see Rete
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public class ObjectTypeNode extends ObjectSource
     implements
     ObjectSink,
-    Serializable,
+    Externalizable,
     NodeMemory
 
 {
@@ -66,21 +69,25 @@ public class ObjectTypeNode extends ObjectSource
     // ------------------------------------------------------------
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
 
     /** The <code>ObjectType</code> semantic module. */
-    private final ObjectType  objectType;
+    private ObjectType  objectType;
 
     private boolean           skipOnModify     = false;
 
     private boolean           objectMemoryEnabled;
 
+    public ObjectTypeNode() {
+
+    }
+
     /**
      * Construct given a semantic <code>ObjectType</code> and the provided
      * unique id. All <code>ObjectTypdeNode</code> have node memory.
-     * 
+     *
      * @param id
      *          The unique id for the node.
      * @param objectType
@@ -97,10 +104,23 @@ public class ObjectTypeNode extends ObjectSource
         setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        objectType  = (ObjectType)in.readObject();
+        skipOnModify    = in.readBoolean();
+        objectMemoryEnabled = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(objectType);
+        out.writeBoolean(skipOnModify);
+        out.writeBoolean(objectMemoryEnabled);
+    }
     /**
      * Retrieve the semantic <code>ObjectType</code> differentiator.
-     * 
-     * @return 
+     *
+     * @return
      *      The semantic <code>ObjectType</code> differentiator.
      */
     public ObjectType getObjectType() {
@@ -110,7 +130,7 @@ public class ObjectTypeNode extends ObjectSource
     /**
      * Tests the provided object to see if this <code>ObjectTypeNode</code> can receive the object
      * for assertion and retraction propagations.
-     * 
+     *
      * @param object
      * @return
      *      boolean value indicating whether the <code>ObjectTypeNode</code> can receive the object.
@@ -127,7 +147,7 @@ public class ObjectTypeNode extends ObjectSource
      * Propagate the <code>FactHandleimpl</code> through the <code>Rete</code> network. All
      * <code>FactHandleImpl</code> should be remembered in the node memory, so that later runtime rule attachmnents
      * can have the matched facts propagated to them.
-     * 
+     *
      * @param handle
      *            The fact handle.
      * @param object
@@ -155,9 +175,9 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     /**
-     * Retract the <code>FactHandleimpl</code> from the <code>Rete</code> network. Also remove the 
+     * Retract the <code>FactHandleimpl</code> from the <code>Rete</code> network. Also remove the
      * <code>FactHandleImpl</code> from the node memory.
-     * 
+     *
      * @param handle
      *            The fact handle.
      * @param object
@@ -204,8 +224,8 @@ public class ObjectTypeNode extends ObjectSource
     public void attach(final InternalWorkingMemory[] workingMemories) {
         attach();
 
-        // we need to call updateSink on Rete, because someone 
-        // might have already added facts matching this ObjectTypeNode 
+        // we need to call updateSink on Rete, because someone
+        // might have already added facts matching this ObjectTypeNode
         // to working memories
         for ( int i = 0, length = workingMemories.length; i < length; i++ ) {
             final InternalWorkingMemory workingMemory = workingMemories[i];
@@ -220,14 +240,10 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    public void networkUpdated() {
-        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
-    }
-    
     /**
-     * OTN needs to override remove to avoid releasing the node ID, since OTN are 
+     * OTN needs to override remove to avoid releasing the node ID, since OTN are
      * never removed from the rulebase in the current implementation
-     * 
+     *
      * @inheritDoc
      *
      * @see org.drools.common.BaseNode#remove(org.drools.reteoo.RuleRemovalContext, org.drools.reteoo.ReteooBuilder, org.drools.common.BaseNode, org.drools.common.InternalWorkingMemory[])
@@ -293,11 +309,12 @@ public class ObjectTypeNode extends ObjectSource
         return this.objectType.equals( other.objectType ) && this.objectSource.equals( other.objectSource );
     }
 
-    /** 
+    /**
      * @inheritDoc
      */
     protected void addObjectSink(final ObjectSink objectSink) {
         super.addObjectSink( objectSink );
+        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
     }
 
     /**
@@ -305,12 +322,13 @@ public class ObjectTypeNode extends ObjectSource
      */
     protected void removeObjectSink(final ObjectSink objectSink) {
         super.removeObjectSink( objectSink );
+        this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
     }
 
     /**
      * Checks if a modify action on this object type may
      * be skipped because no constraint is applied to it
-     *  
+     *
      * @param sinks
      * @return
      */
@@ -318,24 +336,21 @@ public class ObjectTypeNode extends ObjectSource
         // If we have no alpha or beta node with constraints on this ObjectType, we can just skip modifies
         boolean hasConstraints = false;
         for ( int i = 0; i < sinks.length && !hasConstraints; i++ ) {
-            if ( sinks[i] instanceof AlphaNode || sinks[i] instanceof AccumulateNode || sinks[i] instanceof CollectNode || sinks[i] instanceof FromNode ) {
-                hasConstraints = true;
+            if ( sinks[i] instanceof AlphaNode ) {
+                hasConstraints = this.usesDeclaration( ((AlphaNode) sinks[i]).getConstraint() );
             } else if ( sinks[i] instanceof BetaNode && ((BetaNode) sinks[i]).getConstraints().length > 0 ) {
                 hasConstraints = this.usesDeclaration( ((BetaNode) sinks[i]).getConstraints() );
-            } else if ( sinks[i] instanceof EvalConditionNode ) {
-                hasConstraints = this.usesDeclaration( ((EvalConditionNode)sinks[i]).getCondition() );
             }
             if ( !hasConstraints && sinks[i] instanceof ObjectSource ) {
-                hasConstraints = !this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
-            } else if ( !hasConstraints && sinks[i] instanceof TupleSource ) {
-                hasConstraints = !this.canSkipOnModify( ((TupleSource) sinks[i]).getSinkPropagator().getSinks() );
+                hasConstraints = this.canSkipOnModify( ((ObjectSource) sinks[i]).getSinkPropagator().getSinks() );
+            } else if ( sinks[i] instanceof TupleSource ) {
+                hasConstraints = this.canSkipOnModify( ((TupleSource) sinks[i]).getSinkPropagator().getSinks() );
             }
         }
 
         // Can only skip if we have no constraints
         return !hasConstraints;
     }
-
 
     private boolean usesDeclaration(final Constraint[] constraints) {
         boolean usesDecl = false;
@@ -348,15 +363,6 @@ public class ObjectTypeNode extends ObjectSource
     private boolean usesDeclaration(final Constraint constraint) {
         boolean usesDecl = false;
         final Declaration[] declarations = constraint.getRequiredDeclarations();
-        for ( int j = 0; !usesDecl && j < declarations.length; j++ ) {
-            usesDecl = (declarations[j].getPattern().getObjectType() == this.objectType);
-        }
-        return usesDecl;
-    }
-
-    private boolean usesDeclaration(final EvalCondition condition) {
-        boolean usesDecl = false;
-        final Declaration[] declarations = condition.getRequiredDeclarations();
         for ( int j = 0; !usesDecl && j < declarations.length; j++ ) {
             usesDecl = (declarations[j].getPattern().getObjectType() == this.objectType);
         }

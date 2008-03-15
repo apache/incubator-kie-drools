@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 
 import org.drools.Agenda;
 import org.drools.DroolsTestCase;
@@ -58,12 +61,12 @@ import org.drools.spi.RuleFlowGroup;
 public class AgendaTest extends DroolsTestCase {
     private InternalRuleBase ruleBase;
     private BuildContext buildContext;
-    
+
     protected void setUp() throws Exception {
         ruleBase = ( InternalRuleBase ) RuleBaseFactory.newRuleBase();
         buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
     }
-    
+
     public void testClearAgenda() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -77,12 +80,12 @@ public class AgendaTest extends DroolsTestCase {
                                                              rule1,
                                                              rule1.getLhs(),
                                                              buildContext );
-        
+
         final RuleTerminalNode node2 = new RuleTerminalNode( 5,
                                                              new MockTupleSource( 4 ),
                                                              rule2,
                                                              rule2.getLhs(),
-                                                             buildContext );        
+                                                             buildContext );
 
         final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
                                                                       "cheese" ) );
@@ -96,7 +99,7 @@ public class AgendaTest extends DroolsTestCase {
         // is itself
         rule1.setConsequence( new org.drools.spi.Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -104,13 +107,20 @@ public class AgendaTest extends DroolsTestCase {
                                  final WorkingMemory workingMemory) {
                 // do nothing
             }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         } );
-        
+
         // Add consequence. Notice here the context here for the add to ageyunda
         // is itself
         rule2.setConsequence( new org.drools.spi.Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -118,42 +128,49 @@ public class AgendaTest extends DroolsTestCase {
                                  final WorkingMemory workingMemory) {
                 // do nothing
             }
-        } );        
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
+        } );
 
         assertEquals( 0,
                       agenda.getFocus().size() );
 
         rule1.setNoLoop( false );
         rule2.setDuration( 5000 );
-        
+
         node1.assertTuple( tuple,
                            context1,
                            workingMemory );
-        
+
         node2.assertTuple( tuple,
                            context1,
-                           workingMemory );                
+                           workingMemory );
 
         // make sure we have an activation in the current focus
         assertEquals( 1,
                       agenda.getFocus().size() );
-        
+
         assertEquals( 1,
                       agenda.getScheduledActivations().length );
-        
+
 
         agenda.clearAgenda();
 
         assertEquals( 0,
                       agenda.getFocus().size() );
-        
+
         assertEquals( 0,
-                      agenda.getScheduledActivations().length );        
+                      agenda.getScheduledActivations().length );
     }
 
     public void testFilters() throws Exception {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
-        
+
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         final Rule rule = new Rule( "test-rule" );
@@ -167,7 +184,7 @@ public class AgendaTest extends DroolsTestCase {
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -175,6 +192,13 @@ public class AgendaTest extends DroolsTestCase {
                                  final WorkingMemory workingMemory) {
                 results.put( "fired",
                              new Boolean( true ) );
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         } );
 
@@ -254,6 +278,13 @@ public class AgendaTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         final ReteTuple tuple = new ReteTuple( new DefaultFactHandle( 1,
@@ -310,7 +341,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                         PropagationContext.ASSERTION,
                                                                         rule3,
                                                                         null );
-        
+
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         // create the AgendaGroups
@@ -321,7 +352,7 @@ public class AgendaTest extends DroolsTestCase {
         agenda.addAgendaGroup( agendaGroup2 );
 
         final AgendaGroup agendaGroup3 = new BinaryHeapQueueAgendaGroup( "agendaGroup3", ruleBase );
-        agenda.addAgendaGroup( agendaGroup3 );        
+        agenda.addAgendaGroup( agendaGroup3 );
 
         // focus at this point is MAIN
         assertEquals( 0,
@@ -475,13 +506,20 @@ public class AgendaTest extends DroolsTestCase {
         // create the consequence
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -607,13 +645,20 @@ public class AgendaTest extends DroolsTestCase {
         // create the consequence
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 list.add( knowledgeHelper.getRule() );
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -695,7 +740,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 1,
                       activationGroup0.size() );
 
-        // Assert another tuple and check it was added to activation-group-0        
+        // Assert another tuple and check it was added to activation-group-0
         node1.assertTuple( tuple,
                            context1,
                            workingMemory );
@@ -706,7 +751,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 2,
                       agenda.focusStackSize() );
 
-        // The first tuple should fire, adding itself to the List and clearing and cancelling the other Activations in the activation-group-0        
+        // The first tuple should fire, adding itself to the List and clearing and cancelling the other Activations in the activation-group-0
         agenda.fireNextItem( null );
 
         // Make sure the activation-group-0 is clear
@@ -779,7 +824,7 @@ public class AgendaTest extends DroolsTestCase {
 
     }
 
-    /** 
+    /**
      * Basic RuleFlowGroup test where there are three rules, each in their own
      * RuleFlowGroup.  First only rule-flow-group-0 is activated and rule0 is
      * executed.  When the two remaining groups are activated, the rule with the
@@ -797,13 +842,20 @@ public class AgendaTest extends DroolsTestCase {
         // create the consequence
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 list.add( knowledgeHelper.getRule() );
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -955,6 +1007,13 @@ public class AgendaTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         final Rule rule1 = new Rule( "test-rule1" );
@@ -985,6 +1044,13 @@ public class AgendaTest extends DroolsTestCase {
                 node1.assertTuple( tuple1,
                                    context0,
                                    workingMemory );
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -1020,7 +1086,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 1,
                       agenda.agendaSize() );
 
-        // As we fire the rule, an new activation is created for rule1, and it should be added to group AND the agenda. 
+        // As we fire the rule, an new activation is created for rule1, and it should be added to group AND the agenda.
         agenda.fireNextItem( null );
         assertEquals( 1,
                       ruleFlowGroup0.size() );
@@ -1054,6 +1120,13 @@ public class AgendaTest extends DroolsTestCase {
                                  WorkingMemory workingMemory) {
                 // do nothing
             }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         final Rule rule1 = new Rule( "test-rule1" );
@@ -1085,6 +1158,13 @@ public class AgendaTest extends DroolsTestCase {
                 node1.retractTuple( tuple1,
                                     context0,
                                     workingMemory );
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -1138,7 +1218,7 @@ public class AgendaTest extends DroolsTestCase {
     /**
      * RuleFlowGroup test that makes sure that, when deactivating a RuleFlowGroup,
      * all activations for that group are no longer on the agenda.  When
-     * reactivating the RuleFlowGroup however, they get added to the agenda again. 
+     * reactivating the RuleFlowGroup however, they get added to the agenda again.
      */
     public void testRuleFlowGroup3() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -1154,6 +1234,13 @@ public class AgendaTest extends DroolsTestCase {
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory w) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -1193,7 +1280,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.agendaSize() );
 
-        // Activate the RuleFlowGroup, the activations stay in the group, but 
+        // Activate the RuleFlowGroup, the activations stay in the group, but
         // should now also be in the Agenda
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 2,
@@ -1216,7 +1303,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.agendaSize() );
 
-        // Reactivate the RuleFlowGroup, the activations stay in the group, but 
+        // Reactivate the RuleFlowGroup, the activations stay in the group, but
         // should now also be in the Agenda again
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 2,
@@ -1227,7 +1314,7 @@ public class AgendaTest extends DroolsTestCase {
     }
 
     /**
-     * Test auto-deactivation of RuleFlowGroup. 
+     * Test auto-deactivation of RuleFlowGroup.
      */
     public void testRuleFlowGroup4() {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
@@ -1243,6 +1330,13 @@ public class AgendaTest extends DroolsTestCase {
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory w) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -1280,7 +1374,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.agendaSize() );
 
-        // Activate the RuleFlowGroup, the activations stay in the group, but 
+        // Activate the RuleFlowGroup, the activations stay in the group, but
         // should now also be in the Agenda
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 1,
@@ -1323,7 +1417,7 @@ public class AgendaTest extends DroolsTestCase {
         workingMemory.executeQueuedActions();
         assertFalse( ruleFlowGroup0.isActive() );
 
-        // A new activation should now be added to the RuleFlowGroup but not to the agenda 
+        // A new activation should now be added to the RuleFlowGroup but not to the agenda
         final ReteTuple tuple2 = new ReteTuple( new DefaultFactHandle( 1,
                                                                        "cheese" ) );
         node0.assertTuple( tuple2,
@@ -1334,9 +1428,9 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.agendaSize() );
     }
-    
+
     /**
-     * Test auto-deactivation of empty ruleflow group. 
+     * Test auto-deactivation of empty ruleflow group.
      */
     public void testRuleFlowGroup5() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -1353,6 +1447,13 @@ public class AgendaTest extends DroolsTestCase {
                                  WorkingMemory w) {
                 // do nothing
             }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         final Rule rule0 = new Rule( "test-rule0" );
@@ -1368,7 +1469,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.agendaSize() );
 
-        // Activate the RuleFlowGroup, the activations stay in the group, but 
+        // Activate the RuleFlowGroup, the activations stay in the group, but
         // should now also be in the Agenda
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 0,
@@ -1437,23 +1538,30 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 2,
                       ruleFlowGroup.size() );
     }
-    
+
     public void testSequentialAgenda() {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );
         InternalRuleBase ruleBase = ( InternalRuleBase ) RuleBaseFactory.newRuleBase( conf );
-        
+
 
         // create the consequence
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -1515,7 +1623,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                         PropagationContext.ASSERTION,
                                                                         rule3,
                                                                         null );
-        
+
         ruleBase.getAgendaGroupRuleTotals().put( "MAIN", new Integer( 100 ) );
         ruleBase.getAgendaGroupRuleTotals().put( "agendaGroup1", new Integer( 10 ) );
         ruleBase.getAgendaGroupRuleTotals().put( "agendaGroup2", new Integer( 1 ) );
@@ -1528,8 +1636,8 @@ public class AgendaTest extends DroolsTestCase {
         agenda.addAgendaGroup( agendaGroup1 );
 
         final AgendaGroup agendaGroup2 = new ArrayAgendaGroup( "agendaGroup2", ruleBase );
-        agenda.addAgendaGroup( agendaGroup2 );  
-        
+        agenda.addAgendaGroup( agendaGroup2 );
+
         // focus at this point is MAIN
         assertEquals( 0,
                       agenda.focusStackSize() );
@@ -1602,7 +1710,7 @@ public class AgendaTest extends DroolsTestCase {
         // agendaGroup2 now has 2 activations
         assertEquals( 2,
                       agenda.getFocus().size() );
-        
+
         // check totalAgendaSize still works
         assertEquals( 5,
                       agenda.agendaSize() );
@@ -1662,8 +1770,8 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals( 0,
                       agenda.getFocus().size() );
         assertEquals( 0,
-                      agenda.agendaSize() );        
-        
+                      agenda.agendaSize() );
+
     }
 
 }

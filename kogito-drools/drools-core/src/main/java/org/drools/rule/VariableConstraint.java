@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,12 +22,20 @@ import org.drools.reteoo.ReteTuple;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 
-public class VariableConstraint extends MutableTypeConstraint {
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Externalizable;
+
+public class VariableConstraint extends MutableTypeConstraint implements Externalizable {
 
     private static final long         serialVersionUID = 400L;
 
-    private final FieldExtractor      fieldExtractor;
-    private final VariableRestriction restriction;
+    private FieldExtractor      fieldExtractor;
+    private VariableRestriction restriction;
+
+    public VariableConstraint() {
+    }
 
     public VariableConstraint(final FieldExtractor fieldExtractor,
                               final Declaration declaration,
@@ -44,6 +52,17 @@ public class VariableConstraint extends MutableTypeConstraint {
         this.restriction = restriction;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        fieldExtractor  = (FieldExtractor)in.readObject();
+        restriction     = (VariableRestriction)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(fieldExtractor);
+        out.writeObject(restriction);
+    }
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();
     }

@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,10 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.Externalizable;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -31,16 +34,16 @@ import org.drools.util.TupleHashTable;
 
 /**
  * Node which filters <code>ReteTuple</code>s.
- * 
+ *
  * <p>
  * Using a semantic <code>Test</code>, this node may allow or disallow
  * <code>Tuples</code> to proceed further through the Rete-OO network.
  * </p>
- * 
+ *
  * @see EvalConditionNode
  * @see Eval
  * @see ReteTuple
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
@@ -53,17 +56,17 @@ public class EvalConditionNode extends TupleSource
     // ------------------------------------------------------------
 
     /**
-     * 
+     *
      */
     private static final long   serialVersionUID = 400L;
 
     /** The semantic <code>Test</code>. */
-    private final EvalCondition condition;
+    private EvalCondition condition;
 
     /** The source of incoming <code>Tuples</code>. */
-    private final TupleSource   tupleSource;
-    
-    protected boolean          tupleMemoryEnabled;        
+    private TupleSource   tupleSource;
+
+    protected boolean          tupleMemoryEnabled;
 
     private TupleSinkNode       previousTupleSinkNode;
     private TupleSinkNode       nextTupleSinkNode;
@@ -71,10 +74,13 @@ public class EvalConditionNode extends TupleSource
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public EvalConditionNode() {
+
+    }
 
     /**
      * Construct.
-     * 
+     *
      * @param rule
      *            The rule
      * @param tupleSource
@@ -91,6 +97,23 @@ public class EvalConditionNode extends TupleSource
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        condition   = (EvalCondition)in.readObject();
+        tupleSource = (TupleSource)in.readObject();
+        tupleMemoryEnabled  = in.readBoolean();
+        previousTupleSinkNode   = (TupleSinkNode)in.readObject();
+        nextTupleSinkNode       = (TupleSinkNode)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(condition);
+        out.writeObject(tupleSource);
+        out.writeBoolean(tupleMemoryEnabled);
+        out.writeObject(previousTupleSinkNode);
+        out.writeObject(nextTupleSinkNode);
+    }
     /**
      * Attaches this node into the network.
      */
@@ -113,17 +136,13 @@ public class EvalConditionNode extends TupleSource
         }
     }
 
-    public void networkUpdated() {
-        this.tupleSource.networkUpdated();
-    }
-
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
 
     /**
      * Retrieve the <code>Test</code> associated with this node.
-     * 
+     *
      * @return The <code>Test</code>.
      */
     public EvalCondition getCondition() {
@@ -136,7 +155,7 @@ public class EvalConditionNode extends TupleSource
 
     /**
      * Assert a new <code>Tuple</code>.
-     * 
+     *
      * @param tuple
      *            The <code>Tuple</code> being asserted.
      * @param workingMemory
@@ -180,7 +199,7 @@ public class EvalConditionNode extends TupleSource
 
     /**
      * Produce a debug string.
-     * 
+     *
      * @return The debug string.
      */
     public String toString() {
@@ -206,7 +225,7 @@ public class EvalConditionNode extends TupleSource
     }
 
     public Object createMemory(final RuleBaseConfiguration config) {
-        return new EvalMemory( this.tupleMemoryEnabled, this.condition.createContext() ); 
+        return new EvalMemory( this.tupleMemoryEnabled, this.condition.createContext() );
     }
 
     /* (non-Javadoc)
@@ -246,14 +265,14 @@ public class EvalConditionNode extends TupleSource
                                      workingMemories );
         }
     }
-    
+
     public boolean isTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }
 
     public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
-    }      
+    }
 
     /**
      * Returns the next node
@@ -265,7 +284,7 @@ public class EvalConditionNode extends TupleSource
     }
 
     /**
-     * Sets the next node 
+     * Sets the next node
      * @param next
      *      The next TupleSinkNode
      */
@@ -283,26 +302,39 @@ public class EvalConditionNode extends TupleSource
     }
 
     /**
-     * Sets the previous node 
+     * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode
      */
     public void setPreviousTupleSinkNode(final TupleSinkNode previous) {
         this.previousTupleSinkNode = previous;
     }
-    
-    public static class EvalMemory implements Serializable {
+
+    public static class EvalMemory implements Externalizable {
 
         private static final long serialVersionUID = -2754669682742843929L;
-        
+
         public TupleHashTable tupleMemory;
         public Object context;
-        
+
+        public EvalMemory() {
+
+        }
         public EvalMemory( final boolean tupleMemoryEnabled, final Object context ) {
             this.context = context;
             if( tupleMemoryEnabled ) {
                 this.tupleMemory = new TupleHashTable();
             }
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            tupleMemory = (TupleHashTable)in.readObject();
+            context     = in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(tupleMemory);
+            out.writeObject(context);
         }
     }
 

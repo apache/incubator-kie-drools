@@ -1,13 +1,17 @@
 package org.drools.base.mvel;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.mvel.integration.VariableResolver;
 
 public class DroolsMVELGlobalVariable
     implements
     VariableResolver,
-    Serializable {
+    Externalizable {
 
     private static final long serialVersionUID = -2480015657934353449L;
     
@@ -15,12 +19,27 @@ public class DroolsMVELGlobalVariable
     private Class             knownType;
     private DroolsMVELFactory factory;
 
+    public DroolsMVELGlobalVariable() {
+    }
+
     public DroolsMVELGlobalVariable(final String identifier,
                                     final Class knownType,
                                     final DroolsMVELFactory factory) {
         this.name = identifier;
         this.factory = factory;
         this.knownType = knownType;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        name    = (String)in.readObject();
+        knownType   = (Class)in.readObject();
+        factory     = (DroolsMVELFactory)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(name);
+        out.writeObject(knownType);
+        out.writeObject(factory);
     }
 
     public String getName() {

@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,9 @@ package org.drools.base.evaluators;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
@@ -35,7 +38,7 @@ import org.drools.spi.FieldValue;
 
 /**
  * The implementation of the 'before' evaluator definition
- * 
+ *
  * @author mgroch
  */
 public class BeforeEvaluatorDefinition
@@ -46,10 +49,18 @@ public class BeforeEvaluatorDefinition
                                                                                   false );
     public static final Operator  NOT_BEFORE   = Operator.addOperatorToRegistry( "before",
                                                                                   true );
-    
+
     private static final String[] SUPPORTED_IDS = { BEFORE.getOperatorString() };
-    
+
     private Map<String, BeforeEvaluator> cache        = Collections.emptyMap();
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        cache  = (Map<String, BeforeEvaluator>)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(cache);
+    }
 
     /**
      * @inheridDoc
@@ -131,9 +142,12 @@ public class BeforeEvaluatorDefinition
      */
     public static class BeforeEvaluator extends BaseEvaluator {
 		private static final long serialVersionUID = -4778826341073034320L;
-		
+
 		private long                  initRange;
         private long                  finalRange;
+
+        public BeforeEvaluator() {
+        }
 
         public BeforeEvaluator(final ValueType type,
                               final boolean isNegated,
@@ -142,12 +156,24 @@ public class BeforeEvaluatorDefinition
                    isNegated ? NOT_BEFORE : BEFORE );
             this.parseParameters( parameters );
         }
-        
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal(in);
+            initRange    = in.readLong();
+            finalRange   = in.readLong();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal(out);
+            out.writeLong(initRange);
+            out.writeLong(finalRange);
+        }
+
         @Override
         public Object prepareObject(InternalFactHandle handle) {
             return handle;
         }
-        
+
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
                                 final Object object1,
@@ -161,7 +187,7 @@ public class BeforeEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long dist = ((EventFactHandle) left ).getStartTimestamp() - 
+            long dist = ((EventFactHandle) left ).getStartTimestamp() -
             			((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp();
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
@@ -173,7 +199,7 @@ public class BeforeEvaluatorDefinition
                                                 right ) ) {
                 return false;
             }
-            long dist = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() - 
+            long dist = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() -
             			((EventFactHandle) right ).getEndTimestamp();
 
             return this.getOperator().isNegated() ^ (  dist >= this.initRange && dist <= this.finalRange );
@@ -221,9 +247,9 @@ public class BeforeEvaluatorDefinition
         }
 
         /**
-         * This methods tries to parse the string of parameters to customize 
+         * This methods tries to parse the string of parameters to customize
          * the evaluator.
-         * 
+         *
          * @param parameters
          */
         private void parseParameters(String parameters) {

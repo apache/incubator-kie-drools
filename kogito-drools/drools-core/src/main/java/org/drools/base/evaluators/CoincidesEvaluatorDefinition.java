@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,9 @@ package org.drools.base.evaluators;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
@@ -35,7 +38,7 @@ import org.drools.spi.FieldValue;
 
 /**
  * The implementation of the 'coincides' evaluator definition
- * 
+ *
  * @author mgroch
  */
 public class CoincidesEvaluatorDefinition
@@ -46,10 +49,18 @@ public class CoincidesEvaluatorDefinition
                                                                                   false );
     public static final Operator  COINCIDES_NOT   = Operator.addOperatorToRegistry( "coincides",
                                                                                   true );
-    
+
     private static final String[] SUPPORTED_IDS = { COINCIDES.getOperatorString() };
-    
+
     private Map<String, CoincidesEvaluator> cache        = Collections.emptyMap();
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        cache  = (Map<String, CoincidesEvaluator>)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(cache);
+    }
 
     /**
      * @inheridDoc
@@ -129,11 +140,14 @@ public class CoincidesEvaluatorDefinition
     /**
      * Implements the 'coincides' evaluator itself
      */
-    public static class CoincidesEvaluator extends BaseEvaluator {		
+    public static class CoincidesEvaluator extends BaseEvaluator {
 		private static final long serialVersionUID = 6031520837249122183L;
-		
+
 		private long                  startDev;
         private long                  endDev;
+
+        public CoincidesEvaluator() {
+        }
 
         public CoincidesEvaluator(final ValueType type,
                               final boolean isNegated,
@@ -142,12 +156,24 @@ public class CoincidesEvaluatorDefinition
                    isNegated ? COINCIDES_NOT : COINCIDES );
             this.parseParameters( parameters );
         }
-        
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal(in);
+            startDev = in.readLong();
+            endDev = in.readLong();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal(out);
+            out.writeLong(startDev);
+            out.writeLong(endDev);
+        }
+
         @Override
         public Object prepareObject(InternalFactHandle handle) {
             return handle;
         }
-        
+
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
                                 final Object object1,
@@ -161,9 +187,9 @@ public class CoincidesEvaluatorDefinition
             if ( context.rightNull ) {
                 return false;
             }
-            long distStart = Math.abs(((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp() - 
+            long distStart = Math.abs(((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp() -
                         	 ((EventFactHandle) left ).getStartTimestamp());
-            long distEnd = Math.abs(((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp() - 
+            long distEnd = Math.abs(((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp() -
        	 				   ((EventFactHandle) left ).getEndTimestamp());
             return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd <= this.endDev);
         }
@@ -175,9 +201,9 @@ public class CoincidesEvaluatorDefinition
                                                 right ) ) {
                 return false;
             }
-            long distStart = Math.abs(((EventFactHandle) right ).getStartTimestamp() - 
+            long distStart = Math.abs(((EventFactHandle) right ).getStartTimestamp() -
                         	 ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp());
-            long distEnd = Math.abs(((EventFactHandle) right ).getEndTimestamp() - 
+            long distEnd = Math.abs(((EventFactHandle) right ).getEndTimestamp() -
                	 		   ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp());
             return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd <= this.endDev );
         }
@@ -225,9 +251,9 @@ public class CoincidesEvaluatorDefinition
         }
 
         /**
-         * This methods tries to parse the string of parameters to customize 
+         * This methods tries to parse the string of parameters to customize
          * the evaluator.
-         * 
+         *
          * @param parameters
          */
         private void parseParameters(String parameters) {

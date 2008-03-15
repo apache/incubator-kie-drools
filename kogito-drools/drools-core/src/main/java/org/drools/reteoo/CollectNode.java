@@ -1,12 +1,12 @@
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,9 @@ package org.drools.reteoo;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BetaConstraints;
@@ -45,14 +48,17 @@ public class CollectNode extends BetaNode
 
     private static final long                serialVersionUID = 400L;
 
-    private final Collect                    collect;
-    private final AlphaNodeFieldConstraint[] resultConstraints;
-    private final BetaConstraints            resultsBinder;
-    private final boolean                    unwrapRightObject;
+    private Collect                    collect;
+    private AlphaNodeFieldConstraint[] resultConstraints;
+    private BetaConstraints            resultsBinder;
+    private boolean                    unwrapRightObject;
+
+    public CollectNode() {
+    }
 
     /**
      * Constructor.
-     * 
+     *
      * @param id
      *            The id for the node
      * @param leftInput
@@ -88,18 +94,33 @@ public class CollectNode extends BetaNode
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        collect = (Collect)in.readObject();
+        resultConstraints = (AlphaNodeFieldConstraint[])in.readObject();
+        resultsBinder = (BetaConstraints)in.readObject();
+        unwrapRightObject   = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(collect);
+        out.writeObject(resultConstraints);
+        out.writeObject(resultsBinder);
+        out.writeBoolean(unwrapRightObject);
+    }
     /**
      * @inheritDoc
-     * 
+     *
      *  When a new tuple is asserted into a CollectNode, do this:
-     *  
+     *
      *  1. Select all matching objects from right memory
      *  2. Add them to the resulting collection object
      *  3. Apply resultConstraints and resultsBinder to the resulting collection
      *  4. In case all of them evaluates to true do the following:
      *  4.1. Create a new InternalFactHandle for the resulting collection and add it to the tuple
      *  4.2. Propagate the tuple
-     *  
+     *
      */
     public void assertTuple(final ReteTuple leftTuple,
                             final PropagationContext context,
@@ -189,19 +210,19 @@ public class CollectNode extends BetaNode
                                              context,
                                              workingMemory );
 
-            // Destroying the acumulate result object 
+            // Destroying the acumulate result object
             workingMemory.getFactHandleFactory().destroyFactHandle( handle );
         }
     }
 
     /**
      * @inheritDoc
-     * 
+     *
      *  When a new object is asserted into a CollectNode, do this:
-     *  
+     *
      *  1. Select all matching tuples from left memory
      *  2. For each matching tuple, call a modify tuple
-     *  
+     *
      */
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
@@ -238,7 +259,7 @@ public class CollectNode extends BetaNode
 
     /**
      *  @inheritDoc
-     *  
+     *
      *  If an object is retract, call modify tuple for each
      *  tuple match.
      */
@@ -276,7 +297,7 @@ public class CollectNode extends BetaNode
     /**
      * Modifies the results match for a tuple, retracting it and repropagating
      * if constraints allow it
-     * 
+     *
      * @param leftTuple
      * @param handle
      * @param context

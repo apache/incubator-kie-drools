@@ -19,13 +19,17 @@ package org.drools.rule;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.Externalizable;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 
-public class EvalCondition extends ConditionalElement {
+public class EvalCondition extends ConditionalElement implements Externalizable {
     /**
      *
      */
@@ -33,9 +37,13 @@ public class EvalCondition extends ConditionalElement {
 
     private EvalExpression             expression;
 
-    private final Declaration[]        requiredDeclarations;
+    private Declaration[]        requiredDeclarations;
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
+
+    public EvalCondition() {
+        this(null);
+    }
 
     public EvalCondition(final Declaration[] requiredDeclarations) {
         this( null,
@@ -52,6 +60,16 @@ public class EvalCondition extends ConditionalElement {
         } else {
             this.requiredDeclarations = requiredDeclarations;
         }
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        expression  = (EvalExpression)in.readObject();
+        requiredDeclarations    = (Declaration[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(expression);
+        out.writeObject(requiredDeclarations);
     }
 
     public EvalExpression getEvalExpression() {
@@ -79,7 +97,7 @@ public class EvalCondition extends ConditionalElement {
                                              workingMemory,
                                              context );
         } catch ( final Exception e ) {
-        	throw new RuntimeDroolsException( this.getEvalExpression() + " : " + e, e );
+            throw new RuntimeDroolsException( e );
         }
     }
 

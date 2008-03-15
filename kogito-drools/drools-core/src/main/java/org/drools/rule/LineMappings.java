@@ -1,14 +1,33 @@
 package org.drools.rule;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
-public class LineMappings implements Serializable {
+public class LineMappings implements Externalizable {
     private String className;
     private int    startLine;
     private int    offset;
 
+    public LineMappings() {
+    }
+
     public LineMappings(final String className) {
         this.className = className;
+    }
+
+    public void readExternal(ObjectInput stream) throws IOException, ClassNotFoundException {
+        className   = (String)stream.readObject();
+        startLine   = stream.readInt();
+        offset      = stream.readInt();
+    }
+
+    public void writeExternal(ObjectOutput stream) throws IOException {
+        stream.writeObject(className);
+        stream.writeInt(startLine);
+        stream.writeInt(offset);
     }
 
     public String getClassName() {

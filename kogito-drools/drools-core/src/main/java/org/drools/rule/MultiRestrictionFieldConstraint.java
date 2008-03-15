@@ -6,13 +6,21 @@ import org.drools.reteoo.ReteTuple;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.Restriction;
 
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
+
 public class MultiRestrictionFieldConstraint extends MutableTypeConstraint {
 
     private static final long    serialVersionUID = 400L;
 
-    private final FieldExtractor extractor;
+    private FieldExtractor extractor;
 
-    private final Restriction    restrictions;
+    private Restriction    restrictions;
+
+    public MultiRestrictionFieldConstraint() {
+
+    }
 
     public MultiRestrictionFieldConstraint(final FieldExtractor extractor,
                                            final Restriction restrictions) {
@@ -20,6 +28,17 @@ public class MultiRestrictionFieldConstraint extends MutableTypeConstraint {
         this.restrictions = restrictions;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        extractor   = (FieldExtractor)in.readObject();
+        restrictions   = (Restriction)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(extractor);
+        out.writeObject(restrictions);
+    }
     public FieldExtractor getFieldExtractor() {
         return this.extractor;
     }

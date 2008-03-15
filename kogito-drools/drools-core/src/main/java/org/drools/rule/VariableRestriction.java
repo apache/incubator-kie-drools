@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,10 @@ package org.drools.rule;
  */
 
 import java.util.Arrays;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
@@ -35,11 +39,14 @@ public class VariableRestriction
 
     private Declaration          declaration;
 
-    private final Declaration[]  requiredDeclarations;
+    private Declaration[]  requiredDeclarations;
 
-    private final Evaluator      evaluator;
+    private Evaluator      evaluator;
 
-    private final FieldExtractor extractor;
+    private FieldExtractor extractor;
+
+    public VariableRestriction() {
+    }
 
     public VariableRestriction(final FieldExtractor fieldExtractor,
                                final Declaration declaration,
@@ -48,6 +55,20 @@ public class VariableRestriction
         this.requiredDeclarations = new Declaration[]{declaration};
         this.evaluator = evaluator;
         this.extractor = fieldExtractor;
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(declaration);
+        out.writeObject(requiredDeclarations);
+        out.writeObject(evaluator);
+        out.writeObject(extractor);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        declaration = (Declaration) in.readObject();
+        requiredDeclarations = (Declaration[]) in.readObject();
+        evaluator = (Evaluator) in.readObject();
+        extractor = (FieldExtractor) in.readObject();
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -173,12 +194,39 @@ public class VariableRestriction
         public boolean               rightNull;
         public InternalWorkingMemory workingMemory;
 
+        public VariableContextEntry() {
+        }
+
         public VariableContextEntry(final FieldExtractor extractor,
                                     final Declaration declaration,
                                     final Evaluator evaluator) {
             this.extractor = extractor;
             this.declaration = declaration;
             this.evaluator = evaluator;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            workingMemory   = (InternalWorkingMemory)in.readObject();
+            extractor       = (FieldExtractor)in.readObject();
+            evaluator       = (Evaluator)in.readObject();
+            object          = in.readObject();
+            declaration     = (Declaration)in.readObject();
+            reteTuple       = (ReteTuple)in.readObject();
+            entry           = (ContextEntry)in.readObject();
+            leftNull        = in.readBoolean();
+            rightNull       = in.readBoolean();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(workingMemory);
+            out.writeObject(extractor);
+            out.writeObject(evaluator);
+            out.writeObject(object);
+            out.writeObject(declaration);
+            out.writeObject(reteTuple);
+            out.writeObject(entry);
+            out.writeBoolean(leftNull);
+            out.writeBoolean(rightNull);
         }
 
         public ContextEntry getNext() {
@@ -228,12 +276,27 @@ public class VariableRestriction
         public Object             left;
         public Object             right;
 
+        public ObjectVariableContextEntry() {
+        }
+
         public ObjectVariableContextEntry(final FieldExtractor extractor,
                                           final Declaration declaration,
                                           final Evaluator evaluator) {
             super( extractor,
                    declaration,
                    evaluator );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal(in);
+            left    = in.readObject();
+            right   = in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal(out);
+            out.writeObject(left);
+            out.writeObject(right);
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -274,12 +337,27 @@ public class VariableRestriction
         public long               left;
         public long               right;
 
+        public LongVariableContextEntry() {
+        }
+
         public LongVariableContextEntry(final FieldExtractor extractor,
                                         final Declaration declaration,
                                         final Evaluator evaluator) {
             super( extractor,
                    declaration,
                    evaluator );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal(in);
+            left    = in.readLong();
+            right   = in.readLong();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal(out);
+            out.writeLong(left);
+            out.writeLong(right);
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -320,12 +398,27 @@ public class VariableRestriction
         public char               left;
         public char               right;
 
+        public CharVariableContextEntry() {
+        }
+
         public CharVariableContextEntry(final FieldExtractor extractor,
                                         final Declaration declaration,
                                         final Evaluator evaluator) {
             super( extractor,
                    declaration,
                    evaluator );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal(in);
+            left    = in.readChar();
+            right   = in.readChar();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal(out);
+            out.writeChar(left);
+            out.writeChar(right);
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -366,12 +459,27 @@ public class VariableRestriction
         public double             left;
         public double             right;
 
+        public DoubleVariableContextEntry() {
+        }
+
         public DoubleVariableContextEntry(final FieldExtractor extractor,
                                           final Declaration declaration,
                                           final Evaluator evaluator) {
             super( extractor,
                    declaration,
                    evaluator );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal(in);
+            left    = in.readDouble();
+            right   = in.readDouble();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal(out);
+            out.writeDouble(left);
+            out.writeDouble(right);
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
@@ -411,12 +519,27 @@ public class VariableRestriction
         public boolean            left;
         public boolean            right;
 
+        public BooleanVariableContextEntry() {
+        }
+
         public BooleanVariableContextEntry(final FieldExtractor extractor,
                                            final Declaration declaration,
                                            final Evaluator evaluator) {
             super( extractor,
                    declaration,
                    evaluator );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal(in);
+            left    = in.readBoolean();
+            right   = in.readBoolean();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal(out);
+            out.writeBoolean(left);
+            out.writeBoolean(right);
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,

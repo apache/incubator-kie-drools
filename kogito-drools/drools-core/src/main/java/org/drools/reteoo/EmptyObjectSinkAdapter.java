@@ -4,6 +4,10 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+
 public class EmptyObjectSinkAdapter
     implements
     ObjectSinkPropagator {
@@ -11,14 +15,20 @@ public class EmptyObjectSinkAdapter
     private static final long serialVersionUID = -631743913176779720L;
 
     private static final EmptyObjectSinkAdapter instance = new EmptyObjectSinkAdapter();
-    
+
     private static final ObjectSink[] SINK_LIST = new ObjectSink[0];
 
     public static EmptyObjectSinkAdapter getInstance() {
         return instance;
     }
 
-    private EmptyObjectSinkAdapter() {
+    public EmptyObjectSinkAdapter() {
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
     }
 
     public void propagateAssertObject(final InternalFactHandle handle,
@@ -36,9 +46,13 @@ public class EmptyObjectSinkAdapter
     public ObjectSink[] getSinks() {
         return SINK_LIST;
     }
-    
+
     public int size() {
         return 0;
+    }
+
+    public boolean equals(Object obj) {
+        return obj instanceof EmptyObjectSinkAdapter;
     }
 
 }

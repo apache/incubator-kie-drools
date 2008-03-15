@@ -26,6 +26,9 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import junit.framework.TestCase;
 
@@ -103,6 +106,7 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {Boolean.FALSE, "!=", "xyz", Boolean.FALSE},
                                  {Boolean.FALSE, "!=", "true", Boolean.TRUE},
                                  {Boolean.FALSE, "!=", "false", Boolean.FALSE}
+
         };
 
         runEvaluatorTest( data,
@@ -157,10 +161,6 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {"foo", "matches", ".*foo", Boolean.TRUE},
                                  {"foo", "matches", "bar", Boolean.FALSE},
                                  {null, "matches", ".*foo", Boolean.FALSE},
-                                 {"something", "matches", "something", Boolean.TRUE},
-                                 {"something", "matches", "hello ;=", Boolean.FALSE},
-                                 {"something", "not matches", "something", Boolean.FALSE},
-                                 {"something", "not matches", "hello ;=", Boolean.TRUE},
                                  {"foo", "==", null, Boolean.FALSE},
                                  {"foo", "!=", null, Boolean.TRUE},
                                  {null, "==", null, Boolean.TRUE},
@@ -741,7 +741,7 @@ public class EvaluatorFactoryTest extends TestCase {
                                                    extractor,
                                                    null );
         final ValueType coerced = evaluator.getCoercedValueType();
-        
+
         if ( coerced.isIntegerNumber() ) {
             final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
                                                                              declaration,
@@ -834,6 +834,11 @@ public class EvaluatorFactoryTest extends TestCase {
 
         private static final long serialVersionUID = 400L;
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
         public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {
             return object != null ? ((Boolean) object).booleanValue() : false;
         }

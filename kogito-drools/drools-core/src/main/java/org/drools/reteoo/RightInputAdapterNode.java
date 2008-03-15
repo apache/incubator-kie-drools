@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,11 +28,15 @@ import org.drools.util.Iterator;
 import org.drools.util.ObjectHashMap;
 import org.drools.util.ObjectHashMap.ObjectEntry;
 
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
+
 /**
- * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the 
+ * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the
  * subnetwork's tuple into a fact in order right join it with the tuple being propagated in
  * the main network.
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  * @author <a href="mailto:etirelli@redhat.com">Edson Tirelli</a>
@@ -45,19 +49,22 @@ public class RightInputAdapterNode extends ObjectSource
 
     private static final long serialVersionUID = 400L;
 
-    private final TupleSource tupleSource;
-    
-    protected boolean          tupleMemoryEnabled;      
+    private TupleSource tupleSource;
+
+    protected boolean          tupleMemoryEnabled;
 
     private TupleSinkNode       previousTupleSinkNode;
     private TupleSinkNode       nextTupleSinkNode;
 
+    public RightInputAdapterNode() {
+    }
+
     /**
      * Constructor specifying the unique id of the node in the Rete network, the position of the propagating <code>FactHandleImpl</code> in
      * <code>ReteTuple</code> and the source that propagates the receive <code>ReteTuple<code>s.
-     * 
+     *
      * @param id
-     *      Unique id 
+     *      Unique id
      * @param source
      *      The <code>TupleSource</code> which propagates the received <code>ReteTuple</code>
      */
@@ -69,6 +76,22 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        tupleSource = (TupleSource)in.readObject();
+        tupleMemoryEnabled = in.readBoolean();
+        previousTupleSinkNode = (TupleSinkNode)in.readObject();
+        nextTupleSinkNode = (TupleSinkNode)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(tupleSource);
+        out.writeBoolean(tupleMemoryEnabled);
+        out.writeObject(previousTupleSinkNode);
+        out.writeObject(nextTupleSinkNode);
+
+    }
     /**
      * Creates and return the node memory
      */
@@ -77,13 +100,13 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     /**
-     * Takes the asserted <code>ReteTuple</code> received from the <code>TupleSource</code> and 
+     * Takes the asserted <code>ReteTuple</code> received from the <code>TupleSource</code> and
      * adapts it into a FactHandleImpl
-     * 
+     *
      * @param tuple
      *            The asserted <code>ReteTuple</code>.
      * @param context
-     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.           
+     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
@@ -93,7 +116,7 @@ public class RightInputAdapterNode extends ObjectSource
 
         // creating a dummy fact handle to wrap the tuple
         final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple, false, workingMemory );
-        
+
         if ( this.tupleMemoryEnabled ) {
             final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
             // add it to a memory mapping
@@ -148,10 +171,6 @@ public class RightInputAdapterNode extends ObjectSource
                                          workingMemory );
         }
     }
-    
-    public void networkUpdated() {
-        this.tupleSource.networkUpdated();
-    }
 
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
@@ -183,7 +202,7 @@ public class RightInputAdapterNode extends ObjectSource
                                      workingMemories );
         }
     }
-    
+
     public boolean isTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }
@@ -202,7 +221,7 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     /**
-     * Sets the next node 
+     * Sets the next node
      * @param next
      *      The next TupleSinkNode
      */
@@ -220,7 +239,7 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     /**
-     * Sets the previous node 
+     * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode
      */
@@ -234,7 +253,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(final Object object) {

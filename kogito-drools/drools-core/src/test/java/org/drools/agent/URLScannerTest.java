@@ -33,6 +33,7 @@ public class URLScannerTest extends TestCase {
 
         DroolsObjectInputStream in = new DroolsObjectInputStream( new FileInputStream( f ) );
         Package p_ = (Package) in.readObject();
+        in.close();
         assertEquals( "x", p_.getName() );
 
     }

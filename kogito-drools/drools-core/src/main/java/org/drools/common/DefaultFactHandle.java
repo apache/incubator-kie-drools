@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,10 @@ package org.drools.common;
  */
 
 import org.drools.FactHandle;
+
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 /**
  * Implementation of <code>FactHandle</code>.
@@ -31,26 +35,42 @@ public class DefaultFactHandle
     // ----------------------------------------------------------------------
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
     /** Handle id. */
-    private int               id;
+    private long              id;
     private long              recency;
     private Object            object;
     private EqualityKey       key;
     private int               objectHashCode;
     private boolean           shadowFact;
 
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeLong(id);
+        out.writeLong(recency);
+        out.writeObject(object);
+        out.writeObject(key);
+        out.writeInt(objectHashCode);
+        out.writeBoolean(shadowFact);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        id  = in.readLong();
+        recency = in.readLong();
+        object  = in.readObject();
+        key     = (EqualityKey)in.readObject();
+        objectHashCode  = in.readInt();
+        shadowFact  = in.readBoolean();
+    }
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
 
     public DefaultFactHandle() {
-
     }
 
-    public DefaultFactHandle(final int id,
+    public DefaultFactHandle(final long id,
                              final Object object) {
         this( id,
               object,
@@ -59,11 +79,11 @@ public class DefaultFactHandle
 
     /**
      * Construct.
-     * 
+     *
      * @param id
      *            Handle id.
      */
-    public DefaultFactHandle(final int id,
+    public DefaultFactHandle(final long id,
                              final Object object,
                              final long recency) {
         this.id = id;
@@ -99,7 +119,7 @@ public class DefaultFactHandle
      * @see Object
      */
     public int hashCode() {
-        return this.id;
+        return (int) (this.id ^ (this.id >>> 32));
     }
 
     /**

@@ -2,21 +2,23 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
@@ -38,19 +40,22 @@ import org.drools.util.AbstractHashTable.FieldIndex;
 
 public class SingleBetaConstraints
     implements
-    Serializable,
     BetaConstraints {
 
     /**
-     * 
+     *
      */
     private static final long             serialVersionUID = 400L;
 
-    private final BetaNodeFieldConstraint constraint;
+    private BetaNodeFieldConstraint constraint;
 
     private boolean                       indexed;
 
     private RuleBaseConfiguration         conf;
+
+    public SingleBetaConstraints() {
+
+    }
 
     public SingleBetaConstraints(final BetaNodeFieldConstraint[] constraint,
                                  final RuleBaseConfiguration conf) {
@@ -79,6 +84,19 @@ public class SingleBetaConstraints
         }
 
         this.constraint = constraint;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        constraint  = (BetaNodeFieldConstraint)in.readObject();
+        indexed     = in.readBoolean();
+        conf        = (RuleBaseConfiguration)in.readObject();
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(constraint);
+        out.writeBoolean(indexed);
+        out.writeObject(conf);
     }
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
@@ -191,10 +209,10 @@ public class SingleBetaConstraints
 
     /**
      * Determine if another object is equal to this.
-     * 
+     *
      * @param object
      *            The object to test.
-     * 
+     *
      * @return <code>true</code> if <code>object</code> is equal to this,
      *         otherwise <code>false</code>.
      */

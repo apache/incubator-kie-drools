@@ -1,20 +1,33 @@
 package org.drools.base.field;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldValue;
 
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 public class DoubleFieldImpl
     implements
-    FieldValue {
+    FieldValue, Externalizable {
 
     private static final long serialVersionUID = 400L;
-    private final double      value;
+    private double      value;
+
+    public DoubleFieldImpl() {
+    }
 
     public DoubleFieldImpl(final double value) {
         this.value = value;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        value   = in.readDouble();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeDouble(value);
     }
 
     public Object getValue() {
@@ -100,13 +113,5 @@ public class DoubleFieldImpl
     public boolean isStringField() {
         return false;
     }
-
-	public BigDecimal getBigDecimalValue() {
-		return new BigDecimal(this.value);
-	}
-
-	public BigInteger getBigIntegerValue() {
-		throw new RuntimeDroolsException( "Conversion to BigInteger not supported for type double" );
-	}
 
 }

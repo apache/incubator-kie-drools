@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,10 @@ package org.drools.rule;
  */
 
 import java.util.Arrays;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
@@ -38,21 +42,25 @@ public class ReturnValueRestriction
 
     private ReturnValueExpression      expression;
 
-    private final Declaration[]        requiredDeclarations;
+    private Declaration[]        requiredDeclarations;
 
-    private final String[]             requiredGlobals;
+    private String[]             requiredGlobals;
 
-    private final Declaration[]        previousDeclarations;
+    private Declaration[]        previousDeclarations;
 
-    private final Declaration[]        localDeclarations;
+    private Declaration[]        localDeclarations;
 
-    private final Evaluator            evaluator;
+    private Evaluator            evaluator;
 
-    private final FieldExtractor       extractor;
+    private FieldExtractor       extractor;
 
     private static final Declaration[] noRequiredDeclarations = new Declaration[]{};
 
     private static final String[]      noRequiredGlobals      = new String[]{};
+
+    public ReturnValueRestriction() {
+
+    }
 
     public ReturnValueRestriction(final FieldExtractor fieldExtractor,
                                   final Declaration[] previousDeclarations,
@@ -107,6 +115,24 @@ public class ReturnValueRestriction
                           this.requiredDeclarations,
                           this.previousDeclarations.length,
                           this.localDeclarations.length );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        expression  = (ReturnValueExpression)in.readObject();
+        requiredDeclarations  = (Declaration[])in.readObject();
+        previousDeclarations  = (Declaration[])in.readObject();
+        localDeclarations  = ( Declaration[])in.readObject();
+        evaluator  = (Evaluator)in.readObject();
+        extractor  = (FieldExtractor)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(expression);
+        out.writeObject(requiredDeclarations);
+        out.writeObject(previousDeclarations);
+        out.writeObject(localDeclarations);
+        out.writeObject(evaluator);
+        out.writeObject(extractor);
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -300,12 +326,37 @@ public class ReturnValueRestriction
 
         public Object                dialectContext;
 
+        public ReturnValueContextEntry() {
+        }
+
         public ReturnValueContextEntry(final FieldExtractor fieldExtractor,
                                        final Declaration[] previousDeclarations,
                                        final Declaration[] localDeclarations) {
             this.fieldExtractor = fieldExtractor;
             this.previousDeclarations = previousDeclarations;
             this.localDeclarations = localDeclarations;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            fieldExtractor  = (FieldExtractor)in.readObject();
+            handle  = (InternalFactHandle)in.readObject();
+            leftTuple  = (ReteTuple)in.readObject();
+            workingMemory  = (InternalWorkingMemory)in.readObject();
+            previousDeclarations  = (Declaration[])in.readObject();
+            localDeclarations  = (Declaration[])in.readObject();
+            entry  = (ContextEntry)in.readObject();
+            dialectContext  = in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(fieldExtractor);
+            out.writeObject(handle);
+            out.writeObject(leftTuple);
+            out.writeObject(workingMemory);
+            out.writeObject(previousDeclarations);
+            out.writeObject(localDeclarations);
+            out.writeObject(entry);
+            out.writeObject(dialectContext);
         }
 
         public ContextEntry getNext() {

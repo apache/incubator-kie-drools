@@ -1,10 +1,13 @@
 /**
- * 
+ *
  */
 package org.drools.base;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
@@ -19,7 +22,7 @@ import org.drools.spi.GlobalResolver;
  */
 public class CopyIdentifiersGlobalExporter implements GlobalExporter {
     private String[] identifiers;
-    
+
     /**
      * All identifiers will be copied
      *
@@ -27,7 +30,7 @@ public class CopyIdentifiersGlobalExporter implements GlobalExporter {
     public CopyIdentifiersGlobalExporter() {
         this.identifiers = null;
     }
-    
+
     /**
      * Specified identifiers will be copied
      * @param identifiers
@@ -35,7 +38,15 @@ public class CopyIdentifiersGlobalExporter implements GlobalExporter {
     public CopyIdentifiersGlobalExporter(String[] identifiers) {
         this.identifiers = identifiers;
     }
-    
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        identifiers = (String[])in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(identifiers);
+    }
+
     public GlobalResolver export(WorkingMemory workingMemory) {
         if ( this.identifiers == null || this.identifiers.length == 0 ) {
             // no identifiers, to get all the identifiers from that defined in
@@ -44,7 +55,7 @@ public class CopyIdentifiersGlobalExporter implements GlobalExporter {
             this.identifiers = new String[ map.size() ];
             this.identifiers = (String[]) map.keySet().toArray( this.identifiers );
         }
-        
+
         Map map = new HashMap(identifiers.length);
         for ( int i = 0, length = identifiers.length; i < length; i++ ) {
             map.put( identifiers[i], workingMemory.getGlobal( identifiers[i] ) );

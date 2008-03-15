@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,9 @@ package org.drools.reteoo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
@@ -34,11 +37,11 @@ import org.drools.util.LinkedListEntry;
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
  * both TupleSink and ObjectSink and as such can receive <code>Tuple</code>s and <code>FactHandle</code>s. BetaNode uses BetaMemory
  * to store the propagated instances.
- * 
+ *
  * @see org.drools.reteoo.TupleSource
  * @see org.drools.reteoo.TupleSink
  * @see org.drools.reteoo.BetaMemory
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
@@ -52,29 +55,32 @@ abstract class BetaNode extends TupleSource
     // ------------------------------------------------------------
 
     /** The left input <code>TupleSource</code>. */
-    protected final TupleSource     leftInput;
+    protected TupleSource     leftInput;
 
     /** The right input <code>TupleSource</code>. */
-    protected final ObjectSource    rightInput;
+    protected ObjectSource    rightInput;
 
-    protected final BetaConstraints constraints;
+    protected BetaConstraints constraints;
 
     private TupleSinkNode           previousTupleSinkNode;
     private TupleSinkNode           nextTupleSinkNode;
 
     private ObjectSinkNode          previousObjectSinkNode;
     private ObjectSinkNode          nextObjectSinkNode;
-    
+
     protected boolean               objectMemory = true; // hard coded to true
     protected boolean               tupleMemoryEnabled;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public BetaNode() {
+
+    }
 
     /**
      * Constructs a <code>BetaNode</code> using the specified <code>BetaNodeBinder</code>.
-     * 
+     *
      * @param leftInput
      *            The left input <code>TupleSource</code>.
      * @param rightInput
@@ -94,6 +100,32 @@ abstract class BetaNode extends TupleSource
         }
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        leftInput   = (TupleSource)in.readObject();
+        rightInput   = (ObjectSource)in.readObject();
+        constraints   = (BetaConstraints)in.readObject();
+        previousTupleSinkNode   = (TupleSinkNode)in.readObject();
+        nextTupleSinkNode   = (TupleSinkNode)in.readObject();
+        previousObjectSinkNode   = (ObjectSinkNode)in.readObject();
+        nextObjectSinkNode   = (ObjectSinkNode)in.readObject();
+        objectMemory    = in.readBoolean();
+        tupleMemoryEnabled  = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(leftInput);
+        out.writeObject(rightInput);
+        out.writeObject(constraints);
+        out.writeObject(previousTupleSinkNode);
+        out.writeObject(nextTupleSinkNode);
+        out.writeObject(previousObjectSinkNode);
+        out.writeObject(nextObjectSinkNode);
+        out.writeBoolean(objectMemory);
+        out.writeBoolean(tupleMemoryEnabled);
+    }
+
     public BetaNodeFieldConstraint[] getConstraints() {
         final LinkedList constraints = this.constraints.getConstraints();
 
@@ -109,15 +141,10 @@ abstract class BetaNode extends TupleSource
      * @see org.drools.reteoo.BaseNode#attach()
      */
     public void attach() {
-        this.rightInput.addObjectSink( this );
         this.leftInput.addTupleSink( this );
+        this.rightInput.addObjectSink( this );
     }
 
-    public void networkUpdated() {
-        this.rightInput.networkUpdated();
-        this.leftInput.networkUpdated();
-    }
-    
     public List getRules() {
         final List list = new ArrayList();
 
@@ -150,12 +177,12 @@ abstract class BetaNode extends TupleSource
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null );
-            this.rightInput.updateSink( this,
-                                        propagationContext,
-                                        workingMemory );
             this.leftInput.updateSink( this,
                                        propagationContext,
                                        workingMemory );
+            this.rightInput.updateSink( this,
+                                        propagationContext,
+                                        workingMemory );
         }
 
     }
@@ -175,7 +202,7 @@ abstract class BetaNode extends TupleSource
         }
         this.rightInput.remove( context,
                                 builder,
-                                this, 
+                                this,
                                 workingMemories );
         if( !context.alreadyVisited( this.leftInput )) {
             this.leftInput.remove( context,
@@ -193,14 +220,14 @@ abstract class BetaNode extends TupleSource
     public void setObjectMemoryEnabled(boolean objectMemory) {
         this.objectMemory = objectMemory;
     }
-    
+
     public boolean isTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }
 
     public void setTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
-    }       
+    }
 
     public String toString() {
         return "";
@@ -252,7 +279,7 @@ abstract class BetaNode extends TupleSource
     }
 
     /**
-     * Sets the next node 
+     * Sets the next node
      * @param next
      *      The next TupleSinkNode
      */
@@ -270,7 +297,7 @@ abstract class BetaNode extends TupleSource
     }
 
     /**
-     * Sets the previous node 
+     * Sets the previous node
      * @param previous
      *      The previous TupleSinkNode
      */
@@ -288,7 +315,7 @@ abstract class BetaNode extends TupleSource
     }
 
     /**
-     * Sets the next node 
+     * Sets the next node
      * @param next
      *      The next ObjectSinkNode
      */
@@ -306,7 +333,7 @@ abstract class BetaNode extends TupleSource
     }
 
     /**
-     * Sets the previous node 
+     * Sets the previous node
      * @param previous
      *      The previous ObjectSinkNode
      */

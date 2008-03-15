@@ -2,23 +2,19 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.Operator;
@@ -30,6 +26,7 @@ import org.drools.rule.ContextEntry;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
+import org.drools.util.AbstractHashTable.FieldIndex;
 import org.drools.util.FactHandleIndexHashTable;
 import org.drools.util.FactHashTable;
 import org.drools.util.FactList;
@@ -37,22 +34,29 @@ import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
 import org.drools.util.TupleIndexHashTable;
-import org.drools.util.AbstractHashTable.FieldIndex;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DefaultBetaConstraints
     implements
-    Serializable,
     BetaConstraints {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
 
-    private final LinkedList  constraints;
+    private LinkedList  constraints;
 
     private int               indexed;
 
+    public DefaultBetaConstraints() {
+
+    }
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                   final RuleBaseConfiguration conf) {
         this( constraints,
@@ -88,6 +92,16 @@ public class DefaultBetaConstraints
             }
         }
 
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        constraints = (LinkedList)in.readObject();
+        indexed     = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(constraints);
+        out.writeInt(indexed);
     }
 
     public ContextEntry[] createContext() {
@@ -262,10 +276,10 @@ public class DefaultBetaConstraints
 
     /**
      * Determine if another object is equal to this.
-     * 
+     *
      * @param object
      *            The object to test.
-     * 
+     *
      * @return <code>true</code> if <code>object</code> is equal to this,
      *         otherwise <code>false</code>.
      */

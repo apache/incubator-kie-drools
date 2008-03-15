@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,9 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,39 +36,40 @@ import org.drools.base.ShadowProxy;
 import org.drools.base.ShadowProxyFactory;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalRuleBase;
+import org.drools.common.DroolsObjectInput;
 import org.drools.objenesis.instantiator.ObjectInstantiator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
 import org.drools.rule.EntryPoint;
-import org.drools.rule.TypeDeclaration;
 import org.drools.spi.ObjectType;
 
 public class ClassObjectTypeConf
     implements
     ObjectTypeConf,
-    Serializable {
+    Externalizable {
 
-    private static final long serialVersionUID = 8218802585428841926L;
-    
-    private final Class<?>                 cls;
+    private Class                    cls;
     private transient InternalRuleBase     ruleBase;
     private ObjectTypeNode[]               objectTypeNodes;
 
     protected boolean                      shadowEnabled;
-    protected Class<ShadowProxy>           shadowClass;
+    protected Class                        shadowClass;
     protected transient ObjectInstantiator instantiator;
 
     private ObjectTypeNode                 concreteObjectTypeNode;
     private EntryPoint                     entryPoint;
 
+    public ClassObjectTypeConf() {
+
+    }
+
     public ClassObjectTypeConf(final EntryPoint entryPoint,
-                               final Class<?> clazz,
+                               final Class clazz,
+                               final boolean isEvent,
                                final InternalRuleBase ruleBase) {
         this.cls = clazz;
         this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
-        TypeDeclaration type = ruleBase.getTypeDeclaration( clazz );
-        final boolean isEvent = type != null && type.getRole() == TypeDeclaration.Role.EVENT; 
 
         ObjectType objectType = new ClassObjectType( clazz,
                                                      isEvent );
@@ -94,6 +98,28 @@ public class ClassObjectTypeConf
         }
 
         defineShadowProxyData( clazz );
+    }
+
+    public void readExternal(ObjectInput stream) throws IOException,
+                                                     ClassNotFoundException {
+        ruleBase = (InternalRuleBase)stream.readObject();
+        cls = (Class)stream.readObject();
+        objectTypeNodes = (ObjectTypeNode[])stream.readObject();
+        shadowEnabled = stream.readBoolean();
+        shadowClass = (Class)stream.readObject();
+        concreteObjectTypeNode = (ObjectTypeNode)stream.readObject();
+        entryPoint = (EntryPoint)stream.readObject();
+        defineShadowProxyData(cls);
+    }
+
+    public void writeExternal(ObjectOutput stream) throws IOException {
+        stream.writeObject(ruleBase);
+        stream.writeObject(cls);
+        stream.writeObject(objectTypeNodes);
+        stream.writeBoolean(shadowEnabled);
+        stream.writeObject(shadowClass);
+        stream.writeObject(concreteObjectTypeNode);
+        stream.writeObject(entryPoint);
     }
 
     public boolean isAssignableFrom(Object object) {
@@ -151,7 +177,7 @@ public class ClassObjectTypeConf
      * This will return the package name - if the package is null, it will
      * work it out from the class name (this is in cases where funky classloading is used).
      */
-    public static String getPackageName(Class<?> clazz,
+    public static String getPackageName(Class clazz,
                                         Package pkg) {
         String pkgName = "";
         if ( pkg == null ) {
@@ -223,12 +249,6 @@ public class ClassObjectTypeConf
         return ret;
     }
 
-    private void readObject(ObjectInputStream stream) throws IOException,
-                                                     ClassNotFoundException {
-        stream.defaultReadObject();
-        this.ruleBase = ((DroolsObjectInputStream) stream).getRuleBase();
-    }
-
     /**
      *
      */
@@ -254,7 +274,7 @@ public class ClassObjectTypeConf
                     }
                     proxy = (ShadowProxy) this.instantiator.newInstance();
                 }
-                
+
                 proxy.setShadowedObject( fact );
             } catch ( final Exception e ) {
             	System.out.println( "shadow: " +proxy.getClass() + ":" + fact.getClass() );

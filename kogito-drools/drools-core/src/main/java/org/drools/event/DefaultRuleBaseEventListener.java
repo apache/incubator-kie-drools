@@ -1,4 +1,8 @@
 package org.drools.event;
+
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -19,6 +23,12 @@ package org.drools.event;
 public class DefaultRuleBaseEventListener
     implements
     RuleBaseEventListener {
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+    }
 
     public void afterFunctionRemoved(AfterFunctionRemovedEvent event) {
         // intentionally left blank

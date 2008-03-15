@@ -15,6 +15,10 @@ import org.drools.spi.KnowledgeHelper;
 
 import junit.framework.TestCase;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * This tests the "otherwise" feature.
  * @author Michael Neale
@@ -67,7 +71,7 @@ public class OtherwiseTest extends TestCase {
     }
 
     /**
-     * @TODO: this is a future to be implemented in the future 
+     * @TODO: this is a future to be implemented in the future
      * @throws Exception
      */
     public void FIXME_testOtherwiseFiringWithOneRule() throws Exception {
@@ -92,7 +96,7 @@ public class OtherwiseTest extends TestCase {
     }
 
     /**
-     * @TODO: this is a future to be implemented in the future 
+     * @TODO: this is a future to be implemented in the future
      * @throws Exception
      */
     public void FIXME_testOtherwiseFiringMultipleRules() throws Exception {
@@ -125,7 +129,7 @@ public class OtherwiseTest extends TestCase {
     private Rule getOtherwise(final String name) {
         final Rule rule = new Rule( name );
         final Pattern pat = new Pattern( 0,
-                                       new ClassObjectType( Otherwise.class) );
+                                         new ClassObjectType( Otherwise.class) );
         rule.addPattern( pat );
         rule.setConsequence( new MockConsequence() );
         return rule;
@@ -135,7 +139,7 @@ public class OtherwiseTest extends TestCase {
         final Rule rule = new Rule( name );
 
         final Pattern pat = new Pattern( 0,
-                                       new ClassObjectType( TestBean.class ) );
+                                         new ClassObjectType( TestBean.class ) );
 
         rule.addPattern( pat );
         rule.setConsequence( new MockConsequence() );
@@ -154,6 +158,13 @@ public class OtherwiseTest extends TestCase {
             this.fired = true;
         }
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+
+        }
     }
 
 }

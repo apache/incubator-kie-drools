@@ -2,13 +2,13 @@ package org.drools.base;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,9 +27,14 @@ import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+
 public class DefaultKnowledgeHelper
     implements
-    KnowledgeHelper {
+    KnowledgeHelper, Externalizable {
 
     private static final long                  serialVersionUID = 400L;
 
@@ -37,19 +42,38 @@ public class DefaultKnowledgeHelper
     private GroupElement                       subrule;
     private Activation                         activation;
     private Tuple                              tuple;
-    private final InternalWorkingMemoryActions workingMemory;
+    private InternalWorkingMemoryActions workingMemory;
 
+    public DefaultKnowledgeHelper() {
+
+    }
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        rule    = (Rule)in.readObject();
+        subrule    = (GroupElement)in.readObject();
+        activation    = (Activation)in.readObject();
+        tuple    = (Tuple)in.readObject();
+        workingMemory    = (InternalWorkingMemoryActions)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(rule);
+        out.writeObject(subrule);
+        out.writeObject(activation);
+        out.writeObject(tuple);
+        out.writeObject(workingMemory);
+    }
+    
     public void setActivation(final Activation agendaItem) {
         this.rule = agendaItem.getRule();
         this.subrule = agendaItem.getSubRule();
         this.activation = agendaItem;
         this.tuple = agendaItem.getTuple();
     }
-    
+
     public void reset() {
         this.rule = null;
         this.subrule = null;
@@ -59,32 +83,71 @@ public class DefaultKnowledgeHelper
 
     public void insert(final Object object) throws FactException {
         insert( object,
+                0,
+                false );
+    }
+
+    public void insert(final Object object,
+                       final long duration) throws FactException {
+        insert( object,
+                duration,
                 false );
     }
 
     public void insert(final Object object,
                        final boolean dynamic) throws FactException {
         this.workingMemory.insert( object,
+                                   0,
                                    dynamic,
                                    false,
                                    this.rule,
                                    this.activation );
     }
-    
+
+    public void insert(final Object object,
+                       final long duration,
+                       final boolean dynamic) throws FactException {
+        this.workingMemory.insert( object,
+                                   duration,
+                                   dynamic,
+                                   false,
+                                   this.rule,
+                                   this.activation );
+    }
+
     public void insertLogical(final Object object) throws FactException {
         insertLogical( object,
+                       0,
+                       false );
+    }
+
+    public void insertLogical(final Object object, final long duration) throws FactException {
+        insertLogical( object,
+                       duration,
                        false );
     }
 
     public void insertLogical(final Object object,
                               final boolean dynamic) throws FactException {
         this.workingMemory.insert( object,
+                                   0,
                                    dynamic,
                                    true,
                                    this.rule,
                                    this.activation );
     }
-    
+
+    public void insertLogical(final Object object,
+                              final long duration,
+                              final boolean dynamic) throws FactException {
+        this.workingMemory.insert( object,
+                                   duration,
+                                   dynamic,
+                                   true,
+                                   this.rule,
+                                   this.activation );
+    }
+
     public void update(final FactHandle handle,
                        final Object newObject) throws FactException {
         // only update if this fact exists in the wm
@@ -142,7 +205,7 @@ public class DefaultKnowledgeHelper
 
     public void modifyInsert(final FactHandle factHandle,
                              final Object object) {
-        this.workingMemory.modifyInsert( factHandle, object, rule, activation );        
+        this.workingMemory.modifyInsert( factHandle, object, rule, activation );
     }
 
     public Rule getRule() {
@@ -193,15 +256,15 @@ public class DefaultKnowledgeHelper
     //    public void setFocus(final AgendaGroup focus) {
     //        this.workingMemory.setFocus( focus );
     //    }
-    
+
     public Object get(final Declaration declaration) {
         return declaration.getValue( workingMemory, this.tuple.get( declaration ).getObject() );
-    }    
+    }
 
     public Declaration getDeclaration(final String identifier) {
         return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
     }
-    
+
     public void halt() {
         this.workingMemory.halt();
     }

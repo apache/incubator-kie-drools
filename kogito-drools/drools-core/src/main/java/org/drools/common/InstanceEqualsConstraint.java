@@ -1,12 +1,12 @@
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,11 +22,15 @@ import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.spi.BetaNodeFieldConstraint;
 
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 /**
  * InstanceEqualsConstraint
  *
  * Created: 21/06/2006
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a> 
+ * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * @version $Id$
  */
@@ -37,12 +41,25 @@ public class InstanceEqualsConstraint
 
     private static final long   serialVersionUID = 400L;
 
-    private final Declaration[] declarations     = new Declaration[0];
+    private Declaration[] declarations     = new Declaration[0];
 
     private Pattern             otherPattern;
 
+    public InstanceEqualsConstraint() {
+    }
+
     public InstanceEqualsConstraint(final Pattern otherPattern) {
         this.otherPattern = otherPattern;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        declarations    = (Declaration[])in.readObject();
+        otherPattern    = (Pattern)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(declarations);
+        out.writeObject(otherPattern);
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -109,8 +126,25 @@ public class InstanceEqualsConstraint
         private Pattern           pattern;
         private ContextEntry      entry;
 
+        public InstanceEqualsConstraintContextEntry() {
+        }
+        
         public InstanceEqualsConstraintContextEntry(final Pattern pattern) {
             this.pattern = pattern;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            left    = in.readObject();
+            right   = in.readObject();
+            pattern = (Pattern)in.readObject();
+            entry   = (ContextEntry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(left);
+            out.writeObject(right);
+            out.writeObject(pattern);
+            out.writeObject(entry);
         }
 
         public ContextEntry getNext() {
@@ -130,14 +164,14 @@ public class InstanceEqualsConstraint
                                          final InternalFactHandle handle) {
             this.right = handle.getObject();
         }
-        
+
         public void resetTuple() {
             this.left = null;
         }
-        
+
         public void resetFactHandle() {
             this.right = null;
-        }         
+        }
     }
 
     public ConstraintType getType() {

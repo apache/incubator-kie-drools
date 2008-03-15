@@ -2,12 +2,16 @@ package org.drools.common;
 
 import org.drools.FactHandle;
 
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
+
 public class EventFactHandle extends DefaultFactHandle {
 
     private static final long serialVersionUID = 5997141759543399455L;
-    
-    private final long startTimestamp;
-    private final long duration;
+
+    private long startTimestamp;
+    private long duration;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -19,7 +23,7 @@ public class EventFactHandle extends DefaultFactHandle {
         this.duration = 0;
     }
 
-    public EventFactHandle(final int id,
+    public EventFactHandle(final long id,
                            final Object object) {
         super( id,
                object );
@@ -29,11 +33,11 @@ public class EventFactHandle extends DefaultFactHandle {
 
     /**
      * Construct.
-     * 
+     *
      * @param id
      *            Handle id.
      */
-    public EventFactHandle(final int id,
+    public EventFactHandle(final long id,
                            final Object object,
                            final long recency) {
         super( id,
@@ -42,28 +46,42 @@ public class EventFactHandle extends DefaultFactHandle {
         this.startTimestamp = 0;
         this.duration = 0;
     }
-    
+
     /**
      * Creates a new event fact handle.
-     * 
+     *
      * @param id this event fact handle ID
      * @param object the event object encapsulated in this event fact handle
      * @param recency the recency of this event fact handle
      * @param timestamp the timestamp of the occurrence of this event
      * @param duration the duration of this event. May be 0 (zero) in case this is a primitive event.
      */
-    public EventFactHandle( final int id, 
+    public EventFactHandle( final long id,
                             final Object object,
                             final long recency,
                             final long timestamp,
                             final long duration ) {
         super( id,
-               object, 
+               object,
                recency );
         this.startTimestamp = timestamp;
         this.duration = duration;
     }
-    
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        startTimestamp  = in.readLong();
+        duration    = in.readLong();
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeLong(startTimestamp);
+        out.writeLong(duration);
+    }
+
+
     /**
      * @see FactHandle
      */
@@ -95,9 +113,9 @@ public class EventFactHandle extends DefaultFactHandle {
     }
 
     /**
-     * Returns the duration of this event. In case this is a primitive event, 
+     * Returns the duration of this event. In case this is a primitive event,
      * returns 0 (zero).
-     * 
+     *
      * @return
      */
     public long getDuration() {
@@ -106,9 +124,9 @@ public class EventFactHandle extends DefaultFactHandle {
 
     /**
      * Returns the end timestamp for this event. This is the same as:
-     * 
+     *
      * startTimestamp + duration
-     * 
+     *
      * @return
      */
     public long getEndTimestamp() {

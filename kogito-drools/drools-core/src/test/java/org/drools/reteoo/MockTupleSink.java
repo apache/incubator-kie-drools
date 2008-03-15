@@ -159,10 +159,4 @@ public class MockTupleSink extends TupleSource
         
     }
 
-    @Override
-    public void networkUpdated() {
-        // TODO Auto-generated method stub
-        
-    }
-
 }

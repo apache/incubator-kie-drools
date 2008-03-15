@@ -1,21 +1,43 @@
 package org.drools.rule;
 
 import java.io.InputStream;
-import java.net.URL;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.Externalizable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CompositePackageClassLoader extends ClassLoader implements DroolsClassLoader  {
+public class CompositePackageClassLoader extends ClassLoader implements DroolsClassLoader, Externalizable  {
 
-    private final List classLoaders = new ArrayList();
+    private List classLoaders  = new ArrayList();
+
+    public CompositePackageClassLoader() {
+    }
 
     public CompositePackageClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
     }
 
     public void addClassLoader(final ClassLoader classLoader) {
-        this.classLoaders.add( classLoader );
+        if (classLoader instanceof CompositePackageClassLoader) {
+            for (Object object : ((CompositePackageClassLoader)classLoader).classLoaders) {
+               if (!this.classLoaders.contains(object)) {
+                   this.classLoaders.add(object);
+               }
+            }
+        } else {
+            this.classLoaders.add( classLoader );
+        }
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        classLoaders    = (List)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(classLoaders);
     }
 
     public void removeClassLoader(final ClassLoader classLoader) {

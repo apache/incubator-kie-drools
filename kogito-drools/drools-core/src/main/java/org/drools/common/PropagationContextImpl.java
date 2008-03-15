@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,27 +23,35 @@ import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
 
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
+
 public class PropagationContextImpl
     implements
     PropagationContext {
 
     private static final long serialVersionUID = 8400185220119865618L;
 
-    private final int    type;
+    private int    type;
 
     private Rule         rule;
 
     private Activation   activation;
 
-    private final long   propagationNumber;
+    private long   propagationNumber;
 
-    public final int     activeActivations;
+    public int     activeActivations;
 
-    public final int     dormantActivations;
+    public int     dormantActivations;
 
     public ObjectHashMap retracted;
 
     private EntryPoint   entryPoint;
+
+    public PropagationContextImpl() {
+
+    }
 
     public PropagationContextImpl(final long number,
                                   final int type,
@@ -74,13 +82,35 @@ public class PropagationContextImpl
         this.entryPoint = entryPoint;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        type    = in.readInt();
+        activeActivations   = in.readInt();
+        dormantActivations  = in.readInt();
+        propagationNumber   = in.readLong();
+        rule        = (Rule)in.readObject();
+        activation  = (Activation)in.readObject();
+        retracted   = (ObjectHashMap)in.readObject();
+        entryPoint  = (EntryPoint)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(type);
+        out.writeInt(activeActivations);
+        out.writeInt(dormantActivations);
+        out.writeLong(propagationNumber);
+        out.writeObject(rule);
+        out.writeObject(activation);
+        out.writeObject(retracted);
+        out.writeObject(entryPoint);
+    }
+
     public long getPropagationNumber() {
         return this.propagationNumber;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.drools.reteoo.PropagationContext#getRuleOrigin()
      */
     public Rule getRuleOrigin() {
@@ -89,7 +119,7 @@ public class PropagationContextImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.drools.reteoo.PropagationContext#getActivationOrigin()
      */
     public Activation getActivationOrigin() {
@@ -98,7 +128,7 @@ public class PropagationContextImpl
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.drools.reteoo.PropagationContext#getType()
      */
     public int getType() {

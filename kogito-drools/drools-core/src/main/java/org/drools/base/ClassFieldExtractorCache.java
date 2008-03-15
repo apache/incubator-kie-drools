@@ -1,6 +1,9 @@
 package org.drools.base;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,12 +56,15 @@ public class ClassFieldExtractorCache {
 
     private static class ExtractorKey
         implements
-        Serializable {
+        Externalizable {
         private static final long serialVersionUID = 400;
 
-        private final Class       clazz;
-        private final String      fieldName;
-        private final int         hashCode;
+        private Class       clazz;
+        private String      fieldName;
+        private int         hashCode;
+
+        public ExtractorKey() {
+        }
 
         public ExtractorKey(Class clazz,
                             String fieldName) {
@@ -71,6 +77,18 @@ public class ClassFieldExtractorCache {
             result = PRIME * result + ((clazz == null) ? 0 : clazz.hashCode());
             result = PRIME * result + ((fieldName == null) ? 0 : fieldName.hashCode());
             this.hashCode = result;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            clazz   = (Class)in.readObject();
+            fieldName   = (String)in.readObject();
+            hashCode    = in.readInt();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(clazz);
+            out.writeObject(fieldName);
+            out.writeInt(hashCode);
         }
 
         public Class getClazz() {

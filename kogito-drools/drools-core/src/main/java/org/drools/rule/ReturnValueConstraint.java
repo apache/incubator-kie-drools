@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,17 +25,37 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldExtractor;
 import org.drools.spi.ReturnValueExpression;
 
-public class ReturnValueConstraint extends MutableTypeConstraint {
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+
+public class ReturnValueConstraint extends MutableTypeConstraint implements Externalizable {
 
     private static final long            serialVersionUID = 400L;
 
-    private final FieldExtractor         fieldExtractor;
-    private final ReturnValueRestriction restriction;
+    private FieldExtractor         fieldExtractor;
+    private ReturnValueRestriction restriction;
 
+    public ReturnValueConstraint() {
+        this(null, null);
+    }
     public ReturnValueConstraint(final FieldExtractor fieldExtractor,
                                  final ReturnValueRestriction restriction) {
         this.fieldExtractor = fieldExtractor;
         this.restriction = restriction;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        fieldExtractor  = (FieldExtractor)in.readObject();
+        restriction     = (ReturnValueRestriction)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(fieldExtractor);
+        out.writeObject(restriction);
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -47,7 +67,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint {
         this.restriction.replaceDeclaration( oldDecl,
                                              newDecl );
     }
-    
+
     public void setReturnValueExpression(final ReturnValueExpression expression) {
         this.restriction.setReturnValueExpression( expression );
     }
@@ -134,7 +154,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint {
                                               e );
         }
     }
-    
+
     public Object clone() {
         return new ReturnValueConstraint( this.fieldExtractor, (ReturnValueRestriction) this.restriction.clone() );
     }

@@ -2,13 +2,13 @@ package org.drools.rule;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,10 @@ package org.drools.rule;
  */
 
 import java.util.Arrays;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalFactHandle;
@@ -28,32 +32,36 @@ import org.drools.spi.Restriction;
 
 /**
  * A predicate can be written as a top level constraint or be nested
- * inside inside a field constraint (and as so, must implement the 
+ * inside inside a field constraint (and as so, must implement the
  * Restriction interface).
- * 
+ *
  * @author etirelli
  */
 public class PredicateConstraint extends MutableTypeConstraint
     implements
-    Restriction {
+    Restriction, Externalizable {
 
     /**
-     * 
+     *
      */
     private static final long          serialVersionUID   = 400L;
 
     private PredicateExpression        expression;
 
-    private final Declaration[]        requiredDeclarations;
+    private Declaration[]        requiredDeclarations;
 
-    private final Declaration[]        previousDeclarations;
+    private Declaration[]        previousDeclarations;
 
-    private final Declaration[]        localDeclarations;
+    private Declaration[]        localDeclarations;
 
-    private final String[]             requiredGlobals;
+    private String[]             requiredGlobals;
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
     private static final String[]      EMPTY_GLOBALS      = new String[0];
+
+    public PredicateConstraint() {
+        this(null);
+    }
 
     public PredicateConstraint(final PredicateExpression evaluator) {
         this( evaluator,
@@ -106,6 +114,23 @@ public class PredicateConstraint extends MutableTypeConstraint
                           this.requiredDeclarations,
                           this.previousDeclarations.length,
                           this.localDeclarations.length );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        expression  = (PredicateExpression)in.readObject();
+        requiredDeclarations  = (Declaration[])in.readObject();
+        previousDeclarations  = (Declaration[])in.readObject();
+        localDeclarations  = (Declaration[])in.readObject();
+        requiredGlobals  = (String[])in.readObject();
+    }
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(expression);
+        out.writeObject(requiredDeclarations);
+        out.writeObject(previousDeclarations);
+        out.writeObject(localDeclarations);
+        out.writeObject(requiredGlobals);
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -230,7 +255,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
     public boolean isAllowed(Extractor extractor,
                              InternalFactHandle handle,
-                             InternalWorkingMemory workingMemory, 
+                             InternalWorkingMemory workingMemory,
                              ContextEntry context ) {
         throw new UnsupportedOperationException("Method not supported. Please contact development team.");
     }
@@ -293,7 +318,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         public ReteTuple             leftTuple;
         public Object                rightObject;
         public InternalWorkingMemory workingMemory;
-        
+
         public Object                dialectContext;
 
         private ContextEntry         entry;
@@ -301,6 +326,22 @@ public class PredicateConstraint extends MutableTypeConstraint
         public PredicateContextEntry() {
         }
 
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            leftTuple   = (ReteTuple)in.readObject();
+            rightObject   = in.readObject();
+            workingMemory   = (InternalWorkingMemory)in.readObject();
+            dialectContext   = in.readObject();
+            entry   = (ContextEntry)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(leftTuple);
+            out.writeObject(rightObject);
+            out.writeObject(workingMemory);
+            out.writeObject(dialectContext);
+            out.writeObject(entry);
+        }
+        
         public ContextEntry getNext() {
             return this.entry;
         }
@@ -320,14 +361,14 @@ public class PredicateConstraint extends MutableTypeConstraint
             this.workingMemory = workingMemory;
             this.leftTuple = tuple;
         }
-        
+
         public void resetTuple() {
             this.leftTuple = null;
         }
-        
+
         public void resetFactHandle() {
             this.rightObject = null;
-        }        
+        }
     }
 
 }

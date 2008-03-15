@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,9 @@ package org.drools.reteoo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
@@ -69,13 +72,20 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         // create the consequence
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 list.add( knowledgeHelper.getRule() );
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -257,7 +267,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         assertEquals( 1,
                       agenda.agendaSize() );
 
-        // on firing the last activation the child rule flow groups should 
+        // on firing the last activation the child rule flow groups should
         // activate and thus repopulate the agenda
         agenda.fireNextItem( null );
         workingMemory.executeQueuedActions();
@@ -279,7 +289,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         assertEquals( 1,
                       agenda.agendaSize() );
 
-        // executing rule1, which should activate AND-join and thus group 3 
+        // executing rule1, which should activate AND-join and thus group 3
         agenda.fireNextItem( null );
         workingMemory.executeQueuedActions();
         assertEquals( 0,
@@ -321,13 +331,20 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         // create the consequence
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 list.add( knowledgeHelper.getRule() );
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -567,7 +584,7 @@ public class RuleFlowGroupTest extends DroolsTestCase {
         assertEquals( 1,
                       agenda.agendaSize() );
 
-        // executing group1, XOR join should activate group3 
+        // executing group1, XOR join should activate group3
         agenda.fireNextItem( null );
         workingMemory.executeQueuedActions();
         assertEquals( 0,

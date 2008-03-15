@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
+import java.io.Externalizable;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
@@ -24,24 +25,24 @@ import org.drools.spi.PropagationContext;
 /**
  * Receiver of propagated <code>ReteTuple</code>s from a
  * <code>TupleSource</code>.
- * 
+ *
  * @see TupleSource
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public interface TupleSink
     extends
-    Serializable,
+    Externalizable,
     Sink {
 
     /**
      * Assert a new <code>ReteTuple</code>.
-     * 
+     *
      * @param tuple
      *            The <code>ReteTuple</code> to propagate.
      * @param context
-     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action            
+     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
@@ -52,8 +53,8 @@ public interface TupleSink
     void retractTuple(ReteTuple tuple,
                       PropagationContext context,
                       InternalWorkingMemory workingMemory);
-    
+
     public boolean isTupleMemoryEnabled();
 
-    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled);       
+    public void setTupleMemoryEnabled(boolean tupleMemoryEnabled);
 }

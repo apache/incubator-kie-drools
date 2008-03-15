@@ -2,6 +2,9 @@ package org.drools.reteoo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.base.ShadowProxy;
 import org.drools.common.InternalFactHandle;
@@ -18,7 +21,7 @@ public class ReteTuple
 
     private int                      index;
 
-    private final InternalFactHandle handle;
+    private InternalFactHandle handle;
 
     private ReteTuple                parent;
 
@@ -27,7 +30,7 @@ public class ReteTuple
     private long                     recency;
 
     private int                      hashCode;
-    
+
     private InternalFactHandle       match;
 
     private Entry                    next;
@@ -35,6 +38,9 @@ public class ReteTuple
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public ReteTuple() {
+        
+    }
     public ReteTuple(final InternalFactHandle handle) {
         this.recency = handle.getRecency();
         this.handle = handle;
@@ -61,6 +67,29 @@ public class ReteTuple
         this.recency = parentTuple.recency + handle.getRecency();
         this.handle = handle;
         this.hashCode = parentTuple.hashCode ^ (handle.hashCode() * 31);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        index   = in.readInt();
+        handle  = (InternalFactHandle)in.readObject();
+        parent  = (ReteTuple)in.readObject();
+        activation  = (Activation)in.readObject();
+        recency = in.readLong();
+        hashCode    = in.readInt();
+        match   = (InternalFactHandle)in.readObject();
+        next    = (Entry)in.readObject();
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(index);
+        out.writeObject(handle);
+        out.writeObject(parent);
+        out.writeObject(activation);
+        out.writeLong(recency);
+        out.writeInt(hashCode);
+        out.writeObject(match);
+        out.writeObject(next);
     }
 
     public InternalFactHandle get(final int index) {
@@ -108,7 +137,7 @@ public class ReteTuple
     public long getRecency() {
         return this.recency;
     }
-        
+
 
     public InternalFactHandle getMatch() {
         return match;
@@ -166,7 +195,7 @@ public class ReteTuple
     }
 
     public boolean equals(final Object object) {
-        // we know the object is never null and always of the  type ReteTuple    
+        // we know the object is never null and always of the  type ReteTuple
         return equals( (ReteTuple) object );
     }
 
@@ -177,17 +206,17 @@ public class ReteTuple
     /**
      * Returns the ReteTuple that contains the "elements"
      * first elements in this tuple.
-     * 
+     *
      * Use carefully as no cloning is made during this process.
-     * 
+     *
      * This method is used by TupleStartEqualsConstraint when
      * joining a subnetwork tuple into the main network tuple;
-     * 
+     *
      * @param elements the number of elements to return, starting from
      * the begining of the tuple
-     * 
+     *
      * @return a ReteTuple containing the "elements" first elements
-     * of this tuple or null if "elements" is greater than size; 
+     * of this tuple or null if "elements" is greater than size;
      */
     public ReteTuple getSubTuple(final int elements) {
         ReteTuple entry = this;
@@ -200,10 +229,10 @@ public class ReteTuple
         }
         return entry;
     }
-    
-    public Object[] toObjectArray() {        
+
+    public Object[] toObjectArray() {
         Object[] objects = new Object[ this.index + 1 ];
-        ReteTuple entry = this;       
+        ReteTuple entry = this;
         while ( entry != null ) {
             Object object = entry.getLastHandle().getObject();
             if ( object instanceof ShadowProxy ) {
@@ -211,7 +240,7 @@ public class ReteTuple
             }
             objects[entry.index] = object;
             entry = entry.parent;
-        }   
+        }
         return objects;
     }
 }

@@ -141,13 +141,14 @@ public class ReteTest extends DroolsTestCase {
                                                        PropagationContext.ASSERTION,
                                                        null,
                                                        null ),
-                           workingMemory );               
-        
-        ClassObjectTypeConf conf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), ArrayList.class );
+                           workingMemory );
+
+        final Map map = workingMemory.getObjectTypeConfMap( EntryPoint.DEFAULT );
+        ClassObjectTypeConf conf = (ClassObjectTypeConf) map.get( ArrayList.class );
         assertLength( 3,
                       conf.getObjectTypeNodes() );
 
-        conf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), LinkedList.class );
+        conf = (ClassObjectTypeConf) map.get( LinkedList.class );
         assertLength( 3,
                       conf.getObjectTypeNodes() );
 
@@ -248,7 +249,8 @@ public class ReteTest extends DroolsTestCase {
                     rete.getObjectTypeNodes( EntryPoint.DEFAULT ).get( new ClassObjectType( List.class ) ) );
 
         // ArrayConf should match two ObjectTypenodes for List and ArrayList
-        ClassObjectTypeConf arrayConf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), ArrayList.class );
+        Map memory = workingMemory.getObjectTypeConfMap( EntryPoint.DEFAULT );
+        ObjectTypeConf arrayConf = (ObjectTypeConf) memory.get( ArrayList.class );
         final ObjectTypeNode arrayOtn = arrayConf.getConcreteObjectTypeNode();
         assertEquals( 2,
                       arrayConf.getObjectTypeNodes().length );

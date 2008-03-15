@@ -1,12 +1,12 @@
 /*
  * Copyright 2007 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,9 @@ package org.drools.base.evaluators;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.BaseEvaluator;
@@ -35,7 +38,7 @@ import org.drools.spi.FieldValue;
 
 /**
  * The implementation of the 'metby' evaluator definition
- * 
+ *
  * @author mgroch
  */
 public class MetByEvaluatorDefinition
@@ -46,10 +49,18 @@ public class MetByEvaluatorDefinition
                                                                                   false );
     public static final Operator  NOT_MET_BY   = Operator.addOperatorToRegistry( "metby",
                                                                                   true );
-    
+
     private static final String[] SUPPORTED_IDS = { MET_BY.getOperatorString() };
-    
+
     private Map<String, MetByEvaluator> cache        = Collections.emptyMap();
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        cache  = (Map<String, MetByEvaluator>)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(cache);
+    }
 
     /**
      * @inheridDoc
@@ -131,8 +142,11 @@ public class MetByEvaluatorDefinition
      */
     public static class MetByEvaluator extends BaseEvaluator {
 		private static final long serialVersionUID = 7907908401657594347L;
-		
+
 		private long                  finalRange;
+
+        public MetByEvaluator() {
+        }
 
         public MetByEvaluator(final ValueType type,
                               final boolean isNegated,
@@ -141,12 +155,22 @@ public class MetByEvaluatorDefinition
                    isNegated ? NOT_MET_BY : MET_BY );
             this.parseParameters( parameters );
         }
-        
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            super.readExternal(in);
+            finalRange = in.readLong();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            super.writeExternal(out);
+            out.writeLong(finalRange);
+        }
+
         @Override
         public Object prepareObject(InternalFactHandle handle) {
             return handle;
         }
-        
+
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final Extractor extractor,
                                 final Object object1,
@@ -175,7 +199,7 @@ public class MetByEvaluatorDefinition
             long rightStartTS = ((EventFactHandle) right ).getStartTimestamp();
             long dist = Math.abs(rightStartTS - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp());
 
-            return this.getOperator().isNegated() ^ ( ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() <= rightStartTS && 
+            return this.getOperator().isNegated() ^ ( ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() <= rightStartTS &&
             	    dist <= this.finalRange );
         }
 
@@ -221,9 +245,9 @@ public class MetByEvaluatorDefinition
         }
 
         /**
-         * This methods tries to parse the string of parameters to customize 
+         * This methods tries to parse the string of parameters to customize
          * the evaluator.
-         * 
+         *
          * @param parameters
          */
         private void parseParameters(String parameters) {

@@ -14,20 +14,21 @@ package org.drools.reteoo;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Created on January 8th, 2007
  */
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.WorkingMemoryEntryPoint;
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
@@ -41,19 +42,19 @@ import org.drools.util.Iterator;
 /**
  * A node that is an entry point into the Rete network.
  *
- * As we move the design to support network partitions and concurrent processing 
+ * As we move the design to support network partitions and concurrent processing
  * of parts of the network, we also need to support multiple, independent entry
- * points and this class represents that. 
- * 
+ * points and this class represents that.
+ *
  * It replaces the function of the Rete Node class in previous designs.
- * 
+ *
  * @see ObjectTypeNode
  *
  * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class EntryPointNode extends ObjectSource
     implements
-    Serializable,
+    Externalizable,
     ObjectSink {
     // ------------------------------------------------------------
     // Instance members
@@ -64,16 +65,19 @@ public class EntryPointNode extends ObjectSource
     /**
      * The entry point ID for this node
      */
-    private final EntryPoint    entryPoint;
+    private EntryPoint    entryPoint;
 
     /**
      * The object type nodes under this node
      */
-    private final Map<ObjectType, ObjectTypeNode> objectTypeNodes;
+    private Map<ObjectType, ObjectTypeNode> objectTypeNodes;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public EntryPointNode() {
+
+    }
 
     public EntryPointNode(final int id,
                           final ObjectSource objectSource,
@@ -97,17 +101,43 @@ public class EntryPointNode extends ObjectSource
     // Instance methods
     // ------------------------------------------------------------
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        entryPoint  = (EntryPoint)in.readObject();
+        objectTypeNodes = (Map<ObjectType, ObjectTypeNode>)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(entryPoint);
+        out.writeObject(objectTypeNodes);
+    }
     /**
      * @return the entryPoint
      */
     public EntryPoint getEntryPoint() {
         return entryPoint;
     }
-    
+
+    /**
+     * This is the entry point into the network for all asserted Facts. Iterates a cache
+     * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
+     * exist it first iterates and builds the cache.
+     *
+     * @param handle
+     *            The FactHandle of the fact to assert
+     * @param context
+     *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action
+     * @param workingMemory
+     *            The working memory session.
+     */
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
-                             final ObjectTypeConf objectTypeConf,
                              final InternalWorkingMemory workingMemory) {
+
+        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( this.entryPoint,
+                                                                         handle.getObject() );
+
         // checks if shadow is enabled
         if ( objectTypeConf.isShadowEnabled() ) {
             // need to improve this
@@ -127,24 +157,6 @@ public class EntryPointNode extends ObjectSource
                                          context,
                                          workingMemory );
         }
-    }    
-
-    /**
-     * This is the entry point into the network for all asserted Facts. Iterates a cache
-     * of matching <code>ObjectTypdeNode</code>s asserting the Fact. If the cache does not
-     * exist it first iterates and builds the cache.
-     *
-     * @param handle
-     *            The FactHandle of the fact to assert
-     * @param context
-     *            The <code>PropagationContext</code> of the <code>WorkingMemory</code> action
-     * @param workingMemory
-     *            The working memory session.
-     */
-    public void assertObject(final InternalFactHandle handle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-        // do nothing, dummy method to impl the interface
     }
 
     /**
@@ -158,10 +170,11 @@ public class EntryPointNode extends ObjectSource
      */
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
-                              final ObjectTypeConf objectTypeConf,                              
                               final InternalWorkingMemory workingMemory) {
         final Object object = handle.getObject();
-        
+
+        ObjectTypeConf objectTypeConf = workingMemory.getObjectTypeConf( this.entryPoint,
+                                                                         object );
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {
@@ -174,12 +187,6 @@ public class EntryPointNode extends ObjectSource
                                           context,
                                           workingMemory );
         }
-    }
-    
-    public void retractObject(final InternalFactHandle handle,
-                              final PropagationContext context,        
-                              final InternalWorkingMemory workingMemory) {
-        // do nothing, dummy method to impl the interface                
     }
 
     /**
@@ -259,12 +266,9 @@ public class EntryPointNode extends ObjectSource
                            final InternalWorkingMemory workingMemory) {
         // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.
         final ObjectTypeNode node = (ObjectTypeNode) sink;
-                
         final ObjectType newObjectType = node.getObjectType();
 
-        InternalWorkingMemoryEntryPoint wmEntryPoint = ( InternalWorkingMemoryEntryPoint ) workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
-        
-        for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {            
+        for ( ObjectTypeConf objectTypeConf : workingMemory.getObjectTypeConfMap( this.entryPoint ).values() ) {
             if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
@@ -286,7 +290,7 @@ public class EntryPointNode extends ObjectSource
     public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
         throw new UnsupportedOperationException( "Entry Point Node has no Object memory" );
     }
-    
+
     public String toString() {
         return "[EntryPointNode("+this.id+") "+this.entryPoint+" ]";
     }

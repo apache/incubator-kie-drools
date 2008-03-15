@@ -1,6 +1,9 @@
 package org.drools.base.mvel;
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
 
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
@@ -9,15 +12,28 @@ import org.mvel.integration.VariableResolver;
 public class DroolsMVELPreviousDeclarationVariable
     implements
     VariableResolver,
-    Serializable  {
+    Externalizable  {
 
     private Declaration       declaration;
     private DroolsMVELFactory factory;
+
+    public DroolsMVELPreviousDeclarationVariable() {
+    }
 
     public DroolsMVELPreviousDeclarationVariable(final Declaration declaration,
                                                  final DroolsMVELFactory factory) {
         this.declaration = declaration;
         this.factory = factory;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        declaration = (Declaration)in.readObject();
+        factory     = (DroolsMVELFactory)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(declaration);
+        out.writeObject(factory);
     }
 
     public String getName() {

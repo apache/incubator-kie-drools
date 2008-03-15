@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,21 +30,21 @@ import org.drools.util.Iterator;
  * considered to be asserted from the left input and facts from the right input.
  * The <code>BetaNode</code> provides the BetaMemory to store assserted
  * ReteTuples and
- * <code>FactHandleImpl<code>s. Each fact handle is stored in the right memory as a key in a <code>HashMap</code>, the value is an <code>ObjectMatches</code> 
- * instance which maintains a <code>LinkedList of <code>TuplesMatches - The tuples that are matched with the handle. the left memory is a <code>LinkedList</code> 
- * of <code>ReteTuples</code> which maintains a <code>HashMa</code>, where the keys are the matching <code>FactHandleImpl</code>s and the value is 
- * populated <code>TupleMatche</code>es, the keys are matched fact handles. <code>TupleMatch</code> maintains a <code>List</code> of resulting joins, 
+ * <code>FactHandleImpl<code>s. Each fact handle is stored in the right memory as a key in a <code>HashMap</code>, the value is an <code>ObjectMatches</code>
+ * instance which maintains a <code>LinkedList of <code>TuplesMatches - The tuples that are matched with the handle. the left memory is a <code>LinkedList</code>
+ * of <code>ReteTuples</code> which maintains a <code>HashMa</code>, where the keys are the matching <code>FactHandleImpl</code>s and the value is
+ * populated <code>TupleMatche</code>es, the keys are matched fact handles. <code>TupleMatch</code> maintains a <code>List</code> of resulting joins,
  * where there is joined <code>ReteTuple</code> per <code>TupleSink</code>.
- *  
- * 
+ *
+ *
  * The BetaNode provides
- * the BetaMemory which stores the 
- * 
+ * the BetaMemory which stores the
+ *
  * @see BetaNode
  * @see ObjectMatches
  * @see TupleMatch
  * @see TupleSink
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
@@ -53,11 +53,15 @@ public class JoinNode extends BetaNode {
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-    
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
+
+    public JoinNode() {
+        
+    }
 
     public JoinNode(final int id,
                     final TupleSource leftInput,
@@ -76,12 +80,12 @@ public class JoinNode extends BetaNode {
      * <code>FactHandleInput</code>'s is iterated and joins attemped, via the
      * binder, any successful bindings results in joined tuples being created
      * and propaged. there is a joined tuple per TupleSink.
-     * 
+     *
      * @see ReteTuple
      * @see ObjectMatches
      * @see TupleSink
      * @see TupleMatch
-     * 
+     *
      * @param tuple
      *            The <code>Tuple</code> being asserted.
      * @param context
@@ -93,7 +97,7 @@ public class JoinNode extends BetaNode {
                             final PropagationContext context,
                             final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        
+
         if ( this.tupleMemoryEnabled ) {
             memory.getTupleMemory().add( leftTuple );
         }
@@ -112,7 +116,7 @@ public class JoinNode extends BetaNode {
                                                 workingMemory );
             }
         }
-        
+
         this.constraints.resetTuple( memory.getContext() );
     }
 
@@ -121,12 +125,12 @@ public class JoinNode extends BetaNode {
      * <code>ReteTuple</code>s is iterated and joins attemped, via the
      * binder, any successful bindings results in joined tuples being created
      * and propaged. there is a joined tuple per TupleSink.
-     * 
+     *
      * @see ReteTuple
      * @see ObjectMatches
      * @see TupleSink
      * @see TupleMatch
-     * 
+     *
      * @param handle
      *            The <code>FactHandleImpl</code> being asserted.
      * @param context
@@ -164,7 +168,7 @@ public class JoinNode extends BetaNode {
     /**
      * Retract a FactHandleImpl. Iterates the referenced TupleMatches stored in
      * the handle's ObjectMatches retracting joined tuples.
-     * 
+     *
      * @param handle
      *            the <codeFactHandleImpl</code> being retracted
      * @param context
@@ -193,7 +197,7 @@ public class JoinNode extends BetaNode {
                                                  workingMemory );
             }
         }
-        
+
         this.constraints.resetFactHandle( memory.getContext() );
     }
 
@@ -201,7 +205,7 @@ public class JoinNode extends BetaNode {
      * Retract a <code>ReteTuple</code>. Iterates the referenced
      * <code>TupleMatche</code>'s stored in the tuples <code>Map</code>
      * retracting all joined tuples.
-     * 
+     *
      * @param key
      *            The tuple key.
      * @param context
@@ -232,7 +236,7 @@ public class JoinNode extends BetaNode {
                                                  workingMemory );
             }
         }
-        
+
         this.constraints.resetTuple( memory.getContext() );
     }
 
@@ -261,7 +265,7 @@ public class JoinNode extends BetaNode {
                                       workingMemory );
                 }
             }
-            
+
             this.constraints.resetTuple( memory.getContext() );
         }
     }

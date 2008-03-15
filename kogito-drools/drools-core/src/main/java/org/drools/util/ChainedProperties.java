@@ -1,11 +1,14 @@
 /**
- * 
+ *
  */
 package org.drools.util;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,9 +20,13 @@ import java.util.Properties;
 
 public class ChainedProperties
     implements
-    Serializable {
-    private final List props;
-    private final List defaultProps;
+    Externalizable {
+    private List props;
+    private List defaultProps;
+
+    public ChainedProperties() {
+
+    }
 
     public ChainedProperties(String confFileName) {
         this( null,
@@ -124,6 +131,16 @@ public class ChainedProperties
                                           confClassLoader ),
                             this.defaultProps );
         }
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        props   = (List)in.readObject();
+        defaultProps    = (List)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(props);
+        out.writeObject(defaultProps);
     }
 
     private Enumeration getResources(String name,

@@ -1,15 +1,15 @@
 package org.drools.spi;
 
-import java.io.Serializable;
+import java.io.Externalizable;
 
 import org.drools.WorkingMemory;
 
 /**
  * Care should be taken when implementing this class. Swallowing of consequence can be dangerous
- * if the exception occured during a WorkingMemory action, thus leaving the integrity of the 
+ * if the exception occured during a WorkingMemory action, thus leaving the integrity of the
  * WorkingMemory invalid.
  *
  */
-public interface ConsequenceExceptionHandler extends Serializable {
+public interface ConsequenceExceptionHandler extends Externalizable {
     void handleException(Activation activation, WorkingMemory workingMemory, Exception exception);
-}   
+}

@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,10 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -30,7 +33,7 @@ import org.drools.util.Queueable;
 
 /**
  * Item entry in the <code>Agenda</code>.
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
@@ -38,36 +41,36 @@ public class AgendaItem
     implements
     Activation,
     Queueable,
-    Serializable {
+    Externalizable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /**
-     * 
+     *
      */
     private static final long        serialVersionUID = 400L;
 
     /** The tuple. */
-    private final Tuple              tuple;
+    private Tuple              tuple;
 
     /** The rule. */
-    private final Rule               rule;
+    private Rule               rule;
 
     /** The salience */
-    private final int                salience;
+    private int                salience;
 
     /** Used for sequential mode */
     private int                      sequenence;
 
     /** The subrule */
-    private final GroupElement       subrule;
+    private GroupElement       subrule;
 
     /** The propagation context */
-    private final PropagationContext context;
+    private PropagationContext context;
 
     /** The activation number */
-    private final long               activationNumber;
+    private long               activationNumber;
 
     /** A reference to the PriorityQeue the item is on */
     private Queue                    queue;
@@ -87,10 +90,13 @@ public class AgendaItem
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public AgendaItem() {
+
+    }
 
     /**
      * Construct.
-     * 
+     *
      * @param tuple
      *            The tuple.
      * @param rule
@@ -113,13 +119,47 @@ public class AgendaItem
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        tuple   = (Tuple)in.readObject();
+        rule    = (Rule)in.readObject();
+        salience    = in.readInt();
+        sequenence  = in.readInt();
+        subrule     = (GroupElement)in.readObject();
+        context     = (PropagationContext)in.readObject();
+        activationNumber    = in.readLong();
+        queue     = (Queue)in.readObject();
+        index     = in.readInt();
+        justified     = (LinkedList)in.readObject();
+        activated   = in.readBoolean();
+        agendaGroup     = (InternalAgendaGroup)in.readObject();
+        activationGroupNode     = (ActivationGroupNode)in.readObject();
+        ruleFlowGroupNode     = (RuleFlowGroupNode)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(tuple);
+        out.writeObject(rule);
+        out.writeInt(salience);
+        out.writeInt(sequenence);
+        out.writeObject(subrule);
+        out.writeObject(context);
+        out.writeLong(activationNumber);
+        out.writeObject(queue);
+        out.writeInt(index);
+        out.writeObject(justified);
+        out.writeBoolean(activated);
+        out.writeObject(agendaGroup);
+        out.writeObject(activationGroupNode);
+        out.writeObject(ruleFlowGroupNode);
+    }
+
     public PropagationContext getPropagationContext() {
         return this.context;
     }
 
     /**
      * Retrieve the rule.
-     * 
+     *
      * @return The rule.
      */
     public Rule getRule() {
@@ -128,7 +168,7 @@ public class AgendaItem
 
     /**
      * Retrieve the tuple.
-     * 
+     *
      * @return The tuple.
      */
     public Tuple getTuple() {
@@ -149,7 +189,7 @@ public class AgendaItem
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.drools.spi.Activation#getActivationNumber()
      */
     public long getActivationNumber() {
@@ -186,7 +226,7 @@ public class AgendaItem
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(final Object object) {

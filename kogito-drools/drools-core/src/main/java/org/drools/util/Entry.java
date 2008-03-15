@@ -1,13 +1,13 @@
 /**
- * 
+ *
  */
 package org.drools.util;
 
-import java.io.Serializable;
+import java.io.Externalizable;
 
 public interface Entry
     extends
-    Serializable {
+    Externalizable {
     public void setNext(Entry next);
 
     public Entry getNext();

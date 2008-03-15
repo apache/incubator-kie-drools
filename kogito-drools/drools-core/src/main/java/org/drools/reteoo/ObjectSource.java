@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,10 @@ package org.drools.reteoo;
  */
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultFactHandle;
@@ -25,20 +29,20 @@ import org.drools.spi.PropagationContext;
 
 /**
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.
- * 
+ *
  * <p>
  * Nodes that propagate <code>FactHandleImpl</code> extend this class.
  * </p>
- * 
+ *
  * @see ObjectSource
  * @see DefaultFactHandle
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public abstract class ObjectSource extends BaseNode
     implements
-    Serializable {
+    Externalizable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -53,10 +57,13 @@ public abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public ObjectSource() {
+
+    }
 
     /**
      * Single parameter constructor that specifies the unique id of the node.
-     * 
+     *
      * @param id
      */
     ObjectSource(final int id) {
@@ -67,7 +74,7 @@ public abstract class ObjectSource extends BaseNode
 
     /**
      * Single parameter constructor that specifies the unique id of the node.
-     * 
+     *
      * @param id
      */
     ObjectSource(final int id,
@@ -82,18 +89,31 @@ public abstract class ObjectSource extends BaseNode
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        sink    = (ObjectSinkPropagator)in.readObject();
+        objectSource    = (ObjectSource)in.readObject();
+        alphaNodeHashingThreshold   = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(sink);
+        out.writeObject(objectSource);
+        out.writeInt(alphaNodeHashingThreshold);
+    }
 
     /**
      * Adds the <code>ObjectSink</code> so that it may receive
      * <code>FactHandleImpl</code> propagated from this
      * <code>ObjectSource</code>.
-     * 
+     *
      * @param objectSink
      *            The <code>ObjectSink</code> to receive propagated
      *            <code>FactHandleImpl</code>.
      */
     protected void addObjectSink(final ObjectSink objectSink) {
-        if ( this.sink instanceof EmptyObjectSinkAdapter ) {
+        if ( EmptyObjectSinkAdapter.getInstance().equals(this.sink) ) {
             this.sink = new SingleObjectSinkAdapter( objectSink );
         } else if ( this.sink instanceof SingleObjectSinkAdapter ) {
             final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter( this.alphaNodeHashingThreshold );
@@ -107,12 +127,12 @@ public abstract class ObjectSource extends BaseNode
 
     /**
      * Removes the <code>ObjectSink</code>
-     * 
+     *
      * @param objectSink
      *            The <code>ObjectSink</code> to remove
      */
     protected void removeObjectSink(final ObjectSink objectSink) {
-        if ( this.sink instanceof EmptyObjectSinkAdapter ) {
+        if ( this.sink == EmptyObjectSinkAdapter.getInstance() ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
 
@@ -130,15 +150,11 @@ public abstract class ObjectSource extends BaseNode
     public abstract void updateSink(ObjectSink sink,
                                     PropagationContext context,
                                     InternalWorkingMemory workingMemory);
-    
-    public void networkUpdated() {
-        this.objectSource.networkUpdated();
-    }
 
     public ObjectSinkPropagator getSinkPropagator() {
         return this.sink;
     }
-    
+
     public boolean isInUse() {
         return this.sink.size() > 0;
     }

@@ -3,16 +3,20 @@ package org.drools.rule;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.Externalizable;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 public class MapBackedClassLoader extends ClassLoader
     implements
-    DroolsClassLoader,
-    Serializable {
+    DroolsClassLoader, Externalizable {
 
     private static final long             serialVersionUID = 400L;
 
@@ -28,6 +32,9 @@ public class MapBackedClassLoader extends ClassLoader
         } );
     }
 
+    public MapBackedClassLoader() {
+    }
+
     public MapBackedClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
         this.store = new HashMap();
@@ -37,6 +44,14 @@ public class MapBackedClassLoader extends ClassLoader
                                 final Map store) {
         super( parentClassLoader );
         this.store = store;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        store    = (Map)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(store);
     }
 
     public void addResource(String className,
@@ -53,21 +68,16 @@ public class MapBackedClassLoader extends ClassLoader
 
     public void addClass(final String className,
                          byte[] bytes) {
-        synchronized ( this.store ) {     
-            this.store.put( convertResourcePathToClassName( className ),
-                            bytes );
-        }
+
+        this.store.put( convertResourcePathToClassName( className ),
+                        bytes );
     }
 
     public Class fastFindClass(final String name) {
         final Class clazz = findLoadedClass( name );
 
         if ( clazz == null ) {
-            byte[] clazzBytes = null;
-            synchronized ( this.store ) {            
-                clazzBytes = (byte[]) this.store.get( name );
-            }
-            
+            final byte[] clazzBytes = (byte[]) this.store.get( name );
             if ( clazzBytes != null ) {
                 return defineClass( name,
                                     clazzBytes,
@@ -115,12 +125,7 @@ public class MapBackedClassLoader extends ClassLoader
     }
 
     public InputStream getResourceAsStream(final String name) {
-        byte[] bytes = null;
-        synchronized ( this.store ) {            
-            bytes = (byte[]) this.store.get( name );
-        }
-        
-        
+        final byte[] bytes = (byte[]) this.store.get( name );
         if ( bytes != null ) {
             return new ByteArrayInputStream( bytes );
         } else {

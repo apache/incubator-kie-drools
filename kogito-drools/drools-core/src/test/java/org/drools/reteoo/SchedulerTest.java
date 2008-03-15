@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,6 +18,9 @@ package org.drools.reteoo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 
 import org.drools.Agenda;
 import org.drools.DroolsTestCase;
@@ -42,13 +45,13 @@ import org.drools.spi.Tuple;
 public class SchedulerTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext buildContext;
-    
+
     protected void setUp() throws Exception {
         ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
     }
-    
-    
+
+
     public void testScheduledActivation() throws Exception {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
         InternalWorkingMemory workingMemory = ( InternalWorkingMemory ) ruleBase.newStatefulSession();
@@ -64,7 +67,7 @@ public class SchedulerTest extends DroolsTestCase {
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -72,12 +75,19 @@ public class SchedulerTest extends DroolsTestCase {
                                  final WorkingMemory workingMemory) {
                 data.add( "tested" );
             }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         } );
 
         /* 1/10th of a second */
         final Duration duration = new Duration() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -128,7 +138,7 @@ public class SchedulerTest extends DroolsTestCase {
         /* 1/10th of a second */
         final Duration duration = new Duration() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -143,7 +153,7 @@ public class SchedulerTest extends DroolsTestCase {
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -162,6 +172,13 @@ public class SchedulerTest extends DroolsTestCase {
                                       (ReteooWorkingMemory) workingMemory );
                 }
                 data.add( "tested" );
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         } );
 
@@ -208,7 +225,7 @@ public class SchedulerTest extends DroolsTestCase {
         /* 1/10th of a second */
         final Duration duration = new Duration() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -224,7 +241,7 @@ public class SchedulerTest extends DroolsTestCase {
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
@@ -243,6 +260,13 @@ public class SchedulerTest extends DroolsTestCase {
                                       (ReteooWorkingMemory) workingMemory );
                 }
                 data.add( "tested" );
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         } );
 

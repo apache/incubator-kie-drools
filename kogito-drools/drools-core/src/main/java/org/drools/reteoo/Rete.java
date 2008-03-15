@@ -17,19 +17,19 @@ package org.drools.reteoo;
  */
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Externalizable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BaseNode;
-import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.common.DroolsObjectInput;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
@@ -37,6 +37,8 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
+import org.drools.util.ObjectHashMap;
+import org.drools.RuleBase;
 
 /**
  * The Rete-OO network.
@@ -59,7 +61,7 @@ import org.drools.util.Iterator;
  */
 public class Rete extends ObjectSource
     implements
-    Serializable,
+    Externalizable,
     ObjectSink {
     // ------------------------------------------------------------
     // Instance members
@@ -70,9 +72,13 @@ public class Rete extends ObjectSource
      */
     private static final long                     serialVersionUID = 400L;
 
-    private final Map<EntryPoint, EntryPointNode> entryPoints;
+    private Map<EntryPoint, EntryPointNode> entryPoints;
 
     private transient InternalRuleBase            ruleBase;
+
+    public Rete() {
+        this(null);
+    }
 
     // ------------------------------------------------------------
     // Constructors
@@ -82,12 +88,6 @@ public class Rete extends ObjectSource
         super( 0 );
         this.entryPoints = new HashMap<EntryPoint, EntryPointNode>();
         this.ruleBase = ruleBase;
-    }
-
-    private void readObject(ObjectInputStream stream) throws IOException,
-                                                     ClassNotFoundException {
-        stream.defaultReadObject();
-        this.ruleBase = ((DroolsObjectInputStream) stream).getRuleBase();
     }
 
     // ------------------------------------------------------------
@@ -109,12 +109,9 @@ public class Rete extends ObjectSource
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        EntryPoint entryPoint = context.getEntryPoint();
-        EntryPointNode node = this.entryPoints.get( entryPoint );
-        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(  entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
+        EntryPointNode node = this.entryPoints.get( context.getEntryPoint() );
         node.assertObject( handle,
                            context,
-                           typeConf,
                            workingMemory );
     }
 
@@ -130,12 +127,9 @@ public class Rete extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        EntryPoint entryPoint = context.getEntryPoint();
-        EntryPointNode node = this.entryPoints.get( entryPoint );
-        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(  entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
+        EntryPointNode node = this.entryPoints.get( context.getEntryPoint() );
         node.retractObject( handle,
                             context,
-                            typeConf,
                             workingMemory );
     }
 
@@ -167,10 +161,6 @@ public class Rete extends ObjectSource
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 
-    public void networkUpdated() {
-        // nothing to do
-    }
-    
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
@@ -178,7 +168,7 @@ public class Rete extends ObjectSource
         final EntryPointNode entryPointNode = (EntryPointNode) node;
         removeObjectSink( entryPointNode );
     }
-    
+
     public EntryPointNode getEntryPointNode( final EntryPoint entryPoint ) {
         return this.entryPoints.get( entryPoint );
     }
@@ -230,4 +220,15 @@ public class Rete extends ObjectSource
         throw new UnsupportedOperationException( "ORete has no Object memory" );
     }
 
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(entryPoints);
+        out.writeObject(ruleBase);
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        entryPoints = (Map<EntryPoint, EntryPointNode>) in.readObject();
+        ruleBase    = (InternalRuleBase)in.readObject();
+    }
 }

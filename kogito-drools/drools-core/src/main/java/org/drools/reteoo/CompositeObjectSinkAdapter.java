@@ -1,8 +1,11 @@
 package org.drools.reteoo;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Externalizable;
 
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
@@ -40,7 +43,7 @@ public class CompositeObjectSinkAdapter
 
     ObjectHashMap             hashedSinkMap;
 
-    private final int         alphaNodeHashingThreshold;
+    private int         alphaNodeHashingThreshold;
 
     public CompositeObjectSinkAdapter() {
         this( 3 );
@@ -48,6 +51,22 @@ public class CompositeObjectSinkAdapter
 
     public CompositeObjectSinkAdapter(final int alphaNodeHashingThreshold) {
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        otherSinks      = (ObjectSinkNodeList)in.readObject();
+        hashableSinks   = (ObjectSinkNodeList)in.readObject();
+        hashedFieldIndexes  = (LinkedList)in.readObject();
+        hashedSinkMap       = (ObjectHashMap)in.readObject();
+        alphaNodeHashingThreshold   = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(otherSinks);
+        out.writeObject(hashableSinks);
+        out.writeObject(hashedFieldIndexes);
+        out.writeObject(hashedSinkMap);
+        out.writeInt(alphaNodeHashingThreshold);
     }
 
     public void addObjectSink(final ObjectSink sink) {
@@ -282,7 +301,7 @@ public class CompositeObjectSinkAdapter
         // if the field is hashed then it builds the hashkey to return the correct sink for the current objects slot's
         // value, one object may have multiple fields indexed.
         if ( this.hashedFieldIndexes != null ) {
-            // Iterate the FieldIndexes to see if any are hashed        
+            // Iterate the FieldIndexes to see if any are hashed
             for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
                 if ( !fieldIndex.isHashed() ) {
                     continue;
@@ -330,7 +349,7 @@ public class CompositeObjectSinkAdapter
         if ( this.hashedFieldIndexes != null ) {
             if ( useHash && this.hashedSinkMap != null ) {
                 final Object object = handle.getObject();
-                // Iterate the FieldIndexes to see if any are hashed        
+                // Iterate the FieldIndexes to see if any are hashed
                 for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = (FieldIndex) fieldIndex.getNext() ) {
                     // this field is hashed so set the existing hashKey and see if there is a sink for it
                     if ( !fieldIndex.isHashed() ) {
@@ -415,7 +434,7 @@ public class CompositeObjectSinkAdapter
 
     public static class HashKey
         implements
-        Serializable {
+        Externalizable {
         private static final long serialVersionUID = 400L;
 
         private static final byte OBJECT           = 1;
@@ -452,6 +471,28 @@ public class CompositeObjectSinkAdapter
             this.setValue( index,
                            value,
                            extractor );
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            index   = in.readInt();
+            type    = in.readByte();
+            ovalue  = in.readObject();
+            lvalue  = in.readLong();
+            bvalue  = in.readBoolean();
+            dvalue  = in.readDouble();
+            isNull  = in.readBoolean();
+            hashCode   = in.readInt();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(index);
+            out.writeByte(type);
+            out.writeObject(ovalue);
+            out.writeLong(lvalue);
+            out.writeBoolean(bvalue);
+            out.writeDouble(dvalue);
+            out.writeBoolean(isNull);
+            out.writeInt(hashCode);
         }
 
         public int getIndex() {
@@ -675,7 +716,7 @@ public class CompositeObjectSinkAdapter
         implements
         LinkedListNode {
         private static final long serialVersionUID = 400L;
-        private final int         index;
+        private int         index;
         private FieldExtractor    fieldExtactor;
 
         private int               count;
@@ -685,10 +726,32 @@ public class CompositeObjectSinkAdapter
         private LinkedListNode    previous;
         private LinkedListNode    next;
 
+        public FieldIndex() {
+
+        }
+
         public FieldIndex(final int index,
                           final FieldExtractor fieldExtractor) {
             this.index = index;
             this.fieldExtactor = fieldExtractor;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            index   = in.readInt();
+            fieldExtactor  = (FieldExtractor)in.readObject();
+            count   = in.readInt();
+            hashed  = in.readBoolean();
+            previous    = (LinkedListNode)in.readObject();
+            next        = (LinkedListNode)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(index);
+            out.writeObject(fieldExtactor);
+            out.writeInt(count);
+            out.writeBoolean(hashed);
+            out.writeObject(previous);
+            out.writeObject(next);
         }
 
         public FieldExtractor getFieldExtractor() {

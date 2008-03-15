@@ -2,15 +2,24 @@ package org.drools.facttemplates;
 
 import org.drools.base.ValueType;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 public class FieldTemplateImpl
     implements
-    FieldTemplate {
+    FieldTemplate, Externalizable {
 
     private static final long serialVersionUID = 400L;
 
-    private final String      name;
-    private final int         index;
-    private final ValueType   valueType;
+    private String      name;
+    private int         index;
+    private ValueType   valueType;
+
+    public FieldTemplateImpl() {
+
+    }
 
     public FieldTemplateImpl(final String name,
                              final int index,
@@ -20,6 +29,19 @@ public class FieldTemplateImpl
         this.valueType = ValueType.determineValueType( clazz );
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        name    = (String)in.readObject();
+        index   = in.readInt();
+        valueType   = (ValueType)in.readObject();
+        if (valueType != null)
+            valueType   = ValueType.determineValueType(valueType.getClassType());
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(name);
+        out.writeInt(index);
+        out.writeObject(valueType);
+    }
     /* (non-Javadoc)
      * @see org.drools.facttemplates.FieldTemplate#getIndex()
      */

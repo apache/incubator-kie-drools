@@ -1,6 +1,7 @@
 package org.drools.spi;
 
 import java.io.Serializable;
+import java.io.Externalizable;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -10,7 +11,7 @@ import org.drools.rule.Declaration;
 
 public interface Restriction
     extends
-    Serializable,
+    Externalizable,
     Cloneable {
     Declaration[] getRequiredDeclarations();
 
@@ -30,7 +31,7 @@ public interface Restriction
     /**
      * A restriction may be required to replace an old
      * declaration object by a new updated one
-     * 
+     *
      * @param oldDecl
      * @param newDecl
      */

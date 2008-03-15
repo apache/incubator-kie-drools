@@ -2,13 +2,13 @@ package org.drools.reteoo;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,11 +37,15 @@ import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+import java.io.IOException;
+
 public class LogicalAssertionTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext buildContext;
     private EntryPointNode entryPoint;
-    
+
     protected void setUp() throws Exception {
         ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
@@ -50,7 +54,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                               buildContext );
         this.entryPoint.attach();
     }
-    
+
     public void testSingleLogicalRelationship() throws Exception {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
@@ -77,13 +81,20 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -180,13 +191,20 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
         rule1.setConsequence( consequence );
@@ -226,9 +244,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         logicalHandle1 = workingMemory.insert( logicalString1 );
         logicalHandle2 = workingMemory.insert( logicalString2 );
 
-        // If assert behavior in working memory is IDENTITY, 
-        // returned handles must not be the same 
-        if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY == ((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour() ) {
+        // If assert behavior in working memory is IDENTITY,
+        // returned handles must not be the same
+        if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY.equals(((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour() )) {
 
             assertNotSame( logicalHandle1,
                            logicalHandle2 );
@@ -241,7 +259,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     /**
      * This tests that Stated asserts always take precedent
-     * 
+     *
      * @throws Exception
      */
     public void testStatedOverrideDiscard() throws Exception {
@@ -270,13 +288,20 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
         rule1.setConsequence( consequence );
@@ -378,7 +403,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     /**
      * This tests that Stated asserts always take precedent
-     * 
+     *
      * @throws Exception
      */
     public void testStatedOverridePreserve() throws Exception {
@@ -388,9 +413,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setLogicalOverride( LogicalOverride.PRESERVE );
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase(conf);
-        
+
         BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
-        
+
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
@@ -398,7 +423,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                               rete,
                                                               buildContext );
         entryPoint.attach();
-        
+
         final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
                                                                   entryPoint,
                                                                   new ClassObjectType( String.class ),
@@ -417,13 +442,20 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
         rule1.setConsequence( consequence );
@@ -505,13 +537,20 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -607,13 +646,20 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
 
@@ -636,10 +682,10 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // Create the second justifer
         final Rule rule2 = new Rule( "test-rule2" );
         final RuleTerminalNode node2 = new RuleTerminalNode(  idGenerator.getNextId(),
-                                                             new MockTupleSource(  idGenerator.getNextId() ),
-                                                             rule2,
-                                                             rule2.getLhs(),
-                                                             buildContext  );
+                                                              new MockTupleSource(  idGenerator.getNextId() ),
+                                                              rule2,
+                                                              rule2.getLhs(),
+                                                              buildContext  );
         rule2.setConsequence( consequence );
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
@@ -709,8 +755,8 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     /**
      * This tests that when multiple not identical, but equals facts, are asserted
-     * into WM, only when all are removed, a logical assert will succeed 
-     * 
+     * into WM, only when all are removed, a logical assert will succeed
+     *
      * @throws Exception
      */
     public void testMultipleAssert() throws Exception {
@@ -739,13 +785,20 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
         rule1.setConsequence( consequence );
@@ -778,13 +831,13 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                           rule1,
                                                           tuple1.getActivation() );
 
-        // Checks that previous LogicalAssert failed 
+        // Checks that previous LogicalAssert failed
         assertNull( logicalHandle3 );
 
-        // If assert behavior in working memory is IDENTITY, 
-        // we need to retract object 2 times before being able to 
+        // If assert behavior in working memory is IDENTITY,
+        // we need to retract object 2 times before being able to
         // succesfully logically assert a new fact
-        if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY == ((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour() ) {
+        if ( RuleBaseConfiguration.AssertBehaviour.IDENTITY.equals(((ReteooRuleBase) ruleBase).getConfiguration().getAssertBehaviour()) ) {
 
             workingMemory.retract( statedHandle2 );
 
@@ -794,7 +847,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                    rule1,
                                                    tuple1.getActivation() );
 
-            // Checks that previous LogicalAssert failed 
+            // Checks that previous LogicalAssert failed
             assertNull( logicalHandle3 );
         }
 
@@ -813,7 +866,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
     }
 
     /**
-     * This test checks that truth maintenance is correctly maintained for modified objects 
+     * This test checks that truth maintenance is correctly maintained for modified objects
      */
     public void testMutableObject() {
         // create a RuleBase with a single ObjectTypeNode we attach a
@@ -840,13 +893,20 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final Consequence consequence = new Consequence() {
             /**
-             * 
+             *
              */
             private static final long serialVersionUID = 400L;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
                 // do nothing
+            }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
             }
         };
         rule1.setConsequence( consequence );

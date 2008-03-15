@@ -41,6 +41,10 @@ package org.drools.rule;
  */
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
@@ -53,13 +57,13 @@ import org.drools.spi.Extractor;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -75,33 +79,36 @@ import org.drools.spi.Extractor;
  */
 public class Declaration
     implements
-    Serializable,
+    Externalizable,
     Cloneable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 400L;
 
     /** The identifier for the variable. */
-    private final String      identifier;
+    private String      identifier;
 
-    private final Extractor   extractor;
+    private Extractor   extractor;
 
     private Pattern           pattern;
 
-    private final boolean     internalFact;
+    private boolean     internalFact;
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public Declaration() {
+        this(null, null, null);
+    }
 
     /**
      * Construct.
-     * 
+     *
      * @param identifier
      *            The name of the variable.
      * @param objectType
@@ -120,7 +127,7 @@ public class Declaration
 
     /**
      * Construct.
-     * 
+     *
      * @param identifier
      *            The name of the variable.
      * @param objectType
@@ -141,13 +148,26 @@ public class Declaration
         this.internalFact = internalFact;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        identifier  = (String)in.readObject();
+        extractor   = (Extractor)in.readObject();
+        pattern     = (Pattern)in.readObject();
+        internalFact    = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(identifier);
+        out.writeObject(extractor);
+        out.writeObject(pattern);
+        out.writeBoolean(internalFact);
+    }
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
 
     /**
      * Retrieve the variable's identifier.
-     * 
+     *
      * @return The variable's identifier.
      */
     public String getIdentifier() {
@@ -156,7 +176,7 @@ public class Declaration
 
     /**
      * Retrieve the <code>ValueType</code>.
-     * 
+     *
      * @return The ValueType.
      */
     public ValueType getValueType() {
@@ -165,7 +185,7 @@ public class Declaration
 
     /**
      * Returns the index of the pattern
-     * 
+     *
      * @return the pattern
      */
     public Pattern getPattern() {
@@ -186,7 +206,7 @@ public class Declaration
 
     /**
      * Returns the Extractor expression
-     * 
+     *
      * @return
      */
     public Extractor getExtractor() {
@@ -287,7 +307,7 @@ public class Declaration
                 throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
                                                   e );
             }
-        } 
+        }
         return this.extractor.getNativeReadMethod();
     }
 
@@ -323,7 +343,7 @@ public class Declaration
     protected boolean isInternalFact() {
         return internalFact;
     }
-    
+
     public Object clone() {
         return new Declaration( this.identifier, this.extractor, this.pattern );
     }

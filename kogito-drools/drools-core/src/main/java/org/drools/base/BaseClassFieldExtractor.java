@@ -2,13 +2,13 @@ package org.drools.base;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,10 @@ import org.drools.spi.FieldExtractor;
 import org.drools.util.ClassUtils;
 import org.drools.util.asm.ClassFieldInspector;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 /**
  * This is the supertype for the ASM generated classes for accessing a field.
  * @author Alexander Bagerman
@@ -28,15 +32,19 @@ import org.drools.util.asm.ClassFieldInspector;
 abstract public class BaseClassFieldExtractor
     implements
     FieldExtractor {
-    private final int       index;
+    private int       index;
 
-    private final Class     fieldType;
+    private Class     fieldType;
 
-    private final ValueType valueType;
+    private ValueType valueType;
+
+    public BaseClassFieldExtractor() {
+
+    }
 
     /**
      * This constructor is not supposed to be used from outside the class hirarchy
-     * 
+     *
      * @param index
      * @param fieldType
      * @param valueType
@@ -51,7 +59,7 @@ abstract public class BaseClassFieldExtractor
 
     /**
      * This is the constructor to be used
-     * 
+     *
      * @param clazz
      * @param fieldName
      */
@@ -65,6 +73,20 @@ abstract public class BaseClassFieldExtractor
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        index   = in.readInt();
+        fieldType   = (Class)in.readObject();
+        valueType   = (ValueType)in.readObject();
+        if (valueType != null)
+            valueType   = ValueType.determineValueType(valueType.getClassType());
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(index);
+        out.writeObject(fieldType);
+        out.writeObject(valueType);
     }
 
     public int getIndex() {
@@ -82,11 +104,11 @@ abstract public class BaseClassFieldExtractor
     public ValueType getValueType() {
         return this.valueType;
     }
-    
+
     public boolean isGlobal() {
         return false;
     }
-    
+
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;

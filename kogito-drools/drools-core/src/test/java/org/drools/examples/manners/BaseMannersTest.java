@@ -2,13 +2,13 @@ package org.drools.examples.manners;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -144,15 +146,15 @@ public abstract class BaseMannersTest extends TestCase {
      *            drools.assert( new Seating( count.getValue(), 1, true, 1, guestName, 1, guestName) );
      *            drools.assert( new Path( count.getValue(), 1, guestName ) );
      *            count.setCount(  count.getValue() + 1 );
-     *   
+     *
      *            System.err.println( &quot;seat 1 &quot; + guest.getName() + &quot; );
-     *   
+     *
      *            context.setPath( Context.ASSIGN_SEATS );
      *        }
-     *    } 
+     *    }
      * </pre>
-     * 
-     * 
+     *
+     *
      * @return
      * @throws IntrospectionException
      * @throws InvalidRuleException
@@ -237,7 +239,7 @@ public abstract class BaseMannersTest extends TestCase {
                     context.setState( Context.ASSIGN_SEATS );
 //                    drools.update( tuple.get( contextDeclaration ),
 //                            context );
-                    
+
                     drools.modifyInsert( context );
 
                     System.err.println( "assign first seat :  " + seating + " : " + path );
@@ -248,6 +250,13 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         rule.setConsequence( consequence );
@@ -264,16 +273,16 @@ public abstract class BaseMannersTest extends TestCase {
      *       Sex rightGuestSex;
      *       Hobby rightGuestHobby;
      *       Count count;
-     *       
+     *
      *       when {
      *           context : Context( state == Context.ASSIGN_SEATS )
-     *           Seating( seatingId:id, seatingPid:pid, pathDone == true 
+     *           Seating( seatingId:id, seatingPid:pid, pathDone == true
      *                    seatingRightSeat:rightSeat seatingRightGuestName:rightGuestName )
      *           Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
      *           Guest( leftGuestName:name , sex != rightGuestSex, hobby == rightGuestHobby )
-     *    
+     *
      *           count : Count()
-     *    
+     *
      *           not ( Path( id == seatingId, guestName == leftGuestName) )
      *           not ( Chosen( id == seatingId, guestName == leftGuestName, hobby == rightGuestHobby) )
      *       } then {
@@ -281,15 +290,15 @@ public abstract class BaseMannersTest extends TestCase {
      *           drools.assert( new Seating( coung.getValue(), rightSeat, rightSeatName, leftGuestName, newSeat, countValue, id, false );
      *           drools.assert( new Path( countValue, leftGuestName, newSeat );
      *           drools.assert( new Chosen( id, leftGuestName, rightGuestHobby ) );
-     *    
+     *
      *           System.err.println( &quot;seat &quot; + rightSeat + &quot; &quot; + rightSeatName + &quot; &quot; + leftGuestName );
-     *    
+     *
      *           count.setCount(  countValue + 1 );
      *           context.setPath( Context.MAKE_PATH );
      *       }
-     *    } 
+     *    }
      * </pre>
-     * 
+     *
      * @return
      * @throws IntrospectionException
      * @throws InvalidRuleException
@@ -459,7 +468,7 @@ public abstract class BaseMannersTest extends TestCase {
         // rightSeatName, leftGuestName, newSeat, countValue, id, false );
         // drools.assert( new Path( countValue, leftGuestName, newSeat );
         // drools.assert( new Chosen( id, leftGuestName, rightGuestHobby ) );
-        // 
+        //
         // System.err.println( "seat " + rightSeat + " " + rightSeatName + " " +
         // leftGuestName );
         //
@@ -514,7 +523,7 @@ public abstract class BaseMannersTest extends TestCase {
                     //                        drools.retractObject( tuple.getFactHandleForDeclaration( countDeclaration ) );
                     //                    } else {
                     //                        drools.update( tuple.getFactHandleForDeclaration( countDeclaration ),
-                    //                                             count );                        
+                    //                                             count );
                     //                    }
 
                     drools.update( tuple.get( countDeclaration ),
@@ -531,6 +540,13 @@ public abstract class BaseMannersTest extends TestCase {
                     throw new ConsequenceException( e );
                 }
             }
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         rule.setConsequence( consequence );
@@ -544,7 +560,7 @@ public abstract class BaseMannersTest extends TestCase {
      *        Context context;
      *        int seatingId, seatingPid, pathSeat;
      *        String pathGuestName;
-     *   
+     *
      *        when {
      *            Context( state == Context.MAKE_PATH )
      *            Seating( seatingId:id, seatingPid:pid, pathDone == false )
@@ -552,11 +568,11 @@ public abstract class BaseMannersTest extends TestCase {
      *            (not Path( id == seatingId, guestName == pathGuestName )
      *        } else {
      *            drools.assert( new Path( seatingId, pathSeat, pathGuestName ) );
-     *   
+     *
      *        }
-     *    } 
+     *    }
      * </pre>
-     * 
+     *
      * @return
      * @throws IntrospectionException
      * @throws InvalidRuleException
@@ -676,6 +692,13 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         rule.setConsequence( consequence );
@@ -684,20 +707,20 @@ public abstract class BaseMannersTest extends TestCase {
     }
 
     /**
-     * 
+     *
      * <pre>
-     * rule pathDone() { 
-     *     Context context; Seating seating; 
-     *     when { 
-     *         context : Context( state == Context.MAKE_PATH ) 
-     *         seating : Seating( pathDone == false ) 
-     *     } then { 
-     *         seating.setPathDone( true ); 
-     *         context.setName( Context.CHECK_DONE ); 
-     *     } 
+     * rule pathDone() {
+     *     Context context; Seating seating;
+     *     when {
+     *         context : Context( state == Context.MAKE_PATH )
+     *         seating : Seating( pathDone == false )
+     *     } then {
+     *         seating.setPathDone( true );
+     *         context.setName( Context.CHECK_DONE );
+     *     }
      * }
      * </pre>
-     * 
+     *
      * @return
      * @throws IntrospectionException
      * @throws InvalidRuleException
@@ -770,6 +793,13 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         rule.setConsequence( consequence );
@@ -779,18 +809,18 @@ public abstract class BaseMannersTest extends TestCase {
 
     /**
      * <pre>
-     * rule areWeDone() { 
-     *     Context context; LastSeat lastSear; 
-     *     when { 
-     *         context : Context( state == Context.CHECK_DONE ) 
+     * rule areWeDone() {
+     *     Context context; LastSeat lastSear;
+     *     when {
+     *         context : Context( state == Context.CHECK_DONE )
      *         LastSeat( lastSeat: seat )
-     *         Seating( rightSeat == lastSeat ) 
-     *     } then { 
-     *         context.setState(Context.PRINT_RESULTS ); 
-     *     } 
+     *         Seating( rightSeat == lastSeat )
+     *     } then {
+     *         context.setState(Context.PRINT_RESULTS );
+     *     }
      * }
      * </pre>
-     * 
+     *
      * @return
      * @throws IntrospectionException
      * @throws InvalidRuleException
@@ -863,6 +893,13 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         rule.setConsequence( consequence );
@@ -872,13 +909,13 @@ public abstract class BaseMannersTest extends TestCase {
 
     /**
      * <pre>
-     * rule continue() { 
-     *     Context context; 
-     *     when { 
-     *         context : Context( state == Context.CHECK_DONE ) 
-     *     } then { 
-     *         context.setState( Context.ASSIGN_SEATS ); 
-     *     } 
+     * rule continue() {
+     *     Context context;
+     *     when {
+     *         context : Context( state == Context.CHECK_DONE )
+     *     } then {
+     *         context.setState( Context.ASSIGN_SEATS );
+     *     }
      * }
      * </pre>
      * @return
@@ -928,6 +965,13 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         rule.setConsequence( consequence );
@@ -937,15 +981,15 @@ public abstract class BaseMannersTest extends TestCase {
 
     /**
      * <pre>
-     * rule all_done() { 
-     *     Context context; 
-     *     when { 
-     *         context : Context( state == Context.PRINT_RESULTS ) 
+     * rule all_done() {
+     *     Context context;
+     *     when {
+     *         context : Context( state == Context.PRINT_RESULTS )
      *     } then {
-     *     } 
+     *     }
      * }
      * </pre>
-     * 
+     *
      * @return
      * @throws IntrospectionException
      * @throws InvalidRuleException
@@ -969,7 +1013,7 @@ public abstract class BaseMannersTest extends TestCase {
         final Declaration contextDeclaration = rule.getDeclaration( "context" );
 
         // ------------
-        //     
+        //
         // ------------
         final Consequence consequence = new Consequence() {
 
@@ -982,6 +1026,13 @@ public abstract class BaseMannersTest extends TestCase {
                 }
             }
 
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+            }
+
+            public void writeExternal(ObjectOutput out) throws IOException {
+
+            }
         };
 
         rule.setConsequence( consequence );

@@ -3,14 +3,25 @@ package org.drools.conflict;
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectInput;
+
 public class DepthConflictResolver
     implements
-    ConflictResolver {
+    ConflictResolver, Externalizable {
     /**
-     * 
+     *
      */
     private static final long                 serialVersionUID = 400L;
     public static final DepthConflictResolver INSTANCE         = new DepthConflictResolver();
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+    }
 
     public static ConflictResolver getInstance() {
         return DepthConflictResolver.INSTANCE;
@@ -30,7 +41,7 @@ public class DepthConflictResolver
         final int s1 = lhs.getSalience();
         final int s2 = rhs.getSalience();
 
-        if ( s1 > s2 ) {                        
+        if ( s1 > s2 ) {
             return -1;
         } else if ( s1 < s2 ) {
             return 1;

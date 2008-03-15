@@ -17,6 +17,10 @@ package org.drools.rule;
  */
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
@@ -41,7 +45,7 @@ import org.drools.spi.Salience;
  */
 public class Rule
     implements
-    Serializable,
+    Externalizable,
     Dialectable {
     /**
      *
@@ -56,7 +60,7 @@ public class Rule
     private String            pkg;
 
     /** Name of the rule. */
-    private final String      name;
+    private String      name;
 
     /** Salience value. */
     private Salience               salience;
@@ -104,9 +108,60 @@ public class Rule
 
     private boolean           enabled;
 
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(pkg);
+        out.writeObject(name);
+        out.writeObject(salience);
+        out.writeBoolean(dirty);
+        out.writeObject(declarations);
+        out.writeObject(declarationArray);
+        out.writeObject(lhsRoot);
+        out.writeObject(dialect);
+        out.writeObject(agendaGroup);
+        out.writeObject(consequence);
+        out.writeObject(duration);
+        out.writeLong(loadOrder);
+        out.writeBoolean(noLoop);
+        out.writeBoolean(autoFocus);
+        out.writeObject(activationGroup);
+        out.writeObject(ruleFlowGroup);
+        out.writeBoolean(lockOnActive);
+        out.writeBoolean(hasLogicalDependency);
+        out.writeBoolean(semanticallyValid);
+        out.writeObject(dateEffective);
+        out.writeObject(dateExpires);
+        out.writeBoolean(enabled);
+    }
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        pkg = (String)in.readObject();
+        name = (String)in.readObject();
+        salience = (Salience)in.readObject();
+        dirty = in.readBoolean();
+        declarations    = (Map)in.readObject();
+        declarationArray = (Declaration[])in.readObject();
+        lhsRoot = (GroupElement)in.readObject();
+        dialect = (String)in.readObject();
+        agendaGroup = (String)in.readObject();
+        consequence = (Consequence)in.readObject();
+        duration = (Duration)in.readObject();
+        loadOrder   = in.readLong();
+        noLoop = in.readBoolean();
+        autoFocus = in.readBoolean();
+        activationGroup = (String)in.readObject();
+        ruleFlowGroup = (String)in.readObject();
+        lockOnActive = in.readBoolean();
+        hasLogicalDependency = in.readBoolean();
+        semanticallyValid = in.readBoolean();
+        dateEffective   = (Calendar)in.readObject();
+        dateExpires = (Calendar)in.readObject();
+        enabled = in.readBoolean();
+    }
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
+    public Rule() {
+
+    }
 
     /**
      * Construct a

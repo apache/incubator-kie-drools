@@ -2,13 +2,13 @@ package org.drools.common;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,10 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,16 +27,16 @@ import org.drools.base.ShadowProxy;
 
 /**
  * Upon instantiation the EqualityKey caches the first Object's hashCode
- * this can never change. The EqualityKey has an internal datastructure 
+ * this can never change. The EqualityKey has an internal datastructure
  * which references all the handles which are equal. It also records
  * Whether the referenced facts are JUSTIFIED or STATED
- * 
+ *
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  *
  */
 public class EqualityKey
     implements
-    Serializable {
+    Externalizable {
     public final static int    STATED    = 1;
     public final static int    JUSTIFIED = 2;
 
@@ -44,10 +47,14 @@ public class EqualityKey
     private List               instances;
 
     /** This is cached in the constructor from the first added Object */
-    private final int          hashCode;
+    private int          hashCode;
 
     /** Tracks whether this Fact is Stated or Justified */
     private int                status;
+
+    public EqualityKey() {
+
+    }
 
     public EqualityKey(final InternalFactHandle handle) {
         this.handle = handle;
@@ -59,6 +66,20 @@ public class EqualityKey
         this.handle = handle;
         this.hashCode = handle.getObjectHashCode();
         this.status = status;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        handle      = (InternalFactHandle)in.readObject();
+        instances   = (List)in.readObject();
+        hashCode    = in.readInt();
+        status      = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(handle);
+        out.writeObject(instances);
+        out.writeInt(hashCode);
+        out.writeInt(status);
     }
 
     public InternalFactHandle getFactHandle() {
@@ -84,7 +105,7 @@ public class EqualityKey
                 this.handle = (InternalFactHandle) this.instances.remove( 0 );
                 if ( this.instances.isEmpty() ) {
                     this.instances = null;
-                }                
+                }
             }
         } else {
             this.instances.remove( handle );
@@ -142,10 +163,10 @@ public class EqualityKey
     }
 
     /**
-     * Equality for the EqualityKey means two things. It returns 
+     * Equality for the EqualityKey means two things. It returns
      * true if the object is also an EqualityKey the of the same
      * the same identity as this. It also returns true if the object
-     * is equal to the head FactHandle's referenced Object. 
+     * is equal to the head FactHandle's referenced Object.
      */
     public boolean equals(final Object object) {
         if ( object == null ) {
@@ -155,7 +176,7 @@ public class EqualityKey
         if ( object instanceof EqualityKey ) {
             return this == object;
         }
-        
+
         return (this.handle.getObject().equals( object ));
     }
 

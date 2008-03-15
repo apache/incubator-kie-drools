@@ -2,13 +2,13 @@ package org.drools;
 
 /*
  * Copyright 2005 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,24 +18,24 @@ package org.drools;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
+import java.io.Externalizable;
 
 import org.drools.rule.Package;
 
 /**
  * Active collection of <code>Rule</code>s.
- * 
+ *
  * <p>
  * From a <code>RuleBase</code> many <code>WorkingMemory</code> rule
  * sessions may be instantiated. Additionally, it may be inspected to determine
  * which <code>Package</code> s it contains.
  * </p>
- * 
+ *
  * @see WorkingMemory
  */
 public interface RuleBase
     extends
-    Serializable,
+    Externalizable,
     RuleBaseEventManager {
 
     public static final int RETEOO = 1;
@@ -46,15 +46,15 @@ public interface RuleBase
      * Create a new <code>WorkingMemory</code> session for this
      * <code>RuleBase</code>. By default the RuleBase retains a
      * weak reference to returned WorkingMemory.
-     * 
+     *
      * <p>
      * The created <code>WorkingMemory</code> uses the default conflict
      * resolution strategy.
      * </p>
-     * 
+     *
      * @see WorkingMemory
      * @see org.drools.conflict.DefaultConflictResolver
-     * 
+     *
      * @return A newly initialized <code>WorkingMemory</code>.
      */
     StatefulSession newStatefulSession();
@@ -63,15 +63,15 @@ public interface RuleBase
      * Create a new <code>WorkingMemory</code> session for this
      * <code>RuleBase</code>. Optionally the RuleBase retains a
      * weak reference to returned WorkingMemory.
-     * 
+     *
      * <p>
      * The created <code>WorkingMemory</code> uses the default conflict
      * resolution strategy.
      * </p>
-     * 
+     *
      * @see WorkingMemory
      * @see org.drools.conflict.DefaultConflictResolver
-     * 
+     *
      * @return A newly initialized <code>WorkingMemory</code>.
      */
     StatefulSession newStatefulSession(boolean keepReference);
@@ -81,23 +81,23 @@ public interface RuleBase
      * pass as an InputStream. If the reference is a byte[] then
      * wrap with new ByteArrayInputStream. By default the RuleBase retains a
      * weak reference to returned WorkingMemory.
-     * 
+     *
      * <p>
      * The created <code>WorkingMemory</code> uses the default conflict
      * resolution strategy.
      * </p>
-     * 
+     *
      * @see WorkingMemory
      * @see org.drools.conflict.DefaultConflictResolver
-     * 
+     *
      * @return A serialised initialized <code>WorkingMemory</code>.
      */
     StatefulSession newStatefulSession(InputStream stream) throws IOException,
                                                           ClassNotFoundException;
-    
+
     /**
      * Creates a new temporal session using the defined clock type.
-     * 
+     *
      * @param clockType
      * @return
      */
@@ -105,7 +105,7 @@ public interface RuleBase
 
     /**
      * Creates a new temporal session using the defined clock type.
-     * 
+     *
      * @param keepReference maintains a reference in the rulebase to the created session
      * @param clockType
      * @return
@@ -117,15 +117,15 @@ public interface RuleBase
      * pass as an InputStream. If the reference is a byte[] then
      * wrap with new ByteArrayInputStream. Optionally the RuleBase retains a
      * weak reference to returned WorkingMemory.
-     * 
+     *
      * <p>
      * The created <code>WorkingMemory</code> uses the default conflict
      * resolution strategy.
      * </p>
-     * 
+     *
      * @see WorkingMemory
      * @see org.drools.conflict.DefaultConflictResolver
-     * 
+     *
      * @return A serialised initialized <code>WorkingMemory</code>.
      */
     StatefulSession newStatefulSession(InputStream stream,
@@ -137,15 +137,15 @@ public interface RuleBase
     Package getPackage(String name);
 
     void addPackage(Package pkg);
-    
+
     /**
-     * This locks the current RuleBase and all there referenced StatefulSessions. This should be 
+     * This locks the current RuleBase and all there referenced StatefulSessions. This should be
      * used when there is a number of dynamic RuleBase changes you wish to make, but cannot have any normal
      * WorkingMemory operations occuring inbetween.
      *
      */
     void lock();
-    
+
     /**
      * Unlocks the RuleBase and all of the referenced StatefulSessions.
      *
@@ -153,13 +153,13 @@ public interface RuleBase
     void unlock();
 
     /**
-     * Returns the number of additive operations applied since the last lock() was obtained 
+     * Returns the number of additive operations applied since the last lock() was obtained
      * @return
      */
     int getAdditionsSinceLock();
 
     /**
-     * Returns the number of removal operations applied since the last lock() was obtained 
+     * Returns the number of removal operations applied since the last lock() was obtained
      * @return
      */
     int getRemovalsSinceLock();

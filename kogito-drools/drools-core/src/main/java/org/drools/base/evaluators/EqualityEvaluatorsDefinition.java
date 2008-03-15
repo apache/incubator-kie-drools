@@ -18,6 +18,10 @@
 package org.drools.base.evaluators;
 
 import java.util.Date;
+import java.util.Map;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ShadowProxy;
@@ -95,6 +99,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     };
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        evaluators  = (EvaluatorCache)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(evaluators);
+    }
+
     /**
      * @inheridDoc
      */
@@ -143,12 +155,12 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
      *  *********************************************************
      */
 
-    static class ArrayEqualEvaluator extends BaseEvaluator {
+    public static class ArrayEqualEvaluator extends BaseEvaluator {
 
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ArrayEqualEvaluator();
 
-        private ArrayEqualEvaluator() {
+        public ArrayEqualEvaluator() {
             super( ValueType.ARRAY_TYPE,
                    Operator.EQUAL );
         }
@@ -209,14 +221,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     }
 
-    static class ArrayNotEqualEvaluator extends BaseEvaluator {
+    public static class ArrayNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ArrayNotEqualEvaluator();
 
-        private ArrayNotEqualEvaluator() {
+        public ArrayNotEqualEvaluator() {
             super( ValueType.ARRAY_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -276,14 +288,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class BigDecimalEqualEvaluator extends BaseEvaluator {
+    public static class BigDecimalEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalEqualEvaluator();
 
-        private BigDecimalEqualEvaluator() {
+        public BigDecimalEqualEvaluator() {
             super( ValueType.BIG_DECIMAL_TYPE,
                    Operator.EQUAL );
         }
@@ -292,7 +304,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getBigDecimalValue();
+            final Object value2 = object2.getValue();
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -335,14 +347,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     }
 
-    static class BigDecimalNotEqualEvaluator extends BaseEvaluator {
+    public static class BigDecimalNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalNotEqualEvaluator();
 
-        private BigDecimalNotEqualEvaluator() {
+        public BigDecimalNotEqualEvaluator() {
             super( ValueType.BIG_DECIMAL_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -351,7 +363,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getBigDecimalValue();
+            final Object value2 = object2.getValue();
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -400,7 +412,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerEqualEvaluator();
 
-        private BigIntegerEqualEvaluator() {
+        public BigIntegerEqualEvaluator() {
             super( ValueType.BIG_INTEGER_TYPE,
                    Operator.EQUAL );
         }
@@ -409,7 +421,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getBigIntegerValue();
+            final Object value2 = object2.getValue();
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -451,14 +463,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class BigIntegerNotEqualEvaluator extends BaseEvaluator {
+    public static class BigIntegerNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerNotEqualEvaluator();
 
-        private BigIntegerNotEqualEvaluator() {
+        public BigIntegerNotEqualEvaluator() {
             super( ValueType.BIG_INTEGER_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -467,7 +479,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getBigDecimalValue();
+            final Object value2 = object2.getValue();
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -509,12 +521,12 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class BooleanEqualEvaluator extends BaseEvaluator {
+    public static class BooleanEqualEvaluator extends BaseEvaluator {
 
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new BooleanEqualEvaluator();
 
-        private BooleanEqualEvaluator() {
+        public BooleanEqualEvaluator() {
             super( ValueType.PBOOLEAN_TYPE,
                    Operator.EQUAL );
         }
@@ -572,14 +584,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     }
 
-    static class BooleanNotEqualEvaluator extends BaseEvaluator {
+    public static class BooleanNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BooleanNotEqualEvaluator();
 
-        private BooleanNotEqualEvaluator() {
+        public BooleanNotEqualEvaluator() {
             super( ValueType.PBOOLEAN_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -635,14 +647,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class ByteEqualEvaluator extends BaseEvaluator {
+    public static class ByteEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteEqualEvaluator();
 
-        private ByteEqualEvaluator() {
+        public ByteEqualEvaluator() {
             super( ValueType.PBYTE_TYPE,
                    Operator.EQUAL );
         }
@@ -700,14 +712,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     }
 
-    static class ByteNotEqualEvaluator extends BaseEvaluator {
+    public static class ByteNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteNotEqualEvaluator();
 
-        private ByteNotEqualEvaluator() {
+        public ByteNotEqualEvaluator() {
             super( ValueType.PBYTE_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -764,14 +776,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class CharacterEqualEvaluator extends BaseEvaluator {
+    public static class CharacterEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterEqualEvaluator();
 
-        private CharacterEqualEvaluator() {
+        public CharacterEqualEvaluator() {
             super( ValueType.PCHAR_TYPE,
                    Operator.EQUAL );
         }
@@ -828,14 +840,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class CharacterNotEqualEvaluator extends BaseEvaluator {
+    public static class CharacterNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterNotEqualEvaluator();
 
-        private CharacterNotEqualEvaluator() {
+        public CharacterNotEqualEvaluator() {
             super( ValueType.PCHAR_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -892,14 +904,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class DateEqualEvaluator extends BaseEvaluator {
+    public static class DateEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateEqualEvaluator();
 
-        private DateEqualEvaluator() {
+        public DateEqualEvaluator() {
             super( ValueType.DATE_TYPE,
                    Operator.EQUAL );
         }
@@ -965,14 +977,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     }
 
-    static class DateNotEqualEvaluator extends BaseEvaluator {
+    public static class DateNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateNotEqualEvaluator();
 
-        private DateNotEqualEvaluator() {
+        public DateNotEqualEvaluator() {
             super( ValueType.DATE_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -1037,14 +1049,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class DoubleEqualEvaluator extends BaseEvaluator {
+    public static class DoubleEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleEqualEvaluator();
 
-        private DoubleEqualEvaluator() {
+        public DoubleEqualEvaluator() {
             super( ValueType.PDOUBLE_TYPE,
                    Operator.EQUAL );
         }
@@ -1103,14 +1115,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class DoubleNotEqualEvaluator extends BaseEvaluator {
+    public static class DoubleNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleNotEqualEvaluator();
 
-        private DoubleNotEqualEvaluator() {
+        public DoubleNotEqualEvaluator() {
             super( ValueType.PDOUBLE_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -1171,14 +1183,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class FactTemplateEqualEvaluator extends BaseEvaluator {
+    public static class FactTemplateEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FactTemplateEqualEvaluator();
 
-        private FactTemplateEqualEvaluator() {
+        public FactTemplateEqualEvaluator() {
             super( ValueType.FACTTEMPLATE_TYPE,
                    Operator.EQUAL );
         }
@@ -1230,14 +1242,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     }
 
-    static class FactTemplateNotEqualEvaluator extends BaseEvaluator {
+    public static class FactTemplateNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FactTemplateNotEqualEvaluator();
 
-        private FactTemplateNotEqualEvaluator() {
+        public FactTemplateNotEqualEvaluator() {
             super( ValueType.FACTTEMPLATE_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -1288,12 +1300,12 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class FloatEqualEvaluator extends BaseEvaluator {
+    public static class FloatEqualEvaluator extends BaseEvaluator {
 
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatEqualEvaluator();
 
-        private FloatEqualEvaluator() {
+        public FloatEqualEvaluator() {
             super( ValueType.PFLOAT_TYPE,
                    Operator.EQUAL );
         }
@@ -1354,14 +1366,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class FloatNotEqualEvaluator extends BaseEvaluator {
+    public static class FloatNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatNotEqualEvaluator();
 
-        private FloatNotEqualEvaluator() {
+        public FloatNotEqualEvaluator() {
             super( ValueType.PFLOAT_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -1422,14 +1434,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class IntegerEqualEvaluator extends BaseEvaluator {
+    static public class IntegerEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerEqualEvaluator();
 
-        private IntegerEqualEvaluator() {
+        public IntegerEqualEvaluator() {
             super( ValueType.PINTEGER_TYPE,
                    Operator.EQUAL );
         }
@@ -1487,14 +1499,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     }
 
-    static class IntegerNotEqualEvaluator extends BaseEvaluator {
+    public static class IntegerNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerNotEqualEvaluator();
 
-        private IntegerNotEqualEvaluator() {
+        public IntegerNotEqualEvaluator() {
             super( ValueType.PINTEGER_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -1551,14 +1563,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class LongEqualEvaluator extends BaseEvaluator {
+    public static class LongEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongEqualEvaluator();
 
-        private LongEqualEvaluator() {
+        public LongEqualEvaluator() {
             super( ValueType.PLONG_TYPE,
                    Operator.EQUAL );
         }
@@ -1615,14 +1627,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class LongNotEqualEvaluator extends BaseEvaluator {
+    public static class LongNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongNotEqualEvaluator();
 
-        private LongNotEqualEvaluator() {
+        public LongNotEqualEvaluator() {
             super( ValueType.PLONG_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -1679,7 +1691,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class ObjectEqualEvaluator extends BaseEvaluator {
+    public static class ObjectEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
@@ -1687,7 +1699,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         public final static Evaluator INSTANCE         = new ObjectEqualEvaluator();
         private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();
 
-        private ObjectEqualEvaluator() {
+        public ObjectEqualEvaluator() {
             super( ValueType.OBJECT_TYPE,
                    Operator.EQUAL );
         }
@@ -1751,7 +1763,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     }
 
-    static class ObjectNotEqualEvaluator extends BaseEvaluator {
+    public static class ObjectNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
@@ -1759,7 +1771,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         public final static Evaluator INSTANCE         = new ObjectNotEqualEvaluator();
         private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();
 
-        private ObjectNotEqualEvaluator() {
+        public ObjectNotEqualEvaluator() {
             super( ValueType.OBJECT_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -1822,14 +1834,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class ShortEqualEvaluator extends BaseEvaluator {
+    public static class ShortEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortEqualEvaluator();
 
-        private ShortEqualEvaluator() {
+        public ShortEqualEvaluator() {
             super( ValueType.PSHORT_TYPE,
                    Operator.EQUAL );
         }
@@ -1886,14 +1898,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class ShortNotEqualEvaluator extends BaseEvaluator {
+    public static class ShortNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortNotEqualEvaluator();
 
-        private ShortNotEqualEvaluator() {
+        public ShortNotEqualEvaluator() {
             super( ValueType.PSHORT_TYPE,
                    Operator.NOT_EQUAL );
         }
@@ -1950,14 +1962,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class StringEqualEvaluator extends BaseEvaluator {
+    static public class StringEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringEqualEvaluator();
 
-        private StringEqualEvaluator() {
+        public StringEqualEvaluator() {
             super( ValueType.STRING_TYPE,
                    Operator.EQUAL );
         }
@@ -2009,14 +2021,14 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
     }
 
-    static class StringNotEqualEvaluator extends BaseEvaluator {
+    public static class StringNotEqualEvaluator extends BaseEvaluator {
         /**
          *
          */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotEqualEvaluator();
 
-        private StringNotEqualEvaluator() {
+        public StringNotEqualEvaluator() {
             super( ValueType.STRING_TYPE,
                    Operator.NOT_EQUAL );
         }
