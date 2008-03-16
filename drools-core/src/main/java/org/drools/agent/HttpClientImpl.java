@@ -11,36 +11,42 @@ import org.drools.rule.Package;
 
 public class HttpClientImpl implements IHttpClient {
 
-    
-    
-    
 
 
 
 
-    
-    
-    
+
+
+
+
+
+
     public LastUpdatedPing checkLastUpdated(URL url) throws IOException {
         URLConnection con = url.openConnection();
         HttpURLConnection httpCon = (HttpURLConnection) con;
         try {
             httpCon.setRequestMethod( "HEAD" );
-            
+
+
             String lm = httpCon.getHeaderField( "lastModified" );
             LastUpdatedPing ping = new LastUpdatedPing();
-            
+
             ping.responseMessage = httpCon.getHeaderFields().toString();
-            
+
             if (lm != null) {
                 ping.lastUpdated = Long.parseLong( lm );
+            } else {
+            	long httpLM = httpCon.getLastModified();
+            	if (httpLM > 0) {
+            		ping.lastUpdated = httpLM;
+            	}
             }
-            
+
             return ping;
-        } finally {        
+        } finally {
             httpCon.disconnect();
         }
-        
+
     }
 
     public Package fetchPackage(URL url) throws IOException, ClassNotFoundException {
@@ -49,28 +55,28 @@ public class HttpClientImpl implements IHttpClient {
         try {
             httpCon.setRequestMethod( "GET" );
             InputStream in = httpCon.getInputStream();
-            
+
             DroolsObjectInputStream oin = new DroolsObjectInputStream(in);
                 return (Package) oin.readObject();
-  
+
         } finally {
             httpCon.disconnect();
         }
     }
-    
+
     public static void main(String[] args) throws Exception {
         HttpClientImpl cl = new HttpClientImpl();
         URL url = new URL("http://localhost:8888/org.drools.brms.JBRMS/package/com.billasurf.manufacturing.plant/SNAP");
-        
-        
+
+
         LastUpdatedPing ping = cl.checkLastUpdated( url );
-        
-        
+
+
         Package p = cl.fetchPackage( url );
-        
-        
+
+
         System.err.println(ping);
         System.err.println( ping.isError() );
     }
-    
+
 }
