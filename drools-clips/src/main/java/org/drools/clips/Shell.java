@@ -3,18 +3,6 @@
  */
 package org.drools.clips;
 
-import java.io.PrintStream;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.FactHandle;
@@ -37,10 +25,22 @@ import org.drools.spi.GlobalResolver;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
 import org.mvel.ast.Function;
-import org.mvel.compiler.CompiledExpression;
 import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.debug.DebugTools;
-import org.mvel.util.CompilerTools;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.PrintStream;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class Shell
     implements
@@ -109,10 +109,23 @@ public class Shell
         private Map<String, Object> vars;
         private GlobalResolver      resolver;
 
+        public GlobalResolver2() {
+        }
+
         public GlobalResolver2(Map<String, Object> vars,
                                GlobalResolver resolver) {
             this.vars = vars;
             this.resolver = resolver;
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            vars    = (Map<String, Object>)in.readObject();
+            resolver    = (GlobalResolver)in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(vars);
+            out.writeObject(resolver);
         }
 
         public Object resolveGlobal(String identifier) {
