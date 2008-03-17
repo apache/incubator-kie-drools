@@ -17,9 +17,9 @@
 package org.drools;
 
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,96 +77,100 @@ import org.mvel.MVEL;
  * drools.consequenceExceptionHandler = <qualified class name>
  * drools.ruleBaseUpdateHandler = <qualified class name>
  * drools.sessionClock = <qualified class name>
- *
+ * drools.useStaticObjenesis = <false|true>
+ * 
  */
 public class RuleBaseConfiguration
     implements
     Externalizable {
-    private static final long                  serialVersionUID = 400L;
+    private static final long              serialVersionUID = 400L;
 
-    private ChainedProperties                  chainedProperties;
+    private ChainedProperties              chainedProperties;
 
-    private boolean                            immutable;
+    private boolean                        immutable;
 
-    private boolean                            sequential;
-    private SequentialAgenda                   sequentialAgenda;
+    private boolean                        sequential;
+    private SequentialAgenda               sequentialAgenda;
 
-    private boolean                            maintainTms;
-    private boolean                            removeIdentities;
-    private boolean                            shareAlphaNodes;
-    private boolean                            shareBetaNodes;
-    private boolean                            alphaMemory;
-    private int                                alphaNodeHashingThreshold;
-    private int                                compositeKeyDepth;
-    private boolean                            indexLeftBetaMemory;
-    private boolean                            indexRightBetaMemory;
-    private AssertBehaviour                    assertBehaviour;
-    private LogicalOverride                    logicalOverride;
-    private String                             executorService;
-    private ConsequenceExceptionHandler        consequenceExceptionHandler;
-    private String                             ruleBaseUpdateHandler;
-    private Class< ? extends SessionClock>     sessionClockClass;
+    private boolean                        maintainTms;
+    private boolean                        removeIdentities;
+    private boolean                        shareAlphaNodes;
+    private boolean                        shareBetaNodes;
+    private boolean                        alphaMemory;
+    private int                            alphaNodeHashingThreshold;
+    private int                            compositeKeyDepth;
+    private boolean                        indexLeftBetaMemory;
+    private boolean                        indexRightBetaMemory;
+    private AssertBehaviour                assertBehaviour;
+    private LogicalOverride                logicalOverride;
+    private String                         executorService;
+    private ConsequenceExceptionHandler    consequenceExceptionHandler;
+    private String                         ruleBaseUpdateHandler;
+    private Class< ? extends SessionClock> sessionClockClass;
 
-    private ConflictResolver                   conflictResolver;
+    private ConflictResolver               conflictResolver;
 
-    private boolean                            shadowProxy;
-    private Map                                shadowProxyExcludes;
-    private static final String                STAR             = "*";
+    private boolean                        shadowProxy;
+    private Map                            shadowProxyExcludes;
+    private boolean                        useStaticObjenesis;
 
-    private NodeInstanceFactoryRegistry processNodeInstanceFactoryRegistry;
+    private static final String            STAR             = "*";
 
-    private transient ClassLoader              classLoader;
+    private NodeInstanceFactoryRegistry    processNodeInstanceFactoryRegistry;
+
+    private transient ClassLoader          classLoader;
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(chainedProperties);
-        out.writeBoolean(immutable);
-        out.writeBoolean(sequential);
-        out.writeObject(sequentialAgenda);
-        out.writeBoolean(maintainTms);
-        out.writeBoolean(removeIdentities);
-        out.writeBoolean(shareAlphaNodes);
-        out.writeBoolean(shareBetaNodes);
-        out.writeBoolean(alphaMemory);
-        out.writeInt(alphaNodeHashingThreshold);
-        out.writeInt(compositeKeyDepth);
-        out.writeBoolean(indexLeftBetaMemory);
-        out.writeBoolean(indexRightBetaMemory);
-        out.writeObject(assertBehaviour);
-        out.writeObject(logicalOverride);
-        out.writeObject(executorService);
-        out.writeObject(consequenceExceptionHandler);
-        out.writeObject(ruleBaseUpdateHandler);
-        out.writeObject(sessionClockClass);
-        out.writeObject(conflictResolver);
-        out.writeBoolean(shadowProxy);
-        out.writeObject(shadowProxyExcludes);
-        out.writeObject(processNodeInstanceFactoryRegistry);
+        out.writeObject( chainedProperties );
+        out.writeBoolean( immutable );
+        out.writeBoolean( sequential );
+        out.writeObject( sequentialAgenda );
+        out.writeBoolean( maintainTms );
+        out.writeBoolean( removeIdentities );
+        out.writeBoolean( shareAlphaNodes );
+        out.writeBoolean( shareBetaNodes );
+        out.writeBoolean( alphaMemory );
+        out.writeInt( alphaNodeHashingThreshold );
+        out.writeInt( compositeKeyDepth );
+        out.writeBoolean( indexLeftBetaMemory );
+        out.writeBoolean( indexRightBetaMemory );
+        out.writeObject( assertBehaviour );
+        out.writeObject( logicalOverride );
+        out.writeObject( executorService );
+        out.writeObject( consequenceExceptionHandler );
+        out.writeObject( ruleBaseUpdateHandler );
+        out.writeObject( sessionClockClass );
+        out.writeObject( conflictResolver );
+        out.writeBoolean( shadowProxy );
+        out.writeObject( shadowProxyExcludes );
+        out.writeObject( processNodeInstanceFactoryRegistry );
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        chainedProperties   = (ChainedProperties)in.readObject();
-        immutable   = in.readBoolean();
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        chainedProperties = (ChainedProperties) in.readObject();
+        immutable = in.readBoolean();
         sequential = in.readBoolean();
-        sequentialAgenda    = (SequentialAgenda)in.readObject();
+        sequentialAgenda = (SequentialAgenda) in.readObject();
         maintainTms = in.readBoolean();
         removeIdentities = in.readBoolean();
         shareAlphaNodes = in.readBoolean();
         shareBetaNodes = in.readBoolean();
         alphaMemory = in.readBoolean();
-        alphaNodeHashingThreshold   = in.readInt();
-        compositeKeyDepth   = in.readInt();
+        alphaNodeHashingThreshold = in.readInt();
+        compositeKeyDepth = in.readInt();
         indexLeftBetaMemory = in.readBoolean();
         indexRightBetaMemory = in.readBoolean();
-        assertBehaviour = (AssertBehaviour)in.readObject();
-        logicalOverride = (LogicalOverride)in.readObject();
-        executorService = (String)in.readObject();
-        consequenceExceptionHandler = (ConsequenceExceptionHandler)in.readObject();
-        ruleBaseUpdateHandler   = (String)in.readObject();
-        sessionClockClass   = (Class< ? extends SessionClock>)in.readObject();
-        conflictResolver    = (ConflictResolver)in.readObject();
+        assertBehaviour = (AssertBehaviour) in.readObject();
+        logicalOverride = (LogicalOverride) in.readObject();
+        executorService = (String) in.readObject();
+        consequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
+        ruleBaseUpdateHandler = (String) in.readObject();
+        sessionClockClass = (Class< ? extends SessionClock>) in.readObject();
+        conflictResolver = (ConflictResolver) in.readObject();
         shadowProxy = in.readBoolean();
-        shadowProxyExcludes = (Map)in.readObject();
-        processNodeInstanceFactoryRegistry  = (NodeInstanceFactoryRegistry)in.readObject();
+        shadowProxyExcludes = (Map) in.readObject();
+        processNodeInstanceFactoryRegistry = (NodeInstanceFactoryRegistry) in.readObject();
     }
 
     /**
@@ -300,6 +304,8 @@ public class RuleBaseConfiguration
         setSessionClockClass( this.chainedProperties.getProperty( "drools.sessionClock",
                                                                   SessionPseudoClock.class.getName() ) );
 
+        setUseStaticObjenesis( Boolean.valueOf( this.chainedProperties.getProperty( "drools.useStaticObjenesis",
+                                                                                    "false" ) ).booleanValue() );
     }
 
     /**
@@ -570,7 +576,7 @@ public class RuleBaseConfiguration
                                                                                   RuleBaseConfiguration.class ) );
 
         Map<Class< ? extends Node>, NodeInstanceFactory> map = (Map<Class< ? extends Node>, NodeInstanceFactory>) MVEL.eval( content,
-                                                                                                                                           new HashMap() );
+                                                                                                                             new HashMap() );
 
         if ( map != null ) {
             for ( Entry<Class< ? extends Node>, NodeInstanceFactory> entry : map.entrySet() ) {
@@ -636,6 +642,15 @@ public class RuleBaseConfiguration
 
     public boolean isShadowProxy() {
         return this.shadowProxy;
+    }
+
+    public boolean isUseStaticObjenesis() {
+        return useStaticObjenesis;
+    }
+
+    public void setUseStaticObjenesis(boolean useStaticObjenesis) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.useStaticObjenesis = useStaticObjenesis;
     }
 
     public ClassLoader getClassLoader() {
@@ -747,27 +762,27 @@ public class RuleBaseConfiguration
 
         private int                         value;
 
-
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            value   = in.readInt();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            value = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(value);
+            out.writeInt( value );
         }
 
         public AssertBehaviour() {
 
         }
+
         private AssertBehaviour(final int value) {
             this.value = value;
         }
 
         public boolean equals(Object obj) {
-            if (obj == this)
-                return true;
-            else if (obj instanceof AssertBehaviour) {
-                AssertBehaviour that    = (AssertBehaviour)obj;
+            if ( obj == this ) return true;
+            else if ( obj instanceof AssertBehaviour ) {
+                AssertBehaviour that = (AssertBehaviour) obj;
 
                 return value == that.value;
             }
@@ -810,12 +825,13 @@ public class RuleBaseConfiguration
 
         private int                         value;
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            value   = in.readInt();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            value = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(value);
+            out.writeInt( value );
         }
 
         public LogicalOverride() {
@@ -848,11 +864,10 @@ public class RuleBaseConfiguration
         }
 
         public boolean equals(Object obj) {
-            if (obj == this) {
+            if ( obj == this ) {
                 return true;
-            }
-            else if (obj instanceof LogicalOverride) {
-                return value == ((LogicalOverride)obj).value;
+            } else if ( obj instanceof LogicalOverride ) {
+                return value == ((LogicalOverride) obj).value;
             }
             return false;
         }
@@ -872,12 +887,13 @@ public class RuleBaseConfiguration
 
         private int                          value;
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            value   = in.readInt();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            value = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt(value);
+            out.writeInt( value );
         }
 
         public SequentialAgenda() {

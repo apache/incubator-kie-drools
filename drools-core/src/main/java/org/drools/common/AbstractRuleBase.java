@@ -16,29 +16,6 @@ package org.drools.common;
  * limitations under the License.
  */
 
-import org.drools.PackageIntegrationException;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.StatefulSession;
-import org.drools.concurrent.CommandExecutor;
-import org.drools.concurrent.ExecutorService;
-import org.drools.event.RuleBaseEventListener;
-import org.drools.event.RuleBaseEventSupport;
-import org.drools.objenesis.Objenesis;
-import org.drools.objenesis.ObjenesisStd;
-import org.drools.process.core.Process;
-import org.drools.rule.CompositePackageClassLoader;
-import org.drools.rule.DialectDatas;
-import org.drools.rule.ImportDeclaration;
-import org.drools.rule.InvalidPatternException;
-import org.drools.rule.MapBackedClassLoader;
-import org.drools.rule.Package;
-import org.drools.rule.Rule;
-import org.drools.rule.TypeDeclaration;
-import org.drools.spi.ExecutorServiceFactory;
-import org.drools.spi.FactHandleFactory;
-import org.drools.util.ObjectHashSet;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -52,9 +29,32 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.drools.PackageIntegrationException;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.StatefulSession;
+import org.drools.concurrent.CommandExecutor;
+import org.drools.concurrent.ExecutorService;
+import org.drools.event.RuleBaseEventListener;
+import org.drools.event.RuleBaseEventSupport;
+import org.drools.objenesis.Objenesis;
+import org.drools.process.core.Process;
+import org.drools.rule.CompositePackageClassLoader;
+import org.drools.rule.DialectDatas;
+import org.drools.rule.ImportDeclaration;
+import org.drools.rule.InvalidPatternException;
+import org.drools.rule.MapBackedClassLoader;
+import org.drools.rule.Package;
+import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
+import org.drools.spi.ExecutorServiceFactory;
+import org.drools.spi.FactHandleFactory;
+import org.drools.util.ObjectHashSet;
+import org.drools.util.ObjenesisFactory;
 
 /**
  * Implementation of <code>RuleBase</code>.
@@ -88,7 +88,7 @@ abstract public class AbstractRuleBase
     protected transient MapBackedClassLoader        classLoader;
 
     private transient Objenesis                     objenesis;
-
+	
     /** The fact handle factory. */
     protected FactHandleFactory                     factHandleFactory;
 
@@ -275,13 +275,17 @@ abstract public class AbstractRuleBase
         }
     }
 
-    /**
-     * Creates Objenesis instance for the RuleBase.
-     * @return a standart Objenesis instanse with caching turned on.
-     */
-    protected Objenesis createObjenesis() {
-        return new ObjenesisStd( true );
-    }
+	/**
+	 * Creates Objenesis instance for the RuleBase. 
+	 * @return a standart Objenesis instanse with caching turned on.
+	 */
+	protected Objenesis createObjenesis() {
+	    if( this.config.isUseStaticObjenesis() ) {
+	        return ObjenesisFactory.getStaticObjenesis();
+	    } else {
+	        return ObjenesisFactory.getDefaultObjenesis();
+	    }
+	}
 
     private void populateTypeDeclarationMaps() {
         this.classTypeDeclaration = new HashMap<Class<?>, TypeDeclaration>();
