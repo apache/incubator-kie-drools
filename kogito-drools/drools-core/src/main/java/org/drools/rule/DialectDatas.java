@@ -1,5 +1,7 @@
 package org.drools.rule;
 
+import org.drools.common.DroolsObjectInput;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -9,15 +11,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.drools.common.DroolsObjectInput;
-
 public class DialectDatas implements Externalizable {
-    private ClassLoader parentClassLoader;
+    private transient ClassLoader parentClassLoader;
     private CompositePackageClassLoader classLoader;
 
-    private Map<String, DialectData> dialects;
+    private Map<String, DialectData>    dialects;
 
-    private Map                           lineMappings;
+    private Map                         lineMappings;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
@@ -41,7 +41,6 @@ public class DialectDatas implements Externalizable {
     public void writeExternal(final ObjectOutput stream) throws IOException {
         stream.writeObject(this.dialects);
         stream.writeObject(this.classLoader);
-        stream.writeObject(this.parentClassLoader instanceof DroolsClassLoader ? this.parentClassLoader : null);
         stream.writeObject( this.lineMappings );
     }
 
@@ -53,14 +52,16 @@ public class DialectDatas implements Externalizable {
      */
     public void readExternal(final ObjectInput stream) throws IOException,
                                                               ClassNotFoundException {
-        this.dialects     = (Map<String, DialectData>)stream.readObject();
+        this.dialects       = (Map<String, DialectData>)stream.readObject();
         this.classLoader    = (CompositePackageClassLoader)stream.readObject();
-        setParentClassLoader((ClassLoader)stream.readObject());
+        setParentClassLoader(this.classLoader.getParent());
         if (stream instanceof DroolsObjectInput) {
-            ((DroolsObjectInput)stream).setClassLoader(this.classLoader);
-            ((DroolsObjectInput)stream).setDialectDatas(this);
+            DroolsObjectInput   droolsStream    = (DroolsObjectInput)stream;
+            addClassLoader(droolsStream.getClassLoader());
+            droolsStream.setClassLoader(this.classLoader);
+            droolsStream.setDialectDatas(this);
         }
-        this.lineMappings = (Map) stream.readObject();
+        this.lineMappings   = (Map) stream.readObject();
     }
 
     public void addDialectData(String dialect, DialectData dialectData) {

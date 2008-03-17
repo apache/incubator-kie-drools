@@ -16,6 +16,20 @@ package org.drools.rule;
  * limitations under the License.
  */
 
+import org.drools.RuntimeDroolsException;
+import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
+import org.drools.spi.Accumulator;
+import org.drools.spi.Consequence;
+import org.drools.spi.EvalExpression;
+import org.drools.spi.PredicateExpression;
+import org.drools.spi.ReturnValueEvaluator;
+import org.drools.spi.ReturnValueExpression;
+import org.drools.util.StringUtils;
+import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
+
 import java.io.ByteArrayInputStream;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -31,20 +45,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.drools.RuntimeDroolsException;
-import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.spi.Accumulator;
-import org.drools.spi.Consequence;
-import org.drools.spi.EvalExpression;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.ReturnValueEvaluator;
-import org.drools.spi.ReturnValueExpression;
-import org.drools.util.StringUtils;
-import org.drools.workflow.core.node.ActionNode;
-import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
 public class JavaDialectData
     implements
@@ -129,7 +129,8 @@ public class JavaDialectData
         this.datas = (DialectDatas)droolsStream.readObject();
         this.classLoader = (PackageClassLoader)droolsStream.readObject();
         this.datas.addClassLoader( this.classLoader );
-        droolsStream.setClassLoader(this.classLoader);
+        this.datas.addClassLoader(droolsStream.getClassLoader());
+        droolsStream.setClassLoader(this.datas.getClassLoader());
         droolsStream.setDialectDatas(this.datas);
         this.store = (Map) stream.readObject();
         this.AST = stream.readObject();

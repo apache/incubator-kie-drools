@@ -27,7 +27,7 @@ public class CompositePackageClassLoader extends ClassLoader implements DroolsCl
                    this.classLoaders.add(object);
                }
             }
-        } else {
+        } else if (classLoader instanceof DroolsClassLoader && !classLoaders.contains(classLoader)) {
             this.classLoaders.add( classLoader );
         }
     }
