@@ -194,10 +194,6 @@ public class Package
                            : new DroolsObjectInputStream(new ByteArrayInputStream((byte[])stream.readObject()));
 
         this.dialectDatas   = (DialectDatas)in.readObject();
-        // Not sure needs to do this, everything is already at this time.
-        if (!isDroolsStream)
-            ((DroolsObjectInput)in).setClassLoader(this.dialectDatas.getClassLoader());
-
         this.typeDeclarations   = (Map)in.readObject();
         this.name = (String) in.readObject();
         this.imports = (Map<String, ImportDeclaration>) in.readObject();

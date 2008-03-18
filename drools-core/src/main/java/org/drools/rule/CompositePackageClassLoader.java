@@ -9,12 +9,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CompositePackageClassLoader extends ClassLoader implements DroolsClassLoader, Externalizable  {
+public class CompositePackageClassLoader extends ClassLoader implements DroolsClassLoader  {
 
     private List classLoaders  = new ArrayList();
-
-    public CompositePackageClassLoader() {
-    }
 
     public CompositePackageClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
@@ -30,14 +27,6 @@ public class CompositePackageClassLoader extends ClassLoader implements DroolsCl
         } else if (classLoader instanceof DroolsClassLoader && !classLoaders.contains(classLoader)) {
             this.classLoaders.add( classLoader );
         }
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        classLoaders    = (List)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(classLoaders);
     }
 
     public void removeClassLoader(final ClassLoader classLoader) {

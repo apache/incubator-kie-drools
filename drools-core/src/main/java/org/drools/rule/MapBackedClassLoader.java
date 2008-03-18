@@ -16,7 +16,7 @@ import java.util.List;
 
 public class MapBackedClassLoader extends ClassLoader
     implements
-    DroolsClassLoader, Externalizable {
+    DroolsClassLoader {
 
     private static final long             serialVersionUID = 400L;
 
@@ -32,9 +32,6 @@ public class MapBackedClassLoader extends ClassLoader
         } );
     }
 
-    public MapBackedClassLoader() {
-    }
-
     public MapBackedClassLoader(final ClassLoader parentClassLoader) {
         super( parentClassLoader );
         this.store = new HashMap();
@@ -44,14 +41,6 @@ public class MapBackedClassLoader extends ClassLoader
                                 final Map store) {
         super( parentClassLoader );
         this.store = store;
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        store    = (Map)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(store);
     }
 
     public void addResource(String className,
