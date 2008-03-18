@@ -297,22 +297,28 @@ public class JavaDialectData
                                           InstantiationException,
                                           IllegalAccessException {
         final Class clazz = this.classLoader.findClass( className );
-        if ( invoker instanceof ReturnValueRestriction ) {
-            ((ReturnValueRestriction) invoker).setReturnValueExpression( (ReturnValueExpression) clazz.newInstance() );
-        } else if ( invoker instanceof PredicateConstraint ) {
-            ((PredicateConstraint) invoker).setPredicateExpression( (PredicateExpression) clazz.newInstance() );
-        } else if ( invoker instanceof EvalCondition ) {
-            ((EvalCondition) invoker).setEvalExpression( (EvalExpression) clazz.newInstance() );
-        } else if ( invoker instanceof Accumulate ) {
-            ((Accumulate) invoker).setAccumulator( (Accumulator) clazz.newInstance() );
-        } else if ( invoker instanceof Rule ) {
-            ((Rule) invoker).setConsequence( (Consequence) clazz.newInstance() );
-        } else if ( invoker instanceof JavaAccumulatorFunctionExecutor ) {
-            ((JavaAccumulatorFunctionExecutor) invoker).setExpression( (ReturnValueExpression) clazz.newInstance() );
-        } else if ( invoker instanceof ActionNode ) {
-            ((ActionNode) invoker).setAction( clazz.newInstance() );
-        } else if ( invoker instanceof ReturnValueConstraintEvaluator ) {
-            ((ReturnValueConstraintEvaluator) invoker).setEvaluator( (ReturnValueEvaluator) clazz.newInstance() );
+
+        if (clazz != null) {
+            if ( invoker instanceof ReturnValueRestriction ) {
+                ((ReturnValueRestriction) invoker).setReturnValueExpression( (ReturnValueExpression) clazz.newInstance() );
+            } else if ( invoker instanceof PredicateConstraint ) {
+                ((PredicateConstraint) invoker).setPredicateExpression( (PredicateExpression) clazz.newInstance() );
+            } else if ( invoker instanceof EvalCondition ) {
+                ((EvalCondition) invoker).setEvalExpression( (EvalExpression) clazz.newInstance() );
+            } else if ( invoker instanceof Accumulate ) {
+                ((Accumulate) invoker).setAccumulator( (Accumulator) clazz.newInstance() );
+            } else if ( invoker instanceof Rule ) {
+                ((Rule) invoker).setConsequence( (Consequence) clazz.newInstance() );
+            } else if ( invoker instanceof JavaAccumulatorFunctionExecutor ) {
+                ((JavaAccumulatorFunctionExecutor) invoker).setExpression( (ReturnValueExpression) clazz.newInstance() );
+            } else if ( invoker instanceof ActionNode ) {
+                ((ActionNode) invoker).setAction( clazz.newInstance() );
+            } else if ( invoker instanceof ReturnValueConstraintEvaluator ) {
+                ((ReturnValueConstraintEvaluator) invoker).setEvaluator( (ReturnValueEvaluator) clazz.newInstance() );
+            }
+        }
+        else {
+            throw new ClassNotFoundException(className);
         }
     }
 
@@ -398,24 +404,17 @@ public class JavaDialectData
                 final ClassLoader parent = getParent();
                 if ( parent != null ) {
                     clazz = parent.loadClass( name );
-                } else {
-                    throw new ClassNotFoundException( name );
                 }
             }
 
-            if ( resolve ) {
+            if ( resolve && clazz != null) {
                 resolveClass( clazz );
             }
-
             return clazz;
         }
 
         protected Class findClass(final String name) throws ClassNotFoundException {
-            final Class clazz = fastFindClass( name );
-            if ( clazz == null ) {
-                throw new ClassNotFoundException( name );
-            }
-            return clazz;
+            return fastFindClass( name );
         }
 
 

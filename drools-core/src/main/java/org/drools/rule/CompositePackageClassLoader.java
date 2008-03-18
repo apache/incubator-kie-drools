@@ -57,7 +57,7 @@ public class CompositePackageClassLoader extends ClassLoader implements DroolsCl
                 if ( parent != null ) {
                     clazz = parent.loadClass( name );
                 } else {
-                    throw new ClassNotFoundException( name );
+                    return null;
                 }
             }
         }
