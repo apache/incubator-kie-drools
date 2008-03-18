@@ -36,19 +36,20 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.StockTick;
 import org.drools.WorkingMemory;
-import org.drools.integrationtests.SerializationHelper;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.RuleFlowGroupNode;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
 import org.drools.facttemplates.Fact;
+import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -68,6 +69,7 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.process.core.Process;
 import org.drools.process.core.Variable;
@@ -82,6 +84,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
@@ -1025,6 +1028,31 @@ public class PackageBuilderTest extends DroolsTestCase {
             fail( "Should not raise any exception: " + e.getMessage() );
         }
     }
+    
+    public void testTypeDeclaration() throws Exception {
+        PackageDescr pkgDescr = new PackageDescr( "org.test" );
+        TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
+        typeDescr.addAttribute( TypeDeclarationDescr.ATTR_ROLE,
+                                "event" );
+        typeDescr.addAttribute( TypeDeclarationDescr.ATTR_CLASS,
+                                "org.drools.StockTick" );
+        pkgDescr.addTypeDeclaration( typeDescr );
+
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackage( pkgDescr );
+
+        Package pkg = builder.getPackage();
+        assertEquals( 1,
+                      pkg.getTypeDeclarations().size() );
+
+        TypeDeclaration type = pkg.getTypeDeclaration( "StockTick" );
+        assertEquals( "StockTick",
+                      type.getTypeName() );
+        assertEquals( TypeDeclaration.Role.EVENT,
+                      type.getRole() );
+        assertEquals( StockTick.class,
+                      type.getTypeClass() );
+    }    
 
     private void createReturnValueRule(final PackageDescr packageDescr,
                                        final String expression) {
