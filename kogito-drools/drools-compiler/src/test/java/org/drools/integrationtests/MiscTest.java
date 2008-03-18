@@ -230,25 +230,6 @@ public class MiscTest extends TestCase {
 
     }
 
-    public void testMVELSoundex() throws Exception {
-
-        // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "MVEL_soundex.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
-
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
-        Cheese c = new Cheese( "fubar",
-                               2 );
-
-        workingMemory.insert( c );
-        workingMemory.fireAllRules();
-        assertEquals( 42,
-                      c.getPrice() );
-    }
-
     public void testGlobals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -880,79 +861,6 @@ public class MiscTest extends TestCase {
         final StatefulSession session = ruleBase.newStatefulSession();
         session.fireAllRules();
 
-    }
-
-    public void testMVELConsequenceWithMapsAndArrays() throws Exception {
-        String rule = "package org.test;\n";
-        rule += "import java.util.ArrayList\n";
-        rule += "import java.util.HashMap\n";
-        rule += "global java.util.List list\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "    dialect \"mvel\"";
-        rule += "when\n";
-        rule += "then\n";
-        rule += "    m = new HashMap();\n";
-        rule += "    l = new ArrayList();\n";
-        rule += "    l.add(\"first\");\n";
-        rule += "    m.put(\"content\", l);\n";
-        rule += "    System.out.println(m[\"content\"][0]);\n";
-        rule += "    list.add(m[\"content\"][0]);\n";
-        rule += "end";
-
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final StatefulSession session = ruleBase.newStatefulSession();
-        List list = new ArrayList();
-        session.setGlobal( "list",
-                           list );
-        session.fireAllRules();
-
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( "first",
-                      list.get( 0 ) );
-    }
-
-    /* @see JBRULES-1484 */
-    public void testMVELDynamicImports() throws Exception {
-        String rule = "package org.xxx;\n";
-
-        rule += "import org.drools.*\n";
-
-        rule += "global java.util.List list\n";
-        rule += "rule \"Test Rule\"\n";
-        rule += "    dialect \"mvel\"";
-        rule += "when\n";
-        rule += "then\n";
-        rule += "    p = new Person( \"diablo\", new Cheese (\"cheddar\") );";
-        rule += "    c = new Cheese( \"y\" );";
-        rule += "    list.add( p );\n";
-        rule += "end";
-
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final StatefulSession session = ruleBase.newStatefulSession();
-        List list = new ArrayList();
-        session.setGlobal( "list",
-                           list );
-        session.fireAllRules();
-
-        assertEquals( 1,
-                      list.size() );
-
-        Person p = new Person( "diablo",
-                               new Cheese( "cheddar" ) );
-
-        assertEquals( p,
-                      list.get( 0 ) );
     }
 
     public void testCell() throws Exception {
@@ -3311,30 +3219,6 @@ public class MiscTest extends TestCase {
                       list.get( 3 ) );
     }
 
-    public void testMatchesMVEL() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesMVEL.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final StatefulSession session = ruleBase.newStatefulSession();
-
-        final List results = new ArrayList();
-        session.setGlobal( "results",
-                           results );
-
-        Map map = new HashMap();
-        map.put( "content",
-                 "hello ;=" );
-        session.insert( map );
-
-        session.fireAllRules();
-
-        assertEquals( 1,
-                      results.size() );
-    }
-
     public void testAutomaticBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoBindings.drl" ) ) );
@@ -5050,48 +4934,4 @@ public class MiscTest extends TestCase {
                       list.size() );
         assertTrue( list.contains( b.getObject() ) );
     }
-
-    public void testNPEOnMVELAlphaPredicates() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NPEOnMVELPredicate.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final StatefulSession session = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
-        session.setGlobal( "results",
-                           list );
-
-        Cheese cheese = new Cheese( "stilton",
-                                    10 );
-        Cheesery cheesery = new Cheesery();
-        cheesery.addCheese( cheese );
-        Person bob = new Person( "bob",
-                                 "stilton" );
-        Cheese cheese2 = new Cheese();
-        bob.setCheese( cheese2 );
-
-        FactHandle p = session.insert( bob );
-        FactHandle c = session.insert( cheesery );
-
-        session.fireAllRules();
-
-        assertEquals( "should not have fired",
-                      0,
-                      list.size() );
-
-        cheese2.setType( "stilton" );
-
-        session.update( p,
-                        bob );
-        session.fireAllRules();
-
-        assertEquals( 1,
-                      list.size() );
-
-    }
-
 }
