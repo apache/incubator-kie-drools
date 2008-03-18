@@ -1,6 +1,19 @@
 package org.drools.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+
 import junit.framework.TestCase;
+
 import org.drools.Cheese;
 import org.drools.Person;
 import org.drools.Primitives;
@@ -9,18 +22,13 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class MarshallingTest extends TestCase {
     public void testSerializable() throws Exception {
@@ -417,6 +425,48 @@ public class MarshallingTest extends TestCase {
                       list.get( 2 ) );
 
     }
+
+    /**
+     * In this case we are dealing with facts which are not on the systems classpath.
+     *
+     */
+    public void testSerializabilityWithJarFacts() throws Exception {
+        MapBackedClassLoader loader = new MapBackedClassLoader( this.getClass().getClassLoader() );
+
+        JarInputStream jis = new JarInputStream(this.getClass().getResourceAsStream("/billasurf.jar"));
+
+        JarEntry entry = null;
+        byte[] buf = new byte[1024];
+        int len = 0;
+        while ( (entry = jis.getNextJarEntry()) != null ) {
+            if ( !entry.isDirectory() ) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                while ( (len = jis.read( buf )) >= 0 ) {
+                    out.write( buf, 0, len );
+                }
+                loader.addResource( entry.getName() , out.toByteArray() );
+            }
+        }
+
+        String drl = "package foo.bar \n" +
+        			"import com.billasurf.Board\n" +
+        			"rule 'MyGoodRule' \n dialect 'mvel' \n when Board() then System.err.println(42); \n end\n";
+
+        PackageBuilder builder = new PackageBuilder(new PackageBuilderConfiguration(loader));
+        builder.addPackageFromDrl(new StringReader(drl));
+        assertFalse(builder.hasErrors());
+
+        Package p = builder.getPackage();
+        byte[] ser = SerializationHelper.serializeOut(p);
+
+        //now read it back
+        DroolsObjectInputStream in = new DroolsObjectInputStream(new ByteArrayInputStream(ser), loader);
+        Package p_ = (Package) in.readObject();
+        assertNotNull(p_);
+
+    }
+
+
 
     protected RuleBase getRuleBase() throws Exception {
 
