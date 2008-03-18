@@ -47,7 +47,7 @@ public class GuidedDecisionTable implements PortableObject {
 	 * Subsequent ones follow the above column definitions:
 	 * attributeCols, then conditionCols, then actionCols, in that order, left to right.
 	 */
-	public String[][] data;
+	public String[][] data = new String[0][0];
 
 	//TODO: add in precondition(s)
 
