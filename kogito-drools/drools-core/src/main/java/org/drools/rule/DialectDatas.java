@@ -40,7 +40,6 @@ public class DialectDatas implements Externalizable {
      */
     public void writeExternal(final ObjectOutput stream) throws IOException {
         stream.writeObject(this.dialects);
-        stream.writeObject(this.classLoader);
         stream.writeObject( this.lineMappings );
     }
 
@@ -52,15 +51,14 @@ public class DialectDatas implements Externalizable {
      */
     public void readExternal(final ObjectInput stream) throws IOException,
                                                               ClassNotFoundException {
-        this.dialects       = (Map<String, DialectData>)stream.readObject();
-        this.classLoader    = (CompositePackageClassLoader)stream.readObject();
-        setParentClassLoader(this.classLoader.getParent());
-        if (stream instanceof DroolsObjectInput) {
-            DroolsObjectInput   droolsStream    = (DroolsObjectInput)stream;
-            addClassLoader(droolsStream.getClassLoader());
-            droolsStream.setClassLoader(this.classLoader);
-            droolsStream.setDialectDatas(this);
-        }
+        DroolsObjectInput   droolsStream    = (DroolsObjectInput)stream;
+
+        setParentClassLoader(droolsStream.getClassLoader());
+        this.classLoader = new CompositePackageClassLoader( this.parentClassLoader );
+        droolsStream.setDialectDatas(this);
+        droolsStream.setClassLoader(this.classLoader);
+
+        this.dialects       = (Map<String, DialectData>)droolsStream.readObject();
         this.lineMappings   = (Map) stream.readObject();
     }
 

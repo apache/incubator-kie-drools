@@ -20,6 +20,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
+import org.drools.common.DroolsObjectInput;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Consequence;
 import org.drools.spi.EvalExpression;
@@ -104,11 +105,6 @@ public class JavaDialectData
      *
      */
     public void writeExternal(ObjectOutput stream) throws IOException {
-        if (!(stream instanceof DroolsObjectOutputStream)) {
-            stream  = new DroolsObjectOutputStream(stream);
-        }
-        stream.writeObject( this.datas );
-        stream.writeObject( classLoader );
         stream.writeObject( this.store );
         stream.writeObject( this.AST );
         stream.writeObject( this.invokerLookups );
@@ -123,15 +119,12 @@ public class JavaDialectData
      */
     public void readExternal(ObjectInput stream) throws IOException,
                                                       ClassNotFoundException {
-        DroolsObjectInputStream droolsStream = stream instanceof DroolsObjectInputStream
-                          ? (DroolsObjectInputStream)stream
-                          : new DroolsObjectInputStream(stream);
-        this.datas = (DialectDatas)droolsStream.readObject();
-        this.classLoader = (PackageClassLoader)droolsStream.readObject();
+        DroolsObjectInput droolsStream = (DroolsObjectInput)stream;
+
+        this.datas          = droolsStream.getDialectDatas();
+        this.classLoader    = new PackageClassLoader( this.datas.getParentClassLoader(), this );
         this.datas.addClassLoader( this.classLoader );
-        this.datas.addClassLoader(droolsStream.getClassLoader());
-        droolsStream.setClassLoader(this.datas.getClassLoader());
-        droolsStream.setDialectDatas(this.datas);
+
         this.store = (Map) stream.readObject();
         this.AST = stream.readObject();
         this.invokerLookups = (Map) droolsStream.readObject();
@@ -362,7 +355,7 @@ public class JavaDialectData
      */
     public static class PackageClassLoader extends ClassLoader
         implements
-        DroolsClassLoader, Externalizable {
+        DroolsClassLoader {
         private JavaDialectData parent;
 
         public PackageClassLoader() {
@@ -371,14 +364,6 @@ public class JavaDialectData
         public PackageClassLoader(final ClassLoader parentClassLoader, JavaDialectData parent) {
             super( parentClassLoader );
             this.parent = parent;
-        }
-
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            parent  = (JavaDialectData)in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(parent);
         }
 
         public Class fastFindClass(final String name) {
