@@ -3,30 +3,28 @@
  */
 package org.drools.common;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StreamCorruptedException;
-import java.io.Externalizable;
 import java.io.InvalidClassException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
-import java.io.ObjectInput;
-import java.io.ByteArrayInputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.Collections;
-import java.util.List;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.io.StreamCorruptedException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.rule.DialectDatas;
 import org.drools.rule.Package;
-import org.drools.rule.CompositePackageClassLoader;
 
 public class DroolsObjectInputStream
         implements DroolsObjectInput, DroolsObjectStreamConstants {
@@ -481,9 +479,6 @@ public class DroolsObjectInputStream
             Class clazz = primClasses.get( className );
             if ( clazz == null ) {
                 clazz = getClassLoader().loadClass( className );
-                if (className.endsWith("ShadowProxy")) {
-                    System.out.println();
-                }
             }
             return clazz;
         }
