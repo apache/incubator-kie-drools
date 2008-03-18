@@ -79,11 +79,11 @@ public class MapBackedClassLoader extends ClassLoader
     }
 
     /**
-     * Javadocs recommend that this method not be overloaded. We overload this so that we can prioritise the fastFindClass 
+     * Javadocs recommend that this method not be overloaded. We overload this so that we can prioritise the fastFindClass
      * over method calls to parent.loadClass(name, false); and c = findBootstrapClass0(name); which the default implementation
-     * would first - hence why we call it "fastFindClass" instead of standard findClass, this indicates that we give it a 
+     * would first - hence why we call it "fastFindClass" instead of standard findClass, this indicates that we give it a
      * higher priority than normal.
-     * 
+     *
      */
     protected synchronized Class loadClass(final String name,
                                            final boolean resolve) throws ClassNotFoundException {
@@ -93,8 +93,6 @@ public class MapBackedClassLoader extends ClassLoader
             final ClassLoader parent = getParent();
             if ( parent != null ) {
                 clazz = parent.loadClass( name );
-            } else {
-                throw new ClassNotFoundException( name );
             }
         }
 
@@ -106,11 +104,7 @@ public class MapBackedClassLoader extends ClassLoader
     }
 
     protected Class findClass(final String name) throws ClassNotFoundException {
-        final Class clazz = fastFindClass( name );
-        if ( clazz == null ) {
-            throw new ClassNotFoundException( name );
-        }
-        return clazz;
+        return fastFindClass( name );
     }
 
     public InputStream getResourceAsStream(final String name) {

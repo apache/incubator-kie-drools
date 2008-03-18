@@ -479,6 +479,9 @@ public class DroolsObjectInputStream
             Class clazz = primClasses.get( className );
             if ( clazz == null ) {
                 clazz = getClassLoader().loadClass( className );
+                if (clazz == null) {
+                  clazz = getClass().getClassLoader().loadClass(className);
+                }
             }
             return clazz;
         }

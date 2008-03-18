@@ -24,7 +24,7 @@ public class DialectDatas implements Externalizable {
      * will result in an invalid state for the instance.
      */
     public DialectDatas() {
-        this(null);
+        this((ClassLoader)null);
     }
 
     public DialectDatas(ClassLoader classLoader) {
