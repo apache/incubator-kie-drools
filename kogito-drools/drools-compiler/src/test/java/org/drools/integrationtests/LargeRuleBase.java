@@ -165,7 +165,7 @@ public class LargeRuleBase {
 				+ (System.currentTimeMillis() - time));
 	}
 
-	private static String getHeader() {
+	public static String getHeader() {
 		return "package org.drools.test; \n " + "import org.drools.Person; \n "
 				+ "import org.drools.Cheese; \n "
 				+ "import org.drools.Cheesery; \n "
@@ -173,7 +173,7 @@ public class LargeRuleBase {
 				+ " global List list \n dialect 'mvel'\n  ";
 	}
 
-	private static String getTemplate1(String name, int status) {
+	public static String getTemplate1(String name, int status) {
 		return "rule 'match Person "
 				+ name
 				+ "' \n"
