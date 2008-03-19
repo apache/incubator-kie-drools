@@ -20,7 +20,7 @@ public class MVELDialectData implements DialectData, Externalizable {
 	 * user, as it will result in an invalid state for the instance.
 	 */
 	public MVELDialectData() {
-        this(null);
+
 	}
 
 	public MVELDialectData(final DialectDatas datas) {
@@ -54,44 +54,46 @@ public class MVELDialectData implements DialectData, Externalizable {
 	}
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        functionFactory = (MapFunctionResolverFactory)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(functionFactory);
     }
 
-    public static class MapFunctionResolverFactory extends
-                                                   MapVariableResolverFactory implements Externalizable {
+	public static class MapFunctionResolverFactory extends
+			MapVariableResolverFactory implements Externalizable {
 
-        public MapFunctionResolverFactory() {
-            super(new HashMap<String, Object>());
-        }
+		public MapFunctionResolverFactory() {
+			super(new HashMap<String, Object>());
+		}
 
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( this.variables );
-        }
+		public void writeExternal(ObjectOutput out) throws IOException {
+			out.writeObject( this.variables );
+		}
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            this.variables = ( Map ) in.readObject();
-        }
+		public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+			this.variables = ( Map ) in.readObject();
+		}
 
-        public void addFunction(Function function) {
-            this.variables.put(function.getName(), function);
-        }
+		public void addFunction(Function function) {
+			this.variables.put(function.getName(), function);
+		}
 
-        public void removeFunction(String functionName) {
-            this.variables.remove(functionName);
-            this.variableResolvers.remove(functionName);
-        }
+		public void removeFunction(String functionName) {
+			this.variables.remove(functionName);
+			this.variableResolvers.remove(functionName);
+		}
 
-        public VariableResolver createVariable(String name, Object value) {
-            throw new RuntimeException(
-                    "variable is a read-only function pointer");
-        }
+		public VariableResolver createVariable(String name, Object value) {
+			throw new RuntimeException(
+					"variable is a read-only function pointer");
+		}
 
-        public VariableResolver createIndexedVariable(int index, String name,
-                                                      Object value, Class<?> type) {
-            throw new RuntimeException(
-                    "variable is a read-only function pointer");
-        }
-    }
+		public VariableResolver createIndexedVariable(int index, String name,
+				Object value, Class<?> type) {
+			throw new RuntimeException(
+					"variable is a read-only function pointer");
+		}
+	}
 }
