@@ -68,4 +68,8 @@ public class DescrFactory {
     public EntryPointDescr createEntryPoint() {
         return new EntryPointDescr();
     }
+    
+    public TypeDeclarationDescr createTypeDeclaration() {
+        return new TypeDeclarationDescr();
+    }    
 }
