@@ -7,6 +7,8 @@ import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class LongFieldImpl
     implements
@@ -113,6 +115,14 @@ public class LongFieldImpl
 
     public boolean isStringField() {
         return false;
+    }
+
+    public BigDecimal getBigDecimalValue() {
+        return new BigDecimal(this.value);
+    }
+
+    public BigInteger getBigIntegerValue() {
+        return BigInteger.valueOf(this.value);
     }
 
 }
