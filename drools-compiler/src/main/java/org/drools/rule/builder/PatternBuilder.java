@@ -27,6 +27,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
+import org.drools.base.field.ObjectFieldImpl;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.facttemplates.FactTemplate;
@@ -791,6 +792,11 @@ public class PatternBuilder
             final Class staticClass = context.getDialect().getTypeResolver().resolveType( className );
             field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ),
                                                 extractor.getValueType() );
+            if( field.isObjectField() ) {
+                ((ObjectFieldImpl) field).setEnum( true );
+                ((ObjectFieldImpl) field).setEnumName( staticClass.getName() );
+                ((ObjectFieldImpl) field).setFieldName( fieldName );
+            }            
         } catch ( final ClassNotFoundException e ) {
             // nothing to do, as it is not a class name with static field
         } catch ( final Exception e ) {
