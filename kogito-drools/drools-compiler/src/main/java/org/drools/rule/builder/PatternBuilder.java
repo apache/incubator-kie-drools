@@ -17,6 +17,7 @@
 package org.drools.rule.builder;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -26,9 +27,8 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
-import org.drools.base.field.ObjectFieldImpl;
-import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.Dialect;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
@@ -73,6 +73,8 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.ObjectType;
 import org.drools.spi.Restriction;
 import org.drools.spi.Constraint.ConstraintType;
+import org.mvel.ParserContext;
+import org.mvel.compiler.ExpressionCompiler;
 
 /**
  * A builder for patterns
@@ -375,12 +377,15 @@ public class PatternBuilder
         MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
         boolean strictMode = mvelDialect.isStrictMode();
         mvelDialect.setStrictMode( false );
-
         context.setDialect( mvelDialect );
+
+        // analyze field type:
+        Class resultType = getFieldReturnType( pattern,
+                                               fieldConstraintDescr );
 
         PredicateDescr predicateDescr = new PredicateDescr();
         MVELDumper dumper = new MVELDumper();
-        predicateDescr.setContent( dumper.dump( fieldConstraintDescr ) );
+        predicateDescr.setContent( dumper.dump( fieldConstraintDescr, Date.class.isAssignableFrom( resultType ) ) );
 
         build( context,
                pattern,
@@ -390,6 +395,23 @@ public class PatternBuilder
         mvelDialect.setStrictMode( strictMode );
         // fall back to original dialect
         context.setDialect( dialect );
+    }
+
+    /**
+     * @param pattern
+     * @param fieldConstraintDescr
+     * @return
+     */
+    private Class getFieldReturnType(final Pattern pattern,
+                                     final FieldConstraintDescr fieldConstraintDescr) {
+        String dummyField = "__DUMMY__";
+        String dummyExpr = dummyField+"."+fieldConstraintDescr.getFieldName();
+        ExpressionCompiler compiler = new ExpressionCompiler( dummyExpr );
+        ParserContext mvelcontext = new ParserContext();
+        mvelcontext.addInput( dummyField, ((ClassObjectType) pattern.getObjectType()).getClassType() );
+        compiler.compile( mvelcontext );
+        Class resultType = compiler.getReturnType();
+        return resultType;
     }
 
     private Restriction createRestriction(final RuleBuildContext context,
@@ -769,11 +791,6 @@ public class PatternBuilder
             final Class staticClass = context.getDialect().getTypeResolver().resolveType( className );
             field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ),
                                                 extractor.getValueType() );
-            if( field.isObjectField() ) {
-                ((ObjectFieldImpl) field).setEnum( true );
-                ((ObjectFieldImpl) field).setEnumName( staticClass.getName() );
-                ((ObjectFieldImpl) field).setFieldName( fieldName );
-            }
         } catch ( final ClassNotFoundException e ) {
             // nothing to do, as it is not a class name with static field
         } catch ( final Exception e ) {
