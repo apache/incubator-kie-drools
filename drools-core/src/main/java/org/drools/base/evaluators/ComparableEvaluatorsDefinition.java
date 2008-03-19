@@ -202,7 +202,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) object2.getValue() ) < 0;
+            return comp.compareTo( object2.getBigDecimalValue() ) < 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -258,7 +258,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) object2.getValue() ) <= 0;
+            return comp.compareTo( object2.getBigDecimalValue() ) <= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -314,7 +314,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) object2.getValue() ) > 0;
+            return comp.compareTo( object2.getBigDecimalValue() ) > 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -370,7 +370,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigDecimal comp = (BigDecimal) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigDecimal) object2.getValue() ) >= 0;
+            return comp.compareTo( object2.getBigDecimalValue() ) >= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -426,7 +426,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) object2.getValue() ) < 0;
+            return comp.compareTo( object2.getBigIntegerValue() ) < 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -482,7 +482,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) object2.getValue() ) <= 0;
+            return comp.compareTo( object2.getBigIntegerValue() ) <= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -538,7 +538,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) object2.getValue() ) > 0;
+            return comp.compareTo( object2.getBigIntegerValue() ) > 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -594,7 +594,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
                 return false;
             }
             final BigInteger comp = (BigInteger) extractor.getValue( workingMemory, object1 );
-            return comp.compareTo( (BigInteger) object2.getValue() ) >= 0;
+            return comp.compareTo( object2.getBigIntegerValue() ) >= 0;
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
@@ -1099,6 +1099,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
             final Date value2 = (Date) extractor2.getValue( workingMemory, object2 );
+            if (null == value2) throw new NullPointerException(extractor2.toString());
             return value1.compareTo( value2 ) < 0;
         }
 
@@ -1159,6 +1160,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
             final Date value2 = (Date) extractor2.getValue( workingMemory, object2 );
+            if (null == value2) throw new NullPointerException(extractor2.toString());
             return value1.compareTo( value2 ) <= 0;
         }
 
@@ -1219,6 +1221,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
             final Date value2 = (Date) extractor2.getValue( workingMemory, object2 );
+            if (null == value2) throw new NullPointerException(extractor2.toString());
             return value1.compareTo( value2 ) > 0;
         }
 
@@ -1279,6 +1282,7 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Date value1 = (Date) extractor1.getValue( workingMemory, object1 );
             final Date value2 = (Date) extractor2.getValue( workingMemory, object2 );
+            if (null == value2) throw new NullPointerException(extractor2.toString());
             return value1.compareTo( value2 ) >= 0;
         }
 
