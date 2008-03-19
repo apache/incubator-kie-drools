@@ -4,11 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
 
-import org.drools.brms.client.modeldriven.brl.ActionFieldList;
 import org.drools.brms.client.modeldriven.brl.ActionFieldValue;
 import org.drools.brms.client.modeldriven.brl.DSLSentence;
 import org.drools.brms.client.modeldriven.brl.FactPattern;
@@ -106,25 +102,7 @@ public class SuggestionCompletionEngine
     public DSLSentence[]          conditionDSLSentences  = new DSLSentence[0];
     public DSLSentence[]          actionDSLSentences     = new DSLSentence[0];
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        factTypes   = (String[])in.readObject();
-        fieldsForType   = (Map)in.readObject();
-        fieldTypes   = (Map)in.readObject();
-        globalTypes   = (Map)in.readObject();
-        dataEnumLists   = (Map)in.readObject();
-        conditionDSLSentences   = (DSLSentence[])in.readObject();
-        actionDSLSentences   = (DSLSentence[])in.readObject();
-    }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(factTypes);
-        out.writeObject(fieldsForType);
-        out.writeObject(fieldTypes);
-        out.writeObject(globalTypes);
-        out.writeObject(dataEnumLists);
-        out.writeObject(conditionDSLSentences);
-        out.writeObject(actionDSLSentences);
-    }
 
     /**
      * This is used to calculate what fields an enum list may depend on. Optional.
@@ -282,8 +260,14 @@ public class SuggestionCompletionEngine
 				}
 			}
 		}
+		return getEnumValues(pat.factType, field);
+	}
 
-		return (String[]) this.dataEnumLists.get(pat.factType + "." + field);
+	/**
+	 * For simple cases - where a list of values are known based on a field.
+	 */
+	public String[] getEnumValues(String factType, String field) {
+		return (String[]) this.dataEnumLists.get(factType + "." + field);
 	}
 
 	public String[] getEnums(String type, ActionFieldValue[] currentValues, String field) {

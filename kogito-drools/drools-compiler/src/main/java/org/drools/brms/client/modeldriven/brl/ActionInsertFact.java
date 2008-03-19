@@ -1,8 +1,5 @@
 package org.drools.brms.client.modeldriven.brl;
 
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 
 /**
  * This is used when asserting a new fact.
@@ -21,11 +18,5 @@ public class ActionInsertFact extends ActionFieldList {
     public ActionInsertFact() {
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        factType    = (String)in.readObject();
-    }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(factType);
-    }
 }

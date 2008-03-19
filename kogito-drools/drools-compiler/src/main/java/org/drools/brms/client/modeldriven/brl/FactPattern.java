@@ -1,8 +1,5 @@
 package org.drools.brms.client.modeldriven.brl;
 
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
 /**
  * A fact pattern is a declaration of a fact type, and its constraint,
@@ -28,17 +25,7 @@ public class FactPattern
         //this.constraints = new CompositeFieldConstraint();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        constraintList  = (CompositeFieldConstraint)in.readObject();
-        factType  = (String)in.readObject();
-        boundName  = (String)in.readObject();
-    }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(constraintList);
-        out.writeObject(factType);
-        out.writeObject(boundName);
-    }
     /**
      * This will add a top level constraint.
      */

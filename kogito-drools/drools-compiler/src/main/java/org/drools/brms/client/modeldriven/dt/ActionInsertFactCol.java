@@ -26,5 +26,10 @@ public class ActionInsertFactCol extends ActionCol {
 	 */
 	public String type;
 
+	/**
+	 * An optional comman separated list of values.
+	 */
+	public String valueList;
+
 
 }

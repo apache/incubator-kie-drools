@@ -1,8 +1,5 @@
 package org.drools.brms.client.modeldriven.brl;
 
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
 /**
  * Represents a constraint, which may be part of a direct field constraint or a connective.
@@ -48,13 +45,5 @@ public class ISingleFieldConstraint
     public String           value;
     public int              constraintValueType;
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        value   = (String)in.readObject();
-        constraintValueType = in.readInt();
-    }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(value);
-        out.writeInt(constraintValueType);
-    }
 }

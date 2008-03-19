@@ -1,8 +1,5 @@
 package org.drools.brms.client.modeldriven.brl;
 
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
 
 /**
  * For setting a field on a bound LHS variable or a global.
@@ -23,11 +20,5 @@ public class ActionSetField extends ActionFieldList {
 
     public String variable;
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        variable    = (String)in.readObject();
-    }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(variable);
-    }
 }

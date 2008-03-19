@@ -19,4 +19,9 @@ public class ActionSetFieldCol extends ActionCol {
 	 * These values come from SuggestionCompletionEngine.
 	 */
 	public String type;
+
+	/**
+	 * An optional comma separated list of values.
+	 */
+	public String valueList;
 }

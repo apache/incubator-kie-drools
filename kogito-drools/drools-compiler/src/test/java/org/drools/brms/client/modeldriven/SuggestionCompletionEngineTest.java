@@ -273,6 +273,16 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    public void testSimpleEnums() {
+    	final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
+    	sce.dataEnumLists = new HashMap();
+    	sce.dataEnumLists.put("Fact.type", new String[] {"sex", "colour"});
+    	assertEquals(2, sce.getEnumValues("Fact", "type").length);
+    	assertEquals("sex", sce.getEnumValues("Fact", "type")[0]);
+    	assertEquals("colour", sce.getEnumValues("Fact", "type")[1]);
+
+    }
+
     private void assertContains(final String string,
                                 final String[] c) {
 

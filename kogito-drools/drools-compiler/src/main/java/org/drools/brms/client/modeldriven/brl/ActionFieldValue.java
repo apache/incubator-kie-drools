@@ -1,8 +1,5 @@
 package org.drools.brms.client.modeldriven.brl;
 
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.IOException;
 
 /**
  * Holds field and value for "action" parts of the rule.
@@ -32,17 +29,7 @@ public class ActionFieldValue
     public ActionFieldValue() {
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        field   = (String)in.readObject();
-        value   = (String)in.readObject();
-        type    = (String)in.readObject();
-    }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(field);
-        out.writeObject(value);
-        out.writeObject(type);
-    }
 
     /**
      * This will return true if the value is really a "formula" - in
