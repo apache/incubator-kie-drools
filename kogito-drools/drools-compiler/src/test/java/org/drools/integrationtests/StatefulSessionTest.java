@@ -165,7 +165,7 @@ public class StatefulSessionTest extends TestCase {
         
         int i = 0;
         while ( !futureFireAllRules.isDone() ) {
-            Thread.sleep( 100 );
+            Thread.sleep( 300 );
             if (i++ > 5) {
                 fail( "Future should have finished by now" );
             }
