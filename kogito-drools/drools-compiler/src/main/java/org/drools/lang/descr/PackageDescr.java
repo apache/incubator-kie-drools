@@ -20,29 +20,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.io.ObjectInput;
-import java.io.IOException;
-import java.io.ObjectOutput;
 
 public class PackageDescr extends BaseDescr {
     /**
      *
      */
-    private static final long          serialVersionUID = 400L;
-    private String                     name;
-    private String                     documentation;
+    private static final long serialVersionUID = 400L;
+    private final String      name;
+    private final String      documentation;
 
-    private List                       imports          = Collections.EMPTY_LIST;
-    private List                       functionImports  = Collections.EMPTY_LIST;
-    private List                       attributes       = Collections.EMPTY_LIST;
-    private List                       globals          = Collections.EMPTY_LIST;
-    private List                       factTemplates    = Collections.EMPTY_LIST;
-    private List                       functions        = Collections.EMPTY_LIST;
-    private List                       rules            = Collections.EMPTY_LIST;
-    private List<TypeDeclarationDescr> typeDeclarations = Collections.emptyList();
-
-    public PackageDescr() {
-    }
+    private List              imports          = Collections.EMPTY_LIST;
+    private List              functionImports  = Collections.EMPTY_LIST;
+    private List              attributes       = Collections.EMPTY_LIST;
+    private List              globals          = Collections.EMPTY_LIST;
+    private List              factTemplates    = Collections.EMPTY_LIST;
+    private List              functions        = Collections.EMPTY_LIST;
+    private List              rules            = Collections.EMPTY_LIST;
+    private List<TypeDeclarationDescr> typeDeclarations     = Collections.emptyList();
 
     public PackageDescr(final String name) {
         this( name,
@@ -53,33 +47,6 @@ public class PackageDescr extends BaseDescr {
                         final String documentation) {
         this.name = name;
         this.documentation = documentation;
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
-        name = (String) in.readObject();
-        documentation = (String) in.readObject();
-        imports = (List) in.readObject();
-        functionImports = (List) in.readObject();
-        attributes = (List) in.readObject();
-        globals = (List) in.readObject();
-        factTemplates = (List) in.readObject();
-        functions = (List) in.readObject();
-        rules = (List) in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-        out.writeObject( name );
-        out.writeObject( documentation );
-        out.writeObject( imports );
-        out.writeObject( functionImports );
-        out.writeObject( attributes );
-        out.writeObject( globals );
-        out.writeObject( factTemplates );
-        out.writeObject( functions );
-        out.writeObject( rules );
     }
 
     public String getName() {
