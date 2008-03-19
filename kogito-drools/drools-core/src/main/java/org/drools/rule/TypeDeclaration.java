@@ -20,18 +20,20 @@ package org.drools.rule;
 
 import org.drools.facttemplates.FactTemplate;
 
+import java.io.Serializable;
+
 /**
  * The type declaration class stores all type's metadata
  * declared in source files.
  *  
  * @author etirelli
  */
-public class TypeDeclaration {
-    
+public class TypeDeclaration implements Serializable {
+
     public static enum Role {
         FACT,
         EVENT;
-        
+
         public static Role parseRole( String role ) {
             if( "event".equalsIgnoreCase( role ) ) {
                 return EVENT;
@@ -41,9 +43,9 @@ public class TypeDeclaration {
             return null;
         }
     }
-    
+
     public static enum Format {
-        POJO, 
+        POJO,
         TEMPLATE;
 
         public static Format parseFormat( String format ) {
@@ -55,14 +57,14 @@ public class TypeDeclaration {
             return null;
         }
     }
-    
+
     public static enum ClockStrategy {
         NONE,
-        PSEUDO, 
-        SYSTEM, 
-        HEARTBEAT, 
+        PSEUDO,
+        SYSTEM,
+        HEARTBEAT,
         ATTRIBUTE;
-        
+
         public static ClockStrategy parseClockStrategy( String clockStrategy ) {
             if( "none".equalsIgnoreCase( clockStrategy ) ) {
                 return NONE;
@@ -87,7 +89,7 @@ public class TypeDeclaration {
     private String durationAttribute;
     private Class<?> typeClass;
     private FactTemplate typeTemplate;
-    
+
     public TypeDeclaration( String typeName ) {
         this.typeName = typeName;
         this.role = Role.FACT;
@@ -98,7 +100,7 @@ public class TypeDeclaration {
         this.typeClass = null;
         this.typeTemplate = null;
     }
-    
+
     /**
      * @return the type
      */
@@ -203,7 +205,7 @@ public class TypeDeclaration {
     public void setTypeTemplate(FactTemplate typeTemplate) {
         this.typeTemplate = typeTemplate;
     }
-    
+
     /**
      * Returns true if the given parameter matches this type declaration
      * 
@@ -219,6 +221,6 @@ public class TypeDeclaration {
         }
         return matches;
     }
-    
-    
+
+
 }
