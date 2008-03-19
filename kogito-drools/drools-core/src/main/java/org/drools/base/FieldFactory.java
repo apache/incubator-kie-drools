@@ -16,17 +16,22 @@ package org.drools.base;
  * limitations under the License.
  */
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Date;
+
 import org.drools.base.field.BooleanFieldImpl;
 import org.drools.base.field.DoubleFieldImpl;
 import org.drools.base.field.LongFieldImpl;
 import org.drools.base.field.ObjectFieldImpl;
 import org.drools.spi.FieldValue;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
+import org.drools.util.DateUtils;
 
 public class FieldFactory {
     private static final FieldFactory INSTANCE = new FieldFactory();
+
+    private static final String     DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
+    private static final String     DATE_FORMAT_MASK    = getDateFormatMask();
 
     public static FieldFactory getInstance() {
         return FieldFactory.INSTANCE;
@@ -79,8 +84,8 @@ public class FieldFactory {
         } else if ( valueType == ValueType.STRING_TYPE ) {
             field = new ObjectFieldImpl( value.intern() );
         } else if ( valueType == ValueType.DATE_TYPE ) {
-            //MN: I think its fine like this, seems to work !
-            field = new ObjectFieldImpl( value );
+            Date date = DateUtils.parseDate( value );
+            field = new ObjectFieldImpl( date );
         } else if ( valueType == ValueType.ARRAY_TYPE ) {
             //MN: I think its fine like this.
             field = new ObjectFieldImpl( value );
@@ -172,7 +177,12 @@ public class FieldFactory {
             field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.DATE_TYPE ) {
             //MN: I think its fine like this, seems to work !
-            field = new ObjectFieldImpl( value );
+            if( value instanceof String ) {
+                Date date = DateUtils.parseDate( (String) value );
+                field = new ObjectFieldImpl( date );
+            } else {
+                field = new ObjectFieldImpl( value );
+            }
         } else if ( valueType == ValueType.ARRAY_TYPE ) {
             //MN: I think its fine like this.
             field = new ObjectFieldImpl( value );
@@ -233,4 +243,12 @@ public class FieldFactory {
         return value;
     }
 
+    /** Check for the system property override, if it exists */
+    private static String getDateFormatMask() {
+        String fmt = System.getProperty( "drools.dateformat" );
+        if ( fmt == null ) {
+            fmt = FieldFactory.DEFAULT_FORMAT_MASK;
+        }
+        return fmt;
+    }
 }
