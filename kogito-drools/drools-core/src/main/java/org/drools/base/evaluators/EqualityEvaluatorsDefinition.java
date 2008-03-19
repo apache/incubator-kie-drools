@@ -403,7 +403,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
         }
     }
 
-    static class BigIntegerEqualEvaluator extends BaseEvaluator {
+    public static class BigIntegerEqualEvaluator extends BaseEvaluator {
         /**
          *
          */

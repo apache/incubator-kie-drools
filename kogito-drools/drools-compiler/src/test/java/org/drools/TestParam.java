@@ -1,6 +1,8 @@
 package org.drools;
 
-public class TestParam {
+import java.io.Serializable;
+
+public class TestParam implements Serializable {
 
     private String value1;
     private String value2;

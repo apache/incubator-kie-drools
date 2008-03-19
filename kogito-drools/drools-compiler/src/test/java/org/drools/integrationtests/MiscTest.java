@@ -187,17 +187,15 @@ public class MiscTest extends TestCase {
         cheesery2.setMaturity( Maturity.YOUNG );
         workingMemory.insert( cheesery2 );
 
-//        workingMemory   = SerializationHelper.serializeObject(workingMemory);
-//        list = (List) workingMemory.getGlobal( "list" );
+        workingMemory   = SerializationHelper.serializeObject(workingMemory);
+        list = (List) workingMemory.getGlobal( "list" );
         workingMemory.fireAllRules();
 
         assertEquals( 2,
                       list.size() );
 
-        assertEquals( cheesery1,
-                      list.get( 0 ) );
-        assertEquals( cheesery2,
-                      list.get( 1 ) );
+        assertTrue( cheesery1.equals( list.get( 0 ) ));
+        assertTrue( cheesery2.equals( list.get( 1 ) ));
     }
 
     public void testPrimitiveArray() throws Exception {
@@ -208,8 +206,8 @@ public class MiscTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        final List result = new ArrayList();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List result = new ArrayList();
         workingMemory.setGlobal( "result",
                                  result );
 
@@ -218,6 +216,9 @@ public class MiscTest extends TestCase {
         p1.setArrayAttribute( new String[]{"a", "b"} );
 
         workingMemory.insert( p1 );
+
+        workingMemory   = SerializationHelper.serializeObject(workingMemory);
+        result = (List) workingMemory.getGlobal( "result" );
 
         workingMemory.fireAllRules();
         assertEquals( 3,
@@ -332,7 +333,7 @@ public class MiscTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Map map = new HashMap();
         List list = new ArrayList();
@@ -448,9 +449,9 @@ public class MiscTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        WorkingMemory wm = ruleBase.newStatefulSession();
 
-        final List list = new ArrayList();
+        List list = new ArrayList();
         wm.setGlobal( "list",
                       list );
 
@@ -458,10 +459,10 @@ public class MiscTest extends TestCase {
         tp1.setValue2( "boo" );
         wm.insert( tp1 );
 
+        wm   = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
-        assertEquals( 1,
-                      list.size() );
+        assertEquals( 1, ((List)wm.getGlobal("list")).size() );
     }
 
     public void testFactBindings() throws Exception {
@@ -520,7 +521,7 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -539,10 +540,11 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( nullPerson );
 
+        workingMemory   = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
-        System.out.println( list.get( 0 ) );
+        System.out.println( ((List)workingMemory.getGlobal("list")).get( 0 ) );
         assertEquals( 3,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
 
     }
 
@@ -563,12 +565,13 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( new Attribute() );
         workingMemory.insert( new Message() );
+        workingMemory   = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
         assertEquals( "X",
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
 
     }
 
@@ -583,9 +586,9 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-        final List list = new ArrayList();
+        List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
 
@@ -593,10 +596,11 @@ public class MiscTest extends TestCase {
                                            5 );
         workingMemory.insert( stilton );
 
+        workingMemory   = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
-        assertEquals( new Integer( 5 ),
-                      list.get( 0 ) );
+        assertEquals( 5,
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
     }
 
     private RuleBase loadRuleBase(final Reader reader) throws IOException,
@@ -638,10 +642,10 @@ public class MiscTest extends TestCase {
         workingMemory.insert( new Cheese( "brie",
                                           33 ) );
 
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
         assertEquals( 1,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
     }
 
     public void testHelloWorld() throws Exception {
@@ -667,7 +671,7 @@ public class MiscTest extends TestCase {
         workingMemory.fireAllRules();
         assertTrue( message.isFired() );
         assertEquals( message,
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
 
     }
 
@@ -688,12 +692,12 @@ public class MiscTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         workingMemory.insert( stilton );
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
 
         workingMemory.fireAllRules();
 
         assertEquals( "stilton",
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
     }
 
     public void testLiteralWithBoolean() throws Exception {
@@ -715,12 +719,12 @@ public class MiscTest extends TestCase {
                                                  12 );
         bill.setAlive( true );
         workingMemory.insert( bill );
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
 
         workingMemory.fireAllRules();
 
         assertEquals( bill,
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
     }
 
     public void testFactTemplate() throws Exception {
@@ -744,16 +748,17 @@ public class MiscTest extends TestCase {
         stilton.setFieldValue( "price",
                                new Integer( 100 ) );
         workingMemory.insert( stilton );
+        // TODO does not work for facts now. adding equals(object) to it.
 //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
 
         workingMemory.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
         assertEquals( stilton,
-                      list.get( 0 ) );
-        final Fact fact = (Fact) list.get( 0 );
-        assertSame( stilton,
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
+        final Fact fact = (Fact) ((List)workingMemory.getGlobal("list")).get( 0 );
+        assertEquals( stilton,
                     fact );
         assertEquals( new Integer( 200 ),
                       fact.getFieldValue( "price" ) );
@@ -777,24 +782,24 @@ public class MiscTest extends TestCase {
         final State state = new State( "initial" );
         workingMemory.insert( state,
                               true );
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
 
         state.setFlag( true );
         assertEquals( 1,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
 
         workingMemory.fireAllRules();
         assertEquals( 2,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
 
         state.setState( "finished" );
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
         assertEquals( 3,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
 
     }
 
@@ -825,11 +830,11 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( bill );
         workingMemory.insert( ben );
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
     }
 
 	public void testBigDecimalIntegerLiteral() throws Exception {
@@ -841,7 +846,7 @@ public class MiscTest extends TestCase {
 
 		final RuleBase ruleBase = getRuleBase();
 		ruleBase.addPackage(pkg);
-		final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+		WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
 		final List list = new ArrayList();
 		workingMemory.setGlobal("list", list);
@@ -851,9 +856,10 @@ public class MiscTest extends TestCase {
 		bill.setBigInteger(new BigInteger("42"));
 
 		workingMemory.insert(bill);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
 		workingMemory.fireAllRules();
 
-		assertEquals(6, list.size());
+		assertEquals(6, ((List)workingMemory.getGlobal("list")).size());
 	}
 
 
@@ -874,7 +880,8 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final StatefulSession session = ruleBase.newStatefulSession();
+        StatefulSession session = ruleBase.newStatefulSession();
+
         session.fireAllRules();
 
     }
@@ -902,16 +909,17 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        final StatefulSession session = ruleBase.newStatefulSession();
+        StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
         session.setGlobal( "list",
                            list );
+        session = SerializationHelper.serializeObject(session);
         session.fireAllRules();
 
         assertEquals( 1,
-                      list.size() );
+                      ((List)session.getGlobal("list")).size() );
         assertEquals( "first",
-                      list.get( 0 ) );
+                      ((List)session.getGlobal("list")).get( 0 ) );
     }
 
     public void testCell() throws Exception {
@@ -928,6 +936,7 @@ public class MiscTest extends TestCase {
         WorkingMemory memory = ruleBase.newStatefulSession();
         memory.insert( cell1 );
         memory.insert( cell );
+        // TODO org.drools.spi.ConsequenceException: org.drools.FactException: Update error: handle not found for object: org.drools.Cell@1654. Is it in the working memory?
 //        memory    = SerializationHelper.serializeObject(memory);
         memory.fireAllRules();
         assertEquals( 9,
@@ -1019,12 +1028,12 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( new Cheese( "stilton",
                                           5 ) );
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         // now have one more
         assertEquals( 2,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
 
     }
 
@@ -1066,11 +1075,11 @@ public class MiscTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         workingMemory.insert( stilton );
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( stilton,
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
     }
 
     public void testJaninoEval() throws Exception {
@@ -1097,11 +1106,11 @@ public class MiscTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         workingMemory.insert( stilton );
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( stilton,
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
     }
 
     public void testEvalMore() throws Exception {
@@ -1120,11 +1129,11 @@ public class MiscTest extends TestCase {
 
         final Person foo = new Person( "foo" );
         workingMemory.insert( foo );
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( foo,
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
     }
 
     public void testReturnValue() throws Exception {
@@ -1153,13 +1162,13 @@ public class MiscTest extends TestCase {
                                                  10 );
         workingMemory.insert( jane );
 
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( jane,
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
         assertEquals( peter,
-                      list.get( 1 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 1 ) );
     }
 
     public void testPredicate() throws Exception {
@@ -1170,7 +1179,7 @@ public class MiscTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "two",
                                  new Integer( 2 ) );
@@ -1188,12 +1197,13 @@ public class MiscTest extends TestCase {
                                                  10 );
         workingMemory.insert( jane );
 
+        workingMemory   = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( jane,
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
         assertEquals( peter,
-                      list.get( 1 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 1 ) );
     }
 
     public void testNullBehaviour() throws Exception {
@@ -1241,10 +1251,10 @@ public class MiscTest extends TestCase {
         workingMemory.insert( p1 );
         workingMemory.insert( p2 );
 
-//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
         assertEquals( 2,
-                      foo.size() );
+                      ((List)workingMemory.getGlobal("messages")).size() );
 
     }
 
@@ -1257,7 +1267,7 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list1 = new ArrayList();
         workingMemory.setGlobal( "list1",
                                  list1 );
@@ -1282,29 +1292,33 @@ public class MiscTest extends TestCase {
         Person p = new Person( "stilton" );
         workingMemory.insert( p );
 
+        // TODO - can not serializing rule with basic from: java.io.EOFException.
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        workingMemory.fireAllRules();
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         // from using a global
         assertEquals( 2,
-                      list1.size() );
+                      ((List)workingMemory.getGlobal("list1")).size() );
         assertEquals( cheddar,
-                      list1.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list1")).get( 0 ) );
         assertEquals( stilton,
-                      list1.get( 1 ) );
+                      ((List)workingMemory.getGlobal("list1")).get( 1 ) );
 
         // from using a declaration
         assertEquals( 2,
-                      list2.size() );
+                      ((List)workingMemory.getGlobal("list2")).size() );
         assertEquals( cheddar,
-                      list2.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list2")).get( 0 ) );
         assertEquals( stilton,
-                      list2.get( 1 ) );
+                      ((List)workingMemory.getGlobal("list2")).get( 1 ) );
 
         // from using a declaration
         assertEquals( 1,
-                      list3.size() );
+                      ((List)workingMemory.getGlobal("list3")).size() );
         assertEquals( stilton,
-                      list3.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list3")).get( 0 ) );
     }
 
     public void testFromWithParams() throws Exception {
@@ -1316,8 +1330,8 @@ public class MiscTest extends TestCase {
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        final List list = new ArrayList();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List list = new ArrayList();
         final Object globalObject = new Object();
         workingMemory.setGlobal( "list",
                                  list );
@@ -1329,17 +1343,19 @@ public class MiscTest extends TestCase {
         final Person bob = new Person( "bob" );
         workingMemory.insert( bob );
 
+        // TODO java.io.NotSerializableException: org.mvel.util.FastList
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 6,
-                      list.size() );
+                      ((List)workingMemory.getGlobal("list")).size() );
 
-        final List array = (List) list.get( 0 );
+        final List array = (List) ((List)workingMemory.getGlobal("list")).get( 0 );
         assertEquals( 3,
                       array.size() );
         final Person p = (Person) array.get( 0 );
-        assertSame( p,
-                    bob );
+        assertEquals( p,
+                      bob );
 
         assertEquals( new Integer( 42 ),
                       array.get( 1 ) );
@@ -1350,13 +1366,13 @@ public class MiscTest extends TestCase {
         assertEquals( "y",
                       nested.get( 1 ) );
 
-        final Map map = (Map) list.get( 1 );
+        final Map map = (Map) ((List)workingMemory.getGlobal("list")).get( 1 );
         assertEquals( 2,
                       map.keySet().size() );
 
         assertTrue( map.keySet().contains( bob ) );
-        assertSame( globalObject,
-                    map.get( bob ) );
+        assertEquals( globalObject,
+                      map.get( bob ) );
 
         assertTrue( map.keySet().contains( "key1" ) );
         final Map nestedMap = (Map) map.get( "key1" );
@@ -1367,13 +1383,13 @@ public class MiscTest extends TestCase {
                       nestedMap.get( "key2" ) );
 
         assertEquals( new Integer( 42 ),
-                      list.get( 2 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 2 ) );
         assertEquals( "literal",
-                      list.get( 3 ) );
-        assertSame( bob,
-                    list.get( 4 ) );
-        assertSame( globalObject,
-                    list.get( 5 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 3 ) );
+        assertEquals( bob,
+                    ((List)workingMemory.getGlobal("list")).get( 4 ) );
+        assertEquals( globalObject,
+                    ((List)workingMemory.getGlobal("list")).get( 5 ) );
     }
 
     public void testFromWithNewConstructor() throws Exception {
@@ -1383,6 +1399,7 @@ public class MiscTest extends TestCase {
         builder.addPackage( descr );
         Package pkg = builder.getPackage();
         pkg.checkValidity();
+        pkg = SerializationHelper.serializeObject(pkg);
     }
     
     /**
@@ -1407,7 +1424,7 @@ public class MiscTest extends TestCase {
 
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage(pkg);
-        final StatefulSession session = ruleBase.newStatefulSession();
+        StatefulSession session = ruleBase.newStatefulSession();
         
         WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( session );
         List list = new ArrayList();
@@ -1417,11 +1434,13 @@ public class MiscTest extends TestCase {
         cheesery.addCheese(  new Cheese("stilton", 22) );
         
         session.insert( cheesery );
-        
+
+        // TODO java.io.EOFException
+//        session = SerializationHelper.serializeObject(session);
         session.fireAllRules();                 
         
-        assertEquals( 1, list.size());
-        assertEquals( "stilton", list.get(0));
+        assertEquals( 1, ((List)session.getGlobal("list")).size());
+        assertEquals( "stilton", ((List)session.getGlobal("list")).get(0));
 }    
 
     public void testWithInvalidRule() throws Exception {
@@ -1506,7 +1525,7 @@ public class MiscTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1516,10 +1535,11 @@ public class MiscTest extends TestCase {
                                            5 );
         workingMemory.insert( stilton );
 
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( new Integer( 5 ),
-                      list.get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
     }
 
     public void testAssertRetract() throws Exception {
@@ -1531,7 +1551,7 @@ public class MiscTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -1541,15 +1561,18 @@ public class MiscTest extends TestCase {
                                                    "cheese" );
         person.setStatus( "start" );
         workingMemory.insert( person );
+
+        // TODO org.drools.spi.ConsequenceException: org.drools.FactException: Update error: handle not found for object:
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 5,
-                      list.size() );
-        assertTrue( list.contains( "first" ) );
-        assertTrue( list.contains( "second" ) );
-        assertTrue( list.contains( "third" ) );
-        assertTrue( list.contains( "fourth" ) );
-        assertTrue( list.contains( "fifth" ) );
+                      ((List)workingMemory.getGlobal("list")).size() );
+        assertTrue( ((List)workingMemory.getGlobal("list")).contains( "first" ) );
+        assertTrue( ((List)workingMemory.getGlobal("list")).contains( "second" ) );
+        assertTrue( ((List)workingMemory.getGlobal("list")).contains( "third" ) );
+        assertTrue( ((List)workingMemory.getGlobal("list")).contains( "fourth" ) );
+        assertTrue( ((List)workingMemory.getGlobal("list")).contains( "fifth" ) );
 
     }
 
