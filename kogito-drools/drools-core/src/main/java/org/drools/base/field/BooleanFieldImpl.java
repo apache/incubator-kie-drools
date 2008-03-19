@@ -23,6 +23,8 @@ import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * @author etirelli
@@ -134,5 +136,14 @@ public class BooleanFieldImpl
     public boolean isStringField() {
         return false;
     }
+
+    public BigDecimal getBigDecimalValue() {
+        throw new RuntimeDroolsException( "Conversion to BigDecimal not supported for type boolean" );
+    }
+
+    public BigInteger getBigIntegerValue() {
+        throw new RuntimeDroolsException( "Conversion to BigInteger not supported for type boolean" );
+    }
+
 
 }

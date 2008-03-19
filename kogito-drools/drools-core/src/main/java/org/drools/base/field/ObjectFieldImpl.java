@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldValue;
@@ -224,6 +226,28 @@ public class ObjectFieldImpl
     public boolean isStringField() {
         return this.isString;
     }
+
+	public BigDecimal getBigDecimalValue() {
+		if (this.value instanceof BigDecimal) return (BigDecimal) this.value;
+		if (this.isNumber) {
+			return new BigDecimal(((Number) value).doubleValue());
+		} else if (this.isString) {
+			return new BigDecimal((String) value);
+		}
+		if (this.value == null) return null;
+        throw new RuntimeDroolsException( "Conversion to BigDecimal not supported for type: " + this.value.getClass() );
+	}
+
+	public BigInteger getBigIntegerValue() {
+		if (this.value instanceof BigInteger) return (BigInteger) this.value;
+		if (this.isNumber) {
+			return BigInteger.valueOf(((Number) value).longValue());
+		} else if (this.isString) {
+			return new BigInteger((String) value);
+		}
+		if (this.value == null) return null;
+        throw new RuntimeDroolsException( "Conversion to BigInteger not supported for type: " + this.value.getClass() );
+	}
 
     public boolean isEnum() {
         return isEnum;
