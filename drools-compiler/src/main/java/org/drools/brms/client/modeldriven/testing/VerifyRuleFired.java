@@ -1,8 +1,5 @@
 package org.drools.brms.client.modeldriven.testing;
 
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
 public class VerifyRuleFired implements Expectation {
 
@@ -32,24 +29,7 @@ public class VerifyRuleFired implements Expectation {
         this.expectedFire = expectedFire;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        ruleName    = (String)in.readObject();
-        expectedCount   = in.readInt();
-        explanation    = (String)in.readObject();
-        expectedFire    = in.readBoolean();
-        successResult   = in.readBoolean();
-        actualResult    = in.readInt();
-    }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(ruleName);
-        out.writeInt(expectedCount);
-        out.writeObject(explanation);
-        out.writeBoolean(expectedFire);
-        out.writeBoolean(successResult);
-        out.writeInt(actualResult);
-    }
-    
     public boolean wasSuccessful() {
         return successResult.booleanValue();
     }

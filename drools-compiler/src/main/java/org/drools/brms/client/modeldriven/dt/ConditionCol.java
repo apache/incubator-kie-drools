@@ -1,6 +1,5 @@
 package org.drools.brms.client.modeldriven.dt;
 
-import org.drools.brms.client.modeldriven.brl.PortableObject;
 
 /**
  * This is the config for a condition column. Typically many of them have their constraints added.
@@ -8,7 +7,7 @@ import org.drools.brms.client.modeldriven.brl.PortableObject;
  * @author Michael Neale
  *
  */
-public class ConditionCol implements PortableObject {
+public class ConditionCol extends DTColumnConfig {
 
 	/**
 	 * What is displayed at the top
@@ -46,6 +45,11 @@ public class ConditionCol implements PortableObject {
 	 */
 	public String operator;
 
+
+	/**
+	 * A comma separated list of valid values. Optional.
+	 */
+	public String valueList;
 
 
 }

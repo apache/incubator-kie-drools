@@ -1,13 +1,11 @@
 package org.drools.brms.client.modeldriven.dt;
 
-import org.drools.brms.client.modeldriven.brl.PortableObject;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
 import org.drools.brms.client.modeldriven.brl.PortableObject;
 
 /**
@@ -16,6 +14,7 @@ import org.drools.brms.client.modeldriven.brl.PortableObject;
  * interface in the decision tables module).
  *
  * This works by taking the column definitions, and combining them with the table of data to produce rule models.
+ *
  *
  * @author Michael Neale
  */
@@ -49,24 +48,115 @@ public class GuidedDecisionTable implements PortableObject {
 	 */
 	public String[][] data = new String[0][0];
 
+	/**
+	 * The width to display the description column.
+	 */
+	public int descriptionWidth = -1;
+
 	//TODO: add in precondition(s)
 
 
 	public GuidedDecisionTable() {}
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        tableName       = (String)in.readObject();
-        attributeCols   = (List)in.readObject();
-        conditionCols   = (List)in.readObject();
-        actionCols      = (List)in.readObject();
-        data   = (String[][])in.readObject();
-    }
+//	/**
+//	 * Will return an attribute col, or condition or action, depending on what column is requested.
+//	 * This works through attributes, conditions and then actions, in left to right manner.
+//	 */
+//	public DTColumnConfig getColumnConfiguration(int index) {
+//		if (index < attributeCols.size()) {
+//			return (DTColumnConfig) attributeCols.get(index);
+//		} else if (index < attributeCols.size() + conditionCols.size()) {
+//			return (DTColumnConfig) conditionCols.get(index - attributeCols.size());
+//		} else {
+//			return (DTColumnConfig) actionCols.get(index - attributeCols.size() - conditionCols.size());
+//		}
+//	}
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(tableName);
-        out.writeObject(attributeCols);
-        out.writeObject(conditionCols);
-        out.writeObject(actionCols);
-        out.writeObject(data);
-    }
+	/**
+	 * This will return a list of valid values. if there is no such "enumeration" of values,
+	 * then it will return an empty array.
+	 */
+	public String[] getValueList(DTColumnConfig col, SuggestionCompletionEngine sce) {
+		if (col instanceof AttributeCol) {
+			AttributeCol at = (AttributeCol) col;
+			if (at.attr.equals("no-loop") || at.attr.equals("enabled")) {
+				return new String[] {"true", "false"};
+			}
+		} else if (col instanceof ConditionCol) {
+			//conditions: if its a formula etc, just return String[0], otherwise check with the sce
+			ConditionCol c = (ConditionCol) col;
+			if (c.constraintValueType == ISingleFieldConstraint.TYPE_RET_VALUE || c.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE) {
+				return new String[0];
+			} else {
+				if (c.valueList != null && !"".equals(c.valueList)) {
+					return c.valueList.split(",");
+				} else {
+					String[] r = sce.getEnumValues(c.factType, c.factField);
+					return (r != null)? r : new String[0];
+				}
+			}
+		} else if (col instanceof ActionSetFieldCol) {
+			ActionSetFieldCol c = (ActionSetFieldCol) col;
+			if (c.valueList != null && !"".equals(c.valueList)) {
+				return c.valueList.split(",");
+			} else {
+				String[] r = sce.getEnumValues(getBoundFactType(c.boundName), c.factField);
+				return (r != null)? r : new String[0];
+			}
+		} else if (col instanceof ActionInsertFactCol) {
+			ActionInsertFactCol c = (ActionInsertFactCol) col;
+			if (c.valueList != null && !"".equals(c.valueList)) {
+				return c.valueList.split(",");
+			} else {
+				String[] r = sce.getEnumValues(c.factType, c.factField);
+				return (r != null)? r : new String[0];
+			}
+		}
+
+		return new String[0];
+	}
+
+	private String getBoundFactType(String boundName) {
+		for (Iterator iterator = conditionCols.iterator(); iterator.hasNext();) {
+			ConditionCol c = (ConditionCol) iterator.next();
+ 	 		if (c.boundName.equals(boundName)) {
+ 	 			return c.factType;
+ 	 		}
+		}
+		return null;
+	}
+
+	public boolean isNumeric(DTColumnConfig col, SuggestionCompletionEngine sce) {
+		if (col instanceof AttributeCol) {
+			AttributeCol at = (AttributeCol) col;
+			if (at.attr.equals("salience")) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if (col instanceof ConditionCol) {
+			ConditionCol c = (ConditionCol) col;
+			if (c.constraintValueType == ISingleFieldConstraint.TYPE_LITERAL) {
+				String ft = sce.getFieldType(c.factType, c.factField);
+				if (ft != null && ft.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+					return true;
+				}
+			}
+		} else if (col instanceof ActionSetFieldCol) {
+			ActionSetFieldCol c = (ActionSetFieldCol) col;
+			String ft = sce.getFieldType(getBoundFactType(c.boundName), c.factField);
+			if (ft != null && ft.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+				return true;
+			}
+		} else if (col instanceof ActionInsertFactCol) {
+			ActionInsertFactCol c = (ActionInsertFactCol) col;
+			String ft = sce.getFieldType(c.factType, c.factField);
+			if (ft != null && ft.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+				return true;
+			}
+		}
+		//we can reuse text filter from guided editor to enforce this for data entry.
+		return false;
+	}
+
 }

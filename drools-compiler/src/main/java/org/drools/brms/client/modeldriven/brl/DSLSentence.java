@@ -1,8 +1,5 @@
 package org.drools.brms.client.modeldriven.brl;
 
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
-import java.io.IOException;
 
 /**
  * This represents a DSL sentence.
@@ -15,13 +12,7 @@ public class DSLSentence
 
     public String sentence;
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        sentence    = (String)in.readObject();
-    }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(sentence);
-    }
     /**
      * This will strip off any residual "{" stuff...
      */
