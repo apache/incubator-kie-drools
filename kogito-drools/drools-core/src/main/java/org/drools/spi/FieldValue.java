@@ -17,6 +17,8 @@ package org.drools.spi;
  */
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public interface FieldValue
     extends
@@ -25,6 +27,10 @@ public interface FieldValue
     public Object getValue();
 
     public char getCharValue();
+
+    public BigDecimal getBigDecimalValue();
+
+    public BigInteger getBigIntegerValue();
 
     public int getIntValue();
 
@@ -39,7 +45,7 @@ public interface FieldValue
     public double getDoubleValue();
 
     public boolean getBooleanValue();
-    
+
     public boolean isNull();
 
     public boolean isBooleanField();
@@ -55,7 +61,7 @@ public interface FieldValue
      * @return
      */
     public boolean isCollectionField();
-    
+
     public boolean isStringField();
 
 }
