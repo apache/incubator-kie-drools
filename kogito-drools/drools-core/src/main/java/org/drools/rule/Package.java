@@ -521,5 +521,6 @@ public class Package
         this.staticImports.clear();
         this.globals.clear();
         this.factTemplates.clear();
+        this.typeDeclarations.clear();
     }
 }
