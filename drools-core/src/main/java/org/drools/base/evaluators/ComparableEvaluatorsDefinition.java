@@ -17,16 +17,15 @@
  */
 package org.drools.base.evaluators;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Comparator;
 import java.util.Date;
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
 
 import org.drools.base.BaseEvaluator;
-import org.drools.base.ShadowProxy;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.CharVariableContextEntry;

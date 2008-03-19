@@ -16,8 +16,23 @@ package org.drools.integrationtests;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Reader;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
 import org.drools.Address;
@@ -26,7 +41,6 @@ import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
 import org.drools.Cheesery;
-import org.drools.Cheesery.Maturity;
 import org.drools.Child;
 import org.drools.DomainObjectHolder;
 import org.drools.FactA;
@@ -61,6 +75,7 @@ import org.drools.StatefulSession;
 import org.drools.StatelessSession;
 import org.drools.TestParam;
 import org.drools.WorkingMemory;
+import org.drools.Cheesery.Maturity;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.base.ClassObjectFilter;
@@ -71,9 +86,9 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
+import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -101,21 +116,6 @@ import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Reader;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest extends TestCase {
 
@@ -138,7 +138,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final Cheese cheese = new Cheese( "stilton",
                                           15 );
@@ -146,10 +146,10 @@ public class MiscTest extends TestCase {
         List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
+        workingMemory   = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
-        list = (List) workingMemory.getGlobal( "list" );
+        list    = (List)workingMemory.getGlobal("list");
         assertEquals( 4,
                       list.size() );
 
@@ -170,7 +170,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         List list = new ArrayList();
@@ -187,30 +187,17 @@ public class MiscTest extends TestCase {
         cheesery2.setMaturity( Maturity.YOUNG );
         workingMemory.insert( cheesery2 );
 
+//        workingMemory   = SerializationHelper.serializeObject(workingMemory);
+//        list = (List) workingMemory.getGlobal( "list" );
         workingMemory.fireAllRules();
 
         assertEquals( 2,
                       list.size() );
 
-        assertSame( cheesery1, list.get( 0 ) );
         assertEquals( cheesery1,
                       list.get( 0 ) );
         assertEquals( cheesery2,
                       list.get( 1 ) );
-        
-        // now try it again with the list from a serialised WM
-        workingMemory   = ruleBase.newStatefulSession( new ByteArrayInputStream( SerializationHelper.serializeOut(  workingMemory  )) );        
-        list = (List) workingMemory.getGlobal( "list" );
-        workingMemory.fireAllRules();
-
-        assertEquals( 2,
-                      list.size() );
-
-        assertNotSame( cheesery1, list.get( 0 ) );
-        assertEquals( cheesery1,
-                      list.get( 0 ) );
-        assertEquals( cheesery2,
-                      list.get( 1 ) );        
     }
 
     public void testPrimitiveArray() throws Exception {
@@ -220,7 +207,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List result = new ArrayList();
         workingMemory.setGlobal( "result",
@@ -244,6 +231,25 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testMVELSoundex() throws Exception {
+
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "MVEL_soundex.drl" ) );
+        RuleBase ruleBase = loadRuleBase( reader );
+
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+        Cheese c = new Cheese( "fubar",
+                               2 );
+
+        workingMemory.insert( c );
+        workingMemory.fireAllRules();
+        assertEquals( 42,
+                      c.getPrice() );
+    }
+
     public void testGlobals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -252,7 +258,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -266,11 +272,11 @@ public class MiscTest extends TestCase {
                                            5 );
         workingMemory.insert( stilton );
 
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( new Integer( 5 ),
-                      ((List) workingMemory.getGlobal( "list" )).get( 0 ) );
+                      ((List)workingMemory.getGlobal("list")).get( 0 ) );
     }
 
     public void testGlobals2() throws Exception {
@@ -281,7 +287,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -298,24 +304,24 @@ public class MiscTest extends TestCase {
                                            5 );
         workingMemory.insert( stilton );
 
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 1,
-                      ((List) workingMemory.getGlobal( "results" )).size() );
+                      ((List)workingMemory.getGlobal("results")).size() );
         assertEquals( "memberOf",
-                      ((List) workingMemory.getGlobal( "results" )).get( 0 ) );
+                      ((List)workingMemory.getGlobal("results")).get( 0 ) );
 
         final Cheese brie = new Cheese( "brie",
                                         5 );
         workingMemory.insert( brie );
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 2,
-                      ((List) workingMemory.getGlobal( "results" )).size() );
+                      ((List)workingMemory.getGlobal("results")).size() );
         assertEquals( "not memberOf",
-                      ((List) workingMemory.getGlobal( "results" )).get( 1 ) );
+                      ((List)workingMemory.getGlobal("results")).get( 1 ) );
     }
 
     public void testCustomGlobalResolver() throws Exception {
@@ -325,7 +331,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Map map = new HashMap();
@@ -338,8 +344,7 @@ public class MiscTest extends TestCase {
                  string );
 
         workingMemory.setGlobalResolver( new GlobalResolver() {
-            public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             }
 
             public void writeExternal(ObjectOutput out) throws IOException {
@@ -376,7 +381,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Map map = new HashMap();
@@ -399,8 +404,7 @@ public class MiscTest extends TestCase {
                          value );
             }
 
-            public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
+            public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             }
 
             public void writeExternal(ObjectOutput out) throws IOException {
@@ -443,7 +447,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -468,7 +472,7 @@ public class MiscTest extends TestCase {
         // add the package to a rulebase
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List events = new ArrayList();
@@ -514,7 +518,7 @@ public class MiscTest extends TestCase {
         // add the package to a rulebase
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -550,7 +554,7 @@ public class MiscTest extends TestCase {
         // add the package to a rulebase
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         List list = new ArrayList();
@@ -577,7 +581,7 @@ public class MiscTest extends TestCase {
         // add the package to a rulebase
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -612,7 +616,7 @@ public class MiscTest extends TestCase {
         // add the package to a rulebase
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         // load up the rulebase
         return ruleBase;
     }
@@ -634,7 +638,7 @@ public class MiscTest extends TestCase {
         workingMemory.insert( new Cheese( "brie",
                                           33 ) );
 
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
         assertEquals( 1,
                       list.size() );
@@ -659,7 +663,7 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( message );
         workingMemory.insert( "boo" );
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
         assertTrue( message.isFired() );
         assertEquals( message,
@@ -674,7 +678,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -684,7 +688,7 @@ public class MiscTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         workingMemory.insert( stilton );
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
 
         workingMemory.fireAllRules();
 
@@ -699,7 +703,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -711,7 +715,7 @@ public class MiscTest extends TestCase {
                                                  12 );
         bill.setAlive( true );
         workingMemory.insert( bill );
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
 
         workingMemory.fireAllRules();
 
@@ -726,7 +730,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -740,7 +744,7 @@ public class MiscTest extends TestCase {
         stilton.setFieldValue( "price",
                                new Integer( 100 ) );
         workingMemory.insert( stilton );
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
 
         workingMemory.fireAllRules();
 
@@ -763,7 +767,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -773,7 +777,7 @@ public class MiscTest extends TestCase {
         final State state = new State( "initial" );
         workingMemory.insert( state,
                               true );
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 1,
@@ -802,7 +806,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -821,39 +825,37 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( bill );
         workingMemory.insert( ben );
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( 1,
                       list.size() );
     }
 
-    public void testBigDecimalIntegerLiteral() throws Exception {
+	public void testBigDecimalIntegerLiteral() throws Exception {
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "big_decimal_and_literal.drl" ) ) );
-        final Package pkg = builder.getPackage();
+		final PackageBuilder builder = new PackageBuilder();
+		builder.addPackageFromDrl(new InputStreamReader(getClass()
+				.getResourceAsStream("big_decimal_and_literal.drl")));
+		final Package pkg = builder.getPackage();
 
-        final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+		final RuleBase ruleBase = getRuleBase();
+		ruleBase.addPackage(pkg);
+		final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
-        final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
-                                 list );
+		final List list = new ArrayList();
+		workingMemory.setGlobal("list", list);
 
-        final PersonInterface bill = new Person( "bill",
-                                                 null,
-                                                 12 );
-        bill.setBigDecimal( new BigDecimal( "42" ) );
-        bill.setBigInteger( new BigInteger( "42" ) );
+		final PersonInterface bill = new Person("bill", null, 12);
+		bill.setBigDecimal(new BigDecimal("42"));
+		bill.setBigInteger(new BigInteger("42"));
 
-        workingMemory.insert( bill );
-        workingMemory.fireAllRules();
+		workingMemory.insert(bill);
+		workingMemory.fireAllRules();
 
-        assertEquals( 6,
-                      list.size() );
-    }
+		assertEquals(6, list.size());
+	}
+
 
     // @FIXME
     public void FIXME_testBigDecimalWithFromAndEval() throws Exception {
@@ -877,6 +879,41 @@ public class MiscTest extends TestCase {
 
     }
 
+    public void testMVELConsequenceWithMapsAndArrays() throws Exception {
+        String rule = "package org.test;\n";
+        rule += "import java.util.ArrayList\n";
+        rule += "import java.util.HashMap\n";
+        rule += "global java.util.List list\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "    dialect \"mvel\"";
+        rule += "when\n";
+        rule += "then\n";
+        rule += "    m = new HashMap();\n";
+        rule += "    l = new ArrayList();\n";
+        rule += "    l.add(\"first\");\n";
+        rule += "    m.put(\"content\", l);\n";
+        rule += "    System.out.println(m[\"content\"][0]);\n";
+        rule += "    list.add(m[\"content\"][0]);\n";
+        rule += "end";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final StatefulSession session = ruleBase.newStatefulSession();
+        List list = new ArrayList();
+        session.setGlobal( "list",
+                           list );
+        session.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( "first",
+                      list.get( 0 ) );
+    }
+
     public void testCell() throws Exception {
         final Cell cell1 = new Cell( 9 );
         final Cell cell = new Cell( 0 );
@@ -886,12 +923,12 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         WorkingMemory memory = ruleBase.newStatefulSession();
         memory.insert( cell1 );
         memory.insert( cell );
-        //        memory    = SerializationHelper.serializeObject(memory);
+//        memory    = SerializationHelper.serializeObject(memory);
         memory.fireAllRules();
         assertEquals( 9,
                       cell.getValue() );
@@ -939,11 +976,11 @@ public class MiscTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory memory = ruleBase.newStatefulSession();
 
         memory.insert( p );
-        memory = SerializationHelper.serializeObject( memory );
+        memory    = SerializationHelper.serializeObject(memory);
         memory.fireAllRules();
 
     }
@@ -955,7 +992,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
@@ -982,7 +1019,7 @@ public class MiscTest extends TestCase {
 
         workingMemory.insert( new Cheese( "stilton",
                                           5 ) );
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         // now have one more
@@ -998,13 +1035,13 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
         workingMemory.insert( stilton );
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         final QueryResults results = workingMemory.getQueryResults( "simple query" );
         assertEquals( 1,
                       results.size() );
@@ -1029,7 +1066,7 @@ public class MiscTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         workingMemory.insert( stilton );
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( stilton,
@@ -1047,7 +1084,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "five",
@@ -1060,7 +1097,7 @@ public class MiscTest extends TestCase {
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
         workingMemory.insert( stilton );
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( stilton,
@@ -1074,7 +1111,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1083,7 +1120,7 @@ public class MiscTest extends TestCase {
 
         final Person foo = new Person( "foo" );
         workingMemory.insert( foo );
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( foo,
@@ -1097,7 +1134,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "two",
@@ -1116,7 +1153,7 @@ public class MiscTest extends TestCase {
                                                  10 );
         workingMemory.insert( jane );
 
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
 
         assertEquals( jane,
@@ -1132,7 +1169,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "two",
@@ -1166,7 +1203,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final PersonInterface p1 = new Person( "michael",
@@ -1178,7 +1215,7 @@ public class MiscTest extends TestCase {
         workingMemory.insert( p1 );
         workingMemory.insert( p2 );
 
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
+        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
     }
 
@@ -1189,7 +1226,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List foo = new ArrayList();
         workingMemory.setGlobal( "messages",
@@ -1204,7 +1241,7 @@ public class MiscTest extends TestCase {
         workingMemory.insert( p1 );
         workingMemory.insert( p2 );
 
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
+//        workingMemory    = SerializationHelper.serializeObject(workingMemory);
         workingMemory.fireAllRules();
         assertEquals( 2,
                       foo.size() );
@@ -1218,7 +1255,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list1 = new ArrayList();
@@ -1277,7 +1314,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List list = new ArrayList();
@@ -1347,7 +1384,7 @@ public class MiscTest extends TestCase {
         Package pkg = builder.getPackage();
         pkg.checkValidity();
     }
-
+    
     /**
      * @see JBRULES-1415 Certain uses of from causes NullPointerException in WorkingMemoryLogger
      */
@@ -1365,37 +1402,32 @@ public class MiscTest extends TestCase {
         rule += "end";
 
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ) );
+        builder.addPackageFromDrl( new StringReader( rule ));
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
+        ruleBase.addPackage(pkg);
         final StatefulSession session = ruleBase.newStatefulSession();
-
+        
         WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( session );
         List list = new ArrayList();
-        session.setGlobal( "list",
-                           list );
-
+        session.setGlobal( "list", list );
+        
         Cheesery cheesery = new Cheesery();
-        cheesery.addCheese( new Cheese( "stilton",
-                                        22 ) );
-
+        cheesery.addCheese(  new Cheese("stilton", 22) );
+        
         session.insert( cheesery );
-
-        session.fireAllRules();
-
-        assertEquals( 1,
-                      list.size() );
-        assertEquals( "stilton",
-                      list.get( 0 ) );
-    }
+        
+        session.fireAllRules();                 
+        
+        assertEquals( 1, list.size());
+        assertEquals( "stilton", list.get(0));
+}    
 
     public void testWithInvalidRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule.drl" ) ) );
         final Package pkg = builder.getPackage();
-        // FIXME
         // Mark: please check if the conseqeuence/should/shouldn't be built
         // Rule badBoy = pkg.getRules()[0];
         // assertFalse(badBoy.isValid());
@@ -1410,7 +1442,7 @@ public class MiscTest extends TestCase {
             assertNotNull( e.getMessage() );
             runtime = e;
         }
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         assertTrue( builder.getErrors().getErrors().length > 0 );
 
         final String pretty = builder.getErrors().toString();
@@ -1473,7 +1505,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1498,7 +1530,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1528,7 +1560,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese mussarela = new Cheese( "Mussarela",
@@ -1581,7 +1613,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
@@ -1590,7 +1622,7 @@ public class MiscTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        assertTrue( ((CustomConsequenceExceptionHandler) ((ReteooRuleBase) ruleBase).getConfiguration().getConsequenceExceptionHandler()).isCalled() );
+        assertTrue( ((CustomConsequenceExceptionHandler)((ReteooRuleBase)ruleBase).getConfiguration().getConsequenceExceptionHandler()).isCalled() );
     }
 
     public static class CustomConsequenceExceptionHandler
@@ -1609,13 +1641,12 @@ public class MiscTest extends TestCase {
             return this.called;
         }
 
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            called = in.readBoolean();
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            called  = in.readBoolean();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeBoolean( called );
+            out.writeBoolean(called);
         }
     }
 
@@ -1626,7 +1657,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
@@ -1649,7 +1680,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
@@ -1672,7 +1703,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
@@ -1695,7 +1726,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese brie = new Cheese( "brie",
@@ -1717,7 +1748,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list1 = new ArrayList();
@@ -1794,7 +1825,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         List list = new ArrayList();
@@ -1879,7 +1910,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1914,7 +1945,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName2.drl" ) ) );
@@ -1934,15 +1965,15 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         // Adding person with null name and likes attributes
-        final PersonInterface bob = new Person( (String) null,
-                                                (String) null );
+        final PersonInterface bob = new Person( null,
+                                                null );
         bob.setStatus( "P1" );
-        final PersonInterface pete = new Person( (String) null,
-                                                 (String) null );
+        final PersonInterface pete = new Person( null,
+                                                 null );
         bob.setStatus( "P2" );
         workingMemory.insert( bob );
         workingMemory.insert( pete );
@@ -1965,7 +1996,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -1985,7 +2016,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2006,7 +2037,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2039,7 +2070,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg1 );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List orderedFacts = new ArrayList();
@@ -2075,7 +2106,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.fireAllRules();
@@ -2093,7 +2124,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.fireAllRules();
@@ -2135,7 +2166,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stinky",
@@ -2277,7 +2308,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final Person p1 = new Person( "p1",
@@ -2363,7 +2394,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2388,7 +2419,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List matchlist = new ArrayList();
@@ -2430,7 +2461,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase( config );
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List sensors = new ArrayList();
@@ -2461,7 +2492,7 @@ public class MiscTest extends TestCase {
 
             RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg );
-            ruleBase = SerializationHelper.serializeObject( ruleBase );
+            ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
             Assert.fail( "Should have thrown an InvalidRulePackage" );
         } catch ( final InvalidRulePackage e ) {
@@ -2480,7 +2511,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2517,7 +2548,7 @@ public class MiscTest extends TestCase {
 
             RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg );
-            ruleBase = SerializationHelper.serializeObject( ruleBase );
+            ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
             fail( "Should have trown an exception" );
         } catch ( final InvalidRulePackage e ) {
@@ -2535,7 +2566,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
@@ -2565,7 +2596,7 @@ public class MiscTest extends TestCase {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportConflict.drl" ) ) );
         final Package pkg = builder.getPackage();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
     }
 
     public void testEmptyIdentifier() throws Exception {
@@ -2575,7 +2606,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final List result = new ArrayList();
         workingMemory.setGlobal( "results",
@@ -2600,7 +2631,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         final Map result = new HashMap();
         workingMemory.setGlobal( "results",
@@ -2658,7 +2689,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.insert( new Child( "gp" ) );
@@ -2673,7 +2704,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -2711,7 +2742,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2769,7 +2800,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -2799,7 +2830,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
         final List agendaList = new ArrayList();
@@ -2889,7 +2920,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -2914,7 +2945,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "value",
@@ -2930,7 +2961,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2969,7 +3000,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -2998,7 +3029,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3026,7 +3057,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3060,7 +3091,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3087,7 +3118,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Cheese stilton = new Cheese( "stilton",
@@ -3119,7 +3150,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3182,7 +3213,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3240,7 +3271,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3255,12 +3286,35 @@ public class MiscTest extends TestCase {
         workingMemory.insert( stilton );
 
         workingMemory.fireAllRules();
-
         assertEquals( 1,
                       list.size() );
 
         assertEquals( bob,
                       list.get( 0 ) );
+    }
+
+    public void testMatchesMVEL() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesMVEL.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        final StatefulSession session = ruleBase.newStatefulSession();
+
+        final List results = new ArrayList();
+        session.setGlobal( "results",
+                           results );
+
+        Map map = new HashMap();
+        map.put( "content",
+                 "hello ;=" );
+        session.insert( map );
+
+        session.fireAllRules();
+
+        assertEquals( 1,
+                      results.size() );
     }
 
     public void testAutomaticBindingsErrors() throws Exception {
@@ -3278,7 +3332,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3308,7 +3362,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3379,7 +3433,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3411,7 +3465,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3436,7 +3490,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3488,7 +3542,7 @@ public class MiscTest extends TestCase {
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
         RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3517,7 +3571,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3557,7 +3611,7 @@ public class MiscTest extends TestCase {
         conf.setShareAlphaNodes( false );
         RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3590,7 +3644,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3616,7 +3670,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -3639,7 +3693,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3689,7 +3743,7 @@ public class MiscTest extends TestCase {
             RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg1 );
             ruleBase.addPackage( pkg2 );
-            ruleBase = SerializationHelper.serializeObject( ruleBase );
+            ruleBase    = SerializationHelper.serializeObject(ruleBase);
             final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
             final List results = new ArrayList();
@@ -3754,7 +3808,7 @@ public class MiscTest extends TestCase {
 
             RuleBase ruleBase = getRuleBase();
             ruleBase.addPackage( pkg1 );
-            ruleBase = SerializationHelper.serializeObject( ruleBase );
+            ruleBase    = SerializationHelper.serializeObject(ruleBase);
             final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
             final List results = new ArrayList();
@@ -3797,7 +3851,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3824,7 +3878,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3857,7 +3911,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3884,7 +3938,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -3998,7 +4052,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -4035,7 +4089,7 @@ public class MiscTest extends TestCase {
         conf.setShadowProxy( true );
         RuleBase rb = RuleBaseFactory.newRuleBase( conf );
         rb.addPackage( builder.getPackage() );
-        rb = SerializationHelper.serializeObject( rb );
+        rb    = SerializationHelper.serializeObject(rb);
         StatefulSession session = rb.newStatefulSession();
 
         List list1 = new ArrayList();
@@ -4096,7 +4150,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -4126,7 +4180,7 @@ public class MiscTest extends TestCase {
         conf.setSequential( true );
         RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         StatelessSession session = ruleBase.newStatelessSession();
         List list = new ArrayList();
@@ -4145,7 +4199,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         StatefulSession session = ruleBase.newStatefulSession();
         List list = new ArrayList();
@@ -4179,7 +4233,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4284,7 +4338,7 @@ public class MiscTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase.addPackage( pkg2 );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -4303,7 +4357,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -4327,7 +4381,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List results = new ArrayList();
@@ -4353,7 +4407,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.fireAllRules();
@@ -4375,7 +4429,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -4434,7 +4488,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
@@ -4465,7 +4519,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -4531,7 +4585,7 @@ public class MiscTest extends TestCase {
 
         try {
             ruleBase.addPackage( builder.getPackage() );
-            ruleBase = SerializationHelper.serializeObject( ruleBase );
+            ruleBase    = SerializationHelper.serializeObject(ruleBase);
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( "Should not raise any exception!" );
@@ -4545,7 +4599,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
@@ -4581,7 +4635,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4623,7 +4677,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4668,7 +4722,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4727,7 +4781,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4755,7 +4809,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4812,7 +4866,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4844,7 +4898,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4869,7 +4923,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4895,7 +4949,7 @@ public class MiscTest extends TestCase {
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
         RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
 
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final StatefulSession session = ruleBase.newStatefulSession();
 
         CheeseEqual cheese = new CheeseEqual( "stilton",
@@ -4911,7 +4965,7 @@ public class MiscTest extends TestCase {
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.IDENTITY );
         RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );
 
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final StatefulSession session = ruleBase.newStatefulSession();
 
         CheeseEqual cheese = new CheeseEqual( "stilton",
@@ -4931,7 +4985,7 @@ public class MiscTest extends TestCase {
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
@@ -4948,4 +5002,47 @@ public class MiscTest extends TestCase {
                       list.size() );
         assertTrue( list.contains( b.getObject() ) );
     }
+
+    public void testNPEOnMVELAlphaPredicates() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NPEOnMVELPredicate.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase    = SerializationHelper.serializeObject(ruleBase);
+        final StatefulSession session = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        session.setGlobal( "results",
+                           list );
+
+        Cheese cheese = new Cheese( "stilton",
+                                    10 );
+        Cheesery cheesery = new Cheesery();
+        cheesery.addCheese( cheese );
+        Person bob = new Person( "bob",
+                                 "stilton" );
+        Cheese cheese2 = new Cheese();
+        bob.setCheese( cheese2 );
+
+        FactHandle p = session.insert( bob );
+        FactHandle c = session.insert( cheesery );
+
+        session.fireAllRules();
+
+        assertEquals( "should not have fired",
+                      0,
+                      list.size() );
+
+        cheese2.setType( "stilton" );
+        session.update( p,
+                        bob );
+        session.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+
+    }
+
 }

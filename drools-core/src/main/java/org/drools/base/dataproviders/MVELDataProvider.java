@@ -71,7 +71,8 @@ public class MVELDataProvider
 
         //this.expression.
         final Object result = MVEL.executeExpression( this.expression,
-                                                      factory );
+                                                      factory );                
+        
         if ( result == null ) {
             return Collections.EMPTY_LIST.iterator();
         } else if ( result instanceof Collection ) {

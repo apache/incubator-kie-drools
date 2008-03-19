@@ -1,14 +1,21 @@
 package org.drools.integrationtests;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
 import org.drools.ClockType;
 import org.drools.OrderEvent;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
-import org.drools.StockTick;
 import org.drools.TemporalSession;
+import org.drools.StockTick;
 import org.drools.WorkingMemory;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
@@ -18,12 +25,6 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.temporal.SessionPseudoClock;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CepEspTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {
@@ -63,9 +64,9 @@ public class CepEspTest extends TestCase {
     public void testEventAssertion() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) );
-        final RuleBase ruleBase = loadRuleBase( reader );
+        RuleBase ruleBase = loadRuleBase( reader );
 
-        final WorkingMemory wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
+        WorkingMemory wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
         final List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -98,12 +99,12 @@ public class CepEspTest extends TestCase {
         assertNotNull( handle3 );
         assertNotNull( handle4 );
 
-// @FIXME_testEventAssertion
-//        assertTrue( handle1.isEvent() );
-//        assertTrue( handle2.isEvent() );
-//        assertTrue( handle3.isEvent() );
-//        assertTrue( handle4.isEvent() );
+        assertTrue( handle1.isEvent() );
+        assertTrue( handle2.isEvent() );
+        assertTrue( handle3.isEvent() );
+        assertTrue( handle4.isEvent() );
 
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         assertEquals( 2,
@@ -135,7 +136,7 @@ public class CepEspTest extends TestCase {
         StockTick tick3 = new StockTick( 3,
                                          "ACME",
                                          10,
-                                         System.currentTimeMillis(),
+                                         System.currentTimeMillis(), 
                                          8 );
         StockTick tick4 = new StockTick( 4,
                                          "DROO",
@@ -157,12 +158,12 @@ public class CepEspTest extends TestCase {
         assertTrue( handle2.isEvent() );
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
-
+        
         EventFactHandle eh1 = (EventFactHandle) handle1;
         EventFactHandle eh2 = (EventFactHandle) handle2;
         EventFactHandle eh3 = (EventFactHandle) handle3;
         EventFactHandle eh4 = (EventFactHandle) handle4;
-
+        
         assertEquals( tick1.getDuration(), eh1.getDuration() );
         assertEquals( tick2.getDuration(), eh2.getDuration() );
         assertEquals( tick3.getDuration(), eh3.getDuration() );
@@ -180,7 +181,7 @@ public class CepEspTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final TemporalSession<SessionPseudoClock> wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
+        TemporalSession<SessionPseudoClock> wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
         final SessionPseudoClock clock = wm.getSessionClock();
 
         clock.setStartupTime( 1000 );
@@ -297,6 +298,7 @@ public class CepEspTest extends TestCase {
         assertTrue( handle7.isEvent() );
         assertTrue( handle8.isEvent() );
 
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         assertEquals( 1,
@@ -376,7 +378,7 @@ public class CepEspTest extends TestCase {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleTimeWindow.drl" ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 
-        final TemporalSession<SessionPseudoClock> wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
+        TemporalSession<SessionPseudoClock> wm = ruleBase.newTemporalSession( ClockType.PSEUDO_CLOCK );
         final List results = new ArrayList();
 
         wm.setGlobal( "results",
@@ -395,6 +397,7 @@ public class CepEspTest extends TestCase {
         assertEquals( 0,
                       handle1.getDuration() );
 
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         clock.advanceTime( 10000 ); // 10 seconds
@@ -439,6 +442,7 @@ public class CepEspTest extends TestCase {
         assertEquals( 0,
                       handle5.getDuration() );
 
+//        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         clock.advanceTime( 10000 ); // 10 seconds
@@ -450,6 +454,7 @@ public class CepEspTest extends TestCase {
         assertEquals( 0,
                       handle6.getDuration() );
 
+        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
     }

@@ -120,7 +120,7 @@ public interface InternalRuleBase
 
 	/**
 	 * Returns the type declaration associated to the given class
-	 *
+	 * 
 	 * @param clazz
 	 * @return
 	 */

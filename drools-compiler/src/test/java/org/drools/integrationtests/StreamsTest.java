@@ -131,11 +131,10 @@ public class StreamsTest extends TestCase {
         assertNotNull( handle3 );
         assertNotNull( handle4 );
 
-// @FIXME_testEventAssertion
-//       assertTrue( handle1.isEvent() );
-//        assertTrue( handle2.isEvent() );
-//        assertTrue( handle3.isEvent() );
-//        assertTrue( handle4.isEvent() );
+        assertTrue( handle1.isEvent() );
+        assertTrue( handle2.isEvent() );
+        assertTrue( handle3.isEvent() );
+        assertTrue( handle4.isEvent() );
 
         wm.fireAllRules();
 
@@ -171,11 +170,10 @@ public class StreamsTest extends TestCase {
         assertNotNull( handle7 );
         assertNotNull( handle8 );
 
-// @FIXME_testEventAssertion
-//        assertTrue( handle5.isEvent() );
-//        assertTrue( handle6.isEvent() );
-//        assertTrue( handle7.isEvent() );
-//        assertTrue( handle8.isEvent() );
+        assertTrue( handle5.isEvent() );
+        assertTrue( handle6.isEvent() );
+        assertTrue( handle7.isEvent() );
+        assertTrue( handle8.isEvent() );
 
         wm.fireAllRules();
 

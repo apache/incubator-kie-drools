@@ -72,14 +72,14 @@ public abstract class BaseNode
     public abstract void attach();
 
     public abstract void attach(InternalWorkingMemory[] workingMemories);
-
+    
     /**
-     * A method that is called for all nodes whose network bellow them
+     * A method that is called for all nodes whose network bellow them 
      * changed, after the change is complete, providing them with an oportunity
      * for state update
      */
     public abstract void networkUpdated();
-
+    
     public void remove(RuleRemovalContext context,
                        ReteooBuilder builder,
                        BaseNode node,

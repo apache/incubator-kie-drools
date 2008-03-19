@@ -21,8 +21,8 @@ import java.util.Set;
 
 import org.drools.base.dataproviders.MVELDataProvider;
 import org.drools.base.mvel.DroolsMVELFactory;
-import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.Dialect;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
@@ -32,11 +32,6 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.DataProvider;
-import org.mvel.compiler.AbstractParser;
-import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
-import org.mvel.integration.impl.ClassImportResolverFactory;
 
 /**
  * A builder for "from" conditional element

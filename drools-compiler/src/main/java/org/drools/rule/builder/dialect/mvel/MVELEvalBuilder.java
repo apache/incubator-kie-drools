@@ -17,15 +17,13 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELEvalExpression;
-import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.Dialect;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.rule.Declaration;
@@ -35,12 +33,6 @@ import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
-import org.drools.spi.DeclarationScopeResolver;
-import org.mvel.compiler.AbstractParser;
-import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
-import org.mvel.util.ParseTools;
 
 /**
  * @author etirelli

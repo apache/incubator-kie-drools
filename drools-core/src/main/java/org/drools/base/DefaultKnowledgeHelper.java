@@ -27,13 +27,14 @@ import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 
+import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.ObjectInput;
 
 public class DefaultKnowledgeHelper
     implements
-    KnowledgeHelper {
+    KnowledgeHelper, Externalizable {
 
     private static final long                  serialVersionUID = 400L;
 
@@ -44,8 +45,8 @@ public class DefaultKnowledgeHelper
     private InternalWorkingMemoryActions workingMemory;
 
     public DefaultKnowledgeHelper() {
-    }
 
+    }
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
     }

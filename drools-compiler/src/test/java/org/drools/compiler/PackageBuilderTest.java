@@ -36,20 +36,20 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.StockTick;
-import org.drools.integrationtests.SerializationHelper;
+import org.drools.WorkingMemory;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.RuleFlowGroupNode;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
 import org.drools.facttemplates.Fact;
+import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -995,7 +995,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // test JANINO with property settings
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
-        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
         builder = new PackageBuilder( conf );
         builder.addPackage( pkgDescr );
@@ -1007,7 +1007,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         // test eclipse jdt core with property settings and default source level
         conf = new PackageBuilderConfiguration();
-        javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );
+        javaConf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         builder = new PackageBuilder( conf );
         builder.addPackage( pkgDescr );
@@ -1031,7 +1031,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( pkgDescr );
 
         Package pkg = builder.getPackage();
-        pkg = SerializationHelper.serializeObject(pkg);
         assertEquals( 1,
                       pkg.getTypeDeclarations().size() );
 
@@ -1258,16 +1257,14 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     public void testJaninoWithStaticImports() throws Exception {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) cfg.getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
 
+        PackageBuilder bldr = new PackageBuilder( cfg );
+        bldr.addPackageFromDrl( new StringReader( "package testBuilderPackageConfig \n import java.util.List" ) );
+        bldr.addPackageFromDrl( new StringReader( "function void doSomething() {\n System.err.println(List.class.toString()); }" ) );
 
-        PackageBuilder bldr = new PackageBuilder(cfg);
-        bldr.addPackageFromDrl( new StringReader("package testBuilderPackageConfig \n import java.util.List") );
-        bldr.addPackageFromDrl( new StringReader("function void doSomething() {\n System.err.println(List.class.toString()); }"));
-
-        assertFalse(bldr.hasErrors());
-
+        assertFalse( bldr.hasErrors() );
     }
 
 
@@ -1298,7 +1295,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
 
         public String getPackageName() {
-        	return null;
+            return null;
         }
 
         public void setId(String id) {

@@ -1,8 +1,12 @@
 package org.drools;
 
-import event org.drools.StockTick;
+import org.drools.StockTick;
 
 global java.util.List results;
+
+declare StockTick {
+    role event
+}
 
 rule "Test entry point"
 when

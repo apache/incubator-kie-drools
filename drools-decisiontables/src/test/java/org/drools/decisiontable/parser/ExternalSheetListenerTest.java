@@ -446,7 +446,7 @@ public class ExternalSheetListenerTest extends TestCase {
 
                 public void writeExternal(ObjectOutput out) throws IOException {
                 }
-            };
+			};
 		}
 	}
 

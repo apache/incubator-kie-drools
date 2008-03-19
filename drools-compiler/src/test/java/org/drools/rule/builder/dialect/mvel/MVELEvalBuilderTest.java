@@ -12,7 +12,6 @@ import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldExtractorCache;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
-import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.EvalDescr;

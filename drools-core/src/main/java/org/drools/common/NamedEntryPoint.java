@@ -3,13 +3,19 @@
  */
 package org.drools.common;
 
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
-import org.drools.WorkingMemoryEntryPoint;
+import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.base.ShadowProxy;
+import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.rule.EntryPoint;
@@ -17,13 +23,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class NamedEntryPoint
     implements
@@ -42,37 +41,11 @@ public class NamedEntryPoint
 
     private ObjectTypeConfigurationRegistry typeConfReg;
 
-    private AbstractWorkingMemory     wm;
+    private final AbstractWorkingMemory     wm;
 
     private FactHandleFactory               handleFactory;
 
-    protected ReentrantLock           lock;
-
-    public NamedEntryPoint() {
-    }
-
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        objectStore     = (ObjectStore)in.readObject();
-        entryPoint      = (EntryPoint)in.readObject();
-        entryPointNode      = (EntryPointNode)in.readObject();
-        typeConfReg      = (ObjectTypeConfigurationRegistry)in.readObject();
-        wm      = (AbstractWorkingMemory)in.readObject();
-        handleFactory      = (FactHandleFactory)in.readObject();
-        lock      = (ReentrantLock)in.readObject();
-        
-        ruleBase = (InternalRuleBase)wm.getRuleBase();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(objectStore);
-        out.writeObject(entryPoint);
-        out.writeObject(entryPointNode);
-        out.writeObject(typeConfReg);
-        out.writeObject(wm);
-        out.writeObject(handleFactory);
-        out.writeObject(lock);
-
-    }
+    protected final ReentrantLock           lock;
 
     public NamedEntryPoint(EntryPoint entryPoint,
                            EntryPointNode entryPointNode,

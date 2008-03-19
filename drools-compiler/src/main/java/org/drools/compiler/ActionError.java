@@ -18,7 +18,6 @@ package org.drools.compiler;
 
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.rule.Rule;
 
 public class ActionError extends DroolsError {
     private BaseDescr descr;

@@ -1,6 +1,11 @@
 package org.drools;
 
-import event org.drools.StockTick;
+import org.drools.StockTick;
+
+declare StockTick {
+    role event,
+    duration_attribute duration
+}
 
 global java.util.List results_coincides;
 global java.util.List results_after;

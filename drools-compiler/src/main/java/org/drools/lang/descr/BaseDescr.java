@@ -16,14 +16,17 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * This is the super type for all pattern AST nodes.
  */
 public class BaseDescr
     implements
-    Serializable {
+    Externalizable {
 
     private static final long serialVersionUID = 400L;
     private int               startCharacter   = -1;
@@ -33,6 +36,26 @@ public class BaseDescr
     private int               endLine          = -1;
     private int               endColumn        = -1;
     private String            text             = "";
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        startCharacter  = in.readInt();
+        endCharacter  = in.readInt();
+        line        = in.readInt();
+        column      = in.readInt();
+        endLine     = in.readInt();
+        endColumn   = in.readInt();
+        text        = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(startCharacter);
+        out.writeInt(endCharacter);
+        out.writeInt(line);
+        out.writeInt(column);
+        out.writeInt(endLine);
+        out.writeInt(endColumn);
+        out.writeObject(text);
+    }
 
     public String getText() {
         return text;

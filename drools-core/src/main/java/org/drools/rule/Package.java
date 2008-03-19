@@ -16,12 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import org.drools.common.DroolsObjectInput;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.facttemplates.FactTemplate;
-import org.drools.process.core.Process;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -34,6 +28,12 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.drools.common.DroolsObjectInput;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
+import org.drools.facttemplates.FactTemplate;
+import org.drools.process.core.Process;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -80,7 +80,7 @@ public class Package
 
     //    private JavaDialectData         packageCompilationData;
     private DialectDatas                   dialectDatas;
-
+    
     private Map<String, TypeDeclaration>   typeDeclarations;
 
     /** This is to indicate the the package has no errors during the compilation/building phase */
@@ -239,19 +239,19 @@ public class Package
     public Map<String, ImportDeclaration> getImports() {
         return this.imports;
     }
-
+    
     public void addTypeDeclaration( final TypeDeclaration typeDecl ) {
         this.typeDeclarations.put( typeDecl.getTypeName(), typeDecl );
     }
-
+    
     public void removeTypeDeclaration( final String type ) {
         this.typeDeclarations.remove( type );
     }
-
+    
     public Map<String, TypeDeclaration> getTypeDeclarations() {
         return this.typeDeclarations;
     }
-
+    
     public TypeDeclaration getTypeDeclaration( String type ) {
         return this.typeDeclarations.get( type );
     }
@@ -495,7 +495,7 @@ public class Package
     /**
      * Returns true if clazz is imported as an Event class in this package
      * @param clazz
-     * @return
+     * @return true if clazz is imported as an Event class in this package
      */
     public boolean isEvent(Class clazz) {
         if ( clazz == null ) {

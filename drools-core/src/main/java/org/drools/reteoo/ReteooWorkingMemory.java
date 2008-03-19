@@ -50,7 +50,7 @@ import org.drools.spi.PropagationContext;
  * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
-public class ReteooWorkingMemory extends AbstractWorkingMemory {
+public class ReteooWorkingMemory extends AbstractWorkingMemory implements Externalizable {
 
     /**
      *
@@ -73,8 +73,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                ruleBase,
                ruleBase.newFactHandleFactory() );
         this.agenda = new DefaultAgenda( this );
-    }
-
+    }    
+    
     public QueryResults getQueryResults(final String query) {
         return getQueryResults( query, null );
     }

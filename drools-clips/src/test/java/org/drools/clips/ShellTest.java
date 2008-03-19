@@ -1,8 +1,17 @@
 package org.drools.clips;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
+
 import org.drools.Person;
 import org.drools.WorkingMemory;
+import org.drools.clips.FunctionHandlers;
+import org.drools.clips.Shell;
 import org.drools.clips.functions.AssertFunction;
 import org.drools.clips.functions.BindFunction;
 import org.drools.clips.functions.CallFunction;
@@ -24,10 +33,6 @@ import org.drools.clips.functions.SetFunction;
 import org.drools.clips.functions.SwitchFunction;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 
 public class ShellTest extends TestCase {
     private ByteArrayOutputStream baos;
@@ -269,7 +274,8 @@ public class ShellTest extends TestCase {
         this.shell.eval( "(defrule testRule (Person (name ?name&bob) ) => (printout t hello) (printout t \" \" ?name))" );
         this.shell.eval( "(assert (Person (name mark) ) )" );
         this.shell.eval( "(run)" );
-// @FIXME_testTwoSimpleRulesWithModify
+// @FIXME testTwoSimpleRulesWithModify
+// commenting out failed test
 //        assertEquals( "hello markhello bob",
 //                      new String( this.baos.toByteArray() ) );
     }
@@ -281,7 +287,8 @@ public class ShellTest extends TestCase {
         text += "(assert (Person (name mark) ) )";
         text += "(run)";
         this.shell.eval( text );
-// @FIXME_testBlockEval        
+// @FIXME testBlockEval
+// commenting out failed test
 //        assertEquals( "hello markhello bob",
 //                      new String( this.baos.toByteArray() ) );
     }

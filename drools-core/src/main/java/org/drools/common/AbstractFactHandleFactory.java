@@ -16,16 +16,17 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.drools.WorkingMemory;
 import org.drools.spi.FactHandleFactory;
 import org.drools.util.PrimitiveLongStack;
 
 import java.io.Externalizable;
-import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.IOException;
 import java.io.ObjectOutput;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 public abstract class AbstractFactHandleFactory
     implements
@@ -36,38 +37,37 @@ public abstract class AbstractFactHandleFactory
      */
     private static final long          serialVersionUID = 400L;
 
-    protected PrimitiveLongStack factHandlePool   = new PrimitiveLongStack();
+//    protected final PrimitiveLongStack factHandlePool   = new PrimitiveLongStack();
 
     /** The fact id. */
     private AtomicInteger              id;
 
     /** The number of facts created - used for recency. */
     private AtomicLong                 counter;
-
+    
     public AbstractFactHandleFactory() {
         this.id = new AtomicInteger(-1);
         this.counter = new AtomicLong(-1);
     }
 
+
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        id      = (AtomicInteger)in.readObject();
-        counter = (AtomicLong)in.readObject();
-        factHandlePool  = (PrimitiveLongStack)in.readObject();
+        id  = (AtomicInteger) in.readObject();
+        counter = (AtomicLong) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(id);
         out.writeObject(counter);
-        out.writeObject(factHandlePool);
     }
 
     /* (non-Javadoc)
-     * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
-     */
+    * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
+    */
     public final InternalFactHandle newFactHandle(final Object object,
                                                   final boolean isEvent,
                                                   final WorkingMemory workingMemory) {
-// @FIXME make id re-cycling thread safe
+// @FIXME make id re-cycling thread safe        
 //        if ( !this.factHandlePool.isEmpty() ) {
 //            return newFactHandle( this.factHandlePool.pop(),
 //                                  object,
@@ -75,7 +75,6 @@ public abstract class AbstractFactHandleFactory
 //                                  0,
 //                                  workingMemory );
 //        }
-
         return newFactHandle( this.id.incrementAndGet(),
                               object,
                               isEvent,
@@ -113,7 +112,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     public void destroyFactHandle(final InternalFactHandle factHandle) {
-// @FIXME make id re-cycling thread safe
+// @FIXME make id re-cycling thread safe                
 //        this.factHandlePool.push( factHandle.getId() );
         factHandle.invalidate();
     }

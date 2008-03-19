@@ -1,10 +1,10 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import java.io.Serializable;
 import java.io.Externalizable;
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,6 @@ import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.JavaDialectData;
 import org.drools.rule.LineMappings;
 import org.drools.rule.MVELDialectData;
 import org.drools.rule.Package;
@@ -73,7 +72,6 @@ import org.mvel.ParserContext;
 import org.mvel.compiler.AbstractParser;
 import org.mvel.compiler.CompiledExpression;
 import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.debug.DebugTools;
 import org.mvel.optimizers.OptimizerFactory;
 import org.mvel.util.CompilerTools;
 import org.mvel.util.ParseTools;

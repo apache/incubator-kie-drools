@@ -71,50 +71,50 @@ abstract public class AbstractRuleBase
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected String                                id;
+    protected String                                   id;
 
-    protected int                                   workingMemoryCounter;
+    protected int                                      workingMemoryCounter;
 
-    protected RuleBaseConfiguration                 config;
+    protected RuleBaseConfiguration                    config;
 
-    protected Map<String, Package>                  pkgs;
+    protected Map<String, Package>                     pkgs;
 
-    protected Map                                   processes;
+    protected Map                                      processes;
 
-    protected Map                                   agendaGroupRuleTotals;
+    protected Map                                      agendaGroupRuleTotals;
 
-    protected transient CompositePackageClassLoader packageClassLoader;
+    protected transient CompositePackageClassLoader    packageClassLoader;
 
-    protected transient MapBackedClassLoader        classLoader;
+    protected transient MapBackedClassLoader           classLoader;
 
-    private transient Objenesis                     objenesis;
+    private transient Objenesis                        objenesis;
 	
     /** The fact handle factory. */
-    protected FactHandleFactory                     factHandleFactory;
+    protected FactHandleFactory                        factHandleFactory;
 
-    protected Map                                   globals;
+    protected Map                                      globals;
 
-    private ReloadPackageCompilationData            reloadPackageCompilationData = null;
+    private ReloadPackageCompilationData               reloadPackageCompilationData = null;
 
-    private RuleBaseEventSupport                    eventSupport                 = new RuleBaseEventSupport( this );
+    private RuleBaseEventSupport                       eventSupport                 = new RuleBaseEventSupport( this );
 
     /**
      * WeakHashMap to keep references of WorkingMemories but allow them to be
      * garbage collected
      */
-    protected transient ObjectHashSet               statefulSessions;
+    protected transient ObjectHashSet                  statefulSessions;
 
     // wms used for lock list during dynamic updates
-    InternalWorkingMemory[]                         wms;
+    InternalWorkingMemory[]                            wms;
 
     // indexed used to track invariant lock
-    int                                             lastAquiredLock;
+    int                                                lastAquiredLock;
 
     // lock for entire rulebase, used for dynamic updates
-    protected ReentrantLock                   lock                         = new ReentrantLock();
+    protected ReentrantLock                            lock                         = new ReentrantLock();
 
-    private int                                     additionsSinceLock;
-    private int                                     removalsSinceLock;
+    private int                                        additionsSinceLock;
+    private int                                        removalsSinceLock;
 
     private transient Map<Class< ? >, TypeDeclaration> classTypeDeclaration;
 
@@ -174,17 +174,16 @@ abstract public class AbstractRuleBase
      *
      */
     public void writeExternal(final ObjectOutput out) throws IOException {
-        ObjectOutput            droolsStream;
-        boolean                 isDrools    = out instanceof DroolsObjectOutputStream;
-        ByteArrayOutputStream   bytes;
+        ObjectOutput droolsStream;
+        boolean isDrools = out instanceof DroolsObjectOutputStream;
+        ByteArrayOutputStream bytes;
 
-        if (isDrools) {
-            droolsStream    = out;
-            bytes           = null;
-        }
-        else {
-            bytes           = new ByteArrayOutputStream();
-            droolsStream    = new DroolsObjectOutputStream(bytes);
+        if ( isDrools ) {
+            droolsStream = out;
+            bytes = null;
+        } else {
+            bytes = new ByteArrayOutputStream();
+            droolsStream = new DroolsObjectOutputStream( bytes );
         }
 
         droolsStream.writeObject( this.pkgs );
@@ -194,24 +193,23 @@ abstract public class AbstractRuleBase
         // Rules must be restored by an ObjectInputStream that can resolve using a given ClassLoader to handle seaprately by storing as
         // a byte[]
         droolsStream.writeObject( this.id );
-        droolsStream.writeInt(workingMemoryCounter);
+        droolsStream.writeInt( workingMemoryCounter );
         droolsStream.writeObject( this.processes );
         droolsStream.writeObject( this.agendaGroupRuleTotals );
         droolsStream.writeObject( this.factHandleFactory );
         droolsStream.writeObject( this.globals );
-        droolsStream.writeObject(reloadPackageCompilationData);
+        droolsStream.writeObject( reloadPackageCompilationData );
 
         this.eventSupport.removeEventListener( RuleBaseEventListener.class );
         droolsStream.writeObject( this.eventSupport );
-        droolsStream.writeObject(wms);
-        droolsStream.writeInt(lastAquiredLock);
-        droolsStream.writeObject(lock);
-        droolsStream.writeInt(additionsSinceLock);
-        droolsStream.writeInt(removalsSinceLock);
-        droolsStream.writeObject(classTypeDeclaration);
-        if (!isDrools) {
+        droolsStream.writeObject( wms );
+        droolsStream.writeInt( lastAquiredLock );
+        droolsStream.writeObject( lock );
+        droolsStream.writeInt( additionsSinceLock );
+        droolsStream.writeInt( removalsSinceLock );
+        if ( !isDrools ) {
             bytes.close();
-            out.writeObject(bytes.toByteArray());
+            out.writeObject( bytes.toByteArray() );
         }
     }
 
@@ -222,34 +220,35 @@ abstract public class AbstractRuleBase
      *
      */
     public void readExternal(final ObjectInput in) throws IOException,
-                                                      ClassNotFoundException {
+                                                  ClassNotFoundException {
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
-        DroolsObjectInput   droolsStream    = null;
-        boolean             isDrools    = in instanceof DroolsObjectInputStream;
+        DroolsObjectInput droolsStream = null;
+        boolean isDrools = in instanceof DroolsObjectInputStream;
 
-        if (isDrools) {
-            droolsStream    = (DroolsObjectInput)in;
+        if ( isDrools ) {
+            droolsStream = (DroolsObjectInput) in;
         } else {
-            byte[]  bytes   = (byte[])in.readObject();
+            byte[] bytes = (byte[]) in.readObject();
 
-            droolsStream    = new DroolsObjectInputStream(new ByteArrayInputStream(bytes));
+            droolsStream = new DroolsObjectInputStream( new ByteArrayInputStream( bytes ) );
         }
         this.pkgs = (Map) droolsStream.readObject();
         this.config = (RuleBaseConfiguration) droolsStream.readObject();
 
         Map store = (Map) droolsStream.readObject();
         this.packageClassLoader = new CompositePackageClassLoader( droolsStream.getClassLoader() );
-        droolsStream.setClassLoader(packageClassLoader);
-        this.classLoader = new MapBackedClassLoader( this.packageClassLoader, store );
+        droolsStream.setClassLoader( packageClassLoader );
+        this.classLoader = new MapBackedClassLoader( this.packageClassLoader,
+                                                     store );
         this.packageClassLoader.addClassLoader( this.classLoader );
         this.objenesis = createObjenesis();
 
-        for ( final Object object : this.pkgs.values()) {
+        for ( final Object object : this.pkgs.values() ) {
             this.packageClassLoader.addClassLoader( ((Package) object).getDialectDatas().getClassLoader() );
         }
         // PackageCompilationData must be restored before Rules as it has the ClassLoader needed to resolve the generated code references in Rules
         this.id = (String) droolsStream.readObject();
-        this.workingMemoryCounter   = droolsStream.readInt();
+        this.workingMemoryCounter = droolsStream.readInt();
 
         this.config.setClassLoader( droolsStream.getClassLoader() );
 
@@ -257,22 +256,23 @@ abstract public class AbstractRuleBase
         this.agendaGroupRuleTotals = (Map) droolsStream.readObject();
         this.factHandleFactory = (FactHandleFactory) droolsStream.readObject();
         this.globals = (Map) droolsStream.readObject();
-        this.reloadPackageCompilationData   = (ReloadPackageCompilationData)droolsStream.readObject();
+        this.reloadPackageCompilationData = (ReloadPackageCompilationData) droolsStream.readObject();
 
         this.eventSupport = (RuleBaseEventSupport) droolsStream.readObject();
         this.eventSupport.setRuleBase( this );
         this.statefulSessions = new ObjectHashSet();
 
-        wms     = (InternalWorkingMemory[])droolsStream.readObject();
+        wms = (InternalWorkingMemory[]) droolsStream.readObject();
         lastAquiredLock = droolsStream.readInt();
-        lock            = (ReentrantLock)droolsStream.readObject();
-        additionsSinceLock  = droolsStream.readInt();
-        removalsSinceLock   = droolsStream.readInt();
-        classTypeDeclaration    = (Map<Class< ? >, TypeDeclaration>)droolsStream.readObject();
+        lock = (ReentrantLock) droolsStream.readObject();
+        additionsSinceLock = droolsStream.readInt();
+        removalsSinceLock = droolsStream.readInt();
 
-        if (!isDrools) {
+        if ( !isDrools ) {
             droolsStream.close();
         }
+
+        this.populateTypeDeclarationMaps();
     }
 
 	/**
@@ -288,10 +288,11 @@ abstract public class AbstractRuleBase
 	}
 
     private void populateTypeDeclarationMaps() {
-        this.classTypeDeclaration = new HashMap<Class<?>, TypeDeclaration>();
-        for( Package pkg : this.pkgs.values() ) {
-            for( TypeDeclaration type : pkg.getTypeDeclarations().values() ) {
-                this.classTypeDeclaration.put( type.getTypeClass(), type );
+        this.classTypeDeclaration = new HashMap<Class< ? >, TypeDeclaration>();
+        for ( Package pkg : this.pkgs.values() ) {
+            for ( TypeDeclaration type : pkg.getTypeDeclarations().values() ) {
+                this.classTypeDeclaration.put( type.getTypeClass(),
+                                               type );
             }
         }
     }
@@ -532,7 +533,8 @@ abstract public class AbstractRuleBase
 
             // remove the rule if it already exists
             if ( pkg.getRule( newRule.getName() ) != null ) {
-                removeRule( pkg, pkg.getRule( newRule.getName() ) );
+                removeRule( pkg,
+                            pkg.getRule( newRule.getName() ) );
             }
 
             pkg.addRule( newRule );
@@ -775,16 +777,16 @@ abstract public class AbstractRuleBase
                                                                                       this.packageClassLoader );
         streamWithLoader.setRuleBase( this );
 
-        final StatefulSession session = (StatefulSession) streamWithLoader.readObject();
+        final StatefulSession session = (StatefulSession) streamWithLoader.readObject();                
 
         synchronized ( this.pkgs ) {
             ((InternalWorkingMemory) session).setRuleBase( this );
             ((InternalWorkingMemory) session).setId( (nextWorkingMemoryCounter()) );
-
+                        
 
             ExecutorService executor = ExecutorServiceFactory.createExecutorService( this.config.getExecutorService() );
-            executor.setCommandExecutor( new CommandExecutor( session ) );
-            ((InternalWorkingMemory) session).setExecutorService( executor );
+            executor.setCommandExecutor( new CommandExecutor( session ) );            
+            ((InternalWorkingMemory) session).setExecutorService( executor );            
 
             if ( keepReference ) {
                 addStatefulSession( session );
@@ -851,12 +853,13 @@ abstract public class AbstractRuleBase
         private static final long serialVersionUID = 1L;
         private Set               set;
 
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            set = (Set)in.readObject();
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            set = (Set) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(set);
+            out.writeObject( set );
         }
 
         public void addDialectDatas(final DialectDatas dialectDatas) {

@@ -2,24 +2,17 @@ package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELAction;
-import org.drools.base.mvel.MVELConsequence;
-import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.Dialect;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.rule.MVELDialectData;
 import org.drools.rule.builder.ActionBuilder;
-import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.PackageBuildContext;
-import org.drools.rule.builder.RuleBuildContext;
 import org.drools.workflow.core.node.ActionNode;
-import org.mvel.Macro;
-import org.mvel.MacroProcessor;
 
 public class MVELActionBuilder
     implements

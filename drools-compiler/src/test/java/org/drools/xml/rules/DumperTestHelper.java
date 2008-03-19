@@ -5,7 +5,6 @@ package org.drools.xml.rules;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 
 import junit.framework.Assert;
 
@@ -13,7 +12,6 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlDumper;
 import org.drools.xml.XmlPackageReader;
 

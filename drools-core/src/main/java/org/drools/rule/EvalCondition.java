@@ -97,7 +97,7 @@ public class EvalCondition extends ConditionalElement implements Externalizable 
                                              workingMemory,
                                              context );
         } catch ( final Exception e ) {
-            throw new RuntimeDroolsException( e );
+        	throw new RuntimeDroolsException( this.getEvalExpression() + " : " + e, e );
         }
     }
 

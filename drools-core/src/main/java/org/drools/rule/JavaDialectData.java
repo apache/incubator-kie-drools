@@ -16,21 +16,6 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import org.drools.RuntimeDroolsException;
-import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.common.DroolsObjectInput;
-import org.drools.spi.Accumulator;
-import org.drools.spi.Consequence;
-import org.drools.spi.EvalExpression;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.ReturnValueEvaluator;
-import org.drools.spi.ReturnValueExpression;
-import org.drools.util.StringUtils;
-import org.drools.workflow.core.node.ActionNode;
-import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
-
 import java.io.ByteArrayInputStream;
 import java.io.Externalizable;
 import java.io.IOException;
@@ -46,6 +31,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.drools.RuntimeDroolsException;
+import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.DroolsObjectOutputStream;
+import org.drools.common.DroolsObjectInput;
+import org.drools.spi.Accumulator;
+import org.drools.spi.Consequence;
+import org.drools.spi.EvalExpression;
+import org.drools.spi.PredicateExpression;
+import org.drools.spi.ReturnValueEvaluator;
+import org.drools.spi.ReturnValueExpression;
+import org.drools.util.StringUtils;
+import org.drools.workflow.core.node.ActionNode;
+import org.drools.workflow.instance.impl.ReturnValueConstraintEvaluator;
 
 public class JavaDialectData
     implements
@@ -410,13 +410,13 @@ public class JavaDialectData
             if ( resolve && clazz != null) {
                 resolveClass( clazz );
             }
+
             return clazz;
         }
 
         protected Class findClass(final String name) throws ClassNotFoundException {
             return fastFindClass( name );
         }
-
 
         public InputStream getResourceAsStream(final String name) {
             final byte[] bytes = (byte[]) parent.store.get( name );

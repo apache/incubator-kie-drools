@@ -16,7 +16,15 @@ package org.drools.lang;
  * limitations under the License.
  */
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Iterator;
+import java.util.List;
+
 import junit.framework.TestCase;
+
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonToken;
@@ -58,16 +66,9 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.lang.dsl.DefaultExpander;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.Iterator;
-import java.util.List;
 
 public class RuleParserTest extends TestCase {
 

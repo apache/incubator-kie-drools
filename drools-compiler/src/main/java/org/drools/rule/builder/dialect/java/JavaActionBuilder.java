@@ -16,24 +16,16 @@
 
 package org.drools.rule.builder.dialect.java;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.ActionDescr;
-import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.Declaration;
 import org.drools.rule.builder.ActionBuilder;
-import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.rule.builder.RuleBuildContext;
-import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.spi.PatternExtractor;
 import org.drools.workflow.core.node.ActionNode;
 
 /**

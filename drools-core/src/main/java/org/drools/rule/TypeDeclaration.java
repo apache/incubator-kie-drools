@@ -21,6 +21,10 @@ package org.drools.rule;
 import org.drools.facttemplates.FactTemplate;
 
 import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
 
 /**
  * The type declaration class stores all type's metadata
@@ -28,7 +32,7 @@ import java.io.Serializable;
  *  
  * @author etirelli
  */
-public class TypeDeclaration implements Serializable {
+public class TypeDeclaration implements Externalizable {
 
     public static enum Role {
         FACT,
@@ -81,7 +85,7 @@ public class TypeDeclaration implements Serializable {
         }
     }
 
-    private final String typeName;
+    private String typeName;
     private Role role;
     private Format format;
     private ClockStrategy clockStrategy;
@@ -89,6 +93,9 @@ public class TypeDeclaration implements Serializable {
     private String durationAttribute;
     private Class<?> typeClass;
     private FactTemplate typeTemplate;
+
+    public TypeDeclaration() {
+    }
 
     public TypeDeclaration( String typeName ) {
         this.typeName = typeName;
@@ -99,6 +106,28 @@ public class TypeDeclaration implements Serializable {
         this.timestampAttribute = null;
         this.typeClass = null;
         this.typeTemplate = null;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.typeName = (String)in.readObject();
+        this.role = (Role)in.readObject();
+        this.format = (Format)in.readObject();
+        this.clockStrategy = (ClockStrategy)in.readObject();
+        this.durationAttribute = (String)in.readObject();
+        this.timestampAttribute = (String)in.readObject();
+        this.typeClass = (Class<?>)in.readObject();
+        this.typeTemplate = (FactTemplate)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(typeName);
+        out.writeObject(role);
+        out.writeObject(format);
+        out.writeObject(clockStrategy);
+        out.writeObject(durationAttribute);
+        out.writeObject(timestampAttribute);
+        out.writeObject(typeClass);
+        out.writeObject(typeTemplate);
     }
 
     /**
@@ -222,5 +251,26 @@ public class TypeDeclaration implements Serializable {
         return matches;
     }
 
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof TypeDeclaration) {
+            TypeDeclaration that    = (TypeDeclaration)obj;
+            return isObjectEqual(typeName, that.typeName) &&
+                   role == that.role &&
+                   format == that.format &&
+                   clockStrategy == that.clockStrategy &&
+                   isObjectEqual(timestampAttribute, that.timestampAttribute) &&
+                   isObjectEqual(durationAttribute, that.durationAttribute) &&
+                   typeClass == that.typeClass &&
+                   isObjectEqual(typeTemplate, that.typeTemplate);
+        }
+        return false;
+    }
+
+
+    private static boolean isObjectEqual(Object a, Object b) {
+        return a == b || a != null && a.equals(b);
+    }
 
 }

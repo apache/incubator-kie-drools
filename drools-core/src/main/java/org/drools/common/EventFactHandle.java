@@ -56,7 +56,7 @@ public class EventFactHandle extends DefaultFactHandle {
      * @param timestamp the timestamp of the occurrence of this event
      * @param duration the duration of this event. May be 0 (zero) in case this is a primitive event.
      */
-    public EventFactHandle( final int id,
+    public EventFactHandle( final int id, 
                             final Object object,
                             final long recency,
                             final long timestamp,

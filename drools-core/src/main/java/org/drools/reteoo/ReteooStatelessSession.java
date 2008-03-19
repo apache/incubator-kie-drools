@@ -27,6 +27,7 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.reteoo.ReteooRuleBase.InitialFactHandleDummyObject;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
+import org.drools.rule.EntryPoint;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.GlobalExporter;

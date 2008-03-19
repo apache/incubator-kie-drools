@@ -1,5 +1,8 @@
 package org.drools.base.field;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldValue;
 
@@ -7,8 +10,6 @@ import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.IOException;
 import java.io.ObjectOutput;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 public class LongFieldImpl
     implements
@@ -117,12 +118,12 @@ public class LongFieldImpl
         return false;
     }
 
-    public BigDecimal getBigDecimalValue() {
-        return new BigDecimal(this.value);
-    }
+	public BigDecimal getBigDecimalValue() {
+		return new BigDecimal(this.value);
+	}
 
-    public BigInteger getBigIntegerValue() {
-        return BigInteger.valueOf(this.value);
-    }
+	public BigInteger getBigIntegerValue() {
+		return BigInteger.valueOf(this.value);
+	}
 
 }

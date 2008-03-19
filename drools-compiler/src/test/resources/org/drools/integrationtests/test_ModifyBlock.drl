@@ -7,6 +7,6 @@ when
     $p: Person( status == "hungry" )
     $c: Cheese( )
 then
-    modify( $c ) {setPrice (10) };
-    modify( $p ) {setStatus("fine") };
+    modify( $c ) {setPrice (10) }
+    modify( $p ) {setStatus("fine") }
 end

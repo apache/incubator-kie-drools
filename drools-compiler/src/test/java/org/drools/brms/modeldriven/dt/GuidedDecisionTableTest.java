@@ -1,18 +1,16 @@
 package org.drools.brms.modeldriven.dt;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+
+import junit.framework.TestCase;
 
 import org.drools.brms.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.brms.client.modeldriven.brl.ISingleFieldConstraint;
-import org.drools.brms.client.modeldriven.dt.ActionCol;
 import org.drools.brms.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.brms.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.brms.client.modeldriven.dt.AttributeCol;
 import org.drools.brms.client.modeldriven.dt.ConditionCol;
 import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
-
-import junit.framework.TestCase;
 
 public class GuidedDecisionTableTest extends TestCase {
 

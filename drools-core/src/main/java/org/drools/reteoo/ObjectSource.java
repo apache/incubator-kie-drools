@@ -16,15 +16,16 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.common.BaseNode;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.spi.PropagationContext;
-
+import java.io.Serializable;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+
+import org.drools.common.BaseNode;
+import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.spi.PropagationContext;
 
 /**
  * A source of <code>FactHandle</code>s for an <code>ObjectSink</code>.
@@ -149,7 +150,7 @@ public abstract class ObjectSource extends BaseNode
     public abstract void updateSink(ObjectSink sink,
                                     PropagationContext context,
                                     InternalWorkingMemory workingMemory);
-
+    
     public void networkUpdated() {
         this.objectSource.networkUpdated();
     }

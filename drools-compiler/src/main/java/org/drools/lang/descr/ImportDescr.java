@@ -24,23 +24,13 @@ public class ImportDescr extends BaseDescr {
 
     private static final long serialVersionUID = 400L;
     private String            target;
-    private boolean           event;
 
     public ImportDescr() {
-        this( null, false );
+        this( null );
     }
 
     public ImportDescr(final String clazzName) {
-        this( clazzName, false );
-    }
-
-    public ImportDescr(final boolean isEvent) {
-        this( null, isEvent );
-    }
-
-    public ImportDescr(final String clazzName, final boolean isEvent ) {
         this.target = clazzName;
-        this.event = isEvent;
     }
 
     public String getTarget() {
@@ -88,10 +78,6 @@ public class ImportDescr extends BaseDescr {
 
     public String toString() {
         return "import " + this.target;
-    }
-
-    public boolean isEvent() {
-        return this.event;
     }
 
 }

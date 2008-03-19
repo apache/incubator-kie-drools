@@ -88,7 +88,7 @@ public abstract class TupleSource extends BaseNode
      *            <code>Tuples</code>.
      */
     protected void addTupleSink(final TupleSink tupleSink) {
-        if ( this.sink == EmptyTupleSinkAdapter.getInstance() ) {
+        if ( this.sink instanceof EmptyTupleSinkAdapter ) {
             this.sink = new SingleTupleSinkAdapter( tupleSink );
         } else if ( this.sink instanceof SingleTupleSinkAdapter ) {
             final CompositeTupleSinkAdapter sinkAdapter = new CompositeTupleSinkAdapter();
@@ -107,7 +107,7 @@ public abstract class TupleSource extends BaseNode
      *            The <code>TupleSink</code> to remove
      */
     protected void removeTupleSink(final TupleSink tupleSink) {
-        if ( this.sink == EmptyTupleSinkAdapter.getInstance() ) {
+        if ( this.sink instanceof EmptyTupleSinkAdapter ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
 

@@ -56,7 +56,7 @@ public class AccumulateTest extends TestCase {
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         // load up the rulebase
-        return SerializationHelper.serializeObject(ruleBase);
+        return ruleBase;
     }
 
     public void testAccumulateModify() throws Exception {

@@ -16,11 +16,9 @@ package org.drools.lang;
  * limitations under the License.
  */
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.lang.descr.AccumulateDescr;
@@ -515,7 +513,7 @@ public class DrlDumper extends ReflectiveVisitor
 
         for ( final Iterator it = imports.iterator(); it.hasNext(); ) {
             final ImportDescr importDescr = (ImportDescr) it.next(); 
-            final String importTemplate = "import " + ( importDescr.isEvent() ? "event " : "" ) + importDescr.getTarget() + ";" + DrlDumper.eol;
+            final String importTemplate = "import " + importDescr.getTarget() + ";" + DrlDumper.eol;
             importList += importTemplate;
         }
         return importList + DrlDumper.eol;

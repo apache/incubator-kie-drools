@@ -9,6 +9,7 @@ import org.drools.WorkingMemoryEntryPoint;
 import org.drools.FactHandle;
 import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
+//import org.drools.common.AbstractWorkingMemory.EntryPointInterfaceImpl;
 import org.drools.concurrent.AssertObject;
 import org.drools.concurrent.AssertObjects;
 import org.drools.concurrent.ExecutorService;
@@ -107,6 +108,12 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         }
         return this.ruleBaseListeners;
     }
+    
+//    public StatefulSession getEntryPoint(String id) {        
+//        EntryPoint ep = new EntryPoint( id );
+//        return new EntryPointInterfaceImpl( ep,
+//                                            this );
+//    }    
 
     public ExecutorService getExecutorService() {
         return executor;

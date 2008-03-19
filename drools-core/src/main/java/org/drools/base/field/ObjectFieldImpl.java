@@ -20,9 +20,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collection;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldValue;
@@ -33,6 +33,7 @@ public class ObjectFieldImpl
     Externalizable {
 
     private static final long serialVersionUID = 400L;
+
     private Object            value;
 
     // the isEnum attribute is used to support jdk 1.4 type safe enums, and so

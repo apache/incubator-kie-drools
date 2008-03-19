@@ -3,12 +3,16 @@
 	package org.drools.lang;
 
 
-import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+
+import org.antlr.runtime.BaseRecognizer;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.DFA;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.RecognitionException;
 public class DRLLexer extends Lexer {
     public static final int ACCUMULATE=46;
     public static final int PACKAGE=4;
@@ -94,7 +98,7 @@ public class DRLLexer extends Lexer {
     public static final int C_STYLE_SINGLE_LINE_COMMENT=73;
     public static final int DATE_EXPIRES=24;
     public static final int STRING=16;
-    public DRLLexer() {;}
+    public DRLLexer() {;} 
     public DRLLexer(CharStream input) {
         super(input);
         ruleMemo = new HashMap[84+1];
@@ -365,7 +369,7 @@ public class DRLLexer extends Lexer {
             } while (true);
 
             if ( backtracking==0 ) {
-               channel=HIDDEN;
+               channel=HIDDEN; 
             }
 
             }
@@ -2337,7 +2341,7 @@ public class DRLLexer extends Lexer {
 
             mEOL(); if (failed) return ;
             if ( backtracking==0 ) {
-               channel=HIDDEN;
+               channel=HIDDEN; 
             }
 
             }
@@ -2398,7 +2402,7 @@ public class DRLLexer extends Lexer {
             match("*/"); if (failed) return ;
 
             if ( backtracking==0 ) {
-               channel=HIDDEN;
+               channel=HIDDEN; 
             }
 
             }
@@ -2988,7 +2992,7 @@ public class DRLLexer extends Lexer {
     }
 
     // $ANTLR start synpred1
-    public final void synpred1_fragment() throws RecognitionException {
+    public final void synpred1_fragment() throws RecognitionException {   
         // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1745:14: ( '\\r\\n' )
         // /home/etirelli/workspace/jboss/jbossrules/drools-compiler/src/main/resources/org/drools/lang/DRL.g:1745:16: '\\r\\n'
         {
@@ -3504,6 +3508,6 @@ public class DRLLexer extends Lexer {
             return "1:1: Tokens : ( T76 | T77 | T78 | T79 | T80 | T81 | T82 | T83 | T84 | T85 | WS | INT | FLOAT | STRING | BOOL | PACKAGE | IMPORT | FUNCTION | EVENT | GLOBAL | DECLARE | RULE | QUERY | TEMPLATE | ATTRIBUTES | DATE_EFFECTIVE | DATE_EXPIRES | ENABLED | SALIENCE | NO_LOOP | AUTO_FOCUS | ACTIVATION_GROUP | AGENDA_GROUP | DIALECT | RULEFLOW_GROUP | DURATION | LOCK_ON_ACTIVE | FROM | ACCUMULATE | INIT | ACTION | REVERSE | RESULT | COLLECT | ENTRY_POINT | OR | AND | CONTAINS | EXCLUDES | MEMBEROF | MATCHES | SOUNDSLIKE | IN | NULL | EXISTS | NOT | EVAL | FORALL | WHEN | THEN | END | ID | LEFT_PAREN | RIGHT_PAREN | LEFT_SQUARE | RIGHT_SQUARE | LEFT_CURLY | RIGHT_CURLY | COMMA | DOT | DOUBLE_AMPER | DOUBLE_PIPE | TILDE | SH_STYLE_SINGLE_LINE_COMMENT | C_STYLE_SINGLE_LINE_COMMENT | MULTI_LINE_COMMENT | MISC );";
         }
     }
-
+ 
 
 }

@@ -16,26 +16,17 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.RuleIntegrationException;
-import org.drools.base.SalienceInteger;
-import org.drools.common.BaseNode;
-import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.builder.ReteooRuleBuilder;
-import org.drools.rule.InvalidPatternException;
-import org.drools.rule.Rule;
-import org.drools.spi.Salience;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Externalizable;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,8 +35,20 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.Map.Entry;
+
+import org.drools.RuleIntegrationException;
+import org.drools.base.SalienceInteger;
+import org.drools.common.BaseNode;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.DroolsObjectOutputStream;
+import org.drools.reteoo.builder.ReteooRuleBuilder;
+import org.drools.rule.InvalidPatternException;
+import org.drools.rule.Rule;
+import org.drools.spi.Salience;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
@@ -319,18 +322,17 @@ public class ReteooBuilder
             droolsStream    = (DroolsObjectInputStream)in;
         } else {
             bytes   = new ByteArrayInputStream((byte[])in.readObject());
-            droolsStream    = new DroolsObjectInputStream((InputStream)new ObjectInputStream(bytes));
+            droolsStream    = new DroolsObjectInputStream(bytes);
         }
         this.rules          = (Map)in.readObject();
         this.idGenerator    = (IdGenerator)in.readObject();
         this.ordered        = in.readBoolean();
-
-        // TODO: possible null for rule base.
         this.ruleBase       = (InternalRuleBase)droolsStream.readObject();
-        this.ruleBuilder    = new ReteooRuleBuilder();
         if (!isDrools) {
             bytes.close();
         }
+
+        this.ruleBuilder    = new ReteooRuleBuilder();
     }
 
 }

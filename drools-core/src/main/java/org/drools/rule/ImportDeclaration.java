@@ -23,9 +23,7 @@ import java.io.IOException;
 import java.io.ObjectOutput;
 
 /**
- * A class to represent an import declaration. That declaration
- * may have additional metadata associated to it, like a flag
- * stating if the imported class is an event or not
+ * A class to represent an import declaration. 
  *
  * @author etirelli
  */
@@ -34,13 +32,12 @@ public class ImportDeclaration implements Externalizable {
     private static final long serialVersionUID = 6410032114027977766L;
 
     private String target;
-    private boolean isEvent;
 
     /**
      * Creates an empty import declaration
      */
     public ImportDeclaration() {
-        this( null, false );
+        this( null );
     }
 
     /**
@@ -49,38 +46,15 @@ public class ImportDeclaration implements Externalizable {
      * @param target
      */
     public ImportDeclaration( String target ) {
-        this( target, false );
+        this.target = target;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         target  = (String)in.readObject();
-        isEvent = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(target);
-        out.writeBoolean(isEvent);
-    }
-
-    /**
-     * Creates an import declaration for the given target.
-     *
-     * @param target the import target
-     * @param isEvent true if the target is an event-type target, false otherwise.
-     */
-    public ImportDeclaration(String target,
-                             boolean isEvent) {
-        super();
-        this.target = target;
-        this.isEvent = isEvent;
-    }
-
-    public boolean isEvent() {
-        return isEvent;
-    }
-
-    public void setEvent(boolean isEvent) {
-        this.isEvent = isEvent;
     }
 
     public String getTarget() {
@@ -94,7 +68,6 @@ public class ImportDeclaration implements Externalizable {
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
-        result = PRIME * result + (isEvent ? 1231 : 1237);
         result = PRIME * result + ((target == null) ? 0 : target.hashCode());
         return result;
     }
@@ -104,7 +77,6 @@ public class ImportDeclaration implements Externalizable {
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         final ImportDeclaration other = (ImportDeclaration) obj;
-        if ( isEvent != other.isEvent ) return false;
         if ( target == null ) {
             if ( other.target != null ) return false;
         } else if ( !target.equals( other.target ) ) return false;
@@ -118,7 +90,7 @@ public class ImportDeclaration implements Externalizable {
      * @param name
      * @return
      */
-    public boolean matches( Class clazz ) {
+    public boolean matches( Class<?> clazz ) {
         // fully qualified import?
         if( this.target.equals( clazz.getName() ) ) {
             return true;

@@ -16,6 +16,10 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.TemporalSession;
 import org.drools.WorkingMemory;
 import org.drools.common.AbstractFactHandleFactory;
@@ -28,6 +32,18 @@ import org.drools.temporal.SessionClock;
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory {
 
     private static final long serialVersionUID = 400L;
+    
+    public ReteooFactHandleFactory() {
+        super();
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+    }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.FactHandleFactory#newFactHandle(long)

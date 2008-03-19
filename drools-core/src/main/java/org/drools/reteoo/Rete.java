@@ -16,15 +16,6 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import org.drools.common.BaseNode;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
-import org.drools.rule.EntryPoint;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PropagationContext;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -33,6 +24,15 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.rule.EntryPoint;
+import org.drools.spi.ObjectType;
+import org.drools.spi.PropagationContext;
 
 /**
  * The Rete-OO network.
@@ -164,7 +164,7 @@ public class Rete extends ObjectSource
     public void networkUpdated() {
         // nothing to do
     }
-
+    
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,

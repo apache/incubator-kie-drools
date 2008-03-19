@@ -16,17 +16,17 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
 import org.drools.FactException;
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.spi.PropagationContext;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 public class MockTupleSink extends TupleSource
     implements
@@ -162,7 +162,7 @@ public class MockTupleSink extends TupleSource
     @Override
     public void networkUpdated() {
         // TODO Auto-generated method stub
-
+        
     }
 
 }

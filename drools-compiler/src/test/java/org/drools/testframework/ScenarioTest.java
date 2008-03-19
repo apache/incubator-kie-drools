@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.TestCase;
+
 import org.drools.brms.client.modeldriven.testing.ExecutionTrace;
 import org.drools.brms.client.modeldriven.testing.FactData;
-import org.drools.brms.client.modeldriven.testing.FieldData;
 import org.drools.brms.client.modeldriven.testing.RetractFact;
 import org.drools.brms.client.modeldriven.testing.Scenario;
 import org.drools.brms.client.modeldriven.testing.VerifyFact;
 import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
-
-import junit.framework.TestCase;
 
 public class ScenarioTest extends TestCase {
 

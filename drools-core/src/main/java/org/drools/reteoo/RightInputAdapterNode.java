@@ -171,6 +171,10 @@ public class RightInputAdapterNode extends ObjectSource
                                          workingMemory );
         }
     }
+    
+    public void networkUpdated() {
+        this.tupleSource.networkUpdated();
+    }
 
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,

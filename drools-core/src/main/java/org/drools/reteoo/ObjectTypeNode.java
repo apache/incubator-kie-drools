@@ -244,7 +244,7 @@ public class ObjectTypeNode extends ObjectSource
     public void networkUpdated() {
         this.skipOnModify = canSkipOnModify( this.sink.getSinks() );
     }
-
+    
     /**
      * OTN needs to override remove to avoid releasing the node ID, since OTN are
      * never removed from the rulebase in the current implementation

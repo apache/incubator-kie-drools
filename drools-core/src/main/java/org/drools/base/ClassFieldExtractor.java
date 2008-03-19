@@ -16,16 +16,20 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import org.drools.RuntimeDroolsException;
-import org.drools.common.DroolsObjectInput;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.spi.FieldExtractor;
-import org.drools.util.ClassUtils;
-
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Externalizable;
 import java.lang.reflect.Method;
+
+import org.drools.RuntimeDroolsException;
+import org.drools.common.DroolsObjectInputStream;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.DroolsObjectInput;
+import org.drools.spi.FieldExtractor;
+import org.drools.util.ClassUtils;
 
 /**
  * This provides access to fields, and what their numerical index/object type is.

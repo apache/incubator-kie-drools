@@ -454,7 +454,7 @@ public class PackageBuilder {
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
             }
-
+            
             this.pkg.addTypeDeclaration( type );
         }
     }

@@ -106,7 +106,6 @@ public class EvaluatorFactoryTest extends TestCase {
                                  {Boolean.FALSE, "!=", "xyz", Boolean.FALSE},
                                  {Boolean.FALSE, "!=", "true", Boolean.TRUE},
                                  {Boolean.FALSE, "!=", "false", Boolean.FALSE}
-
         };
 
         runEvaluatorTest( data,

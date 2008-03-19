@@ -18,6 +18,14 @@ package org.drools.reteoo;
  * Created on January 8th, 2007
  */
 
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
@@ -32,13 +40,6 @@ import org.drools.spi.PropagationContext;
 import org.drools.util.FactEntry;
 import org.drools.util.FactHashTable;
 import org.drools.util.Iterator;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A node that is an entry point into the Rete network.
@@ -119,7 +120,7 @@ public class EntryPointNode extends ObjectSource
     public EntryPoint getEntryPoint() {
         return entryPoint;
     }
-
+    
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,
                              final ObjectTypeConf objectTypeConf,
@@ -143,7 +144,7 @@ public class EntryPointNode extends ObjectSource
                                          context,
                                          workingMemory );
         }
-    }
+    }    
 
     /**
      * This is the entry point into the network for all asserted Facts. Iterates a cache
@@ -174,10 +175,10 @@ public class EntryPointNode extends ObjectSource
      */
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
-                              final ObjectTypeConf objectTypeConf,
+                              final ObjectTypeConf objectTypeConf,                              
                               final InternalWorkingMemory workingMemory) {
         final Object object = handle.getObject();
-
+        
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         if ( cachedNodes == null ) {
@@ -191,11 +192,11 @@ public class EntryPointNode extends ObjectSource
                                           workingMemory );
         }
     }
-
+    
     public void retractObject(final InternalFactHandle handle,
-                              final PropagationContext context,
+                              final PropagationContext context,        
                               final InternalWorkingMemory workingMemory) {
-        // do nothing, dummy method to impl the interface
+        // do nothing, dummy method to impl the interface                
     }
 
     /**
@@ -275,11 +276,12 @@ public class EntryPointNode extends ObjectSource
                            final InternalWorkingMemory workingMemory) {
         // JBRULES-612: the cache MUST be invalidated when a new node type is added to the network, so iterate and reset all caches.
         final ObjectTypeNode node = (ObjectTypeNode) sink;
+                
         final ObjectType newObjectType = node.getObjectType();
 
         InternalWorkingMemoryEntryPoint wmEntryPoint = ( InternalWorkingMemoryEntryPoint ) workingMemory.getWorkingMemoryEntryPoint( this.entryPoint.getEntryPointId() );
-
-        for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {
+        
+        for ( ObjectTypeConf objectTypeConf : wmEntryPoint.getObjectTypeConfigurationRegistry().values() ) {            
             if ( newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();

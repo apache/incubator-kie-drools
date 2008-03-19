@@ -1,14 +1,12 @@
 package org.drools.testframework;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectInput;
 
-import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
@@ -17,7 +15,6 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
