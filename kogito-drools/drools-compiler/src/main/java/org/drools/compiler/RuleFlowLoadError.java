@@ -1,7 +1,5 @@
 package org.drools.compiler;
 
-import java.io.PrintStream;
-import java.io.StringWriter;
 
 /**
  * This is used for reporting errors with loading a ruleflow.

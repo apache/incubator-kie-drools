@@ -16,6 +16,29 @@ package org.drools.common;
  * limitations under the License.
  */
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.drools.Agenda;
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -24,11 +47,11 @@ import org.drools.Otherwise;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseConfiguration.AssertBehaviour;
-import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEntryPoint;
+import org.drools.RuleBaseConfiguration.AssertBehaviour;
+import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.MapGlobalResolver;
 import org.drools.base.ShadowProxy;
 import org.drools.concurrent.ExecutorService;
@@ -50,7 +73,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
-import org.drools.rule.TypeDeclaration;
 import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.ruleflow.instance.RuleFlowProcessInstanceFactory;
 import org.drools.spi.Activation;
@@ -60,28 +82,6 @@ import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -94,7 +94,7 @@ public abstract class AbstractWorkingMemory
     implements
     InternalWorkingMemoryActions,
     EventSupport,
-    PropertyChangeListener {
+    PropertyChangeListener, Externalizable {
     // ------------------------------------------------------------
     // Constants
     // ------------------------------------------------------------
@@ -104,7 +104,7 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
-    protected long                                       id;
+    protected long                                      id;
 
     /** The arguments used when adding/removing a property change listener. */
     protected Object[]                             addRemovePropertyChangeListenerArgs           = new Object[]{this};
@@ -114,33 +114,33 @@ public abstract class AbstractWorkingMemory
 
     protected ObjectStore                          objectStore;
 
-    protected Map                                        queryResults                                  = Collections.EMPTY_MAP;
+    protected Map                                       queryResults                                  = Collections.EMPTY_MAP;
 
     /** Global values which are associated with this memory. */
-    protected GlobalResolver                             globalResolver;
+    protected GlobalResolver                            globalResolver;
 
     /** The eventSupport */
-    protected WorkingMemoryEventSupport                  workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
+    protected WorkingMemoryEventSupport                 workingMemoryEventSupport                     = new WorkingMemoryEventSupport();
 
-    protected AgendaEventSupport                         agendaEventSupport                            = new AgendaEventSupport();
+    protected AgendaEventSupport                        agendaEventSupport                            = new AgendaEventSupport();
 
-    protected RuleFlowEventSupport                       workflowEventSupport                          = new RuleFlowEventSupport();
+    protected RuleFlowEventSupport                      workflowEventSupport                          = new RuleFlowEventSupport();
 
-    protected List                                       __ruleBaseEventListeners                      = new LinkedList();
+    protected List                                      __ruleBaseEventListeners                      = new LinkedList();
 
     /** The <code>RuleBase</code> with which this memory is associated. */
-    protected transient InternalRuleBase                 ruleBase;
+    protected transient InternalRuleBase                ruleBase;
 
     protected FactHandleFactory                    handleFactory;
 
     protected TruthMaintenanceSystem               tms;
 
     /** Rule-firing agenda. */
-    protected DefaultAgenda                              agenda;
+    protected DefaultAgenda                             agenda;
 
     protected Queue<WorkingMemoryAction>           actionQueue                                   = new LinkedList<WorkingMemoryAction>();
 
-    protected boolean                                   evaluatingActionQueue;
+    protected boolean                                    evaluatingActionQueue;
 
     protected ReentrantLock                        lock                                          = new ReentrantLock();
 
@@ -152,7 +152,6 @@ public abstract class AbstractWorkingMemory
     protected AtomicLong                                propagationIdCounter;
 
     private boolean                                maintainTms;
-
     private boolean                                sequential;
 
     private List                                        liaPropagations                               = Collections.EMPTY_LIST;
@@ -183,6 +182,7 @@ public abstract class AbstractWorkingMemory
     // Constructors
     // ------------------------------------------------------------
     public AbstractWorkingMemory() {
+
     }
     /**
      * Construct.
@@ -224,20 +224,20 @@ public abstract class AbstractWorkingMemory
 
         this.workItemManager = new WorkItemManager( this );
         this.processInstanceFactories.put( RuleFlowProcess.RULEFLOW_TYPE,
-                                           new RuleFlowProcessInstanceFactory() );
+                                           new RuleFlowProcessInstanceFactory() );        
         this.entryPoints = new ConcurrentHashMap();
         this.entryPoints.put( "DEFAULT",
                               this );
 
         this.entryPoint = EntryPoint.DEFAULT;
         initTransient();
-    }
-
+    }        
+    
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         id  = in.readLong();
         evaluatingActionQueue = in.readBoolean();
         discardOnLogicalOverride = in.readBoolean();
-        propagationIdCounter = (AtomicLong)in.readObject();
+        propagationIdCounter = (AtomicLong) in.readObject();
         maintainTms = in.readBoolean();
         sequential = in.readBoolean();
         firing = in.readBoolean();
@@ -264,6 +264,7 @@ public abstract class AbstractWorkingMemory
         processInstanceFactories = (Map<String, ProcessInstanceFactory>)in.readObject();
         timeMachine = (TimeMachine)in.readObject();
         entryPoint = (EntryPoint)in.readObject();
+        entryPointNode = (EntryPointNode)in.readObject();
         entryPoints = (Map<String, WorkingMemoryEntryPoint>)in.readObject();
         initTransient();
     }
@@ -299,6 +300,7 @@ public abstract class AbstractWorkingMemory
         out.writeObject(processInstanceFactories);
         out.writeObject(timeMachine);
         out.writeObject(entryPoint);
+        out.writeObject(entryPointNode);
         out.writeObject(entryPoints);
     }
 
@@ -311,13 +313,13 @@ public abstract class AbstractWorkingMemory
         this.nodeMemories.setRuleBaseReference( this.ruleBase );
         initTransient();
     }
-
+    
 
     private void initTransient() {
         this.entryPointNode = this.ruleBase.getRete().getEntryPointNode( this.entryPoint );
         this.typeConfReg = new ObjectTypeConfigurationRegistry( this.ruleBase );
     }
-
+        
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport) {
         this.workingMemoryEventSupport = workingMemoryEventSupport;
@@ -836,7 +838,7 @@ public abstract class AbstractWorkingMemory
                             key.setStatus( EqualityKey.STATED );
                             handle = key.getFactHandle();
 
-                            if ( this.ruleBase.getConfiguration().getAssertBehaviour() == AssertBehaviour.IDENTITY ) {
+                            if ( AssertBehaviour.IDENTITY.equals(this.ruleBase.getConfiguration().getAssertBehaviour()) ) {
                                 // as assertMap may be using an "identity"
                                 // equality comparator,
                                 // we need to remove the handle from the map,
@@ -1235,6 +1237,12 @@ public abstract class AbstractWorkingMemory
                 null );
     }
 
+    /**
+     * modify is implemented as half way retract / assert due to the truth
+     * maintenance issues.
+     *
+     * @see WorkingMemory
+     */
     public void update(final FactHandle factHandle,
                        final Object object,
                        final Rule rule,
@@ -1280,7 +1288,7 @@ public abstract class AbstractWorkingMemory
                                                typeConf,
                                                this );
 
-            if ( (originalObject != object) || (this.ruleBase.getConfiguration().getAssertBehaviour() != AssertBehaviour.IDENTITY) ) {
+            if ( originalObject != object || !AssertBehaviour.IDENTITY.equals(this.ruleBase.getConfiguration().getAssertBehaviour()) ) {
                 this.objectStore.removeHandle( handle );
 
                 // set anyway, so that it updates the hashCodes
@@ -1341,7 +1349,7 @@ public abstract class AbstractWorkingMemory
             evaluatingActionQueue = true;
             WorkingMemoryAction action = null;
 
-            while ( (action = actionQueue.poll()) != null ) {
+            while ( ( action = actionQueue.poll() ) != null ) {
                 action.execute( this );
             }
             evaluatingActionQueue = false;
@@ -1651,7 +1659,4 @@ public abstract class AbstractWorkingMemory
         return this.typeConfReg;
     }
 
-    public TypeDeclaration getTypeDeclaration(Class<?> clazz) {
-        return null;
-    }
 }

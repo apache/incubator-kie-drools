@@ -1,16 +1,11 @@
 package org.drools.testframework;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
-
 import junit.framework.TestCase;
+
+import org.mvel.MVEL;
 
 public class FactPopulatorTest extends TestCase {
 

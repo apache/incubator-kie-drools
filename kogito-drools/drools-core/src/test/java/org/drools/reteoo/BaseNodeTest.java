@@ -81,7 +81,7 @@ public class BaseNodeTest extends TestCase {
         @Override
         public void networkUpdated() {
             // TODO Auto-generated method stub
-
+            
         }
 
     }

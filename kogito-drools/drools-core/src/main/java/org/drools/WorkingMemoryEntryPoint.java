@@ -17,7 +17,7 @@
  */
 package org.drools;
 
-import java.io.Externalizable;
+import java.io.Serializable;
 
 /**
  * An interface for instances that allow handling of entry-point-scoped
@@ -27,7 +27,7 @@ import java.io.Externalizable;
  */
 public interface WorkingMemoryEntryPoint
     extends
-    Externalizable {
+    Serializable {
     /**
      * Assert a fact.
      * 
@@ -40,7 +40,7 @@ public interface WorkingMemoryEntryPoint
      *             If a RuntimeException error occurs.
      */
     FactHandle insert(Object object) throws FactException;
-
+    
     /**
      * Insert a fact registering JavaBean <code>PropertyChangeListeners</code>
      * on the Object to automatically trigger <code>update</code> calls
@@ -58,8 +58,8 @@ public interface WorkingMemoryEntryPoint
      *             If a RuntimeException error occurs.
      */
     FactHandle insert(Object object,
-                      boolean dynamic) throws FactException;
-
+                            boolean dynamic) throws FactException;
+    
     /**
      * Retract a fact.
      * 
@@ -84,22 +84,22 @@ public interface WorkingMemoryEntryPoint
      *             If a RuntimeException error occurs.
      */
     void update(FactHandle handle,
-                Object object) throws FactException;
-
+                      Object object) throws FactException;
+    
     /**
      * 
      * @param factHandle
      */
     public void modifyRetract(final FactHandle factHandle);
-
+    
     /**
      * 
      * @param factHandle
      * @param object
      */
     public void modifyInsert(final FactHandle factHandle,
-                             final Object object);
-
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
+                             final Object object); 
+    
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);    
 
 }

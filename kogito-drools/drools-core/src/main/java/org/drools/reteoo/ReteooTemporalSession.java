@@ -17,14 +17,14 @@
  */
 package org.drools.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.TemporalSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.concurrent.ExecutorService;
 import org.drools.temporal.SessionClock;
-
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
 
 /**
  * ReteooStatefulTemporalSession implements a temporal enabled session
@@ -37,8 +37,7 @@ public class ReteooTemporalSession<T extends SessionClock> extends ReteooStatefu
     TemporalSession<T> {
 
     private static final long serialVersionUID = -2129661675928809928L;
-
-    private T sessionClock;
+    private T                 sessionClock;
 
     public ReteooTemporalSession() {
     }

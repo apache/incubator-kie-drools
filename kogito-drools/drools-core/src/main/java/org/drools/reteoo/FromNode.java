@@ -1,5 +1,10 @@
 package org.drools.reteoo;
 
+import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
@@ -16,11 +21,6 @@ import org.drools.util.Iterator;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
 import org.drools.util.TupleHashTable;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
 
 public class FromNode extends TupleSource
     implements
@@ -185,7 +185,7 @@ public class FromNode extends TupleSource
     public void networkUpdated() {
         this.tupleSource.networkUpdated();
     }
-
+    
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,

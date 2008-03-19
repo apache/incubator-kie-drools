@@ -1,12 +1,14 @@
 package org.drools;
 
-public class StockTick {
+import java.io.Serializable;
+
+public class StockTick implements Serializable {
     private long seq;
     private String company;
     private double price;
     private long time;
     private long duration;
-
+    
     public StockTick() {
     }
 
@@ -24,7 +26,7 @@ public class StockTick {
     public StockTick(long seq,
                      String company,
                      double price,
-                     long time,
+                     long time, 
                      long duration ) {
         super();
         this.seq = seq;

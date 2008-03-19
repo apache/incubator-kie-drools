@@ -24,18 +24,14 @@ import java.util.Set;
 
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELPredicateExpression;
-import org.drools.compiler.Dialect;
 import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.Dialect;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectData;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
-import org.mvel.compiler.AbstractParser;
-import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
 
 /**
  * @author etirelli

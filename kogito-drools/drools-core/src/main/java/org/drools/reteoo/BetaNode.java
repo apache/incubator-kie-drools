@@ -16,6 +16,12 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+import java.io.ObjectOutput;
+import java.io.IOException;
+import java.io.ObjectInput;
+
 import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
@@ -26,12 +32,6 @@ import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 import org.drools.util.LinkedList;
 import org.drools.util.LinkedListEntry;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
@@ -149,7 +149,7 @@ abstract class BetaNode extends TupleSource
         this.rightInput.networkUpdated();
         this.leftInput.networkUpdated();
     }
-
+    
     public List getRules() {
         final List list = new ArrayList();
 

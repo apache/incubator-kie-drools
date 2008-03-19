@@ -3,6 +3,21 @@
  */
 package org.drools.clips;
 
+import java.io.PrintStream;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.FactHandle;
@@ -25,22 +40,10 @@ import org.drools.spi.GlobalResolver;
 import org.mvel.MVEL;
 import org.mvel.ParserContext;
 import org.mvel.ast.Function;
+import org.mvel.compiler.CompiledExpression;
 import org.mvel.compiler.ExpressionCompiler;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import org.mvel.debug.DebugTools;
+import org.mvel.util.CompilerTools;
 
 public class Shell
     implements

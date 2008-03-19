@@ -383,7 +383,7 @@ public class PatternBuilder
         // analyze field type:
         Class resultType = getFieldReturnType( pattern,
                                                fieldConstraintDescr );
-
+        
         PredicateDescr predicateDescr = new PredicateDescr();
         MVELDumper dumper = new MVELDumper();
         predicateDescr.setContent( dumper.dump( fieldConstraintDescr, Date.class.isAssignableFrom( resultType ) ) );
@@ -796,7 +796,7 @@ public class PatternBuilder
                 ((ObjectFieldImpl) field).setEnum( true );
                 ((ObjectFieldImpl) field).setEnumName( staticClass.getName() );
                 ((ObjectFieldImpl) field).setFieldName( fieldName );
-            }            
+            }
         } catch ( final ClassNotFoundException e ) {
             // nothing to do, as it is not a class name with static field
         } catch ( final Exception e ) {

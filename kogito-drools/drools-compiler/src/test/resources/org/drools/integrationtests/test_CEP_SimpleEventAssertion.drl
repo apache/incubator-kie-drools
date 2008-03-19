@@ -1,6 +1,11 @@
 package org.drools;
 
-import event org.drools.StockTick;
+import org.drools.StockTick;
+
+declare StockTick {
+    role event,
+    clock_strategy pseudo
+}
 
 global java.util.List results;
 

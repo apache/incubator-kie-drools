@@ -11,20 +11,22 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drools.common.DroolsObjectInput;
+
 public class DialectDatas implements Externalizable {
     private transient ClassLoader parentClassLoader;
     private CompositePackageClassLoader classLoader;
 
-    private Map<String, DialectData>    dialects;
+    private Map<String, DialectData> dialects;
 
-    private Map                         lineMappings;
+    private Map                           lineMappings;
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
      * will result in an invalid state for the instance.
      */
     public DialectDatas() {
-        this((ClassLoader)null);
+        this(null);
     }
 
     public DialectDatas(ClassLoader classLoader) {

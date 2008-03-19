@@ -5,7 +5,6 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.AccumulateDescr;

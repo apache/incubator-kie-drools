@@ -13,7 +13,6 @@ import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -35,7 +34,6 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
-import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlPackageReader;
 
 public class XmlPackageReaderTest extends TestCase {

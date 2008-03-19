@@ -189,6 +189,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             consequence.append( ";\n" );
             // adding the modifyRetract call:
             consequence.append( "modifyRetract( __obj__ );\n" );
+            
 
             // adding each of the expressions:
             for ( Iterator exprIt = d.getExpressions().iterator(); exprIt.hasNext(); ) {

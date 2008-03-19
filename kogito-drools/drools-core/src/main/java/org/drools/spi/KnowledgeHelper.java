@@ -16,13 +16,13 @@ package org.drools.spi;
  * limitations under the License.
  */
 
+import java.io.Serializable;
+
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
-
-import java.io.Externalizable;
 
 /**
  * KnowledgeHelper implementation types are injected into consequenses
@@ -39,7 +39,7 @@ import java.io.Externalizable;
  */
 public interface KnowledgeHelper
     extends
-    Externalizable {
+    Serializable {
     
     public void setActivation(final Activation agendaItem); 
     

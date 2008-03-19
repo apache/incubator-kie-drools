@@ -2,7 +2,6 @@ package org.drools.testframework;
 
 import static org.mvel.MVEL.eval;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,7 +23,6 @@ import org.drools.brms.client.modeldriven.testing.VerifyField;
 import org.drools.brms.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.TimeMachine;
-import org.mvel.integration.impl.BaseVariableResolverFactory;
 
 /**
  * This actually runs the test scenarios.

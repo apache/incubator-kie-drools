@@ -10,8 +10,6 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
-import org.drools.process.core.Process;
-import org.drools.xml.XmlProcessReader;
 
 public class ActionNodeTest extends TestCase {
     public void testSingleActionNode() throws Exception {                

@@ -17,7 +17,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.io.Serializable;
-import java.io.Externalizable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,10 +31,6 @@ import org.drools.rule.MVELDialectData;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
-import org.mvel.compiler.AbstractParser;
-import org.mvel.compiler.ExpressionCompiler;
-import org.mvel.MVEL;
-import org.mvel.ParserContext;
 
 /**
  * @author etirelli

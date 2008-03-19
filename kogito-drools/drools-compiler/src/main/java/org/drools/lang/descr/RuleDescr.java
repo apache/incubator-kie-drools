@@ -16,11 +16,13 @@ package org.drools.lang.descr;
  * limitations under the License.
  */
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.compiler.Dialect;
 import org.drools.rule.Dialectable;
 
 public class RuleDescr extends BaseDescr implements Dialectable {
@@ -41,6 +43,9 @@ public class RuleDescr extends BaseDescr implements Dialectable {
     private String            className;
 
 
+    public RuleDescr() {
+    }
+
     public RuleDescr(final String name) {
         this( name,
               "" );
@@ -51,6 +56,36 @@ public class RuleDescr extends BaseDescr implements Dialectable {
                      final String documentation) {
         this.name = ruleName;
         this.documentation = documentation;
+    }
+
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        name    = (String)in.readObject();
+        dialect    = (String)in.readObject();
+        documentation    = (String)in.readObject();
+        consequence    = in.readObject();
+        lhs    = (AndDescr)in.readObject();
+        consequenceLine    = in.readInt();
+        consequencePattern    = in.readInt();
+        offset    = in.readInt();
+        attributes    = (List)in.readObject();
+        salience    = (String)in.readObject();
+        className    = (String)in.readObject();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeObject(name);
+        out.writeObject(dialect);
+        out.writeObject(documentation);
+        out.writeObject(consequence);
+        out.writeObject(lhs);
+        out.writeInt(consequenceLine);
+        out.writeInt(consequencePattern);
+        out.writeInt(offset);
+        out.writeObject(attributes);
+        out.writeObject(salience);
+        out.writeObject(className);
     }
 
     public String getName() {

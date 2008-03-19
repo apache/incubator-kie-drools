@@ -20,15 +20,13 @@ import java.io.Externalizable;
 import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class Cheesery
     implements
-    Serializable {
+    Externalizable {
     /**
      *
      */
@@ -41,10 +39,6 @@ public class Cheesery
     private int               status;
     private int               totalAmount;
     private Maturity          maturity;
-    
-    public Cheesery() {
-        
-    }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         cheeses = (List)in.readObject();
@@ -59,8 +53,7 @@ public class Cheesery
         out.writeInt(status);
         out.writeInt(totalAmount);
         out.writeObject(maturity);
-    }    
-    
+    }
     public List getCheeses() {
         return this.cheeses;
     }
@@ -114,14 +107,6 @@ public class Cheesery
         public Maturity(final String age) {
             this.age = age;
         }
-        
-        private Object readResolve() throws ObjectStreamException {
-            if ( "young".equals( this.age) ) {
-                return Maturity.YOUNG;
-            } else {
-                return Maturity.OLD;
-            }
-        }        
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             age = (String)in.readObject();
@@ -135,34 +120,4 @@ public class Cheesery
             return "[Maturity age='" + this.age + "']";
         }
     }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((cheeses == null) ? 0 : cheeses.hashCode());
-        result = prime * result + ((maturity == null) ? 0 : maturity.hashCode());
-        result = prime * result + status;
-        result = prime * result + totalAmount;
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
-        final Cheesery other = (Cheesery) obj;
-        if ( cheeses == null ) {
-            if ( other.cheeses != null ) return false;
-        } else if ( !cheeses.equals( other.cheeses ) ) return false;
-        if ( maturity == null ) {
-            if ( other.maturity != null ) return false;
-        } else if ( !maturity.equals( other.maturity ) ) return false;
-        if ( status != other.status ) return false;
-        if ( totalAmount != other.totalAmount ) return false;
-        return true;
-    }
-    
-    
 }

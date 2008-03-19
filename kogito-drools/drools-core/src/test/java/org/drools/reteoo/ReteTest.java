@@ -16,6 +16,14 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
@@ -31,13 +39,6 @@ import org.drools.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
 import org.drools.spi.PropagationContext;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * @author mproctor
@@ -140,8 +141,8 @@ public class ReteTest extends DroolsTestCase {
                                                        PropagationContext.ASSERTION,
                                                        null,
                                                        null ),
-                           workingMemory );
-
+                           workingMemory );               
+        
         ClassObjectTypeConf conf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(), ArrayList.class );
         assertLength( 3,
                       conf.getObjectTypeNodes() );

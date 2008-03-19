@@ -1,14 +1,11 @@
 package org.drools.agent;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.common.DroolsObjectOutputStream;
-import org.drools.rule.Package;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.io.ObjectOutput;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -17,6 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import org.drools.RuntimeDroolsException;
+import org.drools.common.DroolsObjectOutputStream;
+import org.drools.rule.Package;
 
 public class URLScanner extends PackageProvider {
 

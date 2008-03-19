@@ -29,7 +29,6 @@ import junit.framework.TestCase;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;

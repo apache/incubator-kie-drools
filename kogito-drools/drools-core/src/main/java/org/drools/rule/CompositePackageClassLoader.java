@@ -38,11 +38,11 @@ public class CompositePackageClassLoader extends ClassLoader implements DroolsCl
     }
 
     /**
-     * Javadocs recommend that this method not be overloaded. We overload this so that we can prioritise the fastFindClass
+     * Javadocs recommend that this method not be overloaded. We overload this so that we can prioritise the fastFindClass 
      * over method calls to parent.loadClass(name, false); and c = findBootstrapClass0(name); which the default implementation
-     * would first - hence why we call it "fastFindClass" instead of standard findClass, this indicates that we give it a
+     * would first - hence why we call it "fastFindClass" instead of standard findClass, this indicates that we give it a 
      * higher priority than normal.
-     *
+     * 
      */
     protected synchronized Class loadClass(final String name,
                                            final boolean resolve) throws ClassNotFoundException {
@@ -68,10 +68,10 @@ public class CompositePackageClassLoader extends ClassLoader implements DroolsCl
 
         return clazz;
     }
-
+    
     public InputStream getResourceAsStream(final String name) {
         InputStream stream =  super.getResourceAsStream( name );
-
+        
         for ( final Iterator it = this.classLoaders.iterator(); it.hasNext(); ) {
             final DroolsClassLoader classLoader = (DroolsClassLoader) it.next();
             stream = classLoader.getResourceAsStream( name );

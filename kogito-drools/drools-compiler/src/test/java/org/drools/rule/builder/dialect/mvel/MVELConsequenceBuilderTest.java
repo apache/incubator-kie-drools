@@ -21,12 +21,10 @@ import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.compiler.Dialect;
-import org.drools.compiler.DialectConfiguration;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.lang.descr.ActionDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.ReteTuple;
@@ -38,8 +36,8 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
-import org.mvel.compiler.ExpressionCompiler;
 import org.mvel.ParserContext;
+import org.mvel.compiler.ExpressionCompiler;
 
 public class MVELConsequenceBuilderTest extends TestCase {
 

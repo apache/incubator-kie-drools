@@ -1,6 +1,14 @@
 package org.drools.integrationtests;
 
-import junit.framework.Assert;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StringReader;
+import java.io.ObjectOutput;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
@@ -10,13 +18,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.StringReader;
+import junit.framework.Assert;
 
 /**
  * This generates a large number of rules (complex ones) and then times

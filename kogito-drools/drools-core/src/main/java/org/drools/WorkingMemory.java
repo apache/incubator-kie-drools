@@ -16,10 +16,10 @@ package org.drools;
  * limitations under the License.
  */
 
+import java.io.Externalizable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.io.Externalizable;
 
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
@@ -234,7 +234,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws IllegalArgumentException
      *         if no query named "query" is found in the rulebase
      */
-    public QueryResults getQueryResults(String query, Object[] arguments);
+    public QueryResults getQueryResults(String query, Object[] arguments);  
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda

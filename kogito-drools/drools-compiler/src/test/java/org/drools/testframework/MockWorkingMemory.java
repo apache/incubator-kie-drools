@@ -1,12 +1,23 @@
 package org.drools.testframework;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.Agenda;
+import org.drools.WorkingMemoryEntryPoint;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.ObjectFilter;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
-import org.drools.WorkingMemoryEntryPoint;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -37,17 +48,6 @@ import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ObjectHashMap;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
 

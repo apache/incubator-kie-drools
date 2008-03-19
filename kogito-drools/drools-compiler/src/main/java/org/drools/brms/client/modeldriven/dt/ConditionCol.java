@@ -45,11 +45,9 @@ public class ConditionCol extends DTColumnConfig {
 	 */
 	public String operator;
 
-
 	/**
 	 * A comma separated list of valid values. Optional.
 	 */
 	public String valueList;
-
 
 }

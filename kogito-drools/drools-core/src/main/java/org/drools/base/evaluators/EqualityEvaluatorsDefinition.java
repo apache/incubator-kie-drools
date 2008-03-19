@@ -17,11 +17,10 @@
  */
 package org.drools.base.evaluators;
 
-import java.util.Date;
-import java.util.Map;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Date;
 
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ShadowProxy;
@@ -154,7 +153,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
      *           Evaluator Implementations
      *  *********************************************************
      */
-
     public static class ArrayEqualEvaluator extends BaseEvaluator {
 
         private static final long     serialVersionUID = 400L;

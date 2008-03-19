@@ -17,8 +17,6 @@ package org.drools.xml.rules;
  */
 
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.ListIterator;
 
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;

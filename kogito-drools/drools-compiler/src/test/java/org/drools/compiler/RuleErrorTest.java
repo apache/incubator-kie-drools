@@ -1,11 +1,10 @@
 package org.drools.compiler;
 
+import junit.framework.TestCase;
+
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.rule.Rule;
-
-import junit.framework.TestCase;
 
 public class RuleErrorTest extends TestCase {
 

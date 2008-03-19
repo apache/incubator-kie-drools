@@ -2,7 +2,6 @@ package org.drools.rule.builder.dialect.mvel;
 
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectConfiguration;
-import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 
 /**
