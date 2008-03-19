@@ -304,7 +304,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getValue();
+            final Object value2 = object2.getBigDecimalValue();
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -363,7 +363,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getValue();
+            final Object value2 = object2.getBigDecimalValue();
             if ( value1 == null ) {
                 return value2 != null;
             }
@@ -421,7 +421,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getValue();
+            final Object value2 = object2.getBigIntegerValue();
             if ( value1 == null ) {
                 return value2 == null;
             }
@@ -479,7 +479,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Extractor extractor,
                                 final Object object1, final FieldValue object2) {
             final Object value1 = extractor.getValue( workingMemory, object1 );
-            final Object value2 = object2.getValue();
+            final Object value2 = object2.getBigDecimalValue();
             if ( value1 == null ) {
                 return value2 != null;
             }
