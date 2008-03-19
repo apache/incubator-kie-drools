@@ -101,6 +101,7 @@ import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.xml.XmlDumper;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -191,23 +192,25 @@ public class MiscTest extends TestCase {
         assertEquals( 2,
                       list.size() );
 
+        assertSame( cheesery1, list.get( 0 ) );
         assertEquals( cheesery1,
                       list.get( 0 ) );
         assertEquals( cheesery2,
                       list.get( 1 ) );
         
-//        // now try it again with the list from a serialised WM
-//        workingMemory   = SerializationHelper.serializeObject(workingMemory);
-//        list = (List) workingMemory.getGlobal( "list" );
-//        workingMemory.fireAllRules();
-//
-//        assertEquals( 2,
-//                      list.size() );
-//
-//        assertEquals( cheesery1,
-//                      list.get( 0 ) );
-//        assertEquals( cheesery2,
-//                      list.get( 1 ) );        
+        // now try it again with the list from a serialised WM
+        workingMemory   = ruleBase.newStatefulSession( new ByteArrayInputStream( SerializationHelper.serializeOut(  workingMemory  )) );        
+        list = (List) workingMemory.getGlobal( "list" );
+        workingMemory.fireAllRules();
+
+        assertEquals( 2,
+                      list.size() );
+
+        assertNotSame( cheesery1, list.get( 0 ) );
+        assertEquals( cheesery1,
+                      list.get( 0 ) );
+        assertEquals( cheesery2,
+                      list.get( 1 ) );        
     }
 
     public void testPrimitiveArray() throws Exception {
