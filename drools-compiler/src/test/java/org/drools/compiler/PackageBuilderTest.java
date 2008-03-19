@@ -36,20 +36,20 @@ import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.StockTick;
 import org.drools.WorkingMemory;
+import org.drools.StockTick;
+import org.drools.integrationtests.SerializationHelper;
 import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.DroolsObjectInputStream;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.RuleFlowGroupNode;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
 import org.drools.facttemplates.Fact;
-import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -1018,17 +1018,6 @@ public class PackageBuilderTest extends DroolsTestCase {
                     compiler.getClass() );
     }
 
-    public void testPackageMerge() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        try {
-            builder.addPackage( new PackageDescr( "org.drools" ) );
-
-            builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
-        } catch ( RuntimeException e ) {
-            fail( "Should not raise any exception: " + e.getMessage() );
-        }
-    }
-    
     public void testTypeDeclaration() throws Exception {
         PackageDescr pkgDescr = new PackageDescr( "org.test" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
@@ -1042,6 +1031,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         builder.addPackage( pkgDescr );
 
         Package pkg = builder.getPackage();
+        pkg = SerializationHelper.serializeObject(pkg);
         assertEquals( 1,
                       pkg.getTypeDeclarations().size() );
 
@@ -1052,7 +1042,18 @@ public class PackageBuilderTest extends DroolsTestCase {
                       type.getRole() );
         assertEquals( StockTick.class,
                       type.getTypeClass() );
-    }    
+    }
+
+    public void testPackageMerge() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        try {
+            builder.addPackage( new PackageDescr( "org.drools" ) );
+
+            builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
+        } catch ( RuntimeException e ) {
+            fail( "Should not raise any exception: " + e.getMessage() );
+        }
+    }
 
     private void createReturnValueRule(final PackageDescr packageDescr,
                                        final String expression) {
