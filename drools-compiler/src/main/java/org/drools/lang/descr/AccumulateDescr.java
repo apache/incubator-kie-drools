@@ -18,9 +18,6 @@ package org.drools.lang.descr;
 
 import java.util.Collections;
 import java.util.List;
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
 
 /**
  * A descr class for accumulate node
@@ -44,34 +41,6 @@ public class AccumulateDescr extends PatternSourceDescr
     private String            functionIdentifier;
     private String            expression;
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
-        input           = (BaseDescr)in.readObject();
-        initCode        = (String)in.readObject();
-        actionCode      = (String)in.readObject();
-        reverseCode     = (String)in.readObject();
-        resultCode      = (String)in.readObject();
-        declarations    = (String[])in.readObject();
-        className       = (String)in.readObject();
-        externalFunction    = in.readBoolean();
-        functionIdentifier  = (String)in.readObject();
-        expression          = (String)in.readObject();
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
-        out.writeObject(input);
-        out.writeObject(initCode);
-        out.writeObject(actionCode);
-        out.writeObject(reverseCode);
-        out.writeObject(resultCode);
-        out.writeObject(declarations);
-        out.writeObject(className);
-        out.writeBoolean(externalFunction);
-        out.writeObject(functionIdentifier);
-        out.writeObject(expression);
-    }
-    
     public int getLine() {
         return this.input.getLine();
     }
