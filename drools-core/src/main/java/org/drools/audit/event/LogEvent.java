@@ -1,5 +1,10 @@
 package org.drools.audit.event;
 
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.IOException;
+import java.io.ObjectOutput;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -22,7 +27,7 @@ package org.drools.audit.event;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
-public class LogEvent {
+public class LogEvent implements Externalizable {
 
 public static final int INSERTED                                = 1;
     public static final int UPDATED                             = 2;
@@ -63,6 +68,9 @@ public static final int INSERTED                                = 1;
     
     private int             type;
 
+    public LogEvent() {
+    }
+
     /**
      * Creates a new log event.
      * 
@@ -72,6 +80,13 @@ public static final int INSERTED                                = 1;
         this.type = type;
     }
 
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        type    = in.readInt();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(type);
+    }
     /**
      * Returns the type of the log event as defined in this class.
      * 

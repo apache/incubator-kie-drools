@@ -104,11 +104,11 @@ public class CepEspTest extends TestCase {
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
 
-//        wm  = SerializationHelper.serializeObject(wm);
+        wm  = SerializationHelper.serializeObject(wm);
         wm.fireAllRules();
 
         assertEquals( 2,
-                      results.size() );
+                      ((List)wm.getGlobal("results")).size() );
 
     }
 

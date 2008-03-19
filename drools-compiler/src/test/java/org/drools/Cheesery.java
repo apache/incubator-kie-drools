@@ -20,13 +20,15 @@ import java.io.Externalizable;
 import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Collections;
 
 public class Cheesery
     implements
-    Externalizable {
+    Serializable {
     /**
      *
      */
@@ -40,20 +42,20 @@ public class Cheesery
     private int               totalAmount;
     private Maturity          maturity;
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        cheeses = (List)in.readObject();
-        status  = in.readInt();
-        totalAmount = in.readInt();
-        maturity    = (Maturity)in.readObject();
-
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        else if (obj instanceof Cheesery) {
+            Cheesery    that    = (Cheesery)obj;
+            return cheeses.equals(that.cheeses) &&
+                   status == that.status &&
+                   totalAmount == that.totalAmount &&
+                   maturity == that.maturity || maturity != null && maturity.equals(that.maturity);
+        }
+        return false;
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(cheeses);
-        out.writeInt(status);
-        out.writeInt(totalAmount);
-        out.writeObject(maturity);
-    }
     public List getCheeses() {
         return this.cheeses;
     }
@@ -106,6 +108,13 @@ public class Cheesery
 
         public Maturity(final String age) {
             this.age = age;
+        }
+
+        public boolean equals(Object obj) {
+            if (obj instanceof Maturity) {
+                return age == ((Maturity)obj).age || age != null && age.equals(((Maturity)obj).age);
+            }
+            return false;
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
