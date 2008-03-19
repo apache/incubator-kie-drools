@@ -186,8 +186,6 @@ public class MiscTest extends TestCase {
         cheesery2.setMaturity( Maturity.YOUNG );
         workingMemory.insert( cheesery2 );
 
-        //        workingMemory   = SerializationHelper.serializeObject(workingMemory);
-        //        list = (List) workingMemory.getGlobal( "list" );
         workingMemory.fireAllRules();
 
         assertEquals( 2,
@@ -197,6 +195,19 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
         assertEquals( cheesery2,
                       list.get( 1 ) );
+        
+//        // now try it again with the list from a serialised WM
+//        workingMemory   = SerializationHelper.serializeObject(workingMemory);
+//        list = (List) workingMemory.getGlobal( "list" );
+//        workingMemory.fireAllRules();
+//
+//        assertEquals( 2,
+//                      list.size() );
+//
+//        assertEquals( cheesery1,
+//                      list.get( 0 ) );
+//        assertEquals( cheesery2,
+//                      list.get( 1 ) );        
     }
 
     public void testPrimitiveArray() throws Exception {
