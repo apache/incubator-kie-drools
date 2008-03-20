@@ -4870,11 +4870,32 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
-    public void testModifyBlock() throws Exception {
+    public void testAlphaCompositeConstraints() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyBlock.drl" ) ) );
+        builder.addPackageFromDrl(new InputStreamReader(getClass()
+                .getResourceAsStream("test_AlphaCompositeConstraints.drl")));
         final Package pkg = builder.getPackage();
 
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage(pkg);
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal("results", list);
+
+        Person bob = new Person( "bob", 30 );
+
+        workingMemory.insert(bob);
+        workingMemory.fireAllRules();
+
+        assertEquals( 1, list.size());
+    }
+
+	public void testModifyBlock() throws Exception {
+		final PackageBuilder builder = new PackageBuilder();
+		builder.addPackageFromDrl(new InputStreamReader(getClass()
+				.getResourceAsStream("test_ModifyBlock.drl")));
+		final Package pkg = builder.getPackage();
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();

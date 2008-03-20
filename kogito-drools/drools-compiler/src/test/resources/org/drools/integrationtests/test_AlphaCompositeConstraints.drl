@@ -1,0 +1,10 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "test alpha composite constraints"
+when
+    Person( eval( age == 25 ) || ( eval( name.equals( "bob" ) ) && eval( age == 30 ) ) )
+then
+    results.add( "OK" );
+end
