@@ -92,7 +92,6 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		set2.type = SuggestionCompletionEngine.TYPE_STRING;
 		dt.actionCols.add(set2);
 
-
 		dt.data = new String[][] {
 				new String[] {"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", "gooVal2"},
 				new String[] {"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", "gooVal2"}
@@ -100,11 +99,9 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 
 
-
-
-		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+		GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
 		String drl = p.marshal(dt);
-		System.err.println(drl);
+
 
 		assertTrue(drl.indexOf("from row number") > -1);
 		assertTrue(drl.indexOf("rating == ( age * 0.2 )") > 0);
@@ -308,6 +305,39 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		assertEquals("type", a3.fieldValues[1].field);
 		assertEquals("actioninsertfact2", a3.fieldValues[1].value);
 		assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, a3.fieldValues[1].type);
+
+
+	}
+
+	public void testNoConstraints() {
+		GuidedDecisionTable dt = new GuidedDecisionTable();
+		ConditionCol c = new ConditionCol();
+		c.boundName = "x";
+		c.factType = "Context";
+		c.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		dt.conditionCols.add(c);
+		ActionSetFieldCol asf = new ActionSetFieldCol();
+		asf.boundName = "x";
+		asf.factField = "age";
+		asf.type = "String";
+		dt.actionCols.add(asf);
+
+		String[][] data = new String[][] {
+			new String[] {"1", "desc", "y", "old"}
+		};
+		dt.data = data;
+
+		String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
+
+		assertTrue(drl.indexOf("Context( )") > -1);
+		assertTrue(drl.indexOf("x.setAge") > drl.indexOf("Context( )"));
+
+
+		dt.data = new String[][] {
+				new String[] {"1", "desc", "", "old"}
+			};
+		drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
+		assertEquals(-1, drl.indexOf("Context( )"));
 
 
 	}

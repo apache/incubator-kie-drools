@@ -1,0 +1,41 @@
+package org.drools.brms.server.util;
+
+import org.drools.brms.client.modeldriven.dt.ActionInsertFactCol;
+import org.drools.brms.client.modeldriven.dt.ActionSetFieldCol;
+import org.drools.brms.client.modeldriven.dt.AttributeCol;
+import org.drools.brms.client.modeldriven.dt.ConditionCol;
+import org.drools.brms.client.modeldriven.dt.GuidedDecisionTable;
+
+import junit.framework.TestCase;
+
+public class GuidedDTXMLPersistenceTest extends TestCase {
+
+	public void testRoundTrip() {
+		GuidedDecisionTable dt = new GuidedDecisionTable();
+		dt.actionCols.add(new ActionInsertFactCol());
+		dt.actionCols.add(new ActionSetFieldCol());
+		dt.attributeCols.add(new AttributeCol());
+		dt.conditionCols.add(new ConditionCol());
+		dt.data = new String[][] {
+				new String[] {"hola"}
+		};
+		dt.tableName = "blah";
+		dt.descriptionWidth = 42;
+
+		String xml = GuidedDTXMLPersistence.getInstance().marshal(dt);
+		assertNotNull(xml);
+		assertEquals(-1, xml.indexOf("ActionSetField"));
+		assertEquals(-1, xml.indexOf("ConditionCol"));
+		assertEquals(-1, xml.indexOf("GuidedDecisionTable"));
+
+		GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
+		assertNotNull(dt_);
+		assertEquals(42, dt_.descriptionWidth);
+		assertEquals("blah", dt_.tableName);
+		assertEquals(1, dt_.attributeCols.size());
+		assertEquals(2, dt_.actionCols.size());
+		assertEquals(1, dt_.conditionCols.size());
+
+	}
+
+}

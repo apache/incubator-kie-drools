@@ -268,5 +268,51 @@ public class GuidedDecisionTableTest extends TestCase {
 
 	}
 
+	public void testNoConstraintLists() {
+		GuidedDecisionTable dt = new GuidedDecisionTable();
+
+		//add cols for LHS
+		ConditionCol c1 = new ConditionCol();
+		c1.boundName = "c1";
+		c1.factType = "Driver";
+		c1.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		dt.conditionCols.add(c1);
+
+		ConditionCol c2 = new ConditionCol();
+		c2.boundName = "c2";
+		c2.factType = "Driver";
+		c2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		c2.valueList = "a,b,c";
+		dt.conditionCols.add(c2);
+
+
+		SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
+		sce.dataEnumLists.put("Driver.name", new String[] {"bob", "michael"});
+
+		assertEquals(0, dt.getValueList(c1, sce).length);
+		assertEquals(3, dt.getValueList(c2, sce).length);
+
+
+	}
+
+	public void testNoConstraintsNumeric() {
+		GuidedDecisionTable dt = new GuidedDecisionTable();
+
+		//add cols for LHS
+		ConditionCol c1 = new ConditionCol();
+		c1.boundName = "c1";
+		c1.factType = "Driver";
+		c1.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		dt.conditionCols.add(c1);
+
+		SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
+		sce.fieldTypes = new HashMap();
+		sce.fieldTypes.put("Driver.age", SuggestionCompletionEngine.TYPE_NUMERIC);
+		sce.fieldTypes.put("Driver.name", SuggestionCompletionEngine.TYPE_STRING);
+
+		assertFalse(dt.isNumeric(c1, sce));
+
+	}
+
 
 }
