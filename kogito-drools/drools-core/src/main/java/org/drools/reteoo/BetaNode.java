@@ -101,29 +101,29 @@ abstract class BetaNode extends LeftTupleSource
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal(in);
+        constraints   = (BetaConstraints)in.readObject();
         leftInput   = (LeftTupleSource)in.readObject();
         rightInput   = (ObjectSource)in.readObject();
-        constraints   = (BetaConstraints)in.readObject();
         previousTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
         nextTupleSinkNode   = (LeftTupleSinkNode)in.readObject();
         previousObjectSinkNode   = (ObjectSinkNode)in.readObject();
         nextObjectSinkNode   = (ObjectSinkNode)in.readObject();
         objectMemory    = in.readBoolean();
         tupleMemoryEnabled  = in.readBoolean();
+        super.readExternal(in);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal(out);
+        out.writeObject(constraints);
         out.writeObject(leftInput);
         out.writeObject(rightInput);
-        out.writeObject(constraints);
         out.writeObject(previousTupleSinkNode);
         out.writeObject(nextTupleSinkNode);
         out.writeObject(previousObjectSinkNode);
         out.writeObject(nextObjectSinkNode);
         out.writeBoolean(objectMemory);
         out.writeBoolean(tupleMemoryEnabled);
+        super.writeExternal(out);
     }
 
     public BetaNodeFieldConstraint[] getConstraints() {
@@ -149,7 +149,7 @@ abstract class BetaNode extends LeftTupleSource
         this.rightInput.networkUpdated();
         this.leftInput.networkUpdated();
     }
-    
+
     public List getRules() {
         final List list = new ArrayList();
 

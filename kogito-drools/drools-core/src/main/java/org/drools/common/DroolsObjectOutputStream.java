@@ -7,7 +7,6 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -35,49 +34,6 @@ public class DroolsObjectOutputStream implements ObjectOutput, DroolsObjectStrea
 
     private void writeNull() throws IOException {
         writeRecordType(RT_NULL);
-    }
-
-    private void writeObjectOrReference(Object object, Class clazz) throws IOException {
-        int handle = registerObject(object);
-        if (handle < 0) {
-            writeObject(object, clazz, -handle);
-        } else {
-            writeReference(handle);
-        }
-    }
-
-    private void writeObject(Object object, Class clazz, int handle) throws IOException {
-        if (Externalizable.class.isAssignableFrom(clazz)) {
-            writeExternalizable((Externalizable) object, clazz, handle);
-        } else if (String.class.isAssignableFrom(clazz)) {
-            writeString((String) object, handle);
-        } else if (Map.class.isAssignableFrom(clazz)) {
-            writeMap((Map) object, clazz, handle);
-        } else if (Collection.class.isAssignableFrom(clazz)) {
-            writeCollection((Collection) object, clazz, handle);
-        } else if (clazz == Class.class) {
-            writeClass((Class) object, handle);
-        } else if (clazz.isArray()) {
-            writeArray(object, clazz, handle);
-        } else if (AtomicReferenceArray.class.isAssignableFrom(clazz)) {
-            writeAtomicReferenceArray((AtomicReferenceArray)object, handle);
-        } else if (Serializable.class.isAssignableFrom(clazz)) {
-            writeSerializable((Serializable) object, handle);
-        } else {
-            throw new NotSerializableException("Unsupported class: " + clazz);
-        }
-    }
-
-    private void writeArray(Object array, Class clazz, int handle) throws IOException {
-        writeRecordType(RT_ARRAY);
-        writeHandle(handle);
-        writeObject(clazz);
-        Class componentType = clazz.getComponentType();
-        if (componentType.isPrimitive()) {
-            writePrimitiveArray(array, componentType);
-        } else {
-            writeObjectArray((Object[]) array);
-        }
     }
 
     private void writePrimitiveArray(Object array, Class clazz) throws IOException {
@@ -172,72 +128,16 @@ public class DroolsObjectOutputStream implements ObjectOutput, DroolsObjectStrea
         }
     }
 
-    private void writeObjectArray(Object[] objects) throws IOException {
-        int length = objects.length;
-        writeInt(length);
-        for (int i = 0; i < length; ++i) {
-            writeObject(objects[i]);
-        }
-    }
-
     private void writeClass(Class clazz, int handle) throws IOException {
         writeRecordType(RT_CLASS);
         writeHandle(handle);
-        writeObjectOrReference(clazz.getName(), String.class);
+        writeObject(clazz.getName());
     }
 
     private void writeString(String string, int handle) throws IOException {
         writeRecordType(RT_STRING);
         writeHandle(handle);
         writeUTF(string);
-    }
-
-    private void writeReference(int handle) throws IOException {
-        writeRecordType(RT_REFERENCE);
-        writeHandle(handle);
-    }
-
-    private void writeExternalizable(Externalizable externalizable, Class clazz, int handle) throws IOException {
-        writeRecordType(RT_EXTERNALIZABLE);
-        writeHandle(handle);
-        writeObject(clazz);
-        externalizable.writeExternal(this);
-    }
-
-    private void writeSerializable(Serializable serializable, int handle) throws IOException {
-        writeRecordType(RT_SERIALIZABLE);
-        writeHandle(handle);
-        dataOutput.writeObject(serializable);
-    }
-
-    private void writeAtomicReferenceArray(AtomicReferenceArray array, int handle) throws IOException {
-        writeRecordType(RT_ATOMICREFERENCEARRAY);
-        writeHandle(handle);
-        writeInt(array.length());
-        for (int i = 0; i < array.length(); i++)
-            writeObject(array.get(i));
-    }
-
-    private void writeMap(Map map, Class clazz, int handle) throws IOException {
-        writeRecordType(RT_MAP);
-        writeHandle(handle);
-        writeObject(clazz);
-        writeInt(map.size());
-        for (Object object : map.entrySet()) {
-            Map.Entry entry = (Map.Entry) object;
-            writeObject(entry.getKey());
-            writeObject(entry.getValue());
-        }
-    }
-
-    private void writeCollection(Collection collection, Class clazz, int handle) throws IOException {
-        writeRecordType(RT_COLLECTION);
-        writeHandle(handle);
-        writeObject(clazz);
-        writeInt(collection.size());
-        for (Object object : collection) {
-            writeObject(object);
-        }
     }
 
     private void writeEmptySet() throws IOException {
@@ -297,10 +197,74 @@ public class DroolsObjectOutputStream implements ObjectOutput, DroolsObjectStrea
                 writeEmptyList();
             } else if (clazz == EMPTY_MAP_CLASS) {
                 writeEmptyMap();
-            } else if (clazz == String.class) {
-                writeObjectOrReference(((String) object).intern(), clazz);
             } else {
-                writeObjectOrReference(object, clazz);
+                if (clazz == String.class)
+                    object  = ((String)object).intern();
+                int handle = registerObject(object);
+                if (handle < 0) {
+                    handle  = -handle;
+                    if (Externalizable.class.isAssignableFrom(clazz)) {
+                        writeRecordType(RT_EXTERNALIZABLE);
+                        writeHandle(handle);
+                        writeObject(clazz);
+                        ((Externalizable)object).writeExternal(this);
+                    } else if (String.class.isAssignableFrom(clazz)) {
+                        writeString((String) object, handle);
+                    } else if (Map.class.isAssignableFrom(clazz)) {
+                        Map map = (Map)object;
+                        writeRecordType(RT_MAP);
+                        writeHandle(handle);
+                        writeObject(clazz);
+                        writeInt(map.size());
+                        for (Object obj : map.entrySet()) {
+                            Map.Entry entry = (Map.Entry) obj;
+                            writeObject(entry.getKey());
+                            writeObject(entry.getValue());
+                        }
+                    } else if (Collection.class.isAssignableFrom(clazz)) {
+                        Collection collection   = (Collection)object;
+                        writeRecordType(RT_COLLECTION);
+                        writeHandle(handle);
+                        writeObject(clazz);
+                        writeInt(collection.size());
+                        for (Object obj : collection) {
+                            writeObject(obj);
+                        }
+                    } else if (clazz == Class.class) {
+                        writeClass((Class) object, handle);
+                    } else if (clazz.isArray()) {
+                        writeRecordType(RT_ARRAY);
+                        writeHandle(handle);
+                        writeObject(clazz);
+                        Class componentType = clazz.getComponentType();
+                        if (componentType.isPrimitive()) {
+                            writePrimitiveArray(object, componentType);
+                        } else {
+                            Object[]    array = (Object[])object;
+                            int length = array.length;
+                            writeInt(length);
+                            for (int i = 0; i < length; ++i) {
+                                writeObject(array[i]);
+                            }
+                        }
+                    } else if (AtomicReferenceArray.class.isAssignableFrom(clazz)) {
+                        AtomicReferenceArray array  = (AtomicReferenceArray)object;
+                        writeRecordType(RT_ATOMICREFERENCEARRAY);
+                        writeHandle(handle);
+                        writeInt(array.length());
+                        for (int i = 0; i < array.length(); i++)
+                            writeObject(array.get(i));
+                    } else if (Serializable.class.isAssignableFrom(clazz)) {
+                        writeRecordType(RT_SERIALIZABLE);
+                        writeHandle(handle);
+                        dataOutput.writeObject(object);
+                    } else {
+                        throw new NotSerializableException("Unsupported class: " + clazz);
+                    }
+                } else {
+                    writeRecordType(RT_REFERENCE);
+                    writeHandle(handle);
+                }
             }
         }
         flush();
